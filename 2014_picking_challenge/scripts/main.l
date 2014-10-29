@@ -13,7 +13,7 @@
   (send *baxter* :larm :elbow-p  :joint-angle 90)
   (send *baxter* :larm :wrist-r  :joint-angle 30)
   (send *baxter* :larm :wrist-p  :joint-angle -30)
-  (send *baxter* :larm :neck-p   :joint-angle -30)
+  (send *baxter* :head :neck-y   :joint-angle -30)
   (objects (list *baxter*))
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
   )
