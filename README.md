@@ -13,7 +13,7 @@ $ wstool set 2014-semi https://github.com/start-jsk/2014-semi --git
 $ wstool set jsk_robot https://github.com/jsk-ros-pkg/jsk_robot --git
 $ wstool update
 $ cd ..
-$ rosdep install -r --from-paths .
+$ rosdep install -y -r --from-paths .
 $ catkin_make
 $ source devel/setup.bash
 ```
