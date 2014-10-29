@@ -34,8 +34,8 @@ $ roseus scripts/main.l
 > (main)
 ```
 
-rvizで今の表示する
------------------
+rvizで今の状態を表示する
+------------------------
 
 ```
 $ rosrun rviz rviz
