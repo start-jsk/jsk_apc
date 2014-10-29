@@ -9,7 +9,7 @@
 mkdir -p catkin_ws/semi/src
 cd  catkin_ws/semi/src
 wstool init
-wstool git set 2014-semi https://github.com/start-jsk/2014-semi --git 
+wstool set 2014-semi https://github.com/start-jsk/2014-semi --git 
 wstool update
 cd ..
 catkin_make
