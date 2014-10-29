@@ -3,17 +3,48 @@
 
 2014 機械工学少人数ゼミ　プロジェクトページ
 
-BAXTERの有線LANにつなぐ
-新しい端末を開く
+環境の構築
+----------
 ```
-$ export ROS_MASTER_URI=http://baxter.jsk.imi.i.u-tokyo.ac.jp:11311 
+mkdir -p catkin_ws/semi/src
+cd  catkin_ws/semi/src
+wstool init
+wstool git set 2014-semi https://github.com/start-jsk/2014-semi --git 
+wstool update
+cd ..
+catkin_make
+source devel/setup.bash
+```
+
+
+実機を使うときの環境設定
+-----------------------
+```
+source `rospack find jsk_tools`/src/bashrc.ros
+rossetrobot baxter.jsk.imi.i.u-tokyo.ac.jp
+rossetip
+```
+
+euslispからロボットを動かす
+--------------------------
+```
+> roscd 2014_picking_challenge
+> roseus scripts/main.l
+$ (init)
+$ (main)
+```
+
+rvizで今の表示する
+-----------------
+
+```
 $ rosrun rviz rviz
 ```
-rvizが開く
-addを選択しRobotModelを追加
-FixedFrame base　に設定
 
-BAXTERの状態が自分のPCに表示される
+addを選択しRobotModelを追加, FixedFrame base に設定
+
+
+
 
 
 
