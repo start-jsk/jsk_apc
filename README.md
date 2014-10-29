@@ -10,9 +10,10 @@ $ mkdir -p catkin_ws/semi/src
 $ cd  catkin_ws/semi/src
 $ wstool init
 $ wstool set 2014-semi https://github.com/start-jsk/2014-semi --git
-$ wstool setp jsk_robot https://github.com/tarukosu/jsk_robot --git
+$ wstool set jsk_robot https://github.com/jsk-ros-pkg/jsk_robot --git
 $ wstool update
 $ cd ..
+$ rosdep install -r --from-paths .
 $ catkin_make
 $ source devel/setup.bash
 ```
