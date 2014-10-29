@@ -33,7 +33,7 @@ euslispからロボットを動かす
 $ roscd 2014_picking_challenge
 $ roseus scripts/main.l
 > (init)
-> (main)
+> (test)
 ```
 
 rvizで今の状態を表示する
