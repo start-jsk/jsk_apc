@@ -1,12 +1,12 @@
 (load "package://baxtereus/baxter-interface.l")
 
-
 (defun init ()
   (baxter-init)
+  (send *baxter* :locate #f(0 0 950) :world)
   (objects (list *baxter*)))
 
 
-(defun test ()
+(defun test-1 ()
   (send *baxter* :larm :shoulder-y :joint-angle -30)
   (send *baxter* :larm :shoulder-p :joint-angle -30)
   (send *baxter* :larm :elbow-r  :joint-angle 30)
@@ -17,5 +17,25 @@
   (objects (list *baxter*))
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
   )
+
+(defun test-2 ()
+  (let ()
+    (setq *box* (make-cube 100 100 200))
+    (send *box* :set-color :blue)
+    (do ((z 1100 (+ z 100)))
+        ((>= z 1500))
+        (do ((y 0 (+ y 100)))
+            ((>= y 500))
+            (print (list 900 y z))
+            (send *baxter* :reset-pose)
+            (send *box* :locate (float-vector 900 y z) :world)
+            (objects (list *baxter* *box*))
+            (send *baxter* :larm :inverse-kinematics *box* :rotation-axis :z :debug-view :no-message)
+            (send *baxter* :look-at-hand :larm)
+            (send *irtviewer* :draw-objects)
+            (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
+            (send *ri* :wait-interpolation)
+            ))
+    ))
 
 

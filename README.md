@@ -30,10 +30,11 @@ $ rossetip
 euslispからロボットを動かす
 --------------------------
 ```
-$ roscd 2014_picking_challenge
-$ roseus scripts/main.l
-> (init)
-> (test)
+> roscd 2014_picking_challenge
+> roseus scripts/main.l
+$ (init)
+$ (test-1) ;; simple example
+$ (test-2) ;; ik exmple
 ```
 
 rvizで今の状態を表示する
