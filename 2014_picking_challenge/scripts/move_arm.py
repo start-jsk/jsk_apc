@@ -60,7 +60,8 @@ def callback(pose):
         print "*", current_position, resp.joints[0].position[i]
 
         joint_command = {joint_name: resp.joints[0].position[i]}
-        right.set_joint_positions(joint_command)
+        # right.set_joint_positions(joint_command)
+        right.move_to_joint_positions(joint_command)
         rospy.sleep(0.1)
 
     print right.endpoint_pose()
