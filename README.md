@@ -6,23 +6,25 @@
 環境の構築
 ----------
 ```
-mkdir -p catkin_ws/semi/src
-cd  catkin_ws/semi/src
-wstool init
-wstool git set 2014-semi https://github.com/start-jsk/2014-semi --git 
-wstool update
-cd ..
-catkin_make
-source devel/setup.bash
+$ mkdir -p catkin_ws/semi/src
+$ cd  catkin_ws/semi/src
+$ wstool init
+$ wstool set 2014-semi https://github.com/start-jsk/2014-semi --git
+$ wstool set jsk_robot https://github.com/jsk-ros-pkg/jsk_robot --git
+$ wstool update
+$ cd ..
+$ rosdep install -y -r --from-paths .
+$ catkin_make
+$ source devel/setup.bash
 ```
 
 
 実機を使うときの環境設定
 -----------------------
 ```
-source `rospack find jsk_tools`/src/bashrc.ros
-rossetrobot baxter.jsk.imi.i.u-tokyo.ac.jp
-rossetip
+$ source `rospack find jsk_tools`/src/bashrc.ros
+$ rossetrobot baxter.jsk.imi.i.u-tokyo.ac.jp
+$ rossetip
 ```
 
 euslispからロボットを動かす
@@ -35,8 +37,8 @@ $ (test-1) ;; simple example
 $ (test-2) ;; ik exmple
 ```
 
-rvizで今の表示する
------------------
+rvizで今の状態を表示する
+------------------------
 
 ```
 $ rosrun rviz rviz
