@@ -31,7 +31,7 @@ def callback(pose):
 
 
 def listener():
-    rospy.init_node('semi/get_arm_position', anonymous=True)
+    rospy.init_node('get_arm_position', anonymous=True)
 
     right = baxter_interface.Limb('right')
     print right.endpoint_pose()

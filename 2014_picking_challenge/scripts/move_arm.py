@@ -55,17 +55,17 @@ def callback(pose):
 
     right = baxter_interface.Limb('right')
     rj = right.joint_names()
-    joint_command = {jt_nm: resp.joints[0].position[i]
-            for i, jt_nm in enumerate(rj)}
-    right.move_to_joint_positions(joint_command)
+    if len(resp.joints[0].position) !=0:
+        joint_command = {jt_nm: resp.joints[0].position[i]
+                for i, jt_nm in enumerate(rj)}
+        right.move_to_joint_positions(joint_command)
 
 
 def listener():
-    rospy.init_node('semi/move_arm', anonymous=True)
+    rospy.init_node('move_arm', anonymous=True)
 
     # initialize arm position
     right = baxter_interface.Limb('right')
-    right.move_to_neutral()
 
     rospy.Subscriber('semi/joint_angle_chatter', PoseStamped, callback)
     rospy.spin()
