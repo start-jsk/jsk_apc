@@ -61,13 +61,13 @@ def callback(pose):
 
 
 def listener():
-    rospy.init_node('move_arm', anonymous=True)
+    rospy.init_node('semi/move_arm', anonymous=True)
 
     # initialize arm position
     right = baxter_interface.Limb('right')
     right.move_to_neutral()
 
-    rospy.Subscriber('2014-semi/joint_angle_chatter', PoseStamped, callback)
+    rospy.Subscriber('semi/joint_angle_chatter', PoseStamped, callback)
     rospy.spin()
 
 
