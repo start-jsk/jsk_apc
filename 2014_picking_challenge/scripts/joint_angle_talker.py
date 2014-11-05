@@ -18,7 +18,6 @@ def talker():
     rospy.init_node('joint_angle_talker')
     pub = rospy.Publisher('semi/joint_angle_chatter', PoseStamped)
 
-
     hdr = Header(stamp=rospy.Time.now(), frame_id='base')
     position=Point(
             x=0.9743684236857688,
