@@ -35,18 +35,6 @@ def talker():
     pose = Pose(position=position, orientation=orientation)
     right_pose.append(PoseStamped(header=hdr, pose=pose))
 
-    position = Point(
-            x=1.1257550223179955,
-            y=-0.2874995035594442,
-            z=0.4497770857427736)
-    orientation = Quaternion(
-            x=-0.4546518238906712,
-            y=0.47559726095679095,
-            z=-0.5269588476157249,
-            w=0.5379715023333403)
-    pose = Pose(position=position, orientation=orientation)
-    right_pose.append(PoseStamped(header=hdr, pose=pose))
-
     while not rospy.is_shutdown():
         log = "hello, baxter. I'm talking right_arm_pose: {}".format(right_pose[0])
         rospy.loginfo(log)
