@@ -1,4 +1,8 @@
+#-*- coding:utf-8 -*-
 #!/usr/bin/env python
+"""
+move_arm.pyのテスト用
+"""
 import rospy
 
 from geometry_msgs.msg import (

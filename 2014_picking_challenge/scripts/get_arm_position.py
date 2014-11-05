@@ -1,4 +1,8 @@
+#-*- coding:utf-8 -*-
 #!/usr/bin/env python
+"""
+右腕のエンドエフェクタの位置を出力する
+"""
 import struct
 import rospy
 
@@ -28,9 +32,7 @@ def callback(pose):
     rospy.sleep(3)
 
 
-
-
-def listener():
+def get_arm_position():
     rospy.init_node('get_arm_position', anonymous=True)
 
     right = baxter_interface.Limb('right')
@@ -39,4 +41,4 @@ def listener():
 
 
 if __name__ == '__main__':
-    listener()
+    get_arm_position()

@@ -1,4 +1,15 @@
+#-*- coding:utf-8 -*-
 #!/usr/bin/env python
+"""
+"semi/joint_angle_chatter"でPublishされているPoseStamped型のメッセージ
+を受け取り、PoseStampedで指定されている位置へ右腕を移動させる。
+
+テストの仕方
+```
+$ rosrun 2014_picking_challenge joint_angle_talker.py
+# in another terminal
+$ rosrun 2014_picking_challenge move_arm.py
+"""
 import struct
 import rospy
 
