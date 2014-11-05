@@ -18,9 +18,8 @@ def talker():
     rospy.init_node('joint_angle_talker')
     pub = rospy.Publisher('semi/joint_angle_chatter', PoseStamped)
 
-    right_pose = []
-    hdr = Header(stamp=rospy.Time.now(), frame_id='base')
 
+    hdr = Header(stamp=rospy.Time.now(), frame_id='base')
     position=Point(
             x=0.9743684236857688,
             y=-0.400063802027193,
@@ -33,12 +32,12 @@ def talker():
             w=0.5901791137961719,
             )
     pose = Pose(position=position, orientation=orientation)
-    right_pose.append(PoseStamped(header=hdr, pose=pose))
+    right_pose = PoseStamped(header=hdr, pose=pose)
 
     while not rospy.is_shutdown():
-        log = "hello, baxter. I'm talking right_arm_pose: {}".format(right_pose[0])
+        log = "hello, baxter. I'm talking right_arm_pose: {}".format(right_pose)
         rospy.loginfo(log)
-        pub.publish(right_pose[0])
+        pub.publish(right_pose)
         rospy.sleep(1.)
 
 
