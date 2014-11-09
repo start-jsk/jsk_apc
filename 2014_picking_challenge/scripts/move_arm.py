@@ -1,5 +1,5 @@
-#-*- coding:utf-8 -*-
 #!/usr/bin/env python
+#-*- coding:utf-8 -*-
 """
 "semi/joint_angle_chatter"でPublishされているPoseStamped型のメッセージ
 を受け取り、PoseStampedで指定されている位置へ右腕を移動させる。
