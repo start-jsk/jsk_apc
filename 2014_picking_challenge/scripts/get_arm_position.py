@@ -1,5 +1,5 @@
-#-*- coding:utf-8 -*-
 #!/usr/bin/env python
+#-*- coding:utf-8 -*-
 """
 右腕のエンドエフェクタの位置を出力する
 """
