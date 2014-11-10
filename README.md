@@ -30,7 +30,7 @@ $ rossetip
 euslispからロボットを動かす
 --------------------------
 ```
-> roscd 2014_picking_challenge
+> roscd jsk_2014_picking_challenge
 > roseus scripts/main.l
 $ (init)
 $ (test-1) ;; simple example
