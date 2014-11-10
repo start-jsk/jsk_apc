@@ -6,9 +6,9 @@
 
 テストの仕方
 ```
-$ rosrun 2014_picking_challenge joint_angle_talker.py
+$ rosrun jsk_2014_picking_challenge joint_angle_talker.py
 # in another terminal
-$ rosrun 2014_picking_challenge move_arm.py
+$ rosrun jsk_2014_picking_challenge move_arm.py
 ```
 """
 import struct
