@@ -38,4 +38,43 @@
             ))
     ))
 
+(defun test-3 ()
+  (let (i c b)
+    (when (not (boundp '*pod*))
+      (load "package://jsk_2014_picking_challenge/scripts/pod-lowres.l"))
+    (send *pod* :locate #f(1200 0 0) :world)
+    (send *pod* :orient pi/2 :z :world)
+    (send *baxter* :locate #f(0 0 950) :world)
+    (objects (list *baxter* *pod*))
+    (setq *targets* nil i 0)
+    (dotimes (z 7)
+      (dotimes (x 4)
+        (cond ((< z 3)
+               (setq c (send *pod* :transform-vector (float-vector (+ (* x 200) -310) 400 (+ (* z 370) 550)))))
+              ((< z 4)
+               (setq c (send *pod* :transform-vector (float-vector (+ (* x 200) -310) 400 (+ (* (- z 3) 370) 1550)))))
+              (t
+               (setq c (send *pod* :transform-vector (float-vector (+ (* x 200) -310) 400 (+ (* (- z 4) 250) 1800))))))
+        (setq b (make-cube 25 25 100 :pos c))
+        (send b :set-color (elt gl::*face-colors* (* i 10)))
+        (objects b)
+        (set (intern (format nil "TARGET_~A" i)) b)
+        (push (eval (intern (format nil "TARGET_~A" i))) *targets*)
+        (incf i)
+        ))
+    (dolist (target *targets*)
+      (setq r (send *baxter* :larm :inverse-kinematics target
+                    :rotation-axis :z
+                    :debug-view :no-message))
+      (if r (send target :set-color :red)
+        (progn
+          (setq r (send *baxter* :larm :inverse-kinematics target
+                        :rotation-axis nil
+                        :debug-view :no-message))
+          (if r (send target :set-color :magenta))))
+
+      (send *irtviewer* :draw-objects)
+      (x::window-main-one)
+      )
+    ))
 
