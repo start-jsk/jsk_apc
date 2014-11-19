@@ -60,12 +60,12 @@ def handle_move_arm(pose_req):
             for i, jt_nm in enumerate(rj)}
     right.move_to_joint_positions(joint_command)
     # if the move is successful return True
-    return MoveArmResponse(success_right=True, success_left=False)
+    return MoveArmResponse(succeeded=True)
 
 
 def move_arm_server():
     rospy.init_node('move_arm_server')
-    s = rospy.Service('move_arm', MoveArm, handle_move_arm)
+    s = rospy.Service('semi/move_arm', MoveArm, handle_move_arm)
     print "Ready to move arm."
     rospy.spin()
 
