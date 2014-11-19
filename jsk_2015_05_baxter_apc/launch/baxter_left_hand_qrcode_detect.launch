@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="zbar_ros" type="barcode_detector" name="barcode_detector" output="screen">
+    <param name = "image_topic" type="string" value = "/cameras/right_hand_camera/image" />
+    <param name = "show_cv_window" type="bool" value = "true" />
+  </node>
+</launch>
