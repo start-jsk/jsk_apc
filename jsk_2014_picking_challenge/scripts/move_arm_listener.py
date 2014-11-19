@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 """
-"semi/joint_angle_chatter"でPublishされているPoseStamped型のメッセージ
+"semi/move_arm_chatter"でPublishされているPoseStamped型のメッセージ
 を受け取り、PoseStampedで指定されている位置へ右腕を移動させる。
 
 テストの仕方
@@ -74,12 +74,12 @@ def callback(pose):
 
 
 def listener():
-    rospy.init_node('move_arm', anonymous=True)
+    rospy.init_node('move_arm_listener', anonymous=True)
 
     # initialize arm position
     right = baxter_interface.Limb('right')
 
-    rospy.Subscriber('semi/joint_angle_chatter', PoseStamped, callback)
+    rospy.Subscriber('semi/move_arm_chatter', PoseStamped, callback)
     rospy.spin()
 
 
