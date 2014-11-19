@@ -15,8 +15,8 @@ from std_msgs.msg import Header
 
 
 def talker():
-    rospy.init_node('joint_angle_talker')
-    pub = rospy.Publisher('semi/joint_angle_chatter', PoseStamped)
+    rospy.init_node('move_arm_talker_test')
+    pub = rospy.Publisher('semi/move_arm_chatter', PoseStamped)
 
     hdr = Header(stamp=rospy.Time.now(), frame_id='base')
     position=Point(
