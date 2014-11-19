@@ -1,0 +1,16 @@
+<launch>
+  <!-- Launch the tracking node -->
+  <node pkg="zbar_ros" type="barcode_detector" name="barcode_detector" output="screen">
+    <param name = "image_topic" type="string" value = "/usb_cam/image_raw" />
+    <param name = "show_cv_window" type="bool" value = "true" />
+  </node>
+
+  <!-- Launch the usb camera acquisition node -->
+  <node pkg="usb_cam" type="usb_cam_node" name="usb_cam" output="screen">
+    <param name="image_width" type="int" value="640" />
+    <param name="image_height" type="int" value="480" />
+    <param name="video_device" type="string" value="/dev/video0" />
+    <param name="pixel_format" type="string" value="yuyv" />
+    <param name="camera_name" value="/camera/image_raw" />
+  </node>
+</launch>
