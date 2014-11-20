@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://kiva_pod</uri>
+      <name>kiva_pod</name>
+      <pose>1.5 0 0 0 0 1.56</pose>
+    </include>
+    <include>
+      <uri>model://bowl</uri>
+      <name>beer_A</name>
+      <pose>1.2 0.3 1.9 0.0 0.0 0.0</pose>
+    </include>
+    <include>
+      <uri>model://beer</uri>
+      <name>beer_B</name>
+      <pose>1.3 0.0 1.9 1.5 0.0 -1.5</pose>
+    </include>
+    <include>
+      <uri>model://beer</uri>
+      <name>beer_C</name>
+      <pose>1.3 -0.3 1.9 1.5 0.0 -1.5</pose>
+    </include>
+    <include>
+      <uri>model://beer</uri>
+      <name>beer_D</name>
+      <pose>1.3 0.3 1.7 1.5 0.0 -1.5</pose>
+    </include>
+    <include>
+      <uri>model://beer</uri>
+      <name>beer_E</name>
+      <pose>1.3 0.0 1.7 1.5 0.0 -1.5</pose>
+    </include>
+    <include>
+      <uri>model://bowl</uri>
+      <name>beer_F</name>
+      <pose>1.3 -0.3 1.7 0.0 0.0 0.0</pose>
+    </include>
+    <include>
+      <uri>model://bowl</uri>
+      <name>bowl_G</name>
+      <pose>1.2 0.3 1.5 0.0 0.0 0.0</pose>
+    </include>
+    <include>
+      <uri>model://beer</uri>
+      <name>beer_H</name>
+      <pose>1.3 0.0 1.5 1.5 0.0 -1.5</pose>
+    </include>
+    <include>
+      <uri>model://bowl</uri>
+      <name>bowl_I</name>
+      <pose>1.2 -0.3 1.5 0.0 0.0 0.0</pose>
+    </include>
+    <include>
+      <uri>model://bowl</uri>
+      <name>bowl_J</name>
+      <pose>1.2 0.3 1.3 0.0 0.0 0.0</pose>
+    </include>
+    <include>
+      <uri>model://beer</uri>
+      <name>beer_K</name>
+      <pose>1.3 0.0 1.3 1.5 0.0 -1.5</pose>
+    </include>
+    <include>
+      <uri>model://beer</uri>
+      <name>beer_L</name>
+      <pose>1.3 -0.3 1.3 1.5 0.0 -1.5</pose>
+    </include>
+    <physics type="ode">
+      <real_time_update_rate>1000.0</real_time_update_rate>
+      <gravity>
+        0.0 0.0 -9.81
+      </gravity>
+    </physics>
+  </world>
+</sdf>
