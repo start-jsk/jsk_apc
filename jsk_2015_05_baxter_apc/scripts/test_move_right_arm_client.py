@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-"""
-to test move_arm_server.py
-"""
 import roslib; roslib.load_manifest('jsk_2014_picking_challenge')
 
 import rospy
@@ -18,9 +15,9 @@ from jsk_2014_picking_challenge.srv import MoveArm
 
 
 def move_arm_client(pose):
-    rospy.wait_for_service('semi/move_arm')
+    rospy.wait_for_service('semi/move_right_arm')
     try:
-        move_arm = rospy.ServiceProxy('semi/move_arm', MoveArm)
+        move_arm = rospy.ServiceProxy('semi/move_right_arm', MoveArm)
         resp = move_arm(pose)
         return resp.succeeded
     except rospy.ServiceException, e:
@@ -28,17 +25,10 @@ def move_arm_client(pose):
 
 
 if __name__ == '__main__':
-    rospy.init_node('move_arm_client')
+    rospy.init_node('test_move_right_arm_client')
     hdr = Header(stamp=rospy.Time.now(), frame_id='base')
-    position = Point(
-            x=0.7241942937871891,
-            y=-0.39845057139098894,
-            z=0.5456768943508293)
-    orientation = Quaternion(
-            x=0.0017747791414926728,
-            y=0.9587746912729604,
-            z=0.006296746310126851,
-            w=0.2840920493772123)
+    position = Point(x=0.6246819211728672, y=-0.819074585555165, z=0.3265580285317628)
+    orientation = Quaternion(x=0.3817200917099027, y=0.92271996211121, z=-0.020952656721378728, w=0.04938247951234029)
     pose = Pose(position=position, orientation=orientation)
     right_pose = PoseStamped(header=hdr, pose=pose)
 
