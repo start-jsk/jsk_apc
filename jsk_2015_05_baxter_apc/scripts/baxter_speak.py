@@ -10,7 +10,7 @@ import rospy
 from sound_play.msg import *
 
 def send_audio(speech, lang='en'):
-    speech.replace(' ', '+')
+    speech = speech.replace(' ', '+')
     pub = rospy.Publisher('robotsound', SoundRequest, queue_size=100)
     print('http://translate.google.com/translate_tts?tl='+lang+'&q='+speech)
     req = SoundRequest(sound=SoundRequest.PLAY_FILE, command=SoundRequest.PLAY_ONCE, arg='http://translate.google.com/translate_tts?tl='+lang+'&q='+speech)
