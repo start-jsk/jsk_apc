@@ -28,6 +28,7 @@ $ source devel/setup.bash
 $ source `rospack find jsk_tools`/src/bashrc.ros
 $ rossetrobot baxter.jsk.imi.i.u-tokyo.ac.jp
 $ rossetip
+$ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
 ```
 
 euslispからロボットを動かす
