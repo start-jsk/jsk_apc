@@ -31,7 +31,7 @@ def main():
         for content in bin_contents[bin]:
             s += content + ":"
         s = s[:len(s)-1]
-        print("{0}:{1}".format(bin, s))a
+        print("{0}:{1}".format(bin, s))
 
     order_data = order_list()
     work_orders = jsonData['work_order']
