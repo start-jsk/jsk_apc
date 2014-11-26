@@ -17,6 +17,7 @@ def send_audio(speech, lang='en'):
     time.sleep(1.0)
     pub = rospy.Publisher('robotsound', SoundRequest, queue_size=1)
     while pub.get_num_connections() < 1:
+        print(pub.get_num_connections())
         print("waiting...")
     time.sleep(1.0)
 
