@@ -25,8 +25,8 @@ from baxter_core_msgs.srv import (
 )
 
 def handle_move_arm(pose_req):
-    # calculate right arm IK
-    pose = pose_req.pose_right
+    # calculate arm IK
+    pose = pose_req.pose_arm
     ns = "ExternalTools/" + 'right' + "/PositionKinematicsNode/IKService"
     iksvc = rospy.ServiceProxy(ns, SolvePositionIK)
     ikreq = SolvePositionIKRequest()
@@ -52,7 +52,7 @@ def handle_move_arm(pose_req):
     log = rospy.get_name() + ": I heard {}".format(pose)
     rospy.loginfo(log)
 
-    # get right arm info
+    # get arm info
     right = baxter_interface.Limb('right')
     rj = right.joint_names()
     # move the arm
@@ -64,8 +64,8 @@ def handle_move_arm(pose_req):
 
 
 def move_arm_server():
-    rospy.init_node('move_arm_server')
-    s = rospy.Service('semi/move_arm', MoveArm, handle_move_arm)
+    rospy.init_node('move_right_arm_server')
+    s = rospy.Service('semi/move_right_arm', MoveArm, handle_move_arm)
     print "Ready to move arm."
     rospy.spin()
 
