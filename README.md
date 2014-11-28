@@ -48,4 +48,22 @@ rvizで今の状態を表示する
 $ rosrun rviz rviz
 ```
 
+launchファイルを使う
+-----------------------
+
+```
+$ roslaunch jsk_2014_picking_challenge baxter_oneclick_grasp.launch
+```
+
+* baxter_oneclick_grasp.launch
+
+rviz上で表示されているboxをクリックをすることでつかみにいきます
+このlaunchではbaxter_organized_multi.launchをincludeしています。
+
+* baxter_organized_multi.launch
+
+平面と平面上の物体を分離し,平面とBounding Boxをpublishします。
+jsk_pcl_rosのorganized_multi_planeのlaunchをincludeしています。
+
+
 addを選択しRobotModelを追加, FixedFrame base に設定
