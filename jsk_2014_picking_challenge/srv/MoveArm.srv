@@ -1,0 +1,3 @@
+geometry_msgs/PoseStamped pose_arm
+---
+bool succeeded
