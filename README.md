@@ -6,7 +6,7 @@
 環境の構築
 ----------
 ```
-$ sudo apt-get install julius julius-dev
+$ sudo apt-get install julius libjulius-dev
 $ sudo apt-get install sudo apt-get install libzbar0 libzbar-dev
 $ mkdir -p catkin_ws/semi/src
 $ cd  catkin_ws/semi/src
