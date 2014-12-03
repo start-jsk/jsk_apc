@@ -1,0 +1,50 @@
+(load "package://baxtereus/baxter-interface.l")
+
+(defun init ()
+  (baxter-init)
+  (send *baxter* :locate #f(0 0 950) :world)
+  (objects (list *baxter*)))
+
+(defun tuck ()
+  (send *baxter* :larm :shoulder-y :joint-angle -57.3)
+  (send *baxter* :larm :shoulder-p :joint-angle -118.60)
+  ;;(send *baxter* :larm :elbow-r  :joint-angle 171.8)
+  (send *baxter* :larm :elbow-r  :joint-angle 151.8)
+  (send *baxter* :larm :elbow-p  :joint-angle 146.1)
+  (send *baxter* :larm :wrist-r  :joint-angle 0.0)
+  (send *baxter* :larm :wrist-p  :joint-angle 0.57)
+
+  (send *baxter* :head :neck-y   :joint-angle 0)
+
+  (send *baxter* :rarm :shoulder-y :joint-angle 57.3)
+  (send *baxter* :rarm :shoulder-p :joint-angle -118.60)
+  ;;(send *baxter* :rarm :elbow-r  :joint-angle -171.8)
+  (send *baxter* :rarm :elbow-r  :joint-angle -151.8)
+  (send *baxter* :rarm :elbow-p  :joint-angle 146.1)
+  (send *baxter* :rarm :wrist-r  :joint-angle -0.0)
+  (send *baxter* :rarm :wrist-p  :joint-angle 0.57)
+
+  (objects (list *baxter*))
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 10000)
+  )
+
+(defun untuck ()
+  (send *baxter* :larm :shoulder-y :joint-angle -4.5)
+  (send *baxter* :larm :shoulder-p :joint-angle -57.3)
+  (send *baxter* :larm :elbow-r  :joint-angle -68.2)
+  (send *baxter* :larm :elbow-p  :joint-angle 111.1)
+  (send *baxter* :larm :wrist-r  :joint-angle 38.3)
+  (send *baxter* :larm :wrist-p  :joint-angle 59.0)
+
+  (send *baxter* :head :neck-y   :joint-angle 0)
+
+  (send *baxter* :rarm :shoulder-y :joint-angle 4.5)
+  (send *baxter* :rarm :shoulder-p :joint-angle -57.3)
+  (send *baxter* :rarm :elbow-r  :joint-angle 68.2)
+  (send *baxter* :rarm :elbow-p  :joint-angle 111.1)
+  (send *baxter* :rarm :wrist-r  :joint-angle -38.3)
+  (send *baxter* :rarm :wrist-p  :joint-angle 59.0)
+
+  (objects (list *baxter*))
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 10000)
+  )
