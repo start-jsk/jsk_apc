@@ -72,6 +72,7 @@ generate_messages(
   geometry_msgs
 )
 
+
 ###################################
 ## catkin specific configuration ##
 ###################################
