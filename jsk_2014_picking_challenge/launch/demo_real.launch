@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find jsk_2014_picking_challenge)/launch/baxter_right_hand_qrcode_detect.launch"></include>
+  <node pkg="jsk_2014_picking_challenge" type="speak_qrcode_contents.py" name="speak_qrcode_contents"></node>
+  <node pkg="jsk_2014_picking_challenge" type="demo-real.l" name="demo_real"></node>
+</launch>
