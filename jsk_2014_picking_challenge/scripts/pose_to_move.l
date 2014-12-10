@@ -5,7 +5,6 @@
 
 (defun baxter-ik-init ()
   (load "package://baxtereus/baxter-interface.l")
-  (ros::load-ros-manifest "jsk_2014_picking_challenge")
   (baxter-init)
   ;(send *baxter* :locate #f(0 0 950) :world)
   (objects (list *baxter*))
@@ -30,7 +29,6 @@
 
 (defun pr2-ik-init ()
   (load "package://pr2eus/pr2-interface.l")
-  (ros::load-ros-manifest "jsk_2014_picking_challenge")
   (pr2-init)
   (send *pr2* :angle-vector
          (float-vector 12.0 45.0 60.0 0.0 -120.0 0.0 -45.0 0.0 -45.0 60.0 0.0 -120.0 0.0 -45.0 0.0 0.0 35.0))
