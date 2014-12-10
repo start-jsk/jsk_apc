@@ -1,16 +1,19 @@
 #!/usr/bin/env roseus
 
+(ros::roseus "move_arm_server")
+(ros::load-ros-manifest "jsk_2014_picking_challenge")
 
 (defun baxter-ik-init ()
   (load "package://baxtereus/baxter-interface.l")
+  (ros::load-ros-manifest "jsk_2014_picking_challenge")
   (baxter-init)
-  (send *baxter* :locate #f(0 0 950) :world)
+  ;(send *baxter* :locate #f(0 0 950) :world)
   (objects (list *baxter*))
   (baxter-reset-pose)
   (setq *robot* *baxter*)
   (setq *base* "/base")
   (subscribe-init)
-)
+  )
 
 (defun baxter-reset-pose ()
   (send *baxter* :larm :shoulder-y :joint-angle -30)
@@ -27,6 +30,7 @@
 
 (defun pr2-ik-init ()
   (load "package://pr2eus/pr2-interface.l")
+  (ros::load-ros-manifest "jsk_2014_picking_challenge")
   (pr2-init)
   (send *pr2* :angle-vector
          (float-vector 12.0 45.0 60.0 0.0 -120.0 0.0 -45.0 0.0 -45.0 60.0 0.0 -120.0 0.0 -45.0 0.0 0.0 35.0))
@@ -36,15 +40,17 @@
   (setq *robot* *pr2*)
   (setq *base* "/base_link")
   (subscribe-init)
-)
+  )
 (defun subscribe-init ()
   (unless (boundp '*tfl*)
-    (setq *tfl* (instance ros::transform-listener :init)))
+    (setq *tfl* (instance ros::transform-listener :init)));;;_??????
   (ros::subscribe "/move_left_arm" geometry_msgs::PoseStamped #'start_move_left) 
   (ros::subscribe "/move_right_arm" geometry_msgs::PoseStamped #'start_move_right) 
+  (ros::advertise-service "/move_left_arm_service" jsk_2014_picking_challenge::MoveArm #'service-right-cb)
+  (ros::advertise-service "/move_right_arm_service" jsk_2014_picking_challenge::MoveArm #'service-left-cb)
   (ros::ros-info "subscriber initialized")
-  (ros::spin)
-)
+  (ros::spin)   ;;;;?????????
+  )
 
 ;;(baxter-init)
 ;;(pr2-init)
@@ -53,12 +59,28 @@
 (defun start_move_left (msg)
   (ros::ros-info "start_grasp_cb driven")
   (start_move msg :larm)
-)
+  )
 (defun start_move_right (msg)
   (ros::ros-info "start_grasp_cb driven")
   (start_move msg :rarm)
 )
-(defun start_move (msg arm)
+(defun service-left-cb (req)
+  (let ((tgt (send req :pose_arm)))
+    ;; move left arm 
+    (setq res (send req :response))
+    (send res :succeeded (start_move tgt :larm))
+    res
+  ))
+(defun service-right-cb (req)
+  (let ((tgt (send req :pose_arm)))
+    ;; move left arm 
+    (setq res (send req :response))
+    (send res :succeeded (start_move tgt :rarm))
+    res
+  ))
+
+
+(defun start_move (msg arm)  ;;;;;;????????????
   (setq trans (send *tfl* :lookup-transform
 		    *base*
 		    (send msg :header :frame_id)
@@ -74,7 +96,8 @@
 	)
   (progn (ros::ros-info "failer"))
   )
-)
+  ret
+  )
 
 (warn 
 "
