@@ -45,17 +45,23 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate messages in the 'msg' folder
 # add_message_files(
-#   FILES
+#   FILE
 #   Message1.msg
 #   Message2.msg
 # )
 
-add_message_files(FILES one_order.msg order_list.msg)
+add_message_files(
+  FILES
+  one_order.msg
+  order_list.msg
+  QrStamp.msg
+  )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
   MoveArm.srv
+  QrStampsrv.srv
 )
 
 ## Generate actions in the 'action' folder
