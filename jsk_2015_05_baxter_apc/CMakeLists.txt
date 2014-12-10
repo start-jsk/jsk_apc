@@ -56,6 +56,7 @@ add_message_files(FILES one_order.msg order_list.msg)
 add_service_files(
   FILES
   MoveArm.srv
+  ReleaseItem.srv
 )
 
 ## Generate actions in the 'action' folder
