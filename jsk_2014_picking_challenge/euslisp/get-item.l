@@ -15,19 +15,21 @@
   (unix::sleep 3))
 
 (defun subscribe-init ()
-  (ros::subscribe "/semi/get_item" std_msgs::Empty #'callback)
+  (ros::advertise-service "/semi/get_item" jsk_2014_picking_challenge::Cue #'callback)
   (ros::ros-info "subscriber initialized"))
 
-(defun callback (msg)
+(defun callback (req)
   (ros::ros-info "getting item")
-  (get-item msg :rarm))
+  (setq res (send req :response))
+  (send res :succeeded (get-item :rarm))
+  res)
 
 (defun apply-angles ()
   (send *ri* :angle-vector (send *baxter* :angle-vector) 5000)
   (unix::sleep 5)
   (send *baxter* :angle-vector (send *ri* :state :angle-vector)))
 
-(defun get-item (msg arm)
+(defun get-item (arm)
   (send *baxter* arm :move-end-pos #f(0 0 60) :world)
   (apply-angles)
   (send *baxter* arm :move-end-pos #f(100 0 0) :world)
