@@ -62,6 +62,7 @@ add_service_files(
   FILES
   MoveArm.srv
   QrStampsrv.srv
+  ReleaseItem.srv
 )
 
 ## Generate actions in the 'action' folder
