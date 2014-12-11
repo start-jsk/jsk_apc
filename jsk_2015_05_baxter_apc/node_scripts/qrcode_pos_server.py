@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #-*- coding:utf-8 -*-
 import pprint
+import time
 
 import roslib
 roslib.load_manifest('jsk_2014_picking_challenge')
@@ -49,6 +50,9 @@ def handle_qrcode_pos(req):
         # print(right.joint_angles())
         right.move_to_joint_positions(angle)
 
+        # time.sleep(5)
+        # for i in range(5):
+        #     rospy.sleep()
         global marker_id
         hdr = Header(stamp=rospy.Time.now(), frame_id=marker_id[:5])
         lim = baxter_interface.Limb('right')
