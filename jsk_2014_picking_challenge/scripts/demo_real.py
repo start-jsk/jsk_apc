@@ -9,10 +9,11 @@ from std_msgs.msg import (
     Empty,
     String,
     )
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, Pose
 from jsk_rviz_plugins.msg import OverlayText
 # from jsk_2014_picking_challenge.srv import QrStampsrv, MoveArm
 from jsk_2014_picking_challenge.srv import *
+
 
 class DemoReal(object):
     """Demo for video sending to Amazon Official to get Kiva & Items"""
@@ -21,16 +22,23 @@ class DemoReal(object):
         # publishers
         self.pb_rviz_msg = rospy.Publisher('/semi/rviz_msg', OverlayText)
         # properties
-        self.qrcode_info = None
+        self.qrcode_info = {}
         self.target_bin = ''
 
     def cl_qrcode_reader(self):
         """QR code reader to get the position of bins"""
-        rospy.wait_for_service('/semi/qrcode_pos')
+        rospy.wait_for_service('/semi/qrcode._pos')
         try:
             qrcode_reader = rospy.ServiceProxy('/semi/qrcode_pos', QrStampsrv)
             resp = qrcode_reader(Empty)
-            rospy.logwarn(resp)
+            # rospy.logwarn(resp.qrstamps.qrcode_poses)
+            for stamp in resp.qrstamps.qrcode_poses:
+                # rospy.logwarn(stamp)
+                self.target_bin = stamp.header.frame_id
+                stamp.header.frame_id = ""
+                self.qrcode_info[self.target_bin] = stamp
+                rospy.logwarn(self.qrcode_info[self.target_bin])
+                rospy.logwarn("test =========== " + self.target_bin)
             return resp
         except rospy.ServiceException, e:
             rospy.logwarn('/semi/qrcode_pos Service call failed: {0}'.format(e))
@@ -40,6 +48,8 @@ class DemoReal(object):
         try:
             get_item = rospy.ServiceProxy('/move_right_arm_service', MoveArm)
             rospy.logwarn(get_item)
+            rospy.logwarn(self.qrcode_info[(self.target_bin)])
+            get_item(self.qrcode_info[(self.target_bin)])
             # resp = get_item(PoseStamped(self.qrcode_info[self.target_bin]))
             # if resp.succeeded is False:
             #     rospy.logwarn('move arm to {0} is failed'.format(self.target_bin))
@@ -61,7 +71,7 @@ class DemoReal(object):
         self.cl_qrcode_reader()
         self.pb_rviz_msg.publish(OverlayText(text='Started reading QR code and get position of each bins.'))
         # Get item
-        self.target_bin = 'A'
+        self.target_bin = 'bin_F'
         self.pb_rviz_msg.publish(OverlayText(text='Getting item in bin name: {0}.'.format(self.target_bin)))
         succeeded = self.cl_get_item()
         # Release item
