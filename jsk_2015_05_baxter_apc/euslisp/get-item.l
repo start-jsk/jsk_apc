@@ -1,0 +1,51 @@
+#!/usr/bin/env roseus
+;; get-item.l
+(load "package://baxtereus/baxter-interface.l")
+(load "package://pr2eus/pr2-interface.l")
+
+(ros::roseus "get_item")
+(ros::load-ros-manifest "roseus")
+(ros::load-ros-manifest "std_msgs")
+(ros::load-ros-manifest "jsk_2014_picking_challenge")
+
+(defun init ()
+  (baxter-init)
+  (objects (list *baxter*))
+  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+  (unix::sleep 3))
+
+(defun subscribe-init ()
+  (ros::subscribe "/semi/get_item" std_msgs::Empty #'callback)
+  (ros::ros-info "subscriber initialized"))
+
+(defun callback (msg)
+  (ros::ros-info "getting item")
+  (get-item msg :rarm))
+
+(defun apply-angles ()
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 5000)
+  (unix::sleep 5)
+  (send *baxter* :angle-vector (send *ri* :state :angle-vector)))
+
+(defun get-item (msg arm)
+  (send *baxter* arm :move-end-pos #f(0 0 60) :world)
+  (apply-angles)
+  (send *baxter* arm :move-end-pos #f(100 0 0) :world)
+  (apply-angles)
+  (send *baxter* arm :move-end-pos #f(0 0 -30) :world)
+  (apply-angles)
+  (send *ri* :start-grasp)
+  (send *baxter* arm :move-end-pos #f(0 0 60) :world)
+  (apply-angles)
+  (send *baxter* arm :move-end-pos #f(-120 0 0) :world)
+  (apply-angles)
+  (send *baxter* :reset-pose)
+  (apply-angles)
+  (send *baxter* :untuck-pose)
+  (apply-angles)
+  t)
+
+(warn "; get-item.l")
+(init)
+(subscribe-init)
+(ros::spin)
