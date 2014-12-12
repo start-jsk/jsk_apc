@@ -21,13 +21,15 @@
 (defun callback (req)
   (ros::ros-info "getting item")
   (setq res (send req :response))
-  (send res :succeeded (get-item :rarm))
+  (ros::ros-info "=================================================")
+  (send res :succeeded (instance std_msgs::Bool :init :data (get-item :rarm)))
+  (ros::ros-info "succeeded = [~A]" (send res :succeeded))
   res)
 
 (defun apply-angles ()
   (send *ri* :angle-vector (send *baxter* :angle-vector) 5000)
   (unix::sleep 5)
-  (send *baxter* :angle-vector (send *ri* :state :angle-vector)))
+  (send *baxter* :angle-vector (send *ri* :state :potentio-vector)))
 
 (defun get-item (arm)
   (send *baxter* arm :move-end-pos #f(0 0 60) :world)
