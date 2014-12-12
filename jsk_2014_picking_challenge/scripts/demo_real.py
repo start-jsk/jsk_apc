@@ -11,9 +11,9 @@ from std_msgs.msg import (
     )
 from geometry_msgs.msg import PoseStamped, Pose
 from jsk_rviz_plugins.msg import OverlayText
-# from jsk_2014_picking_challenge.srv import QrStampsrv, MoveArm
-from jsk_2014_picking_challenge.srv import *
 
+from jsk_2014_picking_challenge.msg import *
+from jsk_2014_picking_challenge.srv import *
 
 class DemoReal(object):
     """Demo for video sending to Amazon Official to get Kiva & Items"""
@@ -28,43 +28,46 @@ class DemoReal(object):
 
     def cl_qrcode_reader(self):
         """QR code reader to get the position of bins"""
+        rospy.logwarn("======================== cl_qrcode_reader ========================")
         rospy.wait_for_service('/semi/qrcode_pos')
         try:
             qrcode_reader = rospy.ServiceProxy('/semi/qrcode_pos', QrStampsrv)
             resp = qrcode_reader(Empty)
-            # rospy.logwarn(resp.qrstamps.qrcode_poses)
-            for stamp in resp.qrstamps.qrcode_poses:
-                # rospy.logwarn(stamp)
-                self.target_bin = stamp.header.frame_id
-                stamp.header.frame_id = "base"
-                self.qrcode_info[self.target_bin] = stamp
-                rospy.logwarn(self.qrcode_info[self.target_bin])
-                rospy.logwarn("test =========== " + self.target_bin)
+            for stamp in resp.qrstamps.qrcode_stampes:
+                rospy.logwarn(stamp.label.data)
+                self.qrcode_info[stamp.label.data] = stamp.qrcode_pose_stamp
             return resp
         except rospy.ServiceException, e:
             rospy.logwarn('/semi/qrcode_pos Service call failed: {0}'.format(e))
 
     def cl_get_item(self):
-        rospy.wait_for_service('/semi/move_right_arm')
+        rospy.logwarn('move to ' + self.target_bin + " =================================")
+        rospy.wait_for_service('/move_right_arm_service')
         try:
+            get_item = rospy.ServiceProxy('/move_right_arm_service', MoveArm)
             get_item = rospy.ServiceProxy('/semi/move_right_arm', MoveArm)
-            rospy.logwarn(get_item)
-            rospy.logwarn(self.qrcode_info[(self.target_bin)])
-            resp = get_item(self.qrcode_info[(self.target_bin)])
-            rospy.logwarn('get_item ========================================================')
-            rospy.logwarn(resp)
 
-            rospy.wait_for_service('/semi/get_item')
-            get_item = rospy.ServiceProxy('/semi/get_item', Cue)
-            resp = get_item()
+            get_item(self.qrcode_info[self.target_bin])
+
+            # rospy.logwarn(self.qrcode_info)
+            # rospy.logwarn(get_item)
+            # rospy.logwarn(self.qrcode_info[(self.target_bin)])
+            # resp = get_item(self.qrcode_info[(self.target_bin)])
+            # rospy.logwarn('get_item ========================================================')
+            # rospy.logwarn(resp)
+
+            # rospy.wait_for_service('/semi/get_item')
+            # get_item = rospy.ServiceProxy('/semi/get_item', Cue)
+            # resp = get_item()
             # resp = get_item(PoseStamped(self.qrcode_info[self.target_bin]))
-            if resp.succeeded is False:
-                rospy.logwarn('move arm to {0} is failed'.format(self.target_bin))
+            # if resp.succeeded is False:
+            #     rospy.logwarn('move arm to {0} is failed'.format(self.target_bin))
         except rospy.ServiceException, e:
             rospy.logwarn('/semi/get_item Service call failed: {0}'.format(e))
 
     def cl_release_item(self):
         rospy.wait_for_service('/semi/release_item')
+        rospy.logwarn("===============================release item =====================================")
         try:
             release_item = rospy.ServiceProxy('/semi/release_item', ReleaseItem)
             resp = release_item(Empty)
@@ -85,7 +88,6 @@ class DemoReal(object):
         self.pb_rviz_msg.publish(OverlayText(text='Releasing item.'))
         self.cl_release_item()
         self.pb_rviz_msg.publish(OverlayText(text="baxter waiting"))
-
 
 if __name__ == '__main__':
     demo_real = DemoReal()
