@@ -1,9 +1,8 @@
 <launch>
   <include file="$(find jsk_2014_picking_challenge)/launch/baxter_right_hand_qrcode_detect.launch"></include>
   <node pkg="jsk_2014_picking_challenge" type="speak_qrcode_contents.py" name="speak_qrcode_contents"></node>
-  <node pkg="jsk_2014_picking_challenge" type="picking_up_demo.l" name="picking_up_demp"></node>
-  <node pkg="jsk_2014_picking_challenge" type="qrcode_pos_server.py" name="qrcode_pos_server"></node>
+  <node pkg="jsk_2014_picking_challenge" type="qrcode-pos-server.l" name="qrcode_pos_server"></node>
   <node pkg="jsk_2014_picking_challenge" type="move_right_arm_server.py" name="move_right_arm_server"></node>
-  <node pkg="jsk_2014_picking_challenge" type="demo_real.py" name="demo_real"></node>
+  <node pkg="jsk_2014_picking_challenge" type="get-item.l" name="get_item"></node>
   <node pkg="jsk_2014_picking_challenge" type="release-item.l" name="release_item"></node>
 </launch>

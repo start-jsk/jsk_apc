@@ -21,13 +21,14 @@ class DemoReal(object):
         rospy.init_node('demo_real')
         # publishers
         self.pb_rviz_msg = rospy.Publisher('/semi/rviz_msg', OverlayText)
+        # self.pb_get_item = rospy.Publisher('/semi/get_item', Empty)
         # properties
         self.qrcode_info = {}
         self.target_bin = ''
 
     def cl_qrcode_reader(self):
         """QR code reader to get the position of bins"""
-        rospy.wait_for_service('/semi/qrcode._pos')
+        rospy.wait_for_service('/semi/qrcode_pos')
         try:
             qrcode_reader = rospy.ServiceProxy('/semi/qrcode_pos', QrStampsrv)
             resp = qrcode_reader(Empty)
@@ -35,7 +36,7 @@ class DemoReal(object):
             for stamp in resp.qrstamps.qrcode_poses:
                 # rospy.logwarn(stamp)
                 self.target_bin = stamp.header.frame_id
-                stamp.header.frame_id = ""
+                stamp.header.frame_id = "base"
                 self.qrcode_info[self.target_bin] = stamp
                 rospy.logwarn(self.qrcode_info[self.target_bin])
                 rospy.logwarn("test =========== " + self.target_bin)
@@ -44,15 +45,21 @@ class DemoReal(object):
             rospy.logwarn('/semi/qrcode_pos Service call failed: {0}'.format(e))
 
     def cl_get_item(self):
-        rospy.wait_for_service('/move_right_arm_service')
+        rospy.wait_for_service('/semi/move_right_arm')
         try:
-            get_item = rospy.ServiceProxy('/move_right_arm_service', MoveArm)
+            get_item = rospy.ServiceProxy('/semi/move_right_arm', MoveArm)
             rospy.logwarn(get_item)
             rospy.logwarn(self.qrcode_info[(self.target_bin)])
-            get_item(self.qrcode_info[(self.target_bin)])
+            resp = get_item(self.qrcode_info[(self.target_bin)])
+            rospy.logwarn('get_item ========================================================')
+            rospy.logwarn(resp)
+
+            rospy.wait_for_service('/semi/get_item')
+            get_item = rospy.ServiceProxy('/semi/get_item', Cue)
+            resp = get_item()
             # resp = get_item(PoseStamped(self.qrcode_info[self.target_bin]))
-            # if resp.succeeded is False:
-            #     rospy.logwarn('move arm to {0} is failed'.format(self.target_bin))
+            if resp.succeeded is False:
+                rospy.logwarn('move arm to {0} is failed'.format(self.target_bin))
         except rospy.ServiceException, e:
             rospy.logwarn('/semi/get_item Service call failed: {0}'.format(e))
 
@@ -71,7 +78,7 @@ class DemoReal(object):
         self.cl_qrcode_reader()
         self.pb_rviz_msg.publish(OverlayText(text='Started reading QR code and get position of each bins.'))
         # Get item
-        self.target_bin = 'bin_F'
+        self.target_bin = 'bin_E'
         self.pb_rviz_msg.publish(OverlayText(text='Getting item in bin name: {0}.'.format(self.target_bin)))
         succeeded = self.cl_get_item()
         # Release item
