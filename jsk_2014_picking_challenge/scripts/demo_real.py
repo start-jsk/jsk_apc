@@ -45,7 +45,7 @@ class DemoReal(object):
         rospy.wait_for_service('/move_right_arm_service')
         try:
             get_item = rospy.ServiceProxy('/move_right_arm_service', MoveArm)
-            get_item = rospy.ServiceProxy('/semi/move_right_arm', MoveArm)
+            # get_item = rospy.ServiceProxy('/semi/move_right_arm', MoveArm)
 
             get_item(self.qrcode_info[self.target_bin])
 
@@ -78,8 +78,8 @@ class DemoReal(object):
 
     def main(self):
         # read QR code
-        self.cl_qrcode_reader()
         self.pb_rviz_msg.publish(OverlayText(text='Started reading QR code and get position of each bins.'))
+        succeeded = self.cl_qrcode_reader()
         # Get item
         self.target_bin = 'bin_E'
         self.pb_rviz_msg.publish(OverlayText(text='Getting item in bin name: {0}.'.format(self.target_bin)))

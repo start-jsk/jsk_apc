@@ -64,7 +64,6 @@ add_service_files(
   MoveArm.srv
   QrStampsrv.srv
   ReleaseItem.srv
-  BaxterAngles.srv
   Cue.srv
 )
 
