@@ -19,14 +19,14 @@
   (unix::sleep 3)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
   ; releasing pos
-  (send *baxter* :rarm :move-end-pos #f(0 0 -300) :world)
+  (send *baxter* :rarm :move-end-pos #f(0 0 -250) :world)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
   (unix::sleep 3)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
   ; release item
   (send *ri* :stop-grasp)
   ; releasing bin upper pos
-  (send *baxter* :rarm :move-end-pos #f(0 0 300) :world)
+  (send *baxter* :rarm :move-end-pos #f(0 0 250) :world)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
   (unix::sleep 3)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))

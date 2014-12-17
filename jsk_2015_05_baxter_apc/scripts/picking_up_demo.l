@@ -35,6 +35,8 @@
   (pr2-init)
   (send *pr2* :angle-vector
          (float-vector 12.0 45.0 60.0 0.0 -120.0 0.0 -45.0 0.0 -45.0 60.0 0.0 -120.0 0.0 -45.0 0.0 0.0 35.0))
+
+
   (send *ri* :angle-vector (send *pr2* :angle-vector))
   (setq *robot* *pr2*)
   (setq *base* "/base_link")
@@ -76,15 +78,13 @@
   (let ((tgt (send req :pose_arm)))
     ;; move left arm
     (setq res (send req :response))
-    (send res :succeeded (start_move tgt :rarm))
+    (send res :succeeded (instance std_msgs::Bool
+                                   :init
+                                   :data (start_move tgt :rarm)))
+    (format nil "succeeded [~A]" res)
     res
     ))
 
-(defun apply-angles ()
-  (send *ri* :angle-vector (send *robot* :angle-vector) 5000)
-  (unix::sleep 5)
-  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
-  (send *irtviewer* :draw-objects))
 
 (defun start_move (msg arm)  ;;;;;;????????????
   (setq trans (send *tfl* :lookup-transform
@@ -92,79 +92,59 @@
 		    (send msg :header :frame_id)
 		    (ros::time 0.0);;(send *msg* :header :stamp)
 		    ))
-  (setq cds  (send (send trans :copy-worldcoords) :transform )))
-  (send *robot* arm
-        :inverse-kinematics cds
-        :debug-view t
-        :revert-if-fail nil)
-  (apply-angles)
-
+  (setq cds (send (send trans :copy-worldcoords) :transform (ros::tf-pose->coords(send msg :pose))))
   (send *ri* :stop-grasp)
   (unix::sleep 5);(send *ri* :wait-interpolation)
   ;; over qr
-  (send *robot* arm :move-end-pos #f(0 0 60) :world)
-  (apply-angles)
-  (send *robot* arm :move-end-pos #f(150 0 0) :world)
-  (apply-angles)
-  (send *robot* arm :move-end-pos #f(0 0 -30) :world)
-  (apply-angles)-
+  (send cds :translate (float-vector 0 0 60) :local)
+  (setq ret (send *robot* arm :inverse-kinematics cds))
+  (if ret
+      (progn
+	(send *ri* :angle-vector (send *robot* :angle-vector))
+	(unix::sleep 5);(send *ri* :wait-interpolation)
+	)
+    (progn
+      (ros::ros-info "qr failer")
+      (return-from start_move nil)
+      )
+    )
+  ;; in box
+  (send cds :translate (float-vector 100 0 0) :local)
+  (setq ret (send *robot* arm :inverse-kinematics cds))
+  (if ret
+      (progn
+	(send *ri* :angle-vector (send *robot* :angle-vector))
+	(unix::sleep 5);(send *ri* :wait-interpolation)
+	)
+    (progn (ros::ros-info "in box failer"))
+
+    )
   (send *ri* :start-grasp)
-  (send *robot* arm :move-end-pos #f(0 0 60) :world)
-  (apply-angles)
-  (send *robot* arm :move-end-pos #f(-150 0 0) :world)
-  (apply-angles)
-  (send *robot* :reset-pose)
-  (apply-angles)
-  ; (send cds :translate (float-vector 0 0 60) :local)
-  ; (setq ret (send *robot* arm :inverse-kinematics cds))
-  ; (if ret
-  ;     (progn
-	; (send *ri* :angle-vector (send *robot* :angle-vector))
-	; (unix::sleep 5);(send *ri* :wait-interpolation)
-	; )
-  ;   (progn
-  ;     (ros::ros-info "qr failer")
-  ;     (return-from start_move nil)
-  ;     )
-  ;   )
-  ; ;; in box
-  ; (send cds :translate (float-vector 100 0 0) :local)
-  ; (setq ret (send *robot* arm :inverse-kinematics cds))
-  ; (if ret
-  ;     (progn
-	; (send *ri* :angle-vector (send *robot* :angle-vector))
-	; (unix::sleep 5);(send *ri* :wait-interpolation)
-	; )
-  ;   (progn (ros::ros-info "in box failer"))
-  ;
-  ;   )
-  ; (send *ri* :start-grasp)
-  ; (unix::sleep 3);(send *ri* :wait-interpolation)
-  ; ;; move up hand
-  ; (send cds :translate (float-vector 0 0 60) :local)
-  ; (setq ret (send *robot* arm :inverse-kinematics cds))
-  ; (if ret
-  ;     (progn
-	; (send *ri* :angle-vector (send *robot* :angle-vector))
-	; (unix::sleep 5);(send *ri* :wait-interpolation)
-	; )
-  ;   (progn (ros::ros-info "in box failer"))
-  ;   )
-  ; ;; pull hand
-  ; (send cds :translate (float-vector -150 0 0) :local)
-  ; (setq ret (send *robot* arm :inverse-kinematics cds))
-  ; (if ret
-  ;     (progn
-	; (send *ri* :angle-vector (send *robot* :angle-vector))
-	; (unix::sleep 5);(send *ri* :wait-interpolation)
-	; )
-  ;   (progn (ros::ros-info "in box failer")
-	;    )
-  ;   )
+  (unix::sleep 3);(send *ri* :wait-interpolation)
+  ;; move up hand
+  (send cds :translate (float-vector 0 0 60) :local)
+  (setq ret (send *robot* arm :inverse-kinematics cds))
+  (if ret
+      (progn
+	(send *ri* :angle-vector (send *robot* :angle-vector))
+	(unix::sleep 5);(send *ri* :wait-interpolation)
+	)
+    (progn (ros::ros-info "in box failer"))
+    )
+  ;; pull hand
+  (send cds :translate (float-vector -150 0 0) :local)
+  (setq ret (send *robot* arm :inverse-kinematics cds))
+  (if ret
+      (progn
+	(send *ri* :angle-vector (send *robot* :angle-vector))
+	(unix::sleep 5);(send *ri* :wait-interpolation)
+	)
+    (progn (ros::ros-info "in box failer")
+	   )
+    )
   (send *baxter* :untuck-pose)
-  (apply-angles)
-  ; (send *ri* :angle-vector (send *robot* :angle-vector))
-  ; (unix::sleep 5);(send *ri* :wait-interpolation)
+  (send *ri* :angle-vector (send *robot* :angle-vector))
+  (unix::sleep 5);(send *ri* :wait-interpolation)
   t
   )
 (warn
