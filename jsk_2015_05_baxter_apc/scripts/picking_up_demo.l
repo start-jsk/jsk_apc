@@ -36,7 +36,7 @@
   (send *pr2* :angle-vector
          (float-vector 12.0 45.0 60.0 0.0 -120.0 0.0 -45.0 0.0 -45.0 60.0 0.0 -120.0 0.0 -45.0 0.0 0.0 35.0))
 
-  
+
   (send *ri* :angle-vector (send *pr2* :angle-vector))
   (setq *robot* *pr2*)
   (setq *base* "/base_link")
@@ -45,8 +45,8 @@
 (defun subscribe-init ()
   (unless (boundp '*tfl*)
     (setq *tfl* (instance ros::transform-listener :init)));;;_??????
-  (ros::subscribe "/move_left_arm" geometry_msgs::PoseStamped #'start_move_left) 
-  (ros::subscribe "/move_right_arm" geometry_msgs::PoseStamped #'start_move_right) 
+  (ros::subscribe "/move_left_arm" geometry_msgs::PoseStamped #'start_move_left)
+  (ros::subscribe "/move_right_arm" geometry_msgs::PoseStamped #'start_move_right)
   (ros::advertise-service "/move_right_arm_service" jsk_2014_picking_challenge::MoveArm #'service-right-cb)
   (ros::advertise-service "/move_left_arm_service" jsk_2014_picking_challenge::MoveArm #'service-left-cb)
   (ros::ros-info "subscriber initialized")
@@ -68,7 +68,7 @@
 (defun service-left-cb (req)
   (ros::ros-info "start_grasp_service_driven")
   (let ((tgt (send req :pose_arm)))
-    ;; move left arm 
+    ;; move left arm
     (setq res (send req :response))
     (send res :succeeded (start_move tgt :larm))
     res
@@ -76,9 +76,12 @@
 (defun service-right-cb (req)
   (ros::ros-info "start_grasp_service_driven")
   (let ((tgt (send req :pose_arm)))
-    ;; move left arm 
+    ;; move left arm
     (setq res (send req :response))
-    (send res :succeeded (start_move tgt :rarm))
+    (send res :succeeded (instance std_msgs::Bool
+                                   :init
+                                   :data (start_move tgt :rarm)))
+    (format nil "succeeded [~A]" res)
     res
     ))
 
@@ -89,18 +92,18 @@
 		    (send msg :header :frame_id)
 		    (ros::time 0.0);;(send *msg* :header :stamp)
 		    ))
-  (setq cds (send (send trans :copy-worldcoords) :transform (ros::tf-pose->coords(send msg :pose)))) 
+  (setq cds (send (send trans :copy-worldcoords) :transform (ros::tf-pose->coords(send msg :pose))))
   (send *ri* :stop-grasp)
   (unix::sleep 5);(send *ri* :wait-interpolation)
   ;; over qr
   (send cds :translate (float-vector 0 0 60) :local)
   (setq ret (send *robot* arm :inverse-kinematics cds))
   (if ret
-      (progn 
+      (progn
 	(send *ri* :angle-vector (send *robot* :angle-vector))
 	(unix::sleep 5);(send *ri* :wait-interpolation)
 	)
-    (progn 
+    (progn
       (ros::ros-info "qr failer")
       (return-from start_move nil)
       )
@@ -109,12 +112,12 @@
   (send cds :translate (float-vector 100 0 0) :local)
   (setq ret (send *robot* arm :inverse-kinematics cds))
   (if ret
-      (progn 
+      (progn
 	(send *ri* :angle-vector (send *robot* :angle-vector))
 	(unix::sleep 5);(send *ri* :wait-interpolation)
 	)
     (progn (ros::ros-info "in box failer"))
-    
+
     )
   (send *ri* :start-grasp)
   (unix::sleep 3);(send *ri* :wait-interpolation)
@@ -122,7 +125,7 @@
   (send cds :translate (float-vector 0 0 60) :local)
   (setq ret (send *robot* arm :inverse-kinematics cds))
   (if ret
-      (progn 
+      (progn
 	(send *ri* :angle-vector (send *robot* :angle-vector))
 	(unix::sleep 5);(send *ri* :wait-interpolation)
 	)
@@ -132,7 +135,7 @@
   (send cds :translate (float-vector -150 0 0) :local)
   (setq ret (send *robot* arm :inverse-kinematics cds))
   (if ret
-      (progn 
+      (progn
 	(send *ri* :angle-vector (send *robot* :angle-vector))
 	(unix::sleep 5);(send *ri* :wait-interpolation)
 	)
@@ -144,7 +147,7 @@
   (unix::sleep 5);(send *ri* :wait-interpolation)
   t
   )
-(warn 
+(warn
 "
 ;pr2-ik-init
 ;baxter-ik-init (default)

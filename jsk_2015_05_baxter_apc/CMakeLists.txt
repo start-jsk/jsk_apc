@@ -55,6 +55,7 @@ add_message_files(
   one_order.msg
   order_list.msg
   QrStamp.msg
+  QrStampes.msg
   )
 
 ## Generate services in the 'srv' folder
@@ -62,6 +63,8 @@ add_service_files(
   FILES
   MoveArm.srv
   QrStampsrv.srv
+  ReleaseItem.srv
+  Cue.srv
 )
 
 ## Generate actions in the 'action' folder
