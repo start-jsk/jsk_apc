@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #-*- coding:utf-8 -*-
 import pprint
+import time
 
 import roslib
 roslib.load_manifest('jsk_2014_picking_challenge')
@@ -22,11 +23,11 @@ from geometry_msgs.msg import (
 
 baxter_arm_angles = [
     dict(zip(['right_s0', 'right_s1', 'right_w0', 'right_w1', 'right_w2', 'right_e0', 'right_e1'],
-             [1.0688011127380372, 1.0492428577148438, 3.0587576875488285, 0.24697090656738283, 3.0595246779418948, -3.046869336456299, 1.0580632472351075]
+             [0.6864564017944337, -0.16336895372314456, -0.8471408891418457, 0.3627864559204102, 0.777728258569336, 0.5414952175048828, 0.556835025366211]
          )),
     dict(zip(['right_s0', 'right_s1', 'right_w0', 'right_w1', 'right_w2', 'right_e0', 'right_e1'],
-             [0.872068076916504, 1.0312185834777832, 3.0587576875488285, 0.6906748489562988, 3.0587576875488285, -3.0457188508666992, 1.2168302585998536]
-         ))
+             [0.7554855371704102, -0.3179175179260254, -1.3468351302246095, 0.6178107616149903, 0.8421554515869141, 0.6757185362915039, 0.9200049764831544]
+         )),
 ]
 
 marker_id = ""
@@ -47,8 +48,11 @@ def handle_qrcode_pos(req):
     for angle in baxter_arm_angles:
         # print('right joint_angles=>')
         # print(right.joint_angles())
-        right.move_to_joint_positions(angle)
+        right.move_to_joint_positions(angle, timeout=20.0)
 
+        # time.sleep(5)
+        # for i in range(5):
+        #     rospy.sleep()
         global marker_id
         hdr = Header(stamp=rospy.Time.now(), frame_id=marker_id[:5])
         lim = baxter_interface.Limb('right')
