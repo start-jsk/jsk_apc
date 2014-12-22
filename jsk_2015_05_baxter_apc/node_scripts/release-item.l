@@ -13,8 +13,9 @@
 
 (defun release-item-cb (req)
   (ros::ros-info "release-item called")
+  ; (send *ri* :head-pan -1.5) ;; see the target
   ; releasing bin upper pos
-  (send *baxter* :angle-vector #f(-5.31738 -0.307617 -31.7725 -0.32959 42.8247 -0.241699 71.8506 -0.197754 -44.8901 -69.0161 -9.55811 107.007 7.91016 48.5376 -10.3931))
+  (send *baxter* :angle-vector #f(19.7534 0.197754 -30.7397 1.97754 41.1328 -0.900879 72.5537 -0.241699 -23.1372 -71.5869 -32.2119 98.3716 14.6558 66.0498 -2.87842))
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
   (unix::sleep 3)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
@@ -26,12 +27,13 @@
   ; release item
   (send *ri* :stop-grasp)
   ; releasing bin upper pos
-  (send *baxter* :rarm :move-end-pos #f(0 0 250) :world)
+  (send *baxter* :rarm :move-end-pos #f(0 0 300) :world)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
   (unix::sleep 3)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
   ; reset-pose
   (send *baxter* :reset-pose)
+  ; (send *ri* :head-pan 0)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
   (unix::sleep 3)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
