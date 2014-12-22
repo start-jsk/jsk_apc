@@ -44,12 +44,14 @@
                                                          )))
                                  (setq return-qrstampes
                                        (instance jsk_2014_picking_challenge::QrStampes :init))
+                                 (setq pm -1)
                                  (dolist (angle baxter-angles)
                                    (setq stamp
                                          (instance jsk_2014_picking_challenge::QrStamp :init))
                                    (format t "~A" angle)
 
                                    (send *baxter* :angle-vector angle)
+                                   ; (send *ri* :head-pan (* pm 0.3))
                                    (send *ri* :angle-vector (send *baxter* :angle-vector) 4000)
                                    (unix:sleep 3)
                                    (send *irtviewer* :draw-objects)
@@ -64,7 +66,9 @@
                                          (append (send return-qrstampes :qrcode_stampes)
                                                  (list m)))
                                    (unix:sleep 5)
+                                   (setq pm (* pm -1))
                                    )
+                                 ; (send *ri* :head-pan 0)
                                  return-qrstampes)
                                )
   )
