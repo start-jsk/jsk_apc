@@ -4,8 +4,11 @@
   </include>
 
   <!-- for interactive controller -->
-  <node pkg="roseus" type="roseus" name="move_joint_interface_for_im" args="$(find jsk_interactive)/euslisp/move-joint-interface-robot.l">
+  <node pkg="roseus" type="roseus" name="robot_actions" args="$(find jsk_interactive_marker)/euslisp/robot-actions.l">
     <param name="robot" value="BAXTER"/>
+    <param name="one_click_grasp" value="true"/>
+    <param name="one_click_grasp_arm" value="larm"/> 
+    <param name="frame_id" value="base"/>
   </node>
 
   <node pkg="topic_tools" type="relay" name="topic_tools_relay" args="/handle_estimator/output_best /jsk_interactive_marker_manipulation/grasp_pose"/>
@@ -15,7 +18,5 @@
     <param name="start_ik" value="false"/>
     <param name="use_ik_server" value="false"/>
     <param name="frame_id" value="base"/>
-    <param name="one_click_grasp" value="true"/>
-    <param name="one_click_grasp_arm" value="larm"/> 
   </node>
 </launch>
