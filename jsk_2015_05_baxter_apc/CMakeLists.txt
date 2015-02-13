@@ -54,6 +54,8 @@ add_message_files(
   FILES
   one_order.msg
   order_list.msg
+  bin_content.msg
+  bins_content.msg
   QrStamp.msg
   QrStampes.msg
   )
