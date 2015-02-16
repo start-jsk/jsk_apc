@@ -1,5 +1,6 @@
 (load "package://baxtereus/baxter-interface.l")
 
+
 (defun init ()
   (baxter-init)
   (send *baxter* :locate #f(0 0 950) :world)
@@ -17,6 +18,7 @@
   (objects (list *baxter*))
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
   )
+
 
 (defun test-2 ()
   (let ()
@@ -38,42 +40,79 @@
             ))
     ))
 
-(defun test-3 ()
-  (let (i c b)
+
+(defclass target-pick-region
+  :super propertied-object
+  :slots (a b c d e f g h i j k l))
+(defmethod target-pick-region
+  (:init ()
+    """Local coordinates of each region
+    in the podlowres objects"""
+    (setq a #f(-270 1660 500))
+    (setq b #f(   0 1660 500))
+    (setq c #f( 270 1660 500))
+    (setq d #f(-270 1430 500))
+    (setq e #f(   0 1430 500))
+    (setq f #f( 270 1430 500))
+    (setq g #f(-270 1200 500))
+    (setq h #f(   0 1200 500))
+    (setq i #f( 270 1200 500))
+    (setq j #f(-270  950 500))
+    (setq k #f(   0  950 500))
+    (setq l #f( 270  950 500)))
+  (:target-list ()
+    (list a b c d e f g h i j k l)))
+
+
+(defun test-target-ik ()
+  """Target pick region test
+  to confirm the endpoint can reached
+  """
+  (let (i region c b r)
+    ;; prepare pod-lowres
     (when (not (boundp '*pod*))
-      (load "package://jsk_2014_picking_challenge/scripts/pod-lowres.l"))
-    (send *pod* :locate #f(1200 0 0) :world)
-    (send *pod* :orient pi/2 :z :world)
-    (send *baxter* :locate #f(0 0 950) :world)
+      (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l"))
+    (send *pod* :locate #f(1300 0 0) :world)
+    (send *pod* :rotate pi/2 :x :world)
+    (send *pod* :rotate (- pi/2) :z :world)
     (objects (list *baxter* *pod*))
+    ;; make target cube
     (setq *targets* nil i 0)
-    (dotimes (z 7)
-      (dotimes (x 4)
-        (cond ((< z 3)
-               (setq c (send *pod* :transform-vector (float-vector (+ (* x 200) -310) 400 (+ (* z 370) 550)))))
-              ((< z 4)
-               (setq c (send *pod* :transform-vector (float-vector (+ (* x 200) -310) 400 (+ (* (- z 3) 370) 1550)))))
-              (t
-               (setq c (send *pod* :transform-vector (float-vector (+ (* x 200) -310) 400 (+ (* (- z 4) 250) 1800))))))
-        (setq b (make-cube 25 25 100 :pos c))
-        (send b :set-color (elt gl::*face-colors* (* i 10)))
-        (objects b)
-        (set (intern (format nil "TARGET_~A" i)) b)
-        (push (eval (intern (format nil "TARGET_~A" i))) *targets*)
-        (incf i)
-        ))
+    (setq region (instance target-pick-region :init))
+    (dolist (c (send region :target-list))
+      ;; transform target coordinates local->world
+      (setq c (send *pod* :transform-vector c))
+      (setq b (make-cube 25 25 100 :pos c))
+      (send b :set-color (elt gl::*face-colors* (* i 10)))
+      (objects b)
+      ;; set cube as target
+      (set (intern (format nil "TARGET_~A" i)) b)
+      (push (eval (intern (format nil "TARGET_~A" i))) *targets*)
+      (incf i)
+      )
+    ;; calc inverse kinematics on each target
+    ;; if success with z constraction -> cube is red
+    ;; elif success with no constraction -> magenta
     (dolist (target *targets*)
+      ;; ik with z axis constraction
       (setq r (send *baxter* :larm :inverse-kinematics target
                     :rotation-axis :z
                     :debug-view :no-message))
       (if r (send target :set-color :red)
         (progn
+          ;; ik without axis constraction
           (setq r (send *baxter* :larm :inverse-kinematics target
                         :rotation-axis nil
                         :debug-view :no-message))
           (if r (send target :set-color :magenta))))
-
-      (send *irtviewer* :draw-objects)
-      (x::window-main-one)
-      )
+        (send *irtviewer* :draw-objects)
+        (x::window-main-one)
+        )
     ))
+
+(warn "~%")
+(warn "(init) to initialize baxter model.~%")
+(warn "(test-1) to move baxter arm a little.~%")
+(warn "(test-2) to test simple IK.~%")
+(warn "(test-target-ik) to test target regeion IK.~%")
+
