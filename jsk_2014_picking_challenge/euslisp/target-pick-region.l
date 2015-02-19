@@ -1,4 +1,6 @@
-"""target pick region data"""
+;;;
+;;; Target pick region in the shelf.
+;;;
 (defclass target-pick-region
   :super propertied-object
   :slots (a b c d e f g h i j k l))
