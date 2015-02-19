@@ -3,7 +3,7 @@
 (load "package://baxtereus/baxter-interface.l")
 (load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
 
-(ros::roseus "move2target_listener")
+(ros::roseus "move_arm2target_bin_listener")
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")
 
@@ -19,8 +19,8 @@
   (objects (list *baxter* *pod*)))
 
 (defun subscribe-init ()
-  (ros::subscribe "/semi/move_larm2target" std_msgs::String #'cb-larm)
-  (ros::subscribe "/semi/move_rarm2target" std_msgs::String #'cb-rarm)
+  (ros::subscribe "/semi/move_larm2target_bin" std_msgs::String #'cb-larm)
+  (ros::subscribe "/semi/move_rarm2target_bin" std_msgs::String #'cb-rarm)
   (ros::ros-info "subscriber initialized"))
 
 (defun cb-larm (msg)
