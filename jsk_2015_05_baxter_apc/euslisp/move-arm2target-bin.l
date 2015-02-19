@@ -1,11 +1,13 @@
 #!/usr/bin/env roseus
 
 (load "package://baxtereus/baxter-interface.l")
+(load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
 
 (ros::roseus "move2target_listener")
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")
 
+#|
 (defclass target-pick-region
   :super propertied-object
   :slots (a b c d e f g h i j k l))
@@ -29,11 +31,18 @@
     (list a b c d e f g h i j k l))
   (:target-name-list ()
     '(a b c d e f g h i j k l)))
+|#
 
 (defun init ()
   (baxter-init)
   (send *baxter* :locate #f(0 0 950) :world)
-  (objects (list *baxter*)))
+  (when (not (boundp '*pod*))
+    (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
+    (send *pod* :locate #f(1300 0 0) :world)
+    (send *pod* :rotate pi/2 :x :world)
+    (send *pod* :rotate (- pi/2) :z :world)
+    )
+  (objects (list *baxter* *pod*)))
 
 (defun subscribe-init ()
   (ros::subscribe "/semi/move_larm2target" std_msgs::String #'cb-larm)
@@ -48,17 +57,9 @@
 
 (defun callback (msg arm)
   """msg data should be string and included in (a, b, c, ..., l)"""
-  (let (nm region c cw target)
-    ;; prepare pod-lowres
-    (when (not (boundp '*pod*))
-      (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
-      (send *pod* :locate #f(1300 0 0) :world)
-      (send *pod* :rotate pi/2 :x :world)
-      (send *pod* :rotate (- pi/2) :z :world)
-      )
-    (objects (list *baxter* *pod*))
-    ;;
-    (setq region (instance target-pick-region :init))
+  (let ((region (instance target-pick-region :init))
+        nm c cw target)
+    ; (setq region (instance target-pick-region :init))
     (setq nm (intern (string-upcase (send msg :data))))
     (ros::ros-info (format nil "moving to ~A." nm))
     ;; target data validation
