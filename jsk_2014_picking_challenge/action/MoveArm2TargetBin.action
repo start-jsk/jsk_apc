@@ -2,7 +2,7 @@
 string order
 ---
 #result definition
-int32[] sequence
+string[] sequence
 ---
 #feedback
-int32[] sequence
+string[] sequence
