@@ -14,12 +14,15 @@ from jsk_2014_picking_challenge.msg import (
 def main():
     # cmdline arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('order', help='bin name for arm to move')
+    parser.add_argument('bin_name', help='bin name for arm to move')
+    parser.add_argument('-l', '--limb', choices=('l', 'r'),
+        help='left or right arm')
     args = parser.parse_args(rospy.myargv()[1:])
 
     # initialize
     rospy.init_node('move_arm2target_bin_client')
-    client = actionlib.SimpleActionClient('move_arm2target_bin', MoveArm2TargetBinAction)
+    client = actionlib.SimpleActionClient('move_arm2target_bin',
+        MoveArm2TargetBinAction)
 
     # wait for server to boot
     print("{0} wait_for_server".format(os.getpid()))
@@ -27,7 +30,8 @@ def main():
 
     # request goal for arm to move
     goal = MoveArm2TargetBinGoal()
-    goal.order = args.order
+    goal.limb = 'left' if args.limb == 'l' else 'right'
+    goal.order = args.bin_name
     print "Requesting move for bin {0}".format(goal.order)
     client.send_goal(goal)
 
