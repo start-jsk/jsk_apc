@@ -33,26 +33,27 @@
          (setq region (instance target-pick-region :init)))
   (:execute-cb (server goal)
                """the order should be string and included in (a, b, c, ..., l)"""
-               (let ((order (send goal :goal :order)) seq msg target-nm c target)
-                 (push 0 seq)  ;; started
+               (let ((order (send goal :goal :order)) target-nm seq c msg)
                  (setq target-nm (intern (string-upcase order)))
                  (ros::ros-info (format nil "moving to ~A." target-nm))
                  ;; target name validation
-                 (push 1 seq)  ;; verifying target name
+                 (push "target_name_validation" seq)
                  (unless (find target-nm (send region :target-name-list))
                    (ros::ros-info (format nil "~A not found." target-nm))
-                   (return-from execute-cb nil))
+                   (setq msg (send server :result :sequence (nreverse seq)))
+                   (send server :set-aborted msg)
+                   (return-from :execute-cb nil))
                  ;; get target coordinates
-                 (push 2 seq)  ;; getting target coordinates
+                 (push "get_target_coords" seq)
                  (setq c (send *pod* :transform-vector (send region :get-val target-nm)))
                  ;; ik with z axis constraction
-                 (push 3 seq)  ;; computing IK
+                 (push (format nil "inverse_kinematics_for_~A" target-nm) seq)
                  (ros::ros-info (format nil "computing IK for ~A." target-nm))
-
-                 (setq target (instance cascaded-coords :init :pos c))
-                 (send *baxter* :larm :inverse-kinematics target :rotate-axis :z)
+                 (send *baxter* :larm
+                       :inverse-kinematics (instance cascaded-coords :init :pos c)
+                       :rotate-axis :z)
                  ;; reflect change to ri
-                 (push 4 seq)  ;; reflecting to ri
+                 (push "ri_reflectioin" seq)  ;; reflecting to ri
                  (send *ri* :angle-vector (send *baxter* :angle-vector))
                  (send *irtviewer* :draw-objects)
                  (x::window-main-one)
