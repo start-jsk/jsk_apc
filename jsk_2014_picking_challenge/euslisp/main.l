@@ -65,16 +65,16 @@
       (incf i)
       )
     ;; calc inverse kinematics on each target
-    ;; if success with z constraction -> cube is red
-    ;; elif success with no constraction -> magenta
+    ;; if success with z restriction -> cube is red
+    ;; elif success with no restriction -> magenta
     (dolist (target *targets*)
-      ;; ik with z axis constraction
+      ;; ik with z axis restriction
       (setq r (send *baxter* :larm :inverse-kinematics target
                     :rotation-axis :z
                     :debug-view :no-message))
       (if r (send target :set-color :red)
         (progn
-          ;; ik without axis constraction
+          ;; ik without axis restriction
           (setq r (send *baxter* :larm :inverse-kinematics target
                         :rotation-axis nil
                         :debug-view :no-message))
