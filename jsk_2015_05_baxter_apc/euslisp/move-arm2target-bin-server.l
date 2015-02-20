@@ -49,13 +49,13 @@
     (send *irtviewer* :draw-objects)
     (x::window-main-one)
     ;; set result
-    (push msg (send server :result :sequence (nreverse seq)))
+    (setq msg (send server :result :sequence (nreverse seq)))
     (send server :set-succeeded msg)
     ))
 
 (setq s (instance ros::simple-action-server :init
                   "/move_arm2target_bin" jsk_2014_picking_challenge::MoveArm2TargetBinAction
-                  :execute-cb #'execute-cb))
+                  :execute-cb #'(lambda (server goal) (execute-cb server goal))))
 
 (init)
 (ros::rate 500)
