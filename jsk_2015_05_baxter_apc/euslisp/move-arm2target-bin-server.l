@@ -26,10 +26,10 @@
            )
          (objects (list *baxter* *pod*))
          (setq action (instance ros::simple-action-server
-                                :init "/move_arm2target_bin" jsk_2014_picking_challenge::MoveArm2TargetBinAction
-                                ;; args for callback function are needed
-                                ;; to avoid segmentation fault
-                                :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal))))
+                                     :init "/move_arm2target_bin" jsk_2014_picking_challenge::MoveArm2TargetBinAction
+                                     ;; args for callback function are needed
+                                     ;; to avoid segmentation fault
+                                     :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal))))
          (setq region (instance target-pick-region :init)))
   (:execute-cb (server goal)
                """the order should be string and included in (a, b, c, ..., l)"""
