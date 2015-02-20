@@ -46,12 +46,22 @@
                  ;; get target coordinates
                  (push "get_target_coords" seq)
                  (setq c (send *pod* :transform-vector (send region :get-val target-nm)))
-                 ;; ik with z axis constraction
+                 ;; ik with z axis restriction
                  (push (format nil "inverse_kinematics_for_~A" target-nm) seq)
                  (ros::ros-info (format nil "computing IK for ~A." target-nm))
-                 (send *baxter* :larm
-                       :inverse-kinematics (instance cascaded-coords :init :pos c)
-                       :rotate-axis :z)
+                 (setq target (instance cascaded-coords :init :pos c))
+                 (setq r (send *baxter* :larm
+                               :inverse-kinematics target
+                               :rotate-axis :z))
+                 (if (not r)  ;; if disable to solve ik with z restriction
+                   (push (format nil "inverse_kinematics_for_~A_no_restriction" target-nm) seq)
+                   (setq r (send *baxter* :larm
+                                 :inverse-kinematics target
+                                 :rotation-axis nil))
+                   (if (not r)  ;; if disable to solve ik without restriction
+                     (progn (setq msg (send server :result :sequence (nreverse seq)))
+                            (send server :set-aborted msg)
+                            (return-from :execute-cb nil))))
                  ;; reflect change to ri
                  (push "ri_reflectioin" seq)  ;; reflecting to ri
                  (send *ri* :angle-vector (send *baxter* :angle-vector))
