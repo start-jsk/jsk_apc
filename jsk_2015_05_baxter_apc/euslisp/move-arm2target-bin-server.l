@@ -33,11 +33,19 @@
          (setq region (instance target-pick-region :init)))
   (:execute-cb (server goal)
                """the order should be string and included in (a, b, c, ..., l)"""
-               (let ((order (send goal :goal :order)) target-nm seq c msg)
+               (let ((order (send goal :goal :order))
+                     (limb (send goal :goal :limb)) target-nm seq c msg)
                  (setq target-nm (intern (string-upcase order)))
-                 (ros::ros-info (format nil "moving to ~A." target-nm))
+                 (push "msg_validation" seq)
+                 ;; limb validation
+                 (cond ((string-equal limb "left") (setq limb ':larm))
+                       ((string-equal limb "right") (setq limb ':rarm))
+                       (t (progn
+                            (setq msg (send server :result :sequence (nreverse seq)))
+                            (send server :set-aborted msg)
+                            (return-from :execute-cb nil))))
+                 (ros::ros-info (format nil "requested ~A." target-nm))
                  ;; target name validation
-                 (push "target_name_validation" seq)
                  (unless (find target-nm (send region :target-name-list))
                    (ros::ros-info (format nil "~A not found." target-nm))
                    (setq msg (send server :result :sequence (nreverse seq)))
@@ -50,12 +58,12 @@
                  (push (format nil "inverse_kinematics_for_~A" target-nm) seq)
                  (ros::ros-info (format nil "computing IK for ~A." target-nm))
                  (setq target (instance cascaded-coords :init :pos c))
-                 (setq r (send *baxter* :larm
+                 (setq r (send *baxter* limb
                                :inverse-kinematics target
                                :rotate-axis :z))
                  (if (not r)  ;; if disable to solve ik with z restriction
                    (push (format nil "inverse_kinematics_for_~A_no_restriction" target-nm) seq)
-                   (setq r (send *baxter* :larm
+                   (setq r (send *baxter* limb
                                  :inverse-kinematics target
                                  :rotation-axis nil))
                    (if (not r)  ;; if disable to solve ik without restriction

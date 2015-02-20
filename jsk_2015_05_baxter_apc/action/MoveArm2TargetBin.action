@@ -1,5 +1,6 @@
 #goal definition
-string order
+string limb   # arm to move
+string order  # target bin name
 ---
 #result definition
 string[] sequence
