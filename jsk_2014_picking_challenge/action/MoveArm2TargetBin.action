@@ -1,0 +1,9 @@
+#goal definition
+string limb   # arm to move
+string order  # target bin name
+---
+#result definition
+string[] sequence
+---
+#feedback
+string[] sequence
