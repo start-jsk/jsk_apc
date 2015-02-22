@@ -35,6 +35,8 @@ class MyPlugin(Plugin):
         self.yes = None
 
     def handle_yn_btn(self, req):
+        """Callback function of service,
+        and handle enable/disable of the buttons."""
         self.yes = None  # initialize
         self._widget.yes_button.setEnabled(True)
         self._widget.no_button.setEnabled(True)
@@ -47,11 +49,11 @@ class MyPlugin(Plugin):
         return YesOrNoResponse(yes=self.yes)
 
     def _handle_yes_clicked(self):
-        rospy.logerr("Yes button clicked.")
+        """Handle events of being clicked yes button."""
         self.yes = True
 
     def _handle_no_clicked(self):
-        rospy.logerr("No button clicked.")
+        """Handle events of being clicked no button."""
         self.yes = False
 
     def shutdown_plugin(self):
