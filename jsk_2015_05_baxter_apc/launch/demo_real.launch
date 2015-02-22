@@ -4,6 +4,8 @@
   <node pkg="jsk_2014_picking_challenge" type="qrcode-pos-server.l" name="qrcode_pos_server"></node>
   <node pkg="jsk_2014_picking_challenge" type="picking_up_demo.l" name="move_right_arm_service"></node>
   <!-- <node pkg="jsk_2014_picking_challenge" type="move_right_arm_server.l" name="move_right_arm_server"></node> -->
+  <node launch-prefix="xterm -e" pkg="jsk_2014_picking_challenge" type="qrcode-pos-server.l" name="qrcode_pos_server"></node>
+  <node pkg="jsk_2014_picking_challenge" type="picking_up_demo.l" name="move_right_arm_server"></node>
   <node pkg="jsk_2014_picking_challenge" type="get-item.l" name="get_item"></node>
   <node pkg="jsk_2014_picking_challenge" type="release-item.l" name="release_item"></node>
   <!-- <node pkg="baxter_interface" type="head_action_server.py" name="rsdk_head_action_server"></node> -->
