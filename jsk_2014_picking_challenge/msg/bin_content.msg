@@ -1,0 +1,2 @@
+string bin
+string[] items
