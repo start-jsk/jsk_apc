@@ -1,7 +1,7 @@
 <library path="src">
   <class name="My Plugin" type="rqt_yn_btn.my_module.MyPlugin" base_class_type="rqt_gui_py::Plugin">
     <description>
-      An example Python GUI plugin to create a great user interface.
+      Simple yes or no button with service call.
     </description>
     <qtgui>
       <!-- optional grouping...
@@ -12,7 +12,7 @@
         <label>Subgroup</label>
       </group>
       -->
-      <label>My first Python Plugin</label>
+      <label>YesOrNo Button</label>
       <icon type="theme">system-help</icon>
       <statustip>Great user interface to provide real value.</statustip>
     </qtgui>
