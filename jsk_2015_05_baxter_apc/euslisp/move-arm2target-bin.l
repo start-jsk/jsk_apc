@@ -17,9 +17,7 @@
     (send *pod* :locate #f(1300 0 0) :world)
     (send *pod* :rotate pi/2 :x :world)
     (send *pod* :rotate (- pi/2) :z :world))
-  (objects (list *baxter* *pod*)))
-
-(defun subscribe-init ()
+  (objects (list *baxter* *pod*))
   ;; subscriber init
   (ros::subscribe "/semi/move_larm2target_bin" std_msgs::String #'cb-larm)
   (ros::subscribe "/semi/move_rarm2target_bin" std_msgs::String #'cb-rarm)
