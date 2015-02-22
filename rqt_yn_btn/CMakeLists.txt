@@ -7,6 +7,7 @@ project(rqt_yn_btn)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   rqt_gui_py
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -50,11 +51,12 @@ catkin_python_setup()
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
+add_service_files(
+  FILES
+  YesOrNo.srv
 #   Service1.srv
 #   Service2.srv
-# )
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -64,10 +66,10 @@ catkin_python_setup()
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
+generate_messages(
+  DEPENDENCIES
 #   std_msgs  # Or other packages containing msgs
-# )
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -81,7 +83,7 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES rqt_yn_btn
-#  CATKIN_DEPENDS rospy rqt_gui_py
+  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 

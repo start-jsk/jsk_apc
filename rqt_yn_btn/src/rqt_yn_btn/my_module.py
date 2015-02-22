@@ -5,56 +5,54 @@ from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtGui import QWidget
 
-class MyPlugin(Plugin):
+from rqt_yn_btn.srv import YesOrNo, YesOrNoResponse
 
+
+class MyPlugin(Plugin):
     def __init__(self, context):
         super(MyPlugin, self).__init__(context)
         # Give QObjects reasonable names
         self.setObjectName('MyPlugin')
-
-        # # Process standalone plugin command-line arguments
-        # from argparse import ArgumentParser
-        # parser = ArgumentParser()
-        # # Add argument(s) to the parser.
-        # parser.add_argument("-q", "--quiet", action="store_true",
-        #               dest="quiet",
-        #               help="Put plugin in silent mode")
-        # args, unknowns = parser.parse_known_args(context.argv())
-        # if not args.quiet:
-        #     print 'arguments: ', args
-        #     print 'unknowns: ', unknowns
-
+        # Service initialize
+        s = rospy.Service('/semi/rqt_yn_btn', YesOrNo, self.handle_yn_btn)
         # Create QWidget
         self._widget = QWidget()
-        # Get path to UI file which is a sibling of this file
-        # in this example the .ui and .py file are in the same folder
-        ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'MyPlugin.ui')
+        ui_file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            'MyPlugin.ui')
         # Extend the widget with all attributes and children from UI file
         loadUi(ui_file, self._widget)
         # Give QObjects reasonable names
         self._widget.setObjectName('MyPluginUi')
-        # Show _widget.windowTitle on left-top of each plugin (when 
-        # it's set in _widget). This is useful when you open multiple 
-        # plugins at once. Also if you open multiple instances of your 
-        # plugin at once, these lines add number to make it easy to 
-        # tell from pane to pane.
-        # if context.serial_number() > 1:
-        #     self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
-
         # Add button
         self._widget.yes_button.clicked[bool].connect(self._handle_yes_clicked)
         self._widget.no_button.clicked[bool].connect(self._handle_no_clicked)
-        # self._widget.yes_button.setEnabled(False)
-        # self._widget.no_button.setEnabled(False)
-
+        self._widget.yes_button.setEnabled(False)
+        self._widget.no_button.setEnabled(False)
         # Add widget to the user interface
         context.add_widget(self._widget)
+        # set property
+        self.yes = None
+
+    def handle_yn_btn(self, req):
+        self.yes = None  # initialize
+        self._widget.yes_button.setEnabled(True)
+        self._widget.no_button.setEnabled(True)
+        while self.yes is None:  # wait for user input
+            rospy.sleep(1.)
+
+        self._widget.yes_button.setEnabled(False)
+        self._widget.no_button.setEnabled(False)
+
+        return YesOrNoResponse(yes=self.yes)
 
     def _handle_yes_clicked(self):
         rospy.logerr("Yes button clicked.")
+        self.yes = True
 
     def _handle_no_clicked(self):
         rospy.logerr("No button clicked.")
+        self.yes = False
 
     def shutdown_plugin(self):
         # TODO unregister all publishers here
