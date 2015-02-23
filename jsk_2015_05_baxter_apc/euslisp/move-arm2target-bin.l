@@ -48,6 +48,7 @@
           :rotate-axis :z)
     ;; reflect change to ri
     (send *ri* :angle-vector (send *baxter* :angle-vector))
+    (send *ri* :wait-interpolation)
     (send *irtviewer* :draw-objects)
     (x::window-main-one)
     ))
