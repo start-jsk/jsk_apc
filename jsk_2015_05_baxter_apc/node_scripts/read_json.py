@@ -8,6 +8,8 @@ import rospy
 from std_msgs.msg import String
 from jsk_2014_picking_challenge.msg import order_list
 from jsk_2014_picking_challenge.msg import one_order
+from jsk_2014_picking_challenge.msg import bin_content
+from jsk_2014_picking_challenge.msg import bins_content
 
 def main():
     """Baxter read jsonfile."""
@@ -21,17 +23,21 @@ def main():
     )
     args = parser.parse_args(rospy.myargv()[1:])
 
-
     f = open(args.file, 'r')
     jsonData = json.load(f)
 
+    bins_data = bins_content()
     bin_contents = jsonData['bin_contents']
     for bin in bin_contents:
-        s = ""
-        for content in bin_contents[bin]:
-            s += content + ":"
-        s = s[:len(s)-1]
-        print("{0}:{1}".format(bin, s))
+        data = bin_content()
+        data.bin = bin
+        data.items = bin_contents[bin]
+        bins_data.bins.append(data)
+        # s = ""
+        # for content in bin_contents[bin]:
+        #     s += content + ":"
+        # s = s[:len(s)-1]
+        # print("{0}:{1}".format(bin, s))
 
     order_data = order_list()
     work_orders = jsonData['work_order']
@@ -43,11 +49,13 @@ def main():
 
     rospy.loginfo(order_data)
     rospy.init_node('read_json_data')
-    pub = rospy.Publisher('read_json_data', order_list)
+    pub_order = rospy.Publisher('semi/order_list', order_list)
+    pub_bincontents = rospy.Publisher('semi/bin_contents', bins_content)
 
     while not rospy.is_shutdown():
         rospy.loginfo(order_data)
-        pub.publish(order_data)
+        pub_order.publish(order_data)
+        pub_bincontents.publish(bins_data)
         rospy.sleep(1.0)
 
 
