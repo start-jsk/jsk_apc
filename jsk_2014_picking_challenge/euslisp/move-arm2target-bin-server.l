@@ -73,6 +73,7 @@
                  ;; reflect change to ri
                  (push "ri_reflectioin" seq)  ;; reflecting to ri
                  (send *ri* :angle-vector (send *baxter* :angle-vector))
+                 (send *ri* :wait-interpolation)
                  (send *irtviewer* :draw-objects)
                  (x::window-main-one)
                  ;; set result
