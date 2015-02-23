@@ -1,0 +1,20 @@
+<library path="src">
+  <class name="My Plugin" type="rqt_yn_btn.my_module.MyPlugin" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      Simple yes or no button with service call.
+    </description>
+    <qtgui>
+      <!-- optional grouping...
+      <group>
+        <label>Group</label>
+      </group>
+      <group>
+        <label>Subgroup</label>
+      </group>
+      -->
+      <label>YesOrNo Button</label>
+      <icon type="theme">system-help</icon>
+      <statustip>Great user interface to provide real value.</statustip>
+    </qtgui>
+  </class>
+</library>
