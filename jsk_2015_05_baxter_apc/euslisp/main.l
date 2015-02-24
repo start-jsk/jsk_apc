@@ -134,4 +134,3 @@
 (warn "(ri2ir) to reflect potentio vector to ir viewer.~%")
 (warn "(mv2target arm bin_nm) to move arm (ex. :larm) to target bin (ex. 'a)~%")
 (init)
-
