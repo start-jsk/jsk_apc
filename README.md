@@ -13,7 +13,6 @@ $ cd  catkin_ws/semi/src
 $ wstool init
 $ wstool set 2014-semi https://github.com/start-jsk/2014-semi --git
 $ wstool set jsk_robot https://github.com/jsk-ros-pkg/jsk_robot --git
-$ wstool set zbar_ros git@github.com:vicoslab/vicos_ros.git --git
 $ wstool update
 $ cd ..
 $ rosdep install -y -r --from-paths .
@@ -36,7 +35,6 @@ euslispからロボットを動かす
 ```
 > roscd jsk_2014_picking_challenge
 > roseus scripts/main.l
-$ (init)
 $ (test-1) ;; simple example
 $ (test-2) ;; ik exmple
 ```
