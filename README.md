@@ -35,7 +35,6 @@ euslispからロボットを動かす
 ```
 > roscd jsk_2014_picking_challenge
 > roseus scripts/main.l
-$ (init)
 $ (test-1) ;; simple example
 $ (test-2) ;; ik exmple
 ```
