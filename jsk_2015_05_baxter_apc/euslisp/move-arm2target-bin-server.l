@@ -17,13 +17,13 @@
          ;; baxter model
          (baxter-init)
          (send *baxter* :locate #f(0 0 950) :world)
+         (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
          ;; pod-lowres model
          (when (not (boundp '*pod*))
            (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
            (send *pod* :locate #f(1300 0 0) :world)
            (send *pod* :rotate pi/2 :x :world)
-           (send *pod* :rotate (- pi/2) :z :world)
-           )
+           (send *pod* :rotate (- pi/2) :z :world))
          (objects (list *baxter* *pod*))
          (setq action (instance ros::simple-action-server
                                      :init "/move_arm2target_bin" jsk_2014_picking_challenge::MoveArm2TargetBinAction
@@ -41,6 +41,7 @@
                  (cond ((string-equal limb "left") (setq limb ':larm))
                        ((string-equal limb "right") (setq limb ':rarm))
                        (t (progn
+                            (push "invalid_limb" seq)
                             (setq msg (send server :result :sequence (nreverse seq)))
                             (send server :set-aborted msg)
                             (return-from :execute-cb nil))))
@@ -61,21 +62,19 @@
                  (setq r (send *baxter* limb
                                :inverse-kinematics target
                                :rotate-axis :z))
-                 (if (not r)  ;; if disable to solve ik with z restriction
-                   (push (format nil "inverse_kinematics_for_~A_no_restriction" target-nm) seq)
-                   (setq r (send *baxter* limb
-                                 :inverse-kinematics target
-                                 :rotation-axis nil))
-                   (if (not r)  ;; if disable to solve ik without restriction
-                     (progn (setq msg (send server :result :sequence (nreverse seq)))
-                            (send server :set-aborted msg)
-                            (return-from :execute-cb nil))))
+                 (when (not r)  ;; failed to compute ik from current position
+                   (progn
+                     (push "reset-pose" seq)
+                     (send *baxter* :reset-pose)
+                     (push (format nil "inverse_kinematics_for_~A" target-nm) seq)
+                     (setq r (send *baxter* limb
+                                   :inverse-kinematics target
+                                   :rotation-axis :z))))
                  ;; reflect change to ri
                  (push "ri_reflectioin" seq)  ;; reflecting to ri
                  (send *ri* :angle-vector (send *baxter* :angle-vector))
                  (send *ri* :wait-interpolation)
                  (send *irtviewer* :draw-objects)
-                 (x::window-main-one)
                  ;; set result
                  (setq msg (send server :result :sequence (nreverse seq)))
                  (send server :set-succeeded msg)
