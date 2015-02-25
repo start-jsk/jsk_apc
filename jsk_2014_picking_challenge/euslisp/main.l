@@ -3,6 +3,7 @@
 
 (defun init ()
   (baxter-init)
+  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
   (send *baxter* :locate #f(0 0 950) :world)
   (objects (list *baxter*)))
 
@@ -16,7 +17,7 @@
   (send *baxter* :head :neck-y   :joint-angle -30)
   (objects (list *baxter*))
   (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
-  )
+  (send *irtviewer* :draw-objects))
 
 (defun test-2 ()
   (let ()
@@ -39,9 +40,8 @@
     ))
 
 (defun test-target-ik ()
-  """Target pick region test
-  to confirm the endpoint can reached
-  """
+  "Target pick region test
+  to confirm the endpoint can reached"
   (let (i region c b r)
     ;; prepare pod-lowres
     (when (not (boundp '*pod*))
@@ -84,9 +84,52 @@
         )
     ))
 
+(defun ir2ri (&optional (tm nil))
+  (send *ri* :angle-vector (send *baxter* :angle-vector) tm))
+
+(defun ri2ir ()
+  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+  (send *irtviewer* :draw-objects))
+
+(defun mv2target (arm bin_nm)
+  "Move arm to bin"
+  (let (region c target)
+    ;; prepare pod-lowres
+    (when (not (boundp '*pod*))
+      (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
+      (send *pod* :locate #f(1300 0 0) :world)
+      (send *pod* :rotate pi/2 :x :world)
+      (send *pod* :rotate (- pi/2) :z :world)
+      (objects (list *baxter* *pod*)))
+    ;; validation
+    (setq region (instance target-pick-region :init))
+    (unless (find bin_nm (send region :target-name-list))
+      (warn "unknown bin name")
+      (return-from mv2target))
+    (setq c (send *pod* :transform-vector (send region :get-val bin_nm)))
+    (setq target (instance cascaded-coords :init :pos c))
+    (unless (find arm (list :larm :rarm))
+      (warn "specify :larm or :rarm")
+      (return-from mv2target))
+    ;; inverse kinematics
+    (setq r (send *baxter* arm :inverse-kinematics target :rotation-axis :z))
+    (if r
+      (warn "ik with no axis restriction~%")
+      (setq r (send *baxter* arm :inverse-kinematics target :rotation-axis nil))
+      (if r
+        (warn "failed to compute IK~%")
+        (return-from mv2target)))
+    ;; reflect change to ri
+    (send *irtviewer* :draw-objects)
+    (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
+    (send *ri* :wait-interpolation)
+    ))
+
 (warn "~%")
-(warn "(init) to initialize baxter model.~%")
 (warn "(test-1) to move baxter arm a little.~%")
 (warn "(test-2) to test simple IK.~%")
 (warn "(test-target-ik) to test target regeion IK.~%")
-
+(warn "(ir2ri) to reflect ir angle vector to ri.~%")
+(warn "(ri2ir) to reflect potentio vector to ir viewer.~%")
+(warn "(mv2target arm bin_nm) to move arm (ex. :larm) to target bin (ex. 'a)~%")
+(init)

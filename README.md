@@ -16,7 +16,7 @@ $ wstool set jsk_robot https://github.com/jsk-ros-pkg/jsk_robot --git
 $ wstool set zbar_ros git@github.com:vicoslab/vicos_ros.git --git
 $ wstool update
 $ cd ..
-$ rosdep install -y -r --from-paths .
+$ rosdep install -r --from-paths .
 $ catkin_make
 $ source devel/setup.bash
 ```
