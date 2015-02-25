@@ -45,11 +45,11 @@
   (let (i region c b r)
     ;; prepare pod-lowres
     (when (not (boundp '*pod*))
-      (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l"))
-    (send *pod* :locate #f(1300 0 0) :world)
-    (send *pod* :rotate pi/2 :x :world)
-    (send *pod* :rotate (- pi/2) :z :world)
-    (objects (list *baxter* *pod*))
+      (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
+      (send *pod* :locate #f(1300 0 0) :world)
+      (send *pod* :rotate pi/2 :x :world)
+      (send *pod* :rotate (- pi/2) :z :world)
+      (objects (list *baxter* *pod*)))
     ;; make target cube
     (setq *targets* nil i 0)
     (setq region (instance target-pick-region :init))
@@ -85,7 +85,8 @@
     ))
 
 (defun ir2ri (&optional (tm nil))
-  (send *ri* :angle-vector (send *baxter* :angle-vector) tm))
+  (send *ri* :angle-vector (send *baxter* :angle-vector) tm)
+  (send *irtviewer* :draw-objects))
 
 (defun ri2ir ()
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
@@ -113,10 +114,10 @@
       (return-from mv2target))
     ;; inverse kinematics
     (setq r (send *baxter* arm :inverse-kinematics target :rotation-axis :z))
-    (if r
+    (when (not r)
       (warn "ik with no axis restriction~%")
       (setq r (send *baxter* arm :inverse-kinematics target :rotation-axis nil))
-      (if r
+      (when (not r)
         (warn "failed to compute IK~%")
         (return-from mv2target)))
     ;; reflect change to ri
