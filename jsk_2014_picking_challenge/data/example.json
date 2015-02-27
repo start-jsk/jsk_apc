@@ -1,0 +1,105 @@
+{
+  "bin_contents":
+  {
+    "bin_A":
+    [
+      "oreo_mega_stuf","champion_copper_plus_spark_plug","expo_dry_erase_board_eraser","kong_duck_dog_toy"
+    ],
+    "bin_B":
+    [
+      "genuine_joe_plastic_stir_sticks"
+    ],
+    "bin_C":
+    [
+      "munchkin_white_hot_duck_bath_toy"
+    ],
+    "bin_D":
+    [
+      "crayola_64_ct"
+    ],
+    "bin_E":
+    [
+      "mommys_helper_outlet_plugs","sharpie_accent_tank_style_highlighters","kong_air_dog_squeakair_tennis_ball"
+    ],
+    "bin_F":
+    [
+      "stanley_66_052"
+    ],
+    "bin_G":
+    [
+      "safety_works_safety_glasses","dr_browns_bottle_brush","laugh_out_loud_joke_book"
+    ],
+    "bin_H":
+    [
+      "cheezit_big_original","paper_mate_12_count_mirado_black_warrior"
+    ],
+    "bin_I":
+    [
+      "feline_greenies_dental_treats","elmers_washable_no_run_school_glue"
+    ],
+    "bin_J":
+    [
+      "mead_index_cards","rolodex_jumbo_pencil_cup","mead_index_cards","first_years_take_and_toss_straw_cup"
+    ],
+    "bin_K":
+    [
+      "highland_6539_self_stick_notes","mark_twain_huckleberry_finn"
+    ],
+    "bin_L":
+    [
+      "kyjen_squeakin_eggs_plush_puppies","kong_sitting_frog_dog_toy"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_A",
+      "item": "oreo_mega_stuf"
+    },
+    {
+      "bin": "bin_B",
+      "item": "genuine_joe_plastic_stir_sticks"
+    },
+    {
+      "bin": "bin_C",
+      "item": "munchkin_white_hot_duck_bath_toy"
+    },
+    {
+      "bin": "bin_D",
+      "item": "crayola_64_ct"
+    },
+    {
+      "bin": "bin_E",
+      "item": "mommys_helper_outlet_plugs"
+    },
+    {
+      "bin": "bin_F",
+      "item": "stanley_66_052"
+    },
+    {
+      "bin": "bin_G",
+      "item": "safety_works_safety_glasses"
+    },
+    {
+      "bin": "bin_H",
+      "item": "cheezit_big_original"
+    },
+    {
+      "bin": "bin_I",
+      "item": "feline_greenies_dental_treats"
+    },
+    {
+      "bin": "bin_J",
+      "item": "mead_index_cards"
+    },
+    {
+      "bin": "bin_K",
+      "item": "highland_6539_self_stick_notes"
+    },
+    {
+      "bin": "bin_L",
+      "item": "kyjen_squeakin_eggs_plush_puppies"
+    }
+  ]
+}
