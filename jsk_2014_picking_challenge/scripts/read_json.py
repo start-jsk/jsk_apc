@@ -49,8 +49,8 @@ def main():
 
     rospy.loginfo(order_data)
     rospy.init_node('read_json_data')
-    pub_order = rospy.Publisher('semi/order_list', order_list)
-    pub_bincontents = rospy.Publisher('semi/bin_contents', bins_content)
+    pub_order = rospy.Publisher('semi/order_list', order_list, queue_size=1)
+    pub_bincontents = rospy.Publisher('semi/bin_contents', bins_content, queue_size=1)
 
     while not rospy.is_shutdown():
         rospy.loginfo(order_data)
