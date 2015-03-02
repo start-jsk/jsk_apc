@@ -56,42 +56,35 @@ class SiftMatcherOneImage(object):
     def find_match(query_img, query_features, train_img, train_features):
         """Find match points of query and train images"""
         # parepare to match keypoints
-        query_img = cv2.cvtColor(query_img, cv2.COLOR_RGB2GRAY)
-        query_pos = np.array(query_features.positions).reshape((-1, 2))
         query_des = np.array(query_features.descriptors).reshape((-1, 128))
         query_des = (query_des * 255).astype('uint8')
-        train_img = cv2.cvtColor(train_img, cv2.COLOR_RGB2GRAY)
-        train_pos = np.array(train_features.positions).reshape((-1, 2))
         train_des = np.array(train_features.descriptors).reshape((-1, 128))
         train_des = (train_des * 255).astype('uint8')
         # find good match points
         bf = cv2.BFMatcher()
         matches = bf.knnMatch(query_des, train_des, k=2)
         good_matches = [m for m, n in matches if m.distance < 0.75*n.distance]
-        rospy.loginfo('good_matches: {}'.format(len(good_matches)))
-        # prepare output img
-        matched_img = SiftMatcherOneImage.drawMatches(query_img, query_pos,
-            train_img, train_pos, good_matches)
-        cv2.putText(matched_img, 'good_matches: {}'.format(len(good_matches)),
-                    (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255))
-        return matched_img
+        return good_matches
 
     @staticmethod
-    def drawMatches(img1, pos1, img2, pos2, matches):
+    def drawMatches(query_img, query_features, train_img, train_features,
+                    matches):
         """Draw match points for two images"""
-        n_row1, n_col1 = img1.shape[:2]
-        n_row2, n_col2 = img2.shape[:2]
+        query_img = cv2.cvtColor(query_img, cv2.COLOR_RGB2GRAY)
+        train_img = cv2.cvtColor(train_img, cv2.COLOR_RGB2GRAY)
+        query_pos = np.array(query_features.positions).reshape((-1, 2))
+        train_pos = np.array(train_features.positions).reshape((-1, 2))
+        n_row1, n_col1 = query_img.shape[:2]
+        n_row2, n_col2 = train_img.shape[:2]
         # parepare output img
         img_out = np.zeros((max([n_row1,n_row2]), n_col1+n_col2, 3),
                            dtype='uint8')
-        img_out[:n_row1, :n_col1, :] = np.dstack(3*[img1])
-        img_out[:n_row2, n_col1:n_col1+n_col2, :] = np.dstack(3*[img2])
+        img_out[:n_row1, :n_col1, :] = np.dstack(3*[query_img])
+        img_out[:n_row2, n_col1:n_col1+n_col2, :] = np.dstack(3*[train_img])
         for mat in matches:
             # draw and connect match points
-            img1_idx = mat.queryIdx
-            img2_idx = mat.trainIdx
-            x1, y1 = pos1[img1_idx]
-            x2, y2 = pos2[img2_idx]
+            x1, y1 = query_pos[mat.queryIdx]
+            x2, y2 = train_pos[mat.trainIdx]
             pt1 = (int(x1), int(y1))
             pt2 = (int(x2)+n_col1, int(y2))
             cv2.circle(img_out, pt1, 4, (255, 0, 0), 1)
@@ -112,8 +105,16 @@ def main():
 
     sm = SiftMatcherOneImage(rawfile, maskfile)
     while not rospy.is_shutdown():
-        matched_img = sm.find_match(sm.query_img, sm.query_features,
-                                    sm.train_img, sm.train_features)
+        query_img, query_features = sm.query_img, sm.query_features
+        train_img, train_features = sm.train_img, sm.train_features
+        matches = SiftMatcherOneImage.find_match(query_img,
+            query_features, train_img, train_features)
+        rospy.loginfo('matches: {}'.format(len(matches)))
+        # prepare output img
+        matched_img = SiftMatcherOneImage.drawMatches(query_img,
+            query_features, train_img, train_features, matches)
+        cv2.putText(matched_img, 'matches: {}'.format(len(matches)),
+                    (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255))
         # publish mathced_img
         bridge = cv_bridge.CvBridge()
         img_msg = bridge.cv2_to_imgmsg(matched_img, encoding='bgr8')
