@@ -106,7 +106,7 @@ def main():
     pub = rospy.Publisher('/camera_info', CameraInfo, queue_size=1)
     pub.publish()  # to enable imagesift service
 
-    all_items = [
+    all_objects = [
         'champion_copper_plus_spark_plug',
         'cheezit_big_original',
         'crayola_64_ct',
@@ -136,11 +136,11 @@ def main():
                                 'oreo_mega_stuf,safety_works_safety_glasses')
     obj_names = obj_names.split(',')
     if len(obj_names) == 1 and obj_names[0] == 'all':
-        obj_names = all_items
+        obj_names = all_objects
     rospy.loginfo('objects: {obj}'.format(obj=obj_names))
 
     for obj_name in obj_names:
-        if obj_name not in all_items:
+        if obj_name not in all_objects:
             rospy.logwarn('Unknown object, skipping: {}'.format(obj_name))
             continue
         extract_sift_from_objdata(obj_name)
