@@ -68,6 +68,7 @@ add_service_files(
   QrStampsrv.srv
   ReleaseItem.srv
   Cue.srv
+  ObjectMatch.srv
 )
 
 ## Generate actions in the 'action' folder
