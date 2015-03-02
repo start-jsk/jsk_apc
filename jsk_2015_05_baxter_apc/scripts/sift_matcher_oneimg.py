@@ -100,7 +100,7 @@ class SiftMatcherOneImage(object):
         return img_out
 
 def main():
-    rospy.init_node('sift_matcher')
+    rospy.init_node('sift_matcher_oneimg')
     rate = rospy.Rate(1)
     # get params
     imgfile = rospy.get_param('~imgfile', 'image.png')
