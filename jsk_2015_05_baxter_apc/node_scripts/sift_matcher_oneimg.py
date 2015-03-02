@@ -14,7 +14,7 @@ from posedetection_msgs.srv import Feature0DDetect
 
 
 class SiftMatcherOneImage(object):
-    def __init__(self, imgfile, maskfile):
+    def __init__(self, rawfile, maskfile):
         # Subscribers
         sub_imgfeature = rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
                                           self.cb_imgfeature)
@@ -22,7 +22,7 @@ class SiftMatcherOneImage(object):
         # Publishers
         self.pub = rospy.Publisher('~output', Image, queue_size=1)
         # train img
-        train_img = cv2.imread(imgfile)
+        train_img = cv2.imread(rawfile)
         mask_img = cv2.imread(maskfile)
         self.train_img = cv2.add(mask_img, train_img)
         self.train_features = self.imgsift_client(train_img)
@@ -103,12 +103,14 @@ def main():
     rospy.init_node('sift_matcher_oneimg')
     rate = rospy.Rate(1)
     # get params
-    imgfile = rospy.get_param('~imgfile', 'image.png')
-    base, ext = os.path.splitext(imgfile)
+    rawfile = rospy.get_param('~rawfile', 'image.png')
+    base, ext = os.path.splitext(rawfile)
     maskfile = rospy.get_param('~maskfile',
         '{base}_mask{ext}'.format(base=base, ext=ext))
+    rospy.loginfo('rawfile: {raw}'.format(raw=rawfile))
+    rospy.loginfo('maskfile: {mask}'.format(mask=maskfile))
 
-    sm = SiftMatcherOneImage(imgfile, maskfile)
+    sm = SiftMatcherOneImage(rawfile, maskfile)
     while not rospy.is_shutdown():
         matched_img = sm.find_match(sm.query_img, sm.query_features,
                                     sm.train_img, sm.train_features)
