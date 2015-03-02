@@ -13,7 +13,7 @@ from posedetection_msgs.msg import ImageFeature0D
 from posedetection_msgs.srv import Feature0DDetect
 
 
-class SiftMatcherWithImage(object):
+class SiftMatcherOneImage(object):
     def __init__(self, imgfile, maskfile):
         # Subscribers
         sub_imgfeature = rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
@@ -54,7 +54,7 @@ class SiftMatcherWithImage(object):
 
     @staticmethod
     def find_match(query_img, query_features, train_img, train_features):
-        """Find match points of query and train imgs"""
+        """Find match points of query and train images"""
         # parepare to match keypoints
         query_img = cv2.cvtColor(query_img, cv2.COLOR_RGB2GRAY)
         query_pos = np.array(query_features.positions).reshape((-1, 2))
@@ -70,7 +70,7 @@ class SiftMatcherWithImage(object):
         good_matches = [m for m, n in matches if m.distance < 0.75*n.distance]
         rospy.loginfo('good_matches: {}'.format(len(good_matches)))
         # prepare output img
-        matched_img = SiftMatcherWithImage.drawMatches(query_img, query_pos,
+        matched_img = SiftMatcherOneImage.drawMatches(query_img, query_pos,
             train_img, train_pos, good_matches)
         cv2.putText(matched_img, 'good_matches: {}'.format(len(good_matches)),
                     (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255))
@@ -78,7 +78,7 @@ class SiftMatcherWithImage(object):
 
     @staticmethod
     def drawMatches(img1, pos1, img2, pos2, matches):
-        """Draw match points for two imgs"""
+        """Draw match points for two images"""
         n_row1, n_col1 = img1.shape[:2]
         n_row2, n_col2 = img2.shape[:2]
         # parepare output img
@@ -108,7 +108,7 @@ def main():
     maskfile = rospy.get_param('~maskfile',
         '{base}_mask{ext}'.format(base=base, ext=ext))
 
-    sm = SiftMatcherWithImage(imgfile, maskfile)
+    sm = SiftMatcherOneImage(imgfile, maskfile)
     while not rospy.is_shutdown():
         matched_img = sm.find_match(sm.query_img, sm.query_features,
                                     sm.train_img, sm.train_features)
