@@ -1,6 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+"""
+This script is to match objects with sift features which is extracted by
+jsk_2014_picking_challenge/scripts/extract_sift_from_objdata.py.
+
+Usage
+-----
+
+    $ roslaunch jsk_2014_picking_challenge sift_matcher_usbcamera.launch
+    $ rosrun jsk_2014_picking_challenge sift_matcher.py
+    $ rosservice call /semi/sift_matcher \
+        "{objects: ['oreo_mega_stuf', 'safety_works_safety_glasses']}"
+
+"""
 from __future__ import print_function, division
 import os
 import gzip
