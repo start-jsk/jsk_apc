@@ -61,10 +61,10 @@ class SiftMatcher(object):
 
         n_matches = np.array(n_matches)
         rospy.loginfo('n_matches: {}'.format(n_matches))
-        if n_matches.max() == 0:
+        if n_matches.sum() == 0:
             return n_matches
         else:
-            return n_matches / n_matches.max()
+            return n_matches / n_matches.sum()
 
     def _handle_siftdata_cache(self, obj_names):
         """Sift data cache handler
