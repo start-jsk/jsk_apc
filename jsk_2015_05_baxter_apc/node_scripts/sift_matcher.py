@@ -21,20 +21,20 @@ class SiftMatcher(object):
         dirname = os.path.dirname(os.path.abspath(__file__))
         ymlfile = os.path.join(dirname, '../data/object_list.yml')
         self.object_list = yaml.load(open(ymlfile))
-
-        rospy.loginfo('Loading sift data')
-        self.all_siftdata = self._load_all_siftdata()
+        self.siftdata_cache = {}
 
         rospy.Service('/semi/sift_matcher', ObjectMatch, self._cb_matcher)
+        rospy.wait_for_message('/ImageFeature0D', ImageFeature0D)
         sub_imgfeature = rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
                                           self._cb_imgfeature)
-        rospy.loginfo('Ready to reseive match request')
 
     def _cb_matcher(self, req):
+        """Callback function for sift match request"""
         probs = self._get_object_probability(req.objects)
         return ObjectMatchResponse(probabilities=probs)
 
     def _cb_imgfeature(self, msg):
+        """Callback function of Subscribers to listen ImageFeature0D"""
         self.query_features = msg.features
 
     def _get_object_probability(self, obj_names):
@@ -46,7 +46,7 @@ class SiftMatcher(object):
                 n_matches.append(0)
                 continue
             # find best match in train features
-            siftdata = self.all_siftdata.get(obj_name, None)
+            siftdata = self._handle_siftdata_cache(obj_name)
             if siftdata is None:  # does not exists data file
                 n_matches.append(0)
                 continue
@@ -56,15 +56,30 @@ class SiftMatcher(object):
                     query_features.descriptors, train_des)
                 train_matches.append(len(matches))
             n_matches.append(max(train_matches))  # best match
-        n_matches = np.array(n_matches)
-        return n_matches / n_matches.max()
 
-    def _load_all_siftdata(self):
-        """Load sift data of all objects"""
-        object_list = self.object_list
-        all_siftdata = {obj_name: self.load_siftdata(obj_name)
-                        for obj_name in object_list}
-        return all_siftdata
+        n_matches = np.array(n_matches)
+        if n_matches.max() == 0:
+            return np.zeros(len(n_matches))
+        else:
+            return n_matches / n_matches.max()
+
+    def _handle_siftdata_cache(self, obj_name):
+        """Sift data cache handler"""
+        siftdata_cache = self.siftdata_cache
+        if obj_name in siftdata_cache:
+            return siftdata_cache[obj_name]
+
+        rospy.loginfo('Loading siftdata: {obj}'.format(obj=obj_name))
+        siftdata = self.load_siftdata(obj_name)
+        if siftdata is None:
+            return
+
+        if len(siftdata_cache) >= 3:  # cache size is 3
+            rm = np.random.choice(siftdata_cache.keys())
+            del siftdata_cache[rm]
+        siftdata_cache[obj_name] = siftdata
+        self.siftdata_cache = siftdata_cache
+        return siftdata
 
     @staticmethod
     def load_siftdata(obj_name):
