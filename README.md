@@ -6,14 +6,13 @@
 環境の構築
 ----------
 ```
-$ sudo apt-get install julius libjulius-dev
-$ sudo apt-get install libzbar0 libzbar-dev
 $ mkdir -p catkin_ws/semi/src
-$ cd  catkin_ws/semi/src
+$ cd catkin_ws/semi/src
 $ wstool init
 $ wstool set 2014-semi https://github.com/start-jsk/2014-semi --git
 $ wstool set jsk_robot https://github.com/jsk-ros-pkg/jsk_robot --git
-$ wstool set zbar_ros git@github.com:vicoslab/vicos_ros.git --git
+$ wstool set jsk_pr2eus https://github.com/jsk-ros-pkg/jsk_pr2eus --git
+$ wstool set jsk_recognition https://github.com/jsk-ros-pkg/jsk_recognition --git
 $ wstool update
 $ cd ..
 $ rosdep install -y -r --from-paths .
