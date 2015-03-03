@@ -11,7 +11,7 @@ Object data is available from here::
 
 Usage
 -----
-1. Download dataset to data dir, and extract it.
+1. Download dataset(Raw High Resolution RGB) to data dir, and extract it.
 2. Execute following::
 
     $ roscore
