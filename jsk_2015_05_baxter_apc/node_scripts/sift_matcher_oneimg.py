@@ -13,7 +13,7 @@ from posedetection_msgs.msg import ImageFeature0D
 from posedetection_msgs.srv import Feature0DDetect
 
 
-class SiftMatcherOneImage(object):
+class SiftMatcherOneImg(object):
     def __init__(self, rawfile, maskfile):
         # Subscribers
         sub_imgfeature = rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
@@ -103,15 +103,15 @@ def main():
     rospy.loginfo('rawfile: {raw}'.format(raw=rawfile))
     rospy.loginfo('maskfile: {mask}'.format(mask=maskfile))
 
-    sm = SiftMatcherOneImage(rawfile, maskfile)
+    sm = SiftMatcherOneImg(rawfile, maskfile)
     while not rospy.is_shutdown():
         query_img, query_features = sm.query_img, sm.query_features
         train_img, train_features = sm.train_img, sm.train_features
-        matches = SiftMatcherOneImage.find_match(query_img,
+        matches = SiftMatcherOneImg.find_match(query_img,
             query_features, train_img, train_features)
         rospy.loginfo('matches: {}'.format(len(matches)))
         # prepare output img
-        matched_img = SiftMatcherOneImage.drawMatches(query_img,
+        matched_img = SiftMatcherOneImg.drawMatches(query_img,
             query_features, train_img, train_features, matches)
         cv2.putText(matched_img, 'matches: {}'.format(len(matches)),
                     (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255))
