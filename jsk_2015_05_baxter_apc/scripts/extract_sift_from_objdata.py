@@ -26,7 +26,6 @@ You should change dirname for following items manually::
     * kygen_squeakin_eggs_plush_puppies  -> kyjen_squeakin_eggs_plush_puppies
     * rollodex_mesh_collection_jumbo_pencil_cup -> rolodex_jumbo_pencil_cup
 
-
 """
 import os
 import sys
@@ -36,6 +35,7 @@ import cPickle as pickle
 
 import cv2
 import numpy as np
+import yaml
 import progressbar
 
 import rospy
@@ -106,31 +106,9 @@ def main():
     pub = rospy.Publisher('/camera_info', CameraInfo, queue_size=1)
     pub.publish()  # to enable imagesift service
 
-    all_objects = [
-        'champion_copper_plus_spark_plug',
-        'cheezit_big_original',
-        'crayola_64_ct',
-        'elmers_washable_no_run_school_glue',
-        'expo_dry_erase_board_eraser',
-        'feline_greenies_dental_treats',
-        'first_years_take_and_toss_straw_cups',
-        'genuine_joe_plastic_stir_sticks',
-        'highland_6539_self_stick_notes',
-        'kong_air_dog_squeakair_tennis_ball',
-        'kong_duck_dog_toy',
-        'kong_sitting_frog_dog_toy',
-        'kyjen_squeakin_eggs_plush_puppies',
-        'mark_twain_huckleberry_finn',
-        'mead_index_cards',
-        'mommys_helper_outlet_plugs',
-        'munchkin_white_hot_duck_bath_toy',
-        'oreo_mega_stuf',
-        'paper_mate_12_count_mirado_black_warrior',
-        'rolodex_jumbo_pencil_cup',
-        'safety_works_safety_glasses',
-        'sharpie_accent_tank_style_highlighters',
-        'stanley_66_052',
-        ]
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    ymlfile = os.path.join(dirname, '../data/object_list.yml')
+    all_objects = yaml.load(open(ymlfile))
 
     obj_names = rospy.get_param('~object',
                                 'oreo_mega_stuf,safety_works_safety_glasses')
@@ -147,5 +125,6 @@ def main():
 
 
 if __name__ == '__main__':
+    print(__doc__)
     main()
 
