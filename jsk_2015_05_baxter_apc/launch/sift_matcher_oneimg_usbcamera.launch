@@ -12,13 +12,6 @@
         <remap from="/image_raw" to="/image" />
     </node>
 
-    <!-- <include file="$(find roseus_tutorials)/launch/jsk_image_proc.launch" /> -->
-
-    <!-- <node pkg="jsk_perception" type="image_publisher.py" name="image_publisher" output="screen"> -->
-    <!--     <param name="file_name" type="string" value="$(find jsk_2014_picking_challenge)/data/frame0001.jpg" /> -->
-    <!--     <remap from="/image_publisher/output" to="/image" /> -->
-    <!-- </node> -->
-
-    <node pkg="image_view" type="image_view" name="image_view_raw_image" ><param name="image" type="string" value="/image" /></node>
+    <node pkg="image_view" type="image_view" name="image_view" ><param name="image" type="string" value="/image" /></node>
     <node pkg="imagesift" type="imagesift" name="imagesift" ></node>
 </launch>
