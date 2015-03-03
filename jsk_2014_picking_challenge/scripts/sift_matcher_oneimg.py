@@ -17,8 +17,8 @@ class SiftMatcherOneImg(object):
     def __init__(self, rawfile, maskfile):
         # Subscribers
         sub_imgfeature = rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
-                                          self.cb_imgfeature)
-        sub_img = rospy.Subscriber('/image', Image, self.cb_img)
+                                          self._cb_imgfeature)
+        sub_img = rospy.Subscriber('/image', Image, self._cb_img)
         # Publishers
         self.pub = rospy.Publisher('~output', Image, queue_size=1)
         # train img
@@ -32,11 +32,11 @@ class SiftMatcherOneImg(object):
         rospy.wait_for_message('/image', Image)
         rospy.wait_for_message('/ImageFeature0D', ImageFeature0D)
 
-    def cb_imgfeature(self, msg):
+    def _cb_imgfeature(self, msg):
         """Callback function of Subscribers to listen ImageFeature0D"""
         self.query_features = msg.features
 
-    def cb_img(self, msg):
+    def _cb_img(self, msg):
         """Callback function of Subscribers to listen Image"""
         bridge = cv_bridge.CvBridge()
         self.query_img = bridge.imgmsg_to_cv2(msg)
