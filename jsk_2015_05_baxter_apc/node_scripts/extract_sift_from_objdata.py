@@ -43,7 +43,7 @@ from sensor_msgs.msg import CameraInfo
 from posedetection_msgs.srv import Feature0DDetect
 from posedetection_msgs.msg import ImageFeature0D
 
-from sift_matcher_oneimg import SiftMatcherOneImage
+from sift_matcher_oneimg import SiftMatcherOneImg
 
 
 def get_train_imgpaths(obj_name):
@@ -90,7 +90,7 @@ def extract_sift_from_objdata(obj_name):
         raw_img = cv2.imread(raw_path)
         mask_img = cv2.imread(mask_path)
         train_img = cv2.add(mask_img, raw_img)
-        train_features = SiftMatcherOneImage.imgsift_client(train_img)
+        train_features = SiftMatcherOneImg.imgsift_client(train_img)
         train_pos = np.array(train_features.positions)
         train_des = np.array(train_features.descriptors)
         positions.append(train_pos)
