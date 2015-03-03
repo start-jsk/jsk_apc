@@ -81,6 +81,7 @@ add_service_files(
 add_action_files(
   FILES
   MoveArm2TargetBin.action
+  ObjectPicking.action
 #   Action1.action
 #   Action2.action
 )
