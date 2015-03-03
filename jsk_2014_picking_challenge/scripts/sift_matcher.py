@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function, division
 import os
 import gzip
 import cPickle as pickle
@@ -41,15 +42,16 @@ class SiftMatcher(object):
         """Get object match probabilities"""
         query_features = self.query_features
         n_matches = []
-        for obj_name in obj_names:
+        siftdata_list = self._handle_siftdata_cache(obj_names)
+        for obj_name, siftdata in zip(obj_names, siftdata_list):
             if obj_name not in self.object_list:
                 n_matches.append(0)
                 continue
-            # find best match in train features
-            siftdata = self._handle_siftdata_cache(obj_name)
             if siftdata is None:  # does not exists data file
                 n_matches.append(0)
                 continue
+            # find best match in train features
+            rospy.loginfo('searching matches: {}'.format(obj_name))
             train_matches = []
             for train_des in siftdata['descriptors']:
                 matches = SiftMatcherOneImg.find_match(
@@ -58,28 +60,31 @@ class SiftMatcher(object):
             n_matches.append(max(train_matches))  # best match
 
         n_matches = np.array(n_matches)
+        rospy.loginfo('n_matches: {}'.format(n_matches))
         if n_matches.max() == 0:
-            return np.zeros(len(n_matches))
+            return n_matches
         else:
             return n_matches / n_matches.max()
 
-    def _handle_siftdata_cache(self, obj_name):
-        """Sift data cache handler"""
+    def _handle_siftdata_cache(self, obj_names):
+        """Sift data cache handler
+        if same obj_names set: don't update, else: update
+        """
         siftdata_cache = self.siftdata_cache
-        if obj_name in siftdata_cache:
-            return siftdata_cache[obj_name]
-
-        rospy.loginfo('Loading siftdata: {obj}'.format(obj=obj_name))
-        siftdata = self.load_siftdata(obj_name)
-        if siftdata is None:
-            return
-
-        if len(siftdata_cache) >= 3:  # cache size is 3
-            rm = np.random.choice(siftdata_cache.keys())
-            del siftdata_cache[rm]
-        siftdata_cache[obj_name] = siftdata
-        self.siftdata_cache = siftdata_cache
-        return siftdata
+        if set(obj_names) != set(siftdata_cache.keys()):
+            siftdata_cache = {}  # reset cache
+        siftdata_list = []
+        for obj_name in obj_names:
+            if obj_name in siftdata_cache:
+                siftdata = siftdata_cache[obj_name]
+            else:
+                siftdata = self.load_siftdata(obj_name)
+            siftdata_list.append(siftdata)
+            # set cache
+            if siftdata is not None:
+                siftdata_cache[obj_name] = siftdata
+            self.siftdata_cache = siftdata_cache
+        return siftdata_list
 
     @staticmethod
     def load_siftdata(obj_name):
@@ -89,6 +94,7 @@ class SiftMatcher(object):
             obj_name+'.pkl.gz')
         if not os.path.exists(datafile):
             return  # does not exists
+        rospy.loginfo('Loading siftdata: {obj}'.format(obj=obj_name))
         with gzip.open(datafile, 'rb') as f:
             return pickle.load(f)
 
