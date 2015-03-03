@@ -72,6 +72,7 @@ add_service_files(
   ReleaseItem.srv
   Cue.srv
   ObjectMatch.srv
+  ObjectVerification.srv
 )
 
 ## Generate actions in the 'action' folder
