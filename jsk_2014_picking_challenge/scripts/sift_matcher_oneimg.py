@@ -53,7 +53,7 @@ class SiftMatcherOneImage(object):
         return resp.features
 
     @staticmethod
-    def find_match(query_img, query_features, train_img, train_features):
+    def find_match(query_features, train_features):
         """Find match points of query and train images"""
         # parepare to match keypoints
         query_des = np.array(query_features.descriptors).reshape((-1, 128))
