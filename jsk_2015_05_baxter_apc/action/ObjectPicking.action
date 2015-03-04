@@ -1,5 +1,6 @@
 #goal definition
-string limb   # arm to move
+string limb   # arm to move larm/rarm
+bool state    # cleaner on/off
 ---
 #result definition
 string[] sequence
