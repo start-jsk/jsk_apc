@@ -78,8 +78,6 @@ add_action_files(
   FILES
   MoveArm2TargetBin.action
   ObjectPicking.action
-#   Action1.action
-#   Action2.action
 )
 
 ## Generate added messages and services with any dependencies listed here
