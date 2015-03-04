@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 #
+"""
+This script is to visualize how match sift features are matched between
+an image and camera frame.
+
+Usage
+-----
+
+    $ roslaunch jsk_2014_picking_challenge \
+        sift_matcher_oneimg_usbcamera.launch
+    $ rosrun jsk_2014_picking_challenge sift_matcher_oneimg.py \
+        _imgfile:=`rospack find jsk_2014_picking_challenge`/data/paste.png \
+        _maskfile:= \
+            `rospack find jsk_2014_picking_challenge`/data/paste_mask.png
+    $ rosrun image_view image_view image:=/sift_matcher_oneimg/output
+
+"""
 import os
 import itertools
 
