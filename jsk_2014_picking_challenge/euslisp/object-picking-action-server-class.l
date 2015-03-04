@@ -1,7 +1,7 @@
 #!/usr/bin/env roseus
-;;
+
 (load "package://baxtereus/baxter-interface.l")
-(load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
+(load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
 
 (ros::roseus "object_picking")
 (ros::load-ros-manifest "roseus")
@@ -9,73 +9,80 @@
 
 (defclass object-picking-actionlib-server
   :super propertied-object
-  :slots (region (action :forward (:worker))))
+  :slots ((action :forward (:worker))))
 
 (defmethod object-picking-actionlib-server
     (:init ()
-     ;; baxter model
      (baxter-init)
      (send *baxter* :locate #f(0 0 950) :world)
-     ;; pod-lowres model
      (when (not (boundp '*pod*))
        (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
        (send *pod* :locate #f(1300 0 0) :world)
        (send *pod* :rotate pi/2 :x :world)
-       (send *pod* :rotate (- pi/2) :z :world)
-       )
+       (send *pod* :rotate -pi/2 :z :world))
      (objects (list *baxter* *pod*))
      (setq action (instance ros::simple-action-server :init
                             "/object_picking" jsk_2014_picking_challenge::ObjectPickingAction
-                            :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal))))
-     (setq region (instance target-pick-region :init)))
+                            :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal)))))
   (:execute-cb (server goal)
-   (let ((limb (send goal :goal :limb)) target-nm seq c msg)
-     (push "msg_validation" seq)
-     ;; limb validation
-     (cond ((string-equal limb "left") (setq limb ':larm))
-           ((string-equal limb "right") (setq limb ':rarm))
+   (let ((l/r (send goal :goal :limb))
+         (on/off (send goal :goal :state)) ;; if you want to return items, state must be "false"
+         seq endcoords msg)
+     ;;(push "msg_validation" seq)
+
+     ;; l/r validataion
+     (cond ((string-equal l/r "larm") (setq l/r ':larm))
+           ((string-equal l/r "rarm") (setq l/r ':rarm))
            (t (progn
-                (push "invalid_limb" seq)
+                (push "invalid_l/r" seq)
                 (setq msg (send server :result :sequence (nreverse seq)))
                 (send server :set-aborted msg)
                 (return-from :execute-cb nil))))
-     ;; (let ((order (send goal :goal :order))
-     ;;       ;;(region (instance target-pick-region :init))
-     ;;       seq msg target-nm c target)
-     (push 0 seq)  ;; started
-     (setq c (send *baxter* :rarm :end-coords))
-     (ros::ros-info (format nil "get arm's endcoords."))
 
-     ;; set end-coords position
-     (push 1 seq)
-     (setq c (send c :locate #f(30 0 50)))
-     ;;(setq target (instance cascaded-coords :init :pos c))
+     ;; get current arm's end-coords
+     (push "0" seq)
+     (setq endcoords
+           (make-cascoords :pos (send *baxter* l/r :end-coords :worldpos)))
+     (ros::ros-info (format nil "get ~A's endcoords." l/r))
+     (ros::ros-info (format nil "~A" endcoords))
+
+     ;; sen target end-coords position
+     (push "1" seq)
+     (setq endcoords
+           (send endcoords :locate (float-vector (random 300) (random 50) (random 50))))
      (ros::ros-info (format nil "endcoords set."))
+     (ros::ros-info (format nil "~A" endcoords))
 
      ;; ik with z axis constraction
-     (push 2 seq)  ;; computing IK
-     (ros::ros-info (format nil "computing IK."))
-     (send *baxter* limb :inverse-kinematics c :rotate-axis :z)
+     (push "2" seq)
+     (ros::ros-info (format nil "computing ik."))
+     (send *baxter* l/r :inverse-kinematics endcoords :rotation-axis :z)
 
-     ;; reflect change to ri
-     (push 3 seq)  ;; reflecting to ri
+     ;; cleaner on/off
+     (push "3" seq)
+     (ros::ros-info (format nil "cleaner ~A" (if on/off "ON" "OFF")))
+     (send *ri* (if on/off :start-grasp :stop-grasp))
+
+     ;; apply changes to *ri*
+     (push "4" seq)
      (send *ri* :angle-vector (send *baxter* :angle-vector))
      (send *ri* :wait-interpolation)
      (send *irtviewer* :draw-objects)
      (x::window-main-one)
 
      ;; set result
+     (ros::ros-info (format nil "~A" seq))
      (setq msg (send server :result :sequence (nreverse seq)))
      (send server :set-succeeded msg)
-     ))
+         ))
   (:spin ()
    (ros::rate 500)
    (do-until-key
-       (send self :worker)
+    (send self :worker)
      (send action :spin-once)
      (ros::sleep)))
-  (:spin-once () (send self :worker) (send action :spin-once))
-  )
+  (:spin-once ()
+   (send self :worker) (send action :spin-once)))
 
 (ros::rate 500)
 (setq s (instance object-picking-actionlib-server :init))
