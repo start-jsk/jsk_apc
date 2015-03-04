@@ -1,3 +1,4 @@
 string[] objects
+string target_object
 ---
 bool succeeded
