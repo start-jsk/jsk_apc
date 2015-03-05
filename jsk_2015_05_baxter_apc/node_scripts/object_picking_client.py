@@ -21,7 +21,8 @@ def main():
     client.send_goal(goal)
 
     print("{} wait_for_result".format(os.getpid()))
-    client.wait_for_server(rospy.Duration.from_sec(10.0))
+    # client.wait_for_server(rospy.Duration.from_sec(10.0))
+    client.wait_for_result(rospy.Duration.from_sec(10.0))
 
     result = client.get_result()
     if result:
