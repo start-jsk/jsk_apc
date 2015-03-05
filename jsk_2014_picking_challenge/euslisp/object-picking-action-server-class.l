@@ -28,8 +28,6 @@
    (let ((l/r (send goal :goal :limb))
          (on/off (send goal :goal :state)) ;; if you want to return items, state must be "false"
          seq endcoords msg)
-     ;;(push "msg_validation" seq)
-
      ;; l/r validataion
      (cond ((string-equal l/r "larm") (setq l/r ':larm))
            ((string-equal l/r "rarm") (setq l/r ':rarm))
@@ -75,16 +73,9 @@
      (setq msg (send server :result :sequence (nreverse seq)))
      (send server :set-succeeded msg)
          ))
-  (:spin ()
-   (ros::rate 500)
-   (do-until-key
-    (send self :worker)
-     (send action :spin-once)
-     (ros::sleep)))
-  (:spin-once ()
-   (send self :worker) (send action :spin-once)))
+  (:spin-once () (send self :worker) (send action :spin-once))
+  (:spin () (do-until-key (send self :spin-once) (ros::sleep))))
 
 (ros::rate 500)
 (setq s (instance object-picking-actionlib-server :init))
-(do-until-key
-  (send s :spin))
+(send s :spin)
