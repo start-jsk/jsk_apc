@@ -24,7 +24,10 @@ def main():
     client.wait_for_server(rospy.Duration.from_sec(10.0))
 
     result = client.get_result()
-    print result
+    if result:
+        print("{}".format(result.sequence))
+    else:
+        print("get result None.")
 
 if __name__ == "__main__":
     main()

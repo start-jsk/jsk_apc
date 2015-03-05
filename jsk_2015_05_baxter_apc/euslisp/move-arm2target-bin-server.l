@@ -14,23 +14,23 @@
   :slots (region (action :forward (:worker))))
 (defmethod move2arm-actionlib-server
   (:init ()
-         ;; baxter model
-         (baxter-init)
-         (send *baxter* :locate #f(0 0 950) :world)
-         (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
-         ;; pod-lowres model
-         (when (not (boundp '*pod*))
-           (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
-           (send *pod* :locate #f(1300 0 0) :world)
-           (send *pod* :rotate pi/2 :x :world)
-           (send *pod* :rotate (- pi/2) :z :world))
-         (objects (list *baxter* *pod*))
-         (setq action (instance ros::simple-action-server
-                                     :init "/move_arm2target_bin" jsk_2014_picking_challenge::MoveArm2TargetBinAction
-                                     ;; args for callback function are needed
-                                     ;; to avoid segmentation fault
-                                     :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal))))
-         (setq region (instance target-pick-region :init)))
+   ;; baxter model
+   (baxter-init)
+   (send *baxter* :locate #f(0 0 950) :world)
+   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+   ;; pod-lowres model
+   (when (not (boundp '*pod*))
+     (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
+     (send *pod* :locate #f(1300 0 0) :world)
+     (send *pod* :rotate pi/2 :x :world)
+     (send *pod* :rotate (- pi/2) :z :world))
+   (objects (list *baxter* *pod*))
+   (setq action (instance ros::simple-action-server
+                          :init "/move_arm2target_bin" jsk_2014_picking_challenge::MoveArm2TargetBinAction
+                          ;; args for callback function are needed
+                          ;; to avoid segmentation fault
+                          :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal))))
+   (setq region (instance target-pick-region :init)))
   (:execute-cb (server goal)
                """the order should be string and included in (a, b, c, ..., l)"""
                (let ((order (send goal :goal :order))
@@ -87,4 +87,3 @@
 (ros::rate 500)
 (setq s (instance move2arm-actionlib-server :init))
 (send s :spin)
-
