@@ -1,0 +1,14 @@
+<launch>
+  <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch"></include>
+
+  <node pkg="jsk_pcl_ros" type="color_histogram_matcher" name="color_histogram_matcher">
+    <remap from="/camera_info" to="/kinect2/depth_highres/camera_info" />
+    <remap from="~input" to="/kinect2/depth_highres/points" />
+    <remap from="~input_indices" to="/pointcloud_to_cluster_point_indices/output" />
+    <remap from="~input_reference_cloud" to="/kinect2/depth_highres/points" />
+  </node>
+  <node pkg="jsk_pcl_ros" type="pointcloud_to_cluster_point_indices" name="pointcloud_to_cluster_point_indices">
+    <remap from="/camera_info" to="/kinect2/depth_highres/camera_info" />
+    <remap from="~input" to="/kinect2/depth_highres/points" />
+  </node>
+</launch>
