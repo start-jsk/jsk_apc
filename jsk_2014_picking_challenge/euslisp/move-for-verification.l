@@ -5,6 +5,8 @@
 (ros::roseus "move_for_verification")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
 
+()
+
 (defclass move-for-verification-cb-class
   :super propertied-object
   :slots ())
@@ -39,22 +41,13 @@
 	       ;;service call
 	       (ros::wait-for-service "/semi/sift_matcher")
 	       (setq req-v (instance roseus::ObjectMatchRequest :init))
-	       (setq req-v :Objects (send req :Objects))
+	       (setq req-v :objects (send req :objects))
 	       (setq res-v (ros::service-call "/semi/sift_matcher" req-v))
 	       (setq plist (send res-v :probabilities))
 	       ;;return response
 	       (setq res (send req :response))
-	       (setq p 0) ;probability
-	       (setq i 0) ;index
-	       (dolist 
-		   (var plist)
-		 (setq i (+ i 1))
-		 (when (> var p)
-		     (setq t-name (elt (send req :Objeccts) i))
-		     ))
-	       (if (string-equal t-name (send req :target_object))
-		   (send res :succeeded t)
-		 (send res :succeeded nil))
+	       (setq i (position (apply #'max plist) plist)) ;index of max
+	       (if (string-equal (elt (send req :objects) i) (send req :target_object)) (send res :succeeded t) (send res :succeeded nil))
 	       res)))
 
 (setq m (instance move-for-verification-cb-class :init))
