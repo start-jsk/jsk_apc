@@ -26,4 +26,9 @@
   (send *baxter* :locate #f(0 0 950) :world)
   (objects (list *baxter*)))
 
+(defun start ()
+  (send *ri* :start-grasp))
+(defun stop ()
+  (send *ri* :stop-grasp))
+
 (init)
