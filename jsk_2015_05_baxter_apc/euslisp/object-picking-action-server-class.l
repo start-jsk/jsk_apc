@@ -38,31 +38,31 @@
                 (return-from :execute-cb nil))))
 
      ;; get current arm's end-coords
-     (push "0" seq)
+     (push "get end-coords" seq)
      (setq endcoords
            (make-cascoords :pos (send *baxter* l/r :end-coords :worldpos)))
      (ros::ros-info (format nil "get ~A's endcoords." l/r))
      (ros::ros-info (format nil "~A" endcoords))
 
-     ;; sen target end-coords position
-     (push "1" seq)
+     ;; set target end-coords position
+     (push "set target end-coords" seq)
      (setq endcoords
            (send endcoords :locate (float-vector (random 300) (random 50) (random 50))))
      (ros::ros-info (format nil "endcoords set."))
      (ros::ros-info (format nil "~A" endcoords))
 
      ;; ik with z axis constraction
-     (push "2" seq)
+     (push "ik computing" seq)
      (ros::ros-info (format nil "computing ik."))
      (send *baxter* l/r :inverse-kinematics endcoords :rotation-axis :z)
 
      ;; cleaner on/off
-     (push "3" seq)
+     (push "cleaner on/off" seq)
      (ros::ros-info (format nil "cleaner ~A" (if on/off "ON" "OFF")))
      (send *ri* (if on/off :start-grasp :stop-grasp))
 
      ;; apply changes to *ri*
-     (push "4" seq)
+     (push "apply changes" seq)
      (send *ri* :angle-vector (send *baxter* :angle-vector))
      (send *ri* :wait-interpolation)
      (send *irtviewer* :draw-objects)
