@@ -82,22 +82,30 @@ class Master(object):
         self.mode = 'mv2target'
         return False
 
-    def client_grasp_ctrl(self):
+    def client_grasp_ctrl(self, limb, state):
         """Pick item from target bin randomly."""
         target = self.target
         rospy.loginfo('Getting {item} in {bin}'.format(
             bin=target[0], item=target[1]))
-        # grasp_ctrl = rospy.ServiceProxy('grasp_ctrl', GraspCtrl)
-        # grasp_ctrl.wait_for_service()
-        # res = grasp_ctrl()
-        # if res.succeeded:
-        #     self.mode = 'verify_item'
-        #     return True
-        # else:
-        #     self.target = None
-        #     self.mv2target = 'mv2target'
         #     return False
-        raise NotImplementedError("waiting iory implementation")
+        client = actionlib.SimpleActionClient("object_picking", ObjectPickingAction)
+        print("{} wait_for_server".format(os.getpid()))
+        client.wait_for_server()
+
+        goal = ObjectPickingGoal()
+        goal.limb = limb
+        goal.state = state
+
+        client.send_goal(goal)
+
+        print("{} wait_for_result".format(os.getpid()))
+        client.wait_for_result(rospy.Duration.from_sec(10.0))
+
+        result = client.get_result
+        if result:
+            print("{}".format(result.sequence))
+        else:
+            print("get result None.")
 
     def client_item_verification(self, item_name):
         """Verify item if it's intended one."""
@@ -144,7 +152,7 @@ class Master(object):
             if self.mode == 'move2target':
                 self.client_mv2target()
             elif self.mode == 'grasp_ctrl':
-                # self.client_grasp_ctrl()  # NotImplemented
+                self.client_grasp_ctrl(self.use_limb, True)  # NotImplemented
                 pass
             elif self.mode == 'verify_item':
                 # self.client_item_verification(target)  # NotImplemented
@@ -156,4 +164,3 @@ class Master(object):
 if __name__ == '__main__':
     m = Master()
     m.main()
-
