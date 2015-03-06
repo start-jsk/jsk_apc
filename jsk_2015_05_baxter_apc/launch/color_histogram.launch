@@ -10,6 +10,7 @@
     <!--   <remap from="/camera_info" to="/kinect2/depth_highres/camera_info" /> -->
     <!--   <remap from="~input" to="/kinect2/depth_highres/points" /> -->
     <!-- </node> -->
+    <arg name="detect_color" default="red" />
 
     <include file="$(find roseus_tutorials)/launch/usb-camera.launch"></include>
     <node pkg="jsk_perception" type="mask_publisher.py" name="mask_publisher" output="screen">
@@ -19,13 +20,13 @@
         <remap from="~input" to="/image_raw" />
     </node>
     <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram" output="screen">
-        <remap from="~input" to="/rgb_decomposer/output/red" />
+        <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color)" />
     </node>
     <node pkg="jsk_perception" type="grid_label" name="grid_label" output="screen">
         <remap from="~input" to="/image_raw" />
     </node>
     <node pkg="jsk_perception" type="color_histogram_label_match" name="color_histogram_label_match" output="screen">
-        <remap from="~input" to="/rgb_decomposer/output/red" />
+        <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color)" />
         <remap from="~input/label" to="/grid_label/output" />
         <remap from="~input/histogram" to="/single_channel_histogram/output" />
         <remap from="~input/mask" to="/mask_publisher/output" />
