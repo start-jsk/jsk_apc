@@ -9,6 +9,9 @@ find_package(catkin REQUIRED COMPONENTS
     geometry_msgs
     message_generation
     actionlib actionlib_msgs
+    jsk_perception
+    jsk_recognition_msgs
+    roscpp
 )
 
 ## System dependencies are found with CMake's conventions
@@ -110,24 +113,20 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a cpp library
-# add_library(jsk_2014_picking_challenge
-#   src/${PROJECT_NAME}/jsk_2014_picking_challenge.cpp
-# )
+# add_library(jsk_perception src/${PROJECT_NAME}/color_histogram_label_match.cpp)
 
 ## Declare a cpp executable
-# add_executable(jsk_2014_picking_challenge_node src/jsk_2014_picking_challenge_node.cpp)
+add_executable(histogram_coefficient src/histogram_coefficient.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(jsk_2014_picking_challenge_node jsk_2014_picking_challenge_generate_messages_cpp)
+add_dependencies(histogram_coefficient ${PROJECT_NAME}_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(jsk_2014_picking_challenge_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(histogram_coefficient ${catkin_LIBRARIES})
 
 #############
 ## Install ##
