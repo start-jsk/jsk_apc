@@ -35,7 +35,7 @@ def main():
     resp = client_siftmatcher(ObjectMatchRequest(objects=object_list))
     rospy.loginfo('Results: {res}'.format(res=resp.probabilities))
     rospy.loginfo('Best match: {best}'.format(
-        best=object_list[np.argmax(resp.probabilities)])
+        best=object_list[np.argmax(resp.probabilities)]))
 
 
 if __name__ == '__main__':
