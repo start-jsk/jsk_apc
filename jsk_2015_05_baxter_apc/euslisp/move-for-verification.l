@@ -31,11 +31,18 @@
 	       ;;display
 	       (objects (list *baxter*))
 	       ;;move
-	       (setq target (instance cascaded-coords :init :pos #f(700 0 1200)))
-	       (when (not (send *baxter* arm :inverse-kinematics target :rotate-axis :z :debug-view :no-message))
-		 (send *baxter* :reset-pose)
-		 (send *baxter* arm :inverse-kinematics target :rotate-axis :z :debug-view :no-message))
-	       (send *ri* :angle-vector (send *baxter* :angle-vector))
+	       ;;use inverse-kinematics
+	       ;; (setq target (instance cascaded-coords :init :pos #f(800 0 1700)))
+	       ;; (when (not (send *baxter* arm :inverse-kinematics target :rotate-axis :z :debug-view :no-message))
+	       ;; 	 (send *baxter* :reset-pose)
+	       ;; 	 (send *baxter* arm :inverse-kinematics target :rotate-axis :z :debug-view :no-message))
+	       ;; (send *ri* :angle-vector (send *baxter* :angle-vector))
+	       ;;use angle-vector directly
+	       (if (string-equal arm 'larm)
+		   (setq target-vector #f(0.0 -27.0 -50.0 -68.0 80.0 35.0 -90.0 0.0 20.0 -25.0 -40.0 60.0 20.0 80.0 0.0))
+		 (setq target-vector #f(0.0 20.0 -25.0 -40.0 60.0 -20.0 80.0 0.0 27.0 -50.0 68.0 80.0 -35.0 -90.0 0.0)))
+	       (send *baxter* :angle-vector target-vector)
+	       (send *ri* :angle-vector target-vector)
 	       (send *irtviewer* :draw-objects)
 	       (x::window-main-one)
 	       ;;service call
