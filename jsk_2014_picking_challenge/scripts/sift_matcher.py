@@ -94,7 +94,11 @@ class SiftMatcher(object):
                 siftdata = self.load_siftdata(obj_name)
             siftdata_list.append(siftdata)
             # set cache
-            if siftdata is not None:
+            if siftdata is None:
+                continue
+            if len(siftdata_cache) > 3:
+                # free cache data to avoid becoming too big
+                del siftdata_cache[np.random.choice(siftdata_cache.keys())]
                 siftdata_cache[obj_name] = siftdata
             self.siftdata_cache = siftdata_cache
         return siftdata_list
