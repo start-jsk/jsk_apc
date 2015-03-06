@@ -128,20 +128,21 @@ rosserial_add_client_target(firmware switching_gripper-upload)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a cpp library
 # add_library(jsk_perception src/${PROJECT_NAME}/color_histogram_label_match.cpp)
 
 ## Declare a cpp executable
-add_executable(histogram_coefficient src/histogram_coefficient.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(histogram_coefficient ${PROJECT_NAME}_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(histogram_coefficient ${catkin_LIBRARIES})
+
+## Add cmake target dependencies of the executable/library
+## as an example, message headers may need to be generated before nodes
+
+## Specify libraries to link a library or executable target against
 
 #############
 ## Install ##
