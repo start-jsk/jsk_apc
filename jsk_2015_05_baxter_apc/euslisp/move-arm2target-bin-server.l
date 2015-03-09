@@ -35,6 +35,7 @@
                """the order should be string and included in (a, b, c, ..., l)"""
                (let ((order (send goal :goal :order))
                      (limb (send goal :goal :limb)) target-nm seq c msg)
+                 (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
                  (setq target-nm (intern (string-upcase order)))
                  (push "msg_validation" seq)
                  ;; limb validation
