@@ -70,7 +70,7 @@
                      (push (format nil "inverse_kinematics_for_~A" target-nm) seq)
                      (setq r (send *baxter* limb
                                    :inverse-kinematics target
-                                   :rotation-axis :z))))
+                                   :rotation-axis t))))
                  ;; reflect change to ri
                  (push "ri_reflectioin" seq)  ;; reflecting to ri
                  (send *ri* :angle-vector (send *baxter* :angle-vector))
