@@ -15,6 +15,7 @@ Usage
 
 """
 from __future__ import print_function, division
+from future_builtins import zip
 import os
 import gzip
 import cPickle as pickle
@@ -55,8 +56,8 @@ class SiftMatcher(object):
         """Get object match probabilities"""
         query_features = self.query_features
         n_matches = []
-        siftdata_list = self._handle_siftdata_cache(obj_names)
-        for obj_name, siftdata in zip(obj_names, siftdata_list):
+        siftdata_set = self._handle_siftdata_cache(obj_names)
+        for obj_name, siftdata in zip(obj_names, siftdata_set):
             if obj_name not in self.object_list:
                 n_matches.append(0)
                 continue
@@ -86,13 +87,12 @@ class SiftMatcher(object):
         siftdata_cache = self.siftdata_cache
         if set(obj_names) != set(siftdata_cache.keys()):
             siftdata_cache = {}  # reset cache
-        siftdata_list = []
         for obj_name in obj_names:
             if obj_name in siftdata_cache:
                 siftdata = siftdata_cache[obj_name]
             else:
                 siftdata = self.load_siftdata(obj_name)
-            siftdata_list.append(siftdata)
+            yield siftdata
             # set cache
             if siftdata is None:
                 continue
@@ -101,7 +101,6 @@ class SiftMatcher(object):
                 del siftdata_cache[np.random.choice(siftdata_cache.keys())]
                 siftdata_cache[obj_name] = siftdata
             self.siftdata_cache = siftdata_cache
-        return siftdata_list
 
     @staticmethod
     def load_siftdata(obj_name):
