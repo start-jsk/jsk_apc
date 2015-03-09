@@ -39,7 +39,7 @@
             ))
     ))
 
-(defun test-target-ik ()
+(defun test-target-ik (&optional (insert 0))
   "Target pick region test
   to confirm the endpoint can reached"
   (let (i region c b r)
@@ -65,19 +65,21 @@
       (incf i)
       )
     ;; calc inverse kinematics on each target
-    ;; if success with z restriction -> cube is red
-    ;; elif success with no restriction -> magenta
+    ;; if success without axis free -> red
+    ;; elif success with z axis free -> magenta
     (dolist (target *targets*)
-      ;; ik with z axis restriction
+      ;; ik without axis free
       (setq r (send *baxter* :larm :inverse-kinematics target
-                    :rotation-axis :z
+                    :rotation-axis t
                     :debug-view :no-message))
+      (setq r (and r (send *baxter* :larm :move-end-pos (float-vector insert 0 0) :world)))
       (if r (send target :set-color :red)
         (progn
-          ;; ik without axis restriction
+          ;; ik with z axis free
           (setq r (send *baxter* :larm :inverse-kinematics target
-                        :rotation-axis nil
+                        :rotation-axis :z
                         :debug-view :no-message))
+          (setq r (and r (send *baxter* :larm :move-end-pos (float-vector insert 0 0) :world)))
           (if r (send target :set-color :magenta))))
         (send *irtviewer* :draw-objects)
         (x::window-main-one)
@@ -113,10 +115,10 @@
       (warn "specify :larm or :rarm")
       (return-from mv2target))
     ;; inverse kinematics
-    (setq r (send *baxter* arm :inverse-kinematics target :rotation-axis :z))
+    (setq r (send *baxter* arm :inverse-kinematics target :rotation-axis t))
     (when (not r)
-      (warn "ik with no axis restriction~%")
-      (setq r (send *baxter* arm :inverse-kinematics target :rotation-axis nil))
+      (warn "ik with z axis free~%")
+      (setq r (send *baxter* arm :inverse-kinematics target :rotation-axis :z))
       (when (not r)
         (warn "failed to compute IK~%")
         (return-from mv2target)))
