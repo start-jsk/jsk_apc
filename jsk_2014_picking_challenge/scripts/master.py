@@ -109,16 +109,18 @@ class Master(object):
 
     def client_item_verification(self, item_name):
         """Verify item if it's intended one."""
-        # item_verification = rospy.ServiceProxy(
-        #     'item_verification', ReleaseItem)
-        # item_verification.wait_for_service()
-        # res = item_verification()
-        # if res.succeeded:
-        #     self.mode = 'place_item'
-        #     return True
-        # else:
-        #     self.mode = 'mv2target'
-        #     return False
+        limb = self.use_limb
+        assert limb in ['left', 'right']
+        lorr = 'l' if limb == 'left' else 'r'
+        item_verification = rospy.ServiceProxy('/semi/{}arm_move_for_verification'.format(lorr), ObjectVerification)
+        item_verification.wait_for_service()
+        res = item_verification()
+        if res.succeeded:
+            self.mode = 'place_item'
+            return True
+        else:
+            self.mode = 'mv2target'
+            return False
         raise NotImplementedError("waiting Tnoriaki implementation")
 
     def client_place_item(self):
