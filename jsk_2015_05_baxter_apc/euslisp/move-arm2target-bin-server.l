@@ -35,6 +35,7 @@
                """the order should be string and included in (a, b, c, ..., l)"""
                (let ((order (send goal :goal :order))
                      (limb (send goal :goal :limb)) target-nm seq c msg)
+                 (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
                  (setq target-nm (intern (string-upcase order)))
                  (push "msg_validation" seq)
                  ;; limb validation
@@ -69,7 +70,7 @@
                      (push (format nil "inverse_kinematics_for_~A" target-nm) seq)
                      (setq r (send *baxter* limb
                                    :inverse-kinematics target
-                                   :rotation-axis :z))))
+                                   :rotation-axis t))))
                  ;; reflect change to ri
                  (push "ri_reflectioin" seq)  ;; reflecting to ri
                  (send *ri* :angle-vector (send *baxter* :angle-vector))
