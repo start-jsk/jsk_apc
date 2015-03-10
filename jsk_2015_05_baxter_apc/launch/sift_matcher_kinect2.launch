@@ -1,8 +1,0 @@
-<launch>
-    <node pkg="kinect2_bridge" type="kinect2_bridge" name="kinect2" output="screen">
-        <remap from="~rgb/image" to="/image" />
-    </node>
-
-    <node pkg="image_view" type="image_view" name="image_view" ><param name="image" type="string" value="/image" /></node>
-    <node pkg="imagesift" type="imagesift" name="imagesift" ></node>
-</launch>
