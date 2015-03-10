@@ -1,5 +1,6 @@
 <launch>
     <!-- <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch"></include> -->
+    <!-- <include file="$(find freenect_launch)/launch/freenect.launch"></include> -->
     <!-- <include file="$(find roseus_tutorials)/launch/usb-camera.launch"></include> -->
 
     <!-- In default, it is expected that kinect2 is launched. -->
