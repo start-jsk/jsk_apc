@@ -12,23 +12,23 @@
     <!-- </node> -->
     <arg name="detect_color" default="red" />
 
-    <include file="$(find roseus_tutorials)/launch/usb-camera.launch"></include>
-    <node pkg="jsk_perception" type="mask_publisher.py" name="mask_publisher" output="screen">
-        <param name="~file_name" type="string" value="$(find jsk_2014_picking_challenge)/data/white.png" />
+    <!-- <include file="$(find roseus_tutorials)/launch/usb-camera.launch"></include> -->
+    <node pkg="jsk_perception" type="image_publisher.py" name="image_publisher" output="screen">
+        <param name="~file_name" type="string" value="$(find jsk_2014_picking_challenge)/data/paste.png" />
     </node>
     <node pkg="jsk_perception" type="rgb_decomposer" name="rgb_decomposer" output="screen">
-        <remap from="~input" to="/image_raw" />
+        <remap from="~input" to="/image_publisher/output" />
     </node>
     <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram" output="screen">
         <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color)" />
     </node>
-    <node pkg="jsk_perception" type="grid_label" name="grid_label" output="screen">
-        <remap from="~input" to="/image_raw" />
-    </node>
-    <node pkg="jsk_perception" type="color_histogram_label_match" name="color_histogram_label_match" output="screen">
-        <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color)" />
-        <remap from="~input/label" to="/grid_label/output" />
-        <remap from="~input/histogram" to="/single_channel_histogram/output" />
-        <remap from="~input/mask" to="/mask_publisher/output" />
-    </node>
+    <!-- <node pkg="jsk_perception" type="grid_label" name="grid_label" output="screen"> -->
+    <!--     <remap from="~input" to="/image_raw" /> -->
+    <!-- </node> -->
+    <!-- <node pkg="jsk_perception" type="color_histogram_label_match" name="color_histogram_label_match" output="screen"> -->
+    <!--     <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color)" /> -->
+    <!--     <remap from="~input/label" to="/grid_label/output" /> -->
+    <!--     <remap from="~input/histogram" to="/single_channel_histogram/output" /> -->
+    <!--     <remap from="~input/mask" to="/mask_publisher/output" /> -->
+    <!-- </node> -->
 </launch>
