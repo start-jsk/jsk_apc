@@ -46,41 +46,60 @@ from sift_matcher_oneimg import SiftMatcherOneImg
 
 from extract_sift_from_objdata import get_train_imgpaths
 
-def save_color_hist_data(histdata, obj_name):
-    """Save color histogram data to data/histdata/{obj_name}.pkl.gz"""
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    histdata_dir = os.path.join(dirname, '../data/histdata')
-    if not os.path.exists(histdata_dir):
-        os.mkdir(histdata_dir)
-    filename = os.path.join(histdata_dir, obj_name+'.pkl.gz')
-    with gzip.open(filename, 'wb') as f:
-        pickle.dump(histdata, f)
+from jsk_recognition_msgs.msg import ColorHistogram
 
-def extract_color_histogram_from_objdata(obj_name):
-    """Extract color histogram data from object images"""
-    positions = []
-    descriptors = []
-    imgpaths = get_train_imgpaths(obj_name)
-    if imgpaths is None:
-        return   # skip if img does not exists
-    progress = progressbar.ProgressBar(widgets=['{o}: '.format(o=obj_name),
-        progressbar.Bar(), progressbar.Percentage(), ' ', progressbar.ETA()])
-    for raw_path, mask_path in progress(imgpaths):
-        raw_img = cv2.imread(raw_path)
-        mask_img = cv2.imread(mask_path)
-        train_img = cv2.add(mask_img, raw_img)
-        # train_features = HistMatcherOneImg.imghist_client(train_img)
-        # change here.
-        #
-        train_pos = np.array(train_features.positions)
-        train_des = np.array(train_features.descriptors)
-        positions.append(train_pos)
-        descriptors.append(train_des)
-    positions, descriptors = map(np.array, [positions, descriptors])
-    histdata = dict(positions=positions, descriptors=descriptors)
-    # save hist data
-    save_histdata(histdata, obj_name)
 
+class ExtractColorHistogram(object):
+    def __init__(self, obj_name):
+        self.obj_name = obj_name
+        self.color_hist = None
+
+    def save_color_hist_data(self, histdata, obj_name):
+        """Save color histogram data to data/histdata/{obj_name}.pkl.gz"""
+        dirname = os.path.dirname(os.path.abspath(__file__))
+        histdata_dir = os.path.join(dirname, '../data/histdata')
+        if not os.path.exists(histdata_dir):
+            os.mkdir(histdata_dir)
+        filename = os.path.join(histdata_dir, self.obj_name+'.pkl.gz')
+        with gzip.open(filename, 'wb') as f:
+            pickle.dump(histdata, f)
+
+    def color_hist_cb(self, msg):
+        self.color_hist = msg.histogram
+
+    def extract_color_histogram_from_objdata(self):
+        """Extract color histogram data from object images"""
+        color_histograms = []
+        imgpaths = get_train_imgpaths(self.obj_name)
+        if imgpaths is None:
+            return   # skip if img does not exists
+            progress = progressbar.ProgressBar(widgets=['{o}: '.format(o=obj_name),
+                                            progressbar.Bar(), progressbar.Percentage(), ' ', progressbar.ETA()])
+        for raw_path, mask_path in progress(imgpaths):
+            raw_img = cv2.imread(raw_path)
+            mask_img = cv2.imread(mask_path)
+            train_img = cv2.add(mask_img, raw_img)
+
+            image_pub = rospy.Publisher('image', Image, queue_size=1)
+            color_hist_sub = rospy.Subscriber('single_channel_histogram/output', ColorHistogram, self.color_hist_cb)
+            image_pub.publish(train_img)
+            self.color_hist = None
+            while self.color_hist == None:
+                rospy.sleep(1)
+            color_histograms.append(self.color_hist)
+        # positions, descriptors = map(np.array, [positions, descriptors])
+        color_histograms = np.array(color_histograms)
+        self.save_histdata(color_histograms, self.obj_name)
+
+    def save_histogram_data(self, histogram_data, obj_name):
+        """Save histogram data to data/histogram_data/{obj_name}.pkl.gz"""
+        dirname = os.path.dirname(os.path.abspath(__file__))
+        histogram_data_dir = os.path.join(dirname, '../data/histogram_data')
+        if not os.path.exists(histogram_data_dir):
+            os.mkdir(histogram_data_dir)
+        filename = os.path.join(histogram_data_dir, obj_name+'.pkl.gz')
+        with gzip.open(filename, 'wb') as f:
+            pickle.dump(histogram_data, f)
 
 def main():
     rospy.init_node('extract_color_histogram_from_objdata')
@@ -102,7 +121,8 @@ def main():
         if obj_name not in all_objects:
             rospy.logwarn('Unknown object, skipping: {}'.format(obj_name))
         else:
-            extract_color_histogram_from_objdata(obj_name)
+            e = ExtractColorHistogram(obj_name)
+            e.extract_color_histogram_from_objdata()
 
 
 if __name__ == '__main__':
