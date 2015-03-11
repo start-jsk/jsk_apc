@@ -38,7 +38,9 @@ import yaml
 import progressbar
 
 import rospy
+import cv_bridge
 from sensor_msgs.msg import CameraInfo
+from sensor_msgs.msg import Image
 from posedetection_msgs.srv import Feature0DDetect
 from posedetection_msgs.msg import ImageFeature0D
 
@@ -53,6 +55,7 @@ class ExtractColorHistogram(object):
     def __init__(self, obj_name):
         self.obj_name = obj_name
         self.color_hist = None
+        self.published_time = None
 
     def save_color_hist_data(self, histdata, obj_name):
         """Save color histogram data to data/histdata/{obj_name}.pkl.gz"""
@@ -73,23 +76,26 @@ class ExtractColorHistogram(object):
         imgpaths = get_train_imgpaths(self.obj_name)
         if imgpaths is None:
             return   # skip if img does not exists
-            progress = progressbar.ProgressBar(widgets=['{o}: '.format(o=obj_name),
-                                            progressbar.Bar(), progressbar.Percentage(), ' ', progressbar.ETA()])
+        progress = progressbar.ProgressBar(widgets=['{o}: '.format(o=self.obj_name),
+                                        progressbar.Bar(), progressbar.Percentage(), ' ', progressbar.ETA()])
+        image_pub = rospy.Publisher('image_publisher/output', Image, queue_size=1)
         for raw_path, mask_path in progress(imgpaths):
             raw_img = cv2.imread(raw_path)
             mask_img = cv2.imread(mask_path)
             train_img = cv2.add(mask_img, raw_img)
 
-            image_pub = rospy.Publisher('image', Image, queue_size=1)
             color_hist_sub = rospy.Subscriber('single_channel_histogram/output', ColorHistogram, self.color_hist_cb)
-            image_pub.publish(train_img)
+            bridge = cv_bridge.CvBridge()
+            train_img_msg = bridge.cv2_to_imgmsg(train_img, encoding="bgr8")
+            train_img_msg.header.stamp = rospy.Time.now()
+
             self.color_hist = None
             while self.color_hist == None:
+                image_pub.publish(train_img_msg)
                 rospy.sleep(1)
             color_histograms.append(self.color_hist)
-        # positions, descriptors = map(np.array, [positions, descriptors])
         color_histograms = np.array(color_histograms)
-        self.save_histdata(color_histograms, self.obj_name)
+        self.save_histogram_data(color_histograms, self.obj_name)
 
     def save_histogram_data(self, histogram_data, obj_name):
         """Save histogram data to data/histogram_data/{obj_name}.pkl.gz"""
