@@ -13,9 +13,9 @@
     <arg name="detect_color" default="red" />
 
     <!-- <include file="$(find roseus_tutorials)/launch/usb-camera.launch"></include> -->
-    <node pkg="jsk_perception" type="image_publisher.py" name="image_publisher" output="screen">
-        <param name="~file_name" type="string" value="$(find jsk_2014_picking_challenge)/data/paste.png" />
-    </node>
+    <!-- <node pkg="jsk_perception" type="image_publisher.py" name="image_publisher" output="screen"> -->
+    <!--     <param name="~file_name" type="string" value="$(find jsk_2014_picking_challenge)/data/paste.png" /> -->
+    <!-- </node> -->
     <node pkg="jsk_perception" type="rgb_decomposer" name="rgb_decomposer" output="screen">
         <remap from="~input" to="/image_publisher/output" />
     </node>
