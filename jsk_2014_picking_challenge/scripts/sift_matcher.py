@@ -8,8 +8,9 @@ jsk_2014_picking_challenge/scripts/extract_sift_from_objdata.py.
 Usage
 -----
 
-    $ roslaunch jsk_2014_picking_challenge sift_matcher_usbcamera.launch
-    $ rosrun jsk_2014_picking_challenge sift_matcher.py
+    $ roslaunch roseus_tutorials usb-camera.launch
+    $ roslaunch jsk_2014_picking_challenge sift_matcher.launch \
+        input_image:=/image_raw input_info:=/camera_info
     $ rosservice call /semi/sift_matcher \
         "{objects: ['oreo_mega_stuf', 'safety_works_safety_glasses']}"
 
