@@ -7,8 +7,8 @@ an image and camera frame.
 Usage
 -----
 
-    $ roslaunch jsk_2014_picking_challenge \
-        sift_matcher_oneimg_usbcamera.launch
+    $ roslaunch roseus_tutorials usb-camera.launch
+    $ rosrun image_sift image_sift ~/input:=/image_raw
     $ rosrun jsk_2014_picking_challenge sift_matcher_oneimg.py \
         _imgfile:=`rospack find jsk_2014_picking_challenge`/data/paste.png \
         _maskfile:= \
