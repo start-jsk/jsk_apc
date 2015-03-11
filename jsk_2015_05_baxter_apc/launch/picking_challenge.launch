@@ -1,5 +1,14 @@
 <launch>
-  <node pkg="jsk_2014_picking_challenge" type="read_json.py" name="read_json_data" args="--file $(find jsk_2014_picking_challenge)/data/example.json"></node>
-  <node pkg="jsk_2014_picking_challenge" type="move-arm2target-bin-server.l" name="move_arm2target_bin"></node>
-  <node pkg="jsk_2014_picking_challenge" type="put-orderbin.l" name="put_orderbin"></node>
+    <!-- JSON -->
+    <node pkg="jsk_2014_picking_challenge" type="read_json.py" name="read_json_data"
+          args="--file $(find jsk_2014_picking_challenge)/data/example.json"></node>
+    <!-- Move to bin -->
+    <node pkg="jsk_2014_picking_challenge" type="move-arm2target-bin-server.l" name="move_arm2target_bin" output="screen"></node>
+    <!-- Object picking -->
+    <node pkg="jsk_2014_picking_challenge" type="object-picking-server.l" name="object_picking" output="screen"></node>
+    <!-- Object verification-->
+    <node pkg="jsk_2014_picking_challenge" type="move-for-verification.l" name="move_for_verification" output="screen"></node>
+    <node pkg="jsk_2014_picking_challenge" type="sift_matcher.py" name="sift_matcher" output="screen"></node>
+    <!-- Place item -->
+    <node pkg="jsk_2014_picking_challenge" type="put-orderbin.l" name="put_orderbin" output="screen"></node>
 </launch>
