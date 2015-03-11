@@ -5,7 +5,7 @@
 (ros::rate 10)
 
 (defmethod baxter-interface
-  (:start-grasp ()
+  (:go-grasp ()
    (ros::ros-info (format nil "cleaner ON"))
    (setq msg (instance std_msgs::Bool :init))
    (send msg :data t)

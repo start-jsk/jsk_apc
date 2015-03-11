@@ -1,6 +1,5 @@
 #!/usr/bin/env roseus
 (load "package://baxtereus/baxter-interface.l")
-(load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
 (load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
 
 (defun init ()
