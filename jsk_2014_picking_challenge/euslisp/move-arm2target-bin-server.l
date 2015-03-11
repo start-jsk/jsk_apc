@@ -39,8 +39,8 @@
       (setq target-nm (intern (string-upcase order)))
       (push "msg_validation" seq)
       ;; limb validation
-      (cond ((string-equal limb "left") (setq limb ':larm))
-            ((string-equal limb "right") (setq limb ':rarm))
+      (cond ((string-equal limb "left") (setq limb :larm))
+            ((string-equal limb "right") (setq limb :rarm))
             (t (progn
                  (push "invalid_limb" seq)
                  (setq msg (send server :result :sequence (nreverse seq)))
