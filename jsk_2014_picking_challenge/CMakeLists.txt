@@ -127,7 +127,6 @@ rosserial_add_client_target(firmware switching_gripper-upload)
 ## Your package locations should be listed before other locations
 
 ## Declare a cpp library
-# add_library(jsk_perception src/${PROJECT_NAME}/color_histogram_label_match.cpp)
 
 ## Declare a cpp executable
 
