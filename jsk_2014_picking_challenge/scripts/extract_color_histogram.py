@@ -93,7 +93,7 @@ class ExtractColorHistogram(object):
         histogram_data_dir = os.path.join(dirname, '../data/histogram_data')
         if not os.path.exists(histogram_data_dir):
             os.mkdir(histogram_data_dir)
-        filename = os.path.join(histogram_data_dir, obj_name + self.color_name + '.pkl.gz')
+        filename = os.path.join(histogram_data_dir, obj_name + '_' + self.color_name + '.pkl.gz')
         with gzip.open(filename, 'wb') as f:
             pickle.dump(histogram_data, f)
 
