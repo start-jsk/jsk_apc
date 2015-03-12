@@ -19,7 +19,7 @@
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (pod-init)
     (orderbin-init)
-    (objects (list *baxter* *pod*))
+    (objects (list *baxter* *pod* *orderbin*))
     (setq action (instance ros::simple-action-server :init
                            "/object_picking" jsk_2014_picking_challenge::ObjectPickingAction
                            :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal)))))
