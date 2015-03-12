@@ -18,10 +18,10 @@ target_features = None
 
 class ColorHistogramMatcher(object):
     def __init__(self):
-        # self.query_histogram = {}
-        self.query_histogram = {'red':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32'),
-                                'green':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32'),
-                                'blue':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32')}
+        self.query_histogram = {}
+        # self.query_histogram = {'red':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32'),
+        #                         'green':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32'),
+        #                         'blue':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32')}
         self.target_histograms = {}
 
         rospy.Service('/semi/color_histogram_matcher', ObjectMatch,
@@ -43,14 +43,15 @@ class ColorHistogramMatcher(object):
     def load_target_histograms(self, object_names):
         """Load extracted color histogram features of objects"""
         rospy.loginfo(object_names)
+        dirname = os.path.dirname(os.path.abspath(__file__))
         for object_name in object_names:
-            obj_dir = os.path.join('../data/histogram_data/', object_name)
+            obj_dir = os.path.join(dirname, '../data/histogram_data/', object_name)
             rospy.loginfo(obj_dir)
-            with gzip.open(obj_dir + '.pkl.gz', 'rb') as gf:
-                x = np.array(cPickle.load(gf), dtype='float32')
-                self.target_histograms[object_name] = {'red':x,
-                                                        'blue':x,
-                                                        'green':x}
+            self.target_histograms[object_name] = {}
+            for color in ['red', 'green', 'blue']:
+                with gzip.open(obj_dir + '_' + color + '.pkl.gz', 'rb') as gf:
+                    histogram = np.array(cPickle.load(gf), dtype='float32')
+                    self.target_histograms[object_name][color] = histogram
 
     def coefficient(self, query_hist, target_hist, method=0):
         """Compute coefficient of 2 histograms with several methods"""
@@ -81,14 +82,17 @@ class ColorHistogramMatcher(object):
 
     def cb_histogram_red(self, msg):
         """Get input red histogram"""
+        rospy.loginfo("red")
         self.query_histogram['red'] = msg.histogram
 
     def cb_histogram_green(self, msg):
         """Get input green histogram"""
+        rospy.loginfo("green")
         self.query_histogram['green'] = msg.histogram
 
     def cb_histogram_blue(self, msg):
         """Get input blue histogram"""
+        rospy.loginfo("blue")
         self.query_histogram['blue'] = msg.histogram
 
 
