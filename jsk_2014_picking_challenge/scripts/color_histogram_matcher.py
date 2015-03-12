@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+
+"""
+Usage
+-----
+$ roscore
+$ rosrun jsk_2014_picking_challenge color_histogram_matcher.launch
+
+"""
 from __future__ import division
 import rospy
 import cv2
