@@ -47,22 +47,21 @@
                  (setq msg (send server :result :sequence (nreverse seq)))
                  (send server :set-aborted msg)
                  (return-from :execute-cb nil))))
-      (ros::ros-info (format nil "requested ~A." target-nm))
+      (ros::ros-info (format nil "[move_arm2target_bin] requested ~A." target-nm))
       ;; target name validation
       (unless (find target-nm (send region :target-name-list))
-        (ros::ros-info (format nil "~A not found." target-nm))
+        (ros::ros-info (format nil "[move_arm2target_bin] ~A not found." target-nm))
         (setq msg (send server :result :sequence (nreverse seq)))
         (send server :set-aborted msg)
         (return-from :execute-cb nil))
       ;; ik with z axis restriction
       (push (format nil "IK_for_~A" target-nm) seq)
-      (ros::ros-info (format nil "Move arm to: ~A" target-nm))
+      (ros::ros-info (format nil "[move_arm2target_bin] move arm to: ~A" target-nm))
       ;; original pose
       (push (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
-      ;; for limb which is not being used
-      (if (equal limb :larm)
-        (send *baxter* :rarm :angle-vector foldav-r)
-        (send *baxter* :larm :angle-vector foldav-l))
+      ;; to avoid shelf
+      (send *baxter* :rarm :angle-vector foldav-r)
+      (send *baxter* :larm :angle-vector foldav-l)
       (push (send *baxter* :angle-vector) avs)
       ;; go to in front of the target bin
       (setq c (send *pod* :transform-vector (send region :get-val target-nm)))
@@ -79,7 +78,7 @@
                       :rotate-axis t :revert-if-fail nil) avs)))
       ;; reflect changes to *ri*
       (push "ri_reflection" seq)
-      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 6000))
+      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 8000))
       (send *ri* :wait-interpolation)
       (send *irtviewer* :draw-objects)
       ;; set result

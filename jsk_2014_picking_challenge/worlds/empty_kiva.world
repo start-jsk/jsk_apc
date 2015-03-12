@@ -8,16 +8,16 @@
     <include>
       <uri>model://sun</uri>
     </include>
-    
+
     <include>
-	<uri>model://kiva_pod</uri>
-	<name>kiva_pod</name>
-	<pose>1.5 0 0 0 0 1.56</pose>
+      <uri>model://kiva_pod</uri>
+      <name>kiva_pod</name>
+      <pose>1.20 0 0 0 0 1.56</pose>
     </include>
     <physics type="ode">
       <real_time_update_rate>1000.0</real_time_update_rate>
       <gravity>
-	0.0 0.0 -9.81
+        0.0 0.0 -9.81
       </gravity>
     </physics>
   </world>

@@ -25,7 +25,6 @@
                            :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal)))))
   (:execute-cb
     (server goal)
-    (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (let ((l/r (send goal :goal :limb))
           (on/off (send goal :goal :state)) ;; if you want to return items, state must be "false"
           seq picking-coords msg)
@@ -41,11 +40,11 @@
       (push "goint to pick" seq)
       (ros::ros-info (format nil "[object_picking] going to pick object"))
       (setq avs nil)
-      (push (send *baxter* :angle-vector) avs)
+      (push (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
       (push (send *baxter* l/r :move-end-pos #f(0 0 50) :world :revert-if-fail nil) avs)
-      (push (send *baxter* l/r :move-end-pos #f(150 0 0) :world :revert-if-fail nil) avs)
+      (push (send *baxter* l/r :move-end-pos #f(200 0 0) :world :revert-if-fail nil) avs)
       (push (send *baxter* l/r :move-end-pos #f(0 0 -50) :world :revert-if-fail nil) avs)
-      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 5000)) 
+      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 8000)) 
       (send *ri* :wait-interpolation)
       (send *irtviewer* :draw-objects)
       ;; go/stop grasp
@@ -55,14 +54,10 @@
       ;; return to original pose
       (push "returning to original pose" seq)
       (ros::ros-info (format nil "[object_picking] returning to original pose."))
-      (setq avs (reverse avs))
-      (pop avs)
-      (pop avs)
-      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 5000))
+      (send *ri* :angle-vector-sequence avs (make-list (length avs) :initial-element 8000))
       (send *ri* :wait-interpolation)
       (send *irtviewer* :draw-objects)
       ;; set result
-      (ros::ros-info (format nil "~A" seq))
       (setq msg (send server :result :sequence (nreverse seq)))
       (send server :set-succeeded msg)
       ))

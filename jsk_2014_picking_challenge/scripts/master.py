@@ -130,6 +130,8 @@ class Master(object):
         """Verify item if it's intended one."""
         bin_name = self.target[0]
         target_object = self.target[1]
+        rospy.loginfo('Veify: {} in {}'.format(
+            target_object, self.bin_contents[bin_name]))
         if len(self.bin_contents[bin_name]) == 1:
             self.mode = 'place_item'
             return True
@@ -153,20 +155,17 @@ class Master(object):
 
     def place_item(self):
         """Place item into order bin."""
+        target_obj = self.target[1]
         limb = self.use_limb
         lorr = 'l' if limb == 'left' else 'r'
         client = rospy.ServiceProxy('/semi/{}arm_put_orderbin'.format(lorr),
             ReleaseItem)
         client.wait_for_service()
         res = client()
-        if res.succeeded:
-            self.mode = 'move2target'
-            return True
-        else:
-            rospy.logwarn('Failed to place item: {}'.format(self.target[1]))
-            self.target = None  # abandon current target
-            self.mode = 'move2target'
-            return False
+        self.target = None
+        self.mode = 'move2target'
+        rospy.loginfo('Finished: place_item')
+        return res.succeeded
 
     def main(self):
         bin_contents = self.bin_contents
@@ -179,12 +178,13 @@ class Master(object):
                 bin_name = bin_contents.pop(0)[0]
                 order_item = orders[bin_name]
                 self.target = (bin_name, order_item)
+            rospy.loginfo('Target: {} in {}'.format(
+                self.target[1], self.target[0]))
             # decide action
             if self.mode == 'move2target':
                 self.move2target()
             elif self.mode == 'grasp_ctrl':
                 self.grasp_ctrl(to_grasp=False)
-                self.move2target()
                 self.grasp_ctrl(to_grasp=True)
             elif self.mode == 'object_verification':
                 self.object_verification()
