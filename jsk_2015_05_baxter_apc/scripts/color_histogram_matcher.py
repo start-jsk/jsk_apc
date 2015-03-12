@@ -68,12 +68,8 @@ class ColorHistogramMatcher(object):
             # loop for RGB color &
             # compute max coefficient about each histograms
             coefs = []
-            # rospy.loginfo(query_histogram)
-            # rospy.loginfo(target_histogram)
             for q_hist, t_hists in zip(query_histogram.values(), target_histograms.values()):
                 for t_hist in t_hists:
-                    # rospy.loginfo(q_hist)
-                    # rospy.loginfo(t_hist)
                     coefs.append(self.coefficient(q_hist, t_hist))
             obj_coefs.append(max(coefs))
         obj_coefs = np.array(obj_coefs)
