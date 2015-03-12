@@ -49,7 +49,9 @@
       (send *irtviewer* :draw-objects)
       (send *ri* :stop-grasp)  ;; release object
       ;; follow back same trajectory
-      (send *ri* :angle-vector-sequence avs (make-list (length avs) :initial-element 8000))
+      (setq avs (reverse avs))  ;; to go backwards
+      (pop avs)  ;; to end with fold pose
+      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 8000))
       (send *ri* :wait-interpolation)
       (send *irtviewer* :draw-objects)
       ;;return response
