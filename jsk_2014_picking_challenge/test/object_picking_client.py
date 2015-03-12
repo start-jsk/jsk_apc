@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import os
+import argparse
 
 import rospy
 import actionlib
-
 from jsk_2014_picking_challenge.msg import (
     ObjectPickingAction,
     ObjectPickingGoal,
@@ -12,6 +12,14 @@ from jsk_2014_picking_challenge.msg import (
 
 
 def main():
+    # cmdline arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-l', '--limb', choices=('l', 'r'),
+        help='left or right arm', required=True)
+    parser.add_argument('-r', '--to-release', action='store_true',
+        help='to pick or release object')
+    args = parser.parse_args(rospy.myargv()[1:])
+
     rospy.init_node("object_picking_client")
     client = actionlib.SimpleActionClient("object_picking",
                                           ObjectPickingAction)
@@ -19,8 +27,8 @@ def main():
     client.wait_for_server()
 
     goal = ObjectPickingGoal()
-    goal.limb = 'left'
-    goal.state = False
+    goal.limb = 'left' if args.limb == 'l' else 'right'
+    goal.state = not args.to_release
     print("Requesting ...")
 
     client.send_goal(goal)
