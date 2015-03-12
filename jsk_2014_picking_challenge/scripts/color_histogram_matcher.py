@@ -19,9 +19,6 @@ target_features = None
 class ColorHistogramMatcher(object):
     def __init__(self):
         self.query_histogram = {}
-        # self.query_histogram = {'red':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32'),
-        #                         'green':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32'),
-        #                         'blue':np.array([63750, 4289, 3947, 22, 1,2,2,3,1,2], dtype='float32')}
         self.target_histograms = {}
 
         rospy.Service('/semi/color_histogram_matcher', ObjectMatch,
@@ -61,7 +58,8 @@ class ColorHistogramMatcher(object):
 
     def get_probabilities(self):
         """Get probabilities of color matching"""
-        rospy.loginfo("probs")
+        rospy.loginfo("get probabilities")
+
         query_histogram = self.query_histogram
         targetes_histograms = self.target_histograms
         obj_coefs = []
@@ -82,17 +80,14 @@ class ColorHistogramMatcher(object):
 
     def cb_histogram_red(self, msg):
         """Get input red histogram"""
-        rospy.loginfo("red")
         self.query_histogram['red'] = msg.histogram
 
     def cb_histogram_green(self, msg):
         """Get input green histogram"""
-        rospy.loginfo("green")
         self.query_histogram['green'] = msg.histogram
 
     def cb_histogram_blue(self, msg):
         """Get input blue histogram"""
-        rospy.loginfo("blue")
         self.query_histogram['blue'] = msg.histogram
 
 
