@@ -74,6 +74,7 @@
       (send *irtviewer* :draw-objects)
       ;; return response
       (setq res (send req :response))
+      (when (= (length plist) 0) (ros::ros-info (format nil "Invalid probabilities: ~A" plist)))
       (if (string-equal (elt (send req :objects) (argmax plist)) (send req :target_object))
         (send res :succeeded t)
         (send res :succeeded nil))
