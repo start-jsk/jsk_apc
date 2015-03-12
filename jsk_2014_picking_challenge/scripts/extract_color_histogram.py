@@ -14,8 +14,8 @@ Usage
 2. Execute following::
 
     $ roscore
-    $ rosrun imagesift imagesift
-    $ rosrun extract_sift_from_objdata.py _object:=oreo_mega_stuf
+    $ rosrun jsk_2014_picking_challenge color_histogram.launch
+    $ rosrun extract_color_histogram.py _object:=oreo_mega_stuf
 
 
 Attention
@@ -55,7 +55,6 @@ class ExtractColorHistogram(object):
     def __init__(self, obj_name):
         self.obj_name = obj_name
         self.color_hist = None
-        self.published_time = None
 
     def save_color_hist_data(self, histdata, obj_name):
         """Save color histogram data to data/histdata/{obj_name}.pkl.gz"""
@@ -63,7 +62,7 @@ class ExtractColorHistogram(object):
         histdata_dir = os.path.join(dirname, '../data/histdata')
         if not os.path.exists(histdata_dir):
             os.mkdir(histdata_dir)
-        filename = os.path.join(histdata_dir, self.obj_name+'.pkl.gz')
+        filename = os.path.join(histdata_dir, self.obj_name+'_red.pkl.gz')
         with gzip.open(filename, 'wb') as f:
             pickle.dump(histdata, f)
 
@@ -117,8 +116,31 @@ def main():
     all_objects = yaml.load(open(ymlfile))
 
     obj_names = rospy.get_param('~object',
-                                'oreo_mega_stuf,safety_works_safety_glasses')
-    obj_names = obj_names.split(',')
+                                ["champion_copper_plus_spark_plug",
+                                "cheezit_big_original",
+                                "crayola_64_ct",
+                                "elmers_washable_no_run_school_glue",
+                                "expo_dry_erase_board_eraser",
+                                "feline_greenies_dental_treats",
+                                "first_years_take_and_toss_straw_cups",
+                                "genuine_joe_plastic_stir_sticks",
+                                "highland_6539_self_stick_notes",
+                                "kong_air_dog_squeakair_tennis_ball",
+                                "kong_duck_dog_toy",
+                                "kong_sitting_frog_dog_toy",
+                                "kyjen_squeakin_eggs_plush_puppies",
+                                "mark_twain_huckleberry_finn",
+                                "mead_index_cards",
+                                "mommys_helper_outlet_plugs",
+                                "munchkin_white_hot_duck_bath_toy",
+                                "oreo_mega_stuf",
+                                "paper_mate_12_count_mirado_black_warrior",
+                                "rolodex_jumbo_pencil_cup",
+                                "safety_works_safety_glasses",
+                                "sharpie_accent_tank_style_highlighters",
+                                "stanley_66_052"]
+    )
+    # obj_names = obj_names.split(',')
     if len(obj_names) == 1 and obj_names[0] == 'all':
         obj_names = all_objects
     rospy.loginfo('objects: {obj}'.format(obj=obj_names))
@@ -129,7 +151,6 @@ def main():
         else:
             e = ExtractColorHistogram(obj_name)
             e.extract_color_histogram_from_objdata()
-
 
 if __name__ == '__main__':
     main()
