@@ -40,6 +40,10 @@ class ColorHistogramMatcher(object):
     def load_target_histograms(self, object_names):
         """Load extracted color histogram features of objects"""
         rospy.loginfo(object_names)
+
+        # initialize
+        self.target_histograms = {}
+
         dirname = os.path.dirname(os.path.abspath(__file__))
         for object_name in object_names:
             obj_dir = os.path.join(dirname, '../data/histogram_data/', object_name)
@@ -68,8 +72,11 @@ class ColorHistogramMatcher(object):
             # compute max coefficient about each histograms
             coefs = []
             for q_hist, t_hists in zip(query_histogram.values(), target_histograms.values()):
+                sum_of_coefs = 0
                 for t_hist in t_hists:
-                    coefs.append(self.coefficient(q_hist, t_hist))
+                    # coefs.append(self.coefficient(q_hist, t_hist))
+                    sum_of_coefs += self.coefficient(q_hist, t_hist)
+                coefs.append(sum_of_coefs)
             obj_coefs.append(max(coefs))
         obj_coefs = np.array(obj_coefs)
         # change coefficient array to probability array
@@ -80,15 +87,15 @@ class ColorHistogramMatcher(object):
 
     def cb_histogram_red(self, msg):
         """Get input red histogram"""
-        self.query_histogram['red'] = msg.histogram
+        self.query_histogram['red'] = np.array(msg.histogram, dtype='float32')
 
     def cb_histogram_green(self, msg):
         """Get input green histogram"""
-        self.query_histogram['green'] = msg.histogram
+        self.query_histogram['green'] = np.array(msg.histogram, dtype='float32')
 
     def cb_histogram_blue(self, msg):
         """Get input blue histogram"""
-        self.query_histogram['blue'] = msg.histogram
+        self.query_histogram['blue'] = np.array(msg.histogram, dtype='float32')
 
 
 def main():
