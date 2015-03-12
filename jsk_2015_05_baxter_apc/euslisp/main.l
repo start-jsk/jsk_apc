@@ -2,6 +2,8 @@
 (load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
 (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
 (load "package://jsk_2014_picking_challenge/euslisp/order-bin.l")
+(load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
+
 
 (defun init ()
   (baxter-init)

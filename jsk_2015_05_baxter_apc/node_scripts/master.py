@@ -76,7 +76,7 @@ class Master(object):
         client.send_goal(goal)
         # get result
         for trial in xrange(3):
-            client.wait_for_result(rospy.Duration.from_sec(10.0))
+            client.wait_for_result(rospy.Duration.from_sec(30))
             result = client.get_result()
             state = client.get_state()
             if result and state == 3:
@@ -109,7 +109,7 @@ class Master(object):
         client.send_goal(goal)
         # get result
         for trial in xrange(3):
-            client.wait_for_result(rospy.Duration.from_sec(10.0))
+            client.wait_for_result(rospy.Duration.from_sec(30))
             result = client.get_result()
             state = client.get_state()
             if result and state == 3:
@@ -128,16 +128,21 @@ class Master(object):
 
     def object_verification(self):
         """Verify item if it's intended one."""
+        bin_name = self.target[0]
+        target_object = self.target[1]
+        if len(self.bin_contents[bin_name]) == 1:
+            self.mode = 'place_item'
+            return True
         limb = self.use_limb
         lorr = 'l' if limb == 'left' else 'r'
         client = rospy.ServiceProxy(
             '/semi/{}arm_move_for_verification'.format(lorr),
             ObjectVerification)
+        res = client(objects=self.bin_contents[bin_name],
+                     target_object=target_object)
         rospy.loginfo('Waiting for server: move_for_verification')
         client.wait_for_service()
         rospy.loginfo('Found: move_for_verification')
-        res = client(objects=self.bin_contents[self.target[0]],
-                     target_object=self.target[1])
         if res.succeeded:
             self.mode = 'place_item'
             return True
@@ -179,6 +184,7 @@ class Master(object):
                 self.move2target()
             elif self.mode == 'grasp_ctrl':
                 self.grasp_ctrl(to_grasp=False)
+                self.move2target()
                 self.grasp_ctrl(to_grasp=True)
             elif self.mode == 'object_verification':
                 self.object_verification()
@@ -189,3 +195,4 @@ class Master(object):
 if __name__ == '__main__':
     m = Master()
     m.main()
+
