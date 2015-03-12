@@ -15,7 +15,7 @@ Usage
 
     $ roscore
     $ rosrun jsk_2014_picking_challenge color_histogram.launch
-    $ rosrun extract_color_histogram.py _object:=oreo_mega_stuf
+    $ rosrun extract_color_histogram.py _object:=oreo_mega_stuf _color:=red
 
 
 Attention
@@ -52,19 +52,10 @@ from jsk_recognition_msgs.msg import ColorHistogram
 
 
 class ExtractColorHistogram(object):
-    def __init__(self, obj_name):
+    def __init__(self, obj_name, color_name):
         self.obj_name = obj_name
         self.color_hist = None
-
-    def save_color_hist_data(self, histdata, obj_name):
-        """Save color histogram data to data/histdata/{obj_name}.pkl.gz"""
-        dirname = os.path.dirname(os.path.abspath(__file__))
-        histdata_dir = os.path.join(dirname, '../data/histdata')
-        if not os.path.exists(histdata_dir):
-            os.mkdir(histdata_dir)
-        filename = os.path.join(histdata_dir, self.obj_name+'_red.pkl.gz')
-        with gzip.open(filename, 'wb') as f:
-            pickle.dump(histdata, f)
+        self.color_name = color_name
 
     def color_hist_cb(self, msg):
         self.color_hist = msg.histogram
@@ -83,7 +74,7 @@ class ExtractColorHistogram(object):
             mask_img = cv2.imread(mask_path)
             train_img = cv2.add(mask_img, raw_img)
 
-            color_hist_sub = rospy.Subscriber('single_channel_histogram/output', ColorHistogram, self.color_hist_cb)
+            color_hist_sub = rospy.Subscriber('single_channel_histogram_' + self.color_name + '/output', ColorHistogram, self.color_hist_cb)
             bridge = cv_bridge.CvBridge()
             train_img_msg = bridge.cv2_to_imgmsg(train_img, encoding="bgr8")
             train_img_msg.header.stamp = rospy.Time.now()
@@ -102,7 +93,7 @@ class ExtractColorHistogram(object):
         histogram_data_dir = os.path.join(dirname, '../data/histogram_data')
         if not os.path.exists(histogram_data_dir):
             os.mkdir(histogram_data_dir)
-        filename = os.path.join(histogram_data_dir, obj_name+'.pkl.gz')
+        filename = os.path.join(histogram_data_dir, obj_name + self.color_name + '.pkl.gz')
         with gzip.open(filename, 'wb') as f:
             pickle.dump(histogram_data, f)
 
@@ -140,6 +131,7 @@ def main():
                                 "sharpie_accent_tank_style_highlighters",
                                 "stanley_66_052"]
     )
+    color_name = rospy.get_param('~color', 'green')
     # obj_names = obj_names.split(',')
     if len(obj_names) == 1 and obj_names[0] == 'all':
         obj_names = all_objects
@@ -149,7 +141,7 @@ def main():
         if obj_name not in all_objects:
             rospy.logwarn('Unknown object, skipping: {}'.format(obj_name))
         else:
-            e = ExtractColorHistogram(obj_name)
+            e = ExtractColorHistogram(obj_name, color_name)
             e.extract_color_histogram_from_objdata()
 
 if __name__ == '__main__':
