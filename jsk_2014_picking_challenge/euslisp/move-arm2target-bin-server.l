@@ -32,10 +32,11 @@
   (:execute-cb
     (server goal)
     """the order should be string and included in (a, b, c, ..., l)"""
-    (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (let ((order (send goal :goal :order))
           (limb (send goal :goal :limb))
-          (avs nil) target-nm seq c msg untuck-coords)
+          (foldav-l #f(37.3096 -2.30713 -74.0698 146.667 99.5361 -3.66943 6.48193))
+          (foldav-r #f(-48.8672 -10.437 80.6616 148.645 -80.9033 1.38428 -18.8745))
+          avs target-nm seq c r msg)
       (setq target-nm (intern (string-upcase order)))
       (push "msg_validation" seq)
       ;; limb validation
@@ -54,23 +55,31 @@
         (send server :set-aborted msg)
         (return-from :execute-cb nil))
       ;; ik with z axis restriction
-      (push (format nil "inverse_kinematics_for_~A" target-nm) seq)
-      (ros::ros-info (format nil "computing IK for ~A." target-nm))
-      (push (send *baxter* :angle-vector) avs)  ;; set original av
-      (setq untuck-coords (make-cascoords :pos (float-vector 550 (if (equal limb :larm) 200 -200) 1100)
-                                          :rot #2f((-3.6e-06 0 -1) (0 1 0) (1 0 -3.6e-06))))
-      (push (send *baxter* limb :inverse-kinematics untuck-coords
-                  :rotation-axis :z :revert-if-fail nil) avs)
-      ;; get target coordinates
-      (push "get_target_coords" seq)
+      (push (format nil "IK_for_~A" target-nm) seq)
+      (ros::ros-info (format nil "Move arm to: ~A" target-nm))
+      ;; original pose
+      (push (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
+      ;; for limb which is not being used
+      (if (equal limb :larm)
+        (send *baxter* :rarm :angle-vector foldav-r)
+        (send *baxter* :larm :angle-vector foldav-l))
+      (push (send *baxter* :angle-vector) avs)
+      ;; go to in front of the target bin
       (setq c (send *pod* :transform-vector (send region :get-val target-nm)))
-      (push (send *baxter* limb
+      (setq r (send *baxter* limb
                   :inverse-kinematics (make-cascoords :pos c)
-                  :rotate-axis t :revert-if-fail nil) avs)
-      (warn (format nil "~A~%" avs))
-      ;; reflect change to ri
-      (push "ri_reflectioin" seq)  ;; reflecting to ri
-      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 10000))
+                  :rotate-axis t :revert-if-fail nil))
+      (if r (push r avs)
+        (progn
+          (if (equal limb :larm)
+            (send *baxter* limb :angle-vector foldav-l)
+            (send *baxter* limb :angle-vector foldav-r))
+          (push (send *baxter* :angle-vector) avs)
+          (push (send *baxter* limb :inverse-kinematics (make-cascoords :pos c)
+                      :rotate-axis t :revert-if-fail nil) avs)))
+      ;; reflect changes to *ri*
+      (push "ri_reflection" seq)
+      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 6000))
       (send *ri* :wait-interpolation)
       (send *irtviewer* :draw-objects)
       ;; set result
@@ -85,3 +94,4 @@
 (ros::rate 500)
 (setq s (instance move2arm-actionlib-server :init))
 (send s :spin)
+
