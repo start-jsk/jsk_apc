@@ -12,21 +12,6 @@
 (ros::rate 10)
 
 (defmethod baxter-interface
-<<<<<<< HEAD
-  (:go-grasp ()
-   (ros::ros-info (format nil "cleaner ON"))
-   (setq msg (instance std_msgs::Bool :init))
-   (send msg :data t)
-   (ros::publish "on_off_gripper" msg)
-   (ros::sleep))
-  (:stop-grasp ()
-   (ros::ros-info (format nil "cleaner OFF"))
-   (setq msg (instance std_msgs::Bool :init))
-   (send msg :data nil)
-   (ros::publish "on_off_gripper" msg)
-   (ros::sleep)
-  ))
-=======
   (:go-grasp
     ()
     (ros::ros-info (format nil "[on_off_gripper] cleaner ON"))
@@ -42,5 +27,3 @@
     (ros::publish "on_off_gripper" msg)
     (ros::sleep))
   )
-
->>>>>>> f03ba86f65461347813d9fa8fe22f504b0dc9ff5
