@@ -20,8 +20,7 @@
   <build_depend>actionlib</build_depend>
   <build_depend>actionlib_msgs</build_depend>
   <build_depend>moveit_resources</build_depend>
-  <build_depend>jsk_perception</build_depend>
-  <build_depend>jsk_recognition_msgs</build_depend>
+
   <build_depend>rosserial_arduino</build_depend>
   <build_depend>rosserial_client</build_depend>
 
