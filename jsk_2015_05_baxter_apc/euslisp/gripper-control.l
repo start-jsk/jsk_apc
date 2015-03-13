@@ -27,4 +27,3 @@
     (ros::publish "on_off_gripper" msg)
     (ros::sleep))
   )
-
