@@ -64,4 +64,3 @@
 (ros::rate 500)
 (setq m (instance put-orderbin-cb-class :init))
 (ros::spin)
-
