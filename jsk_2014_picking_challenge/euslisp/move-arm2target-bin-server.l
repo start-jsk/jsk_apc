@@ -93,4 +93,3 @@
 (ros::rate 500)
 (setq s (instance move2arm-actionlib-server :init))
 (send s :spin)
-
