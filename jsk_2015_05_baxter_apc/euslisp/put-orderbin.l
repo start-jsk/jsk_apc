@@ -1,6 +1,7 @@
 #! /usr/bin/env roseus
 
 (load "package://baxtereus/baxter-interface.l")
+(load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
 
 (ros::roseus "put_orderbin")
 ;(ros::load-ros-manifest "roseus")
@@ -59,8 +60,6 @@
 	       (send res :succeeded t)
 	       res
 	       )))
-   
+
 (setq m (instance put-orderbin-cb-class :init))
 (ros::spin)
-
-    

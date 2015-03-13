@@ -9,6 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
     geometry_msgs
     message_generation
     actionlib actionlib_msgs
+    rosserial_arduino
+    rosserial_client
 )
 
 ## System dependencies are found with CMake's conventions
@@ -101,9 +103,22 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES jsk_2014_picking_challenge
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS message_runtime rosserial_arduino rosserial_client
 #  DEPENDS system_lib
 )
+
+rosserial_generate_ros_lib(
+  PACKAGE rosserial_arduino
+  SCRIPT make_libraries.py
+)
+
+rosserial_configure_client(
+  DIRECTORY firmware
+  TOOLCHAIN_FILE ${ROSSERIAL_ARDUINO_TOOLCHAIN}
+)
+
+rosserial_add_client_target(firmware switching_gripper ALL)
+rosserial_add_client_target(firmware switching_gripper-upload)
 
 ###########
 ## Build ##
