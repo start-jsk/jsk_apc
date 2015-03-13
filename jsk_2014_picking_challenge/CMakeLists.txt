@@ -9,9 +9,6 @@ find_package(catkin REQUIRED COMPONENTS
     geometry_msgs
     message_generation
     actionlib actionlib_msgs
-    jsk_perception
-    jsk_recognition_msgs
-    roscpp
     rosserial_arduino
     rosserial_client
 )
@@ -146,11 +143,6 @@ rosserial_add_client_target(firmware switching_gripper-upload)
 # target_link_libraries(jsk_2014_picking_challenge_node
 #   ${catkin_LIBRARIES}
 # )
-
-## Add cmake target dependencies of the executable/library
-## as an example, message headers may need to be generated before nodes
-
-## Specify libraries to link a library or executable target against
 
 #############
 ## Install ##
