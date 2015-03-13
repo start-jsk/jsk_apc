@@ -51,7 +51,7 @@ def get_train_imgpaths(obj_name):
     dirname = os.path.dirname(os.path.abspath(__file__))
     obj_dir = os.path.join(dirname, '../data/', obj_name)
     if not os.path.exists(obj_dir):
-        rospy.logwarn('Object data does not exists: {}'.format(obj_name))
+        rospy.logwarn('Not found object data: {o}'.format(o=obj_name))
         return
     os.chdir(obj_dir)
     imgpaths = []
@@ -63,6 +63,9 @@ def get_train_imgpaths(obj_name):
         mask_path = os.path.join(obj_dir, 'masks', maskfile)
         imgpaths.append((raw_path, mask_path))
     os.chdir(dirname)
+    if len(imgpaths) == 0:
+        rospy.logwarn('Not found image files: {o}'.format(o=obj_name))
+        return
     return imgpaths
 
 
