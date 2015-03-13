@@ -195,4 +195,3 @@ class Master(object):
 if __name__ == '__main__':
     m = Master()
     m.main()
-
