@@ -1,4 +1,8 @@
 <launch>
+    <arg name="DEBUG" default="true" />
+
+    <env name="DISPLAY" value="$(arg DEBUG)" />
+
     <!-- JSON -->
     <node pkg="jsk_2014_picking_challenge" type="read_json.py" name="read_json_data"
           args="--file $(find jsk_2014_picking_challenge)/data/example.json"></node>
