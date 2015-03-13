@@ -14,8 +14,7 @@ Usage
 1. Download dataset(Raw High Resolution RGB) to data dir, and extract it.
 2. Execute following::
 
-    $ roscore
-    $ rosrun imagesift imagesift
+    $ roslaunch jsk_2014_picking_challenge sift_matcher.launch
     $ rosrun extract_sift_from_objdata.py _object:=oreo_mega_stuf
 
 
@@ -27,54 +26,15 @@ You should change dirname for following items manually::
     * rollodex_mesh_collection_jumbo_pencil_cup -> rolodex_jumbo_pencil_cup
 
 """
-import os
-import sys
-import collections
-import gzip
-import cPickle as pickle
-
 import cv2
 import numpy as np
-import yaml
 import progressbar
 
 import rospy
 from sensor_msgs.msg import CameraInfo
-from posedetection_msgs.srv import Feature0DDetect
-from posedetection_msgs.msg import ImageFeature0D
 
-from sift_matcher_oneimg import SiftMatcherOneImg
-
-
-def get_train_imgpaths(obj_name):
-    """Find train image paths from data/obj_name"""
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    obj_dir = os.path.join(dirname, '../data/', obj_name)
-    if not os.path.exists(obj_dir):
-        rospy.logwarn('Object data does not exists: {}'.format(obj_name))
-        return
-    os.chdir(obj_dir)
-    imgpaths = []
-    for imgfile in os.listdir('.'):
-        if not imgfile.endswith('.jpg'):
-            continue
-        raw_path = os.path.join(obj_dir, imgfile)
-        maskfile = os.path.splitext(imgfile)[0] + '_mask.pbm'
-        mask_path = os.path.join(obj_dir, 'masks', maskfile)
-        imgpaths.append((raw_path, mask_path))
-    os.chdir(dirname)
-    return imgpaths
-
-
-def save_siftdata(siftdata, obj_name):
-    """Save sift data to data/siftdata/{obj_name}.pkl.gz"""
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    siftdata_dir = os.path.join(dirname, '../data/siftdata')
-    if not os.path.exists(siftdata_dir):
-        os.mkdir(siftdata_dir)
-    filename = os.path.join(siftdata_dir, obj_name+'.pkl.gz')
-    with gzip.open(filename, 'wb') as f:
-        pickle.dump(siftdata, f)
+from sift_matcher import imgsift_client
+from matcher_common import save_siftdata, get_object_list, get_train_imgpaths
 
 
 def extract_sift_from_objdata(obj_name):
@@ -90,7 +50,7 @@ def extract_sift_from_objdata(obj_name):
         raw_img = cv2.imread(raw_path)
         mask_img = cv2.imread(mask_path)
         train_img = cv2.add(mask_img, raw_img)
-        train_features = SiftMatcherOneImg.imgsift_client(train_img)
+        train_features = imgsift_client(train_img)
         train_pos = np.array(train_features.positions)
         train_des = np.array(train_features.descriptors)
         positions.append(train_pos)
@@ -106,9 +66,7 @@ def main():
     pub = rospy.Publisher('/camera_info', CameraInfo, queue_size=1)
     pub.publish()  # to enable imagesift service
 
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    ymlfile = os.path.join(dirname, '../data/object_list.yml')
-    all_objects = yaml.load(open(ymlfile))
+    all_objects = get_object_list()
 
     obj_names = rospy.get_param('~object',
                                 'oreo_mega_stuf,safety_works_safety_glasses')
@@ -119,7 +77,7 @@ def main():
 
     for obj_name in obj_names:
         if obj_name not in all_objects:
-            rospy.logwarn('Unknown object, skipping: {}'.format(obj_name))
+            rospy.logwarn('Unknown object, skipping: {o}'.format(o=obj_name))
             continue
         extract_sift_from_objdata(obj_name)
 
