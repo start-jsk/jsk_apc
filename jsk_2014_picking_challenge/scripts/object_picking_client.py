@@ -9,22 +9,26 @@ from jsk_2014_picking_challenge.msg import *
 
 def main():
     rospy.init_node("object_picking_client")
-    client = actionlib.SimpleActionClient("object_picking", MoveArm2TargetBinAction)
+    client = actionlib.SimpleActionClient("object_picking", ObjectPickingAction)
     print("{} wait_for_server".format(os.getpid()))
     client.wait_for_server()
 
-    goal = MoveArm2TargetBinGoal()
-    goal.order = 'a'
+    goal = ObjectPickingGoal()
+    goal.limb = 'larm'
+    goal.state = False
     print("Requesting ...")
 
     client.send_goal(goal)
 
     print("{} wait_for_result".format(os.getpid()))
-    client.wait_for_server(rospy.Duration.from_sec(10.0))
+    # client.wait_for_server(rospy.Duration.from_sec(10.0))
+    client.wait_for_result(rospy.Duration.from_sec(10.0))
 
     result = client.get_result()
-    print(result)
-    # print("Resulting {}".format(result.sequence))
+    if result:
+        print("{}".format(result.sequence))
+    else:
+        print("get result None.")
 
 if __name__ == "__main__":
     main()
