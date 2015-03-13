@@ -1,0 +1,44 @@
+<launch>
+    <!-- <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch"></include> -->
+    <!-- <node pkg="jsk_pcl_ros" type="color_histogram_matcher" name="color_histogram_matcher"> -->
+    <!--   <remap from="/camera_info" to="/kinect2/depth_highres/camera_info" /> -->
+    <!--   <remap from="~input" to="/kinect2/depth_highres/points" /> -->
+    <!--   <remap from="~input_indices" to="/pointcloud_to_cluster_point_indices/output" /> -->
+    <!--   <remap from="~input_reference_cloud" to="/kinect2/depth_highres/points" /> -->
+    <!-- </node> -->
+    <!-- <node pkg="jsk_pcl_ros" type="pointcloud_to_cluster_point_indices" name="pointcloud_to_cluster_point_indices"> -->
+    <!--   <remap from="/camera_info" to="/kinect2/depth_highres/camera_info" /> -->
+    <!--   <remap from="~input" to="/kinect2/depth_highres/points" /> -->
+    <!-- </node> -->
+
+    <arg name="detect_color_red" default="red" />
+    <arg name="detect_color_blue" default="blue" />
+    <arg name="detect_color_green" default="green" />
+
+    <!-- <include file="$(find roseus_tutorials)/launch/usb-camera.launch"></include> -->
+    <!-- <node pkg="jsk_perception" type="image_publisher.py" name="image_publisher" output="screen"> -->
+    <!--     <param name="~file_name" type="string" value="$(find jsk_2014_picking_challenge)/data/paste.png" /> -->
+    <!-- </node> -->
+    <node pkg="jsk_perception" type="rgb_decomposer" name="rgb_decomposer" output="screen">
+        <remap from="~input" to="/image_publisher/output" />
+    </node>
+    <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_$(arg detect_color_red)" output="screen">
+        <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color_red)" />
+    </node>
+    <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_$(arg detect_color_blue)" output="screen">
+        <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color_blue)" />
+    </node>
+    <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_$(arg detect_color_green)" output="screen">
+        <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color_green)" />
+    </node>
+
+    <!-- <node pkg="jsk_perception" type="grid_label" name="grid_label" output="screen"> -->
+    <!--     <remap from="~input" to="/image_raw" /> -->
+    <!-- </node> -->
+    <!-- <node pkg="jsk_perception" type="color_histogram_label_match" name="color_histogram_label_match" output="screen"> -->
+    <!--     <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color)" /> -->
+    <!--     <remap from="~input/label" to="/grid_label/output" /> -->
+    <!--     <remap from="~input/histogram" to="/single_channel_histogram/output" /> -->
+    <!--     <remap from="~input/mask" to="/mask_publisher/output" /> -->
+    <!-- </node> -->
+</launch>
