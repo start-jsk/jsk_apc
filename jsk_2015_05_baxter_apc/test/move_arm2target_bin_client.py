@@ -8,7 +8,7 @@ import actionlib
 from jsk_2014_picking_challenge.msg import (
     MoveArm2TargetBinAction,
     MoveArm2TargetBinGoal,
-)
+    )
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('bin_name', help='bin name for arm to move')
     parser.add_argument('-l', '--limb', choices=('l', 'r'),
-        help='left or right arm')
+        help='left or right arm', required=True)
     args = parser.parse_args(rospy.myargv()[1:])
 
     # initialize

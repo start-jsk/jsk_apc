@@ -14,8 +14,13 @@ from jsk_2014_picking_challenge.msg import (
     bins_content,
     MoveArm2TargetBinAction,
     MoveArm2TargetBinGoal,
+    ObjectPickingAction,
+    ObjectPickingGoal,
     )
-from jsk_2014_picking_challenge.srv import ReleaseItem
+from jsk_2014_picking_challenge.srv import (
+    ReleaseItem,
+    ObjectVerification,
+    )
 
 
 class Master(object):
@@ -28,8 +33,8 @@ class Master(object):
     def __init__(self):
         rospy.init_node('jsk_2014_semi_master')
 
-        self.use_limb = 'left'
-        self.mode = 'mv2target'
+        self.use_limb = 'right'
+        self.mode = 'move2target'
         self.target = None
 
         self.sub_bin_contents = rospy.Subscriber(
@@ -53,90 +58,114 @@ class Master(object):
         self.orders = orders
         self.sub_orders.unregister()
 
-    def client_mv2target(self):
+    def move2target(self):
         """Move arm in the front of target bin."""
         bin_name = self.target[0]
         limb = self.use_limb
-        assert bin_name in 'abcdefghijkl', 'invalid target bin: {}'.format(bin_name)
-        assert limb in ['left', 'right'], 'invalid limb: {}'.format(limb)
-        rospy.loginfo('Moving to {}'.format(bin_name))
-        #
-        mv2target = actionlib.SimpleActionClient(
-            'move_arm2target_bin', MoveArm2TargetBinAction)
-        mv2target.wait_for_server()
+        if bin_name not in 'abcdefghijkl':
+            rospy.logerr('Invalid target bin: {}'.format(bin_name))
+        rospy.loginfo('Moving arm to {}'.format(bin_name))
+
+        client = actionlib.SimpleActionClient('move_arm2target_bin',
+                                              MoveArm2TargetBinAction)
+        rospy.loginfo('Waiting for service: move_arm2target_bin')
+        client.wait_for_server()
+        rospy.loginfo('Found service: move_arm2target_bin')
         # send goal
-        goal = MoveArm2TargetBinGoal()
-        goal.limb = limb
-        goal.order = bin_name
-        mv2target.send_goal(goal)
+        goal = MoveArm2TargetBinGoal(limb=limb, order=bin_name)
+        client.send_goal(goal)
         # get result
         for trial in xrange(3):
-            mv2target.wait_for_result(rospy.Duration.from_sec(10.0))
-            result = mv2target.get_result()
-            state = mv2target.get_state()
+            client.wait_for_result(rospy.Duration.from_sec(30))
+            result = client.get_result()
+            state = client.get_state()
             if result and state == 3:
-                rospy.loginfo("Move result for bin {}".format(result.sequence))
+                rospy.loginfo("Move result: {}".format(result.sequence))
                 self.mode = 'grasp_ctrl'
                 return True
+        if result:
+            rospy.loginfo(result.sequence)
+        rospy.logwarn('Failed motion: move2target')
         self.target = None  # abandon current target
-        self.mode = 'mv2target'
+        self.mode = 'move2target'
         return False
 
-    def client_grasp_ctrl(self, limb, state):
+    def grasp_ctrl(self, to_grasp):
         """Pick item from target bin randomly."""
-        target = self.target
-        rospy.loginfo('Getting {item} in {bin}'.format(
-            bin=target[0], item=target[1]))
-        #     return False
-        client = actionlib.SimpleActionClient("object_picking", ObjectPickingAction)
-        print("{} wait_for_server".format(os.getpid()))
-        client.wait_for_server()
-
-        goal = ObjectPickingGoal()
-        goal.limb = limb
-        goal.state = state
-
-        client.send_goal(goal)
-
-        print("{} wait_for_result".format(os.getpid()))
-        client.wait_for_result(rospy.Duration.from_sec(10.0))
-
-        result = client.get_result
-        if result:
-            print("{}".format(result.sequence))
-        else:
-            print("get result None.")
-
-    def client_item_verification(self, item_name):
-        """Verify item if it's intended one."""
         limb = self.use_limb
-        assert limb in ['left', 'right']
+        target = self.target
+        if to_grasp:
+            rospy.loginfo('Getting {item} in {bin}'.format(
+                bin=target[0], item=target[1]))
+        else:
+            rospy.loginfo('Returning item to {bin}'.format(bin=target[0]))
+        client = actionlib.SimpleActionClient("object_picking",
+                                              ObjectPickingAction)
+        rospy.loginfo('Waiting for service: object_picking')
+        client.wait_for_server()
+        rospy.loginfo('Found service: object_picking')
+        # send result
+        goal = ObjectPickingGoal(limb=limb, state=to_grasp)
+        client.send_goal(goal)
+        # get result
+        for trial in xrange(3):
+            client.wait_for_result(rospy.Duration.from_sec(30))
+            result = client.get_result()
+            state = client.get_state()
+            if result and state == 3:
+                rospy.loginfo('Grasp result: {}'.format(result.sequence))
+                if to_grasp:
+                    self.mode = 'object_verification'
+                else:
+                    self.mode = 'grasp_ctrl'
+                return True
+        if result:
+            rospy.loginfo(result.sequence)
+        rospy.logwarn('Failed motion: grasp_ctrl')
+        self.target = None  # abandon current target
+        self.mode = 'move2target'
+        return False
+
+    def object_verification(self):
+        """Verify item if it's intended one."""
+        bin_name = self.target[0]
+        target_object = self.target[1]
+        rospy.loginfo('Veify: {} in {}'.format(
+            target_object, self.bin_contents[bin_name]))
+        if len(self.bin_contents[bin_name]) == 1:
+            self.mode = 'place_item'
+            return True
+        limb = self.use_limb
         lorr = 'l' if limb == 'left' else 'r'
-        item_verification = rospy.ServiceProxy('/semi/{}arm_move_for_verification'.format(lorr), ObjectVerification)
-        item_verification.wait_for_service()
-        res = item_verification()
+        client = rospy.ServiceProxy(
+            '/semi/{}arm_move_for_verification'.format(lorr),
+            ObjectVerification)
+        res = client(objects=self.bin_contents[bin_name],
+                     target_object=target_object)
+        rospy.loginfo('Waiting for server: move_for_verification')
+        client.wait_for_service()
+        rospy.loginfo('Found: move_for_verification')
         if res.succeeded:
             self.mode = 'place_item'
             return True
         else:
-            self.mode = 'mv2target'
+            rospy.logwarn('Failed motion: object_verification')
+            self.mode = 'move2target'
             return False
-        raise NotImplementedError("waiting Tnoriaki implementation")
 
-    def client_place_item(self):
+    def place_item(self):
         """Place item into order bin."""
+        target_obj = self.target[1]
         limb = self.use_limb
-        assert limb in ['left', 'right']
         lorr = 'l' if limb == 'left' else 'r'
-        place_item = rospy.ServiceProxy('/semi/{}arm_put_orderbin'.format(lorr), ReleaseItem)
-        place_item.wait_for_service()
-        res = place_item()
-        if res.succeeded is False:
-            rospy.logwarn('Failed to place item')
-            return False
-        self.target = None  # abandon current target
-        self.mode = 'mv2target'
-        return True
+        client = rospy.ServiceProxy('/semi/{}arm_put_orderbin'.format(lorr),
+            ReleaseItem)
+        client.wait_for_service()
+        res = client()
+        self.target = None
+        self.mode = 'move2target'
+        rospy.loginfo('Finished: place_item')
+        return res.succeeded
 
     def main(self):
         bin_contents = self.bin_contents
@@ -149,18 +178,18 @@ class Master(object):
                 bin_name = bin_contents.pop(0)[0]
                 order_item = orders[bin_name]
                 self.target = (bin_name, order_item)
-            return  # because some methods is not implemented
+            rospy.loginfo('Target: {} in {}'.format(
+                self.target[1], self.target[0]))
             # decide action
             if self.mode == 'move2target':
-                self.client_mv2target()
+                self.move2target()
             elif self.mode == 'grasp_ctrl':
-                self.client_grasp_ctrl(self.use_limb, True)  # NotImplemented
-                pass
-            elif self.mode == 'verify_item':
-                # self.client_item_verification(target)  # NotImplemented
-                pass
+                self.grasp_ctrl(to_grasp=False)
+                self.grasp_ctrl(to_grasp=True)
+            elif self.mode == 'object_verification':
+                self.object_verification()
             elif self.mode == 'place_item':
-                self.client_place_item()
+                self.place_item()
 
 
 if __name__ == '__main__':

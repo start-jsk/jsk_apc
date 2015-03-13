@@ -1,12 +1,9 @@
-;;eus model
 ;;
-;;Heavy-Duty Stack and Nest Containers - Red, 24 x 15 x 8"
-;;
+;; Heavy-Duty Stack and Nest Containers - Red, 24 x 15 x 8"
 ;;
 
-(defun make-order-bin 
-  ()
-  (let()
+(defun make-orderbin ()
+  (let (b e)
     (setq b (make-cube 609.6 381 203.2))
     (send b :locate #f(0 0 101.6))
     (setq e (make-cube 533.4 353.6 198.12))
@@ -16,7 +13,10 @@
     (send b :set-color :red)
     b))
 
-;;test
-(setq *order-bin* (make-order-bin))
-;; (objects (list bin))
-    
+(defun orderbin-init ()
+  (when (not (boundp '*orderbin*))
+    (setq *orderbin* (make-orderbin))
+    (send *orderbin* :locate #f(500 0 500) :world)
+    (send *orderbin* :rotate pi/2 :z :world)
+    ))
+

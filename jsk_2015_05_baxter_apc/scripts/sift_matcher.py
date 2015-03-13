@@ -15,48 +15,57 @@ Usage
 
 """
 from __future__ import print_function, division
-import os
-import gzip
-import cPickle as pickle
+from future_builtins import zip
 
+import cv2
 import numpy as np
-import yaml
 
 import rospy
 from posedetection_msgs.msg import ImageFeature0D
-from jsk_2014_picking_challenge.srv import ObjectMatch, ObjectMatchResponse
 
-from sift_matcher_oneimg import SiftMatcherOneImg
+from matcher_common import ObjectMatcher, get_object_list, load_siftdata
 
 
 class SiftMatcher(object):
     def __init__(self):
-        # load object list
-        dirname = os.path.dirname(os.path.abspath(__file__))
-        ymlfile = os.path.join(dirname, '../data/object_list.yml')
-        self.object_list = yaml.load(open(ymlfile))
-        self.siftdata_cache = {}
-
-        rospy.Service('/semi/sift_matcher', ObjectMatch, self._cb_matcher)
+        rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
+                         self._cb_imgfeature)
+        rospy.loginfo('Waiting for ImageFeature0D by imagesift/imagesift')
         rospy.wait_for_message('/ImageFeature0D', ImageFeature0D)
-        sub_imgfeature = rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
-                                          self._cb_imgfeature)
-
-    def _cb_matcher(self, req):
-        """Callback function for sift match request"""
-        probs = self._get_object_probability(req.objects)
-        return ObjectMatchResponse(probabilities=probs)
+        rospy.loginfo('Found /ImageFeature0D')
 
     def _cb_imgfeature(self, msg):
         """Callback function of Subscribers to listen ImageFeature0D"""
         self.query_features = msg.features
 
-    def _get_object_probability(self, obj_names):
+    @staticmethod
+    def find_match(query_des, train_des):
+        """Find match points of query and train images"""
+        # parepare to match keypoints
+        query_des = np.array(query_des).reshape((-1, 128))
+        query_des = (query_des * 255).astype('uint8')
+        train_des = np.array(train_des).reshape((-1, 128))
+        train_des = (train_des * 255).astype('uint8')
+        # find good match points
+        bf = cv2.BFMatcher()
+        matches = bf.knnMatch(query_des, train_des, k=2)
+        good_matches = [m for m, n in matches if m.distance < 0.75*n.distance]
+        return good_matches
+
+
+class SiftObjectMatcher(SiftMatcher, ObjectMatcher):
+    def __init__(self):
+        SiftMatcher.__init__(self)
+        ObjectMatcher.__init__(self, '/semi/sift_matcher')
+        self.object_list = get_object_list()
+        self.siftdata_cache = {}
+
+    def match(self, obj_names):
         """Get object match probabilities"""
         query_features = self.query_features
         n_matches = []
-        siftdata_list = self._handle_siftdata_cache(obj_names)
-        for obj_name, siftdata in zip(obj_names, siftdata_list):
+        siftdata_set = self._handle_siftdata_cache(obj_names)
+        for obj_name, siftdata in zip(obj_names, siftdata_set):
             if obj_name not in self.object_list:
                 n_matches.append(0)
                 continue
@@ -64,57 +73,59 @@ class SiftMatcher(object):
                 n_matches.append(0)
                 continue
             # find best match in train features
-            rospy.loginfo('searching matches: {}'.format(obj_name))
+            rospy.loginfo('Searching matches: {}'.format(obj_name))
             train_matches = []
             for train_des in siftdata['descriptors']:
-                matches = SiftMatcherOneImg.find_match(
-                    query_features.descriptors, train_des)
+                matches = self.find_match(query_features.descriptors,
+                                          train_des)
                 train_matches.append(len(matches))
-            n_matches.append(max(train_matches))  # best match
-
+            n_match = max(train_matches)  # best match about the object
+            rospy.loginfo("{}'s best match: {}".format(obj_name, n_match))
+            n_matches.append(n_match)
+        # make match point counts to probabilities
         n_matches = np.array(n_matches)
-        rospy.loginfo('n_matches: {}'.format(n_matches))
-        if n_matches.sum() == 0:
-            return n_matches
-        else:
+        rospy.loginfo('Number of matches: {}'.format(n_matches))
+        try:
             return n_matches / n_matches.sum()
+        except ZeroDivisionError:
+            return n_matches
 
     def _handle_siftdata_cache(self, obj_names):
         """Sift data cache handler
         if same obj_names set: don't update, else: update
         """
-        siftdata_cache = self.siftdata_cache
-        if set(obj_names) != set(siftdata_cache.keys()):
-            siftdata_cache = {}  # reset cache
-        siftdata_list = []
         for obj_name in obj_names:
-            if obj_name in siftdata_cache:
-                siftdata = siftdata_cache[obj_name]
+            if obj_name in self.siftdata_cache:
+                siftdata = self.siftdata_cache[obj_name]
             else:
-                siftdata = self.load_siftdata(obj_name)
-            siftdata_list.append(siftdata)
-            # set cache
-            if siftdata is not None:
-                siftdata_cache[obj_name] = siftdata
-            self.siftdata_cache = siftdata_cache
-        return siftdata_list
+                if len(self.siftdata_cache) > 3:
+                    # free cache data to avoid becoming too big
+                    del self.siftdata_cache[np.random.choice(
+                        self.siftdata_cache.keys())]
+                siftdata = load_siftdata(obj_name)
+                # set cache
+                self.siftdata_cache[obj_name] = siftdata
+            if siftdata is None:
+                continue
+            yield siftdata
 
-    @staticmethod
-    def load_siftdata(obj_name):
-        """Load sift data from pkl file"""
-        dirname = os.path.dirname(os.path.abspath('__file__'))
-        datafile = os.path.join(dirname, '../data/siftdata',
-            obj_name+'.pkl.gz')
-        if not os.path.exists(datafile):
-            return  # does not exists
-        rospy.loginfo('Loading siftdata: {obj}'.format(obj=obj_name))
-        with gzip.open(datafile, 'rb') as f:
-            return pickle.load(f)
+
+def imgsift_client(img):
+    """Request to imagesift with Image as service client"""
+    client = rospy.ServiceProxy('/Feature0DDetect', Feature0DDetect)
+    rospy.loginfo('Waiting for: /Feature0DDetect')
+    client.wait_for_service(10)
+    rospy.loginfo('Found: /Feature0DDetect')
+    bridge = cv_bridge.CvBridge()
+    img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
+    img_msg.header.stamp = rospy.Time.now()
+    resp = client(img_msg)
+    return resp.features
 
 
 def main():
     rospy.init_node('sift_matcher')
-    sm = SiftMatcher()
+    SiftObjectMatcher()
     rospy.spin()
 
 
