@@ -1,8 +1,8 @@
 <launch>
-    <arg name="DEBUG" default="true" />
+    <!-- <arg name="DEBUG" default="" /> -->
     <arg name="custom" default="true"/>
 
-    <env name="DISPLAY" value="$(arg DEBUG)" />
+    <env name="DISPLAY" value="" />
 
     <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
         <arg name="custom" value="$(arg custom)"/>
