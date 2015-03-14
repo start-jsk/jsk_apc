@@ -39,8 +39,8 @@
     (ros::ros-info "[move_for_verification] called")
     (let ((foldav-l #f(37.3096 -2.30713 -74.0698 146.667 99.5361 -3.66943 6.48193))
           (foldav-r #f(-48.8672 -10.437 80.6616 148.645 -80.9033 1.38428 -18.8745))
-          (verifyav-l #f(12.7002 -19.9951 -106.765 127.463 73.4326 -85.4517 -25.0928))
-          (verifyav-r #f(-11.6235 -21.9507 106.941 127.881 -63.2153 -90.0 13.5571))
+          (verifyav-l #f(1.56006 -10.6348 -130.254 83.584 72.29 -15.4028 157.192))
+          (verifyav-r #f(-3.7793 11.4478 144.558 103.206 -161.125 -2.50488 -101.777))
           avs untuck-coords verify-coords req-v res-v plist res)
       ;; set original av
       (push (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
