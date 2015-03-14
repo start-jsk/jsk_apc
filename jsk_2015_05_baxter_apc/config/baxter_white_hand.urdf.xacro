@@ -13,7 +13,7 @@
   <link name="custom_vacuum_link">
     <visual>
       <geometry>
-        <cylinder radius="${width}" length="${bodylen}"/>
+        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukai13.dae"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
