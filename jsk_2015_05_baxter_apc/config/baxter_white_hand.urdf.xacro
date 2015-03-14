@@ -12,6 +12,7 @@
   <xacro:property name="bodylen_side2_base" value=".06" />
   <link name="custom_vacuum_link">
     <visual>
+      <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
       <geometry>
         <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukai13.dae"/>
       </geometry>
@@ -28,7 +29,7 @@
   <link name="custom_vacuum_link_base">
     <visual>
       <geometry>
-        <cylinder radius="${width_base}" length="${bodylen_base}"/>
+        <cylinder radius="0" length="0"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
@@ -43,7 +44,7 @@
   <link name="custom_vacuum_link_side">
     <visual>
       <geometry>
-        <cylinder radius="${width}" length="${bodylen_side}"/>
+        <cylinder radius="0" length="0"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
@@ -58,7 +59,7 @@
   <link name="custom_vacuum_link_side2">
     <visual>
       <geometry>
-        <cylinder radius="${width}" length="${bodylen_side2}"/>
+        <cylinder radius="0" length="0"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
@@ -81,7 +82,7 @@
     </visual>
     <collision>
       <geometry>
-        <cylinder radius="${width_side2_base}" length="${bodylen_side2_base}"/>
+        <cylinder radius="0" length="0"/>
       </geometry>
     </collision>
   </link>
