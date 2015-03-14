@@ -1,13 +1,16 @@
 <launch>
-  <arg name="custom" default="true"/>
+    <arg name="DEBUG" default="true" />
+    <arg name="custom" default="true"/>
 
-  <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
-    <arg name="custom" value="$(arg custom)"/>
-  </include>
-  
-  <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch">
-    <arg name="custom" value="$(arg custom)"/>
-  </include>
+    <env name="DISPLAY" value="$(arg DEBUG)" />
+
+    <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
+        <arg name="custom" value="$(arg custom)"/>
+    </include>
+
+    <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch">
+        <arg name="custom" value="$(arg custom)"/>
+    </include>
 
     <!-- JSON -->
     <node pkg="jsk_2014_picking_challenge" type="read_json.py" name="read_json_data"
