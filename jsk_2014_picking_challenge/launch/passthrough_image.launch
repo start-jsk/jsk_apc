@@ -1,0 +1,58 @@
+<launch>
+  <arg name="input_cloud" default="/kinect2/depth_lowres/points"/>
+  <arg name="custom" default="false"/>
+  <node pkg="pr2_navigation_self_filter"
+	type="self_filter" clear_params="true"
+	name="robot_shadow_self_filter2" respawn="true" output="screen">
+    <!-- The topic for the input cloud -->
+    <remap from="cloud_in" to="$(arg input_cloud)" />
+    <!-- The topic for the output cloud -->
+    <remap from="cloud_out" to="$(arg input_cloud)_filtered" />
+    <param name="subsample_value" type="double" value="0.0"/>
+    <param name="use_rgb" type="bool" value="true"/>
+    <param name="keep_organized" type="bool" value="true"/>
+    <!-- The names of the links the sensor can see -->
+    <rosparam if="$(arg custom)" command="load" file="$(find jsk_2014_picking_challenge)/config/openni_self_filter_custom.yaml" />
+    <rosparam unless="$(arg custom)" command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/openni_self_filter.yaml" />
+  </node>
+
+
+  <node pkg="nodelet" type="nodelet" name="pass_through_z"
+        args="standalone pcl/PassThrough">
+    <remap from="~input" to="/kinect2/depth_lowres/points_filtered" />
+    <!-- suppose QVGA -->
+    <rosparam>
+      filter_field_name: z
+      filter_limit_min: 0
+      filter_limit_max: 0.7
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="organized_to_pi"
+        args="standalone jsk_pcl/OrganizedPointCloudToPointIndices">
+    <remap from="~input" to="pass_through_z/output" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="pi_to_maskimage"
+        args="standalone jsk_pcl/PointIndicesToMaskImage">
+    <remap from="~input" to="organized_to_pi/output" />
+    <remap from="~input/image" to="/kinect2/rgb_lowres/image" />
+    <param name="approximate_sync" value="true" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="apply_mask"
+        args="standalone jsk_perception/ApplyMaskImage">
+    <remap from="~input" to="/kinect2/rgb_lowres/image" />
+    <remap from="~input/mask" to="pi_to_maskimage/output" />
+    <param name="approximate_sync" value="true" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="laser_registration_depth_image_creator"
+        args="standalone jsk_pcl/DepthImageCreator">
+    <remap from="~info" to="/kinect2/rgb_lowres/camera_info" />
+    <remap from="~input" to="pass_through_z/output" />
+    <remap from="~output" to="pass_through_z/depth/image_rect" />
+    <param name="use_approximate" value="true" />
+  </node>
+</launch>
