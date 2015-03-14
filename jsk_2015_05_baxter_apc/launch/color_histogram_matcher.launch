@@ -3,8 +3,6 @@
   <arg name="detect_color_blue" default="blue" />
   <arg name="detect_color_green" default="green" />
 
-  <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch"></include>
-
   <!-- <node pkg="jsk_perception" type="image_publisher.py" name="image_publisher" output="screen"> -->
   <!--   <param name="~file_name" type="string" value="$(find jsk_2014_picking_challenge)/data/paste.png" /> -->
   <!-- </node> -->

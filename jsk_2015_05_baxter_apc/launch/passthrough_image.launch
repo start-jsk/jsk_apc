@@ -1,5 +1,6 @@
 <launch>
   <arg name="input_cloud" default="/kinect2/depth_lowres/points"/>
+  <arg name="custom" default="false"/>
   <node pkg="pr2_navigation_self_filter"
 	type="self_filter" clear_params="true"
 	name="robot_shadow_self_filter2" respawn="true" output="screen">
@@ -11,7 +12,8 @@
     <param name="use_rgb" type="bool" value="true"/>
     <param name="keep_organized" type="bool" value="true"/>
     <!-- The names of the links the sensor can see -->
-    <rosparam command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/openni_self_filter.yaml" />
+    <rosparam if="$(arg custom)" command="load" file="$(find jsk_2014_picking_challenge)/config/openni_self_filter_custom.yaml" />
+    <rosparam unless="$(arg custom)" command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/openni_self_filter.yaml" />
   </node>
 
 
@@ -36,7 +38,7 @@
         args="standalone jsk_pcl/PointIndicesToMaskImage">
     <remap from="~input" to="organized_to_pi/output" />
     <remap from="~input/image" to="/kinect2/rgb_lowres/image" />
-    <param name="use_approximate" value="true" />
+    <param name="approximate_sync" value="true" />
   </node>
 
   <node pkg="nodelet" type="nodelet" name="apply_mask"
