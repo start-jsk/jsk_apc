@@ -9,6 +9,7 @@ from collections import OrderedDict
 import rospy
 import actionlib
 
+from jsk_rviz_plugins.msg import OverlayText
 from jsk_2014_picking_challenge.msg import (
     order_list,
     bins_content,
@@ -37,12 +38,14 @@ class Master(object):
         self.mode = 'move2target'
         self.target = None
 
+        self.pub_rvizmsg = rospy.Publisher('/semi/rviz_msg', OverlayText)
         self.sub_bin_contents = rospy.Subscriber(
             '/semi/bin_contents', bins_content, self.cb_bin_contents)
         self.sub_orders = rospy.Subscriber(
             '/semi/order_list', order_list, self.cb_orders)
         rospy.wait_for_message('/semi/bin_contents', bins_content)
         rospy.wait_for_message('/semi/order_list', order_list)
+        self.pub_rvizmsg.publish(OverlayText(text='Initialized'))
 
     def cb_bin_contents(self, msg):
         """Get bin contents information from topic."""
@@ -178,10 +181,13 @@ class Master(object):
                 bin_name = bin_contents.pop(0)[0]
                 order_item = orders[bin_name]
                 self.target = (bin_name, order_item)
-            rospy.loginfo('Target: {} in {}'.format(
-                self.target[1], self.target[0]))
+            self.pub_rvizmsg.publish(OverlayText(
+                text='Target bin:{}, item:{}'.format(
+                self.target[0], self.target[1])))
             # decide action
             if self.mode == 'move2target':
+                self.pub_rvizmsg.publish(OverlayText(
+                    text=''))
                 self.move2target()
             elif self.mode == 'grasp_ctrl':
                 self.grasp_ctrl(to_grasp=False)
