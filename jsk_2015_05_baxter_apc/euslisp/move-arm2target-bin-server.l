@@ -34,8 +34,12 @@
     """the order should be string and included in (a, b, c, ..., l)"""
     (let ((order (send goal :goal :order))
           (limb (send goal :goal :limb))
-          (foldav-l #f(37.3096 -2.30713 -74.0698 146.667 99.5361 -3.66943 6.48193))
-          (foldav-r #f(-48.8672 -10.437 80.6616 148.645 -80.9033 1.38428 -18.8745))
+          (foldav-l0 #f(37.3096 -2.30713 -74.0698 146.667 99.5361 -3.66943 6.48193))
+          (foldav-r0 #f(-48.8672 -10.437 80.6616 148.645 -80.9033 1.38428 -18.8745))
+          (foldav-r1 #f(-85.6274 12.4146 84.9683 149.941 -120.125 -2.68066 -6.02051))
+          (foldav-l1 #f(89.7803 4.52637 -91.8018 148.096 -13.2715 11.1182 23.5107))
+          (foldav-r2 #f(7.80029 -1.12061 82.9248 141.438 -116.477 -6.48193 -8.10791))
+          (foldav-l2 #f(-24.1919 1.07666 -90.9009 131.572 -58.4912 -0.812988 54.7559))
           avs target-nm seq c r msg)
       (setq target-nm (intern (string-upcase order)))
       (push "msg_validation" seq)
@@ -60,14 +64,27 @@
       ;; original pose
       (push (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
       ;; to avoid shelf
-      (send *baxter* :rarm :angle-vector foldav-r)
-      (send *baxter* :larm :angle-vector foldav-l)
+      (send *baxter* :rarm :angle-vector foldav-r0)
+      (send *baxter* :larm :angle-vector foldav-l0)
       (push (send *baxter* :angle-vector) avs)
+
+      (case limb
+        (:rarm
+          (send *baxter* :larm :angle-vector foldav-l1)
+          (push (send *baxter* :angle-vector) avs)
+          (send *baxter* :rarm :angle-vector foldav-r2)
+          (push (send *baxter* :angle-vector) avs))
+        (:larm
+          (send *baxter* :rarm :angle-vector foldav-r1)
+          (push (send *baxter* :angle-vector) avs)
+          (send *baxter* :larm :angle-vector foldav-l2)
+          (push (send *baxter* :angle-vector) avs)))
+
       ;; go to in front of the target bin
       (setq c (send *pod* :transform-vector (send region :get-val target-nm)))
       (setq r (send *baxter* limb
-                  :inverse-kinematics (make-cascoords :pos c)
-                  :rotate-axis t :revert-if-fail nil))
+                    :inverse-kinematics (make-cascoords :pos c)
+                    :rotate-axis t :revert-if-fail nil))
       (if r (push r avs)
         (progn
           (if (equal limb :larm)
@@ -93,3 +110,4 @@
 (ros::rate 500)
 (setq s (instance move2arm-actionlib-server :init))
 (send s :spin)
+
