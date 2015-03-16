@@ -2,14 +2,24 @@
     <arg name="DEBUG" default="true" />
     <arg name="custom" default="true"/>
     <arg name="tweet" default="true"/>
+    <env name="DISPLAY" value="" unless="$(arg DEBUG)" />
 
-  <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
-    <arg name="custom" value="$(arg custom)"/>
-  </include>
-  
-  <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch">
-    <arg name="custom" value="$(arg custom)"/>
-  </include>
+    <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
+        <arg name="custom" value="$(arg custom)"/>
+    </include>
+
+    <node pkg="tf" type="static_transform_publisher" name="static_transform_publisher"
+          args="-0.15 0.95 -0.0 0 -1.57 1.57 kinect2_rgb_optical_frame base 100" >
+    </node>
+
+    <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch">
+        <arg name="custom" value="$(arg custom)"/>
+    </include>
+
+    <!-- rosserial -->
+    <node pkg="rosserial_python" type="serial_node.py" name="rosserial_node" output="screen" respawn="true">
+        <param name="port" type="string" value="/dev/ttyUSB0" />
+    </node>
 
     <!-- JSON -->
     <node pkg="jsk_2014_picking_challenge" type="read_json.py" name="read_json_data"
@@ -29,6 +39,7 @@
     <node pkg="jsk_2014_picking_challenge" type="put-orderbin.l" name="put_orderbin" output="screen"></node>
 
     <group if="$(arg tweet)">
+      <param name="lhand_camera_closer" command="rosrun baxter_tools camera_control.py -c left_hand_camera" />
       <node pkg="baxter_tools" type="camera_control.py" name="head_camera_opener" args=" -o head_camera"/>
       <node pkg="jsk_2014_picking_challenge" type="apc_tweet.l" name="apc_tweet"/>
     </group>
