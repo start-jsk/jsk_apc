@@ -1,11 +1,17 @@
 (load "package://baxtereus/baxter-interface.l")
 (load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
+(load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
+(load "package://jsk_2014_picking_challenge/euslisp/order-bin.l")
+(load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
+
 
 (defun init ()
   (baxter-init)
-  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
   (send *baxter* :locate #f(0 0 950) :world)
-  (objects (list *baxter*)))
+  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+  (pod-init)
+  (orderbin-init)
+  (objects (list *baxter* *pod* *orderbin*)))
 
 (defun test-1 ()
   (send *baxter* :larm :shoulder-y :joint-angle -30)
@@ -44,12 +50,8 @@
   to confirm the endpoint can reached"
   (let (i region c b r)
     ;; prepare pod-lowres
-    (when (not (boundp '*pod*))
-      (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
-      (send *pod* :locate #f(1300 0 0) :world)
-      (send *pod* :rotate pi/2 :x :world)
-      (send *pod* :rotate (- pi/2) :z :world)
-      (objects (list *baxter* *pod*)))
+    (pod-init)
+    (objects (list *baxter* *pod*))
     ;; make target cube
     (setq *targets* nil i 0)
     (setq region (instance target-pick-region :init))
@@ -97,13 +99,6 @@
 (defun mv2target (arm bin_nm)
   "Move arm to bin"
   (let (region c target)
-    ;; prepare pod-lowres
-    (when (not (boundp '*pod*))
-      (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
-      (send *pod* :locate #f(1300 0 0) :world)
-      (send *pod* :rotate pi/2 :x :world)
-      (send *pod* :rotate (- pi/2) :z :world)
-      (objects (list *baxter* *pod*)))
     ;; validation
     (setq region (instance target-pick-region :init))
     (unless (find bin_nm (send region :target-name-list))
