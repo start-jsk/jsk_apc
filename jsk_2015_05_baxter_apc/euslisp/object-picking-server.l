@@ -25,9 +25,10 @@
                            :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal)))))
   (:execute-cb
     (server goal)
-    (let ((l/r (send goal :goal :limb))
-          (on/off (send goal :goal :state)) ;; if you want to return items, state must be "false"
-          seq picking-coords msg)
+    (let* ((l/r (send goal :goal :limb))
+           (on/off (send goal :goal :state)) ;; if you want to return items, state must be "false"
+           (random-y (list 0 -50 50))
+           seq picking-coords msg)
       ;; l/r validataion
       (cond ((string-equal l/r "left") (setq l/r ':larm))
             ((string-equal l/r "right") (setq l/r ':rarm))
@@ -41,11 +42,15 @@
       (ros::ros-info (format nil "[object_picking] going to pick object"))
       (setq avs nil)
       (push (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
-      (push (send *baxter* l/r :move-end-pos #f(0 0 50) :world :revert-if-fail nil) avs)
-      (push (send *baxter* l/r :move-end-pos #f(230 0 0) :world :revert-if-fail nil) avs)
-      (push (send *baxter* l/r :move-end-pos #f(0 0 -90) :world :revert-if-fail nil) avs)
-      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 8000)) 
-      (send *ri* :wait-interpolation)
+      (push (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
+      (if on/off
+        (push (send *baxter* l/r :move-end-pos #f(260 0 0) :world :revert-if-fail nil) avs)
+        (push (send *baxter* l/r :move-end-pos #f(300 0 0) :world :revert-if-fail nil) avs))
+      (push (send *baxter* l/r :move-end-pos (float-vector 0 (elt random-y (random (length random-y))) 0) :world :revert-if-fail nil) avs)
+
+      (push (send *baxter* l/r :move-end-pos #f(0 0 -75) :world :revert-if-fail nil) avs)
+      (dolist (av (reverse avs))
+        (send *ri* :angle-vector av 3000) (send *ri* :wait-interpolation))
       (send *irtviewer* :draw-objects)
       ;; go/stop grasp
       (push "go/stop grasp" seq)
@@ -54,7 +59,14 @@
       ;; return to original pose
       (push "returning to original pose" seq)
       (ros::ros-info (format nil "[object_picking] returning to original pose."))
-      (send *ri* :angle-vector-sequence avs (make-list (length avs) :initial-element 8000))
+      (when on/off
+        (setq avs (reverse avs))
+        (pop avs)
+        (push (send *baxter* :angle-vector (pop avs)) avs)
+        (push (send *baxter* l/r :move-end-pos #f(-60 0 0) :world :revert-if-fail nil) avs)
+        (setq avs (reverse avs)))
+      (dolist (av avs) (send *ri* :angle-vector av 3000) (send *ri* :wait-interpolation))
+      ; (send *ri* :angle-vector-sequence avs (make-list (length avs) :initial-element 5000))
       (send *ri* :wait-interpolation)
       (send *irtviewer* :draw-objects)
       ;; set result
