@@ -1,81 +1,83 @@
 #!/usr/bin/env roseus
 
 (load "package://baxtereus/baxter-interface.l")
+(load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
+(load "package://jsk_2014_picking_challenge/euslisp/order-bin.l")
 (load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
 
-(ros::roseus "object_picking")
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
 
 (defclass object-picking-actionlib-server
   :super propertied-object
   :slots ((action :forward (:worker))))
-
 (defmethod object-picking-actionlib-server
-    (:init ()
-     (baxter-init)
-     (send *baxter* :locate #f(0 0 950) :world)
-     (when (not (boundp '*pod*))
-       (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
-       (send *pod* :locate #f(1300 0 0) :world)
-       (send *pod* :rotate pi/2 :x :world)
-       (send *pod* :rotate -pi/2 :z :world))
-     (objects (list *baxter* *pod*))
-     (setq action (instance ros::simple-action-server :init
-                            "/object_picking" jsk_2014_picking_challenge::ObjectPickingAction
-                            :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal)))))
-  (:execute-cb (server goal)
-   (let ((l/r (send goal :goal :limb))
-         (on/off (send goal :goal :state)) ;; if you want to return items, state must be "false"
-         seq endcoords msg)
-     ;; l/r validataion
-     (cond ((string-equal l/r "larm") (setq l/r ':larm))
-           ((string-equal l/r "rarm") (setq l/r ':rarm))
-           (t (progn
-                (push "invalid_l/r" seq)
-                (setq msg (send server :result :sequence (nreverse seq)))
-                (send server :set-aborted msg)
-                (return-from :execute-cb nil))))
+  (:init
+    ()
+    (baxter-init)
+    (send *baxter* :locate #f(0 0 950) :world)
+    (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+    (pod-init)
+    (orderbin-init)
+    (objects (list *baxter* *pod* *orderbin*))
+    (setq action (instance ros::simple-action-server :init
+                           "/object_picking" jsk_2014_picking_challenge::ObjectPickingAction
+                           :execute-cb `(lambda (server goal) (send ,self :execute-cb server goal)))))
+  (:execute-cb
+    (server goal)
+    (let* ((l/r (send goal :goal :limb))
+           (on/off (send goal :goal :state)) ;; if you want to return items, state must be "false"
+           (random-y (list 0 -50 50))
+           seq picking-coords msg)
+      ;; l/r validataion
+      (cond ((string-equal l/r "left") (setq l/r ':larm))
+            ((string-equal l/r "right") (setq l/r ':rarm))
+            (t (progn
+                 (push "invalid_l/r" seq)
+                 (setq msg (send server :result :sequence (nreverse seq)))
+                 (send server :set-aborted msg)
+                 (return-from :execute-cb nil))))
+      ;; picking pose
+      (push "goint to pick" seq)
+      (ros::ros-info (format nil "[object_picking] going to pick object"))
+      (setq avs nil)
+      (push (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
+      (push (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
+      (if on/off
+        (push (send *baxter* l/r :move-end-pos #f(260 0 0) :world :revert-if-fail nil) avs)
+        (push (send *baxter* l/r :move-end-pos #f(300 0 0) :world :revert-if-fail nil) avs))
+      (push (send *baxter* l/r :move-end-pos (float-vector 0 (elt random-y (random (length random-y))) 0) :world :revert-if-fail nil) avs)
 
-     ;; get current arm's end-coords
-     (push "get end-coords" seq)
-     (setq endcoords
-           (make-cascoords :pos (send *baxter* l/r :end-coords :worldpos)))
-     (ros::ros-info (format nil "get ~A's endcoords." l/r))
-     (ros::ros-info (format nil "~A" endcoords))
-
-     ;; set target end-coords position
-     (push "set target end-coords" seq)
-     (setq endcoords
-           (send endcoords :locate (float-vector (random 300) (random 50) (random 50))))
-     (ros::ros-info (format nil "endcoords set."))
-     (ros::ros-info (format nil "~A" endcoords))
-
-     ;; ik with z axis constraction
-     (push "ik computing" seq)
-     (ros::ros-info (format nil "computing ik."))
-     (send *baxter* l/r :inverse-kinematics endcoords :rotation-axis :z)
-
-     ;; cleaner on/off
-     (push "cleaner on/off" seq)
-     (ros::ros-info (format nil "cleaner ~A" (if on/off "ON" "OFF")))
-     (send *ri* (if on/off :start-grasp :stop-grasp))
-
-     ;; apply changes to *ri*
-     (push "apply changes" seq)
-     (send *ri* :angle-vector (send *baxter* :angle-vector))
-     (send *ri* :wait-interpolation)
-     (send *irtviewer* :draw-objects)
-     (x::window-main-one)
-
-     ;; set result
-     (ros::ros-info (format nil "~A" seq))
-     (setq msg (send server :result :sequence (nreverse seq)))
-     (send server :set-succeeded msg)
-         ))
+      (push (send *baxter* l/r :move-end-pos #f(0 0 -75) :world :revert-if-fail nil) avs)
+      (dolist (av (reverse avs))
+        (send *ri* :angle-vector av 3000) (send *ri* :wait-interpolation))
+      (send *irtviewer* :draw-objects)
+      ;; go/stop grasp
+      (push "go/stop grasp" seq)
+      (ros::ros-info (format nil "[object_picking] cleaner ~A" (if on/off "ON" "OFF")))
+      (send *ri* (if on/off :go-grasp :stop-grasp))
+      ;; return to original pose
+      (push "returning to original pose" seq)
+      (ros::ros-info (format nil "[object_picking] returning to original pose."))
+      (when on/off
+        (setq avs (reverse avs))
+        (pop avs)
+        (push (send *baxter* :angle-vector (pop avs)) avs)
+        (push (send *baxter* l/r :move-end-pos #f(-60 0 0) :world :revert-if-fail nil) avs)
+        (setq avs (reverse avs)))
+      (dolist (av avs) (send *ri* :angle-vector av 3000) (send *ri* :wait-interpolation))
+      ; (send *ri* :angle-vector-sequence avs (make-list (length avs) :initial-element 5000))
+      (send *ri* :wait-interpolation)
+      (send *irtviewer* :draw-objects)
+      ;; set result
+      (setq msg (send server :result :sequence (nreverse seq)))
+      (send server :set-succeeded msg)
+      ))
   (:spin-once () (send self :worker) (send action :spin-once))
   (:spin () (do-until-key (send self :spin-once) (ros::sleep))))
 
+(ros::roseus "object_picking")
 (ros::rate 500)
 (setq s (instance object-picking-actionlib-server :init))
 (send s :spin)
+

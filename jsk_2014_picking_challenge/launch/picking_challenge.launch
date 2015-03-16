@@ -1,5 +1,0 @@
-<launch>
-  <node pkg="jsk_2014_picking_challenge" type="read_json.py" name="read_json_data" args="--file $(find jsk_2014_picking_challenge)/data/example.json"></node>
-  <node pkg="jsk_2014_picking_challenge" type="move-arm2target-bin-server.l" name="move_arm2target_bin"></node>
-  <node pkg="jsk_2014_picking_challenge" type="put-orderbin.l" name="put_orderbin"></node>
-</launch>

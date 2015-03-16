@@ -7,10 +7,13 @@
 ;; /home/wkentaro/catkin_ws/semi/src/2014-semi/jsk_2014_picking_challenge/data $ /home/wkentaro/catkin_ws/semi/devel/lib/euscollada/collada2eus pod_lowres.dat pod-lowres.l 
 ;;
 
-(defun pod-lowres ()
-  (setq *pod* (instance pod-lowres-object :init))
-  (send (car (send *pod* :bodies)) :set-color :gray30)
-  )
+(defun pod-init ()
+  (when (not (boundp '*pod*))
+    (setq *pod* (instance pod-lowres-object :init))
+    (send (car (send *pod* :bodies)) :set-color :gray30)
+    (send *pod* :locate #f(1220 0 35) :world)
+    (send *pod* :rotate pi/2 :x :world)
+    (send *pod* :rotate -pi/2 :z :world)))
 
 (defclass pod-lowres-object
   :super bodyset-link
@@ -96,5 +99,4 @@
 
 
 (provide :pod-lowres "/home/wkentaro/catkin_ws/semi/src/2014-semi/jsk_2014_picking_challenge/data/pod-lowres.l")
-(pod-lowres)
 
