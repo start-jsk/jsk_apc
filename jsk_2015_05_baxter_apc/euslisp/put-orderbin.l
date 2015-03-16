@@ -58,7 +58,9 @@
       (setq avs (reverse avs))  ;; to go backwards
       (pop avs)  ;; to end with fold pose
       (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 1))
+      (setq avs (reverse avs))  ;; to go backwards
       (send *ri* :wait-interpolation)
+      (setq avs (reverse avs))  ;; to go backwards
       (send *irtviewer* :draw-objects)
       ;;return response
       (setq res (send req :response))
@@ -69,4 +71,9 @@
 (ros::roseus "put_orderbin")
 (ros::rate 500)
 (setq m (instance put-orderbin-cb-class :init))
-(ros::spin)
+(setq r (ros::rate 10))
+(do-until-key (ros::ok)
+  (send *ri* :spin-once) ;; (ros::spin-once "baxter_interface")
+  (ros::spin-once)
+  (ros::sleep))
+
