@@ -5,6 +5,7 @@ import os
 import sys
 import numpy as np
 from collections import OrderedDict
+import datetime
 
 import rospy
 import actionlib
@@ -40,12 +41,14 @@ class Master(object):
 
         self.pub_rvizmsg = rospy.Publisher('/semi/master_status', OverlayText,
                                            queue_size=1)
+        self.rvizmsg = []
         self.sub_bin_contents = rospy.Subscriber(
             '/semi/bin_contents', bins_content, self.cb_bin_contents)
         self.sub_orders = rospy.Subscriber(
             '/semi/order_list', order_list, self.cb_orders)
         rospy.wait_for_message('/semi/bin_contents', bins_content)
         rospy.wait_for_message('/semi/order_list', order_list)
+        
         self.pub_rvizmsg.publish(text='Initialized')
 
     def cb_bin_contents(self, msg):
@@ -171,12 +174,20 @@ class Master(object):
         rospy.loginfo('Finished: place_item')
         return res.succeeded
 
+    def publish_rvizmsg(self, text):
+        self.rvizmsg.append(datetime.datetime.now().strftime("%H:%M:%S ")+text.replace('\n', '\n          '))
+        # if text exceeds 5 line, remove first
+        if len(self.rvizmsg) > 3:
+            self.rvizmsg.pop(0)
+        self.pub_rvizmsg.publish(text='\n'.join(self.rvizmsg))
+
     def main(self):
         bin_contents = self.bin_contents
         orders = self.orders
 
-        go_bin_orders = list('i')  # bin_names for orders
+        go_bin_orders = list('abcdefghijkl')  # bin_names for orders
         while len(bin_contents) > 0:
+            rospy.loginfo('Current mode is {}'.format(self.mode))
             # decide target
             if not self.target:
                 bin_name = go_bin_orders.pop(0)
@@ -187,35 +198,30 @@ class Master(object):
             self.pub_rvizmsg.publish(text=target_text)
             # decide action
             if self.mode == 'move2target':
-                self.pub_rvizmsg.publish(text='Move arm to target bin\n'
+                self.publish_rvizmsg(text='Move arm to target bin\n'
                                          + target_text)
                 is_success = self.move2target()
-                self.pub_rvizmsg.publish(text='Move arm success?: {}'.format(
+                self.publish_rvizmsg(text='Move arm success?: {}'.format(
                                  is_success))
-                rospy.sleep(3)
             elif self.mode == 'grasp_ctrl':
-                self.pub_rvizmsg.publish(text='Insert arm to target bin\n'
+                self.publish_rvizmsg(text='Insert arm to target bin\n'
                                          + target_text)
                 self.grasp_ctrl(to_grasp=False)
                 is_success = self.grasp_ctrl(to_grasp=True)
-                self.pub_rvizmsg.publish(text='Grasp success?: {}'.format(
+                self.publish_rvizmsg(text='Grasp success?: {}'.format(
                                          is_success))
-                rospy.sleep(3)
             elif self.mode == 'object_verification':
-                self.pub_rvizmsg.publish(text='Object verification\n'
+                self.publish_rvizmsg(text='Object verification\n'
                                          + target_text)
                 is_correct = self.object_verification()
-                self.pub_rvizmsg.publish(text='Correct item?: {}'.format(
+                self.publish_rvizmsg(text='Correct item?: {}'.format(
                                          is_correct))
-                rospy.sleep(3)
             elif self.mode == 'place_item':
-                self.pub_rvizmsg.publish(OverlayText(
-                    text='Place item to order bin\n'+target_text))
+                self.publish_rvizmsg(text='Place item to order bin\n'+target_text)
                 is_success = self.place_item()
-                self.pub_rvizmsg.publish(
+                self.publish_rvizmsg(
                     text='Placing item success?: {}'.format(is_success))
-                rospy.sleep(3)
-
+                
 
 if __name__ == '__main__':
     m = Master()
