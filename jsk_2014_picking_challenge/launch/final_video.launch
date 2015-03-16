@@ -1,7 +1,7 @@
 <launch>
     <arg name="DEBUG" default="true" />
     <arg name="custom" default="true"/>
-
+    <arg name="tweet" default="true"/>
     <env name="DISPLAY" value="" unless="$(arg DEBUG)" />
 
     <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
@@ -37,4 +37,10 @@
     <include file="$(find jsk_2014_picking_challenge)/launch/color_histogram_matcher.launch"></include>
     <!-- Place item -->
     <node pkg="jsk_2014_picking_challenge" type="put-orderbin.l" name="put_orderbin" output="screen"></node>
+
+    <group if="$(arg tweet)">
+      <param name="lhand_camera_closer" command="rosrun baxter_tools camera_control.py -c left_hand_camera" />
+      <node pkg="baxter_tools" type="camera_control.py" name="head_camera_opener" args=" -o head_camera"/>
+      <node pkg="jsk_2014_picking_challenge" type="apc_tweet.l" name="apc_tweet"/>
+    </group>
 </launch>
