@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter_custom_white">
+  <xacro:include filename="$(find baxter_description)/urdf/baxter.urdf" />
+
+  <xacro:property name="width" value=".02" />
+  <xacro:property name="width_base" value=".04" />
+  <xacro:property name="width_side2_base" value=".035" />
+  <xacro:property name="bodylen" value=".14" />
+  <xacro:property name="bodylen_base" value=".01" />
+  <xacro:property name="bodylen_side" value=".15" />
+  <xacro:property name="bodylen_side2" value=".12" />
+  <xacro:property name="bodylen_side2_base" value=".06" />
+  <link name="custom_vacuum_link">
+    <visual>
+      <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
+      <geometry>
+        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukai13.dae"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${width}" length="${bodylen}"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="custom_vacuum_link_base">
+    <visual>
+      <geometry>
+        <cylinder radius="0" length="0"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${width_base}" length="${bodylen_base}"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="custom_vacuum_link_side">
+    <visual>
+      <geometry>
+        <cylinder radius="0" length="0"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${width}" length="${bodylen_side}"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="custom_vacuum_link_side2">
+    <visual>
+      <geometry>
+        <cylinder radius="0" length="0"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${width}" length="${bodylen_side2}"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="custom_vacuum_link_side2_base">
+    <visual>
+      <geometry>
+        <cylinder radius="${width_side2_base}" length="${bodylen_side2_base}"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0" length="0"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_custom_joint" type="fixed">
+    <parent link="right_wrist"/>
+    <child link="custom_vacuum_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.18" />
+  </joint>
+  <joint name="right_custom_joint_base" type="fixed">
+    <parent link="right_wrist"/>
+    <child link="custom_vacuum_link_base"/>
+    <origin rpy="0 0 0" xyz="0 0 0.11" />
+  </joint>
+  <joint name="right_custom_joint_side" type="fixed">
+    <parent link="right_wrist"/>
+    <child link="custom_vacuum_link_side"/>
+    <origin rpy="1.57 0 0" xyz="0 0.05 0.15" />
+  </joint>
+  <joint name="right_custom_joint_side2" type="fixed">
+    <parent link="right_wrist"/>
+    <child link="custom_vacuum_link_side2"/>
+    <origin rpy="0 0 0" xyz="0 0.1 0.08" />
+  </joint>
+  <joint name="right_custom_joint_side2_base" type="fixed">
+    <parent link="right_wrist"/>
+    <child link="custom_vacuum_link_side2_base"/>
+    <origin rpy="0 0 0" xyz="0 0.1 0.04" />
+  </joint>
+</robot>
