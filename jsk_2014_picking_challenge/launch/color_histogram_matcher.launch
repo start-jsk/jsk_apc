@@ -7,13 +7,13 @@
   <!--   <param name="~file_name" type="string" value="$(find jsk_2014_picking_challenge)/data/paste.png" /> -->
   <!-- </node> -->
 
+  <!-- <node pkg="jsk_perception" type="rgb_decomposer" name="rgb_decomposer" output="screen"> -->
+  <!--   <remap from="~input" to="/apply_mask/output" /> -->
+  <!-- </node> -->
+
   <node pkg="jsk_perception" type="rgb_decomposer" name="rgb_decomposer" output="screen">
     <remap from="~input" to="/apply_mask/output" />
   </node>
-
-  <!-- <node pkg="jsk_perception" type="rgb_decomposer" name="rgb_decomposer" output="screen"> -->
-  <!--   <remap from="~input" to="/image_publisher/output" /> -->
-  <!-- </node> -->
 
   <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_$(arg detect_color_red)" output="screen">
     <remap from="~input" to="/rgb_decomposer/output/$(arg detect_color_red)" />
