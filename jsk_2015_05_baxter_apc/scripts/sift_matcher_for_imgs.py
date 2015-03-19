@@ -7,13 +7,9 @@ an image and camera frame.
 Usage
 -----
 
-    $ roslaunch jsk_2014_picking_challenge \
-        sift_matcher_oneimg_usbcamera.launch
-    $ rosrun jsk_2014_picking_challenge sift_matcher_oneimg.py \
-        _imgfile:=`rospack find jsk_2014_picking_challenge`/data/paste.png \
-        _maskfile:= \
-            `rospack find jsk_2014_picking_challenge`/data/paste_mask.png
-    $ rosrun image_view image_view image:=/sift_matcher_oneimg/output
+    $ roslaunch roseus_tutorials usb-camera.launch
+    $ roslaunch jsk_2014_picking_challenge sift_matcher_for_imgs.launch
+    $ rosrun image_view image_view image:=/sift_matcher_for_imgs/output
 
 """
 import os
@@ -24,8 +20,9 @@ import numpy as np
 import rospy
 import cv_bridge
 from sensor_msgs.msg import Image
+from posedetection_msgs.srv import Feature0DDetect
 
-from sift_matcher import SiftMatcher, imgsift_client
+from sift_matcher import SiftMatcher
 from matcher_common import load_img
 
 
@@ -44,35 +41,48 @@ class ImageSubscriber(object):
 
 
 class SiftMatcherOneImg(SiftMatcher):
-    def __init__(self, rawfile, maskfile):
+    """Compare two images.
+    Usually camera image (input) with static image (reference)"""
+    def __init__(self):
         super(SiftMatcherOneImg, self).__init__()
         self.img_sub = ImageSubscriber('~input')
+        self.reference_sub = ImageSubscriber('~input/reference')
         self.pub = rospy.Publisher('~output', Image, queue_size=1)
-        train_img = load_img(rawfile)
-        mask_img = load_img(maskfile)
-        self.train_img = cv2.add(mask_img, train_img)
-        self.train_features = imgsift_client(train_img)
 
     def match(self):
-        stamp, query_img = self.img_sub.stamp, self.img_sub.img
-        query_features = self.query_features
-        train_img, train_features = self.train_img, self.train_features
-        matches = self.find_match(query_features.descriptors,
-                                  train_features.descriptors)
+        input_stamp, input_img = self.img_sub.stamp, self.img_sub.img
+        input_features = self.query_features
+        reference_img = self.reference_sub.img
+        reference_features = imgsift_client(reference_img)
+        matches = self.find_match(input_features.descriptors,
+                                  reference_features.descriptors)
         rospy.loginfo('matches: {}'.format(len(matches)))
         # prepare output img
-        matched_img = drawMatches(query_img, query_features.positions,
-                                  train_img, train_features.positions,
+        matched_img = drawMatches(input_img, input_features.positions,
+                                  reference_img, reference_features.positions,
                                   matches)
         cv2.putText(matched_img, 'matches: {}'.format(len(matches)),
                     (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255))
-        self.publish_img(stamp=stamp, img=matched_img)
+        self.publish_img(stamp=input_stamp, img=matched_img)
 
     def publish_img(self, stamp, img, encoding='bgr8'):
         bridge = cv_bridge.CvBridge()
         img_msg = bridge.cv2_to_imgmsg(img, encoding=encoding)
         img_msg.header.stamp = stamp
         self.pub.publish(img_msg)
+
+
+def imgsift_client(img):
+    """Request to imagesift with Image as service client"""
+    client = rospy.ServiceProxy('/Feature0DDetect', Feature0DDetect)
+    rospy.loginfo('Waiting for: /Feature0DDetect')
+    client.wait_for_service(10)
+    rospy.loginfo('Found: /Feature0DDetect')
+    bridge = cv_bridge.CvBridge()
+    img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
+    img_msg.header.stamp = rospy.Time.now()
+    resp = client(img_msg)
+    return resp.features
 
 
 def drawMatches(query_img, query_pos, train_img, train_pos, matches):
@@ -102,16 +112,9 @@ def drawMatches(query_img, query_pos, train_img, train_pos, matches):
 def main():
     rospy.init_node('sift_matcher_oneimg')
     rate = rospy.Rate(10)
-    # get params
-    rawfile = rospy.get_param('~rawfile', 'image.png')
-    base, ext = os.path.splitext(rawfile)
-    maskfile = rospy.get_param('~maskfile',
-        '{base}_mask{ext}'.format(base=base, ext=ext))
-    rospy.loginfo('rawfile: {raw}'.format(raw=rawfile))
-    rospy.loginfo('maskfile: {mask}'.format(mask=maskfile))
 
     while not rospy.is_shutdown():
-        matcher = SiftMatcherOneImg(rawfile, maskfile)
+        matcher = SiftMatcherOneImg()
         matcher.match()
         rate.sleep()
 
