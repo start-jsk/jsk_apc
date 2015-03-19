@@ -72,6 +72,7 @@ add_service_files(
   Cue.srv
   ObjectMatch.srv
   ObjectVerification.srv
+  StringEmpty.srv
 )
 
 ## Generate actions in the 'action' folder
