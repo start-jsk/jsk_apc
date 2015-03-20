@@ -34,7 +34,9 @@
         <arg name="input_image" value="/apply_mask/output" />
         <arg name="input_info" value="/kinect2/rgb/camera_info" />
     </include>
-    <include file="$(find jsk_2014_picking_challenge)/launch/color_histogram_matcher.launch"></include>
+    <include file="$(find jsk_2014_picking_challenge)/launch/color_histogram_matcher.launch">
+        <arg name="input_image" value="/apply_mask/output" />
+    </include>
     <!-- Place item -->
     <node pkg="jsk_2014_picking_challenge" type="put-orderbin.l" name="put_orderbin" output="screen"></node>
 
