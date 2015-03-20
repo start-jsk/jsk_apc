@@ -6,18 +6,19 @@
 Usage
 -----
 
-    $ roslaunch jsk_2014_picking_challenge test_sift_matching.launch
+    $ roslaunch jsk_2014_picking_challenge test_object_matching.launch \
+        sift:=true
+    or
+    $ rolaunch jsk_2014_picking_challenge test_object_matching.launch \
+        color_histogram:=true
 
 """
 import os
 import csv
-import argparse
 
 import numpy as np
-import yaml
 
 import rospy
-from sensor_msgs.msg import CameraInfo
 from jsk_2014_picking_challenge.srv import ObjectMatch, StringEmpty
 
 from matcher_common import get_object_list
@@ -32,18 +33,25 @@ def load_csv(filename):
             yield row
 
 
-class TestSiftMatching(object):
-    def __init__(self):
+class TestObjectMatching(object):
+    def __init__(self, matcher):
+        self.matcher = matcher
         self.client_of_img = rospy.ServiceProxy('/image_publish_server',
                                                 StringEmpty)
-        self.client_of_siftmatcher = rospy.ServiceProxy('/semi/sift_matcher',
-                                                        ObjectMatch)
+        if matcher == 'sift':
+            self.client_of_matcher = rospy.ServiceProxy(
+                '/semi/sift_matcher', ObjectMatch)
+        elif matcher == 'color_histogram':
+            self.client_of_matcher = rospy.ServiceProxy(
+                '/semi/color_histogram_matcher', ObjectMatch)
+        else:
+            raise ValueError('Unknown matcher: {0}'.format(matcher))
 
     def save_result(self, target_obj, probabilities):
         """Save test result to csv"""
         object_list = get_object_list()
         filename = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-            '../data/test_sift_matching_result.csv')
+            '../data/test_{m}_matching_result.csv'.format(m=self.matcher))
         if not os.path.exists(filename):
             # initialize csv file
             with open(filename, 'w') as f:
@@ -58,7 +66,7 @@ class TestSiftMatching(object):
 
     def get_already_tested(self):
         filename = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-            '../data/test_sift_matching_result.csv')
+            '../data/test_{m}_matching_result.csv'.format(m=self.matcher))
         test_data = load_csv(filename)
         return np.array(list(test_data))[:, 0]
 
@@ -80,10 +88,10 @@ class TestSiftMatching(object):
                 continue
             self.wait_for_service(self.client_of_img)
             self.client_of_img(string=imgpath)
-            # request to sift matcher
+            # request to object matcher
             rospy.loginfo('target object: {target}'.format(target=target_obj))
-            self.wait_for_service(self.client_of_siftmatcher)
-            res = self.client_of_siftmatcher(objects=object_list)
+            self.wait_for_service(self.client_of_matcher)
+            res = self.client_of_matcher(objects=object_list)
             rospy.loginfo('results: {res}'.format(res=res.probabilities))
             best_match_obj = object_list[np.argmax(res.probabilities)]
             rospy.loginfo('best match: {best}'.format(best=best_match_obj))
@@ -92,7 +100,8 @@ class TestSiftMatching(object):
 
 
 if __name__ == '__main__':
-    rospy.init_node('test_sift_matching')
-    test = TestSiftMatching()
+    rospy.init_node('test_object_matching')
+    matcher = rospy.get_param('~matcher', 'sift')
+    test = TestObjectMatching(matcher=matcher)
     test.run()
 
