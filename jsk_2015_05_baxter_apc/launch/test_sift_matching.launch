@@ -1,0 +1,18 @@
+<launch>
+    <arg name="knn_threshold" default="0.75" />
+
+    <node pkg="jsk_2014_picking_challenge" type="fake_camera_info_publisher.py" name="fake_camera_info_publisher" output="screen"></node>
+    <node pkg="jsk_2014_picking_challenge" type="image_publish_server.py" name="image_publish_server" output="screen"></node>
+
+    <include file="$(find jsk_2014_picking_challenge)/launch/sift_matcher.launch">
+        <arg name="input_image" value="/image_publish_server/output" />
+        <arg name="input_info" value="/fake_camera_info_publisher/output" />
+        <arg name="respawn" value="true" />
+    </include>
+
+    <node pkg="jsk_2014_picking_challenge" type="test_object_matching.py" name="test_object_matching" output="screen" respawn="true">
+        <param name="set_sift_knn_threshold" command="rosrun dynamic_reconfigure dynparam set /sift_matcher knn_threshold $(arg knn_threshold)" />
+        <param name="matcher" type="string" value="sift" />
+    </node>
+</launch>
+
