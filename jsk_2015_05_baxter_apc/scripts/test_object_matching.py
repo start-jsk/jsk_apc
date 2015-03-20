@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-"""Matching for all objects with camera image
+"""Matching for all objects with test images
 
 Usage
 -----
 
     $ roslaunch jsk_2014_picking_challenge test_object_matching.launch \
-        sift:=true
+        matcher:=sift
     or
     $ rolaunch jsk_2014_picking_challenge test_object_matching.launch \
-        color_histogram:=true
-
+        matcher:=color_histogram
 """
 import os
 import csv
