@@ -110,19 +110,6 @@ class SiftObjectMatcher(SiftMatcher, ObjectMatcher):
             yield siftdata
 
 
-def imgsift_client(img):
-    """Request to imagesift with Image as service client"""
-    client = rospy.ServiceProxy('/Feature0DDetect', Feature0DDetect)
-    rospy.loginfo('Waiting for: /Feature0DDetect')
-    client.wait_for_service(10)
-    rospy.loginfo('Found: /Feature0DDetect')
-    bridge = cv_bridge.CvBridge()
-    img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
-    img_msg.header.stamp = rospy.Time.now()
-    resp = client(img_msg)
-    return resp.features
-
-
 def main():
     rospy.init_node('sift_matcher')
     SiftObjectMatcher()
