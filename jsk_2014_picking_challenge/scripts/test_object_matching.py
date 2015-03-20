@@ -67,6 +67,8 @@ class TestObjectMatching(object):
     def get_already_tested(self):
         filename = os.path.join(os.path.dirname(os.path.abspath(__file__)),
             '../data/test_{m}_matching_result.csv'.format(m=self.matcher))
+        if not os.path.exists(filename):
+            return []
         test_data = load_csv(filename)
         return np.array(list(test_data))[:, 0]
 
