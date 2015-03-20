@@ -6,11 +6,10 @@
 Usage
 -----
 
-    $ roslaunch jsk_2014_picking_challenge test_object_matching.launch \
-        matcher:=sift
-    or
-    $ rolaunch jsk_2014_picking_challenge test_object_matching.launch \
-        matcher:=color_histogram
+    $ roslaunch jsk_2014_picking_challenge test_sift_matching.launch \
+        knn_threshold:=0.8
+    $ rolaunch jsk_2014_picking_challenge test_color_histogram_matching.launch
+
 """
 import os
 import csv
