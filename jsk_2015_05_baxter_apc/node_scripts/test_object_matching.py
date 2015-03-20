@@ -72,9 +72,9 @@ class TestObjectMatching(object):
         return np.array(list(test_data))[:, 0]
 
     def wait_for_service(self, service_client):
-        rospy.loginfo('wait for service')
+        rospy.loginfo('{pid} wait for service'.format(pid=os.getpid()))
         service_client.wait_for_service()
-        rospy.loginfo('found the service')
+        rospy.loginfo('{pid} found the service'.format(pid=os.getpid()))
 
     def run(self):
         object_list = get_object_list()
