@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
     actionlib actionlib_msgs
     rosserial_arduino
     rosserial_client
+    dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -90,6 +91,10 @@ generate_messages(
   actionlib_msgs
 )
 
+## Add dynamic reconfigure api
+generate_dynamic_reconfigure_options(
+  cfg/SIFTMatcher.cfg
+)
 
 ###################################
 ## catkin specific configuration ##
