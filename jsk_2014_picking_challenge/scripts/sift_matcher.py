@@ -16,6 +16,7 @@ Usage
 """
 from __future__ import print_function, division
 from future_builtins import zip
+import os
 
 import cv2
 import numpy as np
@@ -35,9 +36,9 @@ class SiftMatcher(object):
                          self._cb_imgfeature)
         dynamic_reconfigure.server.Server(SIFTMatcherConfig,
                                           self._cb_dynamic_reconfigure)
-        rospy.loginfo('Waiting for ImageFeature0D by imagesift/imagesift')
+        rospy.loginfo('wait for message [{p}]'.format(p=os.getpid()))
         rospy.wait_for_message('/ImageFeature0D', ImageFeature0D)
-        rospy.loginfo('Found /ImageFeature0D')
+        rospy.loginfo('found the message [{p}]'.format(p=os.getpid()))
 
     def _cb_imgfeature(self, msg):
         """Callback function of Subscribers to listen ImageFeature0D"""
@@ -123,9 +124,9 @@ class SiftObjectMatcher(SiftMatcher, ObjectMatcher):
 def imgsift_client(img):
     """Request to imagesift with Image as service client"""
     client = rospy.ServiceProxy('/Feature0DDetect', Feature0DDetect)
-    rospy.loginfo('Waiting for: /Feature0DDetect')
-    client.wait_for_service(10)
-    rospy.loginfo('Found: /Feature0DDetect')
+    rospy.loginfo('waiting for service [{p}]'.format(p=getpid()))
+    client.wait_for_service()
+    rospy.loginfo('found the service [{p}]'.format(p=getpid()))
     bridge = cv_bridge.CvBridge()
     img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
     img_msg.header.stamp = rospy.Time.now()
