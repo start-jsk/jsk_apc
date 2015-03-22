@@ -71,9 +71,9 @@ class TestObjectMatching(object):
         return np.array(list(test_data))[:, 0]
 
     def wait_for_service(self, service_client):
-        rospy.loginfo('{pid} wait for service'.format(pid=os.getpid()))
+        rospy.loginfo('wait for service [{p}]'.format(p=os.getpid()))
         service_client.wait_for_service()
-        rospy.loginfo('{pid} found the service'.format(pid=os.getpid()))
+        rospy.loginfo('found the service [{p}]'.format(p=os.getpid()))
 
     def run(self):
         object_list = get_object_list()
@@ -89,7 +89,7 @@ class TestObjectMatching(object):
             self.wait_for_service(self.client_of_img)
             self.client_of_img(string=imgpath)
             # request to object matcher
-            rospy.loginfo('target object: {target}'.format(target=target_obj))
+            rospy.loginfo('target object: {t}'.format(t=target_obj))
             self.wait_for_service(self.client_of_matcher)
             res = self.client_of_matcher(objects=object_list)
             rospy.loginfo('results: {res}'.format(res=res.probabilities))
