@@ -22,7 +22,7 @@ import cv_bridge
 from sensor_msgs.msg import Image
 from posedetection_msgs.srv import Feature0DDetect
 
-from sift_matcher import SiftMatcher
+from sift_matcher import SiftMatcher, imgsift_client
 from matcher_common import load_img
 
 
@@ -70,19 +70,6 @@ class SiftMatcherOneImg(SiftMatcher):
         img_msg = bridge.cv2_to_imgmsg(img, encoding=encoding)
         img_msg.header.stamp = stamp
         self.pub.publish(img_msg)
-
-
-def imgsift_client(img):
-    """Request to imagesift with Image as service client"""
-    client = rospy.ServiceProxy('/Feature0DDetect', Feature0DDetect)
-    rospy.loginfo('Waiting for: /Feature0DDetect')
-    client.wait_for_service(10)
-    rospy.loginfo('Found: /Feature0DDetect')
-    bridge = cv_bridge.CvBridge()
-    img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
-    img_msg.header.stamp = rospy.Time.now()
-    resp = client(img_msg)
-    return resp.features
 
 
 def drawMatches(query_img, query_pos, train_img, train_pos, matches):

@@ -16,30 +16,40 @@ Usage
 """
 from __future__ import print_function, division
 from future_builtins import zip
+import os
 
 import cv2
 import numpy as np
 
 import rospy
+import dynamic_reconfigure.server
 from posedetection_msgs.msg import ImageFeature0D
+from jsk_2014_picking_challenge.cfg import SIFTMatcherConfig
 
 from matcher_common import ObjectMatcher, get_object_list, load_siftdata
 
 
 class SiftMatcher(object):
     def __init__(self):
+        self.knn_threshold = 0.75
         rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
                          self._cb_imgfeature)
-        rospy.loginfo('Waiting for ImageFeature0D by imagesift/imagesift')
+        dynamic_reconfigure.server.Server(SIFTMatcherConfig,
+                                          self._cb_dynamic_reconfigure)
+        rospy.loginfo('wait for message [{p}]'.format(p=os.getpid()))
         rospy.wait_for_message('/ImageFeature0D', ImageFeature0D)
-        rospy.loginfo('Found /ImageFeature0D')
+        rospy.loginfo('found the message [{p}]'.format(p=os.getpid()))
 
     def _cb_imgfeature(self, msg):
         """Callback function of Subscribers to listen ImageFeature0D"""
         self.query_features = msg.features
 
-    @staticmethod
-    def find_match(query_des, train_des):
+    def _cb_dynamic_reconfigure(self, config, level):
+        """Callback function of dynamic reconfigure server"""
+        self.knn_threshold = config['knn_threshold']
+        return config
+
+    def find_match(self, query_des, train_des):
         """Find match points of query and train images"""
         # parepare to match keypoints
         query_des = np.array(query_des).reshape((-1, 128))
@@ -49,7 +59,8 @@ class SiftMatcher(object):
         # find good match points
         bf = cv2.BFMatcher()
         matches = bf.knnMatch(query_des, train_des, k=2)
-        good_matches = [m for m, n in matches if m.distance < 0.75*n.distance]
+        good_matches = [n1 for n1, n2 in matches
+                        if n1.distance < self.knn_threshold*n2.distance]
         return good_matches
 
 
@@ -108,6 +119,19 @@ class SiftObjectMatcher(SiftMatcher, ObjectMatcher):
             if siftdata is None:
                 continue
             yield siftdata
+
+
+def imgsift_client(img):
+    """Request to imagesift with Image as service client"""
+    client = rospy.ServiceProxy('/Feature0DDetect', Feature0DDetect)
+    rospy.loginfo('waiting for service [{p}]'.format(p=getpid()))
+    client.wait_for_service()
+    rospy.loginfo('found the service [{p}]'.format(p=getpid()))
+    bridge = cv_bridge.CvBridge()
+    img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
+    img_msg.header.stamp = rospy.Time.now()
+    resp = client(img_msg)
+    return resp.features
 
 
 def main():
