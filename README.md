@@ -24,6 +24,7 @@ $ source devel/setup.bash
 実機を使うときの環境設定
 -----------------------
 ```
+$ sudo apt-get install ros-indigo-jsk-tools
 $ source `rospack find jsk_tools`/src/bashrc.ros
 $ rossetrobot baxter.jsk.imi.i.u-tokyo.ac.jp
 $ rossetip
