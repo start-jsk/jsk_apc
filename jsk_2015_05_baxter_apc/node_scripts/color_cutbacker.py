@@ -5,6 +5,8 @@
 
 import rospy
 import cv_bridge
+import dynamic_reconfigure.server
+from jsk_2014_picking_challenge.cfg import ColorCutbackerConfig
 from sensor_msgs.msg import Image
 
 
@@ -13,9 +15,16 @@ class ColorCutbacker(object):
         self.threshold = rospy.get_param('~threshold', 30)
         self.img = {}
         self.stamp = None
+        dynamic_reconfigure.server.Server(ColorCutbackerConfig,
+                                          self._cb_dynamic_reconfigure)
         self._init_publishers()
         self._init_subscribers()
         rospy.wait_for_message('~input/reference', Image)
+
+    def _cb_dynamic_reconfigure(self, config, level):
+        """Callback function of dynamic reconfigure server"""
+        self.threshold = config['threshold']
+        return config
 
     def _init_publishers(self):
         pub_tmpl = lambda c: rospy.Publisher('~output/{}'.format(c), Image,
