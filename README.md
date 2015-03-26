@@ -16,7 +16,7 @@ $ wstool set jsk_recognition https://github.com/jsk-ros-pkg/jsk_recognition --gi
 $ wstool update
 $ cd ..
 $ rosdep install -y -r --from-paths .
-$ catkin_make
+$ catkin build
 $ source devel/setup.bash
 ```
 
