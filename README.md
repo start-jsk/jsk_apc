@@ -6,6 +6,7 @@
 環境の構築
 ----------
 ```
+$ source /opt/ros/indigo/setup.bash
 $ mkdir -p catkin_ws/semi/src
 $ cd catkin_ws/semi/src
 $ wstool init
