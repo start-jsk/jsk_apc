@@ -68,6 +68,11 @@ jsk_pcl_rosのorganized_multi_planeのlaunchをincludeしています。
 
 addを選択しRobotModelを追加, FixedFrame base に設定
 
+Kinect2のlocalセットアップについて
+----------------------------------
+https://github.com/code-iai/iai_kinect2 のinstall手順に従い
+インストールしてください。
+
 2015/02/18 追記
 ---------------
 
