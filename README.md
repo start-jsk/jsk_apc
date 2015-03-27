@@ -1,6 +1,8 @@
 2014-semi
 =========
 
+[![Join the chat at https://gitter.im/start-jsk/2014-semi](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/start-jsk/2014-semi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 2014 機械工学少人数ゼミ　プロジェクトページ
 
 環境の構築
