@@ -1,6 +1,8 @@
 2014-semi
 =========
 
+[![CI Status at https://travis-ci.org/start-jsk/2014-semi/](https://travis-ci.org/start-jsk/2014-semi.svg)](https://travis-ci.org/start-jsk/2014-semi)
+
 2014 機械工学少人数ゼミ　プロジェクトページ
 
 環境の構築
