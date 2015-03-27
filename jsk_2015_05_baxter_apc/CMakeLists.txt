@@ -94,6 +94,7 @@ generate_messages(
 ## Add dynamic reconfigure api
 generate_dynamic_reconfigure_options(
   cfg/SIFTMatcher.cfg
+  cfg/ColorCutback.cfg
 )
 
 ###################################
