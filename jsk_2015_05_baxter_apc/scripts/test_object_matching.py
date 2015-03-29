@@ -6,9 +6,14 @@
 Usage
 -----
 
+    $ # for sift
     $ roslaunch jsk_2014_picking_challenge test_sift_matching.launch \
         knn_threshold:=0.8
+
+    $ # for color_histogram
     $ rolaunch jsk_2014_picking_challenge test_color_histogram_matching.launch
+    $ rosrun jsk_2014_picking_challenge test_object_matching \
+        _matcher:=color_histogram
 
 """
 import os
