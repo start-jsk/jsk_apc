@@ -45,13 +45,13 @@ class ExtractColorHistogram(object):
         if mask_paths is None:
             self.imgpaths = raw_paths
         else:
-            assert len(raw_paths) == len(mask_paths),
-                   ValueError('Number of raw and mask images should be same')
+            if len(raw_paths) != len(mask_paths):
+                ValueError('Number of raw and mask images should be same')
             self.imgpaths = zip(raw_paths, mask_paths)
         self.object_nm = object_nm
         self.color = color
         self.color_hist = None
-        self.image_pub = rospy.Publisher('image_publisher/output', Image,
+        self.image_pub = rospy.Publisher('~train_image', Image,
                                          queue_size=1)
 
     def color_hist_cb(self, msg):
@@ -65,7 +65,7 @@ class ExtractColorHistogram(object):
         progress = progressbar.ProgressBar(
             widgets=['{o}: '.format(o=object_nm), progressbar.Bar(),
             progressbar.Percentage(), ' ', progressbar.ETA()])
-        for imgpath in progress(imgpaths):
+        for imgpath in progress(list(imgpaths)):
             if type(imgpath) is tuple:
                 raw_path, mask_path = imgpath
                 raw_img = cv2.imread(raw_path)
@@ -81,6 +81,8 @@ class ExtractColorHistogram(object):
             train_imgmsg = bridge.cv2_to_imgmsg(train_img, encoding='bgr8')
             train_imgmsg.header.stamp = rospy.Time.now()
 
+            self.image_pub.publish(train_imgmsg)
+            rospy.sleep(3)
             self.color_hist = None
             while self.color_hist == None:
                 self.image_pub.publish(train_imgmsg)

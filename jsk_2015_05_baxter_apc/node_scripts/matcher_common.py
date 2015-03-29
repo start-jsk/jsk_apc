@@ -89,3 +89,15 @@ class ObjectMatcher(object):
         raise NotImplementedError('Override this method')
 
 
+def is_imgfile(filename):
+    _, ext = os.path.splitext(filename)
+    if ext in ['.jpg', '.jpeg', '.png', '.pgm']:
+        return True
+    return False
+
+
+def listdir_for_img(data_dir):
+    for f in os.listdir(data_dir):
+        if is_imgfile(f):
+            yield f
+
