@@ -113,6 +113,7 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+if(rosserial_generate_ros_lib) # hydro does not have this macro
 rosserial_generate_ros_lib(
   PACKAGE rosserial_arduino
   SCRIPT make_libraries.py
@@ -125,6 +126,7 @@ rosserial_configure_client(
 
 rosserial_add_client_target(firmware switching_gripper ALL)
 rosserial_add_client_target(firmware switching_gripper-upload)
+endif()
 
 ###########
 ## Build ##
