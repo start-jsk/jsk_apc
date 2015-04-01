@@ -16,7 +16,6 @@
   <build_depend>sound_play</build_depend>
   <build_depend>jsk_interactive</build_depend>
   <build_depend>jsk_interactive_marker</build_depend>
-  <build_depend>SoundRequest</build_depend>
   <build_depend>actionlib</build_depend>
   <build_depend>actionlib_msgs</build_depend>
   <build_depend>moveit_resources</build_depend>
@@ -33,7 +32,6 @@
   <run_depend>sound_play</run_depend>
   <run_depend>jsk_interactive</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
-  <run_depend>SoundRequest</run_depend>
   <run_depend>actionlib</run_depend>
   <run_depend>actionlib_msgs</run_depend>
   <run_depend>rosserial_arduino</run_depend>
