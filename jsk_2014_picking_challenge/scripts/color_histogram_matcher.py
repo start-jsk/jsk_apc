@@ -43,11 +43,12 @@ class ColorHistogramMatcher(object):
         """Handler of service request"""
         rospy.loginfo("handl_colohhist_matcher")
         self.load_target_histograms(req.objects)
-        return ObjectMatchResponse(probabilities=self.get_probabilities())
+        probs = self.get_probabilities(req.objects)
+        return ObjectMatchResponse(probabilities=probs)
 
     def load_target_histograms(self, object_names):
         """Load extracted color histogram features of objects"""
-        rospy.loginfo(object_names)
+        rospy.loginfo('objects: {}'.format(object_names))
 
         # initialize
         self.target_histograms = {}
@@ -55,7 +56,6 @@ class ColorHistogramMatcher(object):
         dirname = os.path.dirname(os.path.abspath(__file__))
         for object_name in object_names:
             obj_dir = os.path.join(dirname, '../data/histogram_data/', object_name)
-            rospy.loginfo(obj_dir)
             self.target_histograms[object_name] = {}
             for color in ['red', 'green', 'blue']:
                 with gzip.open(obj_dir + '_' + color + '.pkl.gz', 'rb') as gf:
@@ -68,30 +68,32 @@ class ColorHistogramMatcher(object):
             return (1. + cv2.compareHist(query_hist, target_hist,
                 cv2.cv.CV_COMP_CORREL)) / 2.;
 
-    def get_probabilities(self):
-        """Get probabilities of color matching"""
+    def get_probabilities(self, object_names):
+        """Get probabilities of color matching
+        (the order of object_names and probabilities is same)
+        """
         rospy.loginfo("get probabilities")
 
         query_histogram = self.query_histogram
-        targetes_histograms = self.target_histograms
+        targets_histograms = self.target_histograms
         obj_coefs = []
-        for obj_name, target_histograms in targetes_histograms.iteritems():
+        for obj_name in object_names:
+            target_histograms = targets_histograms[obj_name]
             # loop for RGB color &
             # compute max coefficient about each histograms
             coefs = []
-            for q_hist, t_hists in zip(query_histogram.values(), target_histograms.values()):
-                sum_of_coefs = 0
-                for t_hist in t_hists:
-                    # coefs.append(self.coefficient(q_hist, t_hist))
-                    sum_of_coefs += self.coefficient(q_hist, t_hist)
-                coefs.append(sum_of_coefs)
-            obj_coefs.append(max(coefs))
+            for color in query_histogram.keys():
+                q_hist = query_histogram[color]
+                t_hists = target_histograms[color]
+                coefs.append(max(self.coefficient(q_hist, t_hist)
+                                 for t_hist in t_hists))
+            obj_coefs.append(sum(coefs))
         obj_coefs = np.array(obj_coefs)
         # change coefficient array to probability array
-        if obj_coefs.sum() == 0:
-            return obj_coefs
-        else:
+        try:
             return obj_coefs / obj_coefs.sum()
+        except ZeroDivisionError:
+            return obj_coefs
 
     def cb_histogram_red(self, msg):
         """Get input red histogram"""

@@ -27,122 +27,111 @@ You should change dirname for following items manually::
 
 """
 import os
-import sys
-import collections
 import gzip
 import cPickle as pickle
 
 import cv2
 import numpy as np
-import yaml
 import progressbar
 
 import rospy
 import cv_bridge
-from sensor_msgs.msg import CameraInfo
 from sensor_msgs.msg import Image
-from posedetection_msgs.srv import Feature0DDetect
-from posedetection_msgs.msg import ImageFeature0D
-
-from sift_matcher_oneimg import SiftMatcherOneImg
-
-from extract_sift_from_objdata import get_train_imgpaths
-
 from jsk_recognition_msgs.msg import ColorHistogram
 
 
 class ExtractColorHistogram(object):
-    def __init__(self, obj_name, color_name):
-        self.obj_name = obj_name
+    def __init__(self, object_nm, color, raw_paths, mask_paths=None):
+        if mask_paths is None:
+            self.imgpaths = raw_paths
+        else:
+            if len(raw_paths) != len(mask_paths):
+                ValueError('Number of raw and mask images should be same')
+            self.imgpaths = zip(raw_paths, mask_paths)
+        self.object_nm = object_nm
+        self.color = color
         self.color_hist = None
-        self.color_name = color_name
+        self.image_pub = rospy.Publisher('~train_image', Image,
+                                         queue_size=1)
 
     def color_hist_cb(self, msg):
         self.color_hist = msg.histogram
 
-    def extract_color_histogram_from_objdata(self):
+    def extract(self):
         """Extract color histogram data from object images"""
+        imgpaths = self.imgpaths
+        object_nm = self.object_nm
         color_histograms = []
-        imgpaths = get_train_imgpaths(self.obj_name)
-        if imgpaths is None:
-            return   # skip if img does not exists
-        progress = progressbar.ProgressBar(widgets=['{o}: '.format(o=self.obj_name),
-                                        progressbar.Bar(), progressbar.Percentage(), ' ', progressbar.ETA()])
-        image_pub = rospy.Publisher('image_publisher/output', Image, queue_size=1)
-        for raw_path, mask_path in progress(imgpaths):
-            raw_img = cv2.imread(raw_path)
-            mask_img = cv2.imread(mask_path)
-            train_img = cv2.add(mask_img, raw_img)
+        progress = progressbar.ProgressBar(
+            widgets=['{o}: '.format(o=object_nm), progressbar.Bar(),
+            progressbar.Percentage(), ' ', progressbar.ETA()])
+        for imgpath in progress(list(imgpaths)):
+            if type(imgpath) is tuple:
+                raw_path, mask_path = imgpath
+                raw_img = cv2.imread(raw_path)
+                mask_img = cv2.imread(mask_path)
+                train_img = cv2.add(mask_img, raw_img)
+            else:
+                raw_path = imgpath
+                train_img = cv2.imread(raw_path)
 
-            color_hist_sub = rospy.Subscriber('single_channel_histogram_' + self.color_name + '/output', ColorHistogram, self.color_hist_cb)
+            color_hist_sub = rospy.Subscriber('single_channel_histogram_'
+                + self.color + '/output', ColorHistogram, self.color_hist_cb)
             bridge = cv_bridge.CvBridge()
-            train_img_msg = bridge.cv2_to_imgmsg(train_img, encoding="bgr8")
-            train_img_msg.header.stamp = rospy.Time.now()
+            train_imgmsg = bridge.cv2_to_imgmsg(train_img, encoding='bgr8')
+            train_imgmsg.header.stamp = rospy.Time.now()
 
+            self.image_pub.publish(train_imgmsg)
+            rospy.sleep(3)
             self.color_hist = None
             while self.color_hist == None:
-                image_pub.publish(train_img_msg)
+                self.image_pub.publish(train_imgmsg)
                 rospy.sleep(1)
             color_histograms.append(self.color_hist)
-        color_histograms = np.array(color_histograms)
-        self.save_histogram_data(color_histograms, self.obj_name)
+        return np.array(color_histograms)
 
-    def save_histogram_data(self, histogram_data, obj_name):
-        """Save histogram data to data/histogram_data/{obj_name}.pkl.gz"""
-        dirname = os.path.dirname(os.path.abspath(__file__))
-        histogram_data_dir = os.path.join(dirname, '../data/histogram_data')
-        if not os.path.exists(histogram_data_dir):
-            os.mkdir(histogram_data_dir)
-        filename = os.path.join(histogram_data_dir, obj_name + '_' + self.color_name + '.pkl.gz')
+    def save(self, hist_data):
+        """Save histogram data to data/histogram_data/{object_nm}.pkl.gz"""
+        object_nm = self.object_nm
+        color = self.color
+        data_dir = os.path.join(os.path.dirname(__file__),
+                                '../data/histogram_data')
+        if not os.path.exists(data_dir):
+            os.mkdir(data_dir)
+        filename = os.path.join(data_dir, object_nm+'_'+color+'.pkl.gz')
         with gzip.open(filename, 'wb') as f:
-            pickle.dump(histogram_data, f)
+            pickle.dump(hist_data, f)
+
+    def extract_and_save(self):
+        hist_data = self.extract()
+        self.save(hist_data=hist_data)
+
 
 def main():
+    from matcher_common import get_object_list, get_train_imgpaths
+
     rospy.init_node('extract_color_histogram_from_objdata')
-    pub = rospy.Publisher('/camera_info', CameraInfo, queue_size=1)
-    pub.publish()  # to enable imagehist service
 
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    ymlfile = os.path.join(dirname, '../data/object_list.yml')
-    all_objects = yaml.load(open(ymlfile))
+    all_objects = get_object_list()
 
-    obj_names = rospy.get_param('~object',
-                                ["champion_copper_plus_spark_plug",
-                                 "cheezit_big_original",
-                                 "crayola_64_ct",
-                                 "elmers_washable_no_run_school_glue",
-                                 "expo_dry_erase_board_eraser",
-                                 "feline_greenies_dental_treats",
-                                 "first_years_take_and_toss_straw_cups",
-                                 "genuine_joe_plastic_stir_sticks",
-                                 "highland_6539_self_stick_notes",
-                                 "kong_air_dog_squeakair_tennis_ball",
-                                 "kong_duck_dog_toy",
-                                 "kong_sitting_frog_dog_toy",
-                                 "kyjen_squeakin_eggs_plush_puppies",
-                                 "mark_twain_huckleberry_finn",
-                                 "mead_index_cards",
-                                 "mommys_helper_outlet_plugs",
-                                 "munchkin_white_hot_duck_bath_toy",
-                                 "oreo_mega_stuf",
-                                 "paper_mate_12_count_mirado_black_warrior",
-                                 "rolodex_jumbo_pencil_cup",
-                                 "safety_works_safety_glasses",
-                                 "sharpie_accent_tank_style_highlighters",
-                                 "stanley_66_052"]
-    )
-    color_name = rospy.get_param('~color', 'green')
-    # obj_names = obj_names.split(',')
-    if len(obj_names) == 1 and obj_names[0] == 'all':
-        obj_names = all_objects
-    rospy.loginfo('objects: {obj}'.format(obj=obj_names))
+    object_param = rospy.get_param('~object', all_objects)
+    object_nms = object_param.split(',')
+    if len(object_nms) == 1 and object_nms[0] == 'all':
+        object_nms = all_objects
+    rospy.loginfo('objects: {obj}'.format(obj=object_nms))
 
-    for obj_name in obj_names:
-        if obj_name not in all_objects:
-            rospy.logwarn('Unknown object, skipping: {}'.format(obj_name))
+    for object_nm in object_nms:
+        if object_nm not in all_objects:
+            rospy.logwarn('Unknown object, skipping: {}'.format(object_nm))
         else:
-            e = ExtractColorHistogram(obj_name, color_name)
-            e.extract_color_histogram_from_objdata()
+            imgpaths = get_train_imgpaths(object_nm)
+            raw_paths, mask_paths = zip(*imgpaths)
+            for color in ['red', 'green', 'blue']:
+                e = ExtractColorHistogram(object_nm=object_nm, color=color,
+                        raw_paths=raw_paths, mask_paths=mask_paths)
+                e.extract_and_save()
+
 
 if __name__ == '__main__':
     main()
+
