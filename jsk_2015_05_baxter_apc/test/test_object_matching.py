@@ -6,12 +6,18 @@
 Usage
 -----
 
+    $ # for sift
     $ roslaunch jsk_2014_picking_challenge test_sift_matching.launch \
         knn_threshold:=0.8
+
+    $ # for color_histogram
     $ rolaunch jsk_2014_picking_challenge test_color_histogram_matching.launch
+    $ rosrun jsk_2014_picking_challenge test_object_matching \
+        _matcher:=color_histogram
 
 """
 import os
+import sys
 import csv
 
 import numpy as np
@@ -19,6 +25,7 @@ import numpy as np
 import rospy
 from jsk_2014_picking_challenge.srv import ObjectMatch, StringEmpty
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '../scripts'))
 from matcher_common import get_object_list
 
 
@@ -89,6 +96,7 @@ class TestObjectMatching(object):
             self.wait_for_service(self.client_of_img)
             self.client_of_img(string=imgpath)
             # request to object matcher
+            rospy.sleep(3)
             rospy.loginfo('target object: {t}'.format(t=target_obj))
             self.wait_for_service(self.client_of_matcher)
             res = self.client_of_matcher(objects=object_list)
