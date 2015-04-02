@@ -17,6 +17,7 @@ Usage
 
 """
 import os
+import sys
 import csv
 
 import numpy as np
@@ -24,6 +25,7 @@ import numpy as np
 import rospy
 from jsk_2014_picking_challenge.srv import ObjectMatch, StringEmpty
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '../scripts'))
 from matcher_common import get_object_list
 
 
