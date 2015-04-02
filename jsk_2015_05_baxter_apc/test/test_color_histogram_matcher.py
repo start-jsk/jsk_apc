@@ -21,6 +21,7 @@ from __future__ import division
 import os
 import sys
 import argparse
+import unittest
 
 import numpy as np
 
@@ -57,24 +58,34 @@ def prepare_train_data():
             extractor.extract_and_save()
 
 
-def test():
-    client_of_matcher = rospy.ServiceProxy('/semi/color_histogram_matcher',
-                                        ObjectMatch)
-    client_of_img = rospy.ServiceProxy('/image_publish_server', StringEmpty)
-    nations = np.array(get_nations())
-    for i, target_obj in enumerate(nations):
-        # request to publish image
-        rospy.loginfo('target: {}'.format(target_obj))
-        imgpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-            '../data/national_flags/{0}/{0}.png'.format(target_obj))
-        client_of_img(string=imgpath)
-        rospy.sleep(3)
-        # request to object matcher
-        probs = client_of_matcher(objects=nations).probabilities
-        probs = np.array(probs)
-        rospy.loginfo('correct?: {}'.format(probs.argmax() == i))
-        rospy.loginfo('similar: {}'.format(
-            nations[probs.argsort()][::-1][:3]))
+class TestColorHistogramMatcher(unittest.TestCase):
+    def test_matching(self):
+        client_of_matcher = rospy.ServiceProxy(
+            '/semi/color_histogram_matcher', ObjectMatch)
+        client_of_img = rospy.ServiceProxy('/image_publish_server',
+                                           StringEmpty)
+        nations = np.array(get_nations())
+        for i, target_obj in enumerate(nations):
+            # request to publish image
+            rospy.loginfo('target: {}'.format(target_obj))
+            imgpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                '../data/national_flags/{0}/{0}.png'.format(target_obj))
+            client_of_img(string=imgpath)
+            rospy.sleep(3)
+            # request to object matcher
+            probs = client_of_matcher(objects=nations).probabilities
+            probs = np.array(probs)
+            # about max probability
+            max_index = probs.argmax()
+            rospy.loginfo('correct?: {}'.format(max_index == i))
+            self.assertEqual(max_index, i)
+            # about similar objects
+            similars = nations[probs.argsort()][::-1][:3]
+            rospy.loginfo('similar: {}'.format(similars))
+            if target_obj == 'germany':
+                self.assertIn('south_ossetia', similars)
+            elif target_obj == 'south_ossetia':
+                self.assertIn('germany', similars)
 
 
 def parse_args():
@@ -97,7 +108,9 @@ def main():
     if args.extract:
         prepare_train_data()
     elif args.test:
-        test()
+        suite = unittest.TestLoader().loadTestsFromTestCase(
+            TestColorHistogramMatcher)
+        unittest.TextTestRunner(verbosity=2).run(suite)
     else:
         rospy.logerr('Unknown args')
 
