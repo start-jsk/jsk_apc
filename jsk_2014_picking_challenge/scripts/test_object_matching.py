@@ -94,6 +94,7 @@ class TestObjectMatching(object):
             self.wait_for_service(self.client_of_img)
             self.client_of_img(string=imgpath)
             # request to object matcher
+            rospy.sleep(3)
             rospy.loginfo('target object: {t}'.format(t=target_obj))
             self.wait_for_service(self.client_of_matcher)
             res = self.client_of_matcher(objects=object_list)
