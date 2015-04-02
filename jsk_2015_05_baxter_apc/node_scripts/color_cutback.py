@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-"""Color cutbacker for RGB decomposed image."""
+"""Color cutback for RGB decomposed image."""
 
 import rospy
 import cv_bridge
 import dynamic_reconfigure.server
-from jsk_2014_picking_challenge.cfg import ColorCutbackerConfig
+from jsk_2014_picking_challenge.cfg import ColorCutbackConfig
 from sensor_msgs.msg import Image
 
 
-class ColorCutbacker(object):
+class ColorCutback(object):
     def __init__(self):
         self.threshold = rospy.get_param('~threshold', 30)
         self.img = {}
         self.stamp = None
-        dynamic_reconfigure.server.Server(ColorCutbackerConfig,
+        dynamic_reconfigure.server.Server(ColorCutbackConfig,
                                           self._cb_dynamic_reconfigure)
         self._init_publishers()
         self._init_subscribers()
@@ -79,7 +79,7 @@ class ColorCutbacker(object):
 
 
 if __name__ == '__main__':
-    rospy.init_node('color_cutbacker')
-    cutbacker = ColorCutbacker()
-    cutbacker.spin()
+    rospy.init_node('color_cutback')
+    cutback = ColorCutback()
+    cutback.spin()
 
