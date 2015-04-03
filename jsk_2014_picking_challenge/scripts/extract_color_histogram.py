@@ -4,26 +4,16 @@
 """
 This script is to extract color histogram from object data
 distributed by Robot Learning Lab, UC Berkeley.
-Object data is available from here::
-
-    * http://rll.berkeley.edu/amazon_picking_challenge/
+See extract_sift_from_objdata.py for more details.
 
 Usage
 -----
 1. Download dataset(Raw High Resolution RGB) to data dir, and extract it.
 2. Execute following::
 
-    $ roscore
-    $ rosrun jsk_2014_picking_challenge color_histogram.launch
-    $ rosrun extract_color_histogram.py _object:=oreo_mega_stuf _color:=red
-
-
-Attention
----------
-You should change dirname for following items manually::
-
-    * kygen_squeakin_eggs_plush_puppies  -> kyjen_squeakin_eggs_plush_puppies
-    * rollodex_mesh_collection_jumbo_pencil_cup -> rolodex_jumbo_pencil_cup
+    $ roslaunch jsk_2014_picking_challenge extract_color_histogram.launch
+    $ rosrun jsk_2014_picking_challenge extract_color_histogram.py \
+            _object:=all _color_space:=rgb
 
 """
 import os
@@ -109,9 +99,18 @@ class ExtractColorHistogram(object):
 def main():
     from matcher_common import get_object_list, get_train_imgpaths
 
-    rospy.init_node('extract_color_histogram_from_objdata')
+    rospy.init_node('extract_color_histogram')
 
     all_objects = get_object_list()
+
+    color_space_param = rospy.get_param('~color_space', 'lab')
+    if color_space_param == 'rgb':
+        colors = ['red', 'green', 'blue']
+    elif color_space_param == 'lab':
+        colors = ['l']
+    else:
+        raise ValueError('Unknown color space')
+    rospy.loginfo('color space: {c}'.format(c=color_space_param))
 
     object_param = rospy.get_param('~object', all_objects)
     object_nms = object_param.split(',')
@@ -125,7 +124,7 @@ def main():
         else:
             imgpaths = get_train_imgpaths(object_nm)
             raw_paths, mask_paths = zip(*imgpaths)
-            for color in ['red', 'green', 'blue']:
+            for color in colors:
                 e = ExtractColorHistogram(object_nm=object_nm, color=color,
                         raw_paths=raw_paths, mask_paths=mask_paths)
                 e.extract_and_save()
