@@ -51,11 +51,13 @@ class ExtractColorHistogram(object):
         self.object_nm = object_nm
         self.color = color
         self.color_hist = None
+        self.stamp = None
         self.image_pub = rospy.Publisher('~train_image', Image,
                                          queue_size=1)
 
     def color_hist_cb(self, msg):
         self.color_hist = msg.histogram
+        self.stamp = msg.header.stamp
 
     def extract(self):
         """Extract color histogram data from object images"""
@@ -80,13 +82,10 @@ class ExtractColorHistogram(object):
             bridge = cv_bridge.CvBridge()
             train_imgmsg = bridge.cv2_to_imgmsg(train_img, encoding='bgr8')
             train_imgmsg.header.stamp = rospy.Time.now()
-
-            self.image_pub.publish(train_imgmsg)
-            rospy.sleep(3)
-            self.color_hist = None
-            while self.color_hist == None:
+            # wait for histogram extracted from new image
+            while not self.stamp or self.stamp < train_imgmsg.header.stamp:
                 self.image_pub.publish(train_imgmsg)
-                rospy.sleep(1)
+                rospy.sleep(0.3)
             color_histograms.append(self.color_hist)
         return np.array(color_histograms)
 
