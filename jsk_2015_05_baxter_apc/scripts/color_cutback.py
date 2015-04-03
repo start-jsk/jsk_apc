@@ -11,6 +11,9 @@ from sensor_msgs.msg import Image
 
 
 class ColorCutback(object):
+    colors = ['red', 'green', 'blue', 'hue', 'saturation', 'value',
+              'l', 'a', 'b']
+
     def __init__(self):
         self.threshold = rospy.get_param('~threshold', 30)
         self.img = {}
@@ -29,8 +32,7 @@ class ColorCutback(object):
     def _init_publishers(self):
         pub_tmpl = lambda c: rospy.Publisher('~output/{}'.format(c), Image,
                                              queue_size=1)
-        self._pub = {c: pub_tmpl(c) for c in
-                     ['red', 'green', 'blue', 'hue', 'saturation', 'value']}
+        self._pub = {c: pub_tmpl(c) for c in self.colors}
 
     def _init_subscribers(self):
         rospy.Subscriber('~input/red', Image,
@@ -45,6 +47,12 @@ class ColorCutback(object):
                          lambda msg: self._cb_input(msg, 'saturation'))
         rospy.Subscriber('~input/value', Image,
                          lambda msg: self._cb_input(msg, 'value'))
+        rospy.Subscriber('~input/l', Image,
+                         lambda msg: self._cb_input(msg, 'l'))
+        rospy.Subscriber('~input/a', Image,
+                         lambda msg: self._cb_input(msg, 'a'))
+        rospy.Subscriber('~input/b', Image,
+                         lambda msg: self._cb_input(msg, 'b'))
         rospy.Subscriber('~input/reference', Image,
                          lambda msg: self._cb_input(msg, 'reference'))
 
@@ -53,23 +61,26 @@ class ColorCutback(object):
         self.stamp = msg.header.stamp
         self.img[attr] = bridge.imgmsg_to_cv2(msg)
 
-    def _color_spin_once(self, color):
-        if color not in self.img:
+    def _color_spin_once(self, color, img, stamp):
+        if color not in img:
             return
-        img = self.img[color]
-        img_ref = self.img['reference']
+        img_color = img[color]
+        img_ref = img['reference']
         threshold = self.threshold
         # color cutback with threshold
         # converted image size: height=1, width=*
-        img_cutback = img[img_ref > threshold].reshape((1, -1))
+        img_cutback = img_color[img_ref > threshold].reshape((1, -1))
         bridge = cv_bridge.CvBridge()
         imgmsg = bridge.cv2_to_imgmsg(img_cutback, encoding='mono8')
-        imgmsg.header.stamp = self.stamp
+        imgmsg.header.stamp = stamp
         self._pub[color].publish(imgmsg)
 
     def spin_once(self):
-        for c in ['red', 'green', 'blue', 'hue', 'saturation', 'value']:
-            self._color_spin_once(color=c)
+        img = self.img
+        stamp = self.stamp
+        for c in self.colors:
+            # pass img and stamp to syncronize
+            self._color_spin_once(color=c, img=img, stamp=stamp)
 
     def spin(self):
         rate = rospy.Rate(rospy.get_param("rate", 1))
