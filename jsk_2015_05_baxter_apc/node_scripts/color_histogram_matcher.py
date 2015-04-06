@@ -2,11 +2,16 @@
 # -*- coding: utf-8 -*-
 #
 
-"""
+"""Color histogram matcher using extracted histogram
+by extract_color_histogram.py.
+
 Usage
 -----
-$ roscore
-$ rosrun jsk_2014_picking_challenge color_histogram_matcher.launch
+
+    $ roslaunch kinect2_bridge kinect2_bridge.launch
+    $ roslaunch jsk_2014_picking_challenge rgb_color_histogram_matcher.launch
+    $ rosservice call /semi/color_histogram_matcher \
+        "{objects: oreo_mega_stuf, crayola_64_ct}"
 
 """
 from __future__ import division
@@ -21,23 +26,26 @@ from sensor_msgs.msg import Image
 from jsk_2014_picking_challenge.srv import ObjectMatch, ObjectMatchResponse
 from jsk_recognition_msgs.msg import ColorHistogram
 
-query_features = None
-target_features = None
 
 class ColorHistogramMatcher(object):
-    def __init__(self):
+    def __init__(self, color_space='lab'):
         self.query_histogram = {}
         self.target_histograms = {}
-
         rospy.Service('/semi/color_histogram_matcher', ObjectMatch,
             self.handle_colorhist_matcher)
         # input is color_histograms extracted by camera_image
-        rospy.Subscriber('~input/histogram/red', ColorHistogram,
-            self.cb_histogram_red)
-        rospy.Subscriber('~input/histogram/green', ColorHistogram,
-            self.cb_histogram_green)
-        rospy.Subscriber('~input/histogram/blue', ColorHistogram,
-                         self.cb_histogram_blue)
+        if color_space == 'rgb':
+            self.colors = ['red', 'green', 'blue']
+            rospy.Subscriber('~input/histogram/red', ColorHistogram,
+                             lambda msg: self.cb_histogram(msg, 'red'))
+            rospy.Subscriber('~input/histogram/green', ColorHistogram,
+                             lambda msg: self.cb_histogram(msg, 'green'))
+            rospy.Subscriber('~input/histogram/blue', ColorHistogram,
+                             lambda msg: self.cb_histogram(msg, 'blue'))
+        elif color_space == 'lab':
+            self.colors = ['l']
+            rospy.Subscriber('~input/histogram/l', ColorHistogram,
+                             lambda msg: self.cb_histogram(msg, 'l'))
 
     def handle_colorhist_matcher(self, req):
         """Handler of service request"""
@@ -57,7 +65,7 @@ class ColorHistogramMatcher(object):
         for object_name in object_names:
             obj_dir = os.path.join(dirname, '../data/histogram_data/', object_name)
             self.target_histograms[object_name] = {}
-            for color in ['red', 'green', 'blue']:
+            for color in self.colors:
                 with gzip.open(obj_dir + '_' + color + '.pkl.gz', 'rb') as gf:
                     histogram = np.array(cPickle.load(gf), dtype='float32')
                     self.target_histograms[object_name][color] = histogram
@@ -95,22 +103,15 @@ class ColorHistogramMatcher(object):
         except ZeroDivisionError:
             return obj_coefs
 
-    def cb_histogram_red(self, msg):
-        """Get input red histogram"""
-        self.query_histogram['red'] = np.array(msg.histogram, dtype='float32')
-
-    def cb_histogram_green(self, msg):
-        """Get input green histogram"""
-        self.query_histogram['green'] = np.array(msg.histogram, dtype='float32')
-
-    def cb_histogram_blue(self, msg):
-        """Get input blue histogram"""
-        self.query_histogram['blue'] = np.array(msg.histogram, dtype='float32')
+    def cb_histogram(self, msg, color):
+        """Get input histogram"""
+        self.query_histogram[color] = np.array(msg.histogram, dtype='float32')
 
 
 def main():
     rospy.init_node('color_histogram_matcher')
-    m = ColorHistogramMatcher()
+    color_space = rospy.get_param('~color_space', 'lab')
+    m = ColorHistogramMatcher(color_space=color_space)
     rospy.spin()
 
 

@@ -1,0 +1,27 @@
+<launch>
+  <arg name="input_image" default="/kinect2/rgb/image" />
+  <arg name="input_info" default="/kinect2/rgb/camera_info" />
+  <arg name="respawn" default="false" />
+
+  <node pkg="jsk_perception" type="hsv_decomposer" name="hsv_decomposer" output="screen">
+    <remap from="~input" to="$(arg input_image)" />
+  </node>
+  <node pkg="jsk_perception" type="lab_decomposer" name="lab_decomposer" output="screen">
+    <remap from="~input" to="$(arg input_image)" />
+  </node>
+
+  <node pkg="jsk_2014_picking_challenge" type="color_cutback.py" name="color_cutback" output="screen">
+    <remap from="~input/l" to="/lab_decomposer/output/l" />
+    <remap from="~input/reference" to="/hsv_decomposer/output/saturation" />
+    <param name="threshold" value="30" />
+  </node>
+
+  <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_l" output="screen">
+    <remap from="~input" to="/color_cutback/output/l" />
+  </node>
+
+  <node pkg="jsk_2014_picking_challenge" type="color_histogram_matcher.py" name="color_histogram_matcher" output="screen" respawn="$(arg respawn)">
+    <param name="color_space" value="lab" />
+    <remap from="~input/histogram/l" to="/single_channel_histogram_l/output" />
+  </node>
+</launch>
