@@ -47,12 +47,12 @@ def get_data_dirs():
         yield os.path.join(data_dir, nation)
 
 
-def prepare_train_data():
+def prepare_train_data(colors):
     for data_dir in get_data_dirs():
         nation_nm = os.path.basename(data_dir)
         raw_paths = map(lambda x: os.path.join(data_dir, x),
                         listdir_for_img(data_dir))
-        for color in ['red', 'blue', 'green']:
+        for color in colors:
             extractor = ExtractColorHistogram(object_nm=nation_nm,
                 color=color, raw_paths=raw_paths)
             extractor.extract_and_save()
@@ -82,14 +82,11 @@ class TestColorHistogramMatcher(unittest.TestCase):
             # about similar objects
             similars = nations[probs.argsort()][::-1][:3]
             rospy.loginfo('similar: {}'.format(similars))
-            if target_obj == 'germany':
-                self.assertIn('south_ossetia', similars)
-            elif target_obj == 'south_ossetia':
-                self.assertIn('germany', similars)
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('color_space', help='color space')
     parser.add_argument('-e', '--extract', action='store_true',
                         help='flag to extract color histogram')
     parser.add_argument('-t', '--test', action='store_true',
@@ -105,8 +102,14 @@ def parse_args():
 
 def main():
     args = parse_args()
+    if args.color_space == 'rgb':
+        colors = ['red', 'green', 'blue']
+    elif args.color_space == 'lab':
+        colors = ['l']
+    else:
+        raise ValueError('Unknown color space')
     if args.extract:
-        prepare_train_data()
+        prepare_train_data(colors)
     elif args.test:
         suite = unittest.TestLoader().loadTestsFromTestCase(
             TestColorHistogramMatcher)
