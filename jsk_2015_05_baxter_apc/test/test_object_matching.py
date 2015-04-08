@@ -15,6 +15,9 @@ Usage
     $ rosrun jsk_2014_picking_challenge test_object_matching \
         _matcher:=color_histogram
 
+    $ # for bof
+    $ roslaunch jsk_2014_picking_challenge test_bof_object_matcher.launch
+
 """
 import os
 import sys
@@ -49,6 +52,9 @@ class TestObjectMatching(object):
         elif matcher == 'color_histogram':
             self.client_of_matcher = rospy.ServiceProxy(
                 '/semi/color_histogram_matcher', ObjectMatch)
+        elif matcher == 'bof':
+            self.client_of_matcher = rospy.ServiceProxy(
+                'BofObjectMatcher', ObjectMatch)
         else:
             raise ValueError('Unknown matcher: {0}'.format(matcher))
 
@@ -100,11 +106,11 @@ class TestObjectMatching(object):
             rospy.loginfo('target object: {t}'.format(t=target_obj))
             self.wait_for_service(self.client_of_matcher)
             res = self.client_of_matcher(objects=object_list)
-            rospy.loginfo('results: {res}'.format(res=res.probabilities))
+            proba = (np.array(res.probabilities)*100).astype(int)
+            rospy.loginfo('results: {res}'.format(res=proba))
             best_match_obj = object_list[np.argmax(res.probabilities)]
             rospy.loginfo('best match: {best}'.format(best=best_match_obj))
-            self.save_result(target_obj=target_obj,
-                             probabilities=list(res.probabilities))
+            self.save_result(target_obj=target_obj, probabilities=list(proba))
 
 
 if __name__ == '__main__':
