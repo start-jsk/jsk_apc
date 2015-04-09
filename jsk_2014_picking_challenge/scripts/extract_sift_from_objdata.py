@@ -33,7 +33,7 @@ import progressbar
 import rospy
 from sensor_msgs.msg import CameraInfo
 
-from sift_matcher import imgsift_client
+from sift_matcher import imgsift_client, load_siftdata
 from matcher_common import save_siftdata, get_object_list, get_train_imgpaths
 
 
@@ -58,7 +58,7 @@ def extract_sift_from_objdata(obj_name):
     positions, descriptors = map(np.array, [positions, descriptors])
     siftdata = dict(positions=positions, descriptors=descriptors)
     # save sift data
-    save_siftdata(siftdata, obj_name)
+    save_siftdata(obj_name, siftdata)
 
 
 def main():
@@ -79,6 +79,8 @@ def main():
         if obj_name not in all_objects:
             rospy.logwarn('Unknown object, skipping: {o}'.format(o=obj_name))
             continue
+        elif load_siftdata(obj_name, dry_run=True):
+            continue  # already extracted
         extract_sift_from_objdata(obj_name)
 
 
