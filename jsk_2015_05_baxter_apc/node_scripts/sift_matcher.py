@@ -22,8 +22,10 @@ import cv2
 import numpy as np
 
 import rospy
+import cv_bridge
 import dynamic_reconfigure.server
 from posedetection_msgs.msg import ImageFeature0D
+from posedetection_msgs.srv import Feature0DDetect
 from jsk_2014_picking_challenge.cfg import SIFTMatcherConfig
 
 from matcher_common import ObjectMatcher, get_object_list, load_siftdata
@@ -124,9 +126,7 @@ class SiftObjectMatcher(SiftMatcher, ObjectMatcher):
 def imgsift_client(img):
     """Request to imagesift with Image as service client"""
     client = rospy.ServiceProxy('/Feature0DDetect', Feature0DDetect)
-    rospy.loginfo('waiting for service [{p}]'.format(p=getpid()))
     client.wait_for_service()
-    rospy.loginfo('found the service [{p}]'.format(p=getpid()))
     bridge = cv_bridge.CvBridge()
     img_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
     img_msg.header.stamp = rospy.Time.now()
