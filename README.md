@@ -2,6 +2,7 @@
 =========
 
 [![CI Status at https://travis-ci.org/start-jsk/2014-semi/](https://travis-ci.org/start-jsk/2014-semi.svg)](https://travis-ci.org/start-jsk/2014-semi)
+[![Slack](https://img.shields.io/badge/slack-jsk--seminar--2014-blue.svg)](https://jsk-seminar-2014.slack.com)
 
 2014 機械工学少人数ゼミ　プロジェクトページ
 
