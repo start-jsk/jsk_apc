@@ -1,0 +1,22 @@
+<launch>
+  <arg name="test" default="false" />
+  <arg name="input_image" default="/image_publish_server/output" if="$(arg test)" />
+  <arg name="input_info" default="/fake_camera_info_publisher/output" if="$(arg test)" />
+  <arg name="input_image" default="/kinect2/rgb/image" unless="$(arg test)" />
+  <arg name="input_info" default="/kinect2/rgb/camera_info" unless="$(arg test)" />
+
+  <group if="$(arg test)">
+    <!-- test -->
+    <node pkg="jsk_2014_picking_challenge" type="image_publish_server.py" name="image_publish_server"></node>
+    <node pkg="jsk_2014_picking_challenge" type="fake_camera_info_publisher.py" name="fake_camera_info_publisher"></node>
+  </group>
+
+  <node pkg="imagesift" type="imagesift" name="imagesift">
+    <remap from="/image" to="$(arg input_image)" />
+    <remap from="/camera_info" to="$(arg input_info)" />
+  </node>
+  <node pkg="jsk_2014_picking_challenge" type="visualize_sift.py" name="visualize_sift">
+    <remap from="~input/image" to="$(arg input_image)" />
+    <remap from="~input/feature" to="/ImageFeature0D" />
+  </node>
+</launch>
