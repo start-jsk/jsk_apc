@@ -1,5 +1,5 @@
 <launch>
-  <arg name="custom" default="false"/>
+  <arg name="custom" default="true"/>
   
   <!-- send baxter urdf to param server -->
   <param if="$(arg custom)" name="robot_description" command="$(find xacro)/xacro.py $(find jsk_2014_picking_challenge)/config/baxter_white_hand.urdf" />

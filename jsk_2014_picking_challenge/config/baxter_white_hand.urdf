@@ -1124,6 +1124,8 @@
     <parent link="left_gripper_base"/>
     <child link="left_gripper"/>
   </joint>
+  <!-- Transmissions -->
+  <!-- Right Arm -->
   <transmission name="right_tran1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="right_s0">
@@ -1194,6 +1196,7 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
+  <!-- Left Arm -->
   <transmission name="left_tran1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="left_s0">
@@ -1264,6 +1267,7 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
+  <!-- Head -->
   <transmission name="head1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="head_pan">
@@ -1274,11 +1278,13 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
+  <!-- ros_control plugin -->
   <gazebo>
     <plugin filename="libbaxter_gazebo_ros_control.so" name="baxter_ros_control">
       <robotNamespace>/robot</robotNamespace>
     </plugin>
   </gazebo>
+  <!-- Gazebo-Specific Link Properties -->
   <gazebo reference="torso">
     <selfCollide>true</selfCollide>
   </gazebo>
@@ -1544,7 +1550,7 @@
     <visual>
       <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
       <geometry>
-        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukai13.dae"/>
+        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/long1.dae" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
@@ -1559,7 +1565,7 @@
   <link name="custom_vacuum_link_base">
     <visual>
       <geometry>
-        <cylinder length="0" radius="0"/>
+        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukailong2.dae" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
@@ -1624,7 +1630,7 @@
   <joint name="right_custom_joint_base" type="fixed">
     <parent link="right_wrist"/>
     <child link="custom_vacuum_link_base"/>
-    <origin rpy="0 0 0" xyz="0 0 0.11"/>
+    <origin rpy="0 0 1.57" xyz="0 0 0.11"/>
   </joint>
   <joint name="right_custom_joint_side" type="fixed">
     <parent link="right_wrist"/>
