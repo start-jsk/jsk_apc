@@ -14,7 +14,7 @@
     <visual>
       <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
       <geometry>
-        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukai13.dae"/>
+        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/long1.dae" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
@@ -29,7 +29,7 @@
   <link name="custom_vacuum_link_base">
     <visual>
       <geometry>
-        <cylinder radius="0" length="0"/>
+        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukailong2.dae" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
@@ -94,7 +94,7 @@
   <joint name="right_custom_joint_base" type="fixed">
     <parent link="right_wrist"/>
     <child link="custom_vacuum_link_base"/>
-    <origin rpy="0 0 0" xyz="0 0 0.11" />
+    <origin rpy="0 0 1.57" xyz="0 0 0.11" />
   </joint>
   <joint name="right_custom_joint_side" type="fixed">
     <parent link="right_wrist"/>
