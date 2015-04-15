@@ -3,6 +3,7 @@
 ;;; Move arm to target pick bin region in the shelf.
 ;;;
 (load "package://baxtereus/baxter-interface.l")
+(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
 (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
 (load "package://jsk_2014_picking_challenge/euslisp/order-bin.l")
@@ -35,7 +36,7 @@
     (let ((order (send goal :goal :order))
           (limb (send goal :goal :limb))
           (foldav-r #f(-85.6274 12.4146 84.9683 149.941 -120.125 -2.68066 -6.02051))
-	  (foldav-l #f(97.4991 11.2061 -90.5933 125.574 -45.7251 -1.2085 92.7686))
+          (foldav-l #f(97.4991 11.2061 -90.5933 125.574 -45.7251 -1.2085 92.7686))
           (foldav-l-middle #f(37.3096 -2.30713 -74.0698 146.667 99.5361 -3.66943 6.48193))
           (foldav-r-middle #f(-48.8672 -10.437 80.6616 148.645 -80.9033 1.38428 -18.8745))
           (foldav-r-upper #f(7.80029 -1.12061 82.9248 141.438 -116.477 -6.48193 -8.10791))
@@ -44,36 +45,36 @@
           (foldav-l-lower #f(-4.37256 34.9146 -40.4736 103.14 -59.9194 8.4375 91.4941))
           avs target-nm seq c r msg)
       (setq target-nm (intern (string-upcase order)))
-      (push "msg_validation" seq)
+      (pushback "msg_validation" seq)
       ;; limb validation
       (cond ((string-equal limb "left") (setq limb :larm))
             ((string-equal limb "right") (setq limb :rarm))
             (t (progn
-                 (push "invalid_limb" seq)
-                 (setq msg (send server :result :sequence (nreverse seq)))
+                 (pushback "invalid_limb" seq)
+                 (setq msg (send server :result :sequence seq))
                  (send server :set-aborted msg)
                  (return-from :execute-cb nil))))
       (ros::ros-info (format nil "[move_arm2target_bin] requested ~A." target-nm))
       ;; target name validation
       (unless (find target-nm (send region :target-name-list))
         (ros::ros-info (format nil "[move_arm2target_bin] ~A not found." target-nm))
-        (setq msg (send server :result :sequence (nreverse seq)))
+        (setq msg (send server :result :sequence seq))
         (send server :set-aborted msg)
         (return-from :execute-cb nil))
       ;; ik with z axis restriction
-      (push (format nil "IK_for_~A" target-nm) seq)
+      (pushback (format nil "IK_for_~A" target-nm) seq)
       (ros::ros-info (format nil "[move_arm2target_bin] move arm to: ~A" target-nm))
       ;; original pose
-      (push (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
+      (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
       ;; to avoid shelf
       (send *baxter* :rarm :angle-vector foldav-r-middle)
       (send *baxter* :larm :angle-vector foldav-l-middle)
-      (push (send *baxter* :angle-vector) avs)
+      (pushback (send *baxter* :angle-vector) avs)
       ;; initial fold pose
       (case limb
         (:rarm (send *baxter* :larm :angle-vector foldav-l))
         (:larm (send *baxter* :rarm :angle-vector foldav-r)))
-      (push (send *baxter* :angle-vector) avs)
+      (pushback (send *baxter* :angle-vector) avs)
       ;; prepare for paticular target bins
       (cond
         ((or (eq target-nm 'a) (eq target-nm 'b) (eq target-nm 'c) (eq target-nm 'd) (eq target-nm 'f))
@@ -85,28 +86,28 @@
            (:larm (send *baxter* :larm :angle-vector foldav-l-lower))
            (:rarm (send *baxter* :rarm :angle-vector foldav-r-lower))))
         (t nil))
-      (push (send *baxter* :angle-vector) avs)
+      (pushback (send *baxter* :angle-vector) avs)
       ;; go to in front of the target bin
       (setq c (send *pod* :transform-vector (send region :get-val target-nm)))
       (ros::ros-info (format nil "~A" c))
       (setq r (send *baxter* limb
                     :inverse-kinematics (make-cascoords :pos c)
                     :rotation-axis t :revert-if-fail nil))
-      (if r (push r avs)
+      (if r (pushback r avs)
         (progn
           (if (equal limb :larm)
             (send *baxter* limb :angle-vector foldav-l0)
             (send *baxter* limb :angle-vector foldav-r0))
-          (push (send *baxter* :angle-vector) avs)
-          (push (send *baxter* limb :inverse-kinematics (make-cascoords :pos c)
+          (pushback (send *baxter* :angle-vector) avs)
+          (pushback (send *baxter* limb :inverse-kinematics (make-cascoords :pos c)
                       :rotate-axis t :revert-if-fail nil) avs)))
       ;; reflect changes to *ri*
-      (push "ri_reflection" seq)
-      (send *ri* :angle-vector-sequence (reverse avs) (make-list (length avs) :initial-element 1))
+      (pushback "ri_reflection" seq)
+      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
       (send *ri* :wait-interpolation)
       (send *irtviewer* :draw-objects)
       ;; set result
-      (setq msg (send server :result :sequence (nreverse seq)))
+      (setq msg (send server :result :sequence seq))
       (send server :set-succeeded msg)
       ))
   ;(:spin-once () (send self :worker) (send action :spin-once))
@@ -119,8 +120,8 @@
 ;(send s :spin)
 (setq r (ros::rate 10))
 (do-until-key (ros::ok)
-  (send *ri* :spin-once) ;; (ros::spin-once "baxter_interface")
-  (send s :worker)
-  (ros::spin-once)
-  (ros::sleep))
+              (send *ri* :spin-once) ;; (ros::spin-once "baxter_interface")
+              (send s :worker)
+              (ros::spin-once)
+              (ros::sleep))
 
