@@ -5,7 +5,7 @@
   <xacro:property name="width" value=".02" />
   <xacro:property name="width_base" value=".04" />
   <xacro:property name="width_side2_base" value=".035" />
-  <xacro:property name="bodylen" value=".14" />
+  <xacro:property name="bodylen" value=".45" />
   <xacro:property name="bodylen_base" value=".01" />
   <xacro:property name="bodylen_side" value=".15" />
   <xacro:property name="bodylen_side2" value=".12" />
