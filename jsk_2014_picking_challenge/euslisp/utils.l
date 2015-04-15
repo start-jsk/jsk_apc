@@ -13,3 +13,6 @@
             (t nil)))
     ret))
 
+(defun str2symbol (str)
+  (intern (string-upcase str) "KEYWORD"))
+
