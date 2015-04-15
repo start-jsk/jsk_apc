@@ -62,6 +62,7 @@ add_message_files(
   bins_content.msg
   QrStamp.msg
   QrStampes.msg
+  ObjectRecognition.msg
   )
 
 ## Generate services in the 'srv' folder

@@ -38,6 +38,9 @@
   <run_depend>rosserial_client</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>posedetection_msgs</run_depend>
+  <run_depend>python-sklearn</run_depend>
+  <run_depend>python-numpy</run_depend>
+  <run_depend>python-opencv</run_depend>
 
   <export>
   </export>
