@@ -2,7 +2,7 @@
 
 import sys
 
-from rqt_yn_btn.my_module import MyPlugin
+from rqt_yn_btn.yes_no_button import YesNoButton
 from rqt_gui.main import Main
 
 

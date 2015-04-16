@@ -53,7 +53,7 @@ catkin_python_setup()
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  YesOrNo.srv
+  YesNo.srv
 #   Service1.srv
 #   Service2.srv
 )
