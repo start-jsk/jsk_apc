@@ -31,7 +31,7 @@
     (let (avs res)
       (ros::ros-info "[put_orderbin] called")
       (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
-      (setq avs (append avs (move-arm-to-order-bin arm)))
+      (setq avs (append avs (move-to-order-bin arm)))
       (send *irtviewer* :draw-objects)
       (send *ri* :stop-grasp)  ;; release object
       ;; follow back same trajectory
