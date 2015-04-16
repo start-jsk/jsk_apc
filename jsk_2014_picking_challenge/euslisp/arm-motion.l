@@ -121,7 +121,7 @@
        (setq wrist-index 7))
       (:rarm
        (setq wrist-index 14)))
-    (setf (elt angles wrist-index) angle)
+    (setf (elt angles wrist-index) (+ (elt angles wrist-index) angle))
     angles))
 
 ;; this is function version of object-picking
