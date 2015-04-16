@@ -1,5 +1,7 @@
 #!/usr/bin/env roseus
 (load "package://baxtereus/baxter-interface.l")
+(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
+(load "package://jsk_2014_picking_challenge/euslisp/arm-motion.l")
 (load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
 (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
 (load "package://jsk_2014_picking_challenge/euslisp/order-bin.l")
