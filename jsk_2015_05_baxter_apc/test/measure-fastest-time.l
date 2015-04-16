@@ -15,18 +15,19 @@
   (orderbin-init)
   (objects (list *baxter* *pod* *orderbin*)))
 
+(defun test-for-bin (arm bin)
+  (ros::ros-info "test for ~A" bin)
+  (move-to-target-bin arm bin)
+  (pick-object arm)
+  (move-to-order-bin arm))
+
 (defun test (arm)
   (let (bins)
     (case arm
       (:rarm (setq bins (list :b :c :e :f :h :i :k :l)))
       (:larm (setq bins (list :a :d :g :j))))
-    (dolist (bin bins)
-      (ros::ros-info "test for ~A" bin)
-      (move-to-target-bin arm bin)
-      (pick-object arm)
-      (move-to-order-bin arm))
+    (dolist (bin bins) (test-for-bin arm bin))
     ))
 
 (init)
-(test :rarm)
-(test :larm)
+
