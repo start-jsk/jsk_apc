@@ -38,7 +38,7 @@
       (unless (validate-arm arm)
         (send server :set-aborted (send server :result :sequence seq))
         (return-from :execute-cb nil))
-      (setq avs (append avs (move-arm-for-verification arm)))
+      (setq avs (append avs (move-for-verification arm)))
       (send *irtviewer* :draw-objects)
       ;; verify object
       (setq plist (send self :get-proba (send req :objects) "bof"))
