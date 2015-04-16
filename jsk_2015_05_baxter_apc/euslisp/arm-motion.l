@@ -125,13 +125,8 @@
     angles))
 
 ;; this is function version of object-picking
-(defun pick-object (l/r)
+(defun pick-object-avs (l/r)
   (let (revavs avs)
-    ;; l/r validataion
-    (if (not
-         (or (eq l/r :larm) (eq l/r :rarm)))
-        (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
-
     ;; picking pose
     (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
     (pushback (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
@@ -166,6 +161,14 @@
           (setq avs (append avs revavs)))
           ))
     avs))
+
+(defun pick-object (l/r)
+  ;; l/r validataion
+  (if (not
+       (or (eq l/r :larm) (eq l/r :rarm)))
+      (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
+  ;; send angle-vector-sequence to *ri*
+  (send *ri* :angle-vector-sequence (pick-object-avs l/r) :fast :default-controller 0 :scale 2.5))
 
 ;; this is function version of object-picking's release
 ;; this function must call from release-object
