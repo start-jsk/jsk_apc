@@ -3,6 +3,7 @@
 ;;
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
+(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 
 (defun str2arm (str)
   (let (res)
@@ -79,3 +80,93 @@
     (setq avs (append avs (move-to-bin arm bin)))
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
     (send *ri* :wait-interpolation)))
+
+(defun rotate-wrist (angles l/r &optional (angle 90))
+  (let ((wrist-index 0))
+    (case l/r
+      (:larm
+       (setq wrist-index 7))
+      (:rarm
+       (setq wrist-index 14)))
+    (setf (elt angles wrist-index) angle)
+    angles))
+
+;; this is function version of object-picking
+(defun pick-object (l/r)
+  (let (revavs)
+    ;; l/r validataion
+    (if (not
+         (or (eq l/r :larm) (eq l/r :rarm)))
+        (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
+
+    ;; picking pose
+    (setq avs nil)
+    (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
+    (pushback (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
+
+    (let* ((p 0.2)
+           (point (midpoint p #f(0 0 0) #f(260 0 0))))
+      (dotimes (i (/ 1 p))
+        (pushback (send *baxter* l/r :move-end-pos point :world :revert-if-fail nil) avs)))
+
+    ;; random motion
+    (let* ((random-y 40)
+           (random-move-points (list (float-vector 0 random-y 0) (float-vector 0 0 0) (float-vector 0 (- random-y) 0)))
+           (range (length random-move-points))
+           (sign (if (= (random 2) 1) 1 -1))
+           (rotate-angle (* sign 90)))
+      (if (= (random 2) 1)
+          (progn
+            (pushback (send *baxter* l/r :move-end-pos (elt random-move-points (random range)) :world :revert-if-fail nil) avs)
+            (pushback (send *baxter* l/r :move-end-pos #f(0 0 -75) :world :revert-if-fail nil) avs)
+            (setq revavs (reverse (cdr avs)))
+            ;; rotate wrist some angle
+            (dotimes (i 3)
+              (pushback (rotate-wrist (send *baxter* :angle-vector) l/r (+ (random 31) -15)) avs))
+            ;; return to original pose
+            (setq avs (append avs revavs)))
+        (progn
+          (setq revavs (reverse (cdr avs)))
+          (pushback (rotate-wrist (send *baxter* :angle-vector) l/r (* sign 90)) avs)
+          (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 (* sign 80) 0) :world :revert-if-fail nil) l/r rotate-angle) avs)
+          (dolist (av revavs)
+            (setf av (rotate-wrist av l/r rotate-angle)))
+          (setq avs (append avs revavs)))
+          )
+        ))
+
+
+    avs))
+
+;; this is function version of object-picking's release
+;; this function must call from release-object
+(defun release-object-first (l/r)
+  ;; releasing pose
+  (setq avs nil)
+  (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
+  (pushback (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
+  (let* ((p 0.2)
+        (point (midpoint p #f(0 0 0) #f(300 0 0))))
+    (dotimes (i (/ 1 p))
+             (pushback (send *baxter* l/r :move-end-pos point :world :revert-if-fail nil) avs)))
+
+  ;;(pushback (send *baxter* l/r :move-end-pos (float-vector 0 (elt random-y (random (length random-y))) 0) :world :revert-if-fail nil) avs)
+  ;;(push (send *baxter* l/r :move-end-pos (float-vector 0 (elt step-list counter) 0) :world :revert-if-fail nil) avs)
+
+  (pushback (send *baxter* l/r :move-end-pos #f(0 0 -75) :world :revert-if-fail nil) avs)
+  avs)
+
+(defun release-object (l/r)
+  ;; l/r validataion
+  (if (not
+       (or (eq l/r :larm) (eq l/r :rarm)))
+      (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
+
+  (setq avs (release-object-first l/r))
+
+  ;; go grasp(cleaner ON)
+  (ros::ros-info (format nil "[releasing_picking] cleaner OFF"))
+  (send *ri* :stop-grasp)
+
+  ;; return to original pose
+  (setq avs (append avs (reverse (cdr avs)))))
