@@ -41,8 +41,8 @@
       (unless (validate-arm arm)
         (send server :set-aborted (send server :result :sequence seq))
         (return-from :execute-cb nil))
-      (ros::ros-info "validate bin")
       ;; validate target bin name
+      (ros::ros-info "validate bin")
       (unless (validate-bin-name bin)
         (send server :set-aborted (send server :result :sequence seq))
         (return-from :execute-cb nil))
