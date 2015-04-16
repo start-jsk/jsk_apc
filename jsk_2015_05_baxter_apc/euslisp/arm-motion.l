@@ -96,21 +96,21 @@
     (setq avs (append avs (fold-pose-up arm)))
     (setq avs (append avs (untuck-pose arm)))
     (setq avs (append avs (to-order-bin arm)))
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
+    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
     (send *ri* :wait-interpolation)
     avs))
 (defun move-to-target-bin (arm bin)
   (let (avs)
     (setq avs (append avs (fold-pose arm bin)))
     (setq avs (append avs (to-target-bin arm bin)))
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
+    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
     (send *ri* :wait-interpolation)
     avs))
 (defun move-for-verification (arm)
   (let (avs)
     (setq avs (append avs (fold-pose-mid arm)))
     (setq avs (append avs (verification-pose arm)))
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
+    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
     (send *ri* :wait-interpolation)
     avs))
 
@@ -121,7 +121,7 @@
        (setq wrist-index 7))
       (:rarm
        (setq wrist-index 14)))
-    (setf (elt angles wrist-index) angle)
+    (setf (elt angles wrist-index) (+ (elt angles wrist-index) angle))
     angles))
 
 ;; this is function version of object-picking
@@ -164,11 +164,15 @@
 
 (defun pick-object (l/r)
   ;; l/r validataion
-  (if (not
-       (or (eq l/r :larm) (eq l/r :rarm)))
-      (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
-  ;; send angle-vector-sequence to *ri*
-  (send *ri* :angle-vector-sequence (pick-object-avs l/r) :fast :default-controller 0 :scale 2.5))
+  (let (avs)
+    (if (not
+        (or (eq l/r :larm) (eq l/r :rarm)))
+        (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
+    ;; send angle-vector-sequence to *ri*
+    (setq avs (pick-object-avs l/r))
+    (setq avs (append avs (fold-pose-up l/r)))
+    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5.)
+    (send *ri* :wait-interpolation)))
 
 ;; this is function version of object-picking's release
 ;; this function must call from release-object
