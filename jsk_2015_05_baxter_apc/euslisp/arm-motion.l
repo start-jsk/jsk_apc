@@ -122,7 +122,7 @@
             (setq revavs (reverse (cdr avs)))
             ;; rotate wrist some angle
             (dotimes (i 3)
-              (pushback (rotate-wrist (send *baxter* :angle-vector) l/r (+ (random 31) -15)) avs))
+              (pushback (rotate-wrist (send *baxter* :angle-vector) l/r (+ (random 7) -3)) avs))
             ;; return to original pose
             (setq avs (append avs revavs)))
         (progn
@@ -134,7 +134,6 @@
           (setq avs (append avs revavs)))
           )
         ))
-
 
     avs))
 
@@ -163,10 +162,20 @@
       (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
 
   (setq avs (release-object-first l/r))
+  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
+  (send *ri* :wait-interpolation)
 
   ;; go grasp(cleaner ON)
   (ros::ros-info (format nil "[releasing_picking] cleaner OFF"))
   (send *ri* :stop-grasp)
 
   ;; return to original pose
-  (setq avs (append avs (reverse (cdr avs)))))
+  ;; (setq avs (append avs (reverse (cdr avs))))
+  (setq avs (reverse (cdr avs)))
+  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
+  (send *ri* :wait-interpolation)
+  )
+
+;; debug
+(defun f (avs)
+  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5))
