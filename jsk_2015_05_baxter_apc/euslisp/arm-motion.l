@@ -132,9 +132,7 @@
           (dolist (av revavs)
             (setf av (rotate-wrist av l/r rotate-angle)))
           (setq avs (append avs revavs)))
-          )
-        ))
-
+          ))
     avs))
 
 ;; this is function version of object-picking's release
