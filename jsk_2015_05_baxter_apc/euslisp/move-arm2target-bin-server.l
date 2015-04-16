@@ -47,7 +47,7 @@
         (send server :set-aborted (send server :result :sequence seq))
         (return-from :execute-cb nil))
       (ros::ros-info "move arm to target bin")
-      (move-arm-to-target-bin arm bin)
+      (move-to-target-bin arm bin)
       (send *irtviewer* :draw-objects)
       ;; set result
       (send server :set-succeeded (send server :result :sequence seq))
