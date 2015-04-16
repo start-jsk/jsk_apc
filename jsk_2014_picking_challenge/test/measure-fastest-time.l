@@ -23,11 +23,10 @@
     (dolist (bin bins)
       (ros::ros-info "test for ~A" bin)
       (move-to-target-bin arm bin)
-;       (pick-object arm)
+      (pick-object arm)
       (move-to-order-bin arm))
     ))
 
 (init)
 (test :rarm)
 (test :larm)
-

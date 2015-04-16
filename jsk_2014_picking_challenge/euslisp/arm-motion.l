@@ -3,6 +3,7 @@
 ;;
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
+(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 
 (defun str2arm (str)
   (let (res)
@@ -125,14 +126,13 @@
 
 ;; this is function version of object-picking
 (defun pick-object (l/r)
-  (let (revavs)
+  (let (revavs avs)
     ;; l/r validataion
     (if (not
          (or (eq l/r :larm) (eq l/r :rarm)))
         (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
 
     ;; picking pose
-    (setq avs nil)
     (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
     (pushback (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
 
@@ -164,9 +164,7 @@
           (dolist (av revavs)
             (setf av (rotate-wrist av l/r rotate-angle)))
           (setq avs (append avs revavs)))
-          )
-        ))
-
+          ))
     avs))
 
 ;; this is function version of object-picking's release
