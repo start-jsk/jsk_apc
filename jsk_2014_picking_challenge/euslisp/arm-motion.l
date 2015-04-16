@@ -58,9 +58,9 @@
   (let (avs)
     (setq avs (append avs (fold-pose-back (if (eq arm :larm) :rarm :larm))))  ; fold oposite arm
     (setq avs (append avs (fold-pose-mid arm)))
-    (cond ((find bin '(:a :b :c :d)) (setq avs (append avs (fold-pose-up arm))))
-          ((find bin '(:e :f :g :h :i)) (setq avs (append avs (fold-pose-mid arm))))
-          ((find bin '(:j :k :l)) (setq avs (append avs (fold-pose-low arm))))
+    (cond ((find bin '(:a :b :c)) (setq avs (append avs (fold-pose-up arm))))
+          ((find bin '(:d :e :f :g :i)) (setq avs (append avs (fold-pose-mid arm))))
+          ((find bin '(:h :j :k :l)) (setq avs (append avs (fold-pose-low arm))))
           (t nil))
     avs))
 (defun to-target-bin (arm bin)
