@@ -24,12 +24,14 @@
     (ros::ros-error "invalid bin name")
     nil))
 
-(defun fold-pose-init ()
+(defun fold-pose-mid (&optional (arm :arms))
   (let ((av-init (send *baxter* :angle-vector))
         (av-l #f(37.3096 -2.30713 -74.0698 146.667 99.5361 -3.66943 6.48193))
         (av-r #f(-48.8672 -10.437 80.6616 148.645 -80.9033 1.38428 -18.8745)) midp)
-    (send *baxter* :larm :angle-vector av-l)
-    (send *baxter* :rarm :angle-vector av-r)
+    (case arm
+      (:arms (progn (send *baxter* :larm :angle-vector av-l) (send *baxter* :rarm :angle-vector av-r)))
+      (:larm (send *baxter* :larm :angle-vector av-l))
+      (:rarm (send *baxter* :rarm :angle-vector av-r)))
     (setq midp (midpoint 0.5 av-init (send *baxter* :angle-vector)))
     (list midp (send *baxter* :angle-vector))))
 
@@ -59,7 +61,7 @@
 
 (defun fold-pose (arm bin)
   (let (avs)
-    (setq avs (append avs (fold-pose-init)))
+    (setq avs (append avs (fold-pose-mid)))
     (setq avs (append avs (fold-pose-back arm)))
     (cond ((find bin '(:a :b :c :d :f)) (setq avs (append avs (fold-pose-up arm))))
           ((find bin '(:e :g :h :i)) (setq avs (append avs (fold-pose-mid arm))))
@@ -78,4 +80,21 @@
     (setq avs (append avs (fold-pose arm bin)))
     (setq avs (append avs (move-to-bin arm bin)))
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
-    (send *ri* :wait-interpolation)))
+    (send *ri* :wait-interpolation)
+    avs))
+
+(defun verification-pose (arm)
+  (let ((av-l #f(1.56006 -10.6348 -130.254 83.584 72.29 -15.4028 157.192))
+        (av-r #f(-22.0825 15.1392 144.448 111.006 -25.0488 2.54883 24.895)))
+    (case arm
+      (:larm (send *baxter* arm :angle-vector av-l))
+      (:rarm (send *baxter* arm :angle-vector av-r)))
+    (list (send *baxter* :angle-vector))))
+
+(defun move-arm-for-verification (arm)
+  (let (avs)
+    (setq avs (append avs (fold-pose-mid arm)))
+    (setq avs (append avs (verification-pose arm)))
+    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
+    (send *ri* :wait-interpolation)
+    avs))
