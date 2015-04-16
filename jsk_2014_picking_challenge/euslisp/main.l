@@ -4,6 +4,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
 (load "package://jsk_2014_picking_challenge/euslisp/order-bin.l")
 (load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
+(load "package://jsk_2014_picking_challenge/euslisp/arm-motion.l")
 
 
 (defun init ()
