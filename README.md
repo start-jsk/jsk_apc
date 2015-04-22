@@ -8,6 +8,8 @@
 
 環境の構築
 ----------
+[Ros Wiki](http://wiki.ros.org/indigo/Installation/Ubuntu)のインストール手順に従ってindigoの環境設定をしたのち,
+以下の手順で環境構築をしてください.
 ```
 $ mkdir -p catkin_ws/semi/src
 $ cd catkin_ws/semi/src
@@ -19,16 +21,15 @@ $ wstool set jsk_recognition https://github.com/jsk-ros-pkg/jsk_recognition --gi
 $ wstool update
 $ cd ..
 $ rosdep install -y -r --from-paths .
-$ catkin_make
+$ sudo apt-get install python-catkin-tools ros-indigo-jsk-tools
+$ catkin build
 $ source devel/setup.bash
 ```
-
 
 実機を使うときの環境設定
 -----------------------
 ```
-$ source `rospack find jsk_tools`/src/bashrc.ros
-$ rossetrobot baxter.jsk.imi.i.u-tokyo.ac.jp
+$ rossetmaster baxter.jsk.imi.i.u-tokyo.ac.jp
 $ rossetip
 $ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
 ```
@@ -36,8 +37,7 @@ $ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
 euslispからロボットを動かす
 --------------------------
 ```
-> roscd jsk_2014_picking_challenge
-> roseus scripts/main.l
+> rosrun jsk_2014_picking_challenge main.l
 $ (test-1) ;; simple example
 $ (test-2) ;; ik exmple
 ```
