@@ -45,9 +45,9 @@ $ (test-2) ;; ik exmple
 最新のデモの実行方法
 -----------------------
 
-```
+```sh
 roslaunch jsk_baxter_startup baxter.launch
-roslaunch jsk_2014_picking_challenge final_video.launch
+roslaunch jsk_2014_picking_challenge challenge.launch
 rosrun jsk_2014_picking_challenge master.py
 ```
 
