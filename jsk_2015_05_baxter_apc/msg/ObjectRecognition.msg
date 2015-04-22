@@ -1,3 +1,6 @@
 std_msgs/Header header
-string object_name
+string matched
+float64 probability
+string[] candidates
+float64[] probabilities
 

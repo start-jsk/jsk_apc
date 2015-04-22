@@ -64,19 +64,21 @@ class BofObjectMatcher(ObjectMatcher):
         X = self.bof.transform([descs])
         normalize(X, copy=False)
         object_list = get_object_list()
-        stamp = query_features.header.stamp
-        y_pred_one = self.clf.predict(X)[0]
-        obj_pred = object_list[y_pred_one]
-        return stamp, obj_pred
+        proba = self.clf.predict_proba(X)[0]
+        matched_idx = np.argmax(proba)
+        # prepare message
+        res = ObjectRecognition()
+        res.header.stamp = query_features.header.stamp
+        res.matched = object_list[matched_idx]
+        res.probability = proba[matched_idx]
+        res.candidates = object_list
+        res.probabilities = proba
+        return res
 
     def spin_once(self):
-        pred = self.predict_now()
-        if pred is None:
+        res = self.predict_now()
+        if res is None:
             return
-        stamp, obj_name = pred
-        res = ObjectRecognition()
-        res.header.stamp = stamp
-        res.object_name = obj_name
         self._pub_recog.publish(res)
 
     def spin(self):
