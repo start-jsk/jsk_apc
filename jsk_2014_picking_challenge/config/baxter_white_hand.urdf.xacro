@@ -10,6 +10,7 @@
   <xacro:property name="bodylen_side" value=".15" />
   <xacro:property name="bodylen_side2" value=".12" />
   <xacro:property name="bodylen_side2_base" value=".06" />
+  <xacro:property name="right_wrist_offset_x" value="-0.04" />
   <link name="custom_vacuum_link">
     <visual>
       <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
@@ -89,26 +90,26 @@
   <joint name="right_custom_joint" type="fixed">
     <parent link="right_wrist"/>
     <child link="custom_vacuum_link"/>
-    <origin rpy="0 0 0" xyz="0 0 0.18" />
+    <origin rpy="0 0 0" xyz="${right_wrist_offset_x} 0 0.18" />
   </joint>
   <joint name="right_custom_joint_base" type="fixed">
     <parent link="right_wrist"/>
     <child link="custom_vacuum_link_base"/>
-    <origin rpy="0 0 1.57" xyz="0 0 0.11" />
+    <origin rpy="0 0 0" xyz="${right_wrist_offset_x} 0 0.11" />
   </joint>
   <joint name="right_custom_joint_side" type="fixed">
     <parent link="right_wrist"/>
     <child link="custom_vacuum_link_side"/>
-    <origin rpy="1.57 0 0" xyz="0 0.05 0.15" />
+    <origin rpy="1.57 0 0" xyz="${right_wrist_offset_x} 0 0.15" />
   </joint>
   <joint name="right_custom_joint_side2" type="fixed">
     <parent link="right_wrist"/>
     <child link="custom_vacuum_link_side2"/>
-    <origin rpy="0 0 0" xyz="0 0.1 0.08" />
+    <origin rpy="0 0 0" xyz="${right_wrist_offset_x} 0 0.08" />
   </joint>
   <joint name="right_custom_joint_side2_base" type="fixed">
     <parent link="right_wrist"/>
     <child link="custom_vacuum_link_side2_base"/>
-    <origin rpy="0 0 0" xyz="0 0.1 0.04" />
+    <origin rpy="0 0 0" xyz="${right_wrist_offset_x} 0 0.04" />
   </joint>
 </robot>
