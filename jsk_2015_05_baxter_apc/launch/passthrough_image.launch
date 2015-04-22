@@ -1,11 +1,12 @@
 <launch>
-  <arg name="input_cloud" default="/kinect2/depth_lowres/points"/>
+  <arg name="input_cloud" default="/kinect2/depth_highres/points"/>
   <arg name="custom" default="false"/>
   <arg name="manager" default="passthrough_manager"/>
+  <arg name="rect" default="false" />
 
   <node pkg="pr2_navigation_self_filter"
-	type="self_filter" clear_params="true"
-	name="robot_shadow_self_filter2" respawn="true" output="screen">
+        type="self_filter" clear_params="true"
+        name="robot_shadow_self_filter2" respawn="true" output="screen">
     <!-- The topic for the input cloud -->
     <remap from="cloud_in" to="$(arg input_cloud)" />
     <!-- The topic for the output cloud -->
@@ -18,13 +19,12 @@
     <rosparam unless="$(arg custom)" command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/openni_self_filter.yaml" />
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="$(arg manager)"
-        args="manager" output="screen"/>
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
 
 
   <node pkg="nodelet" type="nodelet" name="pass_through_z"
-        args="load pcl/PassThrough $(arg manager)">
-    <remap from="~input" to="/kinect2/depth_lowres/points_filtered" />
+        args="load pcl/PassThrough $(arg manager)" respawn="true">
+    <remap from="~input" to="/kinect2/depth_highres/points_filtered" />
     <!-- suppose QVGA -->
     <rosparam>
       filter_field_name: z
@@ -35,21 +35,50 @@
   </node>
 
   <node pkg="nodelet" type="nodelet" name="organized_to_pi"
-        args="load jsk_pcl/OrganizedPointCloudToPointIndices $(arg manager)">
+        args="load jsk_pcl/OrganizedPointCloudToPointIndices $(arg manager)" respawn="true">
     <remap from="~input" to="pass_through_z/output" />
   </node>
 
   <node pkg="nodelet" type="nodelet" name="pi_to_maskimage"
         args="load jsk_pcl/PointIndicesToMaskImage $(arg manager)">
     <remap from="~input" to="organized_to_pi/output" />
-    <remap from="~input/image" to="/kinect2/rgb_lowres/image" />
+    <remap from="~input/image" to="/kinect2/rgb/image" />
     <param name="approximate_sync" value="true" />
   </node>
 
+  <!-- process mask image -->
+  <node pkg="nodelet" type="nodelet" name="dilate_mask_image"
+        args="load jsk_perception/DilateMaskImage $(arg manager)">
+    <remap from="~input" to="/pi_to_maskimage/output" />
+    <param name="approximate_sync" value="true" />
+    <param name="size" type="int" value="5" />
+    <param name="iterations" type="int" value="2" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="erode_mask_image"
+        args="load jsk_perception/ErodeMaskImage $(arg manager)">
+    <remap from="~input" to="/dilate_mask_image/output" />
+    <param name="approximate_sync" value="true" />
+    <param name="size" type="int" value="5" />
+    <param name="iterations" type="int" value="4" />
+  </node>
+  <group if="$(arg rect)">
+    <node pkg="nodelet" type="nodelet" name="mask_image_to_roi"
+          args="load jsk_perception/MaskImageToROI $(arg manager)">
+      <remap from="~input" to="/erode_mask_image/output" />
+      <remap from="~input/camera_info" to="/kinect2/depth_highres/camera_info" />
+      <param name="approximate_sync" value="true" />
+    </node>
+    <node pkg="nodelet" type="nodelet" name="roi_to_mask_image"
+          args="load jsk_perception/ROIToMaskImage $(arg manager)">
+      <remap from="~input" to="/mask_image_to_roi/output" />
+      <param name="approximate_sync" value="true" />
+    </node>
+  </group>
   <node pkg="nodelet" type="nodelet" name="apply_mask"
         args="load jsk_perception/ApplyMaskImage $(arg manager)">
-    <remap from="~input" to="/kinect2/rgb_lowres/image" />
-    <remap from="~input/mask" to="pi_to_maskimage/output" />
+    <remap from="~input" to="/kinect2/rgb/image" />
+    <remap from="~input/mask" to="/erode_mask_image/output" unless="$(arg rect)" />
+    <remap from="~input/mask" to="/roi_to_mask_image/output" if="$(arg rect)" />
     <param name="approximate_sync" value="true" />
   </node>
 
