@@ -11,9 +11,7 @@
     <arg name="custom" value="$(arg custom)"/>
   </include>
 
-  <node pkg="tf" type="static_transform_publisher" name="static_transform_publisher"
-    args="-0.16 0.932 0.0 0.0 -1.57 1.57 kinect2_rgb_optical_frame base 100" >
-  </node>
+  <include file="$(find jsk_2014_picking_challenge)/launch/tf.launch"></include>
 
   <!-- rosserial -->
   <node pkg="rosserial_python" type="serial_node.py" name="rosserial_node" output="screen" respawn="true">
