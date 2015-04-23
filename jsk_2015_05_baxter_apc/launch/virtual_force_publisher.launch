@@ -1,0 +1,18 @@
+<launch>
+  <arg name="limb" default="right" />
+  <arg name="namespace" default="$(arg limb)_endeffector" />
+  <arg name="publish_frequency" default="50.0"/>
+  <arg name="time_constant" default="0"/>
+  <arg name="root" default="$(arg limb)_arm_mount"/>
+  <arg name="tip"  default="$(arg limb)_wrist"/>
+  <arg name="input" default="/robot/ref_joint_states"/> <!-- ref removes baxter's own weight according to Mailing List -->
+  <group ns="$(arg namespace)">
+    <node pkg="virtual_force_publisher" type="virtual_force_publisher" name="virtual_force_publisher">
+      <remap from="joint_states" to="/$(arg input)"/>
+      <param name="publish_frequency" value="$(arg publish_frequency)"/>
+      <param name="time_constant" value="$(arg time_constant)"/>
+      <param name="root" value="$(arg root)"/>
+      <param name="tip" value="$(arg tip)"/>
+    </node>
+  </group>
+</launch>
