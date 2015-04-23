@@ -116,9 +116,15 @@
     (send *ri* :wait-interpolation)
     avs))
 
+(defun assert-l/r (l/r)
+  (if (not
+       (or (eq l/r :larm) (eq l/r :rarm)))
+      (return-from pick-object "invalid l/r. l/r must be :larm or :rarm")))
+
 ;; this is function version of object-picking
 (defun pick-object-first (l/r)
   (let (avs)
+    (assert-l/r l/r)
     ;; picking pose
     (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
     (pushback (send *baxter* l/r :move-end-pos #f(0 0 -20) :world :revert-if-fail nil) avs)
@@ -126,6 +132,7 @@
     avs))
 
 (defun rotate-wrist (angles l/r &optional (angle 90))
+  (assert-l/r l/r)
   (let ((wrist-index 0))
     (case l/r
       (:larm
@@ -136,6 +143,7 @@
     angles))
 
 (defun same-rotate-wrist (avs l/r angles)
+  (assert-l/r l/r)
   (case l/r
     (:larm
      (dolist (av avs)
@@ -147,6 +155,7 @@
   avs)
 
 (defun random-pick (l/r &optional random-num)
+  (assert-l/r l/r)
   ;; random motion
   (let* (avs revavs
          (random-y 50))
@@ -162,10 +171,10 @@
        (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 -75) :world :revert-if-fail nil) avs))
       (3
        (pushback (rotate-wrist (send *baxter* :angle-vector) l/r (- 90)) avs)
-       (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 (- 100) 0) :world :revert-if-fail nil) l/r (- 90)) avs))
+       (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 (- 60) 0) :world :revert-if-fail nil) l/r (- 90)) avs))
       (4
        (pushback (rotate-wrist (send *baxter* :angle-vector) l/r 90) avs)
-       (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 100 0) :world :revert-if-fail nil) l/r 90) avs))
+       (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 60 0) :world :revert-if-fail nil) l/r 90) avs))
       )
     avs))
 
@@ -181,23 +190,20 @@
 
 (defun pick-object (l/r)
   ;; l/r validataion
+  (assert-l/r l/r)
   (let (avs
         revavs
-        (random-list (list 0 1 2 3 4)))
-    (if (not
-        (or (eq l/r :larm) (eq l/r :rarm)))
-        (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
+        (pattern-list (list 0 1 2 3 4)))
     ;; go grasp(cleaner ON)
     (ros::ros-info (format nil "[picking_object] cleaner ON"))
     (send *ri* :go-grasp)
 
     (setq *grabbed* nil)
-    (while (and (not *grabbed*) random-list)
+    (while (and (not *grabbed*) pattern-list)
       ;; send angle-vector-sequence to *ri*
-      (setq random-element (elt random-list (random (length random-list))))
-      (ros::ros-info (format nil "~A~%" random-list))
-      (setq avs (append (pick-object-first l/r) (random-pick l/r random-element)))
-      (setq random-list (remove random-element random-list))
+      ;;(format t "~A~%" pattern-list)
+      (setq avs (append (pick-object-first l/r) (random-pick l/r (car pattern-list))))
+      (setq pattern-list (cdr pattern-list))
       (setq revavs (reverse avs))
 
       (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5)
@@ -207,11 +213,15 @@
 
       ;; rotate same angle
       (setq revavs (same-rotate-wrist revavs l/r (car (last avs))))
-      (send *baxter* :angle-vector (car (last avs)))
-      (setq av (send *baxter* :angle-vector))
-      (case random-element
-        (3 (pushback (rotate-wrist av l/r 90) avs))
-        (4 (pushback (rotate-wrist av l/r (- 90)) avs)))
+
+      ;; back to original wrist angles
+      (let ((av (car (last revavs))))
+        (case (length pattern-list)
+          (1
+           (pushback (rotate-wrist av l/r 90) revavs))
+          (0
+           (pushback (rotate-wrist av l/r -90) revavs))))
+
       (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
       (send *ri* :wait-interpolation)
       (ros::spin-once) ;; check if grabbed
@@ -220,6 +230,7 @@
 ;; this is function version of object-picking's release
 ;; this function must call from release-object
 (defun release-object-first (l/r)
+  (assert-l/r l/r)
   ;; releasing pose
   (setq avs nil)
   (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
@@ -255,4 +266,4 @@
 
 ;; debug
 (defun f (avs)
-  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5.))
+  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5))
