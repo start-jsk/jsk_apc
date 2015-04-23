@@ -88,7 +88,7 @@ def get_train_imgpaths(obj_name):
         rotation_deg = int(rotation_deg)
         with open(os.path.join(data_dir, 'appropriate_images.yml')) as f:
             appropriate_data = yaml.load(f)[obj_name]   # {'N1': ['0-30']}
-        if camera_pos not in appropriate_data:
+        if (not appropriate_data) or (camera_pos not in appropriate_data):
             continue
         skip = True
         for min_max in appropriate_data[camera_pos]:
@@ -103,11 +103,6 @@ def get_train_imgpaths(obj_name):
         mask_path = os.path.join(obj_dir, 'masks', maskfile)
         imgpaths.append((raw_path, mask_path))
     os.chdir(data_dir)
-    if len(imgpaths) == 0:
-        print(terminal_color.fmt(
-            '@{yellow}[WARNING] not found images: {0}'
-            ).format(obj_name))
-        return
     return imgpaths
 
 

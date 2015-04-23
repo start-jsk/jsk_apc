@@ -105,8 +105,10 @@ mark_twain_huckleberry_finn:
     - 170-200
     - 340-360
 mead_index_cards:
-  N4: 0-360
-  N5: 0-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
 mommys_helper_outlet_plugs:
   N1:
     - 0-20
