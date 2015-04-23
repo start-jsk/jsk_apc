@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-import os
-import sys
-import numpy as np
-from collections import OrderedDict
 import datetime
+
+import numpy as np
 
 import rospy
 import actionlib
@@ -20,8 +18,9 @@ from jsk_2014_picking_challenge.msg import (
     ObjectPickingGoal,
     )
 from jsk_2014_picking_challenge.srv import (
+    MoveArm,
     ReleaseItem,
-    ObjectVerification,
+    ObjectMatch
     )
 
 
@@ -48,7 +47,6 @@ class Master(object):
             '/semi/order_list', order_list, self.cb_orders)
         rospy.wait_for_message('/semi/bin_contents', bins_content)
         rospy.wait_for_message('/semi/order_list', order_list)
-        
         self.pub_rvizmsg.publish(text='Initialized')
 
     def cb_bin_contents(self, msg):
@@ -133,36 +131,31 @@ class Master(object):
         self.mode = 'move2target'
         return False
 
+    def move_for_verification(self):
+        client = rospy.ServiceProxy('/move_for_verification', MoveArm)
+        res = client(limb=self.use_limb)
+        return res
+
     def object_verification(self):
         """Verify item if it's intended one."""
         bin_name = self.target[0]
         target_object = self.target[1]
-        rospy.loginfo('Veify: {} in {}'.format(
-            target_object, self.bin_contents[bin_name]))
         if len(self.bin_contents[bin_name]) == 1:
             self.mode = 'place_item'
             return True
-        limb = self.use_limb
-        lorr = 'l' if limb == 'left' else 'r'
-        client = rospy.ServiceProxy(
-            '/semi/{}arm_move_for_verification'.format(lorr),
-            ObjectVerification)
-        res = client(objects=self.bin_contents[bin_name],
-                     target_object=target_object)
-        rospy.loginfo('Waiting for server: move_for_verification')
-        client.wait_for_service()
-        rospy.loginfo('Found: move_for_verification')
-        if res.succeeded:
+        res = self.move_for_verification()
+        matcher_client = rospy.ServiceProxy('/bof_matcher', ObjectMatch)
+        res = matcher_client(objects=self.bin_contents[bin_name])
+        if target_object == np.argmax(res.probabilities):
             self.mode = 'place_item'
             return True
         else:
-            rospy.logwarn('Failed motion: object_verification')
             self.mode = 'move2target'
             return False
 
     def place_item(self):
         """Place item into order bin."""
-        target_obj = self.target[1]
+        # target_obj = self.target[1]
         limb = self.use_limb
         lorr = 'l' if limb == 'left' else 'r'
         client = rospy.ServiceProxy('/semi/{}arm_put_orderbin'.format(lorr),
