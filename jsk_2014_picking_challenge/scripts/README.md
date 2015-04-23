@@ -1,0 +1,23 @@
+About object data
+=================
+To extract features from object data,
+you need to download distributed by Robot Learning Lab, UC Berkeley.
+Object data is available from here::
+
+    * http://rll.berkeley.edu/amazon_picking_challenge/
+
+
+Attention
+---------
+You should change dirname for following items manually::
+
+    * kygen_squeakin_eggs_plush_puppies  -> kyjen_squeakin_eggs_plush_puppies
+    * rollodex_mesh_collection_jumbo_pencil_cup -> rolodex_jumbo_pencil_cup
+
+
+Extract sift
+============
+1. Follow the instruction at **About object data**
+2. Execute following::
+
+    $ roslaunch jsk_2014_picking_challenge extract_sift.launch

@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="jsk_2014_picking_challenge" type="empty_camera_info.py" name="empty_camera_info"></node>
+  <node pkg="imagesift" type="imagesift" name="imagesift">
+    <remap from="/camera_info" to="/empty_camera_info/output" />
+  </node>
+  <node pkg="jsk_2014_picking_challenge" type="extract_sift.py" name="extract_sift" output="screen"></node>
+</launch>
