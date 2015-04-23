@@ -193,7 +193,6 @@
 
     (setq *grabbed* nil)
     (while (and (not *grabbed*) random-list)
-      (ros::spin-once)
       ;; send angle-vector-sequence to *ri*
       (setq random-element (elt random-list (random (length random-list))))
       (ros::ros-info (format nil "~A~%" random-list))
@@ -201,16 +200,22 @@
       (setq random-list (remove random-element random-list))
       (setq revavs (reverse avs))
 
-      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
+      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5)
       (send *ri* :wait-interpolation)
       (unix:sleep 3) ;; wait 3 seconds.
+      (ros::spin-once)  ;; check if grabbed
 
       ;; rotate same angle
       (setq revavs (same-rotate-wrist revavs l/r (car (last avs))))
-      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 2.5)
+      (send *baxter* :angle-vector (car (last avs)))
+      (setq av (send *baxter* :angle-vector))
+      (case random-element
+        (3 (pushback (rotate-wrist av l/r 90) avs))
+        (4 (pushback (rotate-wrist av l/r (- 90)) avs)))
+      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
       (send *ri* :wait-interpolation)
-      )
-    ))
+      (ros::spin-once) ;; check if grabbed
+      )))
 
 ;; this is function version of object-picking's release
 ;; this function must call from release-object
