@@ -116,6 +116,15 @@
     (send *ri* :wait-interpolation)
     avs))
 
+;; this is function version of object-picking
+(defun pick-object-first (l/r)
+  (let (avs)
+    ;; picking pose
+    (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
+    (pushback (send *baxter* l/r :move-end-pos #f(0 0 -20) :world :revert-if-fail nil) avs)
+    (pushback (send *baxter* l/r :move-end-pos #f(260 0 0) :world :revert-if-fail nil) avs)
+    avs))
+
 (defun rotate-wrist (angles l/r &optional (angle 90))
   (let ((wrist-index 0))
     (case l/r
@@ -136,17 +145,6 @@
        (setf (elt av 14) (elt angles 14)))
      ))
   avs)
-;; this is function version of object-picking
-(defun pick-object-first (l/r)
-  (let (avs)
-    ;; picking pose
-    (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
-    (pushback (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
-    (let* ((p 0.1)
-           (point (midpoint p #f(0 0 0) #f(260 0 0))))
-      (dotimes (i (/ 1 p))
-        (pushback (send *baxter* l/r :move-end-pos point :world :revert-if-fail nil) avs)))
-    avs))
 
 (defun random-pick (l/r &optional random-num)
   ;; random motion
@@ -203,13 +201,13 @@
       (setq random-list (remove random-element random-list))
       (setq revavs (reverse avs))
 
-      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5.)
+      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
       (send *ri* :wait-interpolation)
       (unix:sleep 3) ;; wait 3 seconds.
 
       ;; rotate same angle
       (setq revavs (same-rotate-wrist revavs l/r (car (last avs))))
-      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5.)
+      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 2.5)
       (send *ri* :wait-interpolation)
       )
     ))
@@ -252,4 +250,4 @@
 
 ;; debug
 (defun f (avs)
-  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5.))
+  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5.))
