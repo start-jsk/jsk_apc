@@ -98,7 +98,7 @@
     (setq avs (append avs (fold-pose-up arm)))
     (setq avs (append avs (untuck-pose arm)))
     (setq avs (append avs (to-order-bin arm)))
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
+    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
     (send *ri* :wait-interpolation)
     avs))
 (defun move-to-target-bin (arm bin)
