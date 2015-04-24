@@ -7,6 +7,10 @@
 (load "package://jsk_2014_picking_challenge/euslisp/order-bin.l")
 (load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
 
+(ros::roseus "tweet_example")
+(ros::advertise "tweet" std_msgs::string 1)
+;; (unix:sleep 3)
+
 (defun init ()
   (baxter-init)
   (send *baxter* :locate #f(0 0 950) :world)
@@ -16,10 +20,20 @@
   (objects (list *baxter* *pod* *orderbin*)))
 
 (defun test-for-bin (arm bin)
+  (setq start-time (ros::time-now))
   (ros::ros-info "test for ~A" bin)
   (move-to-target-bin arm bin)
   (pick-object arm)
-  (move-to-order-bin arm))
+  (move-to-order-bin arm)
+  (setq finish-time (ros::time-now))
+  (setq elapsed-time (ros::time- finish-time start-time))
+  (setq elapsed-msg (instance std_msgs::string :init))
+  (send elapsed-msg :data (format nil "It takes ~d min ~d sec" (/ (send elapsed-time :sec) 60) (mod (send elapsed-time :sec) 60)))
+  (ros::ros-info (send elapsed-msg :data))
+  (ros::publish "tweet" elapsed-msg)
+  (ros::spin-once)
+  (ros::exit 1)
+  )
 
 (defun test (arm)
   (let (bins)
@@ -30,4 +44,3 @@
     ))
 
 (init)
-
