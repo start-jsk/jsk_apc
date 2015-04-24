@@ -1,0 +1,12 @@
+(load "package://baxtereus/baxter-interface.l")
+(load "package://jsk_2014_picking_challenge/euslisp/model/pod-lowres.l")
+(load "package://jsk_2014_picking_challenge/euslisp/model/order-bin.l")
+
+(defun apc-init ()
+  (baxter-init)
+  (send *baxter* :locate #f(0 0 950) :world)
+  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+  (pod-init)
+  (orderbin-init)
+  (objects (list *baxter* *pod* *orderbin*))
+  t)
