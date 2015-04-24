@@ -1,21 +1,7 @@
 #!/usr/bin/env roseus
-(load "package://baxtereus/baxter-interface.l")
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/arm-motion.l")
-(load "package://jsk_2014_picking_challenge/euslisp/target-pick-region.l")
-(load "package://jsk_2014_picking_challenge/euslisp/pod-lowres.l")
-(load "package://jsk_2014_picking_challenge/euslisp/order-bin.l")
-(load "package://jsk_2014_picking_challenge/euslisp/gripper-control.l")
-(load "package://jsk_2014_picking_challenge/euslisp/arm-motion.l")
-
-
-(defun init ()
-  (baxter-init)
-  (send *baxter* :locate #f(0 0 950) :world)
-  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
-  (pod-init)
-  (orderbin-init)
-  (objects (list *baxter* *pod* *orderbin*)))
+(load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
 
 (defun test-1 ()
   (send *baxter* :larm :shoulder-y :joint-angle -30)
@@ -127,11 +113,4 @@
     (send *ri* :wait-interpolation)
     ))
 
-(warn "~%")
-(warn "(test-1) to move baxter arm a little.~%")
-(warn "(test-2) to test simple IK.~%")
-(warn "(test-target-ik) to test target regeion IK.~%")
-(warn "(ir2ri) to reflect ir angle vector to ri.~%")
-(warn "(ri2ir) to reflect potentio vector to ir viewer.~%")
-(warn "(mv2target arm bin_nm) to move arm (ex. :larm) to target bin (ex. 'a)~%")
-(init)
+(workcell-init)
