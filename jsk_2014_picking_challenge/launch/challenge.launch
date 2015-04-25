@@ -19,8 +19,8 @@
   </node>
 
   <!-- json -->
-  <node pkg="jsk_2014_picking_challenge" type="read_json.py" name="read_json_data"
-    args="--file $(find jsk_2014_picking_challenge)/data/example.json">
+  <node pkg="jsk_2014_picking_challenge" type="bin_contents.py" name="bin_contents" output="log">
+    <param name="json" value="$(find jsk_2014_picking_challenge)/data/example.json" />
   </node>
 
   <!-- motion -->
