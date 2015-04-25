@@ -23,6 +23,7 @@
       ; get status from parameter server
       (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)))
       (setq state (ros::get-param (format nil "~A_limb/state" (arm-to-str arm))))
+      (send *irtviewer* :draw-objects)
       (ros::ros-info "state: ~A, arm: ~A, target: ~A" state (arm-to-str arm) (symbol-to-str target))
       (cond
         ((string= state "move_to_target_bin")
@@ -51,5 +52,7 @@
 ; TODO: make workorder publisher
 (setq workorder (list '("right" :c) '("left" :a) '("right" :b) '("left" :d) '("right" :e)))
 
-(apc-init)
-(main)
+(warn "~% Commands ~%")
+(warn "(apc-init) : Setup~%")
+(warn "(main)     : Start the loop~%")
+
