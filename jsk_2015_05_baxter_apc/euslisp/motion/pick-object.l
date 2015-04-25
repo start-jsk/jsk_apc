@@ -68,4 +68,7 @@
       (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
       (send *ri* :wait-interpolation)
       (ros::spin-once) ;; check if grabbed
-      )))
+      (if (not *grabbed*)
+	  (speak-en  "Fail to catch the target" :google t)
+	)))
+  )
