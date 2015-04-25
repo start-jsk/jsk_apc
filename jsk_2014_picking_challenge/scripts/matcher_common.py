@@ -7,6 +7,7 @@ import gzip
 import cPickle as pickle
 
 import cv2
+from catkin import terminal_color
 
 import rospy
 from jsk_2014_picking_challenge.srv import ObjectMatch, ObjectMatchResponse
@@ -73,21 +74,35 @@ def get_train_imgpaths(obj_name):
     data_dir = get_data_dir()
     obj_dir = os.path.join(data_dir, obj_name)
     if not os.path.exists(obj_dir):
-        rospy.logwarn('not found object data: {o}'.format(o=obj_name))
+        print(terminal_color.fmt(
+            '@{yellow}[WARNING] not found object data: {0}'
+            ).format(obj_name))
         return
     os.chdir(obj_dir)
     imgpaths = []
     for imgfile in os.listdir('.'):
         if not imgfile.endswith('.jpg'):
             continue
+        basename, _ = os.path.splitext(imgfile)         # N1_30.jpg -> N1_30
+        camera_pos, rotation_deg = basename.split('_')  # N1_30 -> N1, 30
+        rotation_deg = int(rotation_deg)
+        with open(os.path.join(data_dir, 'appropriate_images.yml')) as f:
+            appropriate_data = yaml.load(f)[obj_name]   # {'N1': ['0-30']}
+        if (not appropriate_data) or (camera_pos not in appropriate_data):
+            continue
+        skip = True
+        for min_max in appropriate_data[camera_pos]:
+            _min, _max = map(int, min_max.split('-'))
+            if _min <= rotation_deg <= _max:
+                skip = False
+                break
+        if skip:
+            continue
         raw_path = os.path.join(obj_dir, imgfile)
         maskfile = os.path.splitext(imgfile)[0] + '_mask.pbm'
         mask_path = os.path.join(obj_dir, 'masks', maskfile)
         imgpaths.append((raw_path, mask_path))
     os.chdir(data_dir)
-    if len(imgpaths) == 0:
-        rospy.logwarn('not found images: {o}'.format(o=obj_name))
-        return
     return imgpaths
 
 

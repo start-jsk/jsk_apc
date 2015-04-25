@@ -1,0 +1,155 @@
+champion_copper_plus_spark_plug:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+  N3:
+    - 0-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+  N6:
+    - 0-360
+cheezit_big_original:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+crayola_64_ct:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+dr_browns_bottle_brush:
+  N1:
+    - 0-360
+elmers_washable_no_run_school_glue:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+expo_dry_erase_board_eraser:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+  N3:
+    - 0-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+  N6:
+    - 0-360
+feline_greenies_dental_treats:
+  N1:
+    - 0-50
+    - 150-230
+    - 330-360
+first_years_take_and_toss_straw_cups:
+  N1:
+    - 0-360
+  N2:
+    - 0-360
+genuine_joe_plastic_stir_sticks:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+highland_6539_self_stick_notes:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+kong_air_dog_squeakair_tennis_ball:
+  N3:
+    - 0-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+kong_duck_dog_toy:
+  N3:
+    - 0-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+kong_sitting_frog_dog_toy:
+  N3:
+    - 0-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+kyjen_squeakin_eggs_plush_puppies:
+  N3:
+    - 0-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+laugh_out_loud_joke_book:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+mark_twain_huckleberry_finn:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+mead_index_cards:
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+mommys_helper_outlet_plugs:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+munchkin_white_hot_duck_bath_toy:
+  N1:
+    - 0-50
+    - 150-230
+    - 330-360
+  N2:
+    - 0-50
+    - 150-230
+    - 330-360
+oreo_mega_stuf:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+paper_mate_12_count_mirado_black_warrior:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+rolodex_jumbo_pencil_cup:
+safety_works_safety_glasses:
+  # there are no back images
+  N3:
+    - 0-360
+  N4:
+    - 0-360
+  N5:
+    - 0-360
+sharpie_accent_tank_style_highlighters:
+  N1:
+    - 0-20
+    - 170-200
+    - 340-360
+stanley_66_052:
+  # there are no back images
+  N4:
+    - 0-360
+  N5:
+    - 0-360
