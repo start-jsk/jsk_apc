@@ -41,6 +41,7 @@
   <run_depend>python-sklearn</run_depend>
   <run_depend>python-numpy</run_depend>
   <run_depend>python-opencv</run_depend>
+  <run_depend>python-progressbar</run_depend>
 
   <export>
   </export>
