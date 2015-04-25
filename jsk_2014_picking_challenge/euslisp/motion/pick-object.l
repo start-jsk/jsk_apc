@@ -67,5 +67,8 @@
 
       (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
       (send *ri* :wait-interpolation)
+      (if *simulator-p*
+	  (return)
+	)
       (ros::spin-once) ;; check if grabbed
       )))
