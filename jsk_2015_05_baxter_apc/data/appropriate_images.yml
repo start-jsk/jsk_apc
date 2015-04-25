@@ -134,6 +134,8 @@ paper_mate_12_count_mirado_black_warrior:
     - 170-200
     - 340-360
 rolodex_jumbo_pencil_cup:
+  N1:
+    - 0-1
 safety_works_safety_glasses:
   # there are no back images
   N3:

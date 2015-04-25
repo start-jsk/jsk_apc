@@ -42,7 +42,7 @@ def get_descriptors(n_imgs=None, cache=True):
 
 def extract_bof_histograms():
     rospy.loginfo('getting descriptors...')
-    _, descs = zip(*get_descriptors(n_imgs=30))
+    _, descs = zip(*get_descriptors(n_imgs=50))
     X = []
     for d in descs:
         X.append(np.vstack(map(lambda x: x.reshape((-1, 128)), d)))
