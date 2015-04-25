@@ -56,8 +56,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  one_order.msg
-  order_list.msg
+  WorkOrder.msg
+  WorkOrderArray.msg
   BinContents.msg
   BinContentsArray.msg
   QrStamp.msg
