@@ -38,10 +38,12 @@
          (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)))
          (place-object arm)
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "move_to_target_bin")
-         ; update arm and target
+	  ; update arm and target
          (setq work (pop workorder))
-         (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)))
-         (ros::set-param "/target" (symbol-to-str target)))
+	 (if work
+	     (progn
+	       (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)))
+	       (ros::set-param "/target" (symbol-to-str target)))))
         (t (ros::set-param (format nil "/~A_limb/state" (arm-to-str arm)) "move_to_target_bin"))
         )
       )
