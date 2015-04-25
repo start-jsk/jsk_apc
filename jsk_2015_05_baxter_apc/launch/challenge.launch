@@ -5,6 +5,7 @@
   <arg name="bof" default="true"/>
   <arg name="sift" default="false"/>
   <arg name="color" default="false"/>
+  <arg name="launch_main" default="false"/>
   <env name="DISPLAY" value="" unless="$(arg DEBUG)" />
 
   <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
@@ -23,11 +24,9 @@
     args="--file $(find jsk_2014_picking_challenge)/data/example.json">
   </node>
 
-  <!-- motion -->
-  <node pkg="jsk_2014_picking_challenge" type="move-arm2target-bin-server.l" name="move_arm2target_bin" output="screen"></node>
-  <node pkg="jsk_2014_picking_challenge" type="object-picking-server.l" name="object_picking" output="screen"></node>
-  <node pkg="jsk_2014_picking_challenge" type="move-for-verification.l" name="move_for_verification" output="screen"></node>
-  <node pkg="jsk_2014_picking_challenge" type="put-orderbin.l" name="put_orderbin" output="screen"></node>
+  <!-- main -->
+  <node if="launch_main" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
+	args="&quot;(progn (apc-init) (main))&quot;"/>
 
   <!-- recognition -->
   <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch">
