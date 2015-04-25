@@ -23,6 +23,9 @@
   <node pkg="jsk_2014_picking_challenge" type="bin_contents.py" name="bin_contents" output="log">
     <param name="json" value="$(find jsk_2014_picking_challenge)/data/example.json" />
   </node>
+  <node pkg="jsk_2014_picking_challenge" type="work_order.py" name="work_order" output="log">
+    <param name="json" value="$(find jsk_2014_picking_challenge)/data/example.json" />
+  </node>
 
   <!-- main -->
   <node if="launch_main" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
