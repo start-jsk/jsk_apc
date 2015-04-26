@@ -112,5 +112,3 @@
     (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
     (send *ri* :wait-interpolation)
     ))
-
-(workcell-init)
