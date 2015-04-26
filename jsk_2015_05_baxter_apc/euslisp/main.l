@@ -6,6 +6,8 @@
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-test.l")
+
 
 (defun main ()
   (let (arm target param-target state work)
@@ -63,4 +65,3 @@
 (warn "~% Commands ~%")
 (warn "(apc-init) : Setup~%")
 (warn "(main)     : Start the loop~%")
-
