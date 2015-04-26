@@ -19,11 +19,10 @@ from matcher_common import ObjectMatcher, get_data_dir, get_object_list
 
 class BofObjectMatcher(ObjectMatcher):
     def __init__(self):
-        super(BofObjectMatcher, self).__init__('/semi/bof_matcher')
-        rospy.Subscriber('/ImageFeature0D', ImageFeature0D,
-                         self._cb_imgfeature)
-        self._pub_recog = rospy.Publisher('/BofObjectRecognition',
-                                          ObjectRecognition, queue_size=1)
+        super(BofObjectMatcher, self).__init__('/bof_object_matcher')
+        rospy.Subscriber('~input', ImageFeature0D, self._cb_imgfeature)
+        self._pub_recog = rospy.Publisher('~output', ObjectRecognition,
+                                          queue_size=1)
         self._init_bof()
         self._init_clf()
         self.query_features = ImageFeature0D().features
