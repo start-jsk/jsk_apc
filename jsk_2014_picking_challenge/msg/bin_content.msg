@@ -1,2 +1,0 @@
-string bin
-string[] items
