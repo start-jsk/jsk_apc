@@ -1,3 +1,5 @@
+;; about work order
+(load "package://jsk_2014_picking_challenge/euslisp/motion/get-work-order.l")
 ;; about vacuum gripper
 (load "package://jsk_2014_picking_challenge/euslisp/motion/control-vacuum-gripper.l")
 (load "package://jsk_2014_picking_challenge/euslisp/motion/check-if-grabbed.l")
