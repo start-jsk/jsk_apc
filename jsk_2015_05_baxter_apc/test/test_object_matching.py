@@ -53,8 +53,8 @@ class TestObjectMatching(object):
             self.client_of_matcher = rospy.ServiceProxy(
                 '/semi/color_histogram_matcher', ObjectMatch)
         elif matcher == 'bof':
-            self.client_of_matcher = rospy.ServiceProxy(
-                'BofObjectMatcher', ObjectMatch)
+            self.client_of_matcher = rospy.ServiceProxy('/bof_object_matcher',
+                                                        ObjectMatch)
         else:
             raise ValueError('Unknown matcher: {0}'.format(matcher))
 
