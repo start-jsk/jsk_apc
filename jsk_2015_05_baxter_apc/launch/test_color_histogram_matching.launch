@@ -1,6 +1,6 @@
 <launch>
   <arg name="color_space" default="lab" />
-  <node pkg="jsk_2014_picking_challenge" type="fake_camera_info_publisher.py" name="fake_camera_info_publisher" output="screen"></node>
+  <node pkg="jsk_2014_picking_challenge" type="empty_camera_info.py" name="empty_camera_info" output="screen"></node>
   <node pkg="jsk_2014_picking_challenge" type="image_publish_server.py" name="image_publish_server" output="screen"></node>
 
   <include file="$(find jsk_2014_picking_challenge)/launch/$(arg color_space)_color_histogram_matcher.launch">
