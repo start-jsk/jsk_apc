@@ -10,6 +10,7 @@
   (let (arm target param-target state work)
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
+    (while (not (ros::get-param "/target")) (unix::sleep 1))
     (setq param-target (str-to-symbol (ros::get-param "/target")))
     ; remove already picked target bins
     ; this does work when this robot_main node respawned
