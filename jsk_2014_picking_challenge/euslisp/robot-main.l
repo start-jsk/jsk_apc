@@ -1,10 +1,11 @@
 #!/usr/bin/env roseus
 ;;
+
+(ros::roseus "robot_main")
+
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
-
-(ros::roseus "robot_main")
 
 (defun main ()
   (let (arm target param-target state work)
@@ -16,7 +17,7 @@
     ; this does work when this robot_main node respawned
     (while
       t
-      (setq work (pop workorder))
+      (setq work (pop work-order))
       (when (string= (when (elt work 1)) (symbol-to-str param-target))) (return))
     ; loop of motions
     (speak-en "Let's start picking challenge" :google t :wait t)
@@ -47,7 +48,7 @@
          (place-object arm)
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "move_to_target_bin")
 	  ; update arm and target
-         (setq work (pop workorder))
+         (setq work (pop work-order))
 	 (if work
 	     (progn
 	       (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)))
@@ -57,9 +58,7 @@
       )
     ))
 
-; this is test workorder
-; TODO: make workorder publisher
-(setq workorder (list '("right" :c) '("left" :a) '("right" :b) '("left" :d) '("right" :e)))
+(setq work-order (get-work-order))
 
 (warn "~% Commands ~%")
 (warn "(apc-init) : Setup~%")
