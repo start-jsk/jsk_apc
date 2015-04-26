@@ -16,23 +16,23 @@
   (pushback (send *baxter* l/r :move-end-pos #f(0 0 -75) :world :revert-if-fail nil) avs)
   avs)
 
-(defun return-object (l/r)
+(defun return-object (l/r &optional (ctype :default-controller))
   ;; l/r validataion
   (if (not
        (or (eq l/r :larm) (eq l/r :rarm)))
       (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
 
   (setq avs (return-object-avs l/r))
-  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
-  (send *ri* :wait-interpolation)
+  (send *ri* :angle-vector-sequence avs :fast ctype 0 :scale 2.5)
+  (send *ri* :wait-interpolation ctype)
 
   ;; stop grasp(cleaner OFF)
   (ros::ros-info (format nil "[releasing_object] cleaner OFF"))
-  (send *ri* :stop-grasp)
+  (send *ri* :stop-grasp l/r)
 
   ;; return to original pose
   ;; (setq avs (append avs (reverse (cdr avs))))
   (setq avs (reverse (cdr avs)))
-  (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
-  (send *ri* :wait-interpolation)
+  (send *ri* :angle-vector-sequence avs :fast ctype 0 :scale 2.5)
+  (send *ri* :wait-interpolation ctype)
   )

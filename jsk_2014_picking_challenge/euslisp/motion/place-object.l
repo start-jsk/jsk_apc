@@ -8,12 +8,12 @@
     (pushback (send *baxter* arm :move-end-pos #f(0 0 -250) :world :revert-if-fail nil) avs)
     avs))
 
-(defun place-object (arm)
+(defun place-object (arm &optional (ctype :default-controller))
   (let (avs)
     (setq avs (append avs (fold-pose-back (if (eq arm :larm) :rarm :larm))))  ; fold oposite arm
     (setq avs (append avs (fold-pose-up arm)))
     (setq avs (append avs (untuck-pose arm)))
     (setq avs (append avs (place-object-avs arm)))
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
-    (send *ri* :wait-interpolation)
+    (send *ri* :angle-vector-sequence avs :fast ctype 0 :scale 2.2)
+    (send *ri* :wait-interpolation ctype)
     avs))

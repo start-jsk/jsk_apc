@@ -33,13 +33,13 @@
       )
     avs))
 
-(defun pick-object (l/r)
+(defun pick-object (l/r &optional (ctype :default-controller))
   (let (avs
         revavs
         (pattern-list (list 0 1 2 3 4)))
     ;; go grasp(cleaner ON)
     (ros::ros-info (format nil "[picking_object] cleaner ON"))
-    (send *ri* :start-grasp)
+    (send *ri* :start-grasp l/r)
 
     (setq *grabbed* nil)
     (while (and (not *grabbed*) pattern-list)
@@ -49,8 +49,8 @@
       (setq pattern-list (cdr pattern-list))
       (setq revavs (reverse avs))
 
-      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5)
-      (send *ri* :wait-interpolation)
+      (send *ri* :angle-vector-sequence avs :fast ctype 0 :scale 5)
+      (send *ri* :wait-interpolation ctype)
       (unix:sleep 3) ;; wait 3 seconds.
       (ros::spin-once)  ;; check if grabbed
 
@@ -65,8 +65,8 @@
           (0
            (pushback (rotate-wrist av l/r -90) revavs))))
 
-      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
-      (send *ri* :wait-interpolation)
+      (send *ri* :angle-vector-sequence revavs :fast ctype 0 :scale 5)
+      (send *ri* :wait-interpolation ctype)
       (if *simulator-p*
 	  (return)
 	)

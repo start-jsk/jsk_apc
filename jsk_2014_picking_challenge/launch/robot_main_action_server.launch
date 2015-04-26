@@ -1,0 +1,8 @@
+<launch>
+  <group ns="picking_server">
+    <node type="robot-main-action-server.l" pkg="jsk_2014_picking_challenge" name="rarm"
+	  args="&quot;(progn (apc-init) (main))&quot;" output="screen">
+      <param name="~arm" value="rarm"/>
+    </node>
+  </group>
+</launch>
