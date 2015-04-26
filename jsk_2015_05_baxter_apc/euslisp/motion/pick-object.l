@@ -71,4 +71,7 @@
 	  (return)
 	)
       (ros::spin-once) ;; check if grabbed
-      )))
+      (if (not *grabbed*)
+	  (speak-en  "Fail to catch the target" :google t)
+	)))
+  )
