@@ -6,6 +6,7 @@
   <arg name="sift" default="false"/>
   <arg name="color" default="false"/>
   <arg name="launch_main" default="false"/>
+  <arg name="cameras_setup" default="false"/>
   <env name="DISPLAY" value="" unless="$(arg DEBUG)" />
 
   <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
@@ -35,7 +36,7 @@
   <param name="/right_limb/state" value="pick_object" />
 
   <!-- main -->
-  <node if="launch_main" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
 	args="&quot;(progn (apc-init) (main))&quot;"/>
 
   <!-- recognition -->
@@ -70,8 +71,10 @@
 
   <group if="$(arg tweet)">
     <!-- tweet -->
-    <param name="lhand_camera_closer" command="rosrun baxter_tools camera_control.py -c left_hand_camera" />
-    <node pkg="baxter_tools" type="camera_control.py" name="head_camera_opener" args=" -o head_camera"/>
+    <group if="$(arg cameras_setup)">
+      <param name="lhand_camera_closer" command="rosrun baxter_tools camera_control.py -c left_hand_camera" />
+      <node pkg="baxter_tools" type="camera_control.py" name="head_camera_opener" args=" -o head_camera"/>
+    </group>
     <node pkg="jsk_2014_picking_challenge" type="apc_tweet.l" name="apc_tweet"/>
   </group>
 </launch>
