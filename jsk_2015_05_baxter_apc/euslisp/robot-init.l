@@ -2,6 +2,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/model/pod-lowres.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/order-bin.l")
 
+(setq *simulator-p* nil)
 (defun apc-init ()
   (baxter-init)
   (send *baxter* :locate #f(0 0 950) :world)
@@ -9,4 +10,5 @@
   (pod-init)
   (orderbin-init)
   (objects (list *baxter* *pod* *orderbin*))
+  (setq *simulator-p* (not (send *ri* :joint-action-enable)))
   t)
