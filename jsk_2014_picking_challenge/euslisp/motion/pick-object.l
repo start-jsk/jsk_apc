@@ -4,15 +4,19 @@
 
 ;; this is function version of object-picking
 (defun pick-object-avs (l/r)
+  ;; invalid check of l/r
+  (assert-l/r l/r)
   (let (avs)
     ;; picking pose
     (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
-    (pushback (send *baxter* l/r :move-end-pos #f(0 0 -20) :world :revert-if-fail nil) avs)
+    ;; (pushback (send *baxter* l/r :move-end-pos #f(0 0 20) :world :revert-if-fail nil) avs)
     (pushback (send *baxter* l/r :move-end-pos #f(260 0 0) :world :revert-if-fail nil) avs)
     avs))
 
 (defun picking-pattern-avs (l/r pattern-id)
   ;; random motion
+  ;; invalid check of l/r
+  (assert-l/r l/r)
   (let* (avs revavs (random-y 50))
     (case pattern-id
       (0
@@ -36,7 +40,11 @@
 (defun pick-object (l/r &optional (ctype :default-controller))
   (let (avs
         revavs
-        (pattern-list (list 0 1 2 3 4)))
+        (pattern-list (list 0 1 2 3 4))
+        (init-angle (send *baxter* :angle-vector (send *ri* :state :potentio-vector))))
+    ;; invalid check of l/r
+    (assert-l/r l/r)
+
     ;; go grasp(cleaner ON)
     (ros::ros-info (format nil "[picking_object] cleaner ON"))
     (send *ri* :start-grasp l/r)
@@ -46,6 +54,7 @@
       ;; send angle-vector-sequence to *ri*
       ;;(format t "~A~%" pattern-list)
       (setq avs (append (pick-object-avs l/r) (picking-pattern-avs l/r (car pattern-list))))
+      (push init-angle avs)
       (setq pattern-list (cdr pattern-list))
       (setq revavs (reverse avs))
 
@@ -68,10 +77,12 @@
       (send *ri* :angle-vector-sequence revavs :fast ctype 0 :scale 5)
       (send *ri* :wait-interpolation ctype)
       (if *simulator-p*
-	  (return)
-	)
+          (return))
       (ros::spin-once) ;; check if grabbed
       (if (not *grabbed*)
-	  (speak-en  "Fail to catch the target" :google t)
-	)))
-  )
+          (speak-en  "Fail to catch the target" :google t)
+        )
+      )
+    (send *ri* :angle-vector (send *baxter* :angle-vector init-angle))
+    (send *ri* :wait-interpolation)
+    ))

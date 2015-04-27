@@ -22,22 +22,30 @@
 
   <!-- json -->
   <node pkg="jsk_2014_picking_challenge" type="bin_contents.py" name="bin_contents" output="log">
-    <param name="json" value="$(find jsk_2014_picking_challenge)/data/example.json" />
+    <param name="json" value="$(find jsk_2014_picking_challenge)/data/apc.json" />
   </node>
   <node pkg="jsk_2014_picking_challenge" type="work_order.py" name="work_order" output="log">
-    <param name="json" value="$(find jsk_2014_picking_challenge)/data/example.json" />
+    <param name="json" value="$(find jsk_2014_picking_challenge)/data/apc.json" />
   </node>
 
   <!-- parameter -->
   <node pkg="jsk_2014_picking_challenge" type="setup_target.py" name="setup_target" output="log">
-    <param name="json" value="$(find jsk_2014_picking_challenge)/data/example.json" />
+    <param name="json" value="$(find jsk_2014_picking_challenge)/data/apc.json" />
   </node>
   <param name="/left_limb/state" value="pick_object" />
   <param name="/right_limb/state" value="pick_object" />
 
+  <!-- robot setup -->
+  <!-- this node should be started only once befor start picking challenge -->
+  <group>
+    <node pkg="jsk_2014_picking_challenge" type="robot-setup.l" name="robot_setup" output="log" respawn="false">
+      <env name="DISPLAY" value="" />
+    </node>
+  </group>
+
   <!-- main -->
-  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
-	args="&quot;(progn (apc-init) (main))&quot;"/>
+  <node if="launch_main" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
+        args="&quot;(progn (apc-init) (main))&quot;" respawn="true" />
 
   <!-- recognition -->
   <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch">
