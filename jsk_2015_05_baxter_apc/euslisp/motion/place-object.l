@@ -18,4 +18,6 @@
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
     (send *ri* :wait-interpolation)
+    (send *ri* :stop-grasp)
+    (unix::sleep 3)
     avs))
