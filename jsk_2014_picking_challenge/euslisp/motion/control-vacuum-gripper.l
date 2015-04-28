@@ -8,21 +8,40 @@
 ;;
 (ros::load-ros-manifest "roseus")
 (ros::roseus "control_vacuum_gripper")
-(ros::advertise "on_off_gripper" std_msgs::Bool 1)
+(ros::advertise "/on_off_gripper/limb/left" std_msgs::Bool 1)
+(ros::advertise "/on_off_gripper/limb/right" std_msgs::Bool 1)
 (ros::rate 10)
 
 (defmethod baxter-interface
   (:start-grasp
-    ()
-    (setq msg (instance std_msgs::Bool :init))
-    (send msg :data t)
-    (ros::publish "on_off_gripper" msg)
-    (ros::sleep))
+   (&optional (arm :arms))
+   (case arm
+     (:larm
+      (setq arm "left"))
+     (:rarm
+      (setq arm "right")))
+   (ros::ros-info (format nil "~A" arm))
+   (dolist (a (if (eq arm :arms) (list "left" "right") (list arm)))
+     (setq msg (instance std_msgs::Bool :init))
+     (send msg :data t)
+     (ros::publish (concatenate string "/on_off_gripper/limb/" a) msg)
+     (ros::ros-info (format nil "~A" (concatenate string "/on_off_gripper/limb/" a)))
+     (ros::sleep)
+     ))
   (:go-grasp () (send self :start-grasp))
   (:stop-grasp
-    ()
-    (setq msg (instance std_msgs::Bool :init))
-    (send msg :data nil)
-    (ros::publish "on_off_gripper" msg)
-    (ros::sleep))
+   (&optional (arm :arms))
+   (case arm
+     (:larm
+      (setq arm "left"))
+     (:rarm
+      (setq arm "right")))
+   (ros::ros-info (format nil "~A" arm))
+   (dolist (a (if (eq arm :arms) (list "left" "right") (list arm)))
+     (setq msg (instance std_msgs::Bool :init))
+     (send msg :data nil)
+     (ros::ros-info (format nil "~A" (concatenate string "/on_off_gripper/limb/" a)))
+     (ros::publish (concatenate string "/on_off_gripper/limb/" a) msg)
+     (ros::sleep)
+     ))
   )
