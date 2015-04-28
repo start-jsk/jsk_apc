@@ -58,7 +58,7 @@
       (setq pattern-list (cdr pattern-list))
       (setq revavs (reverse avs))
 
-      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5)
+      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 6)
       (send *ri* :wait-interpolation)
       (unix:sleep 3) ;; wait 3 seconds.
       (ros::spin-once)  ;; check if grabbed
@@ -74,7 +74,7 @@
           (0
            (pushback (rotate-wrist av l/r -90) revavs))))
 
-      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
+      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 6)
       (send *ri* :wait-interpolation)
       (if *simulator-p*
           (return))
