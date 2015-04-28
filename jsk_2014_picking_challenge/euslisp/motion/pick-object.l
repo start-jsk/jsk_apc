@@ -73,6 +73,36 @@
     (send *ri* :wait-interpolation)
 
     (pushback (send *baxter* :angle-vector) avs)
+    (case l/r
+      (:larm (setq *grabbed-left* nil))
+      (:rarm (setq *grabbed-right* nil)))
+
+    (while (and (not (check-if-grabbed l/r)) pattern-list)
+      ;; send angle-vector-sequence to *ri*
+      ;;(format t "~A~%" pattern-list)
+      (setq avs (append (pick-object-avs l/r) (picking-pattern-avs l/r (car pattern-list))))
+      (push init-angle avs)
+      (setq pattern-list (cdr pattern-list))
+      (setq revavs (reverse avs))
+
+      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5)
+      (send *ri* :wait-interpolation)
+      (unix:sleep 3) ;; wait 3 seconds.
+      (ros::spin-once)  ;; check if grabbed
+
+      ;; rotate same angle
+      (setq revavs (same-rotate-wrist revavs l/r (car (last avs))))
+
+      ;; back to original wrist angles
+      (let ((av (car (last revavs))))
+        (case (length pattern-list)
+          (1
+           (pushback (rotate-wrist av l/r 90) revavs))
+          (0
+           (pushback (rotate-wrist av l/r -90) revavs))))
+
+      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
+      (send *ri* :wait-interpolation)
 
     ;; insert arm to target bin
     (setq avs (append avs (insert-arm-to-bin-avs arm)))
