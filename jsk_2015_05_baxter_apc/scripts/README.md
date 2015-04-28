@@ -21,3 +21,11 @@ Extract sift
 2. Execute following::
 
     $ roslaunch jsk_2014_picking_challenge extract_sift.launch
+
+
+Kinect2で収集したデータの取得方法
+=================================
+```sh
+roscd jsk_data
+make large KEYWORD=jsk_2014_picking_challenge/20150428_collected_images.tgz
+```
