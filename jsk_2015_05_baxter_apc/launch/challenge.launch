@@ -3,6 +3,7 @@
   <arg name="custom" default="true"/>
   <arg name="tweet" default="true"/>
   <arg name="bof" default="true"/>
+  <arg name="rosserial" default="true" />
   <arg name="sift" default="false"/>
   <arg name="color" default="false"/>
   <arg name="launch_main" default="false"/>
@@ -16,7 +17,7 @@
   <include file="$(find jsk_2014_picking_challenge)/launch/kinect2_tf.launch"></include>
 
   <!-- rosserial -->
-  <node pkg="rosserial_python" type="serial_node.py" name="rosserial_node" output="screen" respawn="true">
+  <node if="$(arg rosserial)" pkg="rosserial_python" type="serial_node.py" name="rosserial_node" output="screen" respawn="true">
     <param name="port" type="string" value="/dev/ttyUSB0" />
   </node>
 
@@ -35,16 +36,8 @@
   <param name="/left_limb/state" value="pick_object" />
   <param name="/right_limb/state" value="pick_object" />
 
-  <!-- robot setup -->
-  <!-- this node should be started only once befor start picking challenge -->
-  <group>
-    <node pkg="jsk_2014_picking_challenge" type="robot-setup.l" name="robot_setup" output="log" respawn="false">
-      <env name="DISPLAY" value="" />
-    </node>
-  </group>
-
   <!-- main -->
-  <node if="launch_main" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
         args="&quot;(progn (apc-init) (main))&quot;" respawn="true" />
 
   <!-- recognition -->
