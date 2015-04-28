@@ -20,15 +20,14 @@
       (setq arm "left"))
      (:rarm
       (setq arm "right")))
-   (ros::ros-info (format nil "~A" arm))
    (dolist (a (if (eq arm :arms) (list "left" "right") (list arm)))
      (setq msg (instance std_msgs::Bool :init))
      (send msg :data t)
      (ros::publish (concatenate string "/on_off_gripper/limb/" a) msg)
-     (ros::ros-info (format nil "~A" (concatenate string "/on_off_gripper/limb/" a)))
+     (ros::ros-info (format nil "starting ~A" (concatenate string "/on_off_gripper/limb/" a)))
      (ros::sleep)
      ))
-  (:go-grasp () (send self :start-grasp))
+  (:go-grasp (&optional (arm :arms)) (send self :start-grasp arm))
   (:stop-grasp
    (&optional (arm :arms))
    (case arm
@@ -36,11 +35,10 @@
       (setq arm "left"))
      (:rarm
       (setq arm "right")))
-   (ros::ros-info (format nil "~A" arm))
    (dolist (a (if (eq arm :arms) (list "left" "right") (list arm)))
      (setq msg (instance std_msgs::Bool :init))
      (send msg :data nil)
-     (ros::ros-info (format nil "~A" (concatenate string "/on_off_gripper/limb/" a)))
+     (ros::ros-info (format nil "stoping ~A" (concatenate string "/on_off_gripper/limb/" a)))
      (ros::publish (concatenate string "/on_off_gripper/limb/" a) msg)
      (ros::sleep)
      ))

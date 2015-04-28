@@ -11,9 +11,6 @@ const int PRESSURE_SENSOR_PIN = 6;
 
 ros::NodeHandle nh;
 
-// following code did not work well.
-// $rostopic pub /on_off_gripper std_msgs/String {data: "ON"}
-
 void messageCb( const std_msgs::Bool& toggle_msg){
     if(toggle_msg.data){
         digitalWrite(PIN, HIGH);
@@ -22,20 +19,15 @@ void messageCb( const std_msgs::Bool& toggle_msg){
     }
 }
 
-// void messageCb(const std_msgs::Empty& toggle_msg){
-//     digitalWrite(PIN, HIGH-digitalRead(PIN));   // Switch SSR
-// }
-
-ros::Subscriber<std_msgs::Bool> sub("on_off_gripper", &messageCb);
-//ros::Subscriber<std_msgs::Empty> sub("on_off_gripper", &messageCb);
+ros::Subscriber<std_msgs::Bool> sub("/on_off_gripper/limb/right", &messageCb);
 
 // publish state <on/off>
 std_msgs::String str_msg;
-ros::Publisher pub("on_off_gripper/state", &str_msg);
+ros::Publisher pub("/on_off_gripper/limb/right/state", &str_msg);
 
 // publish whether gripper grabbed.
 std_msgs::Bool grabbed_msg;
-ros::Publisher grabbed_pub("gripper_grabbed/state", &grabbed_msg);
+ros::Publisher grabbed_pub("/gripper_grabbed/limb/right/state", &grabbed_msg);
 
 void setup()
 {
