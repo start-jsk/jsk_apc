@@ -9,7 +9,7 @@
     avs))
 
 (defun place-object (arm)
-  (let (avs)
+  (let (avs shake-avs)
     (setq avs (append avs (fold-pose-back (if (eq arm :larm) :rarm :larm))))  ; fold oposite arm
     (send *irtviewer* :draw-objects)
     (setq avs (append avs (untuck-pose arm)))
@@ -20,4 +20,10 @@
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp)
     (unix::sleep 3)
+    (setq shake-avs (list (send *baxter* :angle-vector)))
+    (pushback (send *baxter* arm :move-end-pos #f(0 0 80) :world) shake-avs)
+    (pushback (elt shake-avs 0) shake-avs)
+    (dotimes (i 3)
+      (send *ri* :angle-vector-sequence shake-avs :fast :default-controller 0 :scale 2.2)
+      (send *ri* :wait-interpolation))
     avs))
