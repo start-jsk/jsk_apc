@@ -45,7 +45,7 @@
   </group>
 
   <!-- main -->
-  <node if="launch_main" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
         args="&quot;(progn (apc-init) (main))&quot;" respawn="true" />
 
   <!-- recognition -->
