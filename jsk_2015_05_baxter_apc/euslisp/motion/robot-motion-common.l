@@ -65,3 +65,6 @@
        (setf (elt av 14) (elt angles 14)))
      ))
   avs)
+
+(defmethod baxter-robot
+  (:fold-pose () (fold-pose-back :larm) (elt (fold-pose-back :rarm) 0)))
