@@ -8,8 +8,7 @@
   (assert-l/r l/r)
   (let (avs)
     ;; picking pose
-    (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
-    ;; (pushback (send *baxter* l/r :move-end-pos #f(0 0 20) :world :revert-if-fail nil) avs)
+    (pushback (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
     (pushback (send *baxter* l/r :move-end-pos #f(200 0 0) :world :revert-if-fail nil) avs)
     avs))
 
@@ -43,15 +42,13 @@
   (let (avs
         revavs
         (pattern-list (list 0 1 2 3 4))
-        (init-angle (send *baxter* :angle-vector (send *ri* :state :potentio-vector))))
+        (init-angle (send *baxter* :angle-vector)))
     ;; invalid check of l/r
     (assert-l/r l/r)
 
     ;; go grasp(cleaner ON)
     (ros::ros-info (format nil "[picking_object] cleaner ON"))
     (send *ri* :start-grasp)
-    (send *ri* :angle-vector (send *baxter* l/r :move-end-pos #f(0 0 30) :world))
-    (send *ri* :wait-interpolation)
 
     (setq *grabbed* nil)
     (while (and (not *grabbed*) pattern-list)
@@ -62,7 +59,7 @@
       (setq pattern-list (cdr pattern-list))
       (setq revavs (reverse avs))
 
-      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 10)
+      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5)
       (send *ri* :wait-interpolation)
       (unix:sleep 3) ;; wait 3 seconds.
       (ros::spin-once)  ;; check if grabbed
@@ -78,8 +75,12 @@
           (0
            (pushback (rotate-wrist av l/r -90) revavs))))
 
-      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 10)
+      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
       (send *ri* :wait-interpolation)
+
+      ;; update *baxter*
+      (send *baxter* :angle-vector init-angle)
+
       (if *simulator-p*
           (return))
       (ros::spin-once) ;; check if grabbed
@@ -88,7 +89,5 @@
         )
       )
     (send *ri* :angle-vector (send *baxter* :angle-vector init-angle))
-    (send *ri* :wait-interpolation)
-    (send *ri* :angle-vector (send *baxter* :move-end-pos #f(-100 0 0) :world))
     (send *ri* :wait-interpolation)
     ))
