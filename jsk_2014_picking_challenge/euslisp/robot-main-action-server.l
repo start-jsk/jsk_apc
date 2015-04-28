@@ -1,12 +1,13 @@
 #!/usr/bin/env roseus
 ;;
+(ros::roseus "robot_main")
+
+(ros::load-ros-manifest "jsk_recognition_msgs")
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
-
-(ros::roseus "robot_main")
 
 ;;Global Variables
 (setq *use-arm* nil)
@@ -25,6 +26,12 @@
     (ros::ros-info " command: ~A, arm: ~A, target-bin: ~A" command (arm-to-str *use-arm*) target-bin)
     (speak-en (format nil " command: ~A, arm: ~A, target-bin: ~A" command (symbol-to-str *use-arm*) target-bin) :google t)
     (cond
+     ((string= command "init_pose")
+      ;; (move-to-target-bin *use-arm* target-bin-symbol)
+      (send server :set-succeeded result))
+     ((string= command "return_object")
+      ;; (move-to-target-bin *use-arm* target-bin-symbol)
+      (send server :set-succeeded result))
      ((string= command "move_to_target")
       (move-to-target-bin *use-arm* target-bin-symbol)
       (send server :set-succeeded result))

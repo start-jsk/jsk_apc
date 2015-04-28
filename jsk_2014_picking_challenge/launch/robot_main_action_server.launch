@@ -4,5 +4,12 @@
 	  args="&quot;(progn (apc-init) (main))&quot;" output="screen">
       <param name="~arm" value="rarm"/>
     </node>
+    <node type="robot-main-action-server.l" pkg="jsk_2014_picking_challenge" name="larm"
+	  args="&quot;(progn (apc-init) (main))&quot;" output="screen">
+      <param name="~arm" value="larm"/>
+    </node>
   </group>
+  <node type="robot-main-master.l" pkg="jsk_2014_picking_challenge" name="arm_master"
+	args="&quot;(progn (demo))&quot;" output="screen">
+  </node>
 </launch>
