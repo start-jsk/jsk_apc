@@ -1,0 +1,82 @@
+<launch>
+  <arg name="feature" default="bof" />
+  <arg name="manager" default="passthrough_manager" />
+
+  <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
+    <arg name="publish_tf" value="true" />
+    <arg name="depth_method" value="cpu" />
+  </include>
+
+  <node pkg="tf" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 -1.57 base kinect2_rgb_optical_frame 10" />
+
+  <!-- crop object image -->
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+  <node pkg="nodelet" type="nodelet" name="pass_through_x"
+        args="load pcl/PassThrough $(arg manager)" respawn="true">
+    <remap from="~input" to="/kinect2/depth_highres/points" />
+    <!-- suppose QVGA -->
+    <rosparam>
+      filter_field_name: x
+      filter_limit_min: -0.1
+      filter_limit_max: 0.1
+      keep_organized: true
+    </rosparam>
+  </node>
+  <node pkg="nodelet" type="nodelet" name="pass_through_y"
+        args="load pcl/PassThrough $(arg manager)" respawn="true">
+    <remap from="~input" to="/pass_through_x/output" />
+    <!-- suppose QVGA -->
+    <rosparam>
+      filter_field_name: y
+      filter_limit_min: -0.1
+      filter_limit_max: 0.1
+      keep_organized: true
+    </rosparam>
+  </node>
+  <node pkg="nodelet" type="nodelet" name="pass_through_z"
+        args="load pcl/PassThrough $(arg manager)" respawn="true">
+    <remap from="~input" to="/pass_through_y/output" />
+    <!-- suppose QVGA -->
+    <rosparam>
+      filter_field_name: z
+      filter_limit_min: 0
+      filter_limit_max: 0.7
+      keep_organized: true
+    </rosparam>
+  </node>
+  <node pkg="nodelet" type="nodelet" name="organized_to_pi"
+        args="load jsk_pcl/OrganizedPointCloudToPointIndices $(arg manager)" respawn="true">
+    <remap from="~input" to="pass_through_z/output" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="pi_to_maskimage"
+        args="load jsk_pcl/PointIndicesToMaskImage $(arg manager)">
+    <remap from="~input" to="organized_to_pi/output" />
+    <remap from="~input/image" to="/kinect2/rgb/image" />
+    <param name="approximate_sync" value="true" />
+  </node>
+  <!-- process mask image -->
+  <node pkg="nodelet" type="nodelet" name="dilate_mask_image"
+        args="load jsk_perception/DilateMaskImage $(arg manager)">
+    <remap from="~input" to="/pi_to_maskimage/output" />
+    <param name="approximate_sync" value="true" />
+    <param name="size" type="int" value="10" />
+    <param name="iterations" type="int" value="5" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="erode_mask_image"
+        args="load jsk_perception/ErodeMaskImage $(arg manager)">
+    <remap from="~input" to="/dilate_mask_image/output" />
+    <param name="approximate_sync" value="true" />
+    <param name="size" type="int" value="10" />
+    <param name="iterations" type="int" value="7" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="apply_mask"
+        args="load jsk_perception/ApplyMaskImage $(arg manager)">
+    <remap from="~input" to="/kinect2/rgb/image" />
+    <remap from="~input/mask" to="/erode_mask_image/output" />
+    <param name="approximate_sync" value="true" />
+  </node>
+
+  <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
+    <arg name="input_image" value="/apply_mask/output" />
+  </include>
+</launch>
