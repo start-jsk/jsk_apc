@@ -69,6 +69,8 @@
     ;; start grasp
     (ros::ros-info (format nil "[pick_object] start grasp"))
     (send *ri* :start-grasp)
+    (send *ri* :angle-vector (send *baxter* l/r :move-end-pos #f(0 0 30) :world))
+    (send *ri* :wait-interpolation)
 
     (pushback (send *baxter* :angle-vector) avs)
 
@@ -92,5 +94,7 @@
     (send *baxter* :angle-vector (car (last avs)))
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs)
+    (send *ri* :wait-interpolation)
+    (send *ri* :angle-vector (send *baxter* :move-end-pos #f(-100 0 0) :world))
     (send *ri* :wait-interpolation)
     ))
