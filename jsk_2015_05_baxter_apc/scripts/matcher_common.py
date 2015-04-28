@@ -69,41 +69,53 @@ def load_siftdata(obj_name, return_pos=True, dry_run=False):
     return siftdata['descriptors']
 
 
-def get_train_imgpaths(obj_name):
+def get_train_imgs(
+        obj_name,
+        data_dir=None,
+        only_appropriate=True,
+        with_mask=True,
+        ):
     """Find train image paths from data/obj_name"""
-    data_dir = get_data_dir()
+    if data_dir is None:
+        data_dir = get_data_dir()
     obj_dir = os.path.join(data_dir, obj_name)
     if not os.path.exists(obj_dir):
         print(terminal_color.fmt(
             '@{yellow}[WARNING] not found object data: {0}'
             ).format(obj_name))
-        return
-    os.chdir(obj_dir)
-    imgpaths = []
-    for imgfile in os.listdir('.'):
-        if not imgfile.endswith('.jpg'):
-            continue
-        basename, _ = os.path.splitext(imgfile)         # N1_30.jpg -> N1_30
-        camera_pos, rotation_deg = basename.split('_')  # N1_30 -> N1, 30
-        rotation_deg = int(rotation_deg)
-        with open(os.path.join(data_dir, 'appropriate_images.yml')) as f:
-            appropriate_data = yaml.load(f)[obj_name]   # {'N1': ['0-30']}
-        if (not appropriate_data) or (camera_pos not in appropriate_data):
-            continue
-        skip = True
-        for min_max in appropriate_data[camera_pos]:
-            _min, _max = map(int, min_max.split('-'))
-            if _min <= rotation_deg <= _max:
-                skip = False
-                break
-        if skip:
-            continue
-        raw_path = os.path.join(obj_dir, imgfile)
-        maskfile = os.path.splitext(imgfile)[0] + '_mask.pbm'
-        mask_path = os.path.join(obj_dir, 'masks', maskfile)
-        imgpaths.append((raw_path, mask_path))
-    os.chdir(data_dir)
-    return imgpaths
+    else:
+        os.chdir(obj_dir)
+        for imgfile in os.listdir('.'):
+            if not imgfile.endswith('.jpg'):
+                continue
+            if only_appropriate:
+                # N1_30.jpg -> N1_30
+                basename, _ = os.path.splitext(imgfile)
+                # N1_30 -> N1, 30
+                camera_pos, rotation_deg = basename.split('_')
+                rotation_deg = int(rotation_deg)
+                with open(os.path.join(data_dir, 'appropriate_images.yml')) as f:
+                    # {'N1': ['0-30']}
+                    appropriate_data = yaml.load(f)[obj_name]
+                if (not appropriate_data) or (camera_pos not in appropriate_data):
+                    continue
+                skip = True
+                for min_max in appropriate_data[camera_pos]:
+                    _min, _max = map(int, min_max.split('-'))
+                    if _min <= rotation_deg <= _max:
+                        skip = False
+                        break
+                if skip:
+                    continue
+            train_path = os.path.join(obj_dir, imgfile)
+            train_img = cv2.imread(train_path)
+            if with_mask:
+                maskfile = os.path.splitext(imgfile)[0] + '_mask.pbm'
+                mask_path = os.path.join(obj_dir, 'masks', maskfile)
+                mask = cv2.imread(mask_path)
+                train_img = cv2.add(mask, train_img)
+            yield train_img
+        os.chdir(data_dir)
 
 
 class ObjectMatcher(object):
