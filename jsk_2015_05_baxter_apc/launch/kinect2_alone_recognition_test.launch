@@ -3,7 +3,8 @@
   <arg name="manager" default="passthrough_manager" />
 
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
-    <param name="publish_tf" value="true" />
+    <arg name="publish_tf" value="true" />
+    <arg name="depth_method" value="cpu" />
   </include>
 
   <node pkg="tf" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 -1.57 base kinect2_rgb_optical_frame 10" />
