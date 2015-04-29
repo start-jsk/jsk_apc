@@ -40,9 +40,9 @@
 
 (defun pick-object (l/r)
   (let (avs
-        revavs
-        (pattern-list (list 0 1 2 3 4))
-        (init-angle (send *baxter* :angle-vector)))
+         revavs
+         (pattern-list (list 0 1 2 3 4))
+         (init-angle (send *baxter* :angle-vector)))
     ;; invalid check of l/r
     (assert-l/r l/r)
 
@@ -52,44 +52,44 @@
 
     (setq *grabbed* nil)
     (while (and (not *grabbed*) pattern-list)
-      ;; send angle-vector-sequence to *ri*
-      ;;(format t "~A~%" pattern-list)
-      (setq avs (append (pick-object-avs l/r) (picking-pattern-avs l/r (car pattern-list))))
-      (send *irtviewer* :draw-objects)
-      (push init-angle avs)
-      (setq pattern-list (cdr pattern-list))
-      (setq revavs (reverse avs))
+           ;; send angle-vector-sequence to *ri*
+           ;;(format t "~A~%" pattern-list)
+           (setq avs (append (pick-object-avs l/r) (picking-pattern-avs l/r (car pattern-list))))
+           (send *irtviewer* :draw-objects)
+           (push init-angle avs)
+           (setq pattern-list (cdr pattern-list))
+           (setq revavs (reverse avs))
 
-      (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5)
-      (send *ri* :wait-interpolation)
-      (unix:sleep 3) ;; wait 3 seconds.
-      (ros::spin-once)  ;; check if grabbed
+           (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5)
+           (send *ri* :wait-interpolation)
+           (unix:sleep 3) ;; wait 3 seconds.
+           (ros::spin-once)  ;; check if grabbed
 
-      ;; rotate same angle
-      (setq revavs (same-rotate-wrist revavs l/r (car (last avs))))
+           ;; rotate same angle
+           (setq revavs (same-rotate-wrist revavs l/r (car (last avs))))
 
-      ;; back to original wrist angles
-      (let ((av (car (last revavs))))
-        (case (length pattern-list)
-          (1
-           (pushback (rotate-wrist av l/r 90) revavs))
-          (0
-           (pushback (rotate-wrist av l/r -90) revavs))))
+           ;; back to original wrist angles
+           (let ((av (car (last revavs))))
+             (case (length pattern-list)
+               (1
+                (pushback (rotate-wrist av l/r 90) revavs))
+               (0
+                (pushback (rotate-wrist av l/r -90) revavs))))
 
-      (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
-      (send *ri* :wait-interpolation)
+           (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
+           (send *ri* :wait-interpolation)
 
-      ;; update *baxter*
-      (send *baxter* :angle-vector init-angle)
-      (send *irtviewer* :draw-objects)
+           ;; update *baxter*
+           (send *baxter* :angle-vector init-angle)
+           (send *irtviewer* :draw-objects)
 
-      (if *simulator-p*
-          (return))
-      (ros::spin-once) ;; check if grabbed
-      (if (not *grabbed*)
-          (speak-en  "Fail to catch the target" :google t)
-        )
-      )
+           (if *simulator-p*
+             (return))
+           (ros::spin-once) ;; check if grabbed
+           (if (not *grabbed*)
+             (speak-en  "Fail to catch the target" :google t)
+             )
+           )
     (send *ri* :angle-vector (send *baxter* :angle-vector init-angle))
     (send *irtviewer* :draw-objects)
     (send *ri* :wait-interpolation)
