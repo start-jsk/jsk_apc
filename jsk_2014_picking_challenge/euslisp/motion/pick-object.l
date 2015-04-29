@@ -11,17 +11,16 @@
     avs))
 
 (defun picking-pattern-avs (arm pattern-id)
-  ;; random motion
-  (let* (avs revavs (random-y 50))
+  (let (avs)
     (case pattern-id
       (0
        (pushback (send *baxter* arm :move-end-pos (float-vector 0 0 0) :world :revert-if-fail nil :rotation-axis :z) avs)
        (pushback (send *baxter* arm :move-end-pos (float-vector 0 0 -80) :world :revert-if-fail nil :rotation-axis :z) avs))
       (1
-       (pushback (send *baxter* arm :move-end-pos (float-vector 0 random-y 0) :world :revert-if-fail nil :rotation-axis :z) avs)
+       (pushback (send *baxter* arm :move-end-pos (float-vector 0 50 0) :world :revert-if-fail nil :rotation-axis :z) avs)
        (pushback (send *baxter* arm :move-end-pos (float-vector 0 0 -80) :world :revert-if-fail nil :rotation-axis :z) avs))
       (2
-       (pushback (send *baxter* arm :move-end-pos (float-vector 0 (- random-y) 0) :world :revert-if-fail nil :rotation-axis :z) avs)
+       (pushback (send *baxter* arm :move-end-pos (float-vector 0 (- 50) 0) :world :revert-if-fail nil :rotation-axis :z) avs)
        (pushback (send *baxter* arm :move-end-pos (float-vector 0 0 -80) :world :revert-if-fail nil :rotation-axis :z) avs))
       (3
        (pushback (send *baxter* arm :move-end-pos (float-vector 0 0 0) :world :revert-if-fail nil :rotation-axis :z) avs)
