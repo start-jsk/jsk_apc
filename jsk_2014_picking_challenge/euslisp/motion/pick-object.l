@@ -55,6 +55,7 @@
       ;; send angle-vector-sequence to *ri*
       ;;(format t "~A~%" pattern-list)
       (setq avs (append (pick-object-avs l/r) (picking-pattern-avs l/r (car pattern-list))))
+      (send *irtviewer* :draw-objects)
       (push init-angle avs)
       (setq pattern-list (cdr pattern-list))
       (setq revavs (reverse avs))
@@ -80,6 +81,7 @@
 
       ;; update *baxter*
       (send *baxter* :angle-vector init-angle)
+      (send *irtviewer* :draw-objects)
 
       (if *simulator-p*
           (return))
@@ -89,5 +91,6 @@
         )
       )
     (send *ri* :angle-vector (send *baxter* :angle-vector init-angle))
+    (send *irtviewer* :draw-objects)
     (send *ri* :wait-interpolation)
     ))
