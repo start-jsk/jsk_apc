@@ -23,16 +23,20 @@
       (return-from pick-object "invalid l/r. l/r must be :larm or :rarm"))
 
   (setq avs (return-object-avs l/r))
+  (send *irtviewer* :draw-objects)
   (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
   (send *ri* :wait-interpolation)
 
   ;; stop grasp(cleaner OFF)
   (ros::ros-info (format nil "[releasing_object] cleaner OFF"))
   (send *ri* :stop-grasp)
+  (unix::sleep 5)
 
   ;; return to original pose
   ;; (setq avs (append avs (reverse (cdr avs))))
   (setq avs (reverse (cdr avs)))
+  (send *baxter* :angle-vector (car (last avs)))
+  (send *irtviewer* :draw-objects)
   (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.5)
   (send *ri* :wait-interpolation)
   )
