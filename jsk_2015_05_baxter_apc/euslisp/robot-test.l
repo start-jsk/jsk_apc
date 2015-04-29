@@ -39,12 +39,7 @@
       (test-for-bin arm bin :verify verify?))
     (setq elapsed-time (ros::time- (ros::time-now) start-time))
     (setq elapsed-msg (format nil "It takes ~d min ~d sec" (/ (send elapsed-time :sec) 60) (mod (send elapsed-time :sec) 60)))
-    (when tweet?
-      ;; tweet elapsed time
-      (setq msg (instance std_msgs::string :init))
-      (send msg :data elapsed-msg)
-      (ros::publish "tweet" msg)
-      (ros::spin-once))
+    (when tweet? (tweet elapsed-msg))  ;; tweet elapsed time
     ;; return to fold pose and speak
     (send *ri* :angle-vector-sequence (fold-pose-back arm))
     (send *ri* :wait-interpolation)
