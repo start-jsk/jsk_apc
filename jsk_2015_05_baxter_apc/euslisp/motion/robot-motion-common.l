@@ -45,26 +45,14 @@
     (send *baxter* arm :angle-vector av-arm)  ; only move one arm
     (list (send *baxter* :angle-vector))))
 
-(defun rotate-wrist (angles l/r &optional (angle 90))
-  (let ((wrist-index 0))
-    (case l/r
-      (:larm
-       (setq wrist-index 7))
-      (:rarm
-       (setq wrist-index 14)))
-    (setf (elt angles wrist-index) (+ (elt angles wrist-index) angle))
-    angles))
-
-(defun same-rotate-wrist (avs l/r angles)
-  (case l/r
-    (:larm
-     (dolist (av avs)
-       (setf (elt av 7) (elt angles 7))))
-    (:rarm
-     (dolist (av avs)
-       (setf (elt av 14) (elt angles 14)))
-     ))
-  avs)
+(defun rotate-wrist (arm angle &key (angle-method :relative))
+  (let (wrist-index)
+    (case arm
+      (:larm (setq wrist-index 7))
+      (:rarm (setq wrist-index 14)))
+    (setq av (send *baxter* :angle-vector))
+    (setf (elt av wrist-index) (+ (elt av wrist-index) angle))
+    (send *baxter* :angle-vector av)))
 
 (defmethod baxter-robot
   (:fold-pose () (fold-pose-back :larm) (elt (fold-pose-back :rarm) 0)))

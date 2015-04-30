@@ -27,8 +27,3 @@
   (intern (string-upcase str) "KEYWORD"))
 (defun symbol-to-str (_symbol)
   (string-downcase (symbol-string _symbol)))
-
-(defun assert-l/r (l/r)
-  (if (not
-       (or (eq l/r :larm) (eq l/r :rarm)))
-      (return-from assert-l/r "invalid l/r. l/r must be :larm or :rarm")))
