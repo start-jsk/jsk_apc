@@ -3,7 +3,6 @@
   <arg name="custom" default="true"/>
   <arg name="tweet" default="true"/>
   <arg name="bof" default="true"/>
-  <arg name="rosserial" default="true" />
   <arg name="sift" default="false"/>
   <arg name="color" default="false"/>
   <arg name="launch_main" default="false"/>
@@ -17,9 +16,7 @@
   <include file="$(find jsk_2014_picking_challenge)/launch/kinect2_tf.launch"></include>
 
   <!-- rosserial -->
-  <node if="$(arg rosserial)" pkg="rosserial_python" type="serial_node.py" name="rosserial_node" output="screen" respawn="true">
-    <param name="port" type="string" value="/dev/ttyUSB0" />
-  </node>
+  <include if="$(arg rosserial)" file="$(find jsk_2014_picking_challenge)/launch/rosserial.launch" />
 
   <!-- json -->
   <node pkg="jsk_2014_picking_challenge" type="bin_contents.py" name="bin_contents" output="log">
@@ -76,6 +73,5 @@
       <param name="lhand_camera_closer" command="rosrun baxter_tools camera_control.py -c left_hand_camera" />
       <node pkg="baxter_tools" type="camera_control.py" name="head_camera_opener" args=" -o head_camera"/>
     </group>
-    <node pkg="jsk_2014_picking_challenge" type="apc_tweet.l" name="apc_tweet"/>
   </group>
 </launch>
