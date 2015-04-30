@@ -3,10 +3,18 @@
 (load "package://jsk_2014_picking_challenge/euslisp/model/order-bin.l")
 
 (setq *simulator-p* nil)
+(setq *moved-to-end-coords* nil)
 (defun apc-init ()
   (baxter-init)
   (send *baxter* :locate #f(0 0 950) :world)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+  (if (not *moved-to-end-coords*)
+      (progn
+	(send (send *baxetr* :larm :end-coords) :move-to #f(300 0 -80))
+	(send (send *baxetr* :rarm :end-coords) :move-to #f(300 0 -80))
+	(setq *moved-to-end-coords* t)
+	)
+    )
   (pod-init)
   (orderbin-init)
   (objects (list *baxter* *pod* *orderbin*))
