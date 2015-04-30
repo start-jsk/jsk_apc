@@ -37,10 +37,10 @@
     (send *baxter* arm :inverse-kinematics (make-cascoords :pos c) :rotation-axis t)
     (list (send *baxter* :angle-vector))))
 
-(defun move-to-target-bin (arm bin)
+(defun move-to-target-bin (arm bin &optional (ctype :default-controller))
   (let (avs)
     (setq avs (append avs (fold-pose-avs arm bin)))
     (setq avs (append avs (move-to-target-bin-avs arm bin)))
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
-    (send *ri* :wait-interpolation)
+    (send *ri* :angle-vector-sequence avs :fast ctype 0 :scale 2.2)
+    (send *ri* :wait-interpolation ctype)
     avs))

@@ -8,10 +8,10 @@
       (:rarm (send *baxter* arm :angle-vector av-r)))
     (list (send *baxter* :angle-vector))))
 
-(defun move-for-verification (arm)
+(defun move-for-verification (arm &optional (ctype :default-controller))
   (let (avs)
     (setq avs (append avs (fold-pose-mid arm)))
     (setq avs (append avs (move-for-verification-avs arm)))
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
-    (send *ri* :wait-interpolation)
+    (send *ri* :angle-vector-sequence avs :fast ctype 0 :scale 2.2)
+    (send *ri* :wait-interpolation ctype)
     avs))

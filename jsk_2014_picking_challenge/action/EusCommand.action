@@ -1,0 +1,6 @@
+string command
+string target_bin
+---
+int8 state
+---
+string message
