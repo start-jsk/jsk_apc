@@ -11,9 +11,11 @@
 (defun place-object (arm)
   (let (avs)
     (setq avs (append avs (fold-pose-back (if (eq arm :larm) :rarm :larm))))  ; fold oposite arm
-    (setq avs (append avs (fold-pose-up arm)))
+    (send *irtviewer* :draw-objects)
     (setq avs (append avs (untuck-pose arm)))
+    (send *irtviewer* :draw-objects)
     (setq avs (append avs (place-object-avs arm)))
+    (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
     (send *ri* :wait-interpolation)
     avs))
