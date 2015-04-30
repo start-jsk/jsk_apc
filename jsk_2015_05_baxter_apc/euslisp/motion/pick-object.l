@@ -2,7 +2,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/motion/check-if-grabbed.l")
 (load "package://jsk_2014_picking_challenge/euslisp/motion/robot-motion-common.l")
 
-(defun insert-arm-to-bin-avs (arm)
+(defun insert-arm-to-pick-avs (arm)
   (let (avs)
     (pushback (send *baxter* arm :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
     (pushback (send *baxter* arm :move-end-pos #f(200 0 0) :world :revert-if-fail nil) avs)
@@ -57,10 +57,16 @@
       )
     (send *irtviewer* :draw-objects)
     (unix::sleep 3)
-    (nreverse avs)
-    (send *baxter* :angle-vector (car (last avs)))
+    (if (check-if-grabbed arm)
+      (progn
+        (setq avs (list (send *baxter* arm :move-end-pos #f(0 0 30) :world :revert-if-fail nil :rotation-axis :z)))
+        (print avs)
+        )
+      (progn ;; go back to original position
+        (nreverse avs)
+        (send *baxter* :angle-vector (car (last avs)))))
     (send *irtviewer* :draw-objects)
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 8.0)  ;; go back to original position
+    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 8.0)
     (send *ri* :wait-interpolation)
     ))
 
@@ -73,7 +79,7 @@
     (pushback (send *baxter* :angle-vector) avs)
 
     ;; insert arm to target bin
-    (setq avs (append avs (insert-arm-to-bin-avs arm)))
+    (setq avs (append avs (insert-arm-to-pick-avs arm)))
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs)
     (send *ri* :wait-interpolation)
@@ -86,10 +92,8 @@
       (unless *simulator-p* (speak-en  "Fail to catch the target" :google t))
       )
 
-    ;; go back to original position
-    (pop avs)
-    (nreverse avs)
-    (send *baxter* :angle-vector (car (last avs)))
+    ;; take arm out of bin
+    (setq avs (list (send *baxter* arm :move-end-pos #f(-100 0 0) :revert-if-fail nil :rotation-axis nil)))
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 8.0)
     (send *ri* :wait-interpolation)
