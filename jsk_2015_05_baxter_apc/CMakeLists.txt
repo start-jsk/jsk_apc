@@ -126,8 +126,10 @@ rosserial_configure_client(
   TOOLCHAIN_FILE ${ROSSERIAL_ARDUINO_TOOLCHAIN}
 )
 
-rosserial_add_client_target(firmware switching_gripper ALL)
-rosserial_add_client_target(firmware switching_gripper-upload)
+rosserial_add_client_target(firmware switching_gripper_left ALL)
+rosserial_add_client_target(firmware switching_gripper_left-upload)
+rosserial_add_client_target(firmware switching_gripper_right ALL)
+rosserial_add_client_target(firmware switching_gripper_right-upload)
 endif()
 
 ###########
