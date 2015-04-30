@@ -16,9 +16,9 @@
   (:g () #f(-280 1250 700))
   (:h () #f(   0 1250 700))
   (:i () #f( 280 1250 700))
-  (:j () #f(-280 1020 700))
-  (:k () #f(   0 1020 700))
-  (:l () #f( 280 1020 700))
+  (:j () #f(-280 990 700))
+  (:k () #f(   0 990 700))
+  (:l () #f( 280 990 700))
   (:list () '(:a :b :c :d :e :f :g :h :i :j :k :l)))
 
 (defun fold-pose-avs (arm bin)
@@ -39,6 +39,7 @@
 
 (defun move-to-target-bin (arm bin)
   (let (avs)
+    (pushback (look-at-other-side arm) avs)
     (setq avs (append avs (fold-pose-avs arm bin)))
     (send *irtviewer* :draw-objects)
     (setq avs (append avs (move-to-target-bin-avs arm bin)))
