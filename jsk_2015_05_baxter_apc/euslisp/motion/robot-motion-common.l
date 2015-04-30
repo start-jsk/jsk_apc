@@ -54,5 +54,13 @@
     (setf (elt av wrist-index) (+ (elt av wrist-index) angle))
     (send *baxter* :angle-vector av)))
 
+(defun look-at-other-side (arm)
+  (let (av)
+    (setq av (send *baxter* :angle-vector))
+    (case arm
+      (:larm (setf (aref av 0) -40))
+      (:rarm (setf (aref av 0) 40)))
+    (send *baxter* :angle-vector av)))
+
 (defmethod baxter-robot
   (:fold-pose () (fold-pose-back :larm) (elt (fold-pose-back :rarm) 0)))
