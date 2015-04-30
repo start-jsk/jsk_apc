@@ -20,7 +20,7 @@
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.4)
     (send *ri* :wait-interpolation)
-    (send *ri* :stop-grasp)
+    (send *ri* :stop-grasp arm)
     (unix::sleep 2)
     (setq shake-avs (list (send *baxter* :angle-vector)))
     (pushback (send *baxter* arm :move-end-pos #f(0 0 80) :world) shake-avs)

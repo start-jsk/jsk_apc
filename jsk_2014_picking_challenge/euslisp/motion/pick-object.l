@@ -68,7 +68,7 @@
   (let (avs (patterns '(:just-down :left-and-down :right-and-down :rotate-and-left :rotate-and-right)))
     ;; start grasp
     (ros::ros-info (format nil "[pick_object] start grasp"))
-    (send *ri* :start-grasp)
+    (send *ri* :start-grasp arm)
 
     (pushback (send *baxter* :angle-vector) avs)
 

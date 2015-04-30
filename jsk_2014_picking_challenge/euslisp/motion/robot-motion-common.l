@@ -58,8 +58,8 @@
   (let (av)
     (setq av (send *baxter* :angle-vector))
     (case arm
-      (:larm (setf (aref av 0) -40))
-      (:rarm (setf (aref av 0) 40)))
+      (:larm (setf (aref av 0) -60))
+      (:rarm (setf (aref av 0) 60)))
     (send *baxter* :angle-vector av)))
 
 (defmethod baxter-robot
