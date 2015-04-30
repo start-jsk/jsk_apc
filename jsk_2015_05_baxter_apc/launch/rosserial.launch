@@ -1,0 +1,9 @@
+<launch>
+  <arg name="rosserial" default="true" />
+  <node if="$(arg rosserial)" pkg="rosserial_python" type="serial_node.py" name="rosserial_node_0" output="screen" respawn="true">
+    <param name="port" type="string" value="/dev/ttyUSB0" />
+  </node>
+  <node if="$(arg rosserial)" pkg="rosserial_python" type="serial_node.py" name="rosserial_node_1" output="screen" respawn="true">
+    <param name="port" type="string" value="/dev/ttyUSB1" />
+  </node>
+</launch>
