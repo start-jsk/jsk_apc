@@ -6,14 +6,26 @@
 (ros::load-ros-manifest "roseus")
 (ros::roseus "grabbed")
 
-(defparameter *grabbed* nil)
+(defparameter *grabbed-left* nil)
+(defparameter *grabbed-right* nil)
 
-(defun grabbed-cb (msg)
+(defun grabbed-left-cb (msg)
   (ros::ros-info (format nil "~A" (send msg :data)))
-  (setq *grabbed* (send msg :data)))
+  (setq *grabbed-left* (send msg :data)))
 
-(defun check-if-grabbed ()
-  (ros::spin-once)
-  *grabbed*)
+(defun grabbed-right-cb (msg)
+  (ros::ros-info (format nil "~A" (send msg :data)))
+  (setq *grabbed-right* (send msg :data)))
 
-(ros::subscribe "gripper_grabbed/state" std_msgs::Bool #'grabbed-cb)
+(ros::subscribe "gripper_grabbed/limb/left/state" std_msgs::Bool #'grabbed-left-cb)
+(ros::subscribe "gripper_grabbed/limb/right/state" std_msgs::Bool #'grabbed-right-cb)
+
+(defun check-if-grabbed (arm)
+  (let (state)
+    (ros::spin-once)
+    (case arm
+      (:larm
+       (setq state *grabbed-left*))
+      (:rarm
+       (setq state *grabbed-right*)))
+    state)
