@@ -31,7 +31,7 @@
   (let ((start-time (ros::time-now))
         elapsed-time elapsed-msg arm msg)
     (dolist (bin bins)
-      (if (eq (length use-arm) 1) (setq arm (elt use-arm 1))  ;; only use arms in use-arm
+      (if (eq (length use-arm) 1) (setq arm (elt use-arm 0))  ;; only use arms in use-arm
         (cond
           ((find bin (list :a :d :g :j)) (setq arm :larm))
           ((find bin (list :c :f :i :l)) (setq arm :rarm))

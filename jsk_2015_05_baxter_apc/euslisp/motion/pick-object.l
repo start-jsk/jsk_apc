@@ -8,9 +8,8 @@
   (assert-l/r l/r)
   (let (avs)
     ;; picking pose
-    (pushback (send *baxter* :angle-vector (send *ri* :state :potentio-vector)) avs)
-    ;; (pushback (send *baxter* l/r :move-end-pos #f(0 0 20) :world :revert-if-fail nil) avs)
-    (pushback (send *baxter* l/r :move-end-pos #f(260 0 0) :world :revert-if-fail nil) avs)
+    (pushback (send *baxter* l/r :move-end-pos #f(0 0 30) :world :revert-if-fail nil) avs)
+    (pushback (send *baxter* l/r :move-end-pos #f(200 0 0) :world :revert-if-fail nil) avs)
     avs))
 
 (defun picking-pattern-avs (l/r pattern-id)
@@ -20,20 +19,22 @@
   (let* (avs revavs (random-y 50))
     (case pattern-id
       (0
-       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 0) :world :revert-if-fail nil) avs)
-       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 -75) :world :revert-if-fail nil) avs))
+       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 0) :world :revert-if-fail nil :rotation-axis :z) avs)
+       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 -80) :world :revert-if-fail nil :rotation-axis :z) avs))
       (1
-       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 random-y 0) :world :revert-if-fail nil) avs)
-       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 -75) :world :revert-if-fail nil) avs))
+       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 random-y 0) :world :revert-if-fail nil :rotation-axis :z) avs)
+       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 -80) :world :revert-if-fail nil :rotation-axis :z) avs))
       (2
-       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 (- random-y) 0) :world :revert-if-fail nil) avs)
-       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 -75) :world :revert-if-fail nil) avs))
+       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 (- random-y) 0) :world :revert-if-fail nil :rotation-axis :z) avs)
+       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 -80) :world :revert-if-fail nil :rotation-axis :z) avs))
       (3
+       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 0) :world :revert-if-fail nil :rotation-axis :z) avs)
        (pushback (rotate-wrist (send *baxter* :angle-vector) l/r (- 90)) avs)
-       (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 (- 60) 0) :world :revert-if-fail nil) l/r (- 90)) avs))
+       (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 (- 60) 0) :world :revert-if-fail nil :rotation-axis :z) l/r (- 90)) avs))
       (4
+       (pushback (send *baxter* l/r :move-end-pos (float-vector 0 0 0) :world :revert-if-fail nil :rotation-axis :z) avs)
        (pushback (rotate-wrist (send *baxter* :angle-vector) l/r 90) avs)
-       (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 60 0) :world :revert-if-fail nil) l/r 90) avs))
+       (pushback (rotate-wrist (send *baxter* l/r :move-end-pos (float-vector 0 60 0) :world :revert-if-fail nil :rotation-axis :z) l/r 90) avs))
       )
     avs))
 
@@ -41,7 +42,7 @@
   (let (avs
         revavs
         (pattern-list (list 0 1 2 3 4))
-        (init-angle (send *baxter* :angle-vector (send *ri* :state :potentio-vector))))
+        (init-angle (send *baxter* :angle-vector)))
     ;; invalid check of l/r
     (assert-l/r l/r)
 
@@ -76,6 +77,10 @@
 
       (send *ri* :angle-vector-sequence revavs :fast :default-controller 0 :scale 5)
       (send *ri* :wait-interpolation)
+
+      ;; update *baxter*
+      (send *baxter* :angle-vector init-angle)
+
       (if *simulator-p*
           (return))
       (ros::spin-once) ;; check if grabbed
