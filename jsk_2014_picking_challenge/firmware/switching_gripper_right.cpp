@@ -19,11 +19,11 @@ void messageCb( const std_msgs::Bool& toggle_msg){
     }
 }
 
-ros::Subscriber<std_msgs::Bool> sub("/on_off_gripper/limb/right", &messageCb);
+ros::Subscriber<std_msgs::Bool> sub("/vacuum_gripper/limb/right", &messageCb);
 
 // publish state <on/off>
 std_msgs::String str_msg;
-ros::Publisher pub("/on_off_gripper/limb/right/state", &str_msg);
+ros::Publisher pub("/vacuum_gripper/limb/right/state", &str_msg);
 
 // publish whether gripper grabbed.
 std_msgs::Bool grabbed_msg;
