@@ -30,7 +30,6 @@
       (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)))
       (ros::set-param "/target" (symbol-to-str target))
       (setq state (ros::get-param (format nil "~A_limb/state" (arm-to-str arm))))
-      (send *irtviewer* :draw-objects)
       (ros::ros-info "state: ~A, arm: ~A, target: ~A" state (arm-to-str arm) (symbol-to-str target))
       (cond
         ((string= state "pick_object")
