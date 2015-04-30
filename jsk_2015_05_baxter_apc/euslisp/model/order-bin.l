@@ -16,7 +16,7 @@
 (defun orderbin-init ()
   (when (not (boundp '*orderbin*))
     (setq *orderbin* (make-orderbin))
-    (send *orderbin* :locate #f(500 0 500) :world)
+    (send *orderbin* :locate #f(600 0 700) :world)
     (send *orderbin* :rotate pi/2 :z :world)
     ))
 

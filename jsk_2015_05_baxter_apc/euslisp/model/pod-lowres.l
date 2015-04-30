@@ -11,7 +11,7 @@
   (when (not (boundp '*pod*))
     (setq *pod* (instance pod-lowres-object :init))
     (send (car (send *pod* :bodies)) :set-color :gray30)
-    (send *pod* :locate #f(1220 0 35) :world)
+    (send *pod* :locate #f(1350 0 35) :world)
     (send *pod* :rotate pi/2 :x :world)
     (send *pod* :rotate -pi/2 :z :world)))
 
