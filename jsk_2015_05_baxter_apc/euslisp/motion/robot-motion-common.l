@@ -58,9 +58,16 @@
   (let (av)
     (setq av (send *baxter* :angle-vector))
     (case arm
-      (:larm (setf (aref av 0) -40))
-      (:rarm (setf (aref av 0) 40)))
+      (:larm (setf (aref av 0) -90))
+      (:rarm (setf (aref av 0) 90)))
     (send *baxter* :angle-vector av)))
 
 (defmethod baxter-robot
-  (:fold-pose () (fold-pose-back :larm) (elt (fold-pose-back :rarm) 0)))
+  (:fold-pose
+    ()
+    (let (av)
+      (fold-pose-back :larm)
+      (fold-pose-back :rarm)
+      (setq av (send *baxter* :angle-vector))
+      (setf (aref av 0) 0)
+      (send *baxter* :angle-vector av))))
