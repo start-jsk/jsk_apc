@@ -39,6 +39,7 @@
 
 (defun move-to-target-bin (arm bin)
   (let (avs)
+    (pushback (look-at-other-side arm) avs)
     (setq avs (append avs (fold-pose-avs arm bin)))
     (send *irtviewer* :draw-objects)
     (setq avs (append avs (move-to-target-bin-avs arm bin)))
