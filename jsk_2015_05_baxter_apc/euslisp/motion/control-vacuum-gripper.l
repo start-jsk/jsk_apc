@@ -7,7 +7,6 @@
 ;; $ rosrun rosserial_python serial_node.py _port:=/dev/ttyUSB0
 ;;
 (ros::load-ros-manifest "roseus")
-(ros::roseus "control_vacuum_gripper")
 (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool 1)
 (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool 1)
 (ros::rate 10)
