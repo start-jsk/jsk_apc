@@ -27,3 +27,8 @@
   (intern (string-upcase str) "KEYWORD"))
 (defun symbol-to-str (_symbol)
   (string-downcase (symbol-string _symbol)))
+
+(defun assert-arm (arm)
+  (if (not
+       (or (eq arm :larm) (eq arm :rarm)))
+      (return-from pick-object "invalid arm. arm must be :larm or :rarm")))
