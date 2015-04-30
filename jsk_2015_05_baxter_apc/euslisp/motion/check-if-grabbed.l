@@ -4,7 +4,6 @@
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 
 (ros::load-ros-manifest "roseus")
-(ros::roseus "grabbed")
 
 (defparameter *grabbed-left* nil)
 (defparameter *grabbed-right* nil)
@@ -28,4 +27,5 @@
        (setq state *grabbed-left*))
       (:rarm
        (setq state *grabbed-right*)))
+    (when state (speak-en "Grasped object" :google t))
     state)
