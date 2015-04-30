@@ -28,4 +28,5 @@
        (setq state *grabbed-left*))
       (:rarm
        (setq state *grabbed-right*)))
+    (when state (speak-en "Grasped object" :google t))
     state)
