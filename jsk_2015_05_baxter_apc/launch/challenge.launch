@@ -7,6 +7,7 @@
   <arg name="color" default="false"/>
   <arg name="launch_main" default="false"/>
   <arg name="cameras_setup" default="false"/>
+  <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
   <env name="DISPLAY" value="" unless="$(arg DEBUG)" />
 
   <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
@@ -20,10 +21,10 @@
 
   <!-- json -->
   <node pkg="jsk_2014_picking_challenge" type="bin_contents.py" name="bin_contents" output="log">
-    <param name="json" value="$(find jsk_2014_picking_challenge)/data/apc.json" />
+    <param name="json" value="$(arg json)" />
   </node>
   <node pkg="jsk_2014_picking_challenge" type="work_order.py" name="work_order" output="log">
-    <param name="json" value="$(find jsk_2014_picking_challenge)/data/apc.json" />
+    <param name="json" value="$(arg json)" />
   </node>
 
   <!-- parameter -->
@@ -66,6 +67,9 @@
       <arg name="input_info" value="/kinect2/rgb/camera_info" />
     </include>
   </group>
+  <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification" output="log">
+    <param name="json" value="$(arg json)" />
+  </node>
 
   <group if="$(arg tweet)">
     <!-- tweet -->
