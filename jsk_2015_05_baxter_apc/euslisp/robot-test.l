@@ -6,7 +6,6 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
 
-
 (defun ir2ri (&optional (tm nil))
   (send *ri* :angle-vector (send *baxter* :angle-vector) tm)
   (send *irtviewer* :draw-objects))
@@ -23,7 +22,7 @@
 
 (ros::advertise "tweet" std_msgs::string 1)
 
-(defun test (&key
+(defun test-challenge (&key
               (bins (list :a :b :c :d :e :f :g :h :i :j :k :l))
               (use-arm (list :larm :rarm))
               (tweet? t)
