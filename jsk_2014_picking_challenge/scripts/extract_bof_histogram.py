@@ -11,12 +11,12 @@ from extract_bof import get_sift_descriptors
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('bof')
+    parser.add_argument('bof_extractor')
     parser.add_argument('siftdata_dir')
     args = parser.parse_args(sys.argv[1:])
 
-    print('loading bof...')
-    with gzip.open(args.bof, 'wb') as f:
+    print('loading bof_extractor...')
+    with gzip.open(args.bof_extractor, 'rb') as f:
         bof = pickle.load(f)
 
     print('making histograms...')
@@ -26,7 +26,9 @@ def main():
         obj_hists[obj] = bof.transform(descs)
 
     print('saving histograms...')
-    with gzip.open('bof_histograms.pkl.gz', 'wb') as f:
+    filename = 'bof_histograms_{0}.pkl.gz'.format(
+        hashlib.sha1(str(time.time())).hexdigest()[:8])
+    with gzip.open(filename, 'wb') as f:
         pickle.dump(obj_hists, f)
 
 
