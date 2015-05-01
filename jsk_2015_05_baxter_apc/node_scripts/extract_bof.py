@@ -10,6 +10,7 @@ import cPickle as pickle
 import numpy as np
 
 from matcher_common import get_object_list, load_siftdata
+from bag_of_features import BagOfFeatures
 
 
 def get_sift_descriptors(n_imgs=None, data_dir=None):
@@ -36,7 +37,7 @@ def main():
     args = parser.parse_args(sys.argv[1:])
 
     print('getting descriptors...')
-    sift_descs = get_sift_descriptors(n_imgs=args.n_imgs,
+    sift_descs = get_sift_descriptors(n_imgs=int(args.n_imgs),
                                       data_dir=args.siftdata_dir)
     _, descs = zip(*sift_descs)
     X = []
@@ -45,12 +46,15 @@ def main():
         X.append(xi)
     X = np.vstack(X)
     np.random.shuffle(X)
-    rospy.loginfo('X.shape: {}'.format(X.shape))
+    print('X.shape: {}'.format(X.shape))
 
     print('fitting bag of features...')
     bof = BagOfFeatures()
     bof.fit(X)
-    bof.save_bof(path='bof.pkl.gz')
+    filename = 'bof_{0}.pkl.gz'.format(
+        hashlib.sha1(str(time.time())).hexdigest()[:8])
+    with gzip.open('bof.pkl.gz', 'wb') as f:
+        pickle.dump(bof, f)
 
 
 if __name__ == '__main__':
