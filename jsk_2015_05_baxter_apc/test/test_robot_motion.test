@@ -1,0 +1,4 @@
+
+<launch>
+  <test pkg="jsk_2014_picking_challenge" type="test-robot-motion.l" test-name="robot_test"></test>
+</launch>
