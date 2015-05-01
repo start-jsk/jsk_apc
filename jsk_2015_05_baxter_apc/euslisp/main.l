@@ -8,6 +8,17 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-test.l")
 
+(defparameter *bin-contents* nil)
+(ros::subscribe "/bin_contents" jsk_2014_picking_challenge::BinContentsArray
+                #'(lambda (msg) (setq *bin-contents* (send msg :array))))
+
+(defun get-bin-contents (bin)
+  (ros::spin-once)
+  (let ((bin_contents *bin-contents*))
+    (dolist (bc bin_contents)
+      (when (string= (symbol-to-str bin) (send bc :bin))
+        (return-from get-bin-contents (send bc :objects))))
+    ))
 
 (defun main ()
   (let (arm target param-target state work)
@@ -37,7 +48,9 @@
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (symbol-to-str target)) :google t)
          (pick-object arm)
-         (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "move_for_verification"))
+         (if (= (length (get-bin-contents target)) 1)
+          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object")
+          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "move_for_verification")))
         ((string= state "move_for_verification")
          (speak-en  "Move for verification." :google t)
          (move-for-verification arm)
