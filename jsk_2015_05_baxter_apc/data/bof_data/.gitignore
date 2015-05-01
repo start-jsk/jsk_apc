@@ -1,2 +1,2 @@
 obj_descs_*.pkl.gz
-bof_histograms.pkl.gz
+bof_histograms_*.pkl.gz

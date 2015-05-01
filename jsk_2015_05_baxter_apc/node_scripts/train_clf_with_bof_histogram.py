@@ -22,7 +22,7 @@ def main():
     args = parser.parse_args(sys.argv[1:])
 
     print('loading bof histogram')
-    with gzip.open(args.bof_histogram, 'wb') as f:
+    with gzip.open(args.bof_histogram, 'rb') as f:
         obj_hists = pickle.load(f)
 
     target_names = get_object_list()
@@ -40,13 +40,13 @@ def main():
 
     # train and test
     lgr = LogisticRegression()
-    rospy.loginfo('fitting LogisticRegression')
+    print('fitting LogisticRegression')
     lgr.fit(X_train, y_train)
     with gzip.open('lgr.pkl.gz', 'wb') as f:
         pickle.dump(lgr, f)
     y_pred = lgr.predict(X_test)
-    rospy.loginfo('score lgr: {}'.format(accuracy_score(y_test, y_pred)))
-    rospy.loginfo(classification_report(y_test, y_pred,
+    print('score lgr: {}'.format(accuracy_score(y_test, y_pred)))
+    print(classification_report(y_test, y_pred,
                                         target_names=target_names))
 
 
