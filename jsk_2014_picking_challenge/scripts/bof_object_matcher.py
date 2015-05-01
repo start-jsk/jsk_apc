@@ -30,7 +30,9 @@ class BofObjectMatcher(ObjectMatcher):
     def _init_bof(self):
         data_dir = get_data_dir()
         bof_path = os.path.join(data_dir, 'bof_data/bof.pkl.gz')
-        self.bof = BagOfFeatures(bof_path=bof_path)
+        with gzip.open(bof_path) as f:
+            bof = pickle.load(f)
+        self.bof = bof
 
     def _init_clf(self):
         data_dir = get_data_dir()
