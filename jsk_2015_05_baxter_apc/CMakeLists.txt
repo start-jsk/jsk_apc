@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
     rosserial_arduino
     rosserial_client
     dynamic_reconfigure
+    rostest
 )
 
 ## System dependencies are found with CMake's conventions
@@ -204,3 +205,4 @@ endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+add_rostest(test/test_robot_motion.test)

@@ -93,7 +93,7 @@
       )
 
     ;; take arm out of bin
-    (setq avs (list (send *baxter* arm :move-end-pos #f(-100 0 0) :revert-if-fail nil :rotation-axis nil)))
+    (setq avs (list (send *baxter* arm :move-end-pos #f(-100 0 0) :world :revert-if-fail nil :rotation-axis nil)))
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 8.0)
     (send *ri* :wait-interpolation)
