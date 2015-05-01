@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter_custom_white">
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter">
   <xacro:include filename="$(find baxter_description)/urdf/baxter_simple.urdf" />
 
   <xacro:property name="width" value=".02" />
