@@ -1,11 +1,18 @@
 (ros::load-ros-manifest "roseus")
-(ros::load-ros-manifest "std_msgs")
+(ros::load-ros-manifest "jsk_2014_picking_challenge")
 
-(defparameter correct? nil)
+(setq correct? nil)
+(setq verify-object-stamp nil)
 
-(defun bool-cb (msg) (setq correct? (send msg :data)))
-(ros::subscribe "/object_verification/output" std_msgs::bool #'bool-cb)
+(defun object-verification-cb (msg)
+  (setq correct? (send msg :data))
+  (setq verify-object-stamp (send (send msg :header) :stamp)))
+(ros::subscribe "/object_verification/output" jsk_2014_picking_challenge::BoolStamped #'object-verification-cb)
 
 (defun verify-object ()
-  (ros::spin-once)
+  (setq now (ros::time-now))
+  (while
+    (< (send verify-object-stamp :sec) (send now :sec))
+    (unix::usleep 1000)
+    (ros::spin-once))
   correct?)
