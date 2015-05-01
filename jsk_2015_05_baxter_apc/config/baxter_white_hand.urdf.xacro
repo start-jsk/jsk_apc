@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter_custom_white">
-  <xacro:include filename="$(find baxter_description)/urdf/baxter.urdf" />
+  <xacro:include filename="$(find baxter_description)/urdf/baxter_simple.urdf" />
 
   <xacro:property name="width" value=".02" />
   <xacro:property name="width_base" value=".04" />
@@ -15,7 +15,7 @@
     <visual>
       <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
       <geometry>
-        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/long1.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/long1_simple.dae" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
@@ -30,7 +30,7 @@
   <link name="custom_vacuum_link_base">
     <visual>
       <geometry>
-        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukailong2.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2014_picking_challenge/config/mesh/jigukailong2_simple.dae" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
