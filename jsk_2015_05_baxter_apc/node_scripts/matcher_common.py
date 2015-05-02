@@ -49,19 +49,20 @@ def save_siftdata(obj_name, siftdata):
         pickle.dump(siftdata, f)
 
 
-def load_siftdata(obj_name, return_pos=True, dry_run=False):
+def load_siftdata(obj_name, return_pos=True, dry_run=False, data_dir=None):
     """Load sift data from pkl file"""
-    data_dir = get_data_dir()
-    datafile = os.path.join(data_dir, 'siftdata/{}.pkl.gz'.format(obj_name))
+    if data_dir is None:
+        data_dir = os.path.join(get_data_dir(), 'siftdata')
+    datafile = os.path.join(data_dir, '{0}.pkl.gz'.format(obj_name))
     if dry_run:  # check if exists
         if os.path.exists(datafile):
             return datafile
         else:
             return
     if not os.path.exists(datafile):
-        rospy.logerr('not found siftdata: {}'.format(obj_name))
+        print('not found siftdata: {0}'.format(obj_name))
         return  # does not exists
-    rospy.loginfo('load siftdata: {o}'.format(o=obj_name))
+    print('load siftdata: {0}'.format(obj_name))
     with gzip.open(datafile, 'rb') as f:
         siftdata = pickle.load(f)
     if return_pos:
