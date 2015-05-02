@@ -32,6 +32,7 @@
   :slots (glvertices)
   )
 (defmethod collada-body
+  (:glvertices (&rest args) (forward-message-to glvertices args))
   (:draw (vwr)
    (when glvertices
      (send glvertices :draw vwr)))
