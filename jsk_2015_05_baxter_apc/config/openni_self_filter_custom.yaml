@@ -3,9 +3,9 @@ self_see_default_padding: .01
 self_see_default_scale: 1.0
 self_see_links:
   - name: right_gripper_base
-    padding: .04 
+    padding: .04
   - name: right_lower_elbow
-    padding: .04 
+    padding: .04
   - name: right_lower_forearm
     padding: .04
   - name: right_lower_shoulder
@@ -20,21 +20,15 @@ self_see_links:
     padding: .04
   - name: right_wrist
     padding: .04
-  - name: custom_vacuum_link
-    padding: .02
-  - name: custom_vacuum_link_base
-    padding: .01
-  - name: custom_vacuum_link_side
-    padding: .02
-  - name: custom_vacuum_link_side2
-    padding: .01
-  - name: custom_vacuum_link_side2_base
-    padding: .01
+  - name: right_custom_vacuum_link
+    padding: .04
+  - name: right_custom_vacuum_link_base
+    padding: .04
 
   - name: left_gripper_base
-    padding: .04 
+    padding: .04
   - name: left_lower_elbow
-    padding: .04 
+    padding: .04
   - name: left_lower_forearm
     padding: .07
   - name: left_lower_shoulder
@@ -48,4 +42,8 @@ self_see_links:
   - name: left_upper_shoulder
     padding: .04
   - name: left_wrist
+    padding: .04
+  - name: left_custom_vacuum_link
+    padding: .04
+  - name: left_custom_vacuum_link_base
     padding: .04
