@@ -23,7 +23,6 @@
 
 (defun fold-pose-avs (arm bin)
   (let (avs)
-    (setq avs (append avs (fold-pose-back (if (eq arm :larm) :rarm :larm))))  ; fold oposite arm
     (setq avs (append avs (fold-pose-mid arm)))
     (cond ((find bin '(:a :b :c)) (setq avs (append avs (fold-pose-up arm))))
           ((find bin '(:d :e :f :g :i)) (setq avs (append avs (fold-pose-mid arm))))
@@ -40,8 +39,9 @@
 (defun move-to-target-bin (arm bin)
   (let (avs)
     (pushback (look-at-other-side arm) avs)
-    (setq avs (append avs (fold-pose-avs arm bin)))
-    (send *irtviewer* :draw-objects)
+    (setq avs (append avs (fold-pose-back (case arm (:larm :rarm) (:rarm :larm)))))  ; fold oposite arm
+    (fold-pose-avs arm bin)
+    (setq avs (append avs (fold-pose-mid arm)))
     (setq avs (append avs (move-to-target-bin-avs arm bin)))
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.2)
