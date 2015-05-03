@@ -82,21 +82,3 @@ Kinect2のlocalセットアップについて
 ----------------------------------
 https://github.com/code-iai/iai_kinect2 のinstall手順に従い
 インストールしてください。
-
-2015/02/18 追記
----------------
-
-現在,githubのbaxter_interfaceのjoint_trajectory_action_serverに対して,
-eusからangle-vectorを送ると,エラーで実行されません.
-
-現状パッチを当てたもので上書いていますが、またダメになったら以下
-```
-sudo cp /home/inagaki/ros/indigo/src/RethinkRobotics/baxter_interface/src/joint_trajectory_action/joint_trajectory_action.py /opt/ros/indigo/lib/python2.7/dist-packages/joint_trajectory_action/joint_trajectory_action.py
-```
-を行ってください.
-
-euslispからangle-vectorを送る場合にエラーが出る場合は
-```
-git checkout d2fadd7e5135f6f5060675cb7910e645a1e66739
-```
-してください.
