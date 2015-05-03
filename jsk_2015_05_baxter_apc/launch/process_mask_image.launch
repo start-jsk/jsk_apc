@@ -1,0 +1,51 @@
+<launch>
+  <arg name="original_image" default="/kinect2/rgb/image"/>
+  <arg name="input_point_indices" default="/organized_to_pi/output"/>
+  <arg name="input_depth_camera_info" default="/kinect2/depth_highres/camera_info"/>
+  <arg name="manager" default=""/>
+  <arg name="rect" default="false" />
+
+  <node pkg="nodelet" type="nodelet" name="div_to_maskimage"
+        args="standalone jsk_pcl/PointIndicesToMaskImage">
+    <remap from="~input" to="$(arg input_point_indices)" />
+    <remap from="~input/image" to="$(arg original_image)" />
+    <param name="approximate_sync" value="true" />
+  </node>
+
+  <!-- process mask image -->
+  <node pkg="nodelet" type="nodelet" name="dilate_mask_image"
+        args="standalone jsk_perception/DilateMaskImage ">
+    <remap from="~input" to="div_to_maskimage/output" />
+    <param name="approximate_sync" value="true" />
+    <param name="size" type="int" value="2" />
+    <param name="iterations" type="int" value="1" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="erode_mask_image"
+        args="standalone jsk_perception/ErodeMaskImage ">
+    <remap from="~input" to="dilate_mask_image/output" />
+    <param name="approximate_sync" value="true" />
+    <param name="size" type="int" value="5" />
+    <param name="iterations" type="int" value="2" />
+  </node>
+  <group if="$(arg rect)">
+    <node pkg="nodelet" type="nodelet" name="mask_image_to_roi"
+          args="standalone jsk_perception/MaskImageToROI ">
+      <remap from="~input" to="erode_mask_image/output" />
+      <remap from="~input/camera_info" to="$(arg input_depth_camera_info)" />
+      <param name="approximate_sync" value="true" />
+    </node>
+    <node pkg="nodelet" type="nodelet" name="roi_to_mask_image"
+          args="standalone jsk_perception/ROIToMaskImage ">
+      <remap from="~input" to="mask_image_to_roi/output" />
+      <param name="approximate_sync" value="true" />
+    </node>
+  </group>
+  <node pkg="nodelet" type="nodelet" name="apply_mask"
+        args="standalone jsk_perception/ApplyMaskImage">
+    <remap from="~input" to="$(arg original_image)" />
+    <remap from="~input/mask" to="erode_mask_image/output" unless="$(arg rect)" />
+    <remap from="~input/mask" to="roi_to_mask_image/output" if="$(arg rect)" />
+    <param name="approximate_sync" value="true" />
+  </node>
+
+</launch>
