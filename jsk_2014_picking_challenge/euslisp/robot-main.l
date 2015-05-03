@@ -7,6 +7,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-test.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-visualization.l")
 
 (defparameter *bin-contents* nil)
 (ros::subscribe "/bin_contents" jsk_2014_picking_challenge::BinContentsArray
