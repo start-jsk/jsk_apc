@@ -17,7 +17,7 @@
     (pushback (send *baxter* :angle-vector) avs)
     (case pattern
       (:just-down
-        (send *baxter* arm :move-end-pos #f(0 0 -100) :world :revert-if-fail nil :rotation-axis :z)
+        (send *baxter* arm :move-end-pos #f(0 0 -90) :world :revert-if-fail nil :rotation-axis :z)
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation)
@@ -27,7 +27,7 @@
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation)
-        (send *baxter* arm :move-end-pos #f(0 0 -100) :world :revert-if-fail nil :rotation-axis :z)
+        (send *baxter* arm :move-end-pos #f(0 0 -90) :world :revert-if-fail nil :rotation-axis :z)
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation))
@@ -36,7 +36,7 @@
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation)
-        (send *baxter* arm :move-end-pos #f(0 0 -100) :world :revert-if-fail nil :rotation-axis :z)
+        (send *baxter* arm :move-end-pos #f(0 0 -90) :world :revert-if-fail nil :rotation-axis :z)
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation))
@@ -45,7 +45,7 @@
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation)
-        (send *baxter* arm :move-end-pos #f(0 0 -90) :world :revert-if-fail nil :rotation-axis :z)
+        (send *baxter* arm :move-end-pos #f(0 0 -80) :world :revert-if-fail nil :rotation-axis :z)
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation)
@@ -58,7 +58,7 @@
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation)
-        (send *baxter* arm :move-end-pos #f(0 0 -90) :world :revert-if-fail nil :rotation-axis :z)
+        (send *baxter* arm :move-end-pos #f(0 0 -80) :world :revert-if-fail nil :rotation-axis :z)
         (pushback (send *baxter* :angle-vector) avs)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
         (send *ri* :wait-interpolation)
@@ -81,12 +81,12 @@
     (case pattern
       ;; rotate wrist to take standing object out of bin
       (:just-down
-        (send *baxter* arm :move-end-pos #f(0 0 170) :world :revert-if-fail nil :rotation-axis nil)
+        (send *baxter* arm :move-end-pos #f(0 0 140) :world :revert-if-fail nil :rotation-axis nil)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 4000)
         (send *ri* :wait-interpolation))
       (:left-and-down
-        (send *baxter* arm :move-end-pos #f(0 0 170) :world :revert-if-fail nil :rotation-axis nil)
+        (send *baxter* arm :move-end-pos #f(0 0 140) :world :revert-if-fail nil :rotation-axis nil)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 4000)
         (send *ri* :wait-interpolation)
@@ -96,7 +96,7 @@
         (send *ri* :wait-interpolation)
         )
       (:right-and-down
-        (send *baxter* arm :move-end-pos #f(0 0 170) :world :revert-if-fail nil :rotation-axis nil)
+        (send *baxter* arm :move-end-pos #f(0 0 140) :world :revert-if-fail nil :rotation-axis nil)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 4000)
         (send *ri* :wait-interpolation)
@@ -106,11 +106,13 @@
         (send *ri* :wait-interpolation))
       (:rotate-and-left
         (rotate-wrist arm -45)
+        (send *baxter* arm :move-end-pos #f(0 -30 30) :world :revert-if-fail nil :rotation-axis nil)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
         (send *ri* :wait-interpolation))
       (:rotate-and-right
         (rotate-wrist arm 45)
+        (send *baxter* arm :move-end-pos #f(0 30 30) :world :revert-if-fail nil :rotation-axis nil)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
         (send *ri* :wait-interpolation)))
