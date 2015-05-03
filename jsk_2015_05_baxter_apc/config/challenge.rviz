@@ -5,10 +5,10 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /Infomation1/APCInfo1
+        - /Infomation1/Score1
         - /Left1
-        - /Left1/LeftHandCamera1
         - /Right1
-        - /Right1/RightHandCamera1
       Splitter Ratio: 0.589655
     Tree Height: 621
   - Class: rviz/Selection
@@ -70,6 +70,19 @@ Visualization Manager:
           Namespaces:
             {}
           Queue Size: 100
+          Value: true
+        - Class: rviz/Marker
+          Enabled: true
+          Marker Topic: /score_board
+          Name: ScoreBoard
+          Namespaces:
+            score_board_body: true
+          Queue Size: 100
+          Value: true
+        - Class: jsk_rviz_plugin/PictogramArray
+          Enabled: true
+          Name: Score
+          Topic: /score_pict
           Value: true
         - Alpha: 0.5
           Cell Size: 1
@@ -437,6 +450,8 @@ Visualization Manager:
               Grid: true
               Pod: true
               RobotModel: true
+              Score: true
+              ScoreBoard: true
               StateConsole: true
               Value: true
             Left:
@@ -532,6 +547,8 @@ Visualization Manager:
               Grid: true
               Pod: true
               RobotModel: true
+              Score: true
+              ScoreBoard: true
               StateConsole: true
               Value: true
             Left:
@@ -743,22 +760,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.5233
+      Distance: 4.72411
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.791792
-        Y: 0.0463676
-        Z: 0.644763
+        X: 0.54716
+        Y: 0.95202
+        Z: 0.14384
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.304796
+      Pitch: 0.244797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.33849
+      Yaw: 3.92851
     Saved: ~
 Window Geometry:
   ApplyImage:
@@ -788,5 +805,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1543
-  X: 48
-  Y: -13
+  X: 57
+  Y: 21
