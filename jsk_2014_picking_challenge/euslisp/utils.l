@@ -1,3 +1,5 @@
+(ros::load-ros-manifest "jsk_rviz_plugins")
+
 (defun str-to-arm (str)
   (cond
     ((string= str "left") :larm)
@@ -27,3 +29,27 @@
   (intern (string-upcase str) "KEYWORD"))
 (defun symbol-to-str (_symbol)
   (string-downcase (symbol-string _symbol)))
+
+(defun publish-popup-text(text frame topic_name)
+  (let ((pict-msg (instance jsk_rviz_plugins::Pictogram :init)))
+    (unless (ros::get-topic-publisher topic_name)
+      (ros::advertise topic_name jsk_rviz_plugins::pictogram 5)
+      (unix:sleep 1))
+    (send pict-msg :header :frame_id frame)
+    (send pict-msg :header :stamp (ros::time-now))
+    (send pict-msg :mode jsk_rviz_plugins::Pictogram::*STRING_MODE*)
+    (send pict-msg :character text) 
+    (send pict-msg :ttl 20.0)
+    (send pict-msg :pose :position :z 1.6)
+    (send pict-msg :pose :orientation :w 0.7)
+    (send pict-msg :pose :orientation :y -0.7)
+    (send pict-msg :size 1)
+    (send pict-msg :color :r  (/ 25.0 255.0))
+    (send pict-msg :color :g (/ 255.0 255.0))
+    (send pict-msg :color :b (/ 240.0 255.0))
+    (send pict-msg :color :a 1.0)
+    
+    (send pict-msg :action jsk_rviz_plugins::Pictogram::*JUMP*)
+    (ros::publish topic_name pict-msg)
+    )
+  )
