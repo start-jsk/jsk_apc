@@ -22,3 +22,40 @@
   (ros::advertise "/rarm_end_coords" visualization_msgs::Marker 5)
   (ros::publish "/larm_end_coords" (eusobj->marker-msg (send (send (send *baxter* :larm :end-coords) :copy-worldcoords) :translate #f(0 0 -950) :world) (instance std_msgs::header :init :stamp (ros::time-now) :frame_id "/base")))
   (ros::publish "/rarm_end_coords"(eusobj->marker-msg (send (send (send *baxter* :rarm :end-coords) :copy-worldcoords) :translate #f(0 0 -950) :world) (instance std_msgs::header :init :stamp (ros::time-now) :frame_id "/base"))))
+
+(defun publish-pod ()
+  (let ((*simulator-origin* "base"))
+    (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
+    (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "pod")
+
+    (ros::advertise "/object_detection_marker_array" visualization_msgs::MarkerArray 5)
+    (unix::sleep 1)
+    (ros::publish "/object_detection_marker_array"
+                  (instance visualization_msgs::MarkerArray :init
+                            :markers
+                            (list (text->marker-msg
+                                   "pod"
+                                   (send (send *pod* :copy-worldcoords)
+                                         :translate #f(-100 0 100))
+                                   (instance std_msgs::header :init
+                                             :stamp (ros::time-now)
+                                             :frame_id "pod")
+                                   :ns (format nil "object_text_~A" "pod") :color #f(1 0 0)
+                                   :scale 100 :lifetime 0 :id 0)
+                                  (coords->marker-msg
+                                   (send *pod* :copy-worldcoords)
+                                   (instance std_msgs::header :init
+                                             :stamp (ros::time-now)
+                                             :frame_id "pod")
+                                   :ns (format nil "object_coords_~A" "pod")
+                                   :lifetime 0 :id 1)
+                                  (eusobj->marker-msg
+                                   *pod*
+                                   (instance std_msgs::header :init
+                                             :stamp (ros::time-now)
+                                             :frame_id "pod")
+                                   :ns (format nil "object_body_~A" "pod")
+                                   :lifetime 0 :id 2
+                                   :rainbow t)
+                                  )))
+    )
