@@ -13,7 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
 
-from matcher_common import get_object_list
+from common import get_object_list
 
 
 def main():

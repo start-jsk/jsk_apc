@@ -97,7 +97,7 @@ class ExtractColorHistogram(object):
 
 
 def main():
-    from matcher_common import get_object_list, get_train_imgpaths
+    from common import get_object_list, get_train_imgpaths
 
     rospy.init_node('extract_color_histogram')
 
