@@ -6,7 +6,7 @@ import numpy as np
 import rospy
 
 from sift_matcher import imgsift_client, load_siftdata
-from matcher_common import save_siftdata, get_object_list, get_train_imgs
+from common import save_siftdata, get_object_list, get_train_imgs
 
 
 def extract_sift(obj_name):
