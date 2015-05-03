@@ -71,3 +71,20 @@
       (setq av (send *baxter* :angle-vector))
       (setf (aref av 0) 0)
       (send *baxter* :angle-vector av))))
+
+(defmethod pod-lowres-object
+  ; local coordinates of each target bin
+  ; these are the entrances
+  (:a () (send self :transform-vector #f(-280 1660 400)))
+  (:b () (send self :transform-vector #f(   0 1660 400)))
+  (:c () (send self :transform-vector #f( 280 1660 400)))
+  (:d () (send self :transform-vector #f(-280 1430 400)))
+  (:e () (send self :transform-vector #f(   0 1430 400)))
+  (:f () (send self :transform-vector #f( 280 1430 400)))
+  (:g () (send self :transform-vector #f(-280 1200 400)))
+  (:h () (send self :transform-vector #f(   0 1200 400)))
+  (:i () (send self :transform-vector #f( 280 1200 400)))
+  (:j () (send self :transform-vector #f(-280  940 400)))
+  (:k () (send self :transform-vector #f(   0  940 400)))
+  (:l () (send self :transform-vector #f( 280  940 400)))
+  (:bin-list () '(:a :b :c :d :e :f :g :h :i :j :k :l)))
