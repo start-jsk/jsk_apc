@@ -17,7 +17,7 @@
 (defun test-for-bin (arm bin &key (verify nil))
   (ros::ros-info "test for ~A" bin)
   (move-to-target-bin arm bin)
-  (pick-object arm)
+  (pick-object arm bin)
   (place-object arm))
 
 (ros::advertise "tweet" std_msgs::string 1)
