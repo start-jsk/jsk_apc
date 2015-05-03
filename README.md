@@ -18,6 +18,7 @@ $ wstool set 2014-semi https://github.com/start-jsk/2014-semi --git
 $ wstool set jsk_robot https://github.com/jsk-ros-pkg/jsk_robot --git
 $ wstool set jsk_pr2eus https://github.com/jsk-ros-pkg/jsk_pr2eus --git
 $ wstool set jsk_recognition https://github.com/jsk-ros-pkg/jsk_recognition --git
+$ wstool set audio_common https://github.com/ros-drivers/audio_common.git --git
 $ wstool update
 $ cd ..
 $ rosdep install -y -r --from-paths .
