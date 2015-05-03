@@ -47,7 +47,7 @@
          (speak-en (format nil "Move to Bin ~A . Target is ~A" (symbol-to-str target) "OREO" ) :google t)
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (symbol-to-str target)) :google t)
-         (pick-object arm)
+         (pick-object arm target)
          (if (= (length (get-bin-contents target)) 1)
           (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object")
           (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "move_for_verification")))
