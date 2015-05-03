@@ -5,6 +5,7 @@
   <arg name="bof" default="true"/>
   <arg name="sift" default="false"/>
   <arg name="color" default="false"/>
+  <arg name="rosserial" default="true"/>
   <arg name="launch_main" default="false"/>
   <arg name="cameras_setup" default="false"/>
   <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
