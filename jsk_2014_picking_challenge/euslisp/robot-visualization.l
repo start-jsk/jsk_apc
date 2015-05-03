@@ -13,7 +13,7 @@
 	    (pose (instance geometry_msgs::Pose :init)))
 	(send pose :position :x (/ (elt pos-vec 0) 1000))
 	(send pose :position :y (/ (elt pos-vec 1) 1000))
-	(send pose :position :z (/ (elt pos-vec 2) 1000))
+	(send pose :position :z (- (/ (elt pos-vec 2) 1000) 0.95))
 	(send pose :orientation :x 0)
 	(send pose :orientation :y -0.7)
 	(send pose :orientation :z 0)
@@ -37,7 +37,7 @@
     (send pict-msg :header :frame_id frame)
     (send pict-msg :header :stamp (ros::time-now))
     (send pict-msg :mode jsk_rviz_plugins::Pictogram::*STRING_MODE*)
-    (send pict-msg :character text) 
+    (send pict-msg :character text)
     (send pict-msg :ttl ttl)
     (send pict-msg :pose pose)
     (send pict-msg :size 0.7)
@@ -63,9 +63,9 @@
     (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
     (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "pod")
 
-    (ros::advertise "/object_detection_marker_array" visualization_msgs::MarkerArray 5)
+    (ros::advertise "/pod_marker_array" visualization_msgs::MarkerArray 5)
     (unix::sleep 1)
-    (ros::publish "/object_detection_marker_array"
+    (ros::publish "/pod_marker_array"
                   (instance visualization_msgs::MarkerArray :init
                             :markers
                             (list (text->marker-msg
@@ -75,21 +75,21 @@
                                    (instance std_msgs::header :init
                                              :stamp (ros::time-now)
                                              :frame_id "pod")
-                                   :ns (format nil "object_text_~A" "pod") :color #f(1 0 0)
+                                   :ns "pod_text_~A" :color #f(1 0 0)
                                    :scale 100 :lifetime 0 :id 0)
                                   (coords->marker-msg
                                    (send *pod* :copy-worldcoords)
                                    (instance std_msgs::header :init
                                              :stamp (ros::time-now)
                                              :frame_id "pod")
-                                   :ns (format nil "object_coords_~A" "pod")
+                                   :ns "pod_coords"
                                    :lifetime 0 :id 1)
                                   (eusobj->marker-msg
                                    *pod*
                                    (instance std_msgs::header :init
                                              :stamp (ros::time-now)
                                              :frame_id "pod")
-                                   :ns (format nil "object_body_~A" "pod")
+                                   :ns "pod_body"
                                    :lifetime 0 :id 2
                                    :rainbow t)
                                   )))
