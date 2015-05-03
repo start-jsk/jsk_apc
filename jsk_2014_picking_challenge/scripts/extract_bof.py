@@ -9,7 +9,7 @@ import cPickle as pickle
 
 import numpy as np
 
-from matcher_common import get_object_list, load_siftdata
+from common import get_object_list, load_siftdata
 from bag_of_features import BagOfFeatures
 
 
