@@ -17,7 +17,7 @@
     (send *irtviewer* :draw-objects)
     (setq avs (append avs (place-object-avs arm)))
     (send *irtviewer* :draw-objects)
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 3.0)
+    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 5.0)
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp arm)
     (unix::sleep 2)
