@@ -28,7 +28,7 @@ from posedetection_msgs.msg import ImageFeature0D
 from posedetection_msgs.srv import Feature0DDetect
 from jsk_2014_picking_challenge.cfg import SIFTMatcherConfig
 
-from matcher_common import ObjectMatcher, get_object_list, load_siftdata
+from common import ObjectMatcher, get_object_list, load_siftdata
 
 
 class SiftMatcher(object):
