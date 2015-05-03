@@ -1,4 +1,5 @@
 (ros::load-ros-manifest "jsk_rviz_plugins")
+(load "package://jsk_2014_picking_challenge/euslisp/model/score-board.l")
 
 ;; How to use
 ;;  (publish-bin-mark (list :a :b :c))
@@ -94,3 +95,17 @@
                                    :rainbow t)
                                   )))
     )
+
+(defun publish-score-board ()
+  (score-board-init)
+  (ros::advertise "/score_board" visualization_msgs::Marker 5)
+  (unix::sleep 1)
+  (ros::publish "/score_board"
+		(eusobj->marker-msg
+		 *score-board*
+		 (instance std_msgs::header :init
+			   :stamp (ros::time-now)
+			   :frame_id "base_footprint")
+		 :ns "score_board_body"
+		 :lifetime 0 :id 2
+		 :rainbow t)))
