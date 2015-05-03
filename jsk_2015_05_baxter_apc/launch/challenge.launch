@@ -11,6 +11,8 @@
   <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
   <env name="DISPLAY" value="" unless="$(arg DEBUG)" />
 
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 0.95 0 0 0 base_footprint base 100"/>
+
   <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
     <arg name="custom" value="$(arg custom)"/>
   </include>
