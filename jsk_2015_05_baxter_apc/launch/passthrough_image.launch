@@ -1,12 +1,12 @@
 <launch>
   <arg name="input_cloud" default="/kinect2/depth_highres/points"/>
-  <arg name="custom" default="false"/>
+  <arg name="custom" default="true"/>
   <arg name="manager" default="passthrough_manager"/>
   <arg name="rect" default="false" />
 
   <node pkg="pr2_navigation_self_filter"
         type="self_filter" clear_params="true"
-        name="robot_shadow_self_filter2" respawn="true" output="screen">
+        name="robot_shadow_self_filter3" respawn="true" output="screen">
     <!-- The topic for the input cloud -->
     <remap from="cloud_in" to="$(arg input_cloud)" />
     <!-- The topic for the output cloud -->
