@@ -29,7 +29,7 @@ import rospy
 from jsk_2014_picking_challenge.srv import ObjectMatch, StringEmpty
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../scripts'))
-from matcher_common import get_object_list
+from common import get_object_list
 
 
 def load_csv(filename):
