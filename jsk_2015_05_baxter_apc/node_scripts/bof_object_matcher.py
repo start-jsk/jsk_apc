@@ -14,7 +14,7 @@ from posedetection_msgs.msg import ImageFeature0D
 from jsk_2014_picking_challenge.msg import ObjectRecognition
 
 from bag_of_features import BagOfFeatures
-from matcher_common import ObjectMatcher, get_data_dir, get_object_list
+from common import ObjectMatcher, get_data_dir, get_object_list
 
 
 class BofObjectMatcher(ObjectMatcher):

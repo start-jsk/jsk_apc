@@ -23,7 +23,7 @@ from sensor_msgs.msg import Image
 from posedetection_msgs.srv import Feature0DDetect
 
 from sift_matcher import SiftMatcher, imgsift_client
-from matcher_common import load_img
+from common import load_img
 
 
 class ImageSubscriber(object):
