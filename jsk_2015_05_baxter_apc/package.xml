@@ -43,6 +43,7 @@
   <run_depend>python-numpy</run_depend>
   <run_depend>python-opencv</run_depend>
   <run_depend>python-progressbar</run_depend>
+  <run_depend>python-termcolor</run_depend>
   <run_depend>rostest</run_depend>
 
   <export>
