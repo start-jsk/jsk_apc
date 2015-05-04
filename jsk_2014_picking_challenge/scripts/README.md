@@ -29,3 +29,10 @@ Kinect2で収集したデータの取得方法
 roscd jsk_data
 make large KEYWORD=jsk_2014_picking_challenge/20150428_collected_images.tgz
 ```
+
+
+スコアの計算
+============
+```sh
+rosrun jsk_2014_picking_challenge score_calculator.py
+```
