@@ -50,7 +50,7 @@ cprint('#------------------#', 'blue')
 
 possible = 0
 scores = collections.defaultdict(dict)
-for bin_ in 'abcdefghijkl':
+for bin_ in work_order:
     contents = bin_contents[bin_]
     target = work_order[bin_]
     N = len(contents)
