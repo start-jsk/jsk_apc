@@ -14,6 +14,7 @@
   (look-at-other-side arm)
   (fold-pose-back (if (eq arm :larm) :rarm :larm))
   (send *baxter* arm :move-end-pos #f(-100 0 0) :world :revert-if-fail nil :rotation-axis nil)
+  (fold-pose-mid arm)
   (pushback (send *baxter* :angle-vector) avs)
   (send *irtviewer* :draw-objects)
   (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.8)
