@@ -54,7 +54,10 @@
       <arg name="input_info" value="/kinect2/rgb/camera_info" />
     </include>
   </group>
-  <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification" output="log">
+  <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification" output="log" ns="left_process">
+    <param name="json" value="$(arg json)" />
+  </node>
+  <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification" output="log" ns="right_process">
     <param name="json" value="$(arg json)" />
   </node>
 </launch>
