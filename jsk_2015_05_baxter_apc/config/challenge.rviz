@@ -4,11 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
-        - /Infomation1/APCInfo1
-        - /Infomation1/Score1
-        - /Left1
-        - /Right1
+        - /Infomation1/Pod1
+        - /Infomation1/RobotModel1/Links1
+        - /HighResKinect1/SelfFilterCloud1/Status1
       Splitter Ratio: 0.589655
     Tree Height: 621
   - Class: rviz/Selection
@@ -68,7 +66,9 @@ Visualization Manager:
           Marker Topic: /pod_marker_array
           Name: Pod
           Namespaces:
-            {}
+            pod_body: true
+            pod_coords: true
+            pod_text: true
           Queue Size: 100
           Value: true
         - Class: rviz/Marker
@@ -152,16 +152,6 @@ Visualization Manager:
               Alpha: 1
               Show Axes: false
               Show Trail: false
-            left_custom_vacuum_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            left_custom_vacuum_link_base:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
             left_gripper:
               Alpha: 1
               Show Axes: false
@@ -258,16 +248,6 @@ Visualization Manager:
               Alpha: 1
               Show Axes: false
               Show Trail: false
-            right_custom_vacuum_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            right_custom_vacuum_link_base:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
             right_gripper:
               Alpha: 1
               Show Axes: false
@@ -378,7 +358,7 @@ Visualization Manager:
       Displays:
         - Class: rviz/Image
           Enabled: true
-          Image Topic: /apply_mask/output
+          Image Topic: /left_process/apply_mask/output
           Max Value: 1
           Median window: 5
           Min Value: 0
@@ -388,8 +368,8 @@ Visualization Manager:
           Transport Hint: raw
           Value: true
         - Class: rviz/Image
-          Enabled: false
-          Image Topic: /kinect2/rgb/image
+          Enabled: true
+          Image Topic: /left_process/div_to_maskimage/output
           Max Value: 1
           Median window: 5
           Min Value: 0
@@ -397,10 +377,10 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: false
+          Value: true
         - Class: rviz/Image
-          Enabled: false
-          Image Topic: /apply_mask/output/mask
+          Enabled: true
+          Image Topic: /left_process/apply_mask/output/mask
           Max Value: 1
           Median window: 5
           Min Value: 0
@@ -408,7 +388,7 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: false
+          Value: true
         - Alpha: 1
           Arrow Scale: 0.1
           Arrow Width: 0.5
@@ -457,25 +437,38 @@ Visualization Manager:
             Left:
               ApplyImage: true
               DividerImage: true
+              ImageFeature0D: true
               LeftWrench: true
               MaskImage: true
               Value: true
             Right:
               ApplyImage: true
               DividerImage: true
+              ImageFeature0D: true
               MaskImage: true
               RightHandCamera: true
               RightWrench: true
               Value: true
             Value: true
           Zoom Factor: 1
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /left_process/feature0d_to_image/output
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: ImageFeature0D
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: raw
+          Value: true
       Enabled: true
       Name: Left
     - Class: rviz/Group
       Displays:
         - Class: rviz/Image
           Enabled: true
-          Image Topic: /apply_mask/output
+          Image Topic: /right_process/apply_mask/output
           Max Value: 1
           Median window: 5
           Min Value: 0
@@ -485,8 +478,8 @@ Visualization Manager:
           Transport Hint: raw
           Value: true
         - Class: rviz/Image
-          Enabled: false
-          Image Topic: /kinect2/rgb/image
+          Enabled: true
+          Image Topic: /right_process/div_to_maskimage/output
           Max Value: 1
           Median window: 5
           Min Value: 0
@@ -494,10 +487,10 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: false
+          Value: true
         - Class: rviz/Image
-          Enabled: false
-          Image Topic: /apply_mask/output/mask
+          Enabled: true
+          Image Topic: /right_process/apply_mask/output/mask
           Max Value: 1
           Median window: 5
           Min Value: 0
@@ -505,7 +498,7 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: false
+          Value: true
         - Alpha: 1
           Arrow Scale: 0.1
           Arrow Width: 0.5
@@ -554,6 +547,7 @@ Visualization Manager:
             Left:
               ApplyImage: true
               DividerImage: true
+              ImageFeature0D: true
               LeftHandCamera: true
               LeftWrench: true
               MaskImage: true
@@ -561,20 +555,32 @@ Visualization Manager:
             Right:
               ApplyImage: true
               DividerImage: true
+              ImageFeature0D: true
               MaskImage: true
               RightWrench: true
               Value: true
             Value: true
           Zoom Factor: 1
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /right_process/feature0d_to_image/output
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: ImageFeature0D
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: raw
+          Value: true
       Enabled: true
       Name: Right
     - Class: rviz/Group
       Displays:
         - Class: jsk_rviz_plugin/BoundingBoxArray
-          Enabled: false
+          Enabled: true
           Name: AttentionRegions
           Topic: /left_right_divider/output/box_array
-          Value: false
+          Value: true
           alpha: 0.4
           auto color: true
           color: 25; 255; 0
@@ -632,7 +638,7 @@ Visualization Manager:
               radius: 1
           Enabled: false
           Name: Diagnostics
-      Enabled: false
+      Enabled: true
       Name: DebugTools
     - Class: rviz/Group
       Displays:
@@ -760,22 +766,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.72411
+      Distance: 2.54186
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.54716
-        Y: 0.95202
-        Z: 0.14384
+        X: 0.121179
+        Y: 0.219105
+        Z: -0.047793
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.244797
+      Pitch: 0.314797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.92851
+      Yaw: 3.41851
     Saved: ~
 Window Geometry:
   ApplyImage:
@@ -787,13 +793,15 @@ Window Geometry:
   Height: 1179
   Hide Left Dock: false
   Hide Right Dock: true
+  ImageFeature0D:
+    collapsed: false
   KinectImage:
     collapsed: false
   LeftHandCamera:
     collapsed: false
   MaskImage:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd000000040000000000000124000002fcfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c0061007900730100000028000002fc000000dd00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000040efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007300000000280000040e000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b2000000000000000000000002000005ff000000a9fc0100000002fb0000000800540069006d00650000000000000005ff000002ab00fffffffb0000000a00560069006500770073030000004e00000080000002e100000197000000030000060700000155fc0100000005fc00000000000001f00000009500fffffffa000000000200000004fb0000001c004c00650066007400480061006e006400430061006d0065007200610100000000ffffffff0000001600fffffffb0000001800440069007600690064006500720049006d0061006700650000000000ffffffff0000001600fffffffb00000014004100700070006c00790049006d0061006700650100000000ffffffff0000001600fffffffb00000012004d00610073006b0049006d0061006700650000000311000001540000001600fffffffb00000016004b0069006e0065006300740049006d00610067006501000001f6000002080000007c00fffffffc00000404000002030000009d00fffffffa000000000200000006fb0000001e0052006900670068007400480061006e006400430061006d0065007200610100000000ffffffff0000001600fffffffb0000001400480061006e006400430061006d0065007200610100000000ffffffff0000000000000000fb0000001400480061006e006400430061006d0065007200610100000000ffffffff0000000000000000fb0000001800440069007600690064006500720049006d0061006700650000000000ffffffff0000001600fffffffb00000014004100700070006c00790049006d0061006700650100000000ffffffff0000001600fffffffb00000012004d00610073006b0049006d0061006700650000000311000001550000001600fffffffb0000000a0049006d0061006700650100000415000001ea0000000000000000fb0000000800540069006d00650100000000000004500000000000000000000004dd000002fc00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001a4000002fcfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c0061007900730100000028000002fc000000dd00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000040efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007300000000280000040e000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b2000000000000000000000002000005ff000000a9fc0100000002fb0000000800540069006d00650000000000000005ff000002ab00fffffffb0000000a00560069006500770073030000004e00000080000002e100000197000000030000060700000155fc0100000005fc00000000000001f00000009500fffffffa000000000200000005fb0000001c0049006d0061006700650046006500610074007500720065003000440100000000ffffffff0000001600fffffffb0000001c004c00650066007400480061006e006400430061006d0065007200610100000000ffffffff0000001600fffffffb0000001800440069007600690064006500720049006d0061006700650100000000ffffffff0000001600fffffffb00000014004100700070006c00790049006d0061006700650100000000ffffffff0000001600fffffffb00000012004d00610073006b0049006d0061006700650100000311000001540000001600fffffffb00000016004b0069006e0065006300740049006d00610067006501000001f6000002080000007c00fffffffc00000404000002030000009d00fffffffa000000000200000007fb0000001c0049006d0061006700650046006500610074007500720065003000440100000000ffffffff0000001600fffffffb0000001e0052006900670068007400480061006e006400430061006d0065007200610100000000ffffffff0000001600fffffffb0000001400480061006e006400430061006d0065007200610100000000ffffffff0000000000000000fb0000001400480061006e006400430061006d0065007200610100000000ffffffff0000000000000000fb0000001800440069007600690064006500720049006d0061006700650100000000ffffffff0000001600fffffffb00000014004100700070006c00790049006d0061006700650100000000ffffffff0000001600fffffffb00000012004d00610073006b0049006d0061006700650100000311000001550000001600fffffffb0000000a0049006d0061006700650100000415000001ea0000000000000000fb0000000800540069006d006501000000000000045000000000000000000000045d000002fc00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   RightHandCamera:
     collapsed: false
   Selection:
