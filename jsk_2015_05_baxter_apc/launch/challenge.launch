@@ -1,31 +1,30 @@
 <launch>
-  <arg name="DEBUG" default="true" />
+  <!-- args -->
   <arg name="custom" default="true"/>
-  <arg name="tweet" default="true"/>
   <arg name="bof" default="true"/>
-  <arg name="sift" default="false"/>
-  <arg name="color" default="false"/>
   <arg name="rosserial" default="true"/>
   <arg name="launch_main" default="false"/>
-  <arg name="cameras_setup" default="false"/>
   <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
-  <env name="DISPLAY" value="" unless="$(arg DEBUG)" />
 
+  <!-- tf of baxter's footprint -->
   <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 0.95 0 0 0 base_footprint base 100"/>
 
+  <!-- custom vacuum link -->
   <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
     <arg name="custom" value="$(arg custom)"/>
   </include>
 
+  <!-- tf of kinect2 -->
   <include file="$(find jsk_2014_picking_challenge)/launch/kinect2_tf.launch"></include>
 
   <!-- rosserial -->
   <include if="$(arg rosserial)" file="$(find jsk_2014_picking_challenge)/launch/rosserial.launch" />
 
-  <!-- json -->
+  <!-- bin contents data -->
   <node pkg="jsk_2014_picking_challenge" type="bin_contents.py" name="bin_contents" output="log">
     <param name="json" value="$(arg json)" />
   </node>
+  <!-- work order data -->
   <node pkg="jsk_2014_picking_challenge" type="work_order.py" name="work_order" output="log">
     <param name="json" value="$(arg json)" />
   </node>
@@ -42,43 +41,20 @@
         args="&quot;(progn (apc-init) (main))&quot;" respawn="true" />
 
   <!-- recognition -->
-  <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch">
-    <arg name="custom" value="$(arg custom)"/>
-  </include>
-  <group if="$(arg sift)">
-    <!-- sift -->
-    <include file="$(find jsk_2014_picking_challenge)/launch/sift_matcher.launch">
-      <arg name="input_image" value="/apply_mask/output" />
-      <arg name="input_info" value="/kinect2/rgb/camera_info" />
-    </include>
-  </group>
-  <group if="$(arg color)">
-    <!-- color histogram -->
-    <include file="$(find jsk_2014_picking_challenge)/launch/red_color_histogram_matcher.launch">
-      <arg name="input_image" value="/apply_mask/output" />
-      <arg name="input_info" value="/kinect2/rgb/camera_info" />
-    </include>
-    <include file="$(find jsk_2014_picking_challenge)/launch/lab_color_histogram_matcher.launch">
-      <arg name="input_image" value="/apply_mask/output" />
-      <arg name="input_info" value="/kinect2/rgb/camera_info" />
-    </include>
-  </group>
-  <group if="$(arg bof)">
-    <!-- bag of features -->
+  <include file="$(find jsk_2014_picking_challenge)/launch/attention_divide.launch"/>
+  <group ns="left_process">
     <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
-      <arg name="input_image" value="/apply_mask/output" />
+      <arg name="input_image" value="/left_process/apply_mask/output" />
+      <arg name="input_info" value="/kinect2/rgb/camera_info" />
+    </include>
+  </group>
+  <group ns="right_process">
+    <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
+      <arg name="input_image" value="/right_process/apply_mask/output" />
       <arg name="input_info" value="/kinect2/rgb/camera_info" />
     </include>
   </group>
   <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification" output="log">
     <param name="json" value="$(arg json)" />
   </node>
-
-  <group if="$(arg tweet)">
-    <!-- tweet -->
-    <group if="$(arg cameras_setup)">
-      <param name="lhand_camera_closer" command="rosrun baxter_tools camera_control.py -c left_hand_camera" />
-      <node pkg="baxter_tools" type="camera_control.py" name="head_camera_opener" args=" -o head_camera"/>
-    </group>
-  </group>
 </launch>
