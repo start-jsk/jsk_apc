@@ -2,7 +2,7 @@
   <arg name="input_cloud" default="/kinect2/depth_highres/points"/>
   <arg name="input_image" default="/kinect2/rgb/image"/>
 
-  <arg name="custom" default="false"/>
+  <arg name="custom" default="true"/>
   <arg name="manager" default="passthrough_manager"/>
   <arg name="rect" default="false" />
 
