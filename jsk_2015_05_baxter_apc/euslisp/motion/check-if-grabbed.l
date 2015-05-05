@@ -1,3 +1,5 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
 ;;
 ;; Check if grabbed or not
 ;;

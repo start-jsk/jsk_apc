@@ -1,5 +1,6 @@
 #!/usr/bin/env roseus
-;;
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
 
 (ros::roseus "robot_main")
 
