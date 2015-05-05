@@ -55,7 +55,7 @@
          (move-for-verification arm)
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "verify_object"))
         ((string= state "verify_object")
-         (let ((correct? (verify-object)))
+         (let ((correct? (verify-object arm)))
            (if correct?
              (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object")
              (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "return_object"))))
