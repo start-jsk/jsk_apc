@@ -5,9 +5,10 @@
   <arg name="rosserial" default="true"/>
   <arg name="launch_main" default="false"/>
   <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
+  <arg name="passthrough" default="true" />
 
   <!-- tf of baxter's footprint -->
-  <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 0.95 0 0 0 base_footprint base 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
 
   <!-- custom vacuum link -->
   <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
@@ -41,18 +42,27 @@
         args="&quot;(progn (apc-init) (main))&quot;" respawn="true" />
 
   <!-- recognition -->
-  <include file="$(find jsk_2014_picking_challenge)/launch/attention_divide.launch"/>
-  <group ns="left_process">
+  <group if="$(arg passthrough)">
+    <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch"/>
     <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
-      <arg name="input_image" value="/left_process/apply_mask/output" />
+      <arg name="input_image" value="/apply_mask/output" />
       <arg name="input_info" value="/kinect2/rgb/camera_info" />
     </include>
   </group>
-  <group ns="right_process">
-    <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
-      <arg name="input_image" value="/right_process/apply_mask/output" />
-      <arg name="input_info" value="/kinect2/rgb/camera_info" />
-    </include>
+  <group unless="$(arg passthrough)">
+    <include file="$(find jsk_2014_picking_challenge)/launch/attention_divide.launch"/>
+    <group ns="left_process">
+      <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
+        <arg name="input_image" value="/left_process/apply_mask/output" />
+        <arg name="input_info" value="/kinect2/rgb/camera_info" />
+      </include>
+    </group>
+    <group ns="right_process">
+      <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
+        <arg name="input_image" value="/right_process/apply_mask/output" />
+        <arg name="input_info" value="/kinect2/rgb/camera_info" />
+      </include>
+    </group>
   </group>
   <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification" output="log" ns="left_process">
     <param name="json" value="$(arg json)" />
