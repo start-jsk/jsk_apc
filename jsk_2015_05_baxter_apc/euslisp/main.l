@@ -9,17 +9,15 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-test.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-visualization.l")
 
-(defparameter *bin-contents* nil)
+(setq *bin-contents* nil)
 (ros::subscribe "/bin_contents" jsk_2014_picking_challenge::BinContentsArray
                 #'(lambda (msg) (setq *bin-contents* (send msg :array))))
 
 (defun get-bin-contents (bin)
   (ros::spin-once)
-  (let ((bin_contents *bin-contents*))
-    (dolist (bc bin_contents)
-      (when (string= (symbol-to-str bin) (send bc :bin))
-        (return-from get-bin-contents (send bc :objects))))
-    ))
+  (dolist (bc *bin-contents*)
+    (when (string= (symbol-to-str bin) (send bc :bin))
+      (return-from get-bin-contents (send bc :objects)))))
 
 (defun main ()
   (let (arm target param-target state work)
@@ -32,9 +30,9 @@
     (while
       t
       (setq work (pop work-order))
-      (when (string= (when (elt work 1)) (symbol-to-str param-target))) (return))
+      (when (eq (elt work 1) param-target) (return)))
     ; loop of motions
-    (speak-en "Let's start picking challenge" :google t :wait t)
+    (speak-en "Let's start picking challenge" :google t)
     (while
       work
       ; get status from parameter server
@@ -64,12 +62,12 @@
         ((string= state "return_object")
          (speak-en (format nil "Return object to Bin ~A." (symbol-to-str target)) :google t)
          (move-to-target-bin arm target)
-         (return_object arm target)
+         (return-object arm)
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "pick_object"))
         ((string= state "place_object")
          (speak-en  "Target is verified. Put in Order bin." :google t)
          (place-object arm)
-         (setq work (pop workorder))  ; change arm and target
+         (setq work (pop work-order))  ; change arm and target
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "pick_object"))
         (t (ros::set-param (format nil "/~A_limb/state" (arm-to-str arm)) "pick_object"))
         )
