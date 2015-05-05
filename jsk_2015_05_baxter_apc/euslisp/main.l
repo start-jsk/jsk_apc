@@ -39,14 +39,16 @@
       work
       ; get status from parameter server
       ;; (speak-en  (format nil "Next Target is ~A" "OREO") :google t  :wait t)
-      (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)))
+      (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)) target-object (elt work 2))
       (ros::set-param "/target" (symbol-to-str target))
       (setq state (ros::get-param (format nil "~A_limb/state" (arm-to-str arm))))
-      (ros::ros-info "state: ~A, arm: ~A, target: ~A" state (arm-to-str arm) (symbol-to-str target))
+      (ros::ros-info "state: ~A, arm: ~A, target: ~A, object: ~A"
+                     state (arm-to-str arm) (symbol-to-str target) target-object)
       (cond
         ((string= state "pick_object")
          (incf n-tried)
-         (speak-en (format nil "Move to Bin ~A . Target is ~A" (symbol-to-str target) "OREO" ) :google t)
+         (ros::ros-info "Move to Bin ~A. Target is ~A." (symbol-to-str target) target-object)
+         (speak-en (format nil "Move to Bin ~A. Target is ~A." (symbol-to-str target) target-object) :google t)
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (symbol-to-str target)) :google t)
          (pick-object arm target)
@@ -59,14 +61,14 @@
          (move-for-verification arm)
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "verify_object"))
         ((string= state "verify_object")
-         (let ((correct? (verify-object arm (elt work 1))))
+         (let ((correct? (verify-object arm target-object)))
            (if correct?
              (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object")
              (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "return_object"))))
         ((string= state "return_object")
          (speak-en (format nil "Return object to Bin ~A." (symbol-to-str target)) :google t)
          (move-to-target-bin arm target)
-         (return-object arm)
+         (return-object arm target)
          ;; if have tried N times and N is larger than number of bin contents,
          ;; robot should abort the target
          (when (<= (length (get-bin-contents bin)) n-tried)
