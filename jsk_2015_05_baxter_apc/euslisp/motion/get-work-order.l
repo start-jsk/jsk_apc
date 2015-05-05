@@ -7,12 +7,12 @@
 (setq work-order-right nil)
 (defun work-order-cb-left (msg)
   (dolist (data (send msg :array))
-    (pushback (list "left" (str-to-symbol (send data :bin))) work-order-left)))
+    (pushback (list "left" (str-to-symbol (send data :bin)) (send data :object)) work-order-left)))
 (defun work-order-cb-right (msg)
   (dolist (data (send msg :array))
-    (pushback (list "right" (str-to-symbol (send data :bin))) work-order-right)))
+    (pushback (list "right" (str-to-symbol (send data :bin)) (send data :object)) work-order-right)))
 
-(defparameter work-order nil)
+(setq work-order nil)
 (defun compose-work-order ()
   (while
     (or (> (length work-order-left) 0) (> (length work-order-right) 0))
