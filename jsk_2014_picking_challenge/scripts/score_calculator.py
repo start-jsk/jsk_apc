@@ -4,7 +4,6 @@
 from __future__ import print_function
 import sys
 import argparse
-import collections
 
 from termcolor import cprint, colored
 
@@ -48,9 +47,21 @@ cprint('#------------------#', 'blue')
 cprint('# SCORE CALCULATOR #', 'blue')
 cprint('#------------------#', 'blue')
 
+def display_score(scores):
+    cprint('---------------------', 'blue')
+    for type_, score in scores.items():
+        if score == 0:
+            continue
+        score = '+{0}'.format(score) if score > 0 else str(score)
+        print('{0}: {1}'.format(type_, score))
+    bin_score = sum(scores.values())
+    cprint('SCORE of bin_{0}: {1}'.format(bin_.upper(), bin_score), 'magenta')
+    cprint('---------------------', 'blue')
+
 possible = 0
-scores = collections.defaultdict(dict)
-for bin_ in 'abcdefghijkl':
+sum_ = 0
+for bin_ in work_order:
+    scores = {}
     contents = bin_contents[bin_]
     target = work_order[bin_]
     N = len(contents)
@@ -68,13 +79,11 @@ for bin_ in 'abcdefghijkl':
         else:
             score_success = SCORING['MOVE_FROM_MULTI_ITEM_BIN']
         if yn.lower() == 'y':
-            scores[bin_]['MOVE_TARGET_ITEM'] = score_success
+            scores['MOVE_TARGET_ITEM'] = score_success
             if target in BONUS:
-                scores[bin_]['BONUS'] = BONUS[target]
+                scores['BONUS'] = BONUS[target]
         possible += (score_success + BONUS.get(target, 0))
         break
-    if yn != 'n' and raw_input('Other things? [y/N]: ').lower() in 'n':
-        continue
     # carried wrong item or not
     while True:
         question = 'Moved non target objects? [0-{0}]: '.format(N)
@@ -87,7 +96,8 @@ for bin_ in 'abcdefghijkl':
             break
         except ValueError:
             cprint('Please enter number', 'red')
-    scores[bin_]['MOVE_NON_TARGET_ITEM'] = (SCORING['MOVE_NON_TARGET_ITEM'] * n_wrong)
+    scores['MOVE_NON_TARGET_ITEM'] = (SCORING['MOVE_NON_TARGET_ITEM']
+                                        * n_wrong)
     # dropped or not
     while True:
         question = 'Dropped objects? [0-{0}]: '.format(N)
@@ -100,7 +110,7 @@ for bin_ in 'abcdefghijkl':
             break
         except ValueError:
             cprint('Please enter number', 'red')
-    scores[bin_]['DROP_TARGET_ITEM'] = SCORING['DROP_TARGET_ITEM'] * n_dropped
+    scores['DROP_TARGET_ITEM'] = SCORING['DROP_TARGET_ITEM'] * n_dropped
     # damaged or not
     while True:
         question = 'Damaged objects? [0-{0}]: '.format(N)
@@ -113,26 +123,14 @@ for bin_ in 'abcdefghijkl':
             break
         except ValueError:
             cprint('Please enter number', 'red')
-    scores[bin_]['DAMAGE_ITEM'] = SCORING['DAMAGE_ITEM'] * n_dropped
+    scores['DAMAGE_ITEM'] = SCORING['DAMAGE_ITEM'] * n_damaged
+    # do this before finish a loop
+    display_score(scores)
+    sum_ += sum(scores.values())
 
-cprint('#------------------#', 'blue')
-cprint('#      RESULT      #', 'blue')
-cprint('#------------------#', 'blue')
-
-sum_ = 0
-for bin_, score_types in scores.items():
-    print('# ---- bin_{0} ----'.format(bin_.upper()))
-    for type_, score in score_types.items():
-        if score == 0:
-            continue
-        score = '+{0}'.format(score) if score > 0 else str(score)
-        print('{0}: {1}'.format(type_, score))
-    bin_score = sum(score_types.values())
-    print('SCORE of bin_{0}: {1}'.format(bin_.upper(), bin_score))
-    sum_ += bin_score
-
-cprint('# ============= #', 'magenta')
-cprint('#      SUM      #', 'magenta')
-cprint('# ============= #', 'magenta')
+# display sum
+cprint('# ================= #', 'magenta')
+cprint('#        SUM        #', 'magenta')
+cprint('# ================= #', 'magenta')
 print('SCORE: {0}'.format(sum_))
 print('POSSIBLE: {0}'.format(possible))
