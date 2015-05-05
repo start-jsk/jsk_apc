@@ -10,8 +10,9 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-visualization.l")
 
 (setq *bin-contents* nil)
+(defun bin-contents-cb (msg) (setq *bin-contents* (send msg :array)))
 (ros::subscribe "/bin_contents" jsk_2014_picking_challenge::BinContentsArray
-                #'(lambda (msg) (setq *bin-contents* (send msg :array))))
+                #'bin-contents-cb)
 
 (defun get-bin-contents (bin)
   (ros::spin-once)
