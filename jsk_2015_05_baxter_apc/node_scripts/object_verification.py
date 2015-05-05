@@ -5,7 +5,7 @@ import rospy
 
 from bin_contents import get_bin_contents
 from work_order import get_work_order
-from jsk_2014_picking_challenge.msg import ObjectRecognition, BoolStamped
+from jsk_2014_picking_challenge.msg import ObjectRecognition
 
 
 class ObjectVerification(object):
@@ -18,9 +18,8 @@ class ObjectVerification(object):
         self._init_work_order(json_file)
         self.sub = rospy.Subscriber('/bof_object_matcher/output',
                                     ObjectRecognition, self._cb_bof)
-        self.pub = rospy.Publisher('~output', BoolStamped, queue_size=1)
-        self.objects_proba = None
-        self.stamp = None
+        self.pub = rospy.Publisher('~output', ObjectRecognition, queue_size=1)
+        self.bof_data = None
 
     def _init_bin_contents(self, json_file):
         bin_contents = get_bin_contents(json_file)
@@ -31,16 +30,13 @@ class ObjectVerification(object):
         self.work_order = dict(work_order)
 
     def _cb_bof(self, msg):
-        self.stamp = msg.header.stamp
-        objects = msg.candidates
-        proba = msg.probabilities
-        self.objects_proba = dict(zip(objects, proba))
+        objects_proba = dict(zip(msg.candidates, msg.probabilities))
+        self.bof_data = (msg.header.stamp, objects_proba)
 
     def spin_once(self):
-        objects_proba = self.objects_proba
-        stamp = self.stamp
-        if (objects_proba is None) or (stamp is None):
+        if self.bof_data is None:
             return
+        stamp, objects_proba = self.bof_data
         target_bin = rospy.get_param('/target', None)
         if target_bin is None:
             return
@@ -48,9 +44,13 @@ class ObjectVerification(object):
         candidates = self.bin_contents[target_bin]
         proba = [(c, objects_proba[c]) for c in candidates]
         matched = sorted(proba, key=lambda x: x[1])[-1][0]
-        msg = BoolStamped()
+        # compose msg
+        msg = ObjectRecognition()
         msg.header.stamp = stamp
-        msg.data = True if target_object == matched else False
+        msg.matched = matched
+        msg.probability = objects_proba[matched]
+        msg.candidates = candidates
+        msg.probabilities = [objects_proba[c] for c in candidates]
         self.pub.publish(msg)
 
     def spin(self):
