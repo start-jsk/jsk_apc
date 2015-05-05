@@ -49,7 +49,8 @@
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (symbol-to-str target)) :google t)
          (pick-object arm target)
-         (if (= (length (get-bin-contents target)) 1)
+         (if (or (= (length (get-bin-contents target)) 1) ;; SINGLE-ITEM-BIN
+                 (= (- (length (get-bin-contents target)) n-tried) 0))  ;; already tried enough
           (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object")
           (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "move_for_verification")))
         ((string= state "move_for_verification")
