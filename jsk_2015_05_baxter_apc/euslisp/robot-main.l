@@ -32,6 +32,7 @@
       (setq work (pop work-order))
       (when (eq (elt work 1) param-target) (return)))
     ; loop of motions
+    (setq n-tried 0)
     (speak-en "Let's start picking challenge" :google t)
     (while
       work
@@ -43,6 +44,7 @@
       (ros::ros-info "state: ~A, arm: ~A, target: ~A" state (arm-to-str arm) (symbol-to-str target))
       (cond
         ((string= state "pick_object")
+         (incf n-tried)
          (speak-en (format nil "Move to Bin ~A . Target is ~A" (symbol-to-str target) "OREO" ) :google t)
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (symbol-to-str target)) :google t)
@@ -63,11 +65,15 @@
          (speak-en (format nil "Return object to Bin ~A." (symbol-to-str target)) :google t)
          (move-to-target-bin arm target)
          (return-object arm)
+         ;; if have tried N times and N is larger than number of bin contents,
+         ;; robot should abort the target
+         (when (<= (length (get-bin-contents bin)) n-tried)
+           (setq work (pop work-order) n-tried 0))
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "pick_object"))
         ((string= state "place_object")
          (speak-en  "Target is verified. Put in Order bin." :google t)
          (place-object arm)
-         (setq work (pop work-order))  ; change arm and target
+         (setq work (pop work-order) n-tried 0)  ;; initialize for loop
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "pick_object"))
         (t (ros::set-param (format nil "/~A_limb/state" (arm-to-str arm)) "pick_object"))
         )
