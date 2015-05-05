@@ -9,10 +9,11 @@
   (setq verify-object-stamp (send (send msg :header) :stamp)))
 (ros::subscribe "/object_verification/output" jsk_2014_picking_challenge::BoolStamped #'object-verification-cb)
 
-(defun verify-object ()
+(defun verify-object (&key (timeout 20))
   (setq now (ros::time-now))
   (while
     (< (send verify-object-stamp :sec) (send now :sec))
     (unix::usleep 1000)
-    (ros::spin-once))
+    (ros::spin-once)
+    (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout) (return)))
   correct?)
