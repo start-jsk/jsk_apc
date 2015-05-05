@@ -19,5 +19,5 @@
       (ros::spin-once)
       (setq correct? (string= target-object (send verify-object-msg :matched)))
       (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout) (return)))
-    (publish-popup-text target-object "base_footprint" (ros::coords->tf-pose (send *baxter* arm :end-coords)))
+    (publish-popup-text target-object "base_footprint" "verified_object" (ros::coords->tf-pose (send *baxter* arm :end-coords)))
     correct?))
