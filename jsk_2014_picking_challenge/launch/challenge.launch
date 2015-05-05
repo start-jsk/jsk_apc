@@ -8,7 +8,7 @@
   <arg name="passthrough" default="true" />
 
   <!-- tf of baxter's footprint -->
-  <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 0.95 0 0 0 base_footprint base 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
 
   <!-- custom vacuum link -->
   <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
