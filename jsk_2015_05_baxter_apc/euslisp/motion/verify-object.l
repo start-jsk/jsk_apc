@@ -1,3 +1,5 @@
+(load "package://jsk_2014_picking_challenge/euslisp/robot-visualization.l")
+
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
 
@@ -17,4 +19,5 @@
       (ros::spin-once)
       (setq correct? (string= target-object (send verify-object-msg :matched)))
       (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout) (return)))
+    (publish-popup-text target-object "base_footprint" (ros::coords->tf-pose (send *baxter* arm :end-coords)))
     correct?))
