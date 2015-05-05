@@ -1,3 +1,6 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
+
 ;; about work order
 (load "package://jsk_2014_picking_challenge/euslisp/motion/get-work-order.l")
 ;; about vacuum gripper
