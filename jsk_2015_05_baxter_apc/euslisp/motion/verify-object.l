@@ -15,7 +15,7 @@
         (stamp (send (send verify-object-msg :header) :stamp)))
     (while
       (< (send stamp :sec) (send now :sec))
-      (unix::usleep 1000)
+      (unix::sleep 1)
       (ros::spin-once)
       (setq correct? (string= target-object (send verify-object-msg :matched)))
       (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout) (return)))
