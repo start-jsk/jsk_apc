@@ -1,3 +1,6 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
+
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 
 (defun fold-pose-up (arm)
