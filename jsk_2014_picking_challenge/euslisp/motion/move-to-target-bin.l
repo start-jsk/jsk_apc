@@ -9,8 +9,11 @@
         ((find bin '(:j :k :l :h)) (fold-pose-low arm))
         (t (return-from move-to-target-bin-av nil)))
   ;; move arm to the position 90mm away from the target bin
-  (send *baxter* arm :inverse-kinematics (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 0))) :rotation-axis t)
-  (send *baxter* :angle-vector))
+  (send *baxter* arm :inverse-kinematics
+        (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 0)))
+        :rotation-axis t
+        :debug-view t)
+  )
 
 (defun fold-to-move-to-target-bin-av (arm)
   (let ((av-l #f(77.1899 4.37256 -86.1548 123.904 11.8213 59.8096 5.53711))
