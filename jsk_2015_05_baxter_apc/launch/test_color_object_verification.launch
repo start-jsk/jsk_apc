@@ -1,0 +1,11 @@
+<launch>
+  <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
+
+  <include file="$(find jsk_2014_picking_challenge)/launch/color_object_matcher.launch" />
+
+  <node pkg="jsk_2014_picking_challenge" type="color_object_verification.py" name="color_object_verification" output="screen">
+    <param name="json" value="$(arg json)" />
+    <param name="output" value="color_object_verification/output" />
+  </node>
+
+</launch>
