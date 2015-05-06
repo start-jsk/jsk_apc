@@ -6,7 +6,7 @@
 
 (setq *simulator-p* nil)
 (defun apc-init ()
-  (baxter-init)
+  (baxter-init :safe nil)
   (send *baxter* :locate #f(0 0 950) :world)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
   (send (send *baxter* :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
