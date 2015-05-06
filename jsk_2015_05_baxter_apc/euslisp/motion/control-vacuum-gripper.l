@@ -1,4 +1,6 @@
 #!/usr/bin/env roseus
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
 ;;
 ;; To use this, you have to run below on
 ;; **PC to which Arduino is connected**

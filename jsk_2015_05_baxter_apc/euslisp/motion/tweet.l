@@ -1,3 +1,6 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
+
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
 
 (ros::advertise "/tweet" std_msgs::string 1)
