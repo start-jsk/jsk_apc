@@ -50,7 +50,7 @@ class ColorObjectMatcher(ObjectMatcher):
             rospy.sleep(0.3)
         # convert image
         bridge = cv_bridge.CvBridge()
-        input_image = bridge.imgmsg_to_cv2(self.query_image)
+        input_image = bridge.imgmsg_to_cv2(self.query_image, 'rgb8')
 
         object_list = get_object_list()
         obj_indices = [object_list.index(o) for o in obj_names]
