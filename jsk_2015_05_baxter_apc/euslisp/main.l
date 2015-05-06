@@ -72,7 +72,7 @@
          (return-object arm target)
          ;; if have tried N times and N is larger than number of bin contents,
          ;; robot should abort the target
-         (when (<= (length (get-bin-contents bin)) n-tried)
+         (when (<= (length (get-bin-contents target)) n-tried)
            (setq work (pop work-order) n-tried 0))
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "pick_object"))
         ((string= state "place_object")
