@@ -5,7 +5,6 @@
 
   <node pkg="jsk_2014_picking_challenge" type="color_object_verification.py" name="color_object_verification" output="screen">
     <param name="json" value="$(arg json)" />
-    <param name="output" value="color_object_verification/output" />
   </node>
 
 </launch>

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+
+import numpy as np
 import rospy
 
 from bin_contents import get_bin_contents
@@ -42,16 +44,17 @@ class ColorObjectVerification(object):
         if target_bin is None:
             rospy.loginfo('target bin is None')
             return
-        target_object = self.work_order[target_bin]
         candidates = self.bin_contents[target_bin]
         proba = [(c, objects_proba[c]) for c in candidates]
         matched = sorted(proba, key=lambda x: x[1])[-1][0]
         # compose msg
         msg = ObjectRecognition()
+        msg.header.stamp = stamp
         msg.matched = matched
-        msg.probability = sorted(proba, key=lambda x: x[1])[0][0]
+        msg.probability = objects_proba[matched]
         msg.candidates = candidates
-        msg.probabilities = proba
+        msg.probabilities = np.array([objects_proba[c] for c in candidates])
+        msg.probabilities /= msg.probabilities.sum()
         self.pub.publish(msg)
     def spin(self):
         rate = rospy.Rate(rospy.get_param('rate', 10))

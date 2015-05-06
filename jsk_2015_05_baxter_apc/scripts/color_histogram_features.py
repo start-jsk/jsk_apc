@@ -29,7 +29,6 @@ class ColorHistogramFeatures(object):
     def save_data(self):
         print('saving data')
         with gzip.open(self.file_name + '.pkl.gz', 'wb') as f:
-            pickle.dump(self.object_names, f)
             pickle.dump(self.cfeatures, f)
             pickle.dump(self.labels, f)
         print("saved data")
@@ -39,7 +38,6 @@ class ColorHistogramFeatures(object):
         data_dir = get_data_dir()
         feature_path = os.path.join(data_dir, 'histogram_data/rgb.pkl.gz')
         with gzip.open(feature_path) as f:
-            self.object_names = pickle.load(f)
             self.cfeatures = pickle.load(f)
             self.labels = pickle.load(f)
         print("load end.")
