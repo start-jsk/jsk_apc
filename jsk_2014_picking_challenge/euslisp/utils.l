@@ -1,3 +1,6 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
+
 (defun str-to-arm (str)
   (cond
     ((string= str "left") :larm)
