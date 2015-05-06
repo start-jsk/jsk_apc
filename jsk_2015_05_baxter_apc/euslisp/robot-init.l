@@ -1,3 +1,5 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
 (load "package://baxtereus/baxter-interface.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/pod-lowres.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/order-bin.l")

@@ -1,3 +1,5 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
 (ros::load-ros-manifest "jsk_rviz_plugins")
 (load "package://jsk_2014_picking_challenge/euslisp/model/score-board.l")
 (setq *score* 0)

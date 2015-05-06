@@ -1,3 +1,6 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
+
 (load "package://jsk_2014_picking_challenge/euslisp/robot-visualization.l")
 
 (ros::load-ros-manifest "roseus")
