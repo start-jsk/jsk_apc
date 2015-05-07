@@ -3,9 +3,15 @@
 - git: {local-name: jsk-ros-pkg/jsk_pr2eus, uri: 'https://github.com/jsk-ros-pkg/jsk_pr2eus.git'}
 - git: {local-name: jsk-ros-pkg/jsk_recognition, uri: 'https://github.com/jsk-ros-pkg/jsk_recognition.git'}
 - git: {local-name: ros-drivers/audio_common, uri: 'https://github.com/ros-drivers/audio_common.git'}
-- git: {local-name: RethinkRobotics/baxter, uri: 'https://github.com/RethinkRobotics/baxter.git'}
-- git: {local-name: RethinkRobotics/baxter_interface, uri: 'https://github.com/RethinkRobotics/baxter_interface.git'}
-- git: {local-name: RethinkRobotics/baxter_tools, uri: 'https://github.com/RethinkRobotics/baxter_tools.git'}
-- git: {local-name: RethinkRobotics/baxter_common, uri: 'https://github.com/RethinkRobotics/baxter_common.git'}
-- git: {local-name: RethinkRobotics/baxter_examples, uri: 'https://github.com/RethinkRobotics/baxter_examples.git'}
-- git: {local-name: RethinkRobotics/baxter_simulator, uri: 'git@github.com:RethinkRobotics/baxter_simulator.git'}
+- git: {local-name: RethinkRobotics/baxter, uri: 'https://github.com/RethinkRobotics/baxter.git',
+    version: v1.1.0}
+- git: {local-name: RethinkRobotics/baxter_interface, uri: 'https://github.com/RethinkRobotics/baxter_interface.git',
+    version: v1.1.0}
+- git: {local-name: RethinkRobotics/baxter_tools, uri: 'https://github.com/RethinkRobotics/baxter_tools.git',
+    version: v1.1.0}
+- git: {local-name: RethinkRobotics/baxter_common, uri: 'https://github.com/RethinkRobotics/baxter_common.git',
+    version: v1.1.0}
+- git: {local-name: RethinkRobotics/baxter_examples, uri: 'https://github.com/RethinkRobotics/baxter_examples.git',
+    version: v1.1.0}
+- git: {local-name: RethinkRobotics/baxter_simulator, uri: 'git@github.com:RethinkRobotics/baxter_simulator.git',
+    version: v0.9.0}
