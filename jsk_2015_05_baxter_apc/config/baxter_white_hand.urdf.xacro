@@ -3,10 +3,10 @@
   <xacro:include filename="$(find baxter_description)/urdf/baxter_simple.urdf" />
 
   <xacro:property name="width" value=".02" />
-  <xacro:property name="width_base" value=".04" />
+  <xacro:property name="width_base" value=".1" />
   <xacro:property name="width_side2_base" value=".035" />
   <xacro:property name="bodylen" value=".49" />
-  <xacro:property name="bodylen_base" value=".01" />
+  <xacro:property name="bodylen_base" value=".12" />
   <xacro:property name="right_wrist_offset_x" value="-0.01" />
   <xacro:property name="left_wrist_offset_x" value="-0.01" />
   <link name="right_custom_vacuum_link">
@@ -81,7 +81,7 @@
   <joint name="right_custom_joint_base" type="fixed">
     <parent link="right_wrist"/>
     <child link="right_custom_vacuum_link_base"/>
-    <origin rpy="0 0 1.57" xyz="${right_wrist_offset_x} 0 0.11" />
+    <origin rpy="0 0 1.57" xyz="${right_wrist_offset_x} 0 0.08" />
   </joint>
   <joint name="left_custom_joint" type="fixed">
     <parent link="left_wrist"/>
@@ -91,7 +91,7 @@
   <joint name="left_custom_joint_base" type="fixed">
     <parent link="left_wrist"/>
     <child link="left_custom_vacuum_link_base"/>
-    <origin rpy="0 0 1.57" xyz="${left_wrist_offset_x} 0 0.11" />
+    <origin rpy="0 0 1.57" xyz="${left_wrist_offset_x} 0 0.08" />
   </joint>
 
 </robot>
