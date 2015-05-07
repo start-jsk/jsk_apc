@@ -3,6 +3,8 @@
 #
 import rospy
 
+import numpy as np
+
 from bin_contents import get_bin_contents
 from work_order import get_work_order
 from jsk_2014_picking_challenge.msg import ObjectRecognition
@@ -16,9 +18,13 @@ class ObjectVerification(object):
             return
         self._init_bin_contents(json_file)
         self._init_work_order(json_file)
-        self.sub = rospy.Subscriber('~input', ObjectRecognition, self._cb_bof)
+        self.bof_sub = rospy.Subscriber('/bof_object_matcher/output',
+                                    ObjectRecognition, self._cb_bof)
+        self.cfeature_sub = rospy.Subscriber('/color_object_matcher/output',
+                                             ObjectRecognition, self._cb_cfeature)
         self.pub = rospy.Publisher('~output', ObjectRecognition, queue_size=1)
         self.bof_data = None
+        self.cfeature = None
 
     def _init_bin_contents(self, json_file):
         bin_contents = get_bin_contents(json_file)
@@ -32,24 +38,31 @@ class ObjectVerification(object):
         objects_proba = dict(zip(msg.candidates, msg.probabilities))
         self.bof_data = (msg.header.stamp, objects_proba)
 
+    def _cb_cfeature(self, msg):
+        objects_proba = dict(zip(msg.candidates, msg.probabilities))
+        self.cfeature = (msg.header.stamp, objects_proba)
+
     def spin_once(self):
-        if self.bof_data is None:
+        if self.bof_data is None or self.cfeature is None:
             return
-        stamp, objects_proba = self.bof_data
+        stamp, bof_objects_proba = self.bof_data
+        stamp, cfeature_objects_proba = self.cfeature
+
         target_bin = rospy.get_param('target', None)
         if target_bin is None or target_bin == '':
             return
-        target_object = self.work_order[target_bin]
         candidates = self.bin_contents[target_bin]
-        proba = [(c, objects_proba[c]) for c in candidates]
+        proba = [(c, bof_objects_proba[c] + cfeature_objects_proba[c]) for c in candidates]
+
         matched = sorted(proba, key=lambda x: x[1])[-1][0]
         # compose msg
         msg = ObjectRecognition()
         msg.header.stamp = stamp
         msg.matched = matched
-        msg.probability = objects_proba[matched]
+        msg.probability = max([prob for c, prob in proba])
         msg.candidates = candidates
-        msg.probabilities = [objects_proba[c] for c in candidates]
+        msg.probabilities = np.array([prob for c, prob in proba])
+        msg.probabilities /= msg.probabilities.sum()
         self.pub.publish(msg)
 
     def spin(self):
