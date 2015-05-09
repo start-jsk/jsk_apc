@@ -44,6 +44,7 @@
   <!-- recognition -->
   <group if="$(arg passthrough)">
     <include file="$(find jsk_2014_picking_challenge)/launch/passthrough_image.launch"/>
+    <include file="$(find jsk_2014_picking_challenge)/launch/color_object_matcher.launch" />
     <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
       <arg name="input_image" value="/apply_mask/output" />
       <arg name="input_info" value="/kinect2/rgb/camera_info" />
