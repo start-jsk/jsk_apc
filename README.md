@@ -43,9 +43,8 @@ $ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
 euslispからロボットを動かす
 --------------------------
 ```
-> rosrun jsk_2014_picking_challenge main.l
-$ (test-1) ;; simple example
-$ (test-2) ;; ik exmple
+> rosrun jsk_2014_picking_challenge robot-main.l
+$ (move-to-target-bin :rarm :c)
 ```
 
 最新のデモの実行方法
