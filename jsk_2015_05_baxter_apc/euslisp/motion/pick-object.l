@@ -79,6 +79,8 @@
       (send *irtviewer* :draw-objects)
       (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
       (send *ri* :wait-interpolation)
+    ;; check if grabbed with image diff after trying to pick
+    (unless (see-if-grabbed :namespace (arm-to-str arm))
       (return-from try-to-pick-object nil))
     ;; patterns after grabbed
     (case pattern
@@ -125,6 +127,8 @@
   (let (avs (patterns '(:just-down :left-and-down :right-and-down :rotate-and-left :rotate-and-right)))
     ;; insert arm to target bin
     (insert-to-pick-object arm bin)
+    ;; store image to compare it with one after trying to pick
+    (start-image-time-diff :namespace (arm-to-str arm))
     ;; make vacuum on
     (send *ri* :start-grasp arm)
     ;; try to pick object while not grabbed
