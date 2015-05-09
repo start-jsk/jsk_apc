@@ -23,6 +23,15 @@ $ catkin build
 $ source devel/setup.bash
 ```
 
+Udev Setup
+----------
+
+Write Below in /etc/udev/rules.d/90-rosserial.rules.
+```
+# ATTR{product}=="rosserial"
+SUBSYSTEM=="tty", MODE="0666"
+```
+
 実機を使うときの環境設定
 -----------------------
 ```
