@@ -61,21 +61,12 @@ add_message_files(
   WorkOrderArray.msg
   BinContents.msg
   BinContentsArray.msg
-  QrStamp.msg
-  QrStampes.msg
   ObjectRecognition.msg
-  BoolStamped.msg
   )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  MoveArm.srv
-  QrStampsrv.srv
-  ReleaseItem.srv
-  Cue.srv
-  ObjectMatch.srv
-  ObjectVerification.srv
   StringEmpty.srv
 )
 
