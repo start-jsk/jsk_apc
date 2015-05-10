@@ -10,6 +10,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-test.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-visualization.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-recognition.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-communication.l")
 
 (setq *bin-contents* nil)
 (defun bin-contents-cb (msg) (setq *bin-contents* (send msg :array)))
