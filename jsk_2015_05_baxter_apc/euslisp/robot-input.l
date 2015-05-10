@@ -1,6 +1,7 @@
 ;; -*- mode: lisp;-*-
 
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-utils.l")
 
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")

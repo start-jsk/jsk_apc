@@ -5,6 +5,7 @@
 (ros::roseus "robot_main")
 
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-input.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
