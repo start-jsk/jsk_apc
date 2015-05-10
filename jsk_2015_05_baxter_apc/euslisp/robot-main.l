@@ -8,6 +8,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-input.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-interface.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-visualization.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-recognition.l")
