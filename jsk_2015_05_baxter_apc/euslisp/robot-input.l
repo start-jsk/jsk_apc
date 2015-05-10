@@ -5,14 +5,14 @@
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
 
-(setq *get-work-order* (make-hash-table))
+(setq *work-order* (make-hash-table))
 (defun work-order-cb (msg arm)
   (let (work-order bin object)
     (dolist (data (send msg :array))
       (setq bin (str-to-symbol (send data :bin)))
       (setq object (send data :object))
       (pushback (list bin object) work-order))
-    (setf (gethash arm *get-work-order*) work-order)
+    (setf (gethash arm *work-order*) work-order)
     ))
 
 (defun get-work-order (arm)
@@ -21,4 +21,4 @@
                     #'(lambda (msg) (work-order-cb msg arm)))
     (unix::sleep 1))
   (ros::spin-once)
-  (gethash arm *get-work-order*))
+  (gethash arm *work-order*))
