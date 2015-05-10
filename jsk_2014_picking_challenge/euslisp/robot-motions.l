@@ -14,5 +14,3 @@
 (load "package://jsk_2014_picking_challenge/euslisp/motion/place-object.l")
 ;; about object verification
 (load "package://jsk_2014_picking_challenge/euslisp/motion/verify-object.l")
-;; others
-(load "package://jsk_2014_picking_challenge/euslisp/motion/tweet.l")
