@@ -1,0 +1,28 @@
+<launch>
+  <arg name="manager" default="check_if_grabbed_manager"/>
+  <arg name="mask_file" default="$(find jsk_2014_picking_challenge)/data/right_hand_mask.jpg"/>
+
+  <arg name="input_image" default="/cameras/right_hand_camera/image" />
+
+  <node pkg="jsk_perception" type="image_publisher.py" name="mask_publisher">
+    <param name="publish_info" type="bool" value="false" />
+    <param name="file_name" value="$(arg mask_file)" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+
+  <node pkg="nodelet" type="nodelet" name="apply_mask"
+        args="standalone jsk_perception/ApplyMaskImage $(arg manager)">
+    <remap from="~input" to="$(arg input_image)" />
+    <remap from="~input/mask" to="mask_publisher/output" />
+    <param name="approximate_sync" value="true" />
+  </node>
+
+  <node pkg="jsk_perception" type="hsv_decomposer" name="hsv_decomposer">
+    <remap from="~input" to="apply_mask/output" />
+  </node>
+
+  <node pkg="jsk_perception" type="image_time_diff.py" name="image_time_diff">
+    <remap from="~input" to="hsv_decomposer/output/hue" />
+  </node>
+</launch>
