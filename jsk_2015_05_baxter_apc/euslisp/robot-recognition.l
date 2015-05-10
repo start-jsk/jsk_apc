@@ -1,6 +1,8 @@
 ;; vim: set ft=lisp:
+
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 
+(ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")
 
 ;; -------------------------------------
@@ -32,3 +34,22 @@
     (setq diff (gethash (intern (string-upcase namespace)) *image-time-diff*))
     (if (> diff *image-time-diff-threshold*) t nil)
     ))
+
+;; -------------------------------------------------------
+;; Check if grabbed with pressure sensor in vacuum cleaner
+;; -------------------------------------------------------
+(setq *gripper-grabbed* (make-hash-table))
+(defun gripper-grabbed-cb (msg arm)
+  (setf (gethash arm *gripper-grabbed*) (send msg :data)))
+
+(ros::subscribe "gripper_grabbed/limb/left/state" std_msgs::Bool
+                #'(lambda (msg) (gripper-grabbed-cb msg :larm)))
+(ros::subscribe "gripper_grabbed/limb/right/state" std_msgs::Bool
+                #'(lambda (msg) (gripper-grabbed-cb msg :rarm)))
+
+(defun check-if-grabbed (arm)
+  (ros::spin-once)
+  (let (state)
+    (setq state (gethash arm *gripper-grabbed*))
+    ; (when state (speak-en "Grasped object" :google t))
+    state)
