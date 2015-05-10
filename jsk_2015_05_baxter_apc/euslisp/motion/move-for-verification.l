@@ -11,9 +11,9 @@
       (:rarm (send *baxter* arm :angle-vector av-r)))
     (list (send *baxter* :angle-vector))))
 
-(defun move-for-verification (arm)
+(defun move-for-verification (arm bin)
   (let (avs)
-    (setq avs (append avs (fold-pose-mid arm)))
+    (pushback (avoid-shelf-pose-for-bin arm bin) avs)
     (send *irtviewer* :draw-objects)
     (setq avs (append avs (move-for-verification-avs arm)))
     (send *irtviewer* :draw-objects)
