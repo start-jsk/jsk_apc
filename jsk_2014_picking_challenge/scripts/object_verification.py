@@ -16,8 +16,7 @@ class ObjectVerification(object):
             return
         self._init_bin_contents(json_file)
         self._init_work_order(json_file)
-        self.sub = rospy.Subscriber('/bof_object_matcher/output',
-                                    ObjectRecognition, self._cb_bof)
+        self.sub = rospy.Subscriber('~input', ObjectRecognition, self._cb_bof)
         self.pub = rospy.Publisher('~output', ObjectRecognition, queue_size=1)
         self.bof_data = None
 
