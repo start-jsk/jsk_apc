@@ -5,7 +5,8 @@
 
 (defun place-object-avs (arm)
   (let (binc avs)
-    (setq binc (make-cascoords :pos (send *orderbin* :transform-vector #f(0 0 0))
+    (untuck-pose arm)
+    (setq binc (make-cascoords :pos (send *orderbin* :transform-vector #f(0 100 0))
                                :rot #2f((-3.6e-06 0 -1) (0 1 0) (1 0 -3.6e-06))))
     (pushback (send *baxter* arm :inverse-kinematics binc :rotation-axis :z :revert-if-fail nil) avs)
     (pushback (send *baxter* arm :move-end-pos #f(0 0 -250) :world :revert-if-fail nil) avs)
@@ -13,8 +14,6 @@
 
 (defun place-object (arm)
   (let (avs shake-avs)
-    (setq avs (append avs (untuck-pose arm)))
-    (send *irtviewer* :draw-objects)
     (setq avs (append avs (place-object-avs arm)))
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 3.0)
