@@ -16,9 +16,9 @@
 (defun take-picture(arm bin )
   (move-to-target-bin arm bin)
   (unix::sleep 5)
-  (speak-en (format nil "Take a picture of ~A" (symbol-to-str bin)))
-  (warn (format nil "Take a picture of ~A in ~A" (symbol-to-str bin) (symbol-to-str arm)))
-  (ros::service-call (format nil "/~A_image_saver/save" (symbol-to-str arm)) (instance std_srvs::EmptyRequest :init))
+  (speak-en (format nil "Take a picture of ~A" (key-to-str bin)))
+  (warn (format nil "Take a picture of ~A in ~A" (key-to-str bin) (key-to-str arm)))
+  (ros::service-call (format nil "/~A_image_saver/save" (key-to-str arm)) (instance std_srvs::EmptyRequest :init))
   (unix::sleep 5)
   )
 

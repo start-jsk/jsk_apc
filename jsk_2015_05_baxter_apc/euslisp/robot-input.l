@@ -10,7 +10,7 @@
 (defun work-order-cb (msg arm)
   (let (work-order bin object)
     (dolist (data (send msg :array))
-      (setq bin (str-to-symbol (send data :bin)))
+      (setq bin (str-to-key (send data :bin)))
       (setq object (send data :object))
       (pushback (list bin object) work-order))
     (setf (gethash arm *get-work-order*) work-order)
