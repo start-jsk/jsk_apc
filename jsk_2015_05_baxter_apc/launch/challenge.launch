@@ -48,6 +48,10 @@
       <arg name="input_image" value="/apply_mask/output" />
       <arg name="input_info" value="/kinect2/rgb/camera_info" />
     </include>
+    <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification">
+      <param name="json" value="$(arg json)" />
+      <remap from="~input" to="bof_object_matcher/output" />
+    </node>
   </group>
   <group unless="$(arg passthrough)">
     <include file="$(find jsk_2014_picking_challenge)/launch/attention_divide.launch"/>
@@ -56,15 +60,20 @@
         <arg name="input_image" value="/left_process/apply_mask/output" />
         <arg name="input_info" value="/kinect2/rgb/camera_info" />
       </include>
+      <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification">
+        <param name="json" value="$(arg json)" />
+        <remap from="~input" to="bof_object_matcher/output" />
+      </node>
     </group>
     <group ns="right_process">
       <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
         <arg name="input_image" value="/right_process/apply_mask/output" />
         <arg name="input_info" value="/kinect2/rgb/camera_info" />
       </include>
+      <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification">
+        <param name="json" value="$(arg json)" />
+        <remap from="~input" to="bof_object_matcher/output" />
+      </node>
     </group>
   </group>
-  <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification" output="log">
-    <param name="json" value="$(arg json)" />
-  </node>
 </launch>
