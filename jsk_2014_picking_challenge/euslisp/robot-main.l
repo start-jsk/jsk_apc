@@ -21,7 +21,7 @@
 (defun get-bin-contents (bin)
   (ros::spin-once)
   (dolist (bc *bin-contents*)
-    (when (string= (symbol-to-str bin) (send bc :bin))
+    (when (string= (key-to-str bin) (send bc :bin))
       (return-from get-bin-contents (send bc :objects)))))
 
 (defun main ()
@@ -29,7 +29,7 @@
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
     (while (not (ros::get-param "/target")) (unix::sleep 1))
-    (setq param-target (str-to-symbol (ros::get-param "/target")))
+    (setq param-target (str-to-key (ros::get-param "/target")))
     ; remove already picked target bins
     ; this does work when this robot_main node respawned
     (while
@@ -43,18 +43,18 @@
       work
       ; get status from parameter server
       ;; (speak-en  (format nil "Next Target is ~A" "OREO") :google t  :wait t)
-      (setq arm (str-to-arm (elt work 0)) target (str-to-symbol (elt work 1)) target-object (elt work 2))
-      (ros::set-param "/target" (symbol-to-str target))
+      (setq arm (str-to-arm (elt work 0)) target (str-to-key (elt work 1)) target-object (elt work 2))
+      (ros::set-param "/target" (key-to-str target))
       (setq state (ros::get-param (format nil "~A_limb/state" (arm-to-str arm))))
       (ros::ros-info "state: ~A, arm: ~A, target: ~A, object: ~A"
-                     state (arm-to-str arm) (symbol-to-str target) target-object)
+                     state (arm-to-str arm) (key-to-str target) target-object)
       (cond
         ((string= state "pick_object")
          (incf n-tried)
-         (ros::ros-info "Move to Bin ~A. Target is ~A." (symbol-to-str target) target-object)
-         (speak-en (format nil "Move to Bin ~A. Target is ~A." (symbol-to-str target) target-object) :google t)
+         (ros::ros-info "Move to Bin ~A. Target is ~A." (key-to-str target) target-object)
+         (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) target-object) :google t)
          (move-to-target-bin arm target)
-         (speak-en (format nil "Pick Object in ~A." (symbol-to-str target)) :google t)
+         (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
          (pick-object arm target)
          (cond ((= (length (get-bin-contents target)) 1) ;; SINGLE-ITEM-BIN
                 (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object"))
@@ -73,7 +73,7 @@
              (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object")
              (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "return_object"))))
         ((string= state "return_object")
-         (speak-en (format nil "Return object to Bin ~A." (symbol-to-str target)) :google t)
+         (speak-en (format nil "Return object to Bin ~A." (key-to-str target)) :google t)
          (move-to-target-bin arm target)
          (return-object arm target)
          ;; if have tried N times and N is larger than number of bin contents,
