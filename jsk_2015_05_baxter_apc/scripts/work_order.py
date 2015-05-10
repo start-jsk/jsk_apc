@@ -38,16 +38,10 @@ def main():
 
     msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
     for bin_, target_object in work_order:
-        if bin_ in 'adgj':
+        if bin_ in 'abdeghjk':
             msg['left'].array.append(WorkOrder(bin=bin_, object=target_object))
         elif bin_ in 'cfil':
             msg['right'].array.append(WorkOrder(bin=bin_, object=target_object))
-        else:
-            if len(msg['left'].array) < len(msg['right'].array):
-                limb = 'left'
-            else:
-                limb = 'right'
-            msg[limb].array.append(WorkOrder(bin=bin_, object=target_object))
 
     pub_left = rospy.Publisher('/work_order/left_limb', WorkOrderArray,
                                queue_size=1)
