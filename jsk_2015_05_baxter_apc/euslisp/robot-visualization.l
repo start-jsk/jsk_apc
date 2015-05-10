@@ -22,7 +22,7 @@
 	(send pose :orientation :y -0.7)
 	(send pose :orientation :z 0)
 	(send pose :orientation :w 0.7)
-	(setq pict-msg (publish-popup-text (symbol-to-str bin) "base" "bin_marks" pose nil jsk_rviz_plugins::Pictogram::*ROTATE_X*))
+	(setq pict-msg (publish-popup-text (key-to-str bin) "base" "bin_marks" pose nil jsk_rviz_plugins::Pictogram::*ROTATE_X*))
 	(push pict-msg bin-msg-list)
 	))
     (send pict-array-msg :header :frame_id "base")
