@@ -1,0 +1,8 @@
+{goal_time: 0.1, left_e0_goal: -1.0, left_e0_trajectory: 1.0, left_e1_goal: -1.0,
+  left_e1_trajectory: 1.0, left_s0_goal: -1.0, left_s0_trajectory: 1.0, left_s1_goal: -1.0,
+  left_s1_trajectory: 1.0, left_w0_goal: -1.0, left_w0_trajectory: 1.0, left_w1_goal: -1.0,
+  left_w1_trajectory: 1.0, left_w2_goal: -1.0, left_w2_trajectory: 1.0, right_e0_goal: -1.0,
+  right_e0_trajectory: 1.0, right_e1_goal: -1.0, right_e1_trajectory: 1.0, right_s0_goal: -1.0,
+  right_s0_trajectory: 1.0, right_s1_goal: -1.0, right_s1_trajectory: 1.0, right_w0_goal: -1.0,
+  right_w0_trajectory: 1.0, right_w1_goal: -1.0, right_w1_trajectory: 1.0, right_w2_goal: -1.0,
+  right_w2_trajectory: 1.0, stopped_velocity_tolerance: 1.0}
