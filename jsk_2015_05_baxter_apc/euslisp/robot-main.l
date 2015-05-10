@@ -9,7 +9,6 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-input.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-test.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-visualization.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-recognition.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-communication.l")
@@ -25,12 +24,13 @@
     (when (string= (key-to-str bin) (send bc :bin))
       (return-from get-bin-contents (send bc :objects)))))
 
-(defun main ()
-  (let (arm target param-target state work)
+(defun main (arm)
+  (let (target param-target state work)
+    (setq work-order (get-work-order arm))
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
-    (while (not (ros::get-param "/target")) (unix::sleep 1))
-    (setq param-target (str-to-key (ros::get-param "/target")))
+    (while (not (ros::get-param (format nil "~A_limb/target" (arm-to-str arm)))) (unix::sleep 1))
+    (setq param-target (str-to-key (ros::get-param (format nil "~A_limb/target" (arm-to-str arm)))))
     ; remove already picked target bins
     ; this does work when this robot_main node respawned
     (while
@@ -44,8 +44,8 @@
       work
       ; get status from parameter server
       ;; (speak-en  (format nil "Next Target is ~A" "OREO") :google t  :wait t)
-      (setq arm (str-to-arm (elt work 0)) target (str-to-key (elt work 1)) target-object (elt work 2))
-      (ros::set-param "/target" (key-to-str target))
+      (setq target (str-to-symbol (elt work 0)) target-object (elt work 1))
+      (ros::set-param "~A_limb/target" (key-to-str target))
       (setq state (ros::get-param (format nil "~A_limb/state" (arm-to-str arm))))
       (ros::ros-info "state: ~A, arm: ~A, target: ~A, object: ~A"
                      state (arm-to-str arm) (key-to-str target) target-object)
@@ -91,8 +91,6 @@
         )
       )
     ))
-
-(setq work-order (get-work-order))
 
 (warn "~% Commands ~%")
 (warn "(apc-init) : Setup~%")
