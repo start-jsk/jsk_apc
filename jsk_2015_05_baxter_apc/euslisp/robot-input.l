@@ -1,6 +1,7 @@
 ;; -*- mode: lisp;-*-
 
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-utils.l")
 
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
@@ -9,7 +10,7 @@
 (defun work-order-cb (msg arm)
   (let (work-order bin object)
     (dolist (data (send msg :array))
-      (setq bin (str-to-symbol (send data :bin)))
+      (setq bin (str-to-key (send data :bin)))
       (setq object (send data :object))
       (pushback (list bin object) work-order))
     (setf (gethash arm *work-order*) work-order)
