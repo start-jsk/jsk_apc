@@ -14,12 +14,16 @@ def main():
         return
     work_order = get_sorted_work_order(json_file=json_file)
 
-    # we should start from left limb
+    flag = {'left': False, 'right': False}
     for bin_, _ in work_order:
+        if sum(flag.values()) = len(flag):
+            break
         if bin_ in 'cfil':
-            continue  # skip bins for right limb
-        rospy.set_param('/target', bin_)
-        return
+            rospy.set_param('right_limb/target', bin_)
+            flag['right'] = True
+        else:
+            rospy.set_param('left_limb/target', bin_)
+            flag['left'] = True
 
 
 if __name__ == '__main__':
