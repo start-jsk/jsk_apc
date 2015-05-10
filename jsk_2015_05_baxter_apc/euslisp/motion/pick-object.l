@@ -2,8 +2,8 @@
 ;; -*- mode: lisp;-*-
 
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/motion/check-if-grabbed.l")
 (load "package://jsk_2014_picking_challenge/euslisp/motion/robot-motion-common.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-recognition.l")
 
 (defun insert-to-pick-object (arm bin)
   (send *baxter* arm :inverse-kinematics (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 50))) :revert-if-fail nil)
