@@ -38,8 +38,10 @@
   <param name="/right_limb/state" value="pick_object" />
 
   <!-- main -->
-  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
-        args="&quot;(progn (apc-init) (main))&quot;" respawn="true" />
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
+        args="&quot;(progn (apc-init :larm-controller) (main :larm))&quot;" respawn="true" />
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_right"
+        args="&quot;(progn (apc-init :rarm-controller) (main :rarm))&quot;" respawn="true" />
 
   <!-- recognition -->
   <group if="$(arg passthrough)">
