@@ -16,7 +16,7 @@ def main():
 
     flag = {'left': False, 'right': False}
     for bin_, _ in work_order:
-        if sum(flag.values()) = len(flag):
+        if sum(flag.values()) == len(flag):
             break
         if bin_ in 'cfil':
             rospy.set_param('right_limb/target', bin_)
