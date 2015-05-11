@@ -14,11 +14,11 @@ def extract_sift(obj_name):
     positions = []
     descriptors = []
     data_dir = rospy.get_param('~train_data', None)
-    sorting = rospy.get_param('~sorting', True)
+    only_appropriate = rospy.get_param('~only_appropriate', True)
     with_mask = rospy.get_param('~with_mask', True)
     train_imgs = get_train_imgs(obj_name=obj_name,
                                 data_dir=data_dir,
-                                sorting=sorting,
+                                only_appropriate=only_appropriate,
                                 with_mask=with_mask)
     for train_img in train_imgs:
         train_features = imgsift_client(train_img)
