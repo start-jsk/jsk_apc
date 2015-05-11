@@ -32,6 +32,14 @@ Write Below in /etc/udev/rules.d/90-rosserial.rules.
 SUBSYSTEM=="tty", MODE="0666"
 ```
 
+Hosts Setup
+-----------
+Write Below in /etc/hosts .
+```
+133.11.216.214 baxter 011310P0014.local
+```
+
+
 実機を使うときの環境設定
 -----------------------
 ```
