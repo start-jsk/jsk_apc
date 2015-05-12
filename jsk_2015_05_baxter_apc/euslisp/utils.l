@@ -28,3 +28,10 @@
     (ros::advertise name data-class queue-size)
     (unix::sleep 1)))
 
+(defun underscore-to-space (str_)
+  (let* ((str (copy-list str_)))
+    (while
+      (position #\_ str)
+      (setf (schar str (position #\_ str)) #\ ))
+    str)
+

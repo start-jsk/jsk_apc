@@ -54,7 +54,7 @@
         ((string= state "pick_object")
          (incf n-tried)
          (ros::ros-info "Move to Bin ~A. Target is ~A." (key-to-str target) target-object)
-         (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) target-object) :google t)
+         (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) (underscore-to-space target-object)) :google t)
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
          (pick-object arm target)
