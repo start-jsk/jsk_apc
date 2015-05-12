@@ -6,6 +6,9 @@
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
 
+;; -------------------
+;; Get work order data
+;; -------------------
 (setq *work-order* (make-hash-table))
 (defun work-order-cb (msg arm)
   (let (work-order bin object)
@@ -25,3 +28,18 @@
 (defun get-work-order (arm)
   (ros::spin-once)
   (gethash arm *work-order*))
+
+;; ---------------------
+;; Get bin contents data
+;; ---------------------
+(setq *bin-contents* nil)
+(defun bin-contents-cb (msg) (setq *bin-contents* (send msg :array)))
+
+(ros::subscribe "/bin_contents" jsk_2014_picking_challenge::BinContentsArray
+                #'bin-contents-cb)
+(defun get-bin-contents (bin)
+  (ros::spin-once)
+  (dolist (bc *bin-contents*)
+    (when (string= (key-to-str bin) (send bc :bin))
+      (return-from get-bin-contents (send bc :objects)))))
+
