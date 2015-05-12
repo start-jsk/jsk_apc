@@ -46,7 +46,7 @@
     ;; prepare for subscription
     (ros::subscribe (format nil "image_time_diff/output/~A/diff" namespace)
                     std_msgs::Float32
-                    #'(lambda (msg) (image-time-diff-cb msg "right_hand")))
+                    #'(lambda (msg) (image-time-diff-cb msg namespace)))
     ))
 
 (defparameter *image-time-diff-threshold* 30)
