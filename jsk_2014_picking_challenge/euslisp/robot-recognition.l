@@ -34,31 +34,30 @@
 ;; Check if grabbed with image_time_diff
 ;; -------------------------------------
 (setq *image-time-diff* (make-hash-table))
-(defun image-time-diff-cb (msg namespace)
-  (setf (gethash (intern (string-upcase namespace)) *image-time-diff*) (send msg :data)))
+(defun image-time-diff-cb (msg arm)
+  (setf (gethash arm *image-time-diff*) (send msg :data)))
 
-(defun start-image-time-diff (&key namespace)
-  (let (msg)
-    (ros::advertise-if-yet "/image_time_diff/start_comparing" std_msgs::String 1)
+(defun start-image-time-diff (arm)
+  (let ((topic-ns (format nil "/see_~A_if_grabbed/image_time_diff" (arm-to-str arm))) msg)
+    (ros::advertise-if-yet (format nil "~A/start_comparing" topic-ns) std_msgs::String 1)
     (setq msg (instance std_msgs::String :init))
-    (send msg :data namespace)
-    (ros::publish "/image_time_diff/start_comparing" msg)
+    (send msg :data "baxter")
+    (ros::publish (format nil "~A/start_comparing" topic-ns) msg)
     ;; prepare for subscription
-    (case (intern (string-upcase namespace))
-      ('right (ros::subscribe (format nil "/image_time_diff/output/~A/diff" namespace)
-                              std_msgs::Float32
-                              #'(lambda (msg) (image-time-diff-cb msg "right"))))
-      ('right (ros::subscribe (format nil "/image_time_diff/output/~A/diff" namespace)
-                              std_msgs::Float32
-                              #'(lambda (msg) (image-time-diff-cb msg "left"))))
-      (t (ros::ros-error "not supported namespace ~A" namespace)))
+    (case arm
+      (:larm (ros::subscribe (format nil "~A/output/baxter/diff" topic-ns)
+                             std_msgs::Float32
+                             #'(lambda (msg) (image-time-diff-cb msg :larm))))
+      (:rarm (ros::subscribe (format nil "~A/output/baxter/diff" topic-ns)
+                             std_msgs::Float32
+                             #'(lambda (msg) (image-time-diff-cb msg :rarm)))))
     ))
 
 (defparameter *image-time-diff-threshold* 30)
-(defun see-if-grabbed (&key namespace)
+(defun see-if-grabbed (arm)
+  (ros::spin-once)
   (let (diff)
-    (ros::spin-once)
-    (setq diff (gethash (intern (string-upcase namespace)) *image-time-diff*))
+    (setq diff (gethash arm *image-time-diff*))
     (if (> diff *image-time-diff-threshold*) t nil)
     ))
 
