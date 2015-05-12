@@ -53,8 +53,8 @@
       )))
 
 (defun publish-end-coords ()
-  (ros::advertise "/larm_end_coords" visualization_msgs::Marker 5)
-  (ros::advertise "/rarm_end_coords" visualization_msgs::Marker 5)
+  (ros::advertise-if-yet "/larm_end_coords" visualization_msgs::Marker 5)
+  (ros::advertise-if-yet "/rarm_end_coords" visualization_msgs::Marker 5)
   (ros::publish "/larm_end_coords" (eusobj->marker-msg (send (send (send *baxter* :larm :end-coords) :copy-worldcoords) :translate #f(0 0 -950) :world) (instance std_msgs::header :init :stamp (ros::time-now) :frame_id "/base")))
   (ros::publish "/rarm_end_coords"(eusobj->marker-msg (send (send (send *baxter* :rarm :end-coords) :copy-worldcoords) :translate #f(0 0 -950) :world) (instance std_msgs::header :init :stamp (ros::time-now) :frame_id "/base"))))
 
@@ -62,7 +62,7 @@
   (let ((*simulator-origin* "base"))
     (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
     (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "pod")
-    (ros::advertise "/pod_marker_array" visualization_msgs::MarkerArray 5)
+    (ros::advertise-if-yet "/pod_marker_array" visualization_msgs::MarkerArray 5)
     (unix::sleep 1)
     (ros::publish "/pod_marker_array"
                   (instance visualization_msgs::MarkerArray :init
@@ -95,7 +95,7 @@
 
 (defun publish-score-board ()
   (score-board-init)
-  (ros::advertise "/score_board" visualization_msgs::Marker 5)
+  (ros::advertise-if-yet "/score_board" visualization_msgs::Marker 5)
   (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
   (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "score_board")
   (unix::sleep 1)
