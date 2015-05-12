@@ -39,6 +39,15 @@ Write Below in /etc/hosts .
 133.11.216.214 baxter 011310P0014.local
 ```
 
+SSH Setup
+---------
+Write Below in ~/.ssh/config
+```
+Host baxter
+  HostName baxter.jsk.imi.i.u-tokyo.ac.jp
+  User ruser
+```
+
 
 実機を使うときの環境設定
 -----------------------
