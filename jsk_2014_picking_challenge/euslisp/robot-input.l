@@ -17,9 +17,8 @@
     ))
 
 (defun get-work-order (arm)
-  (unless (ros::get-topic-subscriber (format nil "work_order/~A_limb" (arm-to-str arm)))
-    (ros::subscribe (format nil "work_order/~A_limb" (arm-to-str arm)) jsk_2014_picking_challenge::WorkOrderArray
-                    #'(lambda (msg) (work-order-cb msg arm)))
-    (unix::sleep 1))
+  (ros::subscribe (format nil "work_order/~A_limb" (arm-to-str arm))
+                  jsk_2014_picking_challenge::WorkOrderArray
+                  #'(lambda (msg) (work-order-cb msg arm)))
   (ros::spin-once)
   (gethash arm *work-order*))

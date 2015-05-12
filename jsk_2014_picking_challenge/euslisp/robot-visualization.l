@@ -1,15 +1,14 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 (ros::load-ros-manifest "jsk_rviz_plugins")
+(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/score-board.l")
 (setq *score* 0)
 
 ;; How to use
 ;;  (publish-bin-mark (list :a :b :c))
 (defun publish-bin-mark(bin-list)
-  (unless (ros::get-topic-publisher "bin_marks")
-    (ros::advertise "bin_marks" jsk_rviz_plugins::pictogramarray 5)
-    (unix:sleep 1))
+  (ros::advertise-if-yet "bin_marks" jsk_rviz_plugins::pictogramarray 5)
   (let ((bin-msg-list)
 	(pict-array-msg (instance jsk_rviz_plugins::pictogramarray :init)))
     (dolist (bin bin-list)
@@ -34,10 +33,7 @@
 
 (defun publish-popup-text(text frame topic_name pose &optional (publishp t) (action jsk_rviz_plugins::Pictogram::*JUMP*) (ttl 0.0))
   (let ((pict-msg (instance jsk_rviz_plugins::Pictogram :init)))
-    (if publishp
-	(unless (ros::get-topic-publisher topic_name)
-	  (ros::advertise topic_name jsk_rviz_plugins::pictogram 5)
-	  (unix:sleep 1)))
+    (when publishp (ros::advertise-if-yet topic_name jsk_rviz_plugins::pictogram 5))
     (send pict-msg :header :frame_id frame)
     (send pict-msg :header :stamp (ros::time-now))
     (send pict-msg :mode jsk_rviz_plugins::Pictogram::*STRING_MODE*)
@@ -113,9 +109,7 @@
                  :lifetime 0 :id 2)))
 
 (defun publish-score(score)
-  (unless (ros::get-topic-publisher "score_pict")
-    (ros::advertise "score_pict" jsk_rviz_plugins::pictogramarray 5)
-    (unix:sleep 1))
+  (ros::advertise-if-yet "score_pict" jsk_rviz_plugins::pictogramarray 5)
   (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
   (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "score_board")
   (let* ((bin-msg-list)
