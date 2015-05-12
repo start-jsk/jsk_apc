@@ -14,17 +14,6 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-recognition.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-communication.l")
 
-(setq *bin-contents* nil)
-(defun bin-contents-cb (msg) (setq *bin-contents* (send msg :array)))
-(ros::subscribe "/bin_contents" jsk_2014_picking_challenge::BinContentsArray
-                #'bin-contents-cb)
-
-(defun get-bin-contents (bin)
-  (ros::spin-once)
-  (dolist (bc *bin-contents*)
-    (when (string= (key-to-str bin) (send bc :bin))
-      (return-from get-bin-contents (send bc :objects)))))
-
 (defun main (arm)
   (let (target param-target state work-order work)
     (setq work-order (get-work-order arm))
