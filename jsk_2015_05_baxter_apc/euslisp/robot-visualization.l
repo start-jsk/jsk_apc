@@ -59,11 +59,20 @@
   (ros::publish "/rarm_end_coords"(eusobj->marker-msg (send (send (send *baxter* :rarm :end-coords) :copy-worldcoords) :translate #f(0 0 -950) :world) (instance std_msgs::header :init :stamp (ros::time-now) :frame_id "/base"))))
 
 (defun publish-pod ()
-  (let ((*simulator-origin* "base"))
+  (let ((*simulator-origin* "base") pod-marker-msg)
     (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
     (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "pod")
     (ros::advertise-if-yet "/pod_marker_array" visualization_msgs::MarkerArray 5)
     (unix::sleep 1)
+    (setq pod-marker-msg (eusobj->marker-msg
+			  *pod*
+			  (instance std_msgs::header :init
+				    :stamp (ros::time-now)
+				    :frame_id "pod")
+			  :ns "pod_body"
+			  :lifetime 0 :id 2
+			  :rainbow t))
+    (send pod-marker-msg :color (vector->rgba (float-vector 0.4 0.4 0.4) 1))
     (ros::publish "/pod_marker_array"
                   (instance visualization_msgs::MarkerArray :init
                             :markers
@@ -83,14 +92,7 @@
                                              :frame_id "pod")
                                    :ns "pod_coords"
                                    :lifetime 0 :id 1)
-                                  (eusobj->marker-msg
-                                   *pod*
-                                   (instance std_msgs::header :init
-                                             :stamp (ros::time-now)
-                                             :frame_id "pod")
-                                   :ns "pod_body"
-                                   :lifetime 0 :id 2
-                                   :rainbow t)
+                                  pod-marker-msg
                                   )))))
 
 (defun publish-score-board ()
