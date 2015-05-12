@@ -1,6 +1,7 @@
 <launch>
   <arg name="manager" default="check_if_grabbed_manager"/>
-  <arg name="mask_file" default="$(find jsk_2014_picking_challenge)/data/right_hand_mask.jpg"/>
+  <arg name="left_or_right" default="left" />
+  <arg name="mask_file" default="$(find jsk_2014_picking_challenge)/data/$(arg left_or_right)_hand_mask.jpg"/>
 
   <arg name="input_image" default="/cameras/right_hand_camera/image" />
 
