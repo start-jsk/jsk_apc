@@ -1,6 +1,7 @@
 ;; -*- mode: lisp;-*-
 
 (load "package://baxtereus/baxter-interface.l")
+(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")
@@ -12,9 +13,7 @@
   (:start-grasp
    (&optional (arm :arms))
    (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (arm-to-str arm))))
-     (unless (ros::get-topic-publisher (format nil "/vacuum_gripper/limb/~A" (arm-to-str arm)))
-       (ros::advertise (format nil "/vacuum_gripper/limb/~A" l/r) std_msgs::Bool 1)
-       (unix:sleep 1))
+     (ros::advertise-if-yet (format nil "/vacuum_gripper/limb/~A" l/r) std_msgs::Bool 1)
      (setq msg (instance std_msgs::Bool :init))
      (send msg :data t)
      (ros::ros-info (format nil "start ~A vacuum gripper" l/r))
@@ -25,9 +24,7 @@
   (:stop-grasp
    (&optional (arm :arms))
    (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (arm-to-str arm))))
-     (unless (ros::get-topic-publisher (format nil "/vacuum_gripper/limb/~A" (arm-to-str arm)))
-       (ros::advertise (format nil "/vacuum_gripper/limb/~A" l/r) std_msgs::Bool 1)
-       (unix:sleep 1))
+     (ros::advertise-if-yet (format nil "/vacuum_gripper/limb/~A" l/r) std_msgs::Bool 1)
      (setq msg (instance std_msgs::Bool :init))
      (send msg :data nil)
      (ros::ros-info (format nil "stop ~A vacuum gripper" l/r))
