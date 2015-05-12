@@ -16,9 +16,12 @@
     (setf (gethash arm *work-order*) work-order)
     ))
 
+(ros::subscribe "work_order/left_limb"
+                jsk_2014_picking_challenge::WorkOrderArray
+                #'(lambda (msg) (work-order-cb msg :larm)))
+(ros::subscribe "work_order/right_limb"
+                jsk_2014_picking_challenge::WorkOrderArray
+                #'(lambda (msg) (work-order-cb msg :rarm)))
 (defun get-work-order (arm)
-  (ros::subscribe (format nil "work_order/~A_limb" (arm-to-str arm))
-                  jsk_2014_picking_challenge::WorkOrderArray
-                  #'(lambda (msg) (work-order-cb msg arm)))
   (ros::spin-once)
   (gethash arm *work-order*))
