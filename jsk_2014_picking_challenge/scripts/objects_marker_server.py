@@ -73,6 +73,7 @@ def makeTargetObject( msg, object_name ):
     marker.scale.y = msg.scale * 2
     marker.scale.z = msg.scale * 2
     marker.mesh_resource = "package://jsk_2014_picking_challenge/meshes/" + object_name +"/" + object_name + ".dae"
+    marker.mesh_use_embedded_materials = True
     return marker
 
 def makeTargetObjectControl( msg, object_name ):
