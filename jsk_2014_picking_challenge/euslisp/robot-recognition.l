@@ -39,17 +39,14 @@
 
 (defun start-image-time-diff (&key namespace)
   (let (msg)
-    (unless (ros::get-topic-publisher "image_time_diff/start_comparing")
-      (ros::advertise "image_time_diff/start_comparing" std_msgs::String 1)
-      (unix::sleep 1))
+    (ros::advertise-if-yet "image_time_diff/start_comparing" std_msgs::String 1)
     (setq msg (instance std_msgs::String :init))
     (send msg :data namespace)
     (ros::publish "image_time_diff/start_comparing" msg)
-    (unless (ros::get-topic-subscriber (format nil "image_time_diff/output/~A" namespace))
-      (ros::subscribe (format nil "image_time_diff/output/~A/diff" namespace) std_msgs::Float32
-                      #'(lambda (msg) (image-time-diff-cb msg "right_hand")))
-      (unix::sleep 1)
-      )
+    ;; prepare for subscription
+    (ros::subscribe (format nil "image_time_diff/output/~A/diff" namespace)
+                    std_msgs::Float32
+                    #'(lambda (msg) (image-time-diff-cb msg "right_hand")))
     ))
 
 (defparameter *image-time-diff-threshold* 30)
