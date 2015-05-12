@@ -6,7 +6,7 @@
 
 (setq *simulator-p* nil)
 (defun apc-init (&optional (arm :larm))
-  (let (ctype (case arm (:larm :larm-controller) (:rarm :rarm-controller)))
+  (let ((ctype (case arm (:larm :larm-controller) (:rarm :rarm-controller))))
     (baxter-init :safe nil :type ctype)
     (send *baxter* :locate #f(0 0 950) :world)
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
