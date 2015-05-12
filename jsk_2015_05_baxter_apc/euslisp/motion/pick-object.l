@@ -81,7 +81,7 @@
       (send *ri* :wait-interpolation))
     ;; check if grabbed with image diff after trying to pick
     (unless *simulator-p*
-      (unless (see-if-grabbed :namespace (arm-to-str arm))
+      (unless (see-if-grabbed arm)
         (return-from try-to-pick-object nil)))
     ;; patterns after grabbed
     (case pattern
@@ -129,7 +129,7 @@
     ;; insert arm to target bin
     (insert-to-pick-object arm bin)
     ;; store image to compare it with one after trying to pick
-    (start-image-time-diff :namespace (arm-to-str arm))
+    (start-image-time-diff arm)
     ;; make vacuum on
     (send *ri* :start-grasp arm)
     ;; try to pick object while not grabbed
