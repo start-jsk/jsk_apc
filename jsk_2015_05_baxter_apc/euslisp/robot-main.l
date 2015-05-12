@@ -26,7 +26,7 @@
       (return-from get-bin-contents (send bc :objects)))))
 
 (defun main (arm)
-  (let (target param-target state work)
+  (let (target param-target state work-order work)
     (setq work-order (get-work-order arm))
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
@@ -37,7 +37,7 @@
     (while
       t
       (setq work (pop work-order))
-      (when (eq (elt work 1) param-target) (return)))
+      (when (eq (elt work 0) param-target) (return)))
     ; loop of motions
     (setq n-tried 0)
     (speak-en "Let's start picking challenge" :google t)
@@ -45,7 +45,7 @@
       work
       ; get status from parameter server
       ;; (speak-en  (format nil "Next Target is ~A" "OREO") :google t  :wait t)
-      (setq target (str-to-symbol (elt work 0)) target-object (elt work 1))
+      (setq target (str-to-key (elt work 0)) target-object (elt work 1))
       (ros::set-param "~A_limb/target" (key-to-str target))
       (setq state (ros::get-param (format nil "~A_limb/state" (arm-to-str arm))))
       (ros::ros-info "state: ~A, arm: ~A, target: ~A, object: ~A"
