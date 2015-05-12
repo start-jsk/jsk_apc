@@ -78,10 +78,11 @@
       (send *baxter* arm :inverse-kinematics (make-cascoords :pos (v+ (send *pod* bin) #f(110 0 50))) :revert-if-fail nil :rotation-axis :y)
       (send *irtviewer* :draw-objects)
       (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
-      (send *ri* :wait-interpolation)
+      (send *ri* :wait-interpolation))
     ;; check if grabbed with image diff after trying to pick
-    (unless (see-if-grabbed :namespace (arm-to-str arm))
-      (return-from try-to-pick-object nil))
+    (unless *simulator-p*
+      (unless (see-if-grabbed :namespace (arm-to-str arm))
+        (return-from try-to-pick-object nil)))
     ;; patterns after grabbed
     (case pattern
       ;; rotate wrist to take standing object out of bin
