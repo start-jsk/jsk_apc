@@ -39,14 +39,19 @@
 
 (defun start-image-time-diff (&key namespace)
   (let (msg)
-    (ros::advertise-if-yet "image_time_diff/start_comparing" std_msgs::String 1)
+    (ros::advertise-if-yet "/image_time_diff/start_comparing" std_msgs::String 1)
     (setq msg (instance std_msgs::String :init))
     (send msg :data namespace)
-    (ros::publish "image_time_diff/start_comparing" msg)
+    (ros::publish "/image_time_diff/start_comparing" msg)
     ;; prepare for subscription
-    (ros::subscribe (format nil "image_time_diff/output/~A/diff" namespace)
-                    std_msgs::Float32
-                    #'(lambda (msg) (image-time-diff-cb msg namespace)))
+    (case (intern (string-upcase namespace))
+      ('right (ros::subscribe (format nil "/image_time_diff/output/~A/diff" namespace)
+                              std_msgs::Float32
+                              #'(lambda (msg) (image-time-diff-cb msg "right"))))
+      ('right (ros::subscribe (format nil "/image_time_diff/output/~A/diff" namespace)
+                              std_msgs::Float32
+                              #'(lambda (msg) (image-time-diff-cb msg "left"))))
+      (t (ros::ros-error "not supported namespace ~A" namespace)))
     ))
 
 (defparameter *image-time-diff-threshold* 30)
