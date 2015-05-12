@@ -72,7 +72,7 @@ def makeTargetObject( msg, object_name ):
     marker.scale.x = msg.scale * 2
     marker.scale.y = msg.scale * 2
     marker.scale.z = msg.scale * 2
-    marker.mesh_resource = "package://jsk_2014_picking_challenge/meshes/optimized_poisson_texture_mapped_mesh.dae"
+    marker.mesh_resource = "package://jsk_2014_picking_challenge/meshes/" + object_name +"/" + object_name + ".dae"
     return marker
 
 def makeTargetObjectControl( msg, object_name ):
@@ -85,7 +85,7 @@ def makeTargetObjectControl( msg, object_name ):
 
 def make6DofMarker( object_name, position, quaternion ):
     int_marker = InteractiveMarker()
-    int_marker.header.frame_id = "/base_link"
+    int_marker.header.frame_id = "/base"
     int_marker.pose.position = position
     int_marker.pose.orientation = quaternion
     int_marker.scale = 1
