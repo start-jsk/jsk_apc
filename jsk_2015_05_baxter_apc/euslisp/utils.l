@@ -22,3 +22,9 @@
 
 (defun key-to-str (_symbol)
   (string-downcase (symbol-string _symbol)))
+
+(defun ros::advertise-if-yet (name data-class queue-size)
+  (unless (assoc name (ros::get-topics) :test #'equal)
+    (ros::advertise name data-class queue-size)
+    (unix::sleep 1)))
+
