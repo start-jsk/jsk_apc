@@ -5,7 +5,7 @@
   <arg name="rosserial" default="true"/>
   <arg name="launch_main" default="false"/>
   <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
-  <arg name="passthrough" default="true" />
+  <arg name="passthrough" default="false" />
 
   <!-- tf of baxter's footprint -->
   <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
