@@ -21,12 +21,13 @@
 (defun verify-object (arm target-object &key (timeout 20))
   (ros::spin-once)
   (let ((now (ros::time-now))
-        (stamp (send (send (gethash arm *verify-object*) :header) :stamp)))
+        (msg (gethash arm *verify-object*))
+        (stamp (send (send msg :header) :stamp)))
     (while
       (< (send stamp :sec) (send now :sec))
       (unix::sleep 1)
       (ros::spin-once)
-      (setq correct? (string= target-object (send verify-object-msg :matched)))
+      (setq correct? (string= target-object (send msg :matched)))
       (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout) (return)))
     correct?))
 
