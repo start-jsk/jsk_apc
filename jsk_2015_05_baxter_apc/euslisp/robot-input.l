@@ -19,10 +19,10 @@
     (setf (gethash arm *work-order*) work-order)
     ))
 
-(ros::subscribe "work_order/left_limb"
+(ros::subscribe "work_order/left_process"
                 jsk_2014_picking_challenge::WorkOrderArray
                 #'(lambda (msg) (work-order-cb msg :larm)))
-(ros::subscribe "work_order/right_limb"
+(ros::subscribe "work_order/right_process"
                 jsk_2014_picking_challenge::WorkOrderArray
                 #'(lambda (msg) (work-order-cb msg :rarm)))
 (defun get-work-order (arm)

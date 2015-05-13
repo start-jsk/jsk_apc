@@ -19,10 +19,10 @@ def main():
         if sum(flag.values()) == len(flag):
             break
         if bin_ in 'cfil':
-            rospy.set_param('right_limb/target', bin_)
+            rospy.set_param('right_process/target', bin_)
             flag['right'] = True
         else:
-            rospy.set_param('left_limb/target', bin_)
+            rospy.set_param('left_process/target', bin_)
             flag['left'] = True
 
 
