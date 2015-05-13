@@ -36,7 +36,7 @@ class ObjectVerification(object):
         if self.bof_data is None:
             return
         stamp, objects_proba = self.bof_data
-        target_bin = rospy.get_param('/target', None)
+        target_bin = rospy.get_param('target', None)
         if target_bin is None:
             return
         target_object = self.work_order[target_bin]
