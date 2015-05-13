@@ -12,18 +12,10 @@
   (send *baxter* arm :inverse-kinematics (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 0))) :rotation-axis t)
   (send *baxter* :angle-vector))
 
-(defun fold-to-move-to-target-bin-av (arm)
-  (let ((av-l #f(77.1899 4.37256 -86.1548 123.904 11.8213 59.8096 5.53711))
-        (av-r #f(-77.1899 4.37256 86.1548 123.904 -11.8213 59.8096 -5.53711)))
-    (case arm
-      (:larm (send *baxter* arm :angle-vector av-l))
-      (:rarm (send *baxter* arm :angle-vector av-r)))
-    (send *baxter* :angle-vector)))
-
 (defun move-to-target-bin (arm bin)
   (let (avs)
     (send *baxter* arm :move-end-pos #f(-100 0 0) :world :revert-if-fail nil :rotation-axis nil)
-    (pushback (fold-to-move-to-target-bin-av arm) avs)
+    (pushback (fold-to-keep-object-av arm) avs)
     (pushback (avoid-shelf-pose-for-bin arm bin) avs)
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.8)
