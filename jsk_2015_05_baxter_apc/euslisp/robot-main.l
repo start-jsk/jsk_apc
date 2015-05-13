@@ -51,7 +51,7 @@
                 (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object"))
                ((= (- (length (get-bin-contents target)) n-tried) 0)  ;; already tried enough
                 (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "place_object"))
-               ((not (check-if-grabbed))
+               ((not (check-if-grabbed arm))  ;; this is temporary for uncertain check-if-grabbed
                 (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "pick_object"))
                (t (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "move_for_verification"))))
         ((string= state "move_for_verification")
