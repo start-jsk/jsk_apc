@@ -34,8 +34,8 @@
   <node pkg="jsk_2014_picking_challenge" type="setup_target.py" name="setup_target" output="log">
     <param name="json" value="$(find jsk_2014_picking_challenge)/data/apc.json" />
   </node>
-  <param name="/left_limb/state" value="pick_object" />
-  <param name="/right_limb/state" value="pick_object" />
+  <param name="/left_process/state" value="pick_object" />
+  <param name="/right_process/state" value="pick_object" />
 
   <!-- main -->
   <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
