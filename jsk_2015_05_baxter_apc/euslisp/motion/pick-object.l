@@ -84,7 +84,7 @@
         ;; go back to original position if can't grabbed
         (insert-to-pick-object-avs arm bin)
         (send *irtviewer* :draw-objects)
-        (send *ri* :angle-vector (send *baxter* :angle-vector))
+        (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
         (send *ri* :wait-interpolation)
         (return-from try-to-pick-object nil)))
     ;; patterns after grabbed
