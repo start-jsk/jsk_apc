@@ -56,7 +56,7 @@
                (t (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "move_for_verification"))))
         ((string= state "move_for_verification")
          (speak-en  "Move for verification." :google t)
-         (move-for-verification arm)
+         (move-for-verification arm target)
          (ros::set-param (format nil "~A_limb/state" (arm-to-str arm)) "verify_object"))
         ((string= state "verify_object")
          (let ((correct? (verify-object arm target-object)))
