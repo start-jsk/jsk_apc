@@ -38,12 +38,15 @@ from interactive_markers.menu_handler import *
 from geometry_msgs.msg import *
 from visualization_msgs.msg import *
 from tf import transformations
+from tf import TransformListener
+from jsk_2014_picking_challenge.msg import SetObjectPositionArray
 import rospkg
 import yaml
 server = None
 menu_handler = MenuHandler()
 counter = 0
 objects_name_list = None
+base_frame_id = "/base"
 
 def frameCallback( msg ):
     global counter, objects_name_list
@@ -85,8 +88,9 @@ def makeTargetObjectControl( msg, object_name ):
 
 
 def make6DofMarker( object_name, position, quaternion ):
+    global base_frame_id
     int_marker = InteractiveMarker()
-    int_marker.header.frame_id = "/base"
+    int_marker.header.frame_id = base_frame_id
     int_marker.pose.position = position
     int_marker.pose.orientation = quaternion
     int_marker.scale = 1
@@ -98,10 +102,21 @@ def make6DofMarker( object_name, position, quaternion ):
     int_marker.description = object_name
     server.insert(int_marker, processFeedback)
 
+def setObjectPoses(msg):
+    for target_object in msg.objects:
+        int_marker = server.get(target_object.object_name)
+        tl = TransformListener()
+        transed_point = tl.transformPoint(base_frame_id, target_object.position)
+        cur_pose = int_marker.pose
+        cur_pose.position = transed_point.point
+        server.setPose(int_marker.name, cur_pose);        
+    server.applyChanges()
 
 if __name__=="__main__":
     rospy.init_node("target_object_marker_server")
     
+    rospy.Subscriber('~set_pose', SetObjectPositionArray, setObjectPoses)
+
     rospy.Timer(rospy.Duration(0.01), frameCallback)
     server = InteractiveMarkerServer("target_object_marker_server")    
     rospack = rospkg.RosPack()
