@@ -43,9 +43,9 @@ def main():
         elif bin_ in 'cfil':
             msg['right'].array.append(WorkOrder(bin=bin_, object=target_object))
 
-    pub_left = rospy.Publisher('/work_order/left_limb', WorkOrderArray,
+    pub_left = rospy.Publisher('/work_order/left_process', WorkOrderArray,
                                queue_size=1)
-    pub_right = rospy.Publisher('/work_order/right_limb', WorkOrderArray,
+    pub_right = rospy.Publisher('/work_order/right_process', WorkOrderArray,
                                 queue_size=1)
     rate = rospy.Rate(rospy.get_param('rate', 1))
     while not rospy.is_shutdown():
