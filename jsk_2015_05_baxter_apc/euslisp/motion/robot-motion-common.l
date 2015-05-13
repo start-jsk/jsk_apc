@@ -40,6 +40,14 @@
       (:larm (send *baxter* arm :angle-vector av-l)))
     (list (midpoint 0.5 av-init (send *baxter* :angle-vector)) (send *baxter* :angle-vector))))
 
+(defun fold-to-keep-object-av (arm)
+  (let ((av-l #f(77.1899 4.37256 -86.1548 123.904 11.8213 59.8096 5.53711))
+        (av-r #f(-77.1899 4.37256 86.1548 123.904 -11.8213 59.8096 -5.53711)))
+    (case arm
+      (:larm (send *baxter* arm :angle-vector av-l))
+      (:rarm (send *baxter* arm :angle-vector av-r)))
+    (send *baxter* :angle-vector)))
+
 (defun untuck-pose (arm)
   (let ((av-init (send *baxter* :angle-vector)) av-arm)
     (send *baxter* :untuck-pose)
