@@ -65,6 +65,8 @@ add_message_files(
   QrStampes.msg
   ObjectRecognition.msg
   BoolStamped.msg
+  SetObjectPosition.msg
+  SetObjectPositionArray.msg
   )
 
 ## Generate services in the 'srv' folder
