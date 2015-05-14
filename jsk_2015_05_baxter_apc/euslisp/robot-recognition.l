@@ -20,7 +20,7 @@
 
 (defun verify-object (arm target-object &key (timeout 20))
   (ros::spin-once)
-  (let ((now (ros::time-now))
+  (let* ((now (ros::time-now))
         (msg (gethash arm *verify-object*))
         (stamp (send (send msg :header) :stamp)))
     (while
@@ -56,6 +56,7 @@
 
 (defparameter *image-time-diff-threshold* 38)
 (defun see-if-grabbed (arm)
+  (unix::sleep 2)
   (ros::spin-once)
   (let (diff)
     (setq diff (gethash arm *image-time-diff*))
