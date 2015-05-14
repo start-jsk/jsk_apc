@@ -11,7 +11,7 @@
   (move-to-target-bin-av arm bin)
   (pushback
     (send *baxter* arm :inverse-kinematics
-          (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 40)))
+          (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 50)))
           :revert-if-fail nil
           :rotation-axis :z) avs)
   (pushback
@@ -132,10 +132,12 @@
     t))
 
 (defun pick-object (arm bin)
-  (let (avs (patterns '(:just-down :left-and-down :right-and-down :rotate-and-left :rotate-and-right)))
+  (let (av avs (patterns '(:just-down :left-and-down :right-and-down :rotate-and-left :rotate-and-right)))
     ;; insert arm to target bin
-    (send *ri* :angle-vector-sequence (insert-to-pick-object-avs arm bin) :fast nil 0 :scale 5.0)
-    (send *ri* :wait-interpolation)
+    (dolist (av (insert-to-pick-object-avs arm bin))
+      (send *irtviewer* :draw-objects)
+      (send *ri* :angle-vector av 3000)
+      (send *ri* :wait-interpolation))
     ;; store image to compare it with one after trying to pick
     (start-image-time-diff arm)
     ;; make vacuum on
