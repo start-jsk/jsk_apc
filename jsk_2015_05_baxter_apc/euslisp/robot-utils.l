@@ -11,3 +11,9 @@
     ((eq arm :larm) "left")
     ((eq arm :rarm) "right")
     (t nil)))
+
+(defun opposite-arm (arm)
+  (cond
+    ((eq arm :larm) :rarm)
+    ((eq arm :rarm) :larm)
+    (t nil)))
