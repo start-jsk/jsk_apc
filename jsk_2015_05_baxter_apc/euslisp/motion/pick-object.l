@@ -133,6 +133,7 @@
   (let (avs (patterns '(:just-down :left-and-down :right-and-down :rotate-and-left :rotate-and-right)))
     ;; insert arm to target bin
     (send *ri* :angle-vector-sequence (insert-to-pick-object-avs arm bin) :fast :default-controller 0 :scale 5.0)
+    (send *ri* :wait-interpolation)
     ;; store image to compare it with one after trying to pick
     (start-image-time-diff arm)
     ;; make vacuum on
