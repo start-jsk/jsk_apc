@@ -19,7 +19,10 @@
                 #'(lambda (msg) (verify-object-cb msg :rarm)))
 
 (defun verify-object (arm target-object &key (timeout 20))
-  (ros::spin-once)
+  (while
+    (not (gethash arm *verify-object*))
+    (unix::sleep 1)
+    (ros::spin-once))
   (let* ((now (ros::time-now))
         (msg (gethash arm *verify-object*))
         (stamp (send (send msg :header) :stamp)))
