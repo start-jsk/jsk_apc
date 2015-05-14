@@ -132,7 +132,7 @@
 (defun pick-object (arm bin)
   (let (avs (patterns '(:just-down :left-and-down :right-and-down :rotate-and-left :rotate-and-right)))
     ;; insert arm to target bin
-    (send *ri* :angle-vector-sequence (insert-to-pick-object-avs arm bin) :fast :default-controller 0 :scale 5.0)
+    (send *ri* :angle-vector-sequence (insert-to-pick-object-avs arm bin) :fast nil 0 :scale 5.0)
     (send *ri* :wait-interpolation)
     ;; store image to compare it with one after trying to pick
     (start-image-time-diff arm)
@@ -146,7 +146,7 @@
     ;; take arm out of bin
     (setq avs (list (send *baxter* arm :move-end-pos #f(-250 0 0) :world :revert-if-fail nil :rotation-axis :z)))
     (send *irtviewer* :draw-objects)
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 8.0)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 8.0)
     (send *ri* :wait-interpolation)
     ))
 
