@@ -14,7 +14,7 @@
 
 (defun place-object (arm)
   (let (avs shake-avs)
-    (pushback (fold-to-keep-object-av :rarm) avs)
+    (pushback (fold-to-keep-object-av arm) avs)
     (setq avs (append avs (place-object-avs arm)))
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 3.0)
