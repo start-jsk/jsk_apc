@@ -32,13 +32,7 @@
     (speak-en "Let's start picking challenge" :google t)
     (while
       work
-      (while  ;; wait for opposite arm if opposite arm's target is center bin
-        (eq
-          (which-bin-region (str-to-key (ros::get-param (format nil "~A_process/target" (arm-to-str (opposite-arm arm))))))
-          :center)
-        (ros::ros-info "waiting for opposite arm to finish one order")
-        (unix::sleep 1))
-      ; get status from parameter server
+      ;; get status from parameter server
       ;; (speak-en  (format nil "Next Target is ~A" "OREO") :google t  :wait t)
       (setq target (str-to-key (elt work 0)) target-object (elt work 1))
       (ros::set-param (format nil "~A_process/target" (arm-to-str arm)) (key-to-str target))
@@ -47,6 +41,20 @@
                      state (arm-to-str arm) (key-to-str target) target-object)
       (cond
         ((string= state "pick_object")
+         ;; wait for opposite arm if opposite arm's target is center bin
+         (while
+           (eq
+             (which-bin-region (str-to-key (ros::get-param (format nil "~A_process/target" (arm-to-str (opposite-arm arm))))))
+             :center)
+           (ros::ros-info "waiting for opposite arm to finish one order for center bin")
+           (unix::sleep 1))
+         ;; wait for opposite arm if current arm's target is center bin and opposite is still processing
+         (while
+           (and
+             (eq (which-bin-region target) :center)
+             (not (string= (ros::get-param (format nil "~A_process/state" (arm-to-str (opposite-arm arm)))) "pick_object")))
+           (ros::ros-info "waiting for opposite arm to do order for center bin")
+           (unix::sleep 1))
          (incf n-tried)
          (ros::ros-info "Move to Bin ~A. Target is ~A." (key-to-str target) target-object)
          (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) (underscore-to-space target-object)) :google t)
