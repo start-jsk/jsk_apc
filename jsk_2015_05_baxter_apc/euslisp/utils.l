@@ -33,5 +33,15 @@
     (while
       (position #\_ str)
       (setf (schar str (position #\_ str)) #\ ))
-    str)
+    str))
+
+(defun which-bin-region (bin)
+  (let ((l-bins '(:a :d :g :j))
+        (c-bins '(:b :e :h :k))
+        (r-bins '(:c :f :i :l)))
+    (cond
+      ((member bin l-bins) :left)
+      ((member bin c-bins) :center)
+      ((member bin r-bins) :right)
+      (t nil))))
 
