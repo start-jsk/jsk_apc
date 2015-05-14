@@ -79,13 +79,14 @@
     (send *ri* :wait-interpolation)
     (ros::ros-info "check if grabbed")
     (unless (check-if-grabbed arm)
-      (unless (if *simulator-p* nil (see-if-grabbed arm))
-        (ros::ros-info "go back to original position")
-        ;; go back to original position if can't grabbed
-        (insert-to-pick-object-avs arm bin)
-        (send *irtviewer* :draw-objects)
-        (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
-        (send *ri* :wait-interpolation)
+      (ros::ros-info "go back to original position")
+      ;; go back to original position if can't grabbed
+      (insert-to-pick-object-avs arm bin)
+      (send *irtviewer* :draw-objects)
+      (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
+      (send *ri* :wait-interpolation)
+      (if (if *simulator-p* nil (see-if-grabbed arm))
+        (return-from try-to-pick-object t)
         (return-from try-to-pick-object nil)))
     ;; patterns after grabbed
     (ros::ros-info "take arm from target bin")
