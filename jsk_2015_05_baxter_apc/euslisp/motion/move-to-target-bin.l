@@ -18,7 +18,7 @@
     (pushback (fold-to-keep-object-av arm) avs)
     (pushback (avoid-shelf-pose-for-bin arm bin) avs)
     (send *irtviewer* :draw-objects)
-    (send *ri* :angle-vector-sequence avs :fast :default-controller 0 :scale 2.8)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 2.8)
     (send *ri* :wait-interpolation)
     (send *ri* :angle-vector (move-to-target-bin-av arm bin) 1000)
     (send *irtviewer* :draw-objects)
