@@ -32,10 +32,16 @@
     (speak-en "Let's start picking challenge" :google t)
     (while
       work
+      (while  ;; wait for opposite arm if opposite arm's target is center bin
+        (eq
+          (which-bin-region (str-to-key (ros::get-param (format nil "~A_process/target" (arm-to-str (opposite-arm arm))))))
+          :center)
+        (ros::ros-info "waiting for opposite arm to finish one order")
+        (unix::sleep 1))
       ; get status from parameter server
       ;; (speak-en  (format nil "Next Target is ~A" "OREO") :google t  :wait t)
       (setq target (str-to-key (elt work 0)) target-object (elt work 1))
-      (ros::set-param "~A_process/target" (key-to-str target))
+      (ros::set-param (format nil "~A_process/target" (arm-to-str arm)) (key-to-str target))
       (setq state (ros::get-param (format nil "~A_process/state" (arm-to-str arm))))
       (ros::ros-info "state: ~A, arm: ~A, target: ~A, object: ~A"
                      state (arm-to-str arm) (key-to-str target) target-object)
