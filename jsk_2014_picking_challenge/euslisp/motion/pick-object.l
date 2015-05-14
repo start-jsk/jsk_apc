@@ -86,7 +86,8 @@
       (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
       (send *ri* :wait-interpolation)
       (if (if *simulator-p* nil (see-if-grabbed arm))
-        (return-from try-to-pick-object t)
+        (progn (ros::ros-info "finish because see if grabbed")
+               (return-from try-to-pick-object t))
         (return-from try-to-pick-object nil)))
     ;; patterns after grabbed
     (ros::ros-info "take arm from target bin")
