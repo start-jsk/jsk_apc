@@ -54,7 +54,7 @@
                              #'(lambda (msg) (image-time-diff-cb msg :rarm)))))
     ))
 
-(defparameter *image-time-diff-threshold* 38)
+(defparameter *image-time-diff-threshold* 45)
 (defun see-if-grabbed (arm)
   (unix::sleep 2)
   (ros::spin-once)
