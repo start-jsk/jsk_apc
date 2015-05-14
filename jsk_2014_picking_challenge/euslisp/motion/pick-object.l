@@ -149,6 +149,7 @@
       (unless *simulator-p* (speak-en  "Fail to catch the target" :google t)))
     ;; take arm out of bin
     (setq avs (list (send *baxter* arm :move-end-pos #f(-250 0 0) :world :revert-if-fail nil :rotation-axis :z)))
+    (pushback (avoid-shelf-pose-for-bin arm bin) avs)
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 8.0)
     (send *ri* :wait-interpolation)
