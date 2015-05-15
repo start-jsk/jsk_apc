@@ -14,6 +14,7 @@
 
 ;; this requires iamge_saver.launch
 (defun tweet-with-image (str l/r) ;; l/r is "larm" or "rarm"
+  (ros::advertise-if-yet "/tweet" std_msgs::String 1)
   (let ((timestamp0 0) (timestamp1 0) (filename (format nil "/tmp/baxter_~A_camera.png" l/r)))
     (if (probe-file filename)
       (setq timestamp0 (file-write-date filename)))
