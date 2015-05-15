@@ -23,7 +23,7 @@
     <rosparam>
       filter_field: 0
       min_index: 0
-      max_index: 1240
+      max_index: 1500
     </rosparam>
   </node>
   <node pkg="nodelet" type="nodelet" name="organized_resize_y"
