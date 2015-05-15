@@ -87,4 +87,7 @@
     <arg name="left_or_right" value="right" />
   </include>
 
+  <!-- tweet -->
+  <include file="$(find jsk_2014_picking_challenge)/launch/image_saver.launch" />
+
 </launch>
