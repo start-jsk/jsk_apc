@@ -3,7 +3,10 @@
   {
     "bin_A":
     [
-      "oreo_mega_stuf","champion_copper_plus_spark_plug","expo_dry_erase_board_eraser","kong_duck_dog_toy"
+      "oreo_mega_stuf",
+      "champion_copper_plus_spark_plug",
+      "expo_dry_erase_board_eraser",
+      "kong_duck_dog_toy"
     ],
     "bin_B":
     [
@@ -19,7 +22,9 @@
     ],
     "bin_E":
     [
-      "mommys_helper_outlet_plugs","sharpie_accent_tank_style_highlighters","kong_air_dog_squeakair_tennis_ball"
+      "mommys_helper_outlet_plugs",
+      "sharpie_accent_tank_style_highlighters",
+      "kong_air_dog_squeakair_tennis_ball"
     ],
     "bin_F":
     [
@@ -27,27 +32,35 @@
     ],
     "bin_G":
     [
-      "safety_works_safety_glasses","dr_browns_bottle_brush","laugh_out_loud_joke_book"
+      "safety_works_safety_glasses",
+      "dr_browns_bottle_brush",
+      "laugh_out_loud_joke_book"
     ],
     "bin_H":
     [
-      "cheezit_big_original","paper_mate_12_count_mirado_black_warrior"
+      "cheezit_big_original",
+      "paper_mate_12_count_mirado_black_warrior"
     ],
     "bin_I":
     [
-      "feline_greenies_dental_treats","elmers_washable_no_run_school_glue"
+      "feline_greenies_dental_treats",
+      "elmers_washable_no_run_school_glue"
     ],
     "bin_J":
     [
-      "mead_index_cards","rolodex_jumbo_pencil_cup","first_years_take_and_toss_straw_cup"
+      "mead_index_cards",
+      "rolodex_jumbo_pencil_cup",
+      "first_years_take_and_toss_straw_cup"
     ],
     "bin_K":
     [
-      "highland_6539_self_stick_notes","mark_twain_huckleberry_finn"
+      "highland_6539_self_stick_notes",
+      "mark_twain_huckleberry_finn"
     ],
     "bin_L":
     [
-      "kyjen_squeakin_eggs_plush_puppies","kong_sitting_frog_dog_toy"
+      "kyjen_squeakin_eggs_plush_puppies",
+      "kong_sitting_frog_dog_toy"
     ]
   },
 
