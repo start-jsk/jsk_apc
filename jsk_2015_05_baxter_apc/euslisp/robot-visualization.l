@@ -4,6 +4,8 @@
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/score-board.l")
 (setq *score* 0)
+(setq *overlay-text-width* 1200)
+(setq *overlay-text-height* 50)
 
 ;; How to use
 ;;  (publish-bin-mark (list :a :b :c))
@@ -183,3 +185,33 @@
     (publish-score-board)
     (publish-score *score*)
     ))
+
+(defun publish-overlay-text (text topic width height left top
+				  &key
+				  (text-size 12)
+				  (line-width 2)
+				  (font "DejaVu Sans Mono")
+				  (fg-color (instance std_msgs::ColorRGBA :init :r  (/ 25.0 255.0) :g 1.0 :b (/ 240.0 255.0) :a 1.0))
+				  (bg-color (instance std_msgs::ColorRGBA :init :r  0  :g 0  :b 0 :a 0.2)))
+  (let ((overlay-text-msg (instance jsk_rviz_plugins::OverlayText :init)))
+    (ros::advertise-if-yet topic jsk_rviz_plugins::OverlayText 5)
+    (warn (format nil "~A" text-size))
+    (send overlay-text-msg :width width)
+    (send overlay-text-msg :height height)
+    (send overlay-text-msg :left left)
+    (send overlay-text-msg :top top)
+    (send overlay-text-msg :text_size text-size)
+    (send overlay-text-msg :font font)
+    (send overlay-text-msg :line_width 2)
+    (send overlay-text-msg :text text)
+    (send overlay-text-msg :fg_color fg-color)
+    (send overlay-text-msg :bg_color bg-color)
+    (ros::publish topic overlay-text-msg)
+    )
+  )
+
+(defun publish-state-info (state arm)
+  (publish-overlay-text (format nil "    ~A" state)
+			(format nil "~A_state_info" (arm-to-str arm))
+			*overlay-text-width* *overlay-text-height* 0
+			(if (equal "left" (arm-to-str arm))  (* 1 *overlay-text-height*) (* 4 *overlay-text-height*) ):text-size 20))
