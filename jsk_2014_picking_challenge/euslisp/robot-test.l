@@ -6,7 +6,9 @@
 
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-interface.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-communication.l")
 
 (defun ir2ri (&optional (tm nil))
   (send *ri* :angle-vector (send *baxter* :angle-vector) tm)

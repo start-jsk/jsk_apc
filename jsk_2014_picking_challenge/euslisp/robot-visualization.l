@@ -1,15 +1,14 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 (ros::load-ros-manifest "jsk_rviz_plugins")
+(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/score-board.l")
 (setq *score* 0)
 
 ;; How to use
 ;;  (publish-bin-mark (list :a :b :c))
 (defun publish-bin-mark(bin-list)
-  (unless (ros::get-topic-publisher "bin_marks")
-    (ros::advertise "bin_marks" jsk_rviz_plugins::pictogramarray 5)
-    (unix:sleep 1))
+  (ros::advertise-if-yet "bin_marks" jsk_rviz_plugins::pictogramarray 5)
   (let ((bin-msg-list)
 	(pict-array-msg (instance jsk_rviz_plugins::pictogramarray :init)))
     (dolist (bin bin-list)
@@ -22,7 +21,7 @@
 	(send pose :orientation :y -0.7)
 	(send pose :orientation :z 0)
 	(send pose :orientation :w 0.7)
-	(setq pict-msg (publish-popup-text (symbol-to-str bin) "base" "bin_marks" pose nil jsk_rviz_plugins::Pictogram::*ROTATE_X*))
+	(setq pict-msg (publish-popup-text (key-to-str bin) "base" "bin_marks" pose nil jsk_rviz_plugins::Pictogram::*ROTATE_X*))
 	(push pict-msg bin-msg-list)
 	))
     (send pict-array-msg :header :frame_id "base")
@@ -34,10 +33,7 @@
 
 (defun publish-popup-text(text frame topic_name pose &optional (publishp t) (action jsk_rviz_plugins::Pictogram::*JUMP*) (ttl 0.0))
   (let ((pict-msg (instance jsk_rviz_plugins::Pictogram :init)))
-    (if publishp
-	(unless (ros::get-topic-publisher topic_name)
-	  (ros::advertise topic_name jsk_rviz_plugins::pictogram 5)
-	  (unix:sleep 1)))
+    (when publishp (ros::advertise-if-yet topic_name jsk_rviz_plugins::pictogram 5))
     (send pict-msg :header :frame_id frame)
     (send pict-msg :header :stamp (ros::time-now))
     (send pict-msg :mode jsk_rviz_plugins::Pictogram::*STRING_MODE*)
@@ -57,17 +53,26 @@
       )))
 
 (defun publish-end-coords ()
-  (ros::advertise "/larm_end_coords" visualization_msgs::Marker 5)
-  (ros::advertise "/rarm_end_coords" visualization_msgs::Marker 5)
+  (ros::advertise-if-yet "/larm_end_coords" visualization_msgs::Marker 5)
+  (ros::advertise-if-yet "/rarm_end_coords" visualization_msgs::Marker 5)
   (ros::publish "/larm_end_coords" (eusobj->marker-msg (send (send (send *baxter* :larm :end-coords) :copy-worldcoords) :translate #f(0 0 -950) :world) (instance std_msgs::header :init :stamp (ros::time-now) :frame_id "/base")))
   (ros::publish "/rarm_end_coords"(eusobj->marker-msg (send (send (send *baxter* :rarm :end-coords) :copy-worldcoords) :translate #f(0 0 -950) :world) (instance std_msgs::header :init :stamp (ros::time-now) :frame_id "/base"))))
 
 (defun publish-pod ()
-  (let ((*simulator-origin* "base"))
+  (let ((*simulator-origin* "base") pod-marker-msg)
     (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
     (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "pod")
-    (ros::advertise "/pod_marker_array" visualization_msgs::MarkerArray 5)
+    (ros::advertise-if-yet "/pod_marker_array" visualization_msgs::MarkerArray 5)
     (unix::sleep 1)
+    (setq pod-marker-msg (eusobj->marker-msg
+			  *pod*
+			  (instance std_msgs::header :init
+				    :stamp (ros::time-now)
+				    :frame_id "pod")
+			  :ns "pod_body"
+			  :lifetime 0 :id 2
+			  :rainbow t))
+    (send pod-marker-msg :color (vector->rgba (float-vector 0.4 0.4 0.4) 1))
     (ros::publish "/pod_marker_array"
                   (instance visualization_msgs::MarkerArray :init
                             :markers
@@ -87,19 +92,12 @@
                                              :frame_id "pod")
                                    :ns "pod_coords"
                                    :lifetime 0 :id 1)
-                                  (eusobj->marker-msg
-                                   *pod*
-                                   (instance std_msgs::header :init
-                                             :stamp (ros::time-now)
-                                             :frame_id "pod")
-                                   :ns "pod_body"
-                                   :lifetime 0 :id 2
-                                   :rainbow t)
+                                  pod-marker-msg
                                   )))))
 
 (defun publish-score-board ()
   (score-board-init)
-  (ros::advertise "/score_board" visualization_msgs::Marker 5)
+  (ros::advertise-if-yet "/score_board" visualization_msgs::Marker 5)
   (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
   (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "score_board")
   (unix::sleep 1)
@@ -113,9 +111,7 @@
                  :lifetime 0 :id 2)))
 
 (defun publish-score(score)
-  (unless (ros::get-topic-publisher "score_pict")
-    (ros::advertise "score_pict" jsk_rviz_plugins::pictogramarray 5)
-    (unix:sleep 1))
+  (ros::advertise-if-yet "score_pict" jsk_rviz_plugins::pictogramarray 5)
   (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
   (send *tfb* :send-transform (send (make-coords) :translate #f(0 0 -950) :world) "base" "score_board")
   (let* ((bin-msg-list)

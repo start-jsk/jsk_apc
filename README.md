@@ -23,6 +23,32 @@ $ catkin build
 $ source devel/setup.bash
 ```
 
+Udev Setup
+----------
+
+Write Below in /etc/udev/rules.d/90-rosserial.rules.
+```
+# ATTR{product}=="rosserial"
+SUBSYSTEM=="tty", MODE="0666"
+```
+
+Hosts Setup
+-----------
+Write Below in /etc/hosts .
+```
+133.11.216.214 baxter 011310P0014.local
+```
+
+SSH Setup
+---------
+Write Below in ~/.ssh/config
+```
+Host baxter
+  HostName baxter.jsk.imi.i.u-tokyo.ac.jp
+  User ruser
+```
+
+
 実機を使うときの環境設定
 -----------------------
 ```
@@ -34,9 +60,8 @@ $ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
 euslispからロボットを動かす
 --------------------------
 ```
-> rosrun jsk_2014_picking_challenge main.l
-$ (test-1) ;; simple example
-$ (test-2) ;; ik exmple
+> rosrun jsk_2014_picking_challenge robot-main.l
+$ (move-to-target-bin :rarm :c)
 ```
 
 最新のデモの実行方法

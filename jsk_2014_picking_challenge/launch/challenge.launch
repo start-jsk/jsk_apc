@@ -4,8 +4,8 @@
   <arg name="bof" default="true"/>
   <arg name="rosserial" default="true"/>
   <arg name="launch_main" default="false"/>
-  <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
-  <arg name="passthrough" default="true" />
+  <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc-a.json" />
+  <arg name="passthrough" default="false" />
 
   <!-- tf of baxter's footprint -->
   <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
@@ -32,14 +32,16 @@
 
   <!-- parameter -->
   <node pkg="jsk_2014_picking_challenge" type="setup_target.py" name="setup_target" output="log">
-    <param name="json" value="$(find jsk_2014_picking_challenge)/data/apc.json" />
+    <param name="json" value="$(arg json)" />
   </node>
-  <param name="/left_limb/state" value="pick_object" />
-  <param name="/right_limb/state" value="pick_object" />
+  <param name="/left_process/state" value="pick_object" />
+  <param name="/right_process/state" value="pick_object" />
 
   <!-- main -->
-  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main"
-        args="&quot;(progn (apc-init) (main))&quot;" respawn="true" />
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
+        args="&quot;(progn (apc-init :larm) (main :larm))&quot;" respawn="true" />
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_right"
+        args="&quot;(progn (apc-init :rarm) (main :rarm))&quot;" respawn="true" />
 
   <!-- recognition -->
   <group if="$(arg passthrough)">
@@ -49,6 +51,10 @@
       <arg name="input_image" value="/apply_mask/output" />
       <arg name="input_info" value="/kinect2/rgb/camera_info" />
     </include>
+    <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification">
+      <param name="json" value="$(arg json)" />
+      <remap from="~input" to="bof_object_matcher/output" />
+    </node>
   </group>
   <group unless="$(arg passthrough)">
     <include file="$(find jsk_2014_picking_challenge)/launch/attention_divide.launch"/>
@@ -57,15 +63,32 @@
         <arg name="input_image" value="/left_process/apply_mask/output" />
         <arg name="input_info" value="/kinect2/rgb/camera_info" />
       </include>
+      <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification">
+        <param name="json" value="$(arg json)" />
+        <remap from="~input" to="bof_object_matcher/output" />
+      </node>
     </group>
     <group ns="right_process">
       <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
         <arg name="input_image" value="/right_process/apply_mask/output" />
         <arg name="input_info" value="/kinect2/rgb/camera_info" />
       </include>
+      <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification">
+        <param name="json" value="$(arg json)" />
+        <remap from="~input" to="bof_object_matcher/output" />
+      </node>
     </group>
   </group>
-  <node pkg="jsk_2014_picking_challenge" type="object_verification.py" name="object_verification" output="log">
-    <param name="json" value="$(arg json)" />
-  </node>
+
+  <!-- see if grabbed -->
+  <include ns="see_left_if_grabbed" file="$(find jsk_2014_picking_challenge)/launch/see_if_grabbed.launch">
+    <arg name="left_or_right" value="left" />
+  </include>
+  <include ns="see_right_if_grabbed" file="$(find jsk_2014_picking_challenge)/launch/see_if_grabbed.launch">
+    <arg name="left_or_right" value="right" />
+  </include>
+
+  <!-- tweet -->
+  <include file="$(find jsk_2014_picking_challenge)/launch/image_saver.launch" />
+
 </launch>

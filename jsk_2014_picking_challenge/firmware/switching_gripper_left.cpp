@@ -8,10 +8,12 @@
 #include <std_msgs/Bool.h>
 const int PIN = 13;
 const int PRESSURE_SENSOR_PIN = 6;
+const int DEBUG_BUTTON = 5;
+bool prev_debug_state = false;
 
 ros::NodeHandle nh;
 
-void messageCb( const std_msgs::Bool& toggle_msg){
+void messageCb(const std_msgs::Bool& toggle_msg){
     if(toggle_msg.data){
         digitalWrite(PIN, HIGH);
     } else {
@@ -33,15 +35,26 @@ void setup()
 {
     pinMode(PIN, OUTPUT);
     pinMode(PRESSURE_SENSOR_PIN, INPUT);
+    pinMode(DEBUG_BUTTON, INPUT);
     nh.initNode();
     nh.subscribe(sub);
     nh.advertise(pub);
     nh.advertise(grabbed_pub);
 }
 
+
 void loop()
 {
-    // publish gripper on/off.
+    // for debug button
+    if(digitalRead(DEBUG_BUTTON) == HIGH){
+        digitalWrite(PIN, HIGH);
+        prev_debug_state = true;
+    } else if(prev_debug_state == true) {
+        digitalWrite(PIN, LOW);
+        prev_debug_state = false;
+    }
+
+    // publish vacuum on/off.
     if(digitalRead(PIN)){
         str_msg.data = "ON";
     } else {
