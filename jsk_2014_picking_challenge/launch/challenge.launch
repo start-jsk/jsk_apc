@@ -31,17 +31,19 @@
   </node>
 
   <!-- parameter -->
+  <param name="/left_process/target" value="" />
+  <param name="/right_process/target" value="" />
+  <param name="/left_process/state" value="" />
+  <param name="/right_process/state" value="" />
   <node pkg="jsk_2014_picking_challenge" type="setup_target.py" name="setup_target" output="log">
     <param name="json" value="$(arg json)" />
   </node>
-  <param name="/left_process/state" value="pick_object" />
-  <param name="/right_process/state" value="pick_object" />
 
   <!-- main -->
   <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
-        args="&quot;(progn (apc-init :larm) (main :larm))&quot;" respawn="true" />
+        args="&quot;(progn (apc-init :larm) (main :larm))&quot;" respawn="true" output="screen" />
   <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_right"
-        args="&quot;(progn (apc-init :rarm) (main :rarm))&quot;" respawn="true" />
+        args="&quot;(progn (apc-init :rarm) (main :rarm))&quot;" respawn="true" output="screen" />
 
   <!-- recognition -->
   <group if="$(arg passthrough)">
