@@ -1,0 +1,103 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "expo_dry_erase_board_eraser",
+            "mommys_helper_outlet_plugs"
+        ],
+        "bin_B": [
+            "laugh_out_loud_joke_book",
+            "kong_duck_dog_toy"
+        ],
+        "bin_C": [
+            "rolodex_jumbo_pencil_cup",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_D": [
+            "stanley_66_052",
+            "highland_6539_self_stick_notes",
+            "crayola_64_ct"
+        ],
+        "bin_E": [
+            "genuine_joe_plastic_stir_sticks"
+        ],
+        "bin_F": [
+            "kong_sitting_frog_dog_toy",
+            "kong_air_dog_squeakair_tennis_ball"
+        ],
+        "bin_G": [
+            "sharpie_accent_tank_style_highlighters",
+            "feline_greenies_dental_treats",
+            "safety_works_safety_glasses"
+        ],
+        "bin_H": [
+            "munchkin_white_hot_duck_bath_toy",
+            "champion_copper_plus_spark_plug",
+            "paper_mate_12_count_mirado_black_warrior"
+        ],
+        "bin_I": [
+            "mark_twain_huckleberry_finn",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_J": [
+            "cheezit_big_original"
+        ],
+        "bin_K": [
+            "mead_index_cards",
+            "oreo_mega_stuf",
+            "dr_browns_bottle_brush"
+        ],
+        "bin_L": [
+            "first_years_take_and_toss_straw_cup"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "expo_dry_erase_board_eraser"
+        },
+        {
+            "bin": "bin_B",
+            "item": "laugh_out_loud_joke_book"
+        },
+        {
+            "bin": "bin_C",
+            "item": "rolodex_jumbo_pencil_cup"
+        },
+        {
+            "bin": "bin_D",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_E",
+            "item": "genuine_joe_plastic_stir_sticks"
+        },
+        {
+            "bin": "bin_F",
+            "item": "kong_sitting_frog_dog_toy"
+        },
+        {
+            "bin": "bin_G",
+            "item": "sharpie_accent_tank_style_highlighters"
+        },
+        {
+            "bin": "bin_H",
+            "item": "munchkin_white_hot_duck_bath_toy"
+        },
+        {
+            "bin": "bin_I",
+            "item": "mark_twain_huckleberry_finn"
+        },
+        {
+            "bin": "bin_J",
+            "item": "cheezit_big_original"
+        },
+        {
+            "bin": "bin_K",
+            "item": "mead_index_cards"
+        },
+        {
+            "bin": "bin_L",
+            "item": "first_years_take_and_toss_straw_cup"
+        }
+    ]
+}
