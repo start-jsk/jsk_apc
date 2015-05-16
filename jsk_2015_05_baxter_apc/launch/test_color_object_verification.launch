@@ -1,5 +1,5 @@
 <launch>
-  <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc.json" />
+  <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc-a.json" />
 
   <include file="$(find jsk_2014_picking_challenge)/launch/color_object_matcher.launch" />
 
