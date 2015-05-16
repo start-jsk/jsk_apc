@@ -54,5 +54,5 @@ void loop()
     grabbed_pub.publish(&grabbed_msg);
 
     nh.spinOnce();
-    delay(1);
+    delay(100);
 }
