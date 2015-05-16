@@ -25,13 +25,17 @@
     (unix::sleep 1)
     (ros::spin-once))
   (let* ((now (ros::time-now))
-        (msg (gethash arm *verify-object*))
-        (stamp (send (send msg :header) :stamp)))
+         (msg (gethash arm *verify-object*))
+         (stamp (send (send msg :header) :stamp)))
+    ;; wait for msg to synchronize
     (while
       (< (send stamp :sec) (send now :sec))
       (unix::sleep 1)
       (ros::spin-once)
+      (setq msg (gethash arm *verify-object*))
+      (setq stamp (send (send msg :header) :stamp))
       (setq correct? (string= target-object (send msg :matched)))
+      ;; timeout
       (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout) (return)))
     correct?))
 
