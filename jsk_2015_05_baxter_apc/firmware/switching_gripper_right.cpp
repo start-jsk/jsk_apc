@@ -36,6 +36,7 @@ void setup()
     pinMode(PIN, OUTPUT);
     pinMode(PRESSURE_SENSOR_PIN, INPUT);
     pinMode(DEBUG_BUTTON, INPUT);
+    nh.getHardware()->setBaud(115200);
     nh.initNode();
     nh.subscribe(sub);
     nh.advertise(pub);
@@ -66,5 +67,5 @@ void loop()
     grabbed_pub.publish(&grabbed_msg);
 
     nh.spinOnce();
-    delay(1);
+    delay(1000);
 }
