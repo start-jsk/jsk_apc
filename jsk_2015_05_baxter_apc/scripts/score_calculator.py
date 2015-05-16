@@ -66,6 +66,12 @@ for bin_ in work_order:
     target = work_order[bin_]
     N = len(contents)
     print('What about ' + colored('bin_{0}'.format(bin_.upper()), 'magenta') + ' ?')
+    print(colored('bin_{0}'.format(bin_.upper()), 'magenta') + ' includes')
+    for content in contents:
+        if target == content:
+            print("- " + colored(target + " (Correct Target)", 'red'))
+        else:
+            print("- " + content)
     # succeeded or not
     while True:
         yn = raw_input(colored('Success? [y/n]: ', 'green'))
