@@ -4,6 +4,7 @@
 
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")
+(ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "jsk_2014_picking_challenge")
 
 ;; -------------
@@ -39,32 +40,42 @@
 ;; -------------------------------------
 (setq *image-time-diff* (make-hash-table))
 (defun image-time-diff-cb (msg arm)
-  (setf (gethash arm *image-time-diff*) (send msg :data)))
+  (setf (gethash arm *image-time-diff*) msg))
 
 (defun start-image-time-diff (arm)
   (let ((topic-ns (format nil "/see_~A_if_grabbed/image_time_diff" (arm-to-str arm))) msg)
-    (ros::advertise-if-yet (format nil "~A/start_comparing" topic-ns) std_msgs::String 1)
-    (setq msg (instance std_msgs::String :init))
-    (send msg :data "baxter")
-    (ros::publish (format nil "~A/start_comparing" topic-ns) msg)
+    (ros::advertise-if-yet (format nil "~A/start" topic-ns) std_msgs::Header 1)
+    (setq msg (instance std_msgs::Header :init))
+    (send msg :stamp (ros::time-now))
+    (ros::publish (format nil "~A/start" topic-ns) msg)
     ;; prepare for subscription
     (case arm
-      (:larm (ros::subscribe (format nil "~A/output/baxter/diff" topic-ns)
-                             std_msgs::Float32
+      (:larm (ros::subscribe (format nil "~A/output/diff" topic-ns)
+                             jsk_recognition_msgs::ImageDifferenceValue
                              #'(lambda (msg) (image-time-diff-cb msg :larm))))
-      (:rarm (ros::subscribe (format nil "~A/output/baxter/diff" topic-ns)
-                             std_msgs::Float32
+      (:rarm (ros::subscribe (format nil "~A/output/diff" topic-ns)
+                             jsk_recognition_msgs::ImageDifferenceValue
                              #'(lambda (msg) (image-time-diff-cb msg :rarm)))))
     ))
 
-(defparameter *image-time-diff-threshold* 45)
+(defparameter *image-time-diff-threshold* 0.17)
 (defun see-if-grabbed (arm)
-  (unix::sleep 2)
-  (ros::spin-once)
-  (let (diff)
-    (setq diff (gethash arm *image-time-diff*))
-    (if (> diff *image-time-diff-threshold*) t nil)
-    ))
+  (while
+    (not (gethash arm *image-time-diff*))
+    (unix::usleep 1000)
+    (ros::spin-once))
+  (let* ((now (ros::time-now))
+         (msg (gethash arm *image-time-diff*))
+         (stamp (send (send msg :header) :stamp)))
+    ;; wait for msg to synchronize
+    (while
+      (< (send stamp :sec) (send now :sec))
+      (unix::usleep 1000)
+      (ros::spin-once)
+      (setq msg (gethash arm *image-time-diff*))
+      (setq stamp (send (send msg :header) :stamp))
+      (setq diff (send msg :difference)))
+    (if (> diff *image-time-diff-threshold*) t nil)))
 
 ;; -------------------------------------------------------
 ;; Check if grabbed with pressure sensor in vacuum cleaner
@@ -83,4 +94,4 @@
   (let (state)
     (setq state (gethash arm *gripper-grabbed*))
     ; (when state (speak-en "Grasped object" :google t))
-    state)
+    state))
