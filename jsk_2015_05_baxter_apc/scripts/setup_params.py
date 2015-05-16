@@ -25,6 +25,9 @@ def main():
             rospy.set_param('left_process/target', bin_)
             flag['left'] = True
 
+    rospy.set_param('/left_process/state', 'pick_object')
+    rospy.set_param('/right_process/state', 'pick_object')
+
 
 if __name__ == '__main__':
     rospy.init_node('setup_target')
