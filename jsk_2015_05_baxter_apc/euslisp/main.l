@@ -90,11 +90,11 @@
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "return_object"))
            (if correct?
              (progn
-               (setq overlay-text-msg (format nil "    Success: PICK ~A's ~A (~A)" (arm-to-str arm) target-object (key-to-str target)))
+	       (setq overlay-text-msg (format nil "    Success: ~A's PICK ~A (~A)!!" (arm-to-str arm) target-object (key-to-str target)))
                (setq overlay-text-color (instance std_msgs::ColorRGBA :init :r 0.2 :g 1 :b 0.2 :a 1))
                )
              (progn
-               (setq overlay-text-msg (format nil "    FAIL: PICK ~A's ~A (~A)" (arm-to-str arm) target-object (key-to-str target)))
+	       (setq overlay-text-msg (format nil "    FAIL: ~A's PICK. This was not ~A (~A). I Will Return It" (arm-to-str arm) target-object (key-to-str target)))
                (setq overlay-text-color (instance std_msgs::ColorRGBA :init :r 1 :g 0.1 :b 0.1 :a 1))
                )
              )
