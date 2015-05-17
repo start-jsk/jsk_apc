@@ -16,10 +16,6 @@
 
 (defun main (arm)
   (let (target param-target state work-order work)
-    (publish-overlay-text (format nil "~A" (string-upcase (arm-to-str arm)))
-                          (format nil "~A_fixed_info" (arm-to-str arm))
-                          *overlay-text-width* *overlay-text-height* 0 (if (equal "left" (arm-to-str arm)) 0 (* 3 *overlay-text-height*) ):text-size 20)
-
     (setq work-order (get-work-order arm))
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
@@ -43,6 +39,10 @@
       (setq state (ros::get-param (format nil "~A_process/state" (arm-to-str arm))))
       (ros::ros-info "state: ~A, arm: ~A, target: ~A, object: ~A"
                      state (arm-to-str arm) (key-to-str target) target-object)
+      (publish-state-info state arm)
+      (publish-overlay-text (format nil "~A (Left ~A objects)" (string-upcase (arm-to-str arm)) (length *work-order*))
+			    (format nil "~A_fixed_info" (arm-to-str arm))
+			    *overlay-text-width* *overlay-text-height* 0 (if (equal "left" (arm-to-str arm)) 0 (* 3 *overlay-text-height*) ):text-size 20)
       (cond
         ((string= state "pick_object")
          ;; wait for opposite arm if opposite arm's target is center bin
@@ -64,7 +64,6 @@
            (publish-state-info "Waiting for opposite arm to start center bin" arm)
            (unix::sleep 1))
          (incf n-tried)
-         (publish-state-info state arm)
          (ros::ros-info "Move to Bin ~A. Target is ~A." (key-to-str target) target-object)
          (publish-overlay-text (format nil "    PICK: ~A IN ~A" target-object (key-to-str target))
                                (format nil "~A_target_info" (arm-to-str arm))
@@ -81,12 +80,10 @@
                 (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object"))
                (t (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "move_for_verification"))))
         ((string= state "move_for_verification")
-         (publish-state-info state arm)
          (speak-en  "Move for verification." :google t)
          (move-for-verification arm target)
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "verify_object"))
         ((string= state "verify_object")
-         (publish-state-info state arm)
          (let ((correct? (verify-object arm target-object)) overlay-text-msg overlay-text-color)
            (if correct?
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object")
@@ -105,7 +102,6 @@
                                  *overlay-text-width* *overlay-text-height* 0 (if (equal "left" (arm-to-str arm)) (* *overlay-text-height* 2) (* *overlay-text-height* 5)) :text-size 20 :fg-color overlay-text-color)
            ))
         ((string= state "return_object")
-         (publish-state-info state arm)
          (speak-en (format nil "Return object to Bin ~A." (key-to-str target)) :google t)
          (move-to-target-bin arm target)
          (return-object arm target)
@@ -115,7 +111,6 @@
            (setq work (pop work-order) n-tried 0))
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object"))
         ((string= state "place_object")
-         (publish-state-info state arm)
          (speak-en  "Target is verified. Put in Order bin." :google t)
          (tweet-with-image (format nil "I got ~a!!" target-object) (arm-to-str arm))
          (place-object arm)
