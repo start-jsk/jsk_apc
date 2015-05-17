@@ -29,23 +29,30 @@ def get_sorted_work_order(json_file):
     return sorted_work_order
 
 
-def main():
-    json_file = rospy.get_param('~json', None)
-    if json_file is None:
-        rospy.logerr('must set json file path to ~json')
-        return
+def get_work_order_msg(json_file):
     work_order = get_sorted_work_order(json_file=json_file)
-
     msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
     for bin_, target_object in work_order:
         if bin_ in 'abdeghjk':
             msg['left'].array.append(WorkOrder(bin=bin_, object=target_object))
         elif bin_ in 'cfil':
             msg['right'].array.append(WorkOrder(bin=bin_, object=target_object))
+    return msg
 
-    pub_left = rospy.Publisher('/work_order/left_process', WorkOrderArray,
+
+def main():
+    json_file = rospy.get_param('~json', None)
+    if json_file is None:
+        rospy.logerr('must set json file path to ~json')
+        return
+
+    msg = get_work_order_msg(json_file)
+
+    pub_left = rospy.Publisher('/work_order/left_process',
+                               WorkOrderArray,
                                queue_size=1)
-    pub_right = rospy.Publisher('/work_order/right_process', WorkOrderArray,
+    pub_right = rospy.Publisher('/work_order/right_process',
+                                WorkOrderArray,
                                 queue_size=1)
     rate = rospy.Rate(rospy.get_param('rate', 1))
     while not rospy.is_shutdown():
