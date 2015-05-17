@@ -5,6 +5,7 @@
   <arg name="rosserial" default="true"/>
   <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc-a.json" />
   <arg name="passthrough" default="false" />
+  <arg name="rviz" default="true" />
 
   <!-- tf of baxter's footprint -->
   <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
@@ -85,4 +86,6 @@
   <!-- tweet -->
   <include file="$(find jsk_2014_picking_challenge)/launch/image_saver.launch" />
 
+  <!-- rviz -->
+  <node if="$(arg rviz)" pkg="rviz" name="rviz_for_challenge" type="rviz" args="-d $(find jsk_2014_picking_challenge)/config/challenge.rviz"/>
 </launch>
