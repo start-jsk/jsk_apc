@@ -6,7 +6,7 @@
 
 (defun insert-arm-to-return-avs (arm bin)
   (let (avs)
-    (send *baxter* arm :inverse-kinematics (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 50))) :revert-if-fail nil)
+    (send *baxter* arm :inverse-kinematics (make-cascoords :pos (v+ (send *pod* bin) #f(-150 0 50))) :revert-if-fail nil)
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
     (send *ri* :wait-interpolation)
@@ -17,7 +17,7 @@
   avs))
 
 (defun return-object (arm bin)
-  (let ((init-angle (send *baxter* :angle-vector)))
+  (let ((init-angle (send *baxter* :angle-vector)) avs shake-avs)
     ;; insert arm to target bin
     (ros::ros-info "[return_object] insert arm to bin")
     (setq avs (insert-arm-to-return-avs arm bin))
@@ -28,6 +28,15 @@
     (send *ri* :stop-grasp arm)
     (ros::ros-info "[return_object] wait for object to leave from hand")
     (unix::sleep 5)
+    ;; shake to have object leave from hand
+    (dotimes (i 3)
+      (pushback (rotate-wrist arm 10) shake-avs)
+      (pushback (rotate-wrist arm -20) shake-avs)
+      (pushback (rotate-wrist arm 20) shake-avs)
+      (pushback (rotate-wrist arm -10) shake-avs))
+    (send *ri* :angle-vector-sequence shake-avs)
+    (send *ri* :wait-interpolation)
+    (unix::sleep 2)
     (ros::ros-info "[return_object] finish waiting")
 
     ;; return to original position
