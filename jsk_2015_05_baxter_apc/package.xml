@@ -23,7 +23,6 @@
   <build_depend>rosserial_client</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>posedetection_msgs</build_depend>
-  <build_depend>rostest</build_depend>
 
   <run_depend>baxtereus</run_depend>
   <run_depend>geometry_msgs</run_depend>
@@ -44,7 +43,9 @@
   <run_depend>python-opencv</run_depend>
   <run_depend>python-progressbar</run_depend>
   <run_depend>python-termcolor</run_depend>
-  <run_depend>rostest</run_depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>rosunit</test_depend>
 
   <export>
   </export>
