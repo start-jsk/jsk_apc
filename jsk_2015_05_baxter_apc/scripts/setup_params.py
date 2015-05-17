@@ -14,17 +14,17 @@ def main():
         return
     work_order = get_sorted_work_order(json_file=json_file)
 
-    flag = {'left': False, 'right': False}
+    first_orders = dict(left='', right='')
     for bin_, _ in work_order:
-        if sum(flag.values()) == len(flag):
+        if bin_ in 'abdeghjk' and first_orders['left'] == '':
+            first_orders['left'] = bin_
+        elif bin_ in 'cfil' and first_orders['right'] == '':
+            first_orders['right'] = bin_
+        elif first_orders['left'] == '' and first_orders['right'] == '':
             break
-        if bin_ in 'cfil':
-            rospy.set_param('right_process/target', bin_)
-            flag['right'] = True
-        else:
-            rospy.set_param('left_process/target', bin_)
-            flag['left'] = True
 
+    rospy.set_param('left_process/target', first_orders['left'])
+    rospy.set_param('right_process/target', first_orders['right'])
     rospy.set_param('/left_process/state', 'pick_object')
     rospy.set_param('/right_process/state', 'pick_object')
 
