@@ -45,3 +45,7 @@
       ((member bin r-bins) :right)
       (t nil))))
 
+(defun arm-to-ctype (arm)
+  (case arm
+    (:larm :larm-controller)
+    (:rarm :rarm-controller)))
