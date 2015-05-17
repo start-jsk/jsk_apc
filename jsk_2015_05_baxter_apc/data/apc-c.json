@@ -1,0 +1,103 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "mark_twain_huckleberry_finn"
+        ],
+        "bin_B": [
+            "first_years_take_and_toss_straw_cup",
+            "highland_6539_self_stick_notes"
+        ],
+        "bin_C": [
+            "kong_duck_dog_toy"
+        ],
+        "bin_D": [
+            "genuine_joe_plastic_stir_sticks",
+            "mead_index_cards"
+        ],
+        "bin_E": [
+            "munchkin_white_hot_duck_bath_toy",
+            "kong_sitting_frog_dog_toy",
+            "feline_greenies_dental_treats"
+        ],
+        "bin_F": [
+            "dr_browns_bottle_brush",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_G": [
+            "crayola_64_ct"
+        ],
+        "bin_H": [
+            "elmers_washable_no_run_school_glue",
+            "stanley_66_052"
+        ],
+        "bin_I": [
+            "rolodex_jumbo_pencil_cup",
+            "sharpie_accent_tank_style_highlighters"
+        ],
+        "bin_J": [
+            "laugh_out_loud_joke_book",
+            "expo_dry_erase_board_eraser",
+            "kong_air_dog_squeakair_tennis_ball"
+        ],
+        "bin_K": [
+            "cheezit_big_original",
+            "safety_works_safety_glasses",
+            "oreo_mega_stuf"
+        ],
+        "bin_L": [
+            "mommys_helper_outlet_plugs",
+            "paper_mate_12_count_mirado_black_warrior",
+            "champion_copper_plus_spark_plug"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "mark_twain_huckleberry_finn"
+        },
+        {
+            "bin": "bin_B",
+            "item": "first_years_take_and_toss_straw_cup"
+        },
+        {
+            "bin": "bin_C",
+            "item": "kong_duck_dog_toy"
+        },
+        {
+            "bin": "bin_D",
+            "item": "genuine_joe_plastic_stir_sticks"
+        },
+        {
+            "bin": "bin_E",
+            "item": "munchkin_white_hot_duck_bath_toy"
+        },
+        {
+            "bin": "bin_F",
+            "item": "dr_browns_bottle_brush"
+        },
+        {
+            "bin": "bin_G",
+            "item": "crayola_64_ct"
+        },
+        {
+            "bin": "bin_H",
+            "item": "elmers_washable_no_run_school_glue"
+        },
+        {
+            "bin": "bin_I",
+            "item": "rolodex_jumbo_pencil_cup"
+        },
+        {
+            "bin": "bin_J",
+            "item": "laugh_out_loud_joke_book"
+        },
+        {
+            "bin": "bin_K",
+            "item": "cheezit_big_original"
+        },
+        {
+            "bin": "bin_L",
+            "item": "mommys_helper_outlet_plugs"
+        }
+    ]
+}
