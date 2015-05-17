@@ -35,7 +35,7 @@
   <param name="/right_process/target" value="" />
   <param name="/left_process/state" value="" />
   <param name="/right_process/state" value="" />
-  <node pkg="jsk_2014_picking_challenge" type="setup_target.py" name="setup_target" output="log">
+  <node pkg="jsk_2014_picking_challenge" type="setup_params.py" name="setup_params" output="log">
     <param name="json" value="$(arg json)" />
   </node>
 
