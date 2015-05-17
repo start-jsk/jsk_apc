@@ -10,7 +10,7 @@
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
     (send *ri* :wait-interpolation)
-    (send *baxter* arm :move-end-pos #f(350 0 0) :world :revert-if-fail nil)
+    (send *baxter* arm :move-end-pos #f(400 0 0) :world :revert-if-fail nil :rotation-axis :z)
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
     (send *ri* :wait-interpolation)
