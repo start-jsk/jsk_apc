@@ -40,7 +40,7 @@
       (ros::ros-info "state: ~A, arm: ~A, target: ~A, object: ~A"
                      state (arm-to-str arm) (key-to-str target) target-object)
       (publish-state-info state arm)
-      (publish-overlay-text (format nil "~A (Left ~A objects)" (string-upcase (arm-to-str arm)) (length *work-order*))
+      (publish-overlay-text (format nil "~A (Left ~A objects)" (string-upcase (arm-to-str arm)) (length work-order))
 			    (format nil "~A_fixed_info" (arm-to-str arm))
 			    *overlay-text-width* *overlay-text-height* 0 (if (equal "left" (arm-to-str arm)) 0 (* 3 *overlay-text-height*) ):text-size 20)
       (cond
