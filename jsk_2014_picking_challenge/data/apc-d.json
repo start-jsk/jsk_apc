@@ -1,0 +1,103 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "munchkin_white_hot_duck_bath_toy",
+            "kong_air_dog_squeakair_tennis_ball",
+            "kong_duck_dog_toy"
+        ],
+        "bin_B": [
+            "genuine_joe_plastic_stir_sticks",
+            "laugh_out_loud_joke_book"
+        ],
+        "bin_C": [
+            "feline_greenies_dental_treats",
+            "paper_mate_12_count_mirado_black_warrior",
+            "mead_index_cards"
+        ],
+        "bin_D": [
+            "dr_browns_bottle_brush"
+        ],
+        "bin_E": [
+            "sharpie_accent_tank_style_highlighters",
+            "first_years_take_and_toss_straw_cup"
+        ],
+        "bin_F": [
+            "rolodex_jumbo_pencil_cup",
+            "expo_dry_erase_board_eraser"
+        ],
+        "bin_G": [
+            "kyjen_squeakin_eggs_plush_puppies",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_H": [
+            "cheezit_big_original"
+        ],
+        "bin_I": [
+            "highland_6539_self_stick_notes",
+            "safety_works_safety_glasses",
+            "champion_copper_plus_spark_plug"
+        ],
+        "bin_J": [
+            "crayola_64_ct",
+            "kong_sitting_frog_dog_toy",
+            "mark_twain_huckleberry_finn"
+        ],
+        "bin_K": [
+            "stanley_66_052"
+        ],
+        "bin_L": [
+            "mommys_helper_outlet_plugs",
+            "oreo_mega_stuf"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "munchkin_white_hot_duck_bath_toy"
+        },
+        {
+            "bin": "bin_B",
+            "item": "genuine_joe_plastic_stir_sticks"
+        },
+        {
+            "bin": "bin_C",
+            "item": "feline_greenies_dental_treats"
+        },
+        {
+            "bin": "bin_D",
+            "item": "dr_browns_bottle_brush"
+        },
+        {
+            "bin": "bin_E",
+            "item": "sharpie_accent_tank_style_highlighters"
+        },
+        {
+            "bin": "bin_F",
+            "item": "rolodex_jumbo_pencil_cup"
+        },
+        {
+            "bin": "bin_G",
+            "item": "kyjen_squeakin_eggs_plush_puppies"
+        },
+        {
+            "bin": "bin_H",
+            "item": "cheezit_big_original"
+        },
+        {
+            "bin": "bin_I",
+            "item": "highland_6539_self_stick_notes"
+        },
+        {
+            "bin": "bin_J",
+            "item": "crayola_64_ct"
+        },
+        {
+            "bin": "bin_K",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_L",
+            "item": "mommys_helper_outlet_plugs"
+        }
+    ]
+}
