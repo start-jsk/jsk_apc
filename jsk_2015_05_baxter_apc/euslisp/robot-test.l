@@ -24,13 +24,12 @@
   (pick-object arm bin)
   (place-object arm))
 
-(ros::advertise "tweet" std_msgs::string 1)
-
 (defun test-challenge (&key
               (bins (list :a :b :c :d :e :f :g :h :i :j :k :l))
               (use-arm (list :larm :rarm))
               (tweet? t)
               (verify? nil))
+  (ros::advertise-if-yet "tweet" std_msgs::string 1)
   (let ((start-time (ros::time-now))
         elapsed-time elapsed-msg arm msg)
     (dolist (bin bins)
@@ -48,6 +47,15 @@
     (send *ri* :wait-interpolation)
     (speak-en "Finished picking test." :google t)
     ))
+
+(defun test-return-object (arm bin)
+  (do-until-key
+    (send *ri* :start-grasp arm)
+    (send *ri* :angle-vector (send *baxter* :fold-pose) :fast (arm-to-ctype arm))
+    (send *ri* :wait-interpolation)
+    (unix::sleep 1)
+    (move-to-target-bin arm bin)
+    (return-object arm bin)))
 
 (apc-init)
 (warn "~% Commands ~%")
