@@ -59,9 +59,9 @@ class ObjectVerification(object):
         msg = ObjectRecognition()
         msg.header.stamp = stamp
         msg.matched = matched
-        msg.probability = max([prob for c, prob in proba])
+        msg.probability = dict(proba)[matched]
         msg.candidates = candidates
-        msg.probabilities = np.array([prob for c, prob in proba])
+        msg.probabilities = np.array([dict(proba)[c] for c in candidates])
         msg.probabilities /= msg.probabilities.sum()
         self.pub.publish(msg)
 
