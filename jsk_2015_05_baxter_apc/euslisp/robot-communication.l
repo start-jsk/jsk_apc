@@ -1,6 +1,7 @@
 ;; -*- mode: lisp;-*-
 
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
+(load "package://jsk_2014_picking_challenge/euslisp/robot-input.l")
 
 (ros::load-ros-manifest "std_msgs")
 
@@ -32,3 +33,12 @@
     (tweet (format nil "~A ~A" str filename))
     ))
 
+(setq *total-score* 0)
+(defun tweet-score (bin)
+  (let (score-points)
+    (setq score-points
+          (case (length (get-bin-contents bin))
+            (1 10) (2 15) (3 20) (t nil)))
+    (setq *total-score* (+ *total-score* score-points))
+    (tweet (format nil "Yay!! Baxter got ~A points now! Total is ~A in the challenge!!"
+                   score-points *total-score*))))
