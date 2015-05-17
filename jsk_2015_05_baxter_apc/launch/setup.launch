@@ -3,7 +3,6 @@
   <arg name="custom" default="true"/>
   <arg name="bof" default="true"/>
   <arg name="rosserial" default="true"/>
-  <arg name="launch_main" default="false"/>
   <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc-a.json" />
   <arg name="passthrough" default="false" />
 
@@ -38,12 +37,6 @@
   <node pkg="jsk_2014_picking_challenge" type="setup_params.py" name="setup_params" output="log">
     <param name="json" value="$(arg json)" />
   </node>
-
-  <!-- main -->
-  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
-        args="&quot;(progn (apc-init :larm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :larm))&quot;" respawn="true" output="screen" />
-  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_right"
-        args="&quot;(progn (apc-init :rarm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :rarm))&quot;" respawn="true" output="screen" />
 
   <!-- recognition -->
   <group if="$(arg passthrough)">
