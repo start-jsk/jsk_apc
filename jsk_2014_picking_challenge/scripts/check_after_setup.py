@@ -31,10 +31,10 @@ if __name__ == "__main__":
     check_topic("/robot/state", True, 3)
 
     index_print("== Check PARAMETERS ==")
-    check_param("/left_process/target", "")
-    check_param("/right_process/target", "")
-    check_param("/left_process/state", "")
-    check_param("/right_process/state", "")
+    # check_param("/left_process/target", "")
+    # check_param("/right_process/target", "")
+    # check_param("/left_process/state", "")
+    # check_param("/right_process/state", "")
 
     index_print("== Check OTHER ==")
     check_vacuum("left")
