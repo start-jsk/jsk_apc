@@ -17,6 +17,8 @@
 (defun main (arm)
   (let (target param-target state work-order work)
     (setq work-order (get-work-order arm))
+    (tweet-with-image (format nil "Ok, ~A start with ~A" arm (mapcar #'cadr work-order)) (arm-to-str arm))
+
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
     (while (not (ros::get-param (format nil "~A_process/target" (arm-to-str arm)))) (unix::sleep 1))
