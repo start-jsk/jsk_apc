@@ -5,9 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Infomation1
-        - /Infomation1/Pod1
         - /Infomation1/RobotModel1/Links1
-        - /Right1
       Splitter Ratio: 0.589655
     Tree Height: 1016
   - Class: rviz/Selection
@@ -353,6 +351,15 @@ Visualization Manager:
           Update Interval: 0
           Value: true
           Visual Enabled: true
+        - Class: rviz/InteractiveMarkers
+          Enable Transparency: true
+          Enabled: true
+          Name: ObjectsModels
+          Show Axes: false
+          Show Descriptions: true
+          Show Visual Aids: false
+          Update Topic: /target_object_marker_server/update
+          Value: true
         - Class: rviz/Group
           Displays:
             - Class: rviz/Group
@@ -550,6 +557,7 @@ Visualization Manager:
               APCInfo: true
               BinMarks: true
               Grid: true
+              ObjectsModels: true
               OverlayTexts:
                 LeftInfo:
                   LeftFixedInfo: true
@@ -672,6 +680,7 @@ Visualization Manager:
               APCInfo: true
               BinMarks: true
               Grid: true
+              ObjectsModels: true
               OverlayTexts:
                 LeftInfo:
                   LeftFixedInfo: true
@@ -911,22 +920,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.54186
+      Distance: 10
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.447513
-        Y: 0.0485294
-        Z: 0.0988106
+        X: 0
+        Y: 0
+        Z: 0
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.234797
+      Pitch: 0.545399
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.71851
+      Yaw: 2.97039
     Saved: ~
 Window Geometry:
   Displays:
@@ -966,5 +975,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 2495
-  X: 65
-  Y: 24
+  X: 58
+  Y: 23
