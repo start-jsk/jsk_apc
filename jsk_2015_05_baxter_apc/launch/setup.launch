@@ -85,6 +85,7 @@
 
   <!-- tweet -->
   <include file="$(find jsk_2014_picking_challenge)/launch/image_saver.launch" />
+  <node pkg="jsk_2014_picking_challenge" type="tweet_server.l" name="tweet_server" />
 
   <!-- rviz -->
   <node if="$(arg rviz)" pkg="rviz" name="rviz_for_challenge" type="rviz" args="-d $(find jsk_2014_picking_challenge)/config/challenge.rviz"/>
