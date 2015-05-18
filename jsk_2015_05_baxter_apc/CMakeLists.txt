@@ -207,5 +207,5 @@ endif()
 # endif()
 
 ## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
-add_rostest(test/test_robot_motion.test)
+catkin_add_nosetests(test/test_robot_input.py)
+# add_rostest(test/test_robot_motion.test)
