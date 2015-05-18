@@ -6,32 +6,23 @@
 (ros::load-ros-manifest "std_msgs")
 
 (defun tweet (str)
-  (ros::advertise-if-yet "/tweet" std_msgs::String 1)
-  (let ((msg (instance std_msgs::string :init)))
-    (send msg :data str)
-    (ros::publish "/tweet" msg)
-    (ros::spin-once)
-    ))
+  (ros::advertise-if-yet "/tweet_string" std_msgs::string 1)
+  (ros::ros-info "tweet ~A" str)
+  (ros::publish "/tweet_string" (instance std_msgs::string :init :data str)))
 
-;; this requires iamge_saver.launch
-(defun tweet-with-image (str l/r) ;; l/r is "larm" or "rarm"
-  (ros::advertise-if-yet "/tweet" std_msgs::String 1)
-  (let ((timestamp0 0) (timestamp1 0) (filename (format nil "/tmp/baxter_~A_camera.png" l/r)))
-    (if (probe-file filename)
-      (setq timestamp0 (file-write-date filename)))
-    (setq timestamp1 timestamp0)
-    (call-empty-service (format nil "/~A_image_saver/save" l/r))
-    (setq tm (ros::time-now))
-    (ros::ros-info "~A timestamp ~A ~A" filename timestamp0 timestamp1)
-    (ros::rate 2)
-    (while (and (< (send (ros::time- (ros::time-now) tm) :to-sec) 10)
-                (= timestamp0 timestamp1))
-           (if (probe-file filename) (setq timestamp1 (file-write-date filename)))
-           (ros::ros-info "~A timestamp ~A ~A" filename timestamp0 timestamp1)
-           (ros::sleep))
-    (ros::ros-info "save image")
-    (tweet (format nil "~A ~A" str filename))
-    ))
+(defun tweet-with-image (str l/r) ;; l/r is "left" or "right"
+  (let (tname)
+    (cond ((equal l/r "left")
+           (setq tname "/tweet_larm"))
+          ((equal l/r "right")
+           (setq tname "/tweet_rarm"))
+          (t
+           (ros::ros-error "arm name ~A is not found" l/r)
+           (return-from tweet-with-image nil)))
+    (ros::advertise-if-yet tname std_msgs::string 1)
+    (ros::ros-info "tweet ~A to ~A" str tname)
+    (ros::publish tname (instance std_msgs::string :init :data str))))
+  
 
 (setq *total-score* 0)
 (defun tweet-score (bin)
