@@ -10,8 +10,8 @@ import unittest
 import rospkg
 rp = rospkg.RosPack()
 pkg_path = rp.get_path('jsk_2014_picking_challenge')
-
 sys.path.append(os.path.join(pkg_path, 'scripts'))
+sys.path.append(os.path.join(pkg_path, 'test'))
 
 
 class TestRobotInput(unittest.TestCase):
