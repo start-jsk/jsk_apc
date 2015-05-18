@@ -1,0 +1,102 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "sharpie_accent_tank_style_highlighters",
+            "munchkin_white_hot_duck_bath_toy",
+            "genuine_joe_plastic_stir_sticks"
+        ],
+        "bin_B": [
+            "crayola_64_ct",
+            "kyjen_squeakin_eggs_plush_puppies",
+            "rolodex_jumbo_pencil_cup"
+        ],
+        "bin_C": [
+            "cheezit_big_original",
+            "laugh_out_loud_joke_book"
+        ],
+        "bin_D": [
+            "expo_dry_erase_board_eraser",
+            "first_years_take_and_toss_straw_cup"
+        ],
+        "bin_E": [
+            "feline_greenies_dental_treats"
+        ],
+        "bin_F": [
+            "stanley_66_052"
+        ],
+        "bin_G": [
+            "mead_index_cards",
+            "dr_browns_bottle_brush"
+        ],
+        "bin_H": [
+            "kong_air_dog_squeakair_tennis_ball",
+            "kong_duck_dog_toy",
+            "paper_mate_12_count_mirado_black_warrior"
+        ],
+        "bin_I": [
+            "elmers_washable_no_run_school_glue",
+            "highland_6539_self_stick_notes"
+        ],
+        "bin_J": [
+            "oreo_mega_stuf"
+        ],
+        "bin_K": [
+            "mark_twain_huckleberry_finn",
+            "safety_works_safety_glasses"
+        ],
+        "bin_L": [
+            "kong_sitting_frog_dog_toy",
+            "mommys_helper_outlet_plugs"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "sharpie_accent_tank_style_highlighters"
+        },
+        {
+            "bin": "bin_B",
+            "item": "crayola_64_ct"
+        },
+        {
+            "bin": "bin_C",
+            "item": "cheezit_big_original"
+        },
+        {
+            "bin": "bin_D",
+            "item": "expo_dry_erase_board_eraser"
+        },
+        {
+            "bin": "bin_E",
+            "item": "feline_greenies_dental_treats"
+        },
+        {
+            "bin": "bin_F",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_G",
+            "item": "mead_index_cards"
+        },
+        {
+            "bin": "bin_H",
+            "item": "kong_air_dog_squeakair_tennis_ball"
+        },
+        {
+            "bin": "bin_I",
+            "item": "elmers_washable_no_run_school_glue"
+        },
+        {
+            "bin": "bin_J",
+            "item": "oreo_mega_stuf"
+        },
+        {
+            "bin": "bin_K",
+            "item": "mark_twain_huckleberry_finn"
+        },
+        {
+            "bin": "bin_L",
+            "item": "kong_sitting_frog_dog_toy"
+        }
+    ]
+}
