@@ -6,6 +6,7 @@ import os
 import sys
 import re
 import unittest
+from termcolor import cprint, colored
 
 import rospkg
 rp = rospkg.RosPack()
@@ -65,6 +66,7 @@ class TestRobotInput(unittest.TestCase):
         r = re.compile('^apc.*\.json$')
         json_files = filter(r.match, files)
         for json in json_files:
+            cprint('\nChecking: {0}'.format(json), 'blue')
             json = os.path.join(pkg_path, 'data', json)
             self.test_work_order(json_file=json)
             self.test_bin_contents(json_file=json)
