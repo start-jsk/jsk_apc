@@ -6,11 +6,15 @@ def check_vacuum(arm):
     print HEADER+BOLD+"=== Check " +topic_name + " ===" +ENDC
     print INFO,"Start " + arm + " Vacuum for 5 seconds..."
     pub = rospy.Publisher(topic_name, Bool, queue_size=1)
-    pub.publish(Bool(True))
+    msg = Bool()
+    msg.data = True
+    pub.publish(msg)
     time.sleep(5)
 
     print INFO,"Stop " + arm + " Vacuum"
-    pub.publish(Bool(False))
+    msg = Bool()
+    msg.data = False
+    pub.publish(msg)
 
 if __name__ == "__main__":
 
@@ -29,12 +33,12 @@ if __name__ == "__main__":
 
     index_print("== Check TOPICS ==")
     check_topic("/robot/state", True, 3)
+    check_topic("/vacuum_gripper/limb/left/state", True, 3)
+    check_topic("/vacuum_gripper/limb/right/state", True, 3)
+    check_topic("/left_hand/output", True, 3)
+    check_topic("/right_hand/output", True, 3)
 
     index_print("== Check PARAMETERS ==")
-    # check_param("/left_process/target", "")
-    # check_param("/right_process/target", "")
-    # check_param("/left_process/state", "")
-    # check_param("/right_process/state", "")
 
     index_print("== Check OTHER ==")
     check_vacuum("left")
