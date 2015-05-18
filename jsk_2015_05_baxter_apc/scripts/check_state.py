@@ -18,6 +18,10 @@ if __name__ == "__main__":
 
     index_print("== Check TOPICS ==")
     check_topic("/robot/state", True, 3)
+    check_topic("/vacuum_gripper/limb/left/state", True, 3)
+    check_topic("/vacuum_gripper/limb/right/state", True, 3)
+    check_topic("/left_hand/output", True, 3)
+    check_topic("/right_hand/output", True, 3)
 
     index_print("== Check PARAMETERS ==")
     check_param("/left_process/target", "")
