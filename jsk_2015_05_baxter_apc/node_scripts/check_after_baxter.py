@@ -12,7 +12,6 @@ if __name__ == "__main__":
 
     index_print("== Check NODES ==")
     check_node("/baxter_joint_trajectory", True)
-    check_node("/robot_state_publisher", True)
     check_node("/kinect2_bridge", True)
     check_node("/kinect2_points_xyzrgb_highres", True)
 
@@ -20,7 +19,7 @@ if __name__ == "__main__":
     check_topic("/robot/state", True, 3)
 
     index_print("== Check PARAMETERS ==")
-    for param_type in ["trajectory", "goal"]:
+    for param_type in ["goal"]:
         for arm in ["right", "left"]:
             for joint in ["e0", "e1", "s0", "s1", "w0", "w1", "w2"]:
                 check_param("/baxter_joint_trajectory/"+"_".join([arm, joint, param_type]),  -1, True)
