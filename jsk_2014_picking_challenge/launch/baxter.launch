@@ -9,6 +9,7 @@
     <arg name="launch_moveit" default="false"/>
     <arg name="launch_teleop" default="false"/>
     <arg name="launch_tweet" default="true"/>
+    <arg name="launch_mongodb" default="false"/>
     <arg name="launch_wrench" default="false"/>
     <arg name="launch_time_signal" default="false"/>
     <arg name="start_openni" default="false"/>
