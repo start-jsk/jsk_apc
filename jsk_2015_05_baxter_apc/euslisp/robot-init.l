@@ -4,6 +4,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/model/pod-lowres.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/order-bin.l")
 
+(setq *debug-view* nil)
 (setq *simulator-p* nil)
 (defun apc-init (&optional (arm :default))
   (let ((ctype
