@@ -1,0 +1,102 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_B": [
+            "oreo_mega_stuf",
+            "rolodex_jumbo_pencil_cup"
+        ],
+        "bin_C": [
+            "kong_air_dog_squeakair_tennis_ball",
+            "mommys_helper_outlet_plugs"
+        ],
+        "bin_D": [
+            "champion_copper_plus_spark_plug",
+            "munchkin_white_hot_duck_bath_toy",
+            "feline_greenies_dental_treats"
+        ],
+        "bin_E": [
+            "paper_mate_12_count_mirado_black_warrior",
+            "sharpie_accent_tank_style_highlighters",
+            "first_years_take_and_toss_straw_cup"
+        ],
+        "bin_F": [
+            "mark_twain_huckleberry_finn",
+            "expo_dry_erase_board_eraser"
+        ],
+        "bin_G": [
+            "genuine_joe_plastic_stir_sticks",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_H": [
+            "stanley_66_052",
+            "dr_browns_bottle_brush"
+        ],
+        "bin_I": [
+            "cheezit_big_original",
+            "kong_duck_dog_toy",
+            "kong_sitting_frog_dog_toy"
+        ],
+        "bin_J": [
+            "crayola_64_ct",
+            "mead_index_cards"
+        ],
+        "bin_K": [
+            "highland_6539_self_stick_notes"
+        ],
+        "bin_L": [
+            "safety_works_safety_glasses"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "elmers_washable_no_run_school_glue"
+        },
+        {
+            "bin": "bin_B",
+            "item": "oreo_mega_stuf"
+        },
+        {
+            "bin": "bin_C",
+            "item": "kong_air_dog_squeakair_tennis_ball"
+        },
+        {
+            "bin": "bin_D",
+            "item": "champion_copper_plus_spark_plug"
+        },
+        {
+            "bin": "bin_E",
+            "item": "paper_mate_12_count_mirado_black_warrior"
+        },
+        {
+            "bin": "bin_F",
+            "item": "mark_twain_huckleberry_finn"
+        },
+        {
+            "bin": "bin_G",
+            "item": "genuine_joe_plastic_stir_sticks"
+        },
+        {
+            "bin": "bin_H",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_I",
+            "item": "cheezit_big_original"
+        },
+        {
+            "bin": "bin_J",
+            "item": "crayola_64_ct"
+        },
+        {
+            "bin": "bin_K",
+            "item": "highland_6539_self_stick_notes"
+        },
+        {
+            "bin": "bin_L",
+            "item": "safety_works_safety_glasses"
+        }
+    ]
+}
