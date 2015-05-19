@@ -22,14 +22,7 @@
     (ros::advertise-if-yet tname std_msgs::string 1)
     (ros::ros-info "tweet ~A to ~A" str tname)
     (ros::publish tname (instance std_msgs::string :init :data str))))
-  
 
-(setq *total-score* 0)
-(defun tweet-score (bin)
-  (let (score-points)
-    (setq score-points
-          (case (length (get-bin-contents bin))
-            (1 10) (2 15) (3 20) (t nil)))
-    (setq *total-score* (+ *total-score* score-points))
-    (tweet (format nil "Yay!! Baxter got ~A points now! Total is ~A in the challenge!!"
-                   score-points *total-score*))))
+(defun tweet-score (score-points total-score)
+  (tweet (format nil "Yay!! Baxter got ~A points now! Total is ~A in the challenge!!"
+		 score-points total-score)))
