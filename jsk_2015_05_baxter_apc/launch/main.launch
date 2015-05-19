@@ -1,4 +1,5 @@
 <launch>
+  <arg name="launch_main" default="true" />
   <arg name="json" default="$(find jsk_2014_picking_challenge)/data/apc-a.json" />
 
   <!-- bin contents data -->
@@ -35,10 +36,10 @@
   </node>
 
   <!-- robot main -->
-  <node pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
     args="&quot;(progn (apc-init :larm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :larm))&quot;"
     respawn="true" output="screen" />
-  <node pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_right"
+  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_right"
     args="&quot;(progn (apc-init :rarm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :rarm))&quot;"
     respawn="true" output="screen" />
 </launch>
