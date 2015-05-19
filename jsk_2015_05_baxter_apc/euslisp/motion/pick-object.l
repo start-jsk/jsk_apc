@@ -23,16 +23,16 @@
   ;; move left or right
   (case pattern
     (:right-most
-     (move-end-pos-with-interpolation arm :y -100 :time 1000)
+     (move-end-pos-with-interpolation arm :y -80 :time 1000)
      )
     (:left-most
-     (move-end-pos-with-interpolation arm :y 100 :time 1000)
+     (move-end-pos-with-interpolation arm :y 80 :time 1000)
      )
     (:right
-     (move-end-pos-with-interpolation arm :y -70 :time 1000)
+     (move-end-pos-with-interpolation arm :y -50 :time 1000)
      )
     (:left
-     (move-end-pos-with-interpolation arm :y 70 :time 1000)
+     (move-end-pos-with-interpolation arm :y 50 :time 1000)
      )
     (:middle
      ;; none
@@ -46,11 +46,11 @@
     (:rotate-and-right
      (rotate-wrist arm -90)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-     (move-end-pos-with-interpolation arm :y 100 :time 1000))
+     (move-end-pos-with-interpolation arm :y -100 :time 1000))
     (:rotate-and-left
      (rotate-wrist arm 90)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-     (move-end-pos-with-interpolation arm :y -100 :time 1000))
+     (move-end-pos-with-interpolation arm :y 100 :time 1000))
     )
 
   (move-end-pos-with-interpolation arm :x depth :time 1000)
@@ -86,16 +86,16 @@
 
   (case pattern
     (:right-most
-     (move-end-pos-with-interpolation arm :y 100 :time 1500)
+     (move-end-pos-with-interpolation arm :y 80 :time 1500)
      )
     (:left-most
-     (move-end-pos-with-interpolation arm :y -100 :time 1500)
+     (move-end-pos-with-interpolation arm :y -80 :time 1500)
      )
     (:right
-     (move-end-pos-with-interpolation arm :y 70 :time 1500)
+     (move-end-pos-with-interpolation arm :y 50 :time 1500)
      )
     (:left
-     (move-end-pos-with-interpolation arm :y -70 :time 1500)
+     (move-end-pos-with-interpolation arm :y -50 :time 1500)
      )
     (:middle
      ;; none
