@@ -1,10 +1,10 @@
 <launch>
-  <node pkg="image_view" type="image_saver" name="right_image_saver" >
+  <node pkg="image_view" type="image_saver" name="right_image_saver" output="screen" >
     <remap from="image" to="/cameras/right_hand_camera/image"/>
     <param name="save_all_image" value="false"/>
 	<param name="filename_format" value="/tmp/baxter_right_camera.png"/>
   </node>
-  <node pkg="image_view" type="image_saver" name="left_image_saver" >
+  <node pkg="image_view" type="image_saver" name="left_image_saver" output="screen" >
     <remap from="image" to="/cameras/left_hand_camera/image"/>
     <param name="save_all_image" value="false"/>
 	<param name="filename_format" value="/tmp/baxter_left_camera.png"/>
