@@ -43,3 +43,14 @@
     (when (string= (key-to-str bin) (send bc :bin))
       (return-from get-bin-contents (send bc :objects)))))
 
+;;----------------------
+;; Calculate Score
+;;----------------------
+(setq *total-score* 0)
+(setq *score-points* 0)
+(defun update-score(bin)
+  (setq *score-points*
+	(case (length (get-bin-contents bin))
+	  (1 10) (2 15) (t 20)))
+  (setq *total-score* (+ *total-score* *score-points*))
+  )

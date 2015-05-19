@@ -99,6 +99,16 @@ def makeBoardObject( msg , object_name):
         
     return marker
 
+def makeDaeObject( msg , object_name):
+    marker = Marker()
+    marker.type = Marker.MESH_RESOURCE
+    marker.scale.x = msg.scale * 2
+    marker.scale.y = msg.scale * 2
+    marker.scale.z = msg.scale * 2
+    marker.mesh_resource = "package://jsk_2014_picking_challenge/meshes/" + object_name +"/" + object_name + ".dae"
+    marker.mesh_use_embedded_materials = True
+    return marker
+
 def makeTargetObjectControl( msg, object_name ):
     control =  InteractiveMarkerControl()
     control.always_visible = True
@@ -110,6 +120,13 @@ def makeBoardObjectControl( msg, object_name ):
     control =  InteractiveMarkerControl()
     control.always_visible = True
     control.markers.append( makeBoardObject(msg, object_name) )
+    msg.controls.append( control )
+    return control
+
+def makeDaeObjectControl( msg, object_name ):
+    control =  InteractiveMarkerControl()
+    control.always_visible = True
+    control.markers.append( makeDaeObject(msg, object_name) )
     msg.controls.append( control )
     return control
 
@@ -128,6 +145,20 @@ def makeInteractiveBoardObject( object_name, position, quaternion):
     int_marker.description = object_name
     server.insert(int_marker, processFeedback)
     
+def makeInteractiveDaeObject( object_name, position, quaternion):
+    global base_frame_id
+    int_marker = InteractiveMarker()
+    int_marker.header.frame_id = base_frame_id
+    int_marker.pose.position = position
+    int_marker.pose.orientation = quaternion
+    int_marker.scale = 1
+
+    makeDaeObjectControl(int_marker, object_name)
+    int_marker.controls[0].interaction_mode = InteractiveMarkerControl.NONE
+
+    int_marker.name  = object_name 
+    int_marker.description = object_name
+    server.insert(int_marker, processFeedback)    
 
 def make6DofMarker( object_name, position, quaternion ):
     global base_frame_id
@@ -145,10 +176,10 @@ def make6DofMarker( object_name, position, quaternion ):
     server.insert(int_marker, processFeedback)
 
 def setObjectPoses(msg):
+    global tl
     for target_object in msg.objects:
         int_marker = server.get(target_object.object_name)
         if int_marker:
-            tl = TransformListener()
             transed_point = tl.transformPoint(base_frame_id, target_object.position)
             cur_pose = int_marker.pose
             cur_pose.position = transed_point.point
@@ -158,16 +189,16 @@ def setObjectPoses(msg):
 def setWithWorkOrder(msg, callback_args):
     arm = callback_args["arm"]
     counter = 0
-    for target_object in msg.array:
+    for target_object in reversed(msg.array):
         int_marker = server.get(target_object.object)
         if int_marker:
-            tl = TransformListener()
             cur_pose = Pose()
-            cur_pose.position.x = -1 if arm == "left" else 1
-            cur_pose.position.y = 0.5 + counter * 0.5
+            cur_pose.position.y = 1 if arm == "left" else -1
+            cur_pose.position.x = - 0.5 - counter * 0.5
             cur_pose.position.z = 0
             cur_pose.orientation = int_marker.pose.orientation
             server.setPose(int_marker.name, cur_pose);
+            counter+=1
     server.applyChanges()    
 
 if __name__=="__main__":
@@ -177,6 +208,7 @@ if __name__=="__main__":
 
     rospy.Subscriber('/left/work_order_list', WorkOrderArray, setWithWorkOrder, {"arm":"left"})
     rospy.Subscriber('/right/work_order_list', WorkOrderArray, setWithWorkOrder, {"arm":"right"})
+    tl = TransformListener()
 
     rospy.Timer(rospy.Duration(0.01), frameCallback)
     server = InteractiveMarkerServer("target_object_marker_server")    
@@ -196,7 +228,10 @@ if __name__=="__main__":
     makeInteractiveBoardObject("left_board", position, quaternion)
     position = Point( -2.8, 0.8,  0)
     makeInteractiveBoardObject("right_board", position, quaternion)
+    makeInteractiveBoardObject("right_board", position, quaternion)
+
+    position = Point( 5, 0, 2)
+    makeInteractiveDaeObject("score_board", position, quaternion)
 
     server.applyChanges()
     rospy.spin()
-

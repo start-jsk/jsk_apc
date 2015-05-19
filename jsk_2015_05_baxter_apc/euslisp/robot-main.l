@@ -56,6 +56,7 @@
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "wait_for_opposite")
            (ros::ros-info "waiting for opposite arm to finish one order for center bin")
            (publish-state-info "Waiting for opposite arm to finish center bin" arm)
+           (move-to-wait-pose arm target)
            (unix::sleep 1))
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object")
          ;; wait for opposite arm if current arm's target is center bin and opposite is still processing
@@ -117,6 +118,12 @@
          (speak-en  "Target is verified. Put in Order bin." :google t)
          (tweet-with-image (format nil "I got ~a!!" target-object) (arm-to-str arm))
          (place-object arm)
+
+	 ;;publish score
+	 (update-score target)
+	 (tweet-score *score-points* *total-score*)
+	 (publish-score *score-points* *total-score*)
+
          (setq work (pop work-order) n-tried 0)  ;; initialize for loop
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object"))
         (t (ros::set-param (format nil "/~A_process/state" (arm-to-str arm)) "pick_object"))
