@@ -125,3 +125,9 @@
           (:l #f(-89.4946 6.02051 56.0083 139.351 -34.1895 22.6538 -98.2397))
           ))
   (send *baxter* :angle-vector))
+
+(defun move-to-wait-pose (arm bin)
+  (send *ri* :angle-vector (avoid-shelf-pose-for-bin arm bin))
+  (send *ri* :wait-interpolation)
+  (send *ri* :angle-vector (send *baxter* :fold-pose))
+  (send *ri* :wait-interpolation))
