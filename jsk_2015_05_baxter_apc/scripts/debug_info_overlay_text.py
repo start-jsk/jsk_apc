@@ -13,7 +13,7 @@ rospy.init_node("debug_info_overlay_text")
 
 text_pub = rospy.Publisher("text_sample", OverlayText)
 
-base_top = 800
+base_top = 400
 common_width = 1000
 
 def publish_overlay_text(text_pub, text_content, width, height, left, top, fg_color = ColorRGBA(25 / 255.0, 1.0, 240.0 / 255.0, 1.0), bg_color = ColorRGBA(0.0, 0.0, 0.0, 0.2)):
