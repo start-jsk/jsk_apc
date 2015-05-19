@@ -352,6 +352,15 @@ Visualization Manager:
           Update Interval: 0
           Value: true
           Visual Enabled: true
+        - Class: rviz/InteractiveMarkers
+          Enable Transparency: true
+          Enabled: true
+          Name: ObjectsModels
+          Show Axes: false
+          Show Descriptions: true
+          Show Visual Aids: false
+          Update Topic: /target_object_marker_server/update
+          Value: true
         - Class: rviz/Group
           Displays:
             - Class: rviz/Group
@@ -643,6 +652,7 @@ Visualization Manager:
               APCInfo: true
               BinMarks: true
               Grid: true
+              ObjectsModels: true
               OverlayTexts:
                 DebugInfo:
                   LeftRecog: true
@@ -772,6 +782,7 @@ Visualization Manager:
               APCInfo: true
               BinMarks: true
               Grid: true
+              ObjectsModels: true
               OverlayTexts:
                 DebugInfo:
                   LeftRecog: true
