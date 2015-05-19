@@ -127,7 +127,9 @@
   (send *baxter* :angle-vector))
 
 (defun move-to-wait-pose (arm bin)
-  (send *ri* :angle-vector (avoid-shelf-pose-for-bin arm bin))
-  (send *ri* :wait-interpolation)
-  (send *ri* :angle-vector (send *baxter* :fold-pose))
-  (send *ri* :wait-interpolation))
+  (let (avs)
+    (pushback (avoid-shelf-pose-for-bin arm bin) avs)
+    (pushback (send *baxter* :fold-pose) avs)
+    (send *ri* :angle-vector-sequence avs)
+    (send *ri* :wait-interpolation)
+    avs))
