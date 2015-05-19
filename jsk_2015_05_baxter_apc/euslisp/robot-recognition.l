@@ -20,23 +20,20 @@
                 #'(lambda (msg) (verify-object-cb msg :rarm)))
 
 (defun verify-object (arm target-object &key (timeout 20))
-  (while
-    (not (gethash arm *verify-object*))
-    (unix::sleep 1)
-    (ros::spin-once))
   (let* ((now (ros::time-now))
-         (msg (gethash arm *verify-object*))
-         (stamp (send (send msg :header) :stamp)))
-    ;; wait for msg to synchronize
-    (while
-      (< (send stamp :sec) (send now :sec))
+         (msg (gethash arm *verify-object*)))
+    (ros::ros-info "wait for object_verification msg: ~A" (arm-to-str arm))
+    (while  ;; wait for msg to synchronize
+      (or (null msg) (< (send (send (send msg :header) :stamp) :sec) (send now :sec)))
       (unix::sleep 1)
       (ros::spin-once)
       (setq msg (gethash arm *verify-object*))
-      (setq stamp (send (send msg :header) :stamp))
-      (setq correct? (string= target-object (send msg :matched)))
+      (when msg (setq correct? (string= target-object (send msg :matched))))
       ;; timeout
-      (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout) (return)))
+      (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout)
+        (ros::ros-warn "timeout in verify_object: ~A" (arm-to-str arm))
+        (return)))
+    (ros::ros-info "got object_verification msg: ~A" (arm-to-str arm))
     correct?))
 
 ;; -------------------------------------
