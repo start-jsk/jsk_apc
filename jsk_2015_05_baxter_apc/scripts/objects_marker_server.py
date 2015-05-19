@@ -99,6 +99,16 @@ def makeBoardObject( msg , object_name):
         
     return marker
 
+def makeDaeObject( msg , object_name):
+    marker = Marker()
+    marker.type = Marker.MESH_RESOURCE
+    marker.scale.x = msg.scale * 2
+    marker.scale.y = msg.scale * 2
+    marker.scale.z = msg.scale * 2
+    marker.mesh_resource = "package://jsk_2014_picking_challenge/meshes/" + object_name +"/" + object_name + ".dae"
+    marker.mesh_use_embedded_materials = True
+    return marker
+
 def makeTargetObjectControl( msg, object_name ):
     control =  InteractiveMarkerControl()
     control.always_visible = True
@@ -110,6 +120,13 @@ def makeBoardObjectControl( msg, object_name ):
     control =  InteractiveMarkerControl()
     control.always_visible = True
     control.markers.append( makeBoardObject(msg, object_name) )
+    msg.controls.append( control )
+    return control
+
+def makeDaeObjectControl( msg, object_name ):
+    control =  InteractiveMarkerControl()
+    control.always_visible = True
+    control.markers.append( makeDaeObject(msg, object_name) )
     msg.controls.append( control )
     return control
 
@@ -128,6 +145,20 @@ def makeInteractiveBoardObject( object_name, position, quaternion):
     int_marker.description = object_name
     server.insert(int_marker, processFeedback)
     
+def makeInteractiveDaeObject( object_name, position, quaternion):
+    global base_frame_id
+    int_marker = InteractiveMarker()
+    int_marker.header.frame_id = base_frame_id
+    int_marker.pose.position = position
+    int_marker.pose.orientation = quaternion
+    int_marker.scale = 1
+
+    makeDaeObjectControl(int_marker, object_name)
+    int_marker.controls[0].interaction_mode = InteractiveMarkerControl.NONE
+
+    int_marker.name  = object_name 
+    int_marker.description = object_name
+    server.insert(int_marker, processFeedback)    
 
 def make6DofMarker( object_name, position, quaternion ):
     global base_frame_id
@@ -196,6 +227,10 @@ if __name__=="__main__":
     makeInteractiveBoardObject("left_board", position, quaternion)
     position = Point( -2.8, 0.8,  0)
     makeInteractiveBoardObject("right_board", position, quaternion)
+    makeInteractiveBoardObject("right_board", position, quaternion)
+
+    position = Point( 5, 0, 2)
+    makeInteractiveDaeObject("score_board", position, quaternion)
 
     server.applyChanges()
     rospy.spin()
