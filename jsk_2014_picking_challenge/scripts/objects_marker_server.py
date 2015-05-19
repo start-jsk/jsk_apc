@@ -159,7 +159,6 @@ def setWithWorkOrder(msg, callback_args):
     arm = callback_args["arm"]
     counter = 0
     for target_object in msg.array:
-        print target_object
         int_marker = server.get(target_object.object)
         if int_marker:
             tl = TransformListener()
@@ -186,7 +185,7 @@ if __name__=="__main__":
         objects_name_list = yaml.load(f)
     
     for i,object_name in enumerate(objects_name_list):
-        position = Point( i / 5, i % 5, 0)
+        position = Point( - i / 5 - 5 , i % 5 - 2.5, 0)
         quat = transformations.quaternion_about_axis(2 * 3.14159286 * (i * 1.0 / len(objects_name_list)), (0,0,1))
         quaternion = Quaternion(quat[0], quat[1], quat[2], quat[3])
         make6DofMarker( object_name, position, quaternion )
