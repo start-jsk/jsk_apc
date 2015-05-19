@@ -1,11 +1,13 @@
 <launch>
-  <node pkg="image_view" type="image_saver" name="right_image_saver" >
+  <node pkg="image_view" type="image_saver" name="right_image_saver" output="screen" >
     <remap from="image" to="/cameras/right_hand_camera/image"/>
+    <remap from="/cameras/right_hand_camera/camera_info" to="/cameras/right_hand_camera/camera_info_dummy"/> <!-- use non-exist topic name, since image and camera is not synchronized, so that image_save drops input image -->
     <param name="save_all_image" value="false"/>
 	<param name="filename_format" value="/tmp/baxter_right_camera.png"/>
   </node>
-  <node pkg="image_view" type="image_saver" name="left_image_saver" >
+  <node pkg="image_view" type="image_saver" name="left_image_saver" output="screen" >
     <remap from="image" to="/cameras/left_hand_camera/image"/>
+    <remap from="/cameras/left_hand_camera/camera_info" to="/cameras/left_hand_camera/camera_info_dummy"/>
     <param name="save_all_image" value="false"/>
 	<param name="filename_format" value="/tmp/baxter_left_camera.png"/>
   </node>
