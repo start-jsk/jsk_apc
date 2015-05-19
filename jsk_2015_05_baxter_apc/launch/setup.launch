@@ -44,4 +44,5 @@
 
   <!-- rviz -->
   <node if="$(arg rviz)" pkg="rviz" name="rviz_for_challenge" type="rviz" args="-d $(find jsk_2014_picking_challenge)/config/challenge.rviz"/>
+  <node pkg="jsk_2014_picking_challenge" name="visuazliation_objects" type="objects_marker_server.py"/>
 </launch>

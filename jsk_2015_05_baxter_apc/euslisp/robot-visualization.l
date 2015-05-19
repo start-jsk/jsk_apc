@@ -1,6 +1,8 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 (ros::load-ros-manifest "jsk_rviz_plugins")
+(ros::load-ros-manifest "jsk_2014_picking_challenge")
+
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/score-board.l")
 (setq *score* 0)
@@ -36,17 +38,17 @@
 (defun publish-work-order-list(arm-str work-order)
   (let (msg object-array work-order-msg topic-name)
     (setq topic-name (format nil "/~A/work_order_list" arm-str))
-    (ros::advertise-if-yet topic-name jsk_rviz_plugins::pictogramarray 5)
+    (ros::advertise-if-yet topic-name jsk_2014_picking_challenge::workorderarray 5)
     (setq msg (instance jsk_2014_picking_challenge::workorderarray :init))
     (setq object-array nil)
     (dolist (target work-order)
       (setq work-order-msg (instance jsk_2014_picking_challenge::workorder :init))
-      (send work-order-msg :bin (car target))
-      (send work-order-msg :object (cadr target))
-      (push object-array)
+      (send work-order-msg :bin (key-to-str (str-to-key (elt target 0))))
+      (send work-order-msg :object (key-to-str (str-to-key (elt target 1))))
+      (push work-order-msg object-array)
       )
     (send msg :array object-array)
-    (ros::publish topic-name object-array)
+    (ros::publish topic-name msg)
     )
   )
 
