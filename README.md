@@ -68,8 +68,10 @@ $ (move-to-target-bin :rarm :c)
 -----------------------
 
 ```sh
-roslaunch jsk_baxter_startup baxter.launch
-roslaunch jsk_2014_picking_challenge challenge.launch
+roslaunch jsk_2014_picking_challenge baxter.launch
+roslaunch jsk_2014_picking_challenge setup.launch json:=`rospack find jsk_2014_picking_challenge`/data/apc-a.json
+roslaunch jsk_2014_picking_challenge main.launch
+roslaunch jsk_2014_picking_challenge record.launch  # rosbag record
 ```
 
 
