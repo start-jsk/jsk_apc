@@ -46,10 +46,12 @@
     (:rotate-and-right
      (rotate-wrist arm -90)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+     (send *ri* :wait-interpolation)
      (move-end-pos-with-interpolation arm :y -100 :time 1000))
     (:rotate-and-left
      (rotate-wrist arm 90)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+     (send *ri* :wait-interpolation)
      (move-end-pos-with-interpolation arm :y 100 :time 1000))
     )
 
@@ -72,7 +74,7 @@
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
     (send *ri* :wait-interpolation)
-    (if nil ;; (if *simulator-p* nil (see-if-grabbed arm))
+    (if (if *simulator-p* nil (see-if-grabbed arm))
         (progn (ros::ros-info "finish because see if grabbed")
                (return-from try-to-pick-object t))
       (return-from try-to-pick-object nil)))
@@ -109,10 +111,12 @@
     (:rotate-and-right
      (rotate-wrist arm -90)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+     (send *ri* :wait-interpolation)
      (move-end-pos-with-interpolation arm :y -100 :time 1000))
     (:rotate-and-left
      (rotate-wrist arm 90)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+     (send *ri* :wait-interpolation)
      (move-end-pos-with-interpolation arm :y 100 :time 1000))
     )
 
@@ -125,13 +129,13 @@
   t)
 
 (defun pick-object (arm bin)
-  (let (av avs (patterns
-                '(:right-most :left-most :right :left :middle :middle-left :middle-right :rotate-and-left :rotate-and-right
-                              :right-most :left-most :right :left :middle :middle-left :middle-right :rotate-and-left :rotate-and-right
-                              :right-most :left-most :right :left :middle :middle-left :middle-right :rotate-and-left :rotate-and-right))
-           (depths '(0 0 0 0 0 0 0 0 0
-                       80 80 80 80 80 80 80 80 80
-                       150 150 150 150 150 150 150 150 150)))
+  (let* (av avs (patterns
+                '(:right-most :right :middle-right :middle :midle-left :left :left-most :rotate-and-left :rotate-and-right
+                              :right-most :right :middle-right :middle :midle-left :left :left-most :rotate-and-left :rotate-and-right
+                              :right-most :right :middle-right :middle :midle-left :left :left-most :rotate-and-left :rotate-and-right))
+           (depths (append (make-list 9 :initial-element 0)
+                           (make-list 9 :initial-element 80)
+                           (make-list 9 :initial-element 150))))
     ;; insert arm to target bin
     (dolist (av (insert-to-pick-object-avs arm bin))
       (send *irtviewer* :draw-objects)
