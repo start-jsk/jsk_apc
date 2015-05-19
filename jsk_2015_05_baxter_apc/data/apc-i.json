@@ -1,0 +1,102 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "mead_index_cards",
+            "champion_copper_plus_spark_plug"
+        ],
+        "bin_B": [
+            "elmers_washable_no_run_school_glue",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_C": [
+            "crayola_64_ct"
+        ],
+        "bin_D": [
+            "highland_6539_self_stick_notes",
+            "genuine_joe_plastic_stir_sticks",
+            "cheezit_big_original"
+        ],
+        "bin_E": [
+            "kong_air_dog_squeakair_tennis_ball",
+            "paper_mate_12_count_mirado_black_warrior",
+            "laugh_out_loud_joke_book"
+        ],
+        "bin_F": [
+            "expo_dry_erase_board_eraser",
+            "mark_twain_huckleberry_finn"
+        ],
+        "bin_G": [
+            "kong_sitting_frog_dog_toy",
+            "kong_duck_dog_toy"
+        ],
+        "bin_H": [
+            "dr_browns_bottle_brush",
+            "feline_greenies_dental_treats"
+        ],
+        "bin_I": [
+            "munchkin_white_hot_duck_bath_toy",
+            "first_years_take_and_toss_straw_cup",
+            "rolodex_jumbo_pencil_cup"
+        ],
+        "bin_J": [
+            "stanley_66_052"
+        ],
+        "bin_K": [
+            "oreo_mega_stuf"
+        ],
+        "bin_L": [
+            "sharpie_accent_tank_style_highlighters",
+            "mommys_helper_outlet_plugs"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "mead_index_cards"
+        },
+        {
+            "bin": "bin_B",
+            "item": "elmers_washable_no_run_school_glue"
+        },
+        {
+            "bin": "bin_C",
+            "item": "crayola_64_ct"
+        },
+        {
+            "bin": "bin_D",
+            "item": "highland_6539_self_stick_notes"
+        },
+        {
+            "bin": "bin_E",
+            "item": "kong_air_dog_squeakair_tennis_ball"
+        },
+        {
+            "bin": "bin_F",
+            "item": "expo_dry_erase_board_eraser"
+        },
+        {
+            "bin": "bin_G",
+            "item": "kong_sitting_frog_dog_toy"
+        },
+        {
+            "bin": "bin_H",
+            "item": "dr_browns_bottle_brush"
+        },
+        {
+            "bin": "bin_I",
+            "item": "munchkin_white_hot_duck_bath_toy"
+        },
+        {
+            "bin": "bin_J",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_K",
+            "item": "oreo_mega_stuf"
+        },
+        {
+            "bin": "bin_L",
+            "item": "sharpie_accent_tank_style_highlighters"
+        }
+    ]
+}
