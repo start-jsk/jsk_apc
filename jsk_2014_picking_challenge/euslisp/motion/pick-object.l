@@ -19,7 +19,7 @@
           :revert-if-fail nil) avs)
   avs))
 
-(defun move-pattern-for-pick-object (arm &key (x 0) (y 0) (z 0) (time 1500) (revert-if-fail nil) (rotation-axis :z))
+(defun move-end-pos-with-interpolation (arm &key (x 0) (y 0) (z 0) (time 1500) (revert-if-fail nil) (rotation-axis :z))
   (send *baxter* arm :move-end-pos (float-vector x y z) :world :revert-if-fail revert-if-fail :rotation-axis rotation-axis)
   (send *irtviewer* :draw-objects)
   (send *ri* :angle-vector (send *baxter* :angle-vector) time)
@@ -30,38 +30,38 @@
   ;; rotate wrist
   (case rotate
     (:left
-     (rotate-wrist arm -45))
+     (rotate-wrist arm -90))
     (:right
-     (rotate-wrist arm 45)))
+     (rotate-wrist arm 90)))
 
   ;; move left or right
   (case pattern
     (:right-most
-     (move-pattern-for-pick-object arm :y -100)
+     (move-end-pos-with-interpolation arm :y -100)
      )
     (:left-most
-     (move-pattern-for-pick-object arm :y 100)
+     (move-end-pos-with-interpolation arm :y 100)
      )
     (:right
-     (move-pattern-for-pick-object arm :y -70)
+     (move-end-pos-with-interpolation arm :y -70)
      )
     (:left
-     (move-pattern-for-pick-object arm :y 70)
+     (move-end-pos-with-interpolation arm :y 70)
      )
     (:middle
      ;; none
      )
     (:middle-left
-     (move-pattern-for-pick-object arm :y 20)
+     (move-end-pos-with-interpolation arm :y 20)
      )
     (:middle-right
-     (move-pattern-for-pick-object arm :y -20)
+     (move-end-pos-with-interpolation arm :y -20)
      ))
 
   (case pattern
     ((:right-most :left-most :right :left :middle :middle-left :middle-right)
-     (move-pattern-for-pick-object arm :x depth)
-     (move-pattern-for-pick-object arm :z -120)
+     (move-end-pos-with-interpolation arm :x depth)
+     (move-end-pos-with-interpolation arm :z -120)
      ))
 
   (send *irtviewer* :draw-objects)
@@ -86,30 +86,30 @@
 
   (case pattern
     ((:right-most :left-most :right :left :middle :middle-left :middle-right)
-     (move-pattern-for-pick-object arm :z 120 :revert-if-fail nil :rotation-axis nil :time 4000)
+     (move-end-pos-with-interpolation arm :z 120 :revert-if-fail nil :rotation-axis nil :time 4000)
      ))
 
   (case pattern
     (:right-most
-     (move-pattern-for-pick-object arm :y 100 :time 1500)
+     (move-end-pos-with-interpolation arm :y 100 :time 1500)
      )
     (:left-most
-     (move-pattern-for-pick-object arm :y -100 :time 1500)
+     (move-end-pos-with-interpolation arm :y -100 :time 1500)
      )
     (:right
-     (move-pattern-for-pick-object arm :y 70 :time 1500)
+     (move-end-pos-with-interpolation arm :y 70 :time 1500)
      )
     (:left
-     (move-pattern-for-pick-object arm :y -70 :time 1500)
+     (move-end-pos-with-interpolation arm :y -70 :time 1500)
      )
     (:middle
      ;; none
      )
     (:middle-left
-     (move-pattern-for-pick-object arm :y -20 :time 1500)
+     (move-end-pos-with-interpolation arm :y -20 :time 1500)
      )
     (:middle-right
-     (move-pattern-for-pick-object arm :y 20 :time 1500)
+     (move-end-pos-with-interpolation arm :y 20 :time 1500)
      ))
 
   ;; rotate wrist to original
