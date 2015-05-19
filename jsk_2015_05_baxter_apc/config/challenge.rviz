@@ -6,7 +6,8 @@ Panels:
       Expanded:
         - /Infomation1
         - /Infomation1/RobotModel1/Links1
-      Splitter Ratio: 0.589655
+        - /Infomation1/OverlayTexts1
+      Splitter Ratio: 0.626794
     Tree Height: 1016
   - Class: rviz/Selection
     Name: Selection
@@ -478,6 +479,100 @@ Visualization Manager:
                   width: 128
               Enabled: true
               Name: RightInfo
+            - Class: rviz/Group
+              Displays:
+                - Background Alpha: 0.8
+                  Background Color: 0; 0; 0
+                  Class: jsk_rviz_plugin/OverlayText
+                  Enabled: true
+                  Foreground Alpha: 0.8
+                  Foreground Color: 25; 255; 240
+                  Name: LeftRecog
+                  Overtake Color Properties: false
+                  Overtake Position Properties: false
+                  Topic: /left_recog_state
+                  Value: true
+                  font: DejaVu Sans Mono
+                  height: 128
+                  left: 0
+                  line width: 2
+                  text size: 12
+                  top: 0
+                  width: 128
+                - Background Alpha: 0.8
+                  Background Color: 0; 0; 0
+                  Class: jsk_rviz_plugin/OverlayText
+                  Enabled: true
+                  Foreground Alpha: 0.8
+                  Foreground Color: 25; 255; 240
+                  Name: RightRecog
+                  Overtake Color Properties: false
+                  Overtake Position Properties: false
+                  Topic: /right_recog_state
+                  Value: true
+                  font: DejaVu Sans Mono
+                  height: 128
+                  left: 0
+                  line width: 2
+                  text size: 12
+                  top: 0
+                  width: 128
+                - Background Alpha: 0.8
+                  Background Color: 0; 0; 0
+                  Class: jsk_rviz_plugin/OverlayText
+                  Enabled: true
+                  Foreground Alpha: 0.8
+                  Foreground Color: 25; 255; 240
+                  Name: LeftVacuumState
+                  Overtake Color Properties: false
+                  Overtake Position Properties: false
+                  Topic: /left_vacuum_state
+                  Value: true
+                  font: DejaVu Sans Mono
+                  height: 128
+                  left: 0
+                  line width: 2
+                  text size: 12
+                  top: 0
+                  width: 128
+                - Background Alpha: 0.8
+                  Background Color: 0; 0; 0
+                  Class: jsk_rviz_plugin/OverlayText
+                  Enabled: true
+                  Foreground Alpha: 0.8
+                  Foreground Color: 25; 255; 240
+                  Name: RightVacuumState
+                  Overtake Color Properties: false
+                  Overtake Position Properties: false
+                  Topic: /right_vacuum_state
+                  Value: true
+                  font: DejaVu Sans Mono
+                  height: 128
+                  left: 0
+                  line width: 2
+                  text size: 12
+                  top: 0
+                  width: 128
+                - Background Alpha: 0.8
+                  Background Color: 0; 0; 0
+                  Class: jsk_rviz_plugin/OverlayText
+                  Enabled: true
+                  Foreground Alpha: 0.8
+                  Foreground Color: 25; 255; 240
+                  Name: TweetText
+                  Overtake Color Properties: false
+                  Overtake Position Properties: false
+                  Topic: /tweet_text
+                  Value: true
+                  font: DejaVu Sans Mono
+                  height: 128
+                  left: 0
+                  line width: 2
+                  text size: 12
+                  top: 0
+                  width: 128
+              Enabled: true
+              Name: DebugInfo
           Enabled: true
           Name: OverlayTexts
       Enabled: true
@@ -559,6 +654,13 @@ Visualization Manager:
               Grid: true
               ObjectsModels: true
               OverlayTexts:
+                DebugInfo:
+                  LeftRecog: true
+                  LeftVacuumState: true
+                  RightRecog: true
+                  RightVacuumState: true
+                  TweetText: true
+                  Value: true
                 LeftInfo:
                   LeftFixedInfo: true
                   LeftStateInfo: true
@@ -682,6 +784,13 @@ Visualization Manager:
               Grid: true
               ObjectsModels: true
               OverlayTexts:
+                DebugInfo:
+                  LeftRecog: true
+                  LeftVacuumState: true
+                  RightRecog: true
+                  RightVacuumState: true
+                  TweetText: true
+                  Value: true
                 LeftInfo:
                   LeftFixedInfo: true
                   LeftStateInfo: true
@@ -920,22 +1029,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10
+      Distance: 3.18851
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.43628
+        Y: 0.22339
+        Z: 0.306179
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.545399
+      Pitch: 0.489797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.97039
+      Yaw: 3.88851
     Saved: ~
 Window Geometry:
   Displays:
@@ -976,4 +1085,4 @@ Window Geometry:
     collapsed: true
   Width: 2495
   X: 58
-  Y: 23
+  Y: 24
