@@ -176,10 +176,10 @@ def make6DofMarker( object_name, position, quaternion ):
     server.insert(int_marker, processFeedback)
 
 def setObjectPoses(msg):
+    global tl
     for target_object in msg.objects:
         int_marker = server.get(target_object.object_name)
         if int_marker:
-            tl = TransformListener()
             transed_point = tl.transformPoint(base_frame_id, target_object.position)
             cur_pose = int_marker.pose
             cur_pose.position = transed_point.point
@@ -189,16 +189,16 @@ def setObjectPoses(msg):
 def setWithWorkOrder(msg, callback_args):
     arm = callback_args["arm"]
     counter = 0
-    for target_object in msg.array:
+    for target_object in reversed(msg.array):
         int_marker = server.get(target_object.object)
         if int_marker:
-            tl = TransformListener()
             cur_pose = Pose()
-            cur_pose.position.x = -1 if arm == "left" else 1
-            cur_pose.position.y = 0.5 + counter * 0.5
+            cur_pose.position.y = 1 if arm == "left" else -1
+            cur_pose.position.x = - 0.5 - counter * 0.5
             cur_pose.position.z = 0
             cur_pose.orientation = int_marker.pose.orientation
             server.setPose(int_marker.name, cur_pose);
+            counter+=1
     server.applyChanges()    
 
 if __name__=="__main__":
@@ -208,6 +208,7 @@ if __name__=="__main__":
 
     rospy.Subscriber('/left/work_order_list', WorkOrderArray, setWithWorkOrder, {"arm":"left"})
     rospy.Subscriber('/right/work_order_list', WorkOrderArray, setWithWorkOrder, {"arm":"right"})
+    tl = TransformListener()
 
     rospy.Timer(rospy.Duration(0.01), frameCallback)
     server = InteractiveMarkerServer("target_object_marker_server")    
