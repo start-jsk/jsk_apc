@@ -4,10 +4,11 @@ from check_common import *
 def check_vacuum(arm):
     topic_name = "/vacuum_gripper/limb/"+arm
     print HEADER+BOLD+"=== Check " +topic_name + " ===" +ENDC
-    print INFO,"Start " + arm + " Vacuum for 5 seconds..."
     pub = rospy.Publisher(topic_name, Bool, queue_size=1)
     msg = Bool()
     msg.data = True
+    time.sleep(3)
+    print INFO,"Start " + arm + " Vacuum for 5 seconds..."
     pub.publish(msg)
     time.sleep(5)
 
