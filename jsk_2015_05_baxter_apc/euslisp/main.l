@@ -56,6 +56,7 @@
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "wait_for_opposite")
            (ros::ros-info "waiting for opposite arm to finish one order for center bin")
            (publish-state-info "Waiting for opposite arm to finish center bin" arm)
+           (move-to-wait-pose arm bin)
            (unix::sleep 1))
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object")
          ;; wait for opposite arm if current arm's target is center bin and opposite is still processing
