@@ -94,12 +94,12 @@
     (case pattern
       ;; rotate wrist to take standing object out of bin
       (:just-down
-        (send *baxter* arm :move-end-pos #f(0 0 120) :world :revert-if-fail nil :rotation-axis nil)
+        (send *baxter* arm :move-end-pos #f(0 0 100) :world :revert-if-fail nil :rotation-axis :y :stop 1000 :debug-view *debug-view*)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 4000)
         (send *ri* :wait-interpolation))
       (:left-and-down
-        (send *baxter* arm :move-end-pos #f(0 0 120) :world :revert-if-fail nil :rotation-axis nil)
+        (send *baxter* arm :move-end-pos #f(0 0 100) :world :revert-if-fail nil :rotation-axis :y :stop 1000 :debug-view *debug-view*)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 4000)
         (send *ri* :wait-interpolation)
@@ -109,7 +109,7 @@
         (send *ri* :wait-interpolation)
         )
       (:right-and-down
-        (send *baxter* arm :move-end-pos #f(0 0 120) :world :revert-if-fail nil :rotation-axis nil)
+        (send *baxter* arm :move-end-pos #f(0 0 100) :world :revert-if-fail nil :rotation-axis :y :stop 1000 :debug-view *debug-view*)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 4000)
         (send *ri* :wait-interpolation)
