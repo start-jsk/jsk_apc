@@ -5,7 +5,6 @@
 
 (load "package://jsk_2014_picking_challenge/euslisp/utils.l")
 (load "package://jsk_2014_picking_challenge/euslisp/model/score-board.l")
-(setq *score* 0)
 (setq *overlay-text-width* 1200)
 (setq *overlay-text-height* 50)
 
@@ -116,7 +115,7 @@
                                   pod-marker-msg
                                   )))))
 
-(defun publish-score-board ()
+(defun publish-marker-score-board ()
   (score-board-init)
   (ros::advertise-if-yet "/score_board" visualization_msgs::Marker 5)
   (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
@@ -131,7 +130,7 @@
                  :ns "score_board_body"
                  :lifetime 0 :id 2)))
 
-(defun publish-score(score)
+(defun publish-marker-score(score)
   (ros::advertise-if-yet "score_pict" jsk_rviz_plugins::pictogramarray 5)
   (let* ((bin-msg-list)
          (pict-array-msg (instance jsk_rviz_plugins::pictogramarray :init))
@@ -160,14 +159,12 @@
   )
 
 
-(defun add-score (diff-score)
+(defun publish-score (diff-score total)
   (let ((pose (instance geometry_msgs::pose :init)))
     (send pose :position :x 5.0)
     (send pose :position :z 2.0)
     (publish-popup-text (format nil "+~AP" diff-score) "head" "apc_info" pose t jsk_rviz_plugins::Pictogram::*JUMP* 5.0)
-    (setq *score* (+ diff-score *score*))
-    (publish-score-board)
-    (publish-score *score*)
+    (publish-marker-score total)
     ))
 
 (defun publish-overlay-text (text topic width height left top
