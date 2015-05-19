@@ -1,0 +1,100 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "rolodex_jumbo_pencil_cup",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_B": [
+            "laugh_out_loud_joke_book",
+            "champion_copper_plus_spark_plug"
+        ],
+        "bin_C": [
+            "crayola_64_ct"
+        ],
+        "bin_D": [
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_E": [
+            "expo_dry_erase_board_eraser",
+            "first_years_take_and_toss_straw_cup",
+            "kong_air_dog_squeakair_tennis_ball"
+        ],
+        "bin_F": [
+            "sharpie_accent_tank_style_highlighters",
+            "kong_duck_dog_toy"
+        ],
+        "bin_G": [
+            "mark_twain_huckleberry_finn",
+            "dr_browns_bottle_brush"
+        ],
+        "bin_H": [
+            "kong_sitting_frog_dog_toy",
+            "feline_greenies_dental_treats"
+        ],
+        "bin_I": [
+            "highland_6539_self_stick_notes"
+        ],
+        "bin_J": [
+            "paper_mate_12_count_mirado_black_warrior",
+            "stanley_66_052"
+        ],
+        "bin_K": [
+            "oreo_mega_stuf"
+        ],
+        "bin_L": [
+            "genuine_joe_plastic_stir_sticks",
+            "munchkin_white_hot_duck_bath_toy",
+            "mead_index_cards"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "rolodex_jumbo_pencil_cup"
+        },
+        {
+            "bin": "bin_B",
+            "item": "laugh_out_loud_joke_book"
+        },
+        {
+            "bin": "bin_C",
+            "item": "crayola_64_ct"
+        },
+        {
+            "bin": "bin_D",
+            "item": "kyjen_squeakin_eggs_plush_puppies"
+        },
+        {
+            "bin": "bin_E",
+            "item": "expo_dry_erase_board_eraser"
+        },
+        {
+            "bin": "bin_F",
+            "item": "sharpie_accent_tank_style_highlighters"
+        },
+        {
+            "bin": "bin_G",
+            "item": "mark_twain_huckleberry_finn"
+        },
+        {
+            "bin": "bin_H",
+            "item": "kong_sitting_frog_dog_toy"
+        },
+        {
+            "bin": "bin_I",
+            "item": "highland_6539_self_stick_notes"
+        },
+        {
+            "bin": "bin_J",
+            "item": "paper_mate_12_count_mirado_black_warrior"
+        },
+        {
+            "bin": "bin_K",
+            "item": "oreo_mega_stuf"
+        },
+        {
+            "bin": "bin_L",
+            "item": "genuine_joe_plastic_stir_sticks"
+        }
+    ]
+}
