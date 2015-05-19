@@ -19,48 +19,43 @@
           :revert-if-fail nil) avs)
   avs))
 
-(defun move-end-pos-with-interpolation (arm &key (x 0) (y 0) (z 0) (time 1500) (revert-if-fail nil) (rotation-axis :z))
-  (send *baxter* arm :move-end-pos (float-vector x y z) :world :revert-if-fail revert-if-fail :rotation-axis rotation-axis)
-  (send *irtviewer* :draw-objects)
-  (send *ri* :angle-vector (send *baxter* :angle-vector) time)
-  (send *ri* :wait-interpolation)
-  )
-
-(defun try-to-pick-object (arm bin pattern depth &key (rotate nil))
-  ;; rotate wrist
-  (case rotate
-    (:left
-     (rotate-wrist arm -90))
-    (:right
-     (rotate-wrist arm 90)))
-
+(defun try-to-pick-object (arm bin pattern depth)
   ;; move left or right
   (case pattern
     (:right-most
-     (move-end-pos-with-interpolation arm :y -100)
+     (move-end-pos-with-interpolation arm :y -100 :time 1000)
      )
     (:left-most
-     (move-end-pos-with-interpolation arm :y 100)
+     (move-end-pos-with-interpolation arm :y 100 :time 1000)
      )
     (:right
-     (move-end-pos-with-interpolation arm :y -70)
+     (move-end-pos-with-interpolation arm :y -70 :time 1000)
      )
     (:left
-     (move-end-pos-with-interpolation arm :y 70)
+     (move-end-pos-with-interpolation arm :y 70 :time 1000)
      )
     (:middle
      ;; none
      )
     (:middle-left
-     (move-end-pos-with-interpolation arm :y 20)
+     (move-end-pos-with-interpolation arm :y 20 :time 1000)
      )
     (:middle-right
-     (move-end-pos-with-interpolation arm :y -20)
-     ))
+     (move-end-pos-with-interpolation arm :y -20 :time 1000)
+     )
+    (:rotate-and-right
+     (rotate-wrist arm -90)
+     (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+     (move-end-pos-with-interpolation arm :y 100 :time 1000))
+    (:rotate-and-left
+     (rotate-wrist arm 90)
+     (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+     (move-end-pos-with-interpolation arm :y -100 :time 1000))
+    )
 
+  (move-end-pos-with-interpolation arm :x depth :time 1000)
   (case pattern
     ((:right-most :left-most :right :left :middle :middle-left :middle-right)
-     (move-end-pos-with-interpolation arm :x depth)
      (move-end-pos-with-interpolation arm :z -120)
      ))
 
@@ -77,7 +72,7 @@
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
     (send *ri* :wait-interpolation)
-    (if (if *simulator-p* nil (see-if-grabbed arm))
+    (if nil ;; (if *simulator-p* nil (see-if-grabbed arm))
         (progn (ros::ros-info "finish because see if grabbed")
                (return-from try-to-pick-object t))
       (return-from try-to-pick-object nil)))
@@ -110,7 +105,16 @@
      )
     (:middle-right
      (move-end-pos-with-interpolation arm :y 20 :time 1500)
-     ))
+     )
+    (:rotate-and-right
+     (rotate-wrist arm -90)
+     (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+     (move-end-pos-with-interpolation arm :y -100 :time 1000))
+    (:rotate-and-left
+     (rotate-wrist arm 90)
+     (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+     (move-end-pos-with-interpolation arm :y 100 :time 1000))
+    )
 
   ;; rotate wrist to original
   (case pattern
@@ -122,12 +126,12 @@
 
 (defun pick-object (arm bin)
   (let (av avs (patterns
-                '(:right-most :left-most :right :left :middle :middle-left :middle-right
-                              :right-most :left-most :right :left :middle :middle-left :middle-right
-                              :right-most :left-most :right :left :middle :middle-left :middle-right))
-           (depths '(0 0 0 0 0 0 0
-                       40 40 40 40 40 40 40
-                       80 80 80 80 80 80 80)))
+                '(:right-most :left-most :right :left :middle :middle-left :middle-right :rotate-and-left :rotate-and-right
+                              :right-most :left-most :right :left :middle :middle-left :middle-right :rotate-and-left :rotate-and-right
+                              :right-most :left-most :right :left :middle :middle-left :middle-right :rotate-and-left :rotate-and-right))
+           (depths '(0 0 0 0 0 0 0 0 0
+                       80 80 80 80 80 80 80 80 80
+                       150 150 150 150 150 150 150 150 150)))
     ;; insert arm to target bin
     (dolist (av (insert-to-pick-object-avs arm bin))
       (send *irtviewer* :draw-objects)
