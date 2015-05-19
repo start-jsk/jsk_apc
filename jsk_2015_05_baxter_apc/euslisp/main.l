@@ -45,6 +45,7 @@
       (publish-overlay-text (format nil "~A (Left ~A objects)" (string-upcase (arm-to-str arm)) (length work-order))
 			    (format nil "~A_fixed_info" (arm-to-str arm))
 			    *overlay-text-width* *overlay-text-height* 0 (if (equal "left" (arm-to-str arm)) 0 (* 3 *overlay-text-height*) ):text-size 20)
+      (publish-work-order-list (arm-to-str arm) work-order)
       (cond
         ((string= state "pick_object")
          ;; wait for opposite arm if opposite arm's target is center bin
