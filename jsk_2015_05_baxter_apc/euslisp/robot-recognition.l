@@ -31,7 +31,7 @@
       (when msg (setq correct? (string= target-object (send msg :matched))))
       ;; timeout
       (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout)
-        (ros::ros-warn "timeout in verify_object: ~A" (arm-to-str arm))
+        (ros::ros-error "timeout in verify_object: ~A" (arm-to-str arm))
         (return)))
     (ros::ros-info "got object_verification msg: ~A" (arm-to-str arm))
     correct?))
