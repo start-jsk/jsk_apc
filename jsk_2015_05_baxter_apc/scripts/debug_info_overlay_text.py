@@ -11,8 +11,6 @@ import rospy
 import math
 rospy.init_node("debug_info_overlay_text")
 
-text_pub = rospy.Publisher("text_sample", OverlayText)
-
 base_top = 400
 common_width = 1000
 
@@ -59,11 +57,11 @@ def tweet_cb(msg, callback_args):
     publish_overlay_text(callback_args["pub"], text, width, height ,left, top, fg_color)
 
 if __name__ == "__main__":
-    left_vacuum_pub = rospy.Publisher("left_vacuum_state", OverlayText)
-    right_vacuum_pub = rospy.Publisher("right_vacuum_state", OverlayText)
-    left_recog_pub = rospy.Publisher("left_recog_state", OverlayText)
-    right_recog_pub = rospy.Publisher("right_recog_state", OverlayText)
-    tweet_pub = rospy.Publisher("tweet_text", OverlayText)
+    left_vacuum_pub = rospy.Publisher("left_vacuum_state", OverlayText,  queue_size=3)
+    right_vacuum_pub = rospy.Publisher("right_vacuum_state", OverlayText,  queue_size=3)
+    left_recog_pub = rospy.Publisher("left_recog_state", OverlayText,  queue_size=3)
+    right_recog_pub = rospy.Publisher("right_recog_state", OverlayText,  queue_size=3)
+    tweet_pub = rospy.Publisher("tweet_text", OverlayText,  queue_size=3)
 
 
     rospy.Subscriber('/vacuum_gripper/limb/left/state', String, vacuum_state_cb, {"arm":"left", "pub":left_vacuum_pub})
