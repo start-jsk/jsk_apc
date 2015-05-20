@@ -186,19 +186,33 @@ def setObjectPoses(msg):
             server.setPose(int_marker.name, cur_pose);        
     server.applyChanges()
 
+work_order_list={"right":[], "left":[]}
 def setWithWorkOrder(msg, callback_args):
+    global work_order_list
     arm = callback_args["arm"]
-    counter = 0
-    for target_object in reversed(msg.array):
+
+    if len(work_order_list[arm]) == 0:
+        work_order_list[arm] = reversed(msg.array)
+
+    target_counter = 0
+    grabbed_counter = 0
+    for target_object in work_order_list[arm]:
         int_marker = server.get(target_object.object)
         if int_marker:
             cur_pose = Pose()
-            cur_pose.position.y = 1 if arm == "left" else -1
-            cur_pose.position.x = - 0.5 - counter * 0.5
-            cur_pose.position.z = 0
-            cur_pose.orientation = int_marker.pose.orientation
+            if target_object in msg.array:
+                cur_pose.position.y = 1 if arm == "left" else -1
+                cur_pose.position.x = - 0.5 - target_counter * 0.5
+                cur_pose.position.z = 0
+                cur_pose.orientation = int_marker.pose.orientation
+                target_counter+=1
+            else:
+                cur_pose.position.y = (2 + grabbed_counter * 0.5) * ( 1 if arm == "left" else -1)
+                cur_pose.position.x = 5.0
+                cur_pose.position.z = 2.6
+                cur_pose.orientation = int_marker.pose.orientation
+                grabbed_counter+=1
             server.setPose(int_marker.name, cur_pose);
-            counter+=1
     server.applyChanges()    
 
 if __name__=="__main__":
