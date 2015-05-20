@@ -161,9 +161,10 @@
 
 (defun publish-score (diff-score total)
   (let ((pose (instance geometry_msgs::pose :init)))
-    (send pose :position :x 5.0)
-    (send pose :position :z 2.0)
-    (publish-popup-text (format nil "+~AP" diff-score) "head" "apc_info" pose t jsk_rviz_plugins::Pictogram::*JUMP* 5.0)
+    (send pose :position :z 0.3)
+    (send pose :orientation :y -0.7)
+    (send pose :orientation :w 0.7)
+    (publish-popup-text (format nil "+~AP" diff-score) "head" "apc_info" pose t jsk_rviz_plugins::Pictogram::*JUMP* 5.0 2.2)
     (publish-marker-score total)
     ))
 
