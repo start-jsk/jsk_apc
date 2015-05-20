@@ -3,6 +3,15 @@
 
 (load "package://jsk_2014_picking_challenge/euslisp/robot-test.l")
 
+(defclass baxter-test-robot
+  :super baxter-robot)
+(defmethod baxter-test-robot
+  (:inverse-kinematics (&rest args)
+   (let (ret)
+    (setq ret (send-super* :inverse-kinematics args))
+    (assert (null ret) "ik failed")
+    ret)))
+
 (init-unit-test)
 
 (deftest test-robot-motion
