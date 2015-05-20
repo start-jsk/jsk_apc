@@ -56,6 +56,13 @@
     (send *baxter* arm :angle-vector av-arm)  ; only move one arm
     (list (send *baxter* :angle-vector))))
 
+(defun move-end-pos-with-interpolation (arm &key (x 0) (y 0) (z 0) (time 1500) (revert-if-fail nil) (rotation-axis :z))
+  (send *baxter* arm :move-end-pos (float-vector x y z) :world :revert-if-fail revert-if-fail :rotation-axis rotation-axis)
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) time)
+  (send *ri* :wait-interpolation)
+  )
+
 (defun rotate-wrist (arm angle &key (angle-method :relative))
   (let (wrist-index)
     (case arm
