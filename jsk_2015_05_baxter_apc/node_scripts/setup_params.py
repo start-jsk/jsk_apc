@@ -28,6 +28,8 @@ def main():
     rospy.set_param('/left_process/state', 'pick_object')
     rospy.set_param('/right_process/state', 'pick_object')
 
+    rospy.set_param('/total_score', 0)
+
 
 if __name__ == '__main__':
     rospy.init_node('setup_target')
