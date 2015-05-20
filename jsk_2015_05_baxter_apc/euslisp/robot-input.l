@@ -59,5 +59,7 @@
   (setq *score-points*
 	(case (length (get-bin-contents bin))
 	  (1 10) (2 15) (t 20)))
+  (setq *total-score* (ros::get-param "/total_score"))
   (setq *total-score* (+ *total-score* *score-points*))
+  (ros::set-param "/total_score" *total-score*)
   )
