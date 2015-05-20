@@ -24,6 +24,8 @@
   </node>
 
   <node pkg="jsk_perception" type="image_time_diff.py" name="image_time_diff">
-    <remap from="~input" to="hsv_decomposer/output/hue" />
+    <remap from="~input/hue" to="hsv_decomposer/output/hue" />
+    <remap from="~input/saturation" to="hsv_decomposer/output/saturation" />
+    <param name="saturation_threshold" type="int" value="30" />
   </node>
 </launch>
