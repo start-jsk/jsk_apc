@@ -38,6 +38,14 @@
     <arg name="left_or_right" value="right" />
   </include>
 
+  <!-- force sensor -->
+  <include file="$(find jsk_2014_picking_challenge)/launch/virtual_force_publisher.launch">
+    <arg name="limb" value="right" />
+  </include>
+  <include file="$(find jsk_2014_picking_challenge)/launch/virtual_force_publisher.launch">
+    <arg name="limb" value="left" />
+  </include>
+
   <!-- tweet -->
   <include file="$(find jsk_2014_picking_challenge)/launch/image_saver.launch" />
   <node pkg="jsk_2014_picking_challenge" type="tweet_server.l" name="tweet_server" />
