@@ -59,7 +59,7 @@
                              #'(lambda (msg) (image-time-diff-cb msg :rarm)))))
     ))
 
-(defparameter *image-time-diff-threshold* 0.17)
+(defparameter *image-time-diff-threshold* 0.03)
 (defun see-if-grabbed (arm)
   (while
     (not (gethash arm *image-time-diff*))
