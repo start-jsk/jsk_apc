@@ -56,7 +56,16 @@
     (send *baxter* arm :angle-vector av-arm)  ; only move one arm
     (list (send *baxter* :angle-vector))))
 
+(defparameter *larm-height-offset* 12)
+(defparameter *larm-depth-angle* 5)
+(defparameter *rarm-height-offset* 20)
+(defparameter *rarm-depth-angle* 5)
+
 (defun move-end-pos-with-interpolation (arm &key (x 0) (y 0) (z 0) (time 1500) (revert-if-fail nil) (rotation-axis :z))
+  (case arm
+    (:larm (setq z (+ z *larm-height-offset* (* (sin (deg2rad *larm-depth-angle*)) x))))
+    (:rarm (setq z (+ z *rarm-height-offset* (* (sin (deg2rad *rarm-depth-angle*)) x))))
+    )
   (send *baxter* arm :move-end-pos (float-vector x y z) :world :revert-if-fail revert-if-fail :rotation-axis rotation-axis)
   (send *irtviewer* :draw-objects)
   (send *ri* :angle-vector (send *baxter* :angle-vector) time)

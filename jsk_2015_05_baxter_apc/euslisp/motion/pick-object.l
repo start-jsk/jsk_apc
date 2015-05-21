@@ -19,7 +19,7 @@
           :revert-if-fail nil) avs)
   avs))
 
-(defun try-to-pick-object (arm bin pattern depth)
+(defun try-to-pick-object (arm bin pattern depth &key (call-check-if-grabbed-function t))
   ;; move left or right
   (case pattern
     (:right-most
@@ -76,6 +76,12 @@
   (send *baxter* :angle-vector tmp-av)
 
   (ros::ros-info "check if grabbed")
+  (unless call-check-if-grabbed-function ;; return without checking grabbed
+    (insert-to-pick-object-avs arm bin)
+    (send *irtviewer* :draw-objects)
+    (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
+    (send *ri* :wait-interpolation)
+    (return-from try-to-pick-object nil))
   (unless (check-if-grabbed arm)
     (ros::ros-info "go back to original position")
     ;; go back to original position if can't grabbed
