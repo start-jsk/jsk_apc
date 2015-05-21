@@ -70,7 +70,7 @@ void loop()
         grabbed_msg.data = digitalRead(PRESSURE_SENSOR_PIN) == HIGH;
         grabbed_pub.publish(&grabbed_msg);
 
-        publisher_timer = millis() + 1000;
+        publisher_timer = millis() + 100;
     }
     nh.spinOnce();
 }
