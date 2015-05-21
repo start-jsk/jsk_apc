@@ -33,9 +33,11 @@
   <!-- see if grabbed -->
   <include ns="see_left_if_grabbed" file="$(find jsk_2014_picking_challenge)/launch/see_if_grabbed.launch">
     <arg name="left_or_right" value="left" />
+    <arg name="input_image" value="/cameras/left_hand_camera/image" />
   </include>
   <include ns="see_right_if_grabbed" file="$(find jsk_2014_picking_challenge)/launch/see_if_grabbed.launch">
     <arg name="left_or_right" value="right" />
+    <arg name="input_image" value="/cameras/right_hand_camera/image" />
   </include>
 
   <!-- tweet -->
