@@ -126,8 +126,9 @@
   ;;   (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
   ;;   (send *ri* :wait-interpolation)
   ;;   (return-from try-to-pick-object nil))
+  (setq check-if-result (check-if-grabbed arm))
 
-  (unless (check-if-grabbed arm)
+  (unless check-if-result
     (ros::ros-info "go back to original position")
     ;; make vacuume OFF
     (send *ri* :stop-grasp arm)
