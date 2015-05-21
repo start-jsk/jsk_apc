@@ -65,8 +65,10 @@
   (case arm
     (:larm (setq z (+ z *larm-height-offset* (* (sin (deg2rad *larm-depth-angle*)) x))))
     (:rarm (setq z (+ z *rarm-height-offset* (* (sin (deg2rad *rarm-depth-angle*)) x)))))
-  (unless (send *baxter* arm :move-end-pos (float-vector x y z) :world :revert-if-fail t :rotation-axis rotation-axis)
-    (ros::ros-error "[move-end-pos] ik error on ~A ~A ~A ~A" arm x y z))
+  (unless (send *baxter* arm :move-end-pos (float-vector x y z) :world :revert-if-fail revert-if-fail :rotation-axis rotation-axis)
+    (ros::ros-error "[move-end-pos] ik error on ~A ~A ~A ~A" arm x y z)
+    (return-from move-end-pos-with-interpolation nil)
+    )
   (send *baxter* arm :move-end-pos (float-vector x y z) :world :revert-if-fail revert-if-fail :rotation-axis rotation-axis)
   (send *irtviewer* :draw-objects)
   (send *ri* :angle-vector (send *baxter* :angle-vector) time)
