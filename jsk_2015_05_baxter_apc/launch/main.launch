@@ -31,6 +31,7 @@
   </node>
 
   <!-- setup params -->
+  <node pkg="rqt_yn_btn" type="rqt_yn_btn" name="rqt_yn_btn" />
   <node pkg="jsk_2014_picking_challenge" type="setup_params.py" name="setup_params">
     <param name="json" value="$(arg json)" />
   </node>
