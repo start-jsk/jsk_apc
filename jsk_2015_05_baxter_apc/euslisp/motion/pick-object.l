@@ -121,10 +121,10 @@
     )
 
   ;; rotate wrist to original
-  (case rotate
-    (:left
+  (case pattern
+    (:rotate-and-left
      (rotate-wrist arm 90))
-    (:right
+    (:rotate-and-right
      (rotate-wrist arm -90)))
   t)
 
