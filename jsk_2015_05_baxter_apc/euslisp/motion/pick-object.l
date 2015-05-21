@@ -66,6 +66,15 @@
 
   (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 30)) 1500)
   (send *ri* :wait-interpolation)
+
+  ;; check if arm gripper unexpectedly attached to shelf or not
+  (ros::ros-info "check if attached to shelf")
+  (setq tmp-av (send *baxter* :angle-vector))
+  (setq arm-av (send *baxter* arm :angle-vector))
+  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+  (ros::ros-info "potentio diff: ~A" (norm (v- (send *baxter* arm :angle-vector) arm-av)))
+  (send *baxter* :angle-vector tmp-av)
+
   (ros::ros-info "check if grabbed")
   (unless (check-if-grabbed arm)
     (ros::ros-info "go back to original position")
