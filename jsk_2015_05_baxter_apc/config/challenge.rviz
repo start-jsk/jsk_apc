@@ -4,11 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Infomation1
         - /Infomation1/RobotModel1/Links1
-        - /Infomation1/OverlayTexts1
       Splitter Ratio: 0.626794
-    Tree Height: 1016
+    Tree Height: 616
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -39,22 +37,14 @@ Visualization Manager:
           Topic: /apc_info
           Value: true
         - Class: jsk_rviz_plugin/PictogramArray
-          Enabled: true
+          Enabled: false
           Name: BinMarks
           Topic: /bin_marks
-          Value: true
+          Value: false
         - Class: rviz/MarkerArray
           Enabled: true
           Marker Topic: /pod_marker_array
           Name: Pod
-          Namespaces:
-            {}
-          Queue Size: 100
-          Value: true
-        - Class: rviz/Marker
-          Enabled: true
-          Marker Topic: /score_board
-          Name: ScoreBoard
           Namespaces:
             {}
           Queue Size: 100
@@ -556,14 +546,14 @@ Visualization Manager:
                 - Background Alpha: 0.8
                   Background Color: 0; 0; 0
                   Class: jsk_rviz_plugin/OverlayText
-                  Enabled: true
+                  Enabled: false
                   Foreground Alpha: 0.8
                   Foreground Color: 25; 255; 240
                   Name: TweetText
                   Overtake Color Properties: false
                   Overtake Position Properties: false
                   Topic: /tweet_text
-                  Value: true
+                  Value: false
                   font: DejaVu Sans Mono
                   height: 128
                   left: 0
@@ -580,7 +570,7 @@ Visualization Manager:
     - Class: rviz/Group
       Displays:
         - Class: rviz/Image
-          Enabled: true
+          Enabled: false
           Image Topic: /left_process/apply_mask/output
           Max Value: 1
           Median window: 5
@@ -589,9 +579,9 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: true
+          Value: false
         - Class: rviz/Image
-          Enabled: true
+          Enabled: false
           Image Topic: /left_process/div_to_maskimage/output
           Max Value: 1
           Median window: 5
@@ -600,9 +590,9 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: true
+          Value: false
         - Class: rviz/Image
-          Enabled: true
+          Enabled: false
           Image Topic: /left_process/apply_mask/output/mask
           Max Value: 1
           Median window: 5
@@ -611,7 +601,7 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: true
+          Value: false
         - Alpha: 1
           Arrow Width: 0.5
           Class: rviz/WrenchStamped
@@ -675,7 +665,6 @@ Visualization Manager:
               Pod: true
               RobotModel: true
               Score: true
-              ScoreBoard: true
               Value: true
             Left:
               LeftApplyImage: true
@@ -710,7 +699,7 @@ Visualization Manager:
     - Class: rviz/Group
       Displays:
         - Class: rviz/Image
-          Enabled: true
+          Enabled: false
           Image Topic: /right_process/apply_mask/output
           Max Value: 1
           Median window: 5
@@ -719,9 +708,9 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: true
+          Value: false
         - Class: rviz/Image
-          Enabled: true
+          Enabled: false
           Image Topic: /right_process/div_to_maskimage/output
           Max Value: 1
           Median window: 5
@@ -730,9 +719,9 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: true
+          Value: false
         - Class: rviz/Image
-          Enabled: true
+          Enabled: false
           Image Topic: /right_process/apply_mask/output/mask
           Max Value: 1
           Median window: 5
@@ -741,7 +730,7 @@ Visualization Manager:
           Normalize Range: true
           Queue Size: 2
           Transport Hint: raw
-          Value: true
+          Value: false
         - Alpha: 1
           Arrow Width: 0.5
           Class: rviz/WrenchStamped
@@ -805,7 +794,6 @@ Visualization Manager:
               Pod: true
               RobotModel: true
               Score: true
-              ScoreBoard: true
               Value: true
             Left:
               LeftApplyImage: true
@@ -840,10 +828,10 @@ Visualization Manager:
     - Class: rviz/Group
       Displays:
         - Class: jsk_rviz_plugin/BoundingBoxArray
-          Enabled: true
+          Enabled: false
           Name: AttentionRegions
           Topic: /left_right_divider/output/box_array
-          Value: true
+          Value: false
           alpha: 0.4
           auto color: true
           color: 25; 255; 0
@@ -901,7 +889,7 @@ Visualization Manager:
               radius: 1
           Enabled: false
           Name: Diagnostics
-      Enabled: true
+      Enabled: false
       Name: DebugTools
     - Class: rviz/Group
       Displays:
@@ -986,7 +974,7 @@ Visualization Manager:
           Color: 255; 255; 255
           Color Transformer: ""
           Decay Time: 0
-          Enabled: true
+          Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
           Max Intensity: 4096
@@ -1002,7 +990,7 @@ Visualization Manager:
           Topic: /pass_through_z/output
           Use Fixed Frame: true
           Use rainbow: true
-          Value: true
+          Value: false
       Enabled: true
       Name: HighResKinect
   Enabled: true
@@ -1029,27 +1017,27 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.18851
+      Distance: 7.89463
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.43628
-        Y: 0.22339
-        Z: 0.306179
+        X: 0.673196
+        Y: 0.15196
+        Z: 1.05157
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.489797
+      Pitch: 0.199797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.88851
+      Yaw: 3.76351
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1576
+  Height: 1176
   Hide Left Dock: false
   Hide Right Dock: true
   KinectImage:
@@ -1064,7 +1052,7 @@ Window Geometry:
     collapsed: false
   LeftMaskImage:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001a400000487fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002800000487000000dd00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000040efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007300000000280000040e000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b2000000000000000000000002000005ff000000a9fc0100000002fb0000000800540069006d00650000000000000005ff000002f600fffffffb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009bf00000155fc0100000005fc0000000000000324000000be00fffffffa000000000200000005fb0000001a004c006500660074004d00610073006b0049006d0061006700650100000000ffffffff0000001600fffffffb00000024004c0065006600740049006d0061006700650046006500610074007500720065003000440100000000ffffffff0000001600fffffffb0000001c004c00650066007400480061006e006400430061006d0065007200610100000000ffffffff0000001600fffffffb0000001c004c006500660074004100700070006c00790049006d0061006700650100000000ffffffff0000001600fffffffb00000020004c00650066007400440069007600690064006500720049006d0061006700650100000000ffffffff0000001600fffffffb00000016004b0069006e0065006300740049006d006100670065010000032a0000034d0000008700fffffffc0000067d00000342000000c700fffffffa000000000200000007fb0000001c00520069006700680074004d00610073006b0049006d0061006700650100000000ffffffff0000001600fffffffb00000026005200690067006800740049006d0061006700650046006500610074007500720065003000440100000000ffffffff0000001600fffffffb0000001e0052006900670068007400480061006e006400430061006d0065007200610100000000ffffffff0000001600fffffffb0000001e00520069006700680074004100700070006c00790049006d0061006700650100000000ffffffff0000001600fffffffb000000220052006900670068007400440069007600690064006500720049006d0061006700650100000000ffffffff0000001600fffffffb0000001400480061006e006400430061006d0065007200610100000000ffffffff0000000000000000fb0000001400480061006e006400430061006d0065007200610100000000ffffffff0000000000000000fb0000000a0049006d0061006700650100000415000001ea0000000000000000fb0000000800540069006d00650100000000000004500000000000000000000008150000048700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001a4000002f7fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c0061007900730100000028000002f7000000dd00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000040efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007300000000280000040e000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b2000000000000000000000002000005ff000000a9fc0100000002fb0000000800540069006d00650000000000000005ff000002f600fffffffb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005ff00000155fc0100000005fc00000000000001ed000000be00fffffffa000000010200000005fb0000001a004c006500660074004d00610073006b0049006d0061006700650000000000ffffffff0000001600fffffffb00000024004c0065006600740049006d0061006700650046006500610074007500720065003000440100000000ffffffff0000001600fffffffb0000001c004c00650066007400480061006e006400430061006d0065007200610100000000ffffffff0000001600fffffffb0000001c004c006500660074004100700070006c00790049006d0061006700650000000000ffffffff0000001600fffffffb00000020004c00650066007400440069007600690064006500720049006d0061006700650000000000ffffffff0000001600fffffffb00000016004b0069006e0065006300740049006d00610067006501000001f3000002060000008700fffffffc000003ff00000200000000c700fffffffa000000010200000007fb0000001c00520069006700680074004d00610073006b0049006d0061006700650000000000ffffffff0000001600fffffffb00000026005200690067006800740049006d0061006700650046006500610074007500720065003000440100000000ffffffff0000001600fffffffb0000001e0052006900670068007400480061006e006400430061006d0065007200610100000000ffffffff0000001600fffffffb0000001e00520069006700680074004100700070006c00790049006d0061006700650000000000ffffffff0000001600fffffffb000000220052006900670068007400440069007600690064006500720049006d0061006700650000000000ffffffff0000001600fffffffb0000001400480061006e006400430061006d0065007200610100000000ffffffff0000000000000000fb0000001400480061006e006400430061006d0065007200610100000000ffffffff0000000000000000fb0000000a0049006d0061006700650100000415000001ea0000000000000000fb0000000800540069006d0065010000000000000450000000000000000000000455000002f700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   RightApplyImage:
     collapsed: false
   RightDividerImage:
@@ -1083,6 +1071,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: true
-  Width: 2495
-  X: 58
+  Width: 1535
+  X: 65
   Y: 24

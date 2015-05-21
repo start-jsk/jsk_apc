@@ -9,7 +9,8 @@
 ;; -------------------
 ;; Get work order data
 ;; -------------------
-(setq *work-order* (make-hash-table))
+(if (not (boundp '*work-order*))
+    (setq *work-order* (make-hash-table)))
 (defun work-order-cb (msg arm)
   (let (work-order bin object)
     (dolist (data (send msg :array))
@@ -19,12 +20,16 @@
     (setf (gethash arm *work-order*) work-order)
     ))
 
+(defun work-order-cb-larm (msg) (work-order-cb msg :larm))
+(defun work-order-cb-rarm (msg) (work-order-cb msg :rarm))
+
 (ros::subscribe "work_order/left_process"
                 jsk_2014_picking_challenge::WorkOrderArray
-                #'(lambda (msg) (work-order-cb msg :larm)))
+                #'work-order-cb-larm)
 (ros::subscribe "work_order/right_process"
                 jsk_2014_picking_challenge::WorkOrderArray
-                #'(lambda (msg) (work-order-cb msg :rarm)))
+                #'work-order-cb-rarm)
+
 (defun get-work-order (arm)
   (ros::spin-once)
   (gethash arm *work-order*))
@@ -32,7 +37,8 @@
 ;; ---------------------
 ;; Get bin contents data
 ;; ---------------------
-(setq *bin-contents* nil)
+(if (not (boundp '*bin-contents*))
+    (setq *bin-contents* nil))
 (defun bin-contents-cb (msg) (setq *bin-contents* (send msg :array)))
 
 (ros::subscribe "/bin_contents" jsk_2014_picking_challenge::BinContentsArray
@@ -49,8 +55,11 @@
 (setq *total-score* 0)
 (setq *score-points* 0)
 (defun update-score(bin)
+  (ros::ros-info "update-score ~A" bin)
   (setq *score-points*
 	(case (length (get-bin-contents bin))
 	  (1 10) (2 15) (t 20)))
+  (setq *total-score* (ros::get-param "/total_score"))
   (setq *total-score* (+ *total-score* *score-points*))
+  (ros::set-param "/total_score" *total-score*)
   )

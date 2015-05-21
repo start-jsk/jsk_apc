@@ -1,0 +1,101 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "champion_copper_plus_spark_plug"
+        ],
+        "bin_B": [
+            "rolodex_jumbo_pencil_cup",
+            "laugh_out_loud_joke_book",
+            "highland_6539_self_stick_notes"
+        ],
+        "bin_C": [
+            "kong_air_dog_squeakair_tennis_ball",
+            "cheezit_big_original"
+        ],
+        "bin_D": [
+            "oreo_mega_stuf"
+        ],
+        "bin_E": [
+            "kyjen_squeakin_eggs_plush_puppies",
+            "feline_greenies_dental_treats"
+        ],
+        "bin_F": [
+            "dr_browns_bottle_brush",
+            "kong_sitting_frog_dog_toy"
+        ],
+        "bin_G": [
+            "expo_dry_erase_board_eraser",
+            "mark_twain_huckleberry_finn"
+        ],
+        "bin_H": [
+            "stanley_66_052",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_I": [
+            "mommys_helper_outlet_plugs"
+        ],
+        "bin_J": [
+            "genuine_joe_plastic_stir_sticks"
+        ],
+        "bin_K": [
+            "first_years_take_and_toss_straw_cup",
+            "munchkin_white_hot_duck_bath_toy",
+            "mead_index_cards"
+        ],
+        "bin_L": [
+            "crayola_64_ct",
+            "paper_mate_12_count_mirado_black_warrior",
+            "safety_works_safety_glasses"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "champion_copper_plus_spark_plug"
+        },
+        {
+            "bin": "bin_B",
+            "item": "rolodex_jumbo_pencil_cup"
+        },
+        {
+            "bin": "bin_C",
+            "item": "kong_air_dog_squeakair_tennis_ball"
+        },
+        {
+            "bin": "bin_D",
+            "item": "oreo_mega_stuf"
+        },
+        {
+            "bin": "bin_E",
+            "item": "kyjen_squeakin_eggs_plush_puppies"
+        },
+        {
+            "bin": "bin_F",
+            "item": "dr_browns_bottle_brush"
+        },
+        {
+            "bin": "bin_G",
+            "item": "expo_dry_erase_board_eraser"
+        },
+        {
+            "bin": "bin_H",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_I",
+            "item": "mommys_helper_outlet_plugs"
+        },
+        {
+            "bin": "bin_J",
+            "item": "genuine_joe_plastic_stir_sticks"
+        },
+        {
+            "bin": "bin_K",
+            "item": "first_years_take_and_toss_straw_cup"
+        },
+        {
+            "bin": "bin_L",
+            "item": "crayola_64_ct"
+        }
+    ]
+}
