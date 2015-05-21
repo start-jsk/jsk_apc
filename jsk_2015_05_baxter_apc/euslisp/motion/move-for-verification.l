@@ -26,6 +26,7 @@
     (send *irtviewer* :draw-objects)
     (setq avs (append avs (move-for-verification-avs-ik arm)))
     (send *irtviewer* :draw-objects)
-    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 2.2)
+    ;;(send *ri* :angle-vector-sequence avs :fast nil 0 :scale 2.2)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 4.0)
     (send *ri* :wait-interpolation)
     avs))
