@@ -49,19 +49,38 @@
      (move-end-pos-with-interpolation arm :z -50)
      (rotate-wrist arm -90)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-     (send *ri* :wait-interpolation)
-     (move-end-pos-with-interpolation arm :y -80 :time 1000))
+     (send *ri* :wait-interpolation))
     (:rotate-and-left
      (move-end-pos-with-interpolation arm :z -50)
      (rotate-wrist arm 90)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-     (send *ri* :wait-interpolation)
-     (move-end-pos-with-interpolation arm :y 80 :time 1000))
+     (send *ri* :wait-interpolation))
     )
 
+  ;; make vacuume ON
+  (send *ri* :start-grasp arm)
+
+  ;; grabbing
   (case pattern
     ((:right-most :left-most :right :left :middle :middle-left :middle-right)
+     (move-end-rot-with-interpolation arm :y 2)
      (move-end-pos-with-interpolation arm :z -120)
+     )
+    (:rotate-and-left
+     (move-end-rot-with-interpolation arm :x -4)
+     (move-end-pos-with-interpolation arm :y 80 :time 1000)
+     )
+    (:rotate-and-right
+     (move-end-rot-with-interpolation arm :x 4)
+     (move-end-pos-with-interpolation arm :y -80 :time 1000))
+    )
+
+  (unix::sleep 1)
+
+  ;; for check grabbed, seperate gripper.
+  (case pattern
+    ((:right-most :left-most :right :left :middle :middle-left :middle-right)
+     (move-end-pos-with-interpolation arm :z 30 :time 1000)
      )
     (:rotate-and-left
      (move-end-pos-with-interpolation arm :y -40 :time 1000)
@@ -163,7 +182,7 @@
 
   (case pattern
     ((:right-most :left-most :right :left :middle :middle-left :middle-right)
-     (move-end-rot-with-interpolation arm :y -2)
+     (move-end-rot-with-interpolation arm :y -4)
      )
     )
   t)
