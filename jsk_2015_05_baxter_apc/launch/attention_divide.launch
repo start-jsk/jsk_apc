@@ -17,31 +17,32 @@
     </rosparam>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="organized_resize_x"
-        args="load jsk_pcl/OrganizedPassThrough $(arg manager)">
-    <remap from="~input" to="passthrough_z/output" />
-    <rosparam>
-      filter_field: 0
-      min_index: 0
-      max_index: 1500
-    </rosparam>
-  </node>
-  <node pkg="nodelet" type="nodelet" name="organized_resize_y"
-        args="load jsk_pcl/OrganizedPassThrough $(arg manager)">
-    <remap from="~input" to="organized_resize_x/output" />
-    <rosparam>
-      filter_field: 1
-      min_index: 140
-      max_index: 700
-    </rosparam>
-  </node>
+  <!-- <node pkg="nodelet" type="nodelet" name="organized_resize_x" -->
+  <!--       args="load jsk_pcl/OrganizedPassThrough $(arg manager)"> -->
+  <!--   <remap from="~input" to="passthrough_z/output" /> -->
+  <!--   <rosparam> -->
+  <!--     filter_field: 0 -->
+  <!--     min_index: 0 -->
+  <!--     max_index: 1500 -->
+  <!--   </rosparam> -->
+  <!-- </node> -->
+  <!-- <node pkg="nodelet" type="nodelet" name="organized_resize_y" -->
+  <!--       args="load jsk_pcl/OrganizedPassThrough $(arg manager)"> -->
+  <!--   <remap from="~input" to="organized_resize_x/output" /> -->
+  <!--   <rosparam> -->
+  <!--     filter_field: 1 -->
+  <!--     min_index: 140 -->
+  <!--     max_index: 700 -->
+  <!--   </rosparam> -->
+  <!-- </node> -->
 
   <node pkg="pr2_navigation_self_filter"
         type="self_filter" clear_params="true"
         name="robot_shadow_self_filter2" respawn="true" output="screen">
     <!-- The topic for the input cloud -->
     <!-- <remap from="cloud_in" to="$(arg input_cloud)" /> -->
-    <remap from="cloud_in" to="organized_resize_y/output" />
+    <remap from="cloud_in" to="passthrough_z/output" />
+    <!-- <remap from="cloud_in" to="organized_resize_y/output" /> -->
     <!-- The topic for the output cloud -->
     <remap from="cloud_out" to="$(arg input_cloud)_filtered" />
     <param name="subsample_value" type="double" value="0.0"/>
