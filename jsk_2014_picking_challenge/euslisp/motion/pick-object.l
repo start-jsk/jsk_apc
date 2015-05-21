@@ -63,9 +63,11 @@
     ((:right-most :left-most :right :left :middle :middle-left :middle-right)
      (move-end-pos-with-interpolation arm :z -120)
      )
-    ((:rotate-and-left :rotate-and-right)
-     ;; none
+    (:rotate-and-left
+     (move-end-pos-with-interpolation arm :y -40 :time 1000)
      )
+    (:rotate-and-right
+     (move-end-pos-with-interpolation arm :y 40 :time 1000))
     )
 
   (send *irtviewer* :draw-objects)
@@ -91,11 +93,22 @@
     (return-from try-to-pick-object nil))
   (unless (check-if-grabbed arm)
     (ros::ros-info "go back to original position")
+    ;; make vacuume OFF
+    (send *ri* :stop-grasp arm)
+
     ;; go back to original position if can't grabbed
+    (case pattern
+      ((:right-most :left-most :right :left :middle :middle-left :middle-right)
+       (move-end-pos-with-interpolation arm :z 90 :time 1000) ;; for check grabbed, seperate gripper.
+       )
+      ((:rotate-and-left :rotate-and-right)
+       (move-end-pos-with-interpolation arm :z 50 :time 1000)
+       ))
     (insert-to-pick-object-avs arm bin)
     (send *irtviewer* :draw-objects)
-    (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
+    (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
     (send *ri* :wait-interpolation)
+
     (if nil ;(if *simulator-p* nil (see-if-grabbed arm))
         (progn (ros::ros-info "finish because see if grabbed")
                (return-from try-to-pick-object t))
@@ -105,7 +118,7 @@
 
   (case pattern
     ((:right-most :left-most :right :left :middle :middle-left :middle-right)
-     (move-end-pos-with-interpolation arm :z 120 :revert-if-fail nil :rotation-axis nil :time 4000)
+     (move-end-pos-with-interpolation arm :z 90 :revert-if-fail nil :rotation-axis nil :time 4000)
      )
     ((:rotate-and-right :rotate-and-left)
      (move-end-pos-with-interpolation arm :z 50 :revert-if-fail nil :rotation-axis nil :time 4000)
@@ -135,20 +148,22 @@
      (move-end-pos-with-interpolation arm :y 20 :time 1500)
      )
     (:rotate-and-right
-     (move-end-pos-with-interpolation arm :y -40 :time 1000)
      (rotate-wrist arm -45)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
      (send *ri* :wait-interpolation)
-     (move-end-pos-with-interpolation arm :y -40 :time 1000)
-     (move-end-pos-with-interpolation arm :z 50)
+     (move-end-pos-with-interpolation arm :y 40 :time 1000)
      )
     (:rotate-and-left
-     (move-end-pos-with-interpolation arm :y 40 :time 1000)
      (rotate-wrist arm 45)
      (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
      (send *ri* :wait-interpolation)
-     (move-end-pos-with-interpolation arm :y 40 :time 1000)
-     (move-end-pos-with-interpolation arm :z 40)
+     (move-end-pos-with-interpolation arm :y -40 :time 1000)
+     )
+    )
+
+  (case pattern
+    ((:right-most :left-most :right :left :middle :middle-left :middle-right)
+     (move-end-rot-with-interpolation arm :y -2)
      )
     )
   t)
@@ -157,9 +172,9 @@
   (let* (av avs
             (patterns
                  '(:middle :middle :middle
+                           :rotate-and-left :rotate-and-right :rotate-and-left :rotate-and-right :rotate-and-left :rotate-and-right
                            :right-most :left-most :right-most :left-most :right-most :left-most
                            :left :right :left :right :left :right
-                           :rotate-and-left :rotate-and-right :rotate-and-left :rotate-and-right :rotate-and-left :rotate-and-right
                            :middle-left :middle-right :middle-left :middle-right :middle-left :middle-right))
             (depths '(0 80 150
                        0 0 80 80 150 150
