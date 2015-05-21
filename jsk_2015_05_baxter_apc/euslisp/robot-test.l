@@ -193,7 +193,7 @@
     limit-dist))
 
 
-(defun check-pick-offset-from-wall (arm &key (bins '(:c :f :i :l)) (depths '(30 80 150)) (angles '(0 1 2)))
+(defun check-pick-offset-from-wall (arm &key (bins '(:c)) (depths '(30)) (angles '(0)))
   (let ((limit-map (make-hash-table :test #'equal)) dict)
     (labels ((add-key (key value)
                       (push (cons key value) dict)
