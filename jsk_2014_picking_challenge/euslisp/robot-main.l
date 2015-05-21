@@ -70,7 +70,6 @@
            (ros::ros-info "waiting for opposite arm to do order for center bin")
            (publish-state-info "Waiting for opposite arm to start center bin" arm)
            (unix::sleep 1))
-         (incf n-tried)
          (ros::ros-info "Move to Bin ~A. Target is ~A." (key-to-str target) target-object)
          (publish-overlay-text (format nil "    PICK: ~A IN ~A" target-object (key-to-str target))
                                (format nil "~A_target_info" (arm-to-str arm))
@@ -79,13 +78,14 @@
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
          (pick-object arm target)
-         (cond ((= (length (get-bin-contents target)) 1) ;; SINGLE-ITEM-BIN
+         (cond ((= (length (get-bin-contents target)) 1)  ;; SINGLE BIN
                 (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object"))
-               ;; this is temporary for uncertain check-if-grabbed
-               ;; should be removed after good pick_object
-               ((not (check-if-grabbed arm))
+               ((= n-tried (length (get-bin-contents target)))  ;; already tried enough
+                (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object"))
+               ((not (check-if-grabbed arm))  ;; this is temporary for uncertain check-if-grabbed
                 (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object"))
-               (t (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "move_for_verification"))))
+               (t (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "move_for_verification")))
+         (incf n-tried))
         ((string= state "move_for_verification")
          (speak-en  "Move for verification." :google t)
          (move-for-verification arm target)
