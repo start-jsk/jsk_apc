@@ -126,9 +126,12 @@
 
          (setq work (pop work-order) n-tried 0)  ;; initialize for loop
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object"))
-        (t (ros::set-param (format nil "/~A_process/state" (arm-to-str arm)) "pick_object"))
+        (t (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object"))
         )
       )
+    (move-to-wait-pose arm target)
+    (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "wait_for_opposite")
+    (ros::set-param (format nil "~A_process/target" (arm-to-str arm)) "")
     ))
 
 (warn "~% Commands ~%")
