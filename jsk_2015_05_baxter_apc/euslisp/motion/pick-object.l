@@ -33,11 +33,11 @@
                                (grasp-depth-z  95) ;; move z down to grasp
                                (check-depth-z  10) ;; move z up to check grabbed
                                (grasp-side-z   80) ;; move z down to side grasp
-                               (grasp-side-z-down   40) ;; move z down to side (grasp after rotate)
+                               (grasp-side-z-down   50) ;; move z down to side (grasp after rotate)
                                (debug-mode nil)
                                )
-  (let* ((grasp-left-most-dist 80)
-        (grasp-right-most-dist -80)
+  (let* ((grasp-left-most-dist 60)
+        (grasp-right-most-dist -60)
         (grasp-left-dist 50)
         (grasp-right-dist -50)
         (grasp-middle-left-dist 20)
