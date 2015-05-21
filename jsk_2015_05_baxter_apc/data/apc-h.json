@@ -1,0 +1,101 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "laugh_out_loud_joke_book"
+        ],
+        "bin_B": [
+            "stanley_66_052"
+        ],
+        "bin_C": [
+            "genuine_joe_plastic_stir_sticks",
+            "champion_copper_plus_spark_plug",
+            "highland_6539_self_stick_notes"
+        ],
+        "bin_D": [
+            "expo_dry_erase_board_eraser"
+        ],
+        "bin_E": [
+            "first_years_take_and_toss_straw_cup",
+            "dr_browns_bottle_brush"
+        ],
+        "bin_F": [
+            "mommys_helper_outlet_plugs",
+            "kong_sitting_frog_dog_toy"
+        ],
+        "bin_G": [
+            "sharpie_accent_tank_style_highlighters",
+            "mead_index_cards"
+        ],
+        "bin_H": [
+            "safety_works_safety_glasses"
+        ],
+        "bin_I": [
+            "paper_mate_12_count_mirado_black_warrior",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_J": [
+            "munchkin_white_hot_duck_bath_toy",
+            "kong_air_dog_squeakair_tennis_ball"
+        ],
+        "bin_K": [
+            "crayola_64_ct",
+            "rolodex_jumbo_pencil_cup",
+            "oreo_mega_stuf"
+        ],
+        "bin_L": [
+            "kong_duck_dog_toy",
+            "kyjen_squeakin_eggs_plush_puppies",
+            "mark_twain_huckleberry_finn"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "laugh_out_loud_joke_book"
+        },
+        {
+            "bin": "bin_B",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_C",
+            "item": "genuine_joe_plastic_stir_sticks"
+        },
+        {
+            "bin": "bin_D",
+            "item": "expo_dry_erase_board_eraser"
+        },
+        {
+            "bin": "bin_E",
+            "item": "first_years_take_and_toss_straw_cup"
+        },
+        {
+            "bin": "bin_F",
+            "item": "mommys_helper_outlet_plugs"
+        },
+        {
+            "bin": "bin_G",
+            "item": "sharpie_accent_tank_style_highlighters"
+        },
+        {
+            "bin": "bin_H",
+            "item": "safety_works_safety_glasses"
+        },
+        {
+            "bin": "bin_I",
+            "item": "paper_mate_12_count_mirado_black_warrior"
+        },
+        {
+            "bin": "bin_J",
+            "item": "munchkin_white_hot_duck_bath_toy"
+        },
+        {
+            "bin": "bin_K",
+            "item": "crayola_64_ct"
+        },
+        {
+            "bin": "bin_L",
+            "item": "kong_duck_dog_toy"
+        }
+    ]
+}
