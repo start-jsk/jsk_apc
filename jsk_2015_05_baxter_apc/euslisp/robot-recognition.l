@@ -62,7 +62,7 @@
                              #'image-time-diff-rarm-cb)))
     ))
 
-(defparameter *image-time-diff-threshold* 0.1)  ;; 0.03 : too sensitive
+(defparameter *image-time-diff-threshold* 0.3)  ;; 0.03 : too sensitive
 (defun see-if-grabbed (arm)
   (while
     (not (gethash arm *image-time-diff*))
@@ -79,6 +79,7 @@
       (setq msg (gethash arm *image-time-diff*))
       (setq stamp (send (send msg :header) :stamp))
       (setq diff (send msg :difference)))
+    (ros::ros-info "see-if-grabbed ~A > ~A" diff *image-time-diff-threshold*)
     (if (> diff *image-time-diff-threshold*) t nil)))
 
 ;; -------------------------------------------------------
