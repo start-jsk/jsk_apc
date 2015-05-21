@@ -155,7 +155,7 @@
       (format t " (~A ~A)" bin (gethash bin limit-map)))
     (format t ")~%")))
 
-(defun check-pick-offset-from-wall-impl (arm bin &key (depth 30))
+(defun check-pick-offset-from-wall-impl (arm bin &key (depth 30) (rotate-angle 2))
   (let (limit-left limit-right
                    (grasp-side-z 80)
                    (grasp-side-z-down 40)
@@ -169,14 +169,12 @@
         (send *ri* :wait-interpolation)
         (move-end-pos-with-interpolation arm :z (- grasp-side-z))
         (send *ri* :start-grasp arm)
-        (move-end-rot-with-interpolation arm :x -4)
+        (move-end-rot-with-interpolation arm :x -2)
         (move-end-pos-with-interpolation arm :y y :z (- grasp-side-z-down) :time 1000)
-
         (unix::sleep 1) ;; waiting
         (when (check-if-grabbed arm)
           (throw 'loop limit-left))
         (setq limit-left y)
-
         ;; return to original pose
         (insert-to-pick-object-avs arm bin)
         (send *irtviewer* :draw-objects)
@@ -189,19 +187,17 @@
     (catch 'loop
       (dolist (y '(60 65 60 75 80 85 90 95 100 105))
         (move-end-pos-with-interpolation arm :x depth :time 1000)
-        (rotate-wrist arm 90)
+        (rotate-wrist arm -90)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
         (send *ri* :wait-interpolation)
         (move-end-pos-with-interpolation arm :z (- grasp-side-z))
         (send *ri* :start-grasp arm)
-        (move-end-rot-with-interpolation arm :x 4)
+        (move-end-rot-with-interpolation arm :x 2)
         (move-end-pos-with-interpolation arm :y (- y) :z (- grasp-side-z-down) :time 1000)
-
         (unix::sleep 1) ;; waiting
         (when (check-if-grabbed arm)
           (throw 'loop limit-right))
         (setq limit-right y)
-
         ;; return to original pose
         (insert-to-pick-object-avs arm bin)
         (send *irtviewer* :draw-objects)
@@ -271,3 +267,4 @@
 (warn "~% Commands ~%")
 (warn "(check-pick) : Check all pick motion~%")
 (warn "(check-pick-offset) : Check all offset%")
+(warn "(check-pick-offset-from-wall) : Check rotate-and-left/right's offset~%")
