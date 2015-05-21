@@ -89,27 +89,22 @@
      (move-end-pos-with-interpolation arm :y 40 :time 1000))
     )
 
-  (send *irtviewer* :draw-objects)
-  (unix::sleep 3)
+  ;; ;; check if arm gripper unexpectedly attached to shelf or not
+  ;; (ros::ros-info "check if attached to shelf")
+  ;; (setq tmp-av (send *baxter* :angle-vector))
+  ;; (setq arm-av (send *baxter* arm :angle-vector))
+  ;; (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+  ;; (ros::ros-info "potentio diff: ~A" (norm (v- (send *baxter* arm :angle-vector) arm-av)))
+  ;; (send *baxter* :angle-vector tmp-av)
 
-  (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 30)) 1500)
-  (send *ri* :wait-interpolation)
+  ;; (ros::ros-info "check if grabbed")
+  ;; (unless call-check-if-grabbed-function ;; return without checking grabbed
+  ;;   (insert-to-pick-object-avs arm bin)
+  ;;   (send *irtviewer* :draw-objects)
+  ;;   (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
+  ;;   (send *ri* :wait-interpolation)
+  ;;   (return-from try-to-pick-object nil))
 
-  ;; check if arm gripper unexpectedly attached to shelf or not
-  (ros::ros-info "check if attached to shelf")
-  (setq tmp-av (send *baxter* :angle-vector))
-  (setq arm-av (send *baxter* arm :angle-vector))
-  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
-  (ros::ros-info "potentio diff: ~A" (norm (v- (send *baxter* arm :angle-vector) arm-av)))
-  (send *baxter* :angle-vector tmp-av)
-
-  (ros::ros-info "check if grabbed")
-  (unless call-check-if-grabbed-function ;; return without checking grabbed
-    (insert-to-pick-object-avs arm bin)
-    (send *irtviewer* :draw-objects)
-    (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
-    (send *ri* :wait-interpolation)
-    (return-from try-to-pick-object nil))
   (unless (check-if-grabbed arm)
     (ros::ros-info "go back to original position")
     ;; make vacuume OFF
@@ -217,7 +212,9 @@
       (and patterns
            (not (try-to-pick-object arm bin (pop patterns) (pop depths))))
       (unless *simulator-p* (speak-en  "Fail to catch the target" :google t)))
-    ;; take arm out of bin
+
+    (ros::ros-info "fjdaljfalfjalfjalkfffffffjf")
+    ;; take arm out of bi wrong controller
     (setq avs (list (send *baxter* arm :move-end-pos #f(-250 0 0) :world :revert-if-fail nil :rotation-axis :z)))
     (pushback (avoid-shelf-pose-for-bin arm bin) avs)
     (send *irtviewer* :draw-objects)
