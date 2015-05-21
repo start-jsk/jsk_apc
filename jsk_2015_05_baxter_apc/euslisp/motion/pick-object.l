@@ -127,10 +127,10 @@
        (move-end-pos-with-interpolation arm :z check-depth-z :time 1000)
        )
       (:rotate-and-left
-       (move-end-pos-with-interpolation arm :y grasp-half-limit-left-side :time 1000)
+       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-left-side) :time 1000)
        )
       (:rotate-and-right
-       (move-end-pos-with-interpolation arm :y grasp-half-limit-right-side :time 1000))
+       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-right-side) :time 1000))
       )
 
     ;; ;; check if arm gripper unexpectedly attached to shelf or not
@@ -213,13 +213,13 @@
        (rotate-wrist arm -45)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
-       (move-end-pos-with-interpolation arm :y (- grasp-limit-left-side grasp-half-limit-left-side) :z grasp-side-z :time 1000)
+       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-left-side grasp-limit-left-side) :z grasp-side-z :time 1000)
        )
       (:rotate-and-right
        (rotate-wrist arm 45)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
-       (move-end-pos-with-interpolation arm :y (- grasp-limit-right-side grasp-half-limit-left-side) :z grasp-side-z :time 1000)
+       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-left-side grasp-limit-right-side) :z grasp-side-z :time 1000)
        )
       )
 
