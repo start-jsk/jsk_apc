@@ -66,12 +66,19 @@ $ (move-to-target-bin :rarm :c)
 
 最新のデモの実行方法
 -----------------------
-
+できるだけ、ビデオも取るようにしてください.
 ```sh
 roslaunch jsk_2014_picking_challenge baxter.launch
-roslaunch jsk_2014_picking_challenge setup.launch json:=`rospack find jsk_2014_picking_challenge`/data/apc-a.json
-roslaunch jsk_2014_picking_challenge main.launch
+roslaunch jsk_2014_picking_challenge setup.launch
+roslaunch jsk_2014_picking_challenge main.launch json:=`rospack find jsk_2014_picking_challenge`/data/apc-a.json
 roslaunch jsk_2014_picking_challenge record.launch  # rosbag record
+```
+
+テストの実行の仕方
+------------------
+
+```sh
+catkin run_tests jsk_2014_picking_challenge --start-with-this --no-deps
 ```
 
 
