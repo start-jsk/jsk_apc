@@ -266,3 +266,4 @@
 (warn "(check-pick) : Check all pick motion~%")
 (warn "(check-pick-offset) : Check all offset~%")
 (warn "(check-pick-offset-from-wall) : Check rotate-and-left/right's offset~%")
+(warn "(check-all-motion-of-pick-object) Check motion of pick-object~%")
