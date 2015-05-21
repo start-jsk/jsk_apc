@@ -35,6 +35,15 @@
 (send (send *baxter* :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
 (setq *ri* (instance baxter-test-interface :init))
 
+(defclass baxter-test-robot
+  :super baxter-robot)
+(defmethod baxter-test-robot
+  (:inverse-kinematics (&rest args)
+   (let (ret)
+    (setq ret (send-super* :inverse-kinematics args))
+    (assert (null ret) "ik failed")
+    ret)))
+
 (init-unit-test)
 
 (deftest
