@@ -135,7 +135,7 @@
   (let* ((bin-msg-list)
          (pict-array-msg (instance jsk_rviz_plugins::pictogramarray :init))
          (score-100 (round (/ score 100)))
-         (score-10 (roound (/ (mod score 100) 10)))
+         (score-10 (round (/ (mod score 100) 10)))
          (score-1 (round (mod score 10)))
          (offset 0))
     (dolist (ascore (list score-100 score-10 score-1))
