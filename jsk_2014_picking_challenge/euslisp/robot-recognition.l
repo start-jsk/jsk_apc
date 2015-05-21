@@ -31,7 +31,7 @@
       (when msg (setq correct? (string= target-object (send msg :matched))))
       ;; timeout
       (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout)
-        (ros::ros-warn "timeout in verify_object: ~A" (arm-to-str arm))
+        (ros::ros-error "timeout in verify_object: ~A" (arm-to-str arm))
         (return)))
     (ros::ros-info "got object_verification msg: ~A" (arm-to-str arm))
     correct?))
@@ -39,9 +39,12 @@
 ;; -------------------------------------
 ;; Check if grabbed with image_time_diff
 ;; -------------------------------------
-(setq *image-time-diff* (make-hash-table))
+(if (not (boundp '*image-time-diff*))
+    (setq *image-time-diff* (make-hash-table)))
 (defun image-time-diff-cb (msg arm)
   (setf (gethash arm *image-time-diff*) msg))
+(defun image-time-diff-larm-cb (msg) (image-time-diff-cb msg :larm))
+(defun image-time-diff-rarm-cb (msg) (image-time-diff-cb msg :rarm))
 
 (defun start-image-time-diff (arm)
   (let ((topic-ns (format nil "/see_~A_if_grabbed/image_time_diff" (arm-to-str arm))) msg)
@@ -53,13 +56,13 @@
     (case arm
       (:larm (ros::subscribe (format nil "~A/output/diff" topic-ns)
                              jsk_recognition_msgs::ImageDifferenceValue
-                             #'(lambda (msg) (image-time-diff-cb msg :larm))))
+                             #'image-time-diff-larm-cb))
       (:rarm (ros::subscribe (format nil "~A/output/diff" topic-ns)
                              jsk_recognition_msgs::ImageDifferenceValue
-                             #'(lambda (msg) (image-time-diff-cb msg :rarm)))))
+                             #'image-time-diff-rarm-cb)))
     ))
 
-(defparameter *image-time-diff-threshold* 0.17)
+(defparameter *image-time-diff-threshold* 0.03)
 (defun see-if-grabbed (arm)
   (while
     (not (gethash arm *image-time-diff*))
@@ -85,10 +88,12 @@
 (defun gripper-grabbed-cb (msg arm)
   (setf (gethash arm *gripper-grabbed*) (send msg :data)))
 
+(defun gripper-grabbed-larm-cb (msg) (gripper-grabbed-cb msg :larm))
+(defun gripper-grabbed-rarm-cb (msg) (gripper-grabbed-cb msg :rarm))
 (ros::subscribe "/gripper_grabbed/limb/left/state" std_msgs::Bool
-                #'(lambda (msg) (gripper-grabbed-cb msg :larm)))
+                #'gripper-grabbed-larm-cb) 
 (ros::subscribe "/gripper_grabbed/limb/right/state" std_msgs::Bool
-                #'(lambda (msg) (gripper-grabbed-cb msg :rarm)))
+                #'gripper-grabbed-rarm-cb)
 
 (defun check-if-grabbed (arm)
   (ros::spin-once)
