@@ -73,6 +73,21 @@
   (send *ri* :wait-interpolation)
   )
 
+(defun move-end-rot-with-interpolation (arm &key (x 0) (y 0) (z 0) (time 1000))
+  (unless (send *baxter* arm :move-end-rot x :x)
+    (ros::ros-error "ik error on ~A x: ~A" arm x))
+  (unless (send *baxter* arm :move-end-rot y :y)
+    (ros::ros-error "ik error on ~A y: ~A" arm y))
+  (unless (send *baxter* arm :move-end-rot z :z)
+    (ros::ros-error "ik error on ~A z: ~A" arm z))
+  (send *baxter* arm :move-end-rot x :x)
+  (send *baxter* arm :move-end-rot y :y)
+  (send *baxter* arm :move-end-rot z :z)
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) time)
+  (send *ri* :wait-interpolation)
+  )
+
 (defun rotate-wrist (arm angle &key (angle-method :relative))
   (let (wrist-index)
     (case arm
