@@ -14,8 +14,8 @@
   (let (goal-coords av0 av1)
     (setq goal-coords
           (case arm
-                (:rarm (make-coords :pos #f(649.331 -319.89 1028.69) :rpy #f(1.30057 -0.71804 1.6585)))
-                (:larm (make-coords :pos #f(690.508 171.959 1034.31) :rpy #f(-1.32998 -0.688911 -1.65887)))))
+                (:rarm (make-coords :pos #f(649.331 -319.89 1978.69) :rpy #f(1.30057 -0.71804 1.6585)))
+                (:larm (make-coords :pos #f(690.508 171.959 1984.31) :rpy #f(-1.32998 -0.688911 -1.65887)))))
     (setq av0 (send *baxter* arm :inverse-kinematics goal-coords :rotation-axis nil)
           av1 (send *baxter* arm :inverse-kinematics goal-coords :rotation-axis t))
     (list av0 av1)))
