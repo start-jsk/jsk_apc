@@ -155,58 +155,43 @@
       (format t " (~A ~A)" bin (gethash bin limit-map)))
     (format t ")~%")))
 
-(defun check-pick-offset-from-wall-impl (arm bin &key (depth 30) (rotate-angle 2))
-  (let (limit-left limit-right
+(defun check-pick-offset-from-wall-impl (arm bin &key (depth 30) (rotate-angle 2) (side :left))
+  (let (limit-dist sign
                    (grasp-side-z 80)
                    (grasp-side-z-down 40)
                    )
-    ;; left
+    (case side
+      (:left (setq sign 1))
+      (:right (setq sign -1))
+      )
+
     (catch 'loop
       (dolist (y '(60 65 60 75 80 85 90 95 100 105))
         (move-end-pos-with-interpolation arm :x depth :time 1000)
-        (rotate-wrist arm 90)
+        (rotate-wrist arm (* sign 90))
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
         (send *ri* :wait-interpolation)
         (move-end-pos-with-interpolation arm :z (- grasp-side-z))
         (send *ri* :start-grasp arm)
-        (move-end-rot-with-interpolation arm :x -2)
-        (move-end-pos-with-interpolation arm :y y :z (- grasp-side-z-down) :time 1000)
+        (move-end-rot-with-interpolation arm :x (* sign rotate-angle))
+        (move-end-pos-with-interpolation arm :y (* sign y) :z (- grasp-side-z-down) :time 1000)
         (unix::sleep 1) ;; waiting
         (when (check-if-grabbed arm)
-          (throw 'loop limit-left))
-        (setq limit-left y)
+          (throw 'loop limit-dist))
+        (setq limit-dist y)
         ;; return to original pose
         (insert-to-pick-object-avs arm bin)
         (send *irtviewer* :draw-objects)
         (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
         (send *ri* :wait-interpolation)
         ))
-    (ros::ros-info "arm: ~A bin: ~A depth: ~A safe left is ~A" arm bin depth limit-left)
+    (insert-to-pick-object-avs arm bin)
+    (send *irtviewer* :draw-objects)
+    (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+    (send *ri* :wait-interpolation)
+    (ros::ros-info "arm: ~A bin: ~A depth: ~A safe ~A is ~A" arm bin depth side limit-dist)
     (send *ri* :stop-grasp arm)
-    ;; right
-    (catch 'loop
-      (dolist (y '(60 65 60 75 80 85 90 95 100 105))
-        (move-end-pos-with-interpolation arm :x depth :time 1000)
-        (rotate-wrist arm -90)
-        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-        (send *ri* :wait-interpolation)
-        (move-end-pos-with-interpolation arm :z (- grasp-side-z))
-        (send *ri* :start-grasp arm)
-        (move-end-rot-with-interpolation arm :x 2)
-        (move-end-pos-with-interpolation arm :y (- y) :z (- grasp-side-z-down) :time 1000)
-        (unix::sleep 1) ;; waiting
-        (when (check-if-grabbed arm)
-          (throw 'loop limit-right))
-        (setq limit-right y)
-        ;; return to original pose
-        (insert-to-pick-object-avs arm bin)
-        (send *irtviewer* :draw-objects)
-        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-        (send *ri* :wait-interpolation)
-        ))
-    (ros::ros-info "arm: ~A bin: ~A depth: ~A safe right is ~A" arm bin depth limit-right)
-    (send *ri* :stop-grasp arm)
-  (cons limit-left limit-right)))
+    limit-dist))
 
 (defun check-pick-offset-from-wall (arm &optional (bins '(:c :f :i :l)))
   (let ((limit-map (make-hash-table)))
@@ -221,7 +206,10 @@
       (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
       (send *ri* :wait-interpolation)
 
-      (setf (gethash bin limit-map) (check-pick-offset-from-wall-impl arm bin))
+      (setf (gethash bin limit-map) (cons
+                                     (check-pick-offset-from-wall-impl arm bin :side :left :rotate-angle 0)
+                                     (check-pick-offset-from-wall-impl arm bin :side :right :rotate-angle 0)
+                                     ))
 
       (insert-to-pick-object-avs arm bin)
       (send *irtviewer* :draw-objects)
