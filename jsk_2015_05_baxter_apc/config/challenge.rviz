@@ -561,6 +561,60 @@ Visualization Manager:
                   text size: 12
                   top: 0
                   width: 128
+                - Background Alpha: 0.8
+                  Background Color: 0; 0; 0
+                  Class: jsk_rviz_plugin/OverlayText
+                  Enabled: true
+                  Foreground Alpha: 0.8
+                  Foreground Color: 25; 255; 240
+                  Name: LeftGrabbedState
+                  Overtake Color Properties: false
+                  Overtake Position Properties: false
+                  Topic: /left_grabbed_state
+                  Value: true
+                  font: DejaVu Sans Mono
+                  height: 128
+                  left: 0
+                  line width: 2
+                  text size: 12
+                  top: 0
+                  width: 128
+                - Background Alpha: 0.8
+                  Background Color: 0; 0; 0
+                  Class: jsk_rviz_plugin/OverlayText
+                  Enabled: true
+                  Foreground Alpha: 0.8
+                  Foreground Color: 25; 255; 240
+                  Name: RightGrabbedState
+                  Overtake Color Properties: false
+                  Overtake Position Properties: false
+                  Topic: /right_grabbed_state
+                  Value: true
+                  font: DejaVu Sans Mono
+                  height: 128
+                  left: 0
+                  line width: 2
+                  text size: 12
+                  top: 0
+                  width: 128
+                - Background Alpha: 0.8
+                  Background Color: 0; 0; 0
+                  Class: jsk_rviz_plugin/OverlayText
+                  Enabled: true
+                  Foreground Alpha: 0.8
+                  Foreground Color: 25; 255; 240
+                  Name: Time
+                  Overtake Color Properties: false
+                  Overtake Position Properties: false
+                  Topic: /passed_time
+                  Value: true
+                  font: DejaVu Sans Mono
+                  height: 128
+                  left: 0
+                  line width: 2
+                  text size: 12
+                  top: 0
+                  width: 128
               Enabled: true
               Name: DebugInfo
           Enabled: true
@@ -645,10 +699,13 @@ Visualization Manager:
               ObjectsModels: true
               OverlayTexts:
                 DebugInfo:
+                  LeftGrabbedState: true
                   LeftRecog: true
                   LeftVacuumState: true
+                  RightGrabbedState: true
                   RightRecog: true
                   RightVacuumState: true
+                  Time: true
                   TweetText: true
                   Value: true
                 LeftInfo:
@@ -774,10 +831,13 @@ Visualization Manager:
               ObjectsModels: true
               OverlayTexts:
                 DebugInfo:
+                  LeftGrabbedState: true
                   LeftRecog: true
                   LeftVacuumState: true
+                  RightGrabbedState: true
                   RightRecog: true
                   RightVacuumState: true
+                  Time: true
                   TweetText: true
                   Value: true
                 LeftInfo:
