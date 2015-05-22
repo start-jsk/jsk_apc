@@ -33,18 +33,22 @@ def main():
 
     # wait for rqt_yn_btn
     wait_for_rqt_yn_btn = True
-    while wait_for_rqt_yn_btn:
+    while wait_for_rqt_yn_btn and (not rospy.is_shutdown()):
         try:
             rospy.wait_for_service('/rqt_yn_btn', timeout=10)
             wait_for_rqt_yn_btn = False
         except rospy.ROSException, e:
             rospy.logerr('timeout for /rqt_yn_btn: {0}'.format(e))
+        rospy.sleep(1)
     # get user input using rqt_yn_btn
     cl_yn = rospy.ServiceProxy('/rqt_yn_btn', YesNo)
     start_main = False
     while start_main is False:
         res = cl_yn()
         start_main = res.yes
+        if res.yes is False:
+            rospy.logerr('please select yes to start')
+        rospy.sleep(1)
     rospy.set_param('/left_process/state', 'pick_object')
     rospy.set_param('/right_process/state', 'pick_object')
 
