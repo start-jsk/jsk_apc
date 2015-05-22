@@ -177,7 +177,6 @@
 				  (bg-color (instance std_msgs::ColorRGBA :init :r  0  :g 0  :b 0 :a 0.2)))
   (let ((overlay-text-msg (instance jsk_rviz_plugins::OverlayText :init)))
     (ros::advertise-if-yet topic jsk_rviz_plugins::OverlayText 5)
-    (warn (format nil "~A" text-size))
     (send overlay-text-msg :width width)
     (send overlay-text-msg :height height)
     (send overlay-text-msg :left left)
