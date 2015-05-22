@@ -96,9 +96,27 @@
 (ros::subscribe "/gripper_grabbed/limb/right/state" std_msgs::Bool
                 #'gripper-grabbed-rarm-cb)
 
+(defparameter *end-coords-diff-threshold* 30)
+(defun check-real-sim-end-coords-diff(arm)
+  (let (real-coords simulator-coords real-v simulator-v)
+    (send *ri* :update-robot-state)
+    (setq real-coords (send (send (*ri* . robot) arm :end-coords) :transformation (car (send (*ri* . robot) arm :links)) :local))
+    (setq simulator-coords (send (send *baxter* arm :end-coords) :transformation (car (send *baxter* arm :links)) :local))
+    (setq real-v (send real-coords :worldpos)) 
+    (setq simulator-v (send simulator-coords :worldpos))
+    (if (and ( > (norm (v- real-v simulator-v)) *end-coords-diff-threshold*) (< (elt (v- real-v simulator-v) 2) 0))
+	(progn
+	  (ros::ros-error "real and sim's end-coords diff is over threshold!!  diff: ~A >  threshold: ~A  z direction: ~A. Seems to catch the bottom of bin...." (norm (v- real-v simulator-v)) *end-coords-diff-threshold* (elt (v- real-v simulator-v) 2))
+	  nil
+	  )
+      t)))
+
 (defun check-if-grabbed (arm)
   (ros::spin-once)
   (let (state)
+    (unless (check-real-sim-end-coords-diff arm)
+      (return-from check-if-grabbed nil)
+      )
     (setq state (gethash arm *gripper-grabbed*))
     ; (when state (speak-en "Grasped object" :google t))
     state))
