@@ -31,4 +31,12 @@
      (ros::publish (format nil "/vacuum_gripper/limb/~A" l/r) msg)
      (ros::sleep)
      ))
+  (:arm-potentio-vector
+    (arm)
+    (case arm
+      (:larm (subseq (send *ri* :state :potentio-vector) 1 8))
+      (:rarm (subseq (send *ri* :state :potentio-vector) 8 15))
+      (t nil)
+      )
+    )
   )
