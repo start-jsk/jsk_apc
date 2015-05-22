@@ -23,4 +23,7 @@
     <arg name="use_machine" value="false"/>
     <!-- <arg name="sensor" value="502986542542"/> -->
   </include>
+
+  <!-- custom vacuum link -->
+  <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch"/>
 </launch>
