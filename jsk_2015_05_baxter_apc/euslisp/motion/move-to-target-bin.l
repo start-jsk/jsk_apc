@@ -24,5 +24,5 @@
       (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       )
     (send *ri* :wait-interpolation)
-    (force-to-reach-goal :arm arm :stop 10)
+    (force-to-reach-goal :arm arm :stop 3)
     avs))
