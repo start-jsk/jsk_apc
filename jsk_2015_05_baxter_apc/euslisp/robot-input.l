@@ -63,3 +63,12 @@
   (setq *total-score* (+ *total-score* *score-points*))
   (ros::set-param "/total_score" *total-score*)
   )
+
+
+;; ---------------
+;; Get object info
+;; ---------------
+(defun get-objects-to-see-if-grabbed ()
+  (list
+    "champion_copper_plus_spark_plug"
+    ))
