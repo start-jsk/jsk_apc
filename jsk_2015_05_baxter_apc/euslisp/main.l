@@ -17,7 +17,8 @@
 (defun main (arm)
   (while  ;; wait for user input to start
     (equal (ros::get-param (format nil "~A_process/state" (arm-to-str arm))) "wait_for_user_input")
-    (unix::usleep 1000))
+    (ros::ros-info "waiting for user input to start: ~A" arm)
+    (unix::sleep 1))
   (let (target param-target state work-order work)
     (setq work-order (get-work-order arm))
     (tweet-with-image (format nil "Ok, ~A start with ~A" arm (mapcar #'cadr work-order)) (arm-to-str arm))
