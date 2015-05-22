@@ -19,9 +19,9 @@
     (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 3.0)
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp arm)
-    (unix::sleep 5)
+    (unix::sleep 3)
     ;; shake to have object leave from hand
-    (dotimes (i 3)
+    (dotimes (i 10)
       (pushback (rotate-wrist arm 10) shake-avs)
       (pushback (rotate-wrist arm -20) shake-avs)
       (pushback (rotate-wrist arm 20) shake-avs)
