@@ -1,6 +1,5 @@
 <launch>
   <!-- args -->
-  <arg name="custom" default="true"/>
   <arg name="bof" default="true"/>
   <arg name="rosserial" default="true"/>
   <arg name="rviz" default="true" />
@@ -9,11 +8,6 @@
 
   <!-- tf of baxter's footprint -->
   <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
-
-  <!-- custom vacuum link -->
-  <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch">
-    <arg name="custom" value="$(arg custom)"/>
-  </include>
 
   <!-- tf of kinect2 -->
   <include file="$(find jsk_2014_picking_challenge)/launch/kinect2_tf.launch"></include>
