@@ -1,0 +1,97 @@
+<launch>
+  <arg name="input_cloud" default="/kinect2/depth_highres/points"/>
+  <arg name="input_image" default="/kinect2/rgb/image"/>
+
+  <arg name="custom" default="true"/>
+  <arg name="manager" default="extract_manager"/>
+  <arg name="rect" default="false" />
+
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+
+  <node pkg="nodelet" type="nodelet" name="passthrough_z_for_extract"
+        args="load pcl/PassThrough $(arg manager)" respawn="true">
+    <remap from="~input" to="$(arg input_cloud)" />
+    <rosparam>
+      filter_field_name: z
+      filter_limit_min: 0.7
+      filter_limit_max: 2
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node pkg="jsk_pcl_ros" type="tf_transform_cloud" name="cloud_from_base">
+    <remap from="~input" to="passthrough_z_for_extract/output" />
+    <rosparam>
+      target_frame_id: /base
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="bin_extracter"
+        args="load jsk_pcl/AttentionClipper /$(arg manager)" respawn="true">
+    <remap from="~input/points" to="cloud_from_base/output" />
+    <rosparam>
+      use_multiple_attention: true
+      initial_pos_list: [[1.12,0.3,0.75], [1.12,0,0.75], [1.12,-0.3,0.75], [1.12,0.3,0.45], [1.12,0,0.45], [1.12,-0.3,0.45]]
+      initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+      dimensions: [[0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22], [0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22]]
+      frame_id_list: [base, base, base, base, base, base]
+      prefixes: [bin_a, bin_b, bin_c, bin_d, bin_e, bin_f]
+    </rosparam>
+  </node>
+
+
+
+  <node pkg="nodelet" type="nodelet" name="extract_a_indices"
+        args="load pcl/ExtractIndices /$(arg manager)">
+    <remap from="~input" to="cloud_from_base/output" />
+    <remap from="~indices" to="/bin_extracter/bin_a/point_indices" />
+    <rosparam>
+      use_indices: true
+    </rosparam>
+  </node>
+  <node pkg="nodelet" type="nodelet" name="extract_b_indices"
+        args="load pcl/ExtractIndices /$(arg manager)">
+    <remap from="~input" to="cloud_from_base/output" />
+    <remap from="~indices" to="/bin_extracter/bin_b/point_indices" />
+    <rosparam>
+      use_indices: true
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="extract_c_indices"
+        args="load pcl/ExtractIndices /$(arg manager)">
+    <remap from="~input" to="cloud_from_base/output" />
+    <remap from="~indices" to="/bin_extracter/bin_c/point_indices" />
+    <rosparam>
+      use_indices: true
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="extract_d_indices"
+        args="load pcl/ExtractIndices /$(arg manager)">
+    <remap from="~input" to="cloud_from_base/output" />
+    <remap from="~indices" to="/bin_extracter/bin_d/point_indices" />
+    <rosparam>
+      use_indices: true
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="extract_e_indices"
+        args="load pcl/ExtractIndices /$(arg manager)">
+    <remap from="~input" to="cloud_from_base/output" />
+    <remap from="~indices" to="/bin_extracter/bin_e/point_indices" />
+    <rosparam>
+      use_indices: true
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="extract_f_indices"
+        args="load pcl/ExtractIndices /$(arg manager)">
+    <remap from="~input" to="cloud_from_base/output" />
+    <remap from="~indices" to="/bin_extracter/bin_f/point_indices" />
+    <rosparam>
+      use_indices: true
+    </rosparam>
+  </node>
+
+</launch>
