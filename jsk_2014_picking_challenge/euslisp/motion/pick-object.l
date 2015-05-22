@@ -30,6 +30,7 @@
 (defun try-to-pick-object (arm bin pattern depth
                                &key
                                (call-check-if-grabbed-function t)
+                               (call-see-if-grabbed-function nil)
                                (grasp-depth-z  95) ;; move z down to grasp
                                (check-depth-z  10) ;; move z up to check grabbed
                                (grasp-side-z   80) ;; move z down to side grasp
@@ -169,9 +170,16 @@
       (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
       (send *ri* :wait-interpolation)
 
-      (if nil ;(if *simulator-p* nil (see-if-grabbed arm))
-          (progn (ros::ros-info "finish because see if grabbed")
-                 (return-from try-to-pick-object t))
+      (if
+        (and
+          (not *simulator-p*)
+          call-see-if-grabbed-function
+          (see-if-grabbed arm)
+          )
+        (progn
+          (ros::ros-info "finish because see if grabbed")
+          (return-from try-to-pick-object t)
+          )
         (return-from try-to-pick-object nil)))
     ;; patterns after grabbed
     (ros::ros-info "take arm from target bin")
@@ -230,7 +238,7 @@
       )
     t))
 
-(defun pick-object (arm bin)
+(defun pick-object (arm bin &key (to-see-if-grabbed nil))
   (let* (av avs
             (patterns
              '(:middle :middle :middle
@@ -260,7 +268,7 @@
     (ros::ros-info "try to pick object ~A ~A" arm bin)
     (while
         (and patterns
-             (not (try-to-pick-object arm bin (pop patterns) (pop depths))))
+             (not (try-to-pick-object arm bin (pop patterns) (pop depths) :call-see-if-grabbed-function to-see-if-grabbed)))
       (unless *simulator-p* (speak-en  "Fail to catch the target" :google t)))
     ;; take arm out of bin
     (ros::ros-info "take arm out of bin ~A ~A" arm bin)
