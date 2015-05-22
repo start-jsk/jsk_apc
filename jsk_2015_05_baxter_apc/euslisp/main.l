@@ -78,7 +78,13 @@
          (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) (underscore-to-space target-object)) :google t)
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
-         (pick-object arm target)
+         (if (and  ;; decide if going to see if grabbed
+               (member target-object (get-objects-to-see-if-grabbed))
+               (= (length (get-bin-contents target)) 1)
+               )
+           (pick-object arm target :to-see-if-grabbed t)
+           (pick-object arm target :to-see-if-grabbed nil)
+           )
          (incf n-tried)  ;; how many times to try to pick
          (if (= (length (get-bin-contents target)) 1)
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object")  ;; SINGLE-ITEM-BIN
