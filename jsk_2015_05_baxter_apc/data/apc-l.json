@@ -1,0 +1,102 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "rolodex_jumbo_pencil_cup",
+            "safety_works_safety_glasses",
+            "champion_copper_plus_spark_plug"
+        ],
+        "bin_B": [
+            "mead_index_cards"
+        ],
+        "bin_C": [
+            "feline_greenies_dental_treats",
+            "kong_sitting_frog_dog_toy"
+        ],
+        "bin_D": [
+            "stanley_66_052",
+            "sharpie_accent_tank_style_highlighters",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_E": [
+            "first_years_take_and_toss_straw_cup",
+            "munchkin_white_hot_duck_bath_toy"
+        ],
+        "bin_F": [
+            "paper_mate_12_count_mirado_black_warrior"
+        ],
+        "bin_G": [
+            "highland_6539_self_stick_notes",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_H": [
+            "oreo_mega_stuf",
+            "mommys_helper_outlet_plugs"
+        ],
+        "bin_I": [
+            "expo_dry_erase_board_eraser",
+            "cheezit_big_original"
+        ],
+        "bin_J": [
+            "genuine_joe_plastic_stir_sticks",
+            "laugh_out_loud_joke_book"
+        ],
+        "bin_K": [
+            "dr_browns_bottle_brush"
+        ],
+        "bin_L": [
+            "kong_duck_dog_toy",
+            "crayola_64_ct",
+            "kong_air_dog_squeakair_tennis_ball"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "rolodex_jumbo_pencil_cup"
+        },
+        {
+            "bin": "bin_B",
+            "item": "mead_index_cards"
+        },
+        {
+            "bin": "bin_C",
+            "item": "feline_greenies_dental_treats"
+        },
+        {
+            "bin": "bin_D",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_E",
+            "item": "first_years_take_and_toss_straw_cup"
+        },
+        {
+            "bin": "bin_F",
+            "item": "paper_mate_12_count_mirado_black_warrior"
+        },
+        {
+            "bin": "bin_G",
+            "item": "highland_6539_self_stick_notes"
+        },
+        {
+            "bin": "bin_H",
+            "item": "oreo_mega_stuf"
+        },
+        {
+            "bin": "bin_I",
+            "item": "expo_dry_erase_board_eraser"
+        },
+        {
+            "bin": "bin_J",
+            "item": "genuine_joe_plastic_stir_sticks"
+        },
+        {
+            "bin": "bin_K",
+            "item": "dr_browns_bottle_brush"
+        },
+        {
+            "bin": "bin_L",
+            "item": "kong_duck_dog_toy"
+        }
+    ]
+}
