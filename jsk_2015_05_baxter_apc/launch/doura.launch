@@ -1,5 +1,5 @@
 <launch>
-  <arg name="input_cloud" default="/kinect2_doura/depth_highres/points"/>
+  <arg name="input_cloud" default="/kinect2_doura/depth_lowres/points"/>
   <arg name="input_image" default="/kinect2_doura/rgb/image"/>
 
   <arg name="manager" default="extract_manager"/>
@@ -8,13 +8,14 @@
   <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
 
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
-    <arg name="use_machine" value="false"/>
+    <arg name="use_machine" value="true"/>
     <arg name="base_name" value="kinect2_doura"/>
   </include>
 
+  <node pkg="tf" type="static_transform_publisher" name="doura_static_tf_publisher" args="0.2 0.13 0.46 -0.08 -1.55 3.14 base kinect2_doura_rgb_optical_frame 100"/>
   <group ns="doura">
     <node pkg="nodelet" type="nodelet" name="passthrough_z_for_extract"
-          args="load pcl/PassThrough $(arg manager)" respawn="true">
+          args="load pcl/PassThrough /$(arg manager)" respawn="true">
       <remap from="~input" to="$(arg input_cloud)" />
       <rosparam>
         filter_field_name: z
@@ -36,7 +37,7 @@
       <remap from="~input/points" to="cloud_from_base/output" />
       <rosparam>
         use_multiple_attention: true
-        initial_pos_list: [[1.12,0.3,0.45], [1.12,0,0.45], [1.12,-0.3,0.45], [1.12,0.3,0.75], [1.12,0,0.75], [1.12,-0.3,0.75]]
+        initial_pos_list: [[1.12,0.3,0], [1.12,0,0], [1.12,-0.3,0], [1.12,0.3,0.3], [1.12,0,0.3], [1.12,-0.3,0.3]]
         initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
         dimensions: [[0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22], [0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22]]
         frame_id_list: [base, base, base, base, base, base]
