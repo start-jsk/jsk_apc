@@ -18,10 +18,12 @@ class ObjectVerification(object):
             return
         self._init_bin_contents(json_file)
         self._init_work_order(json_file)
-        self.bof_sub = rospy.Subscriber('/bof_object_matcher/output',
-                                    ObjectRecognition, self._cb_bof)
-        self.cfeature_sub = rospy.Subscriber('/color_object_matcher/output',
-                                             ObjectRecognition, self._cb_cfeature)
+        self.bof_sub = rospy.Subscriber('bof_object_matcher/output',
+                                        ObjectRecognition,
+                                        self._cb_bof)
+        self.cfeature_sub = rospy.Subscriber('color_object_matcher/output',
+                                             ObjectRecognition,
+                                             self._cb_cfeature)
         self.pub = rospy.Publisher('~output', ObjectRecognition, queue_size=1)
         self.bof_data = None
         self.cfeature = None
@@ -52,7 +54,8 @@ class ObjectVerification(object):
         if target_bin is None or target_bin == '':
             return
         candidates = self.bin_contents[target_bin]
-        proba = [(c, bof_objects_proba[c] + cfeature_objects_proba[c]) for c in candidates]
+        proba = [(c, bof_objects_proba[c] + cfeature_objects_proba[c])
+                 for c in candidates]
 
         matched = sorted(proba, key=lambda x: x[1])[-1][0]
         # compose msg
