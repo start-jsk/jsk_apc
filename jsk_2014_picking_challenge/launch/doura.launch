@@ -12,7 +12,7 @@
     <arg name="base_name" value="kinect2_doura"/>
   </include>
 
-  <node pkg="tf" type="static_transform_publisher" name="doura_static_tf_publisher" args="0.2 0.13 0.48 -0.08 -1.55 3.14 base kinect2_doura_rgb_optical_frame 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="doura_static_tf_publisher" args="0.2 0.13 0.46 -0.08 -1.55 3.14 base kinect2_doura_rgb_optical_frame 100"/>
   <group ns="doura">
     <node pkg="nodelet" type="nodelet" name="passthrough_z_for_extract"
           args="load pcl/PassThrough /$(arg manager)" respawn="true">
