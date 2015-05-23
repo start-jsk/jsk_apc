@@ -44,8 +44,8 @@
         (grasp-right-dist -50)
         (grasp-middle-left-dist 20)
         (grasp-middle-right-dist -20)
-        (grasp-limit-left-side 80)
-        (grasp-limit-right-side -80)
+        (grasp-limit-left-side 50)
+        (grasp-limit-right-side -50)
         (grasp-half-limit-left-side (/ grasp-limit-left-side 2))
         (grasp-half-limit-right-side (/ grasp-limit-right-side 2))
         )
@@ -253,15 +253,20 @@
 (defun pick-object (arm bin &key (to-see-if-grabbed nil))
   (let* (av avs
             (patterns
-             '(;; :middle :middle :middle
-                       :rotate-and-left :rotate-and-right :rotate-and-left :rotate-and-right :rotate-and-left :rotate-and-right
-                       :right-most :left-most :right-most :left-most :right-most :left-most
+             '(:middle :middle :middle
+                       :rotate-and-left :left-most
+		       :rotate-and-right :right-most
+                       :rotate-and-left :left-most
+		       :rotate-and-right :right-most
+                       :rotate-and-left :left-most
+		       :rotate-and-right :right-most
                        :left :right :left :right :left :right
                        :middle-left :middle-right :middle-left :middle-right :middle-left :middle-right
                        ))
             (depths '(30 80 150
-                         30 30 80 80 150 150
-                         30 30 80 80 150 150
+                         30 30 30 30
+			 80 80 80 80
+			 150 150 150 150
                          80 80 30 30 150 150
                          80 80 30 30 150 150
                          ))
