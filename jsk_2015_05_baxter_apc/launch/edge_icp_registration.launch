@@ -1,6 +1,6 @@
 <launch>
-  <arg name="pcd_file" default="PLEASE_SET_PCD_FILE.pcd"/>
-  <arg name="frame_pcd" default="kinect2_rgb_optical_frame"/>
+  <arg name="pcd_file" default="/home/baxter/icp_pcd_data/1432422020608085.pcd"/>
+  <arg name="frame_pcd" default="kinect2_doura_rgb_optical_frame"/>
   <arg name="manager" default="icp_manager"/>
 
   <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud"
@@ -10,11 +10,12 @@
 
   <include file="$(find jsk_2014_picking_challenge)/launch/edge_publisher.launch">
     <arg name="manager" value="icp_manager"/>
+    <arg name="base_name" value="kinect2_doura"/>
   </include>
   
   <node pkg="nodelet" type="nodelet" name="icp_registration"
 	args="load jsk_pcl/ICPRegistration /$(arg manager)">
-    <remap from="~input" to="/icp_nodelet/added/output" />
+    <remap from="~input" to="/icp_nodelet/pass_through_z_edge/output" />
     <remap from="~input_reference" to="/cloud_pcd" />
   </node>
 </launch>
