@@ -36,6 +36,14 @@
     <arg name="input_image" value="/cameras/right_hand_camera/image" />
   </include>
 
+  <!-- object pos detection -->
+  <include ns="left_process" file="$(find jsk_2014_picking_challenge)/launch/feature_label_object_detector.launch">
+    <arg name="left_or_right" value="left" />
+  </include>
+  <include ns="right_process" file="$(find jsk_2014_picking_challenge)/launch/feature_label_object_detector.launch">
+    <arg name="left_or_right" value="right" />
+  </include>
+
   <!-- force sensor -->
   <include file="$(find jsk_2014_picking_challenge)/launch/virtual_force_publisher.launch">
     <arg name="limb" value="right" />
