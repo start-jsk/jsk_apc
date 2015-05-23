@@ -1,8 +1,9 @@
 <launch>
-  <arg name="input_depth_image" default="/kinect2/depth_lowres/image" />
-  <arg name="input_rgb_image" default="/kinect2/rgb_lowres/image" />
-  <arg name="input_point" default="/kinect2/depth_lowres/points" />
-  <arg name="input_info" default="/kinect2/rgb_lowres/camera_info" />
+  <arg name="base_name" default="kinect2"/>
+  <arg name="input_depth_image" default="/$(arg base_name)/depth_lowres/image" />
+  <arg name="input_rgb_image" default="/$(arg base_name)/rgb_lowres/image" />
+  <arg name="input_point" default="/$(arg base_name)/depth_lowres/points" />
+  <arg name="input_info" default="/$(arg base_name)/rgb_lowres/camera_info" />
 
   <arg name="manager" default="icp_manager"/>
 
@@ -15,7 +16,7 @@
   <!-- </node> -->
   <group ns="icp_nodelet">
     <node pkg="nodelet" type="nodelet" name="border_estimator"
-          args="load jsk_pcl_ros/BorderEstimator /$(arg manager)"
+          args="load jsk_pcl/BorderEstimator /$(arg manager)"
           output="screen">
       <remap from="~input" to="$(arg input_point)" />
       <remap from="~input_camera_info" to="$(arg input_info)" />
@@ -78,7 +79,7 @@
       <rosparam>
         filter_field_name: z
         filter_limit_min: 0
-        filter_limit_max: 1.5
+        filter_limit_max: 1.0
         keep_organized: true
       </rosparam>
     </node>
