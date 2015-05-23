@@ -70,7 +70,7 @@
     (ros::ros-error "[move-end-pos] ik error on ~A ~A ~A ~A" arm x y z)
     (return-from move-end-pos-with-interpolation nil))
   (if force
-      (force-to-reach-goal :arm arm)
+      (force-to-reach-goal :arm arm :stop 20 :threshold 2)
     (progn
       (send *irtviewer* :draw-objects)
       (send *ri* :angle-vector (send *baxter* :angle-vector) time)

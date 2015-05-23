@@ -10,6 +10,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-interface.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
 (load "package://jsk_2014_picking_challenge/euslisp/robot-communication.l")
+(load "package://jsk_2014_picking_challenge/euslisp/debug.l")
 
 (defun test-for-bin (arm bin &key (verify nil))
   (ros::ros-info "test for ~A" bin)
@@ -158,15 +159,15 @@
       (:right (setq sign -1))
       )
     (catch 'loop
-      (dolist (y '(40 50 55 60 65 60 75 80 85 90 95 100))
-        (move-end-pos-with-interpolation arm :x depth :time 1000)
+      (dolist (y '(40 50 55 60 65 60 75 80))
+        (move-end-pos-with-interpolation arm :x depth :time 100)
         (rotate-wrist arm (* sign 90))
-        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+        (send *ri* :angle-vector (send *baxter* :angle-vector) 100)
         (send *ri* :wait-interpolation)
         (move-end-pos-with-interpolation arm :z (- grasp-side-z))
         (send *ri* :start-grasp arm)
         (move-end-rot-with-interpolation arm :x (* sign rotate-angle))
-        (move-end-pos-with-interpolation arm :y (* sign y) :z (- grasp-side-z-down) :time 1000 :force t)
+        (move-end-pos-with-interpolation arm :y (* sign y) :z (- grasp-side-z-down) :time 100 :force t)
         (unix::sleep 1) ;; waiting
         (when (check-if-grabbed arm)
           (throw 'loop limit-dist))
@@ -174,7 +175,7 @@
         ;; return to original pose
         (insert-to-pick-object-avs arm bin)
         (send *irtviewer* :draw-objects)
-        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+        (send *ri* :angle-vector (send *baxter* :angle-vector) 100)
         (send *ri* :wait-interpolation)
         ))
     (insert-to-pick-object-avs arm bin)
