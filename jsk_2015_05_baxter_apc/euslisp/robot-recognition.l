@@ -120,3 +120,22 @@
     (setq state (gethash arm *gripper-grabbed*))
     ; (when state (speak-en "Grasped object" :google t))
     state))
+
+;; ---------------------------------
+;; Detect Object Position in the bin
+;; ---------------------------------
+(setq *detected-labels* (make-hash-table))
+(defun detect-object-pos-cb (msg arm) (setf (gethash arm *detected-labels*) (send msg :labels)))
+(defun detect-object-pos-larm-cb (msg) (detect-object-pos-cb msg :larm))
+(defun detect-object-pos-rarm-cb (msg) (detect-object-pos-cb msg :rarm))
+(ros::subscribe "/left_process/feature_label_object_detector/output"
+                jsk_2014_picking_challenge::ProbabilisticLabels
+                #'detect-object-pos-larm-cb)
+(ros::subscribe "/right_process/feature_label_object_detector/output"
+                jsk_2014_picking_challenge::ProbabilisticLabels
+                #'detect-object-pos-rarm-cb)
+(defun detect-object-pos-in-bin (arm)
+  (ros::spin-once)
+  (gethash arm *detected-labels*)
+  )
+
