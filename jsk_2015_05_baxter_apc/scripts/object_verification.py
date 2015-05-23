@@ -1,20 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+from __future__ import division
+
 import rospy
 
 import numpy as np
 
 from bin_contents import get_bin_contents
 from work_order import get_work_order
+from common import get_object_list
 from jsk_2014_picking_challenge.msg import ObjectRecognition
 
 
 class ObjectVerification(object):
     def __init__(self):
         json_file = rospy.get_param('~json', None)
+        weight_yaml = rospy.get_param('~weight', None)
         if json_file is None:
             rospy.logerr('must set json file path to ~json')
+            return
+        if weight_yaml is None:
+            rospy.logerr('must set weight yaml file path to ~weight')
             return
         self._init_bin_contents(json_file)
         self._init_work_order(json_file)
@@ -25,8 +32,16 @@ class ObjectVerification(object):
                                              ObjectRecognition,
                                              self._cb_cfeature)
         self.pub = rospy.Publisher('~output', ObjectRecognition, queue_size=1)
+        self.pub_debug = rospy.Publisher('~debug', ObjectRecognition,
+                                         queue_size=1)
+        self.weight = self._init_weight(weight_yaml)
         self.bof_data = None
         self.cfeature = None
+
+    def _init_weight(self, yaml_file):
+        with open(yaml_file) as f:
+            weight = yaml.load(f)
+        self.weight = weight
 
     def _init_bin_contents(self, json_file):
         bin_contents = get_bin_contents(json_file)
@@ -49,20 +64,34 @@ class ObjectVerification(object):
             return
         stamp, bof_objects_proba = self.bof_data
         stamp, cfeature_objects_proba = self.cfeature
+        weight = self.weight
 
         target_bin = rospy.get_param('target', None)
         if target_bin is None or target_bin == '':
             return
+
+        object_list = get_object_list()
+        all_proba = [
+            (o,
+             (weight[o]['bof'] * bof_objects_proba[o]) +
+             (weight[o]['color'] * cfeature_objects_proba[o])
+             ) for o in object_list
+            ]
+
         candidates = self.bin_contents[target_bin]
-        proba = [(c, bof_objects_proba[c] + cfeature_objects_proba[c])
-                 for c in candidates]
+        proba = [
+            (c,
+             (weight[c]['bof'] * bof_objects_proba[c]) +
+             (weight[c]['color'] * cfeature_objects_proba[c])
+             ) for c in candidates
+            ]
 
         matched = sorted(proba, key=lambda x: x[1])[-1][0]
         # compose msg
         msg = ObjectRecognition()
         msg.header.stamp = stamp
         msg.matched = matched
-        msg.probability = dict(proba)[matched]
+        msg.probability = dict(proba)[matched] / sum(dict(proba).values())
         msg.candidates = candidates
         msg.probabilities = np.array([dict(proba)[c] for c in candidates])
         msg.probabilities /= msg.probabilities.sum()
