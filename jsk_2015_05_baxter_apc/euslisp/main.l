@@ -113,7 +113,7 @@
            ))
         ((string= state "return_object")
          (speak-en (format nil "Return object to Bin ~A." (key-to-str target)) :google t)
-         (move-to-target-bin arm target)
+         (move-to-target-bin arm target :fast nil)
          (return-object arm target)
          ;; if have tried N times and N is larger than number of bin contents,
          ;; robot should abort the target
