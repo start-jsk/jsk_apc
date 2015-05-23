@@ -3,7 +3,7 @@
   <arg name="input_image" default="/kinect2_doura/rgb/image"/>
 
   <arg name="manager" default="extract_manager"/>
-  <arg name="use_decomposer" default="true"/>
+  <arg name="use_decomposer" default="false"/>
 
   <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
 
@@ -37,7 +37,7 @@
       <remap from="~input/points" to="cloud_from_base/output" />
       <rosparam>
         use_multiple_attention: true
-        initial_pos_list: [[1.12,0.3,0], [1.12,0,0], [1.12,-0.3,0], [1.12,0.3,0.3], [1.12,0,0.3], [1.12,-0.3,0.3]]
+        initial_pos_list: [[1.12,0.3,0.3], [1.12,0,0.3], [1.12,-0.3,0.3],[1.12,0.3,0], [1.12,0,0], [1.12,-0.3,0]]
         initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
         dimensions: [[0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22], [0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22]]
         frame_id_list: [base, base, base, base, base, base]
