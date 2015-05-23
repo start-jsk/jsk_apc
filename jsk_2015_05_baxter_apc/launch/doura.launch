@@ -12,7 +12,7 @@
     <arg name="base_name" value="kinect2_doura"/>
   </include>
 
-  <node pkg="tf" type="static_transform_publisher" name="doura_static_tf_publisher" args="0.2 0.13 0.46 -0.08 -1.55 3.14 base kinect2_doura_rgb_optical_frame 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="doura_static_tf_publisher" args="0.2 0.11 0.46 -0.08 -1.55 3.14 base kinect2_doura_rgb_optical_frame 100"/>
   <group ns="doura">
     <node pkg="nodelet" type="nodelet" name="passthrough_z_for_extract"
           args="load pcl/PassThrough /$(arg manager)" respawn="true">
@@ -37,9 +37,9 @@
       <remap from="~input/points" to="cloud_from_base/output" />
       <rosparam>
         use_multiple_attention: true
-        initial_pos_list: [[1.12,0.3,0.3], [1.12,0,0.3], [1.12,-0.3,0.3],[1.12,0.3,0], [1.12,0,0], [1.12,-0.3,0]]
+        initial_pos_list: [[1.16,0.33,0.26], [1.16,0,0.26], [1.16,-0.31,0.26],[1.16,0.33,0], [1.16,0,0], [1.16,-0.31,0]]
         initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-        dimensions: [[0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22], [0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22]]
+        dimensions: [[0.22, 0.22, 0.22],[0.22, 0.28, 0.22],[0.22, 0.22, 0.22], [0.22, 0.22, 0.22],[0.22, 0.28, 0.22],[0.22, 0.22, 0.22]]
         frame_id_list: [base, base, base, base, base, base]
         prefixes: [bin_g, bin_h, bin_i, bin_j, bin_k, bin_l]
       </rosparam>
@@ -60,56 +60,114 @@
 
   <group unless="$(arg use_decomposer)">
     <node pkg="nodelet" type="nodelet" name="extract_g_indices"
-          args="load pcl/ExtractIndices /$(arg manager)">
-      <remap from="~input" to="doura/cloud_from_base/output" />
+          args="standalone jsk_pcl/EstimateBoundingBox ">
+      <remap from="~points" to="doura/cloud_from_base/output" />
       <remap from="~indices" to="/doura/bin_extracter/bin_g/point_indices" />
       <rosparam>
         use_indices: true
+        align_boxes: false
       </rosparam>
     </node>
     <node pkg="nodelet" type="nodelet" name="extract_h_indices"
-          args="load pcl/ExtractIndices /$(arg manager)">
-      <remap from="~input" to="doura/cloud_from_base/output" />
+          args="standalone jsk_pcl/EstimateBoundingBox ">
+      <remap from="~points" to="doura/cloud_from_base/output" />
       <remap from="~indices" to="/doura/bin_extracter/bin_h/point_indices" />
       <rosparam>
         use_indices: true
+        align_boxes: false
       </rosparam>
     </node>
 
     <node pkg="nodelet" type="nodelet" name="extract_i_indices"
-          args="load pcl/ExtractIndices /$(arg manager)">
-      <remap from="~input" to="doura/cloud_from_base/output" />
+          args="standalone jsk_pcl/EstimateBoundingBox ">
+      <remap from="~points" to="doura/cloud_from_base/output" />
       <remap from="~indices" to="/doura/bin_extracter/bin_i/point_indices" />
       <rosparam>
+        align_boxes: false
         use_indices: true
       </rosparam>
     </node>
 
     <node pkg="nodelet" type="nodelet" name="extract_j_indices"
-          args="load pcl/ExtractIndices /$(arg manager)">
-      <remap from="~input" to="doura/cloud_from_base/output" />
+          args="standalone jsk_pcl/EstimateBoundingBox ">
+      <remap from="~points" to="doura/cloud_from_base/output" />
       <remap from="~indices" to="/doura/bin_extracter/bin_j/point_indices" />
       <rosparam>
+        align_boxes: false
         use_indices: true
       </rosparam>
     </node>
 
     <node pkg="nodelet" type="nodelet" name="extract_k_indices"
-          args="load pcl/ExtractIndices /$(arg manager)">
-      <remap from="~input" to="doura/cloud_from_base/output" />
+          args="standalone jsk_pcl/EstimateBoundingBox ">
+      <remap from="~points" to="doura/cloud_from_base/output" />
       <remap from="~indices" to="/doura/bin_extracter/bin_k/point_indices" />
       <rosparam>
+        align_boxes: false
         use_indices: true
       </rosparam>
     </node>
 
     <node pkg="nodelet" type="nodelet" name="extract_l_indices"
-          args="load pcl/ExtractIndices /$(arg manager)">
-      <remap from="~input" to="doura/cloud_from_base/output" />
+          args="standalone jsk_pcl/EstimateBoundingBox ">
+      <remap from="~points" to="doura/cloud_from_base/output" />
       <remap from="~indices" to="/doura/bin_extracter/bin_l/point_indices" />
       <rosparam>
+        align_boxes: false
         use_indices: true
       </rosparam>
     </node>
+    <!-- <node pkg="nodelet" type="nodelet" name="extract_g_indices" -->
+    <!--       args="standalone jsk_pcl/EstimateBoundingBox "> -->
+    <!--   <remap from="~points" to="doura/cloud_from_base/output" /> -->
+    <!--   <remap from="~indices" to="/doura/bin_extracter/bin_g/point_indices" /> -->
+    <!--   <rosparam> -->
+    <!--     use_indices: true -->
+    <!--   </rosparam> -->
+    <!-- </node> -->
+    <!-- <node pkg="nodelet" type="nodelet" name="extract_h_indices" -->
+    <!--       args="standalone jsk_pcl/EstimateBoundingBox "> -->
+    <!--   <remap from="~points" to="doura/cloud_from_base/output" /> -->
+    <!--   <remap from="~indices" to="/doura/bin_extracter/bin_h/point_indices" /> -->
+    <!--   <rosparam> -->
+    <!--     use_indices: true -->
+    <!--   </rosparam> -->
+    <!-- </node> -->
+
+    <!-- <node pkg="nodelet" type="nodelet" name="extract_i_indices" -->
+    <!--       args="standalone jsk_pcl/EstimateBoundingBox "> -->
+    <!--   <remap from="~points" to="doura/cloud_from_base/output" /> -->
+    <!--   <remap from="~indices" to="/doura/bin_extracter/bin_i/point_indices" /> -->
+    <!--   <rosparam> -->
+    <!--     use_indices: true -->
+    <!--   </rosparam> -->
+    <!-- </node> -->
+
+    <!-- <node pkg="nodelet" type="nodelet" name="extract_j_indices" -->
+    <!--       args="standalone jsk_pcl/EstimateBoundingBox "> -->
+    <!--   <remap from="~points" to="doura/cloud_from_base/output" /> -->
+    <!--   <remap from="~indices" to="/doura/bin_extracter/bin_j/point_indices" /> -->
+    <!--   <rosparam> -->
+    <!--     use_indices: true -->
+    <!--   </rosparam> -->
+    <!-- </node> -->
+
+    <!-- <node pkg="nodelet" type="nodelet" name="extract_k_indices" -->
+    <!--       args="standalone jsk_pcl/EstimateBoundingBox "> -->
+    <!--   <remap from="~points" to="doura/cloud_from_base/output" /> -->
+    <!--   <remap from="~indices" to="/doura/bin_extracter/bin_k/point_indices" /> -->
+    <!--   <rosparam> -->
+    <!--     use_indices: true -->
+    <!--   </rosparam> -->
+    <!-- </node> -->
+
+    <!-- <node pkg="nodelet" type="nodelet" name="extract_l_indices" -->
+    <!--       args="standalone jsk_pcl/EstimateBoundingBox "> -->
+    <!--   <remap from="~points" to="doura/cloud_from_base/output" /> -->
+    <!--   <remap from="~indices" to="/doura/bin_extracter/bin_l/point_indices" /> -->
+    <!--   <rosparam> -->
+    <!--     use_indices: true -->
+    <!--   </rosparam> -->
+    <!-- </node> -->
   </group>
 </launch>
