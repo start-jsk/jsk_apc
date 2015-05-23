@@ -67,6 +67,7 @@ add_message_files(
   BoolStamped.msg
   SetObjectPosition.msg
   SetObjectPositionArray.msg
+  ProbabilisticLabels.msg
   )
 
 ## Generate services in the 'srv' folder

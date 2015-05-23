@@ -17,7 +17,8 @@
 (defun main (arm)
   (while  ;; wait for user input to start
     (equal (ros::get-param (format nil "~A_process/state" (arm-to-str arm))) "wait_for_user_input")
-    (unix::usleep 1000))
+    (ros::ros-info "waiting for user input to start: ~A" arm)
+    (unix::sleep 1))
   (let (target param-target state work-order work)
     (setq work-order (get-work-order arm))
     (tweet-with-image (format nil "Ok, ~A start with ~A" arm (mapcar #'cadr work-order)) (arm-to-str arm))
@@ -77,7 +78,13 @@
          (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) (underscore-to-space target-object)) :google t)
          (move-to-target-bin arm target)
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
-         (pick-object arm target)
+         (if (and  ;; decide if going to see if grabbed
+               (member target-object (get-objects-to-see-if-grabbed))
+               (= (length (get-bin-contents target)) 1)
+               )
+           (pick-object arm target :to-see-if-grabbed t)
+           (pick-object arm target :to-see-if-grabbed nil)
+           )
          (incf n-tried)  ;; how many times to try to pick
          (if (= (length (get-bin-contents target)) 1)
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object")  ;; SINGLE-ITEM-BIN
@@ -106,7 +113,7 @@
            ))
         ((string= state "return_object")
          (speak-en (format nil "Return object to Bin ~A." (key-to-str target)) :google t)
-         (move-to-target-bin arm target)
+         (move-to-target-bin arm target :fast nil)
          (return-object arm target)
          ;; if have tried N times and N is larger than number of bin contents,
          ;; robot should abort the target
