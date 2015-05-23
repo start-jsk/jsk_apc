@@ -1,5 +1,5 @@
 <launch>
-  <arg name="input_cloud" default="/kinect2/depth_highres/points"/>
+  <arg name="input_cloud" default="/kinect2/depth_lowres/points"/>
   <arg name="input_image" default="/kinect2/rgb/image"/>
 
   <arg name="custom" default="true"/>
@@ -9,7 +9,7 @@
   <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
 
   <node pkg="nodelet" type="nodelet" name="passthrough_z_for_extract"
-        args="load pcl/PassThrough $(arg manager)" respawn="true">
+        args="load pcl/PassThrough /$(arg manager)" respawn="true">
     <remap from="~input" to="$(arg input_cloud)" />
     <rosparam>
       filter_field_name: z
@@ -42,55 +42,61 @@
 
 
   <node pkg="nodelet" type="nodelet" name="extract_a_indices"
-        args="load pcl/ExtractIndices /$(arg manager)">
-    <remap from="~input" to="cloud_from_base/output" />
+        args="load jsk_pcl/EstimateBoundingBox /$(arg manager)">
+    <remap from="~points" to="cloud_from_base/output" />
     <remap from="~indices" to="/bin_extracter/bin_a/point_indices" />
     <rosparam>
       use_indices: true
+      align_boxes: false
     </rosparam>
   </node>
   <node pkg="nodelet" type="nodelet" name="extract_b_indices"
-        args="load pcl/ExtractIndices /$(arg manager)">
-    <remap from="~input" to="cloud_from_base/output" />
+        args="load jsk_pcl/EstimateBoundingBox /$(arg manager)">
+    <remap from="~points" to="cloud_from_base/output" />
     <remap from="~indices" to="/bin_extracter/bin_b/point_indices" />
     <rosparam>
       use_indices: true
+      align_boxes: false
     </rosparam>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="extract_c_indices"
-        args="load pcl/ExtractIndices /$(arg manager)">
-    <remap from="~input" to="cloud_from_base/output" />
+        args="load jsk_pcl/EstimateBoundingBox /$(arg manager)">
+    <remap from="~points" to="cloud_from_base/output" />
     <remap from="~indices" to="/bin_extracter/bin_c/point_indices" />
     <rosparam>
       use_indices: true
+      align_boxes: false
     </rosparam>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="extract_d_indices"
-        args="load pcl/ExtractIndices /$(arg manager)">
-    <remap from="~input" to="cloud_from_base/output" />
+        args="load jsk_pcl/EstimateBoundingBox /$(arg manager)">
+    <remap from="~points" to="cloud_from_base/output" />
     <remap from="~indices" to="/bin_extracter/bin_d/point_indices" />
     <rosparam>
       use_indices: true
+      align_boxes: false
     </rosparam>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="extract_e_indices"
-        args="load pcl/ExtractIndices /$(arg manager)">
-    <remap from="~input" to="cloud_from_base/output" />
+        args="load jsk_pcl/EstimateBoundingBox /$(arg manager)">
+    <remap from="~points" to="cloud_from_base/output" />
     <remap from="~indices" to="/bin_extracter/bin_e/point_indices" />
     <rosparam>
       use_indices: true
+      align_boxes: false
     </rosparam>
   </node>
 
   <node pkg="nodelet" type="nodelet" name="extract_f_indices"
-        args="load pcl/ExtractIndices /$(arg manager)">
-    <remap from="~input" to="cloud_from_base/output" />
+        args="load jsk_pcl/EstimateBoundingBox /$(arg manager)">
+    <remap from="~points" to="cloud_from_base/output" />
     <remap from="~indices" to="/bin_extracter/bin_f/point_indices" />
     <rosparam>
       use_indices: true
+      align_boxes: false
     </rosparam>
   </node>
 
