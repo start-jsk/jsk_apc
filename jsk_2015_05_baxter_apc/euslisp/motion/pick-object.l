@@ -35,6 +35,7 @@
                                (check-depth-z  10) ;; move z up to check grabbed
                                (grasp-side-z   80) ;; move z down to side grasp
                                (grasp-side-z-down   50) ;; move z down to side (grasp after rotate)
+			       (grasp-z-offset 30) ;; z for returning to original pose
                                (debug-mode nil)
                                )
   (let* ((grasp-left-most-dist 60)
@@ -128,10 +129,13 @@
        (move-end-pos-with-interpolation arm :z check-depth-z :time 1000)
        )
       (:rotate-and-left
-       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-left-side) :time 1000)
+       (move-end-pos-with-interpolation arm :z (- grasp-side-z grasp-side-z-down) :time 1000 :force t)
+       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-left-side) :time 1000 :force t)
        )
       (:rotate-and-right
-       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-right-side) :time 1000))
+       (move-end-pos-with-interpolation arm :z (- grasp-side-z grasp-side-z-down) :time 1000 :force t)
+       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-right-side) :time 1000 :force t)
+       )
       )
 
     ;; ;; check if arm gripper unexpectedly attached to shelf or not
@@ -161,9 +165,9 @@
          (move-end-pos-with-interpolation arm :z (- grasp-depth-z check-depth-z) :time 1000) ;; for check grabbed, seperate gripper.
          )
         (:rotate-and-right)
-        (move-end-pos-with-interpolation arm :y 40 :z (+ grasp-side-z grasp-side-z-down) :time 1000)
+        (move-end-pos-with-interpolation arm :y 40 :z grasp-side-z-down :time 1000)
         (:rotate-and-left
-         (move-end-pos-with-interpolation arm :y -40 :z (+ grasp-side-z grasp-side-z-down) :time 1000)
+         (move-end-pos-with-interpolation arm :y -40 :z grasp-side-z-down :time 1000)
          ))
       (insert-to-pick-object-avs arm bin)
       (send *irtviewer* :draw-objects)
@@ -191,7 +195,7 @@
        (move-end-pos-with-interpolation arm :z (+ 50 (- grasp-depth-z check-depth-z)) :revert-if-fail nil :rotation-axis nil :time 4000)
        )
       ((:rotate-and-left :rotate-and-right)
-       (move-end-pos-with-interpolation arm :z grasp-side-z-down :revert-if-fail nil :rotation-axis nil :time 4000)
+       (move-end-pos-with-interpolation arm :z grasp-side-z-down :revert-if-fail nil :rotation-axis nil :time 4000 :force t)
        )
       )
 
@@ -221,19 +225,27 @@
        (rotate-wrist arm -45)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
-       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-left-side grasp-limit-left-side) :z grasp-side-z :time 1000)
+       (move-end-pos-with-interpolation arm :z grasp-z-offset :force t :time 1000)
+       (move-end-pos-with-interpolation arm
+					:y (- grasp-half-limit-left-side grasp-limit-left-side) 
+					:time 1000
+					:force t)
        )
       (:rotate-and-right
        (rotate-wrist arm 45)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
-       (move-end-pos-with-interpolation arm :y (- grasp-half-limit-left-side grasp-limit-right-side) :z grasp-side-z :time 1000)
+       (move-end-pos-with-interpolation arm :z grasp-z-offset :force t :time 1000)       
+       (move-end-pos-with-interpolation arm 
+					:y (- grasp-half-limit-left-side grasp-limit-right-side)
+					:time 1000
+					:force t)
        )
       )
 
     (case pattern
       ((:left-most :right-most :left :right :middle :middle-left :middle-right)
-       (move-end-rot-with-interpolation arm :y -4)
+       (move-end-rot-with-interpolation arm :y -2)
        )
       )
     t))
@@ -241,7 +253,7 @@
 (defun pick-object (arm bin &key (to-see-if-grabbed nil))
   (let* (av avs
             (patterns
-             '(:middle :middle :middle
+             '(;; :middle :middle :middle
                        :rotate-and-left :rotate-and-right :rotate-and-left :rotate-and-right :rotate-and-left :rotate-and-right
                        :right-most :left-most :right-most :left-most :right-most :left-most
                        :left :right :left :right :left :right
