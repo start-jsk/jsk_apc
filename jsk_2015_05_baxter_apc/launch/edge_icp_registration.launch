@@ -1,16 +1,20 @@
 <launch>
   <arg name="pcd_file" default="PLEASE_SET_PCD_FILE.pcd"/>
+  <arg name="frame_pcd" default="kinect2_rgb_optical_frame"/>
+  <arg name="manager" default="icp_manager"/>
 
   <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud"
 	args="$(arg pcd_file) 1">
-    <param name="frame_id" value="kinect2_rgb_optical_frame"/>
+    <param name="frame_id" value="$(arg frame_pcd)"/>
   </node>
 
-  <include file="$(find jsk_2014_picking_challenge)/launch/edge_publisher.launch"/>
+  <include file="$(find jsk_2014_picking_challenge)/launch/edge_publisher.launch">
+    <arg name="manager" value="icp_manager"/>
+  </include>
   
   <node pkg="nodelet" type="nodelet" name="icp_registration"
-	args="standalone jsk_pcl/ICPRegistration">
-    <remap from="~input" to="/added/output" />
+	args="load jsk_pcl/ICPRegistration /$(arg manager)">
+    <remap from="~input" to="/icp_nodelet/added/output" />
     <remap from="~input_reference" to="/cloud_pcd" />
   </node>
 </launch>
