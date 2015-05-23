@@ -166,7 +166,7 @@
         (move-end-pos-with-interpolation arm :z (- grasp-side-z))
         (send *ri* :start-grasp arm)
         (move-end-rot-with-interpolation arm :x (* sign rotate-angle))
-        (move-end-pos-with-interpolation arm :y (* sign y) :z (- grasp-side-z-down) :time 1000)
+        (move-end-pos-with-interpolation arm :y (* sign y) :z (- grasp-side-z-down) :time 1000 :force t)
         (unix::sleep 1) ;; waiting
         (when (check-if-grabbed arm)
           (throw 'loop limit-dist))
