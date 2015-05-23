@@ -21,7 +21,8 @@
 
 (defun verify-object (arm target-object &key (timeout 20))
   (let* ((now (ros::time-now))
-         (msg (gethash arm *verify-object*)))
+         (msg (gethash arm *verify-object*))
+         correct?)
     (ros::ros-info "wait for object_verification msg: ~A" (arm-to-str arm))
     (while  ;; wait for msg to synchronize
       (or (null msg) (< (send (send (send msg :header) :stamp) :sec) (send now :sec)))
