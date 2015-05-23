@@ -1,5 +1,4 @@
 <launch>
-  <group ns="right_process">
   <arg name="debug" default="false" />
   <arg name="manager" default="object_pos_manager"/>
   <arg name="left_or_right" default="left" />
@@ -30,7 +29,7 @@
   <node pkg="nodelet" type="nodelet" name="grid_label"
         args="load jsk_perception/GridLabel $(arg manager)">
     <remap from="~input" to="apply_mask/output" />
-    <param name="label_size" type="int" value="85" />
+    <param name="label_size" type="int" value="65" />
   </node>
   <node pkg="nodelet" type="nodelet" name="colorize_labels"
         args="load jsk_perception/ColorizeLabels $(arg manager)">
@@ -49,5 +48,4 @@
     <remap from="~input/label" to="grid_label/output" />
     <remap from="~input/ImageFeature0D" to="ImageFeature0D" />
   </node>
-  </group>
 </launch>
