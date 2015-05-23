@@ -25,12 +25,19 @@
       </rosparam>
     </node>
 
-    <node pkg="jsk_pcl_ros" type="tf_transform_cloud" name="cloud_from_base">
+    <!-- <node pkg="jsk_pcl_ros" type="tf_transform_cloud" name="cloud_from_base"> -->
+    <!--   <remap from="~input" to="passthrough_z_for_extract/output" /> -->
+    <!--   <rosparam> -->
+    <!--     target_frame_id: /base -->
+    <!--   </rosparam> -->
+    <!-- </node> --> 
+    <node pkg="nodelet" type="nodelet" name="cloud_from_base" args="load jsk_pcl/TfTransformCloud /$(arg manager)">
       <remap from="~input" to="passthrough_z_for_extract/output" />
       <rosparam>
         target_frame_id: /base
       </rosparam>
     </node>
+
 
     <node pkg="nodelet" type="nodelet" name="bin_extracter"
           args="load jsk_pcl/AttentionClipper /$(arg manager)" respawn="true">
