@@ -17,14 +17,28 @@
 
   <!-- recognition -->
   <include file="$(find jsk_2014_picking_challenge)/launch/attention_divide.launch"/>
-  <include ns="left_process" file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
-    <arg name="input_image" value="/left_process/apply_mask/output" />
-    <arg name="input_info" value="/kinect2/rgb/camera_info" />
-  </include>
-  <include ns="right_process" file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
-    <arg name="input_image" value="/right_process/apply_mask/output" />
-    <arg name="input_info" value="/kinect2/rgb/camera_info" />
-  </include>
+  <group ns="left_process">
+    <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
+      <arg name="input_image" value="/left_process/apply_mask/output" />
+      <arg name="input_info" value="/kinect2/rgb/camera_info" />
+      <arg name="respawn" value="true" />
+    </include>
+    <include file="$(find jsk_2014_picking_challenge)/launch/color_object_matcher.launch">
+      <arg name="input_image" value="/left_process/apply_mask/output" />
+      <arg name="respawn" value="true" />
+    </include>
+  </group>
+  <group ns="right_process">
+    <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
+      <arg name="input_image" value="/right_process/apply_mask/output" />
+      <arg name="input_info" value="/kinect2/rgb/camera_info" />
+      <arg name="respawn" value="true" />
+    </include>
+    <include file="$(find jsk_2014_picking_challenge)/launch/color_object_matcher.launch">
+      <arg name="input_image" value="/right_process/apply_mask/output" />
+      <arg name="respawn" value="true" />
+    </include>
+  </group>
 
   <!-- see if grabbed -->
   <include ns="see_left_if_grabbed" file="$(find jsk_2014_picking_challenge)/launch/see_if_grabbed.launch">
