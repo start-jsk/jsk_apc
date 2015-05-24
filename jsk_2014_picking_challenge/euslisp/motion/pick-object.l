@@ -415,7 +415,7 @@
     result-patterns))
 
 (defun pick-object (arm bin &key (to-see-if-grabbed nil) (n-tried nil) (bin-objects nil))
-  (let* (av avs target-labels
+  (let* (av avs target-labels bounding-box-hint
             (short-range 30)
             (middle-range 80)
             (long-range 150)
@@ -442,6 +442,36 @@
         (setq patterns (delete-arbitrary-patterns patterns '((:middle . long-range)))))
 
     ;; (setq patterns (delete-arbitrary-patterns patterns '((:middle . 30) (:middle . 80) (:middle . 150))))
+    (setq bounding-box-hint (gethash bin *bounding-box-array-in-bin*))
+    (setq max-volume 0)
+    (setq target-bounding-box nil)
+    (dolist (bbox (send bounding-box-hint :boxes))
+      (if (< max-volume (* (send bbox :dimensions :x) (send bbox :dimensions :y) (send bbox :dimensions :z)))
+	  (progn
+	    (setq max-volumet (* (send bbox :dimensions :x) (send bbox :dimensions :y) (send bbox :dimensions :z)))
+	    (setq target-bounding-box bbox)
+	    )
+	)
+      )
+    (when target-bounding-box
+      (let ((depth-offset 1.12) (y-pos ( - (* (send target-bounding-box :pose :position :y) 1000) (elt (send *pod* bin) 1))) y-label)
+	(cond ((> y-pos 60) (setq y-label :left-most))
+	      ((> y-pos 50) (setq y-label :left))
+	      ((> y-pos 20) (setq y-label :middle-left))
+	      ((> y-pos 0) (setq y-label :middle))
+	      ((> y-pos -20) (setq y-label :middle-right))
+	      ((> y-pos -50) (setq y-label :right))
+	      (t (setq y-label :right-most))
+	      )
+	(setq patterns (append (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000)) patterns))
+	(ros::ros-info "Boundging Box Hints Suggest ~A" (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000)))
+	(setq relative-pos-x ( - (* (send target-bounding-box :pose :position :x) 1000) (elt (send *pod* bin) 0)))
+	(setq relative-pos-y ( - (* (send target-bounding-box :pose :position :y) 1000) (elt (send *pod* bin) 1)))
+	(setq relative-pos-z ( - (* (send target-bounding-box :pose :position :z) 1000) (elt (send *pod* bin) 2)))
+	(ros::ros-info " Bounding Box Absolute Pos x,y,z = ~A, ~A, ~A" (send target-bounding-box :pose :position :x) (send target-bounding-box :pose :position :y) (send target-bounding-box :pose :position :z))
+	(ros::ros-info " Bounding Box Relative Pos x,y,z = ~A, ~A, ~A" relative-pos-x relative-pos-y relative-pos-z)
+	(setq patterns (delete-duplicate-patterns patterns :overlap 1))
+	))
 
     (setq target-labels (detect-object-pos-in-bin arm))
     (setq patterns (append (select-target-pattern-from-labels target-labels) patterns))
