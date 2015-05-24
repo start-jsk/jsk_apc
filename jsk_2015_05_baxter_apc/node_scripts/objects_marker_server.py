@@ -191,8 +191,9 @@ def setWithWorkOrder(msg, callback_args):
     global work_order_list
     arm = callback_args["arm"]
 
+    msg.array.reverse()
     if len(work_order_list[arm]) == 0:
-        work_order_list[arm] = reversed(msg.array)
+        work_order_list[arm] = msg.array
 
     target_counter = 0
     grabbed_counter = 0
