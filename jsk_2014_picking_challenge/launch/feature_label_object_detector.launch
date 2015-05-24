@@ -6,6 +6,8 @@
 
   <arg if="$(arg debug)" name="input_image" default="image_publisher/output" />
   <arg unless="$(arg debug)" name="input_image" default="/cameras/$(arg left_or_right)_hand_camera/image" />
+  <arg if="$(arg debug)" name="input_info" default="image_publisher/output/camera_info" />
+  <arg unless="$(arg debug)" name="input_info" default="/cameras/$(arg left_or_right)_hand_camera/camera_info" />
 
   <node if="$(arg debug)" pkg="jsk_perception" type="image_publisher.py" name="image_publisher">
     <param name="publish_info" type="bool" value="true" />
@@ -38,7 +40,7 @@
 
   <node pkg="imagesift" type="imagesift" name="imagesift">
     <remap from="image" to="apply_mask/output" />
-    <remap from="camera_info" to="image_publisher/output/camera_info" />
+    <remap from="camera_info" to="$(arg input_info)" />
   </node>
 
   <node pkg="posedetection_msgs" type="feature0d_to_image" name="feature0d_to_image" />
