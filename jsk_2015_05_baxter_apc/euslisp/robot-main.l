@@ -82,8 +82,8 @@
                (member target-object (get-objects-to-see-if-grabbed))
                (= (length (get-bin-contents target)) 1)
                )
-           (pick-object arm target :to-see-if-grabbed t)
-           (pick-object arm target :to-see-if-grabbed nil)
+           (pick-object arm target :to-see-if-grabbed t :bin-objects (get-bin-contents target))
+           (pick-object arm target :to-see-if-grabbed nil :bin-objects (get-bin-contents target))
            )
          (incf n-tried)  ;; how many times to try to pick
          (if (= (length (get-bin-contents target)) 1)
