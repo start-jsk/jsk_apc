@@ -63,7 +63,7 @@
                              #'image-time-diff-rarm-cb)))
     ))
 
-(defparameter *image-time-diff-threshold* 0.3)  ;; 0.03 : too sensitive
+(defparameter *image-time-diff-threshold* 0.1)  ;; 0.03 : too sensitive
 (defun see-if-grabbed (arm)
   (while
     (not (gethash arm *image-time-diff*))
@@ -78,10 +78,14 @@
       (unix::usleep 1000)
       (ros::spin-once)
       (setq msg (gethash arm *image-time-diff*))
-      (setq stamp (send (send msg :header) :stamp))
-      (setq diff (send msg :difference)))
+      (setq stamp (send (send msg :header) :stamp)))
+    (unix::sleep 1)
+    (ros::spin-once)
+    (setq msg (gethash arm *image-time-diff*))
+    (setq diff (send msg :difference))
     (ros::ros-info "see-if-grabbed ~A > ~A" diff *image-time-diff-threshold*)
-    (if (> diff *image-time-diff-threshold*) t nil)))
+    (if (> diff *image-time-diff-threshold*) t nil)
+    ))
 
 ;; -------------------------------------------------------
 ;; Check if grabbed with pressure sensor in vacuum cleaner

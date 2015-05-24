@@ -104,6 +104,7 @@
 
     ;; make vacuume ON
     (send *ri* :start-grasp arm)
+    (start-image-time-diff arm)
 
     ;; grabbing
     (ros::ros-info "try to grasp with pattern ~A, depth ~A (grasp-depth-z ~A check-depth-z ~A)~%" pattern depth grasp-depth-z check-depth-z)
@@ -126,7 +127,7 @@
     ;; for check grabbed, seperate gripper from wall.
     (case pattern
       ((:left-most :right-most :left :right :middle :middle-left :middle-right)
-       (move-end-pos-with-interpolation arm :z check-depth-z :time 1000)
+       (move-end-pos-with-interpolation arm :z grasp-depth-z :time 1000) ;; return to original height
        )
       (:rotate-and-left
        (move-end-pos-with-interpolation arm :z (- grasp-side-z grasp-side-z-down) :time 1000 :force t)
@@ -138,21 +139,22 @@
        )
       )
 
-    ;; ;; check if arm gripper unexpectedly attached to shelf or not
-    ;; (ros::ros-info "check if attached to shelf")
-    ;; (setq tmp-av (send *baxter* :angle-vector))
-    ;; (setq arm-av (send *baxter* arm :angle-vector))
-    ;; (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
-    ;; (ros::ros-info "potentio diff: ~A" (norm (v- (send *baxter* arm :angle-vector) arm-av)))
-    ;; (send *baxter* :angle-vector tmp-av)
-
-    ;; (ros::ros-info "check if grabbed")
-    ;; (unless call-check-if-grabbed-function ;; return without checking grabbed
-    ;;   (insert-to-pick-object-avs arm bin)
-    ;;   (send *irtviewer* :draw-objects)
-    ;;   (send *ri* :angle-vector (send *baxter* :angle-vector) 2000)
-    ;;   (send *ri* :wait-interpolation)
-    ;;   (return-from try-to-pick-object nil))
+    (if
+      (and
+        (not *simulator-p*)
+        call-see-if-grabbed-function
+        (see-if-grabbed arm)
+        )
+      (progn
+        (ros::ros-info "finish because see if grabbed")
+        (insert-to-pick-object-avs arm bin)
+        (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
+        (send *irtviewer* :draw-objects)
+        (return-from try-to-pick-object t)
+        )
+      (progn
+        (insert-to-pick-object-avs arm bin)
+        (return-from try-to-pick-object nil)))
 
     (unless (or debug-mode (check-if-grabbed arm))
       (ros::ros-info "go back to original position")
@@ -162,7 +164,7 @@
       ;; go back to original position if can't grabbed
       (case pattern
         ((:left-most :right-most :left :right :middle :middle-left :middle-right)
-         (move-end-pos-with-interpolation arm :z (- grasp-depth-z check-depth-z) :time 1000) ;; for check grabbed, seperate gripper.
+         ;; (move-end-pos-with-interpolation arm :z (- grasp-depth-z check-depth-z) :time 1000) ;; for check grabbed, seperate gripper.
          )
         (:rotate-and-right)
         (move-end-pos-with-interpolation arm :y 40 :z grasp-side-z-down :time 1000)
@@ -192,7 +194,7 @@
     (case pattern
       ((:left-most :right-most :left :right :middle :middle-left :middle-right)
        ;; 50mm above then insert-to-pic
-       (move-end-pos-with-interpolation arm :z (+ 50 (- grasp-depth-z check-depth-z)) :revert-if-fail nil :rotation-axis nil :time 4000)
+       ;; (move-end-pos-with-interpolation arm :z (+ 50 (- grasp-depth-z check-depth-z)) :revert-if-fail nil :rotation-axis nil :time 4000)
        )
       ((:rotate-and-left :rotate-and-right)
        (move-end-pos-with-interpolation arm :z grasp-side-z-down :revert-if-fail nil :rotation-axis nil :time 4000 :force t)
