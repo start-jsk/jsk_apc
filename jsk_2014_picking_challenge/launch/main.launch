@@ -22,12 +22,14 @@
   <node ns="left_process" pkg="jsk_2014_picking_challenge" type="object_verification.py"
     name="object_verification" respawn="true">
     <param name="json" value="$(arg json)" />
-    <remap from="~input" to="bof_object_matcher/output" />
+    <remap from="~input/bof" to="bof_object_matcher/output" />
+    <remap from="~input/color_hist" to="color_object_matcher/output" />
   </node>
   <node ns="right_process" pkg="jsk_2014_picking_challenge" type="object_verification.py"
     name="object_verification" respawn="true">
     <param name="json" value="$(arg json)" />
-    <remap from="~input" to="bof_object_matcher/output" />
+    <remap from="~input/bof" to="bof_object_matcher/output" />
+    <remap from="~input/color_hist" to="color_object_matcher/output" />
   </node>
 
   <!-- setup params -->

@@ -6,6 +6,7 @@ import os
 import sys
 import re
 import unittest
+import yaml
 from termcolor import cprint, colored
 
 import rospkg
@@ -72,6 +73,17 @@ class TestRobotInput(unittest.TestCase):
             self.test_bin_contents(json_file=json)
             interface_test(json)
 
+    def test_classifier_weight_yaml(self):
+        from common import get_object_list
+        yaml_file = os.path.join(pkg_path, 'data/classifier_weight.yml')
+        with open(yaml_file) as f:
+            weight = yaml.load(f)
+        object_list = get_object_list()
+        for object_, weights in weight.items():
+            self.assertIn(object_, object_list)
+            for clf, weight in weights.items():
+                self.assertIn(clf, ['bof', 'color'])
+                self.assert_(0. <= weight <= 1.)
 
 if __name__ == '__main__':
     import rosunit
