@@ -107,7 +107,7 @@
     (start-image-time-diff arm)
 
     ;; grabbing
-    (ros::ros-info "try to grasp with pattern ~A, depth ~A (grasp-depth-z ~A check-depth-z ~A)~%" pattern depth grasp-depth-z check-depth-z)
+    (ros::ros-info "try to grasp with pattern ~A, depth ~A (grasp-depth-z ~A check-depth-z ~A debug-mdoe ~A)" pattern depth grasp-depth-z check-depth-z debug-mode)
     (case pattern
       ((:left-most :right-most :left :right :middle :middle-left :middle-right)
        (move-end-rot-with-interpolation arm :y 2)
@@ -130,32 +130,30 @@
        (move-end-pos-with-interpolation arm :z grasp-depth-z :time 1000) ;; return to original height
        )
       (:rotate-and-left
-       (move-end-pos-with-interpolation arm :z (- grasp-side-z grasp-side-z-down) :time 1000 :force t)
+       (move-end-pos-with-interpolation arm :z (- grasp-side-z grasp-side-z-down) :time 1000)
        (move-end-pos-with-interpolation arm :y (- grasp-half-limit-left-side) :time 1000 :force t)
        )
       (:rotate-and-right
-       (move-end-pos-with-interpolation arm :z (- grasp-side-z grasp-side-z-down) :time 1000 :force t)
+       (move-end-pos-with-interpolation arm :z (- grasp-side-z grasp-side-z-down) :time 1000)
        (move-end-pos-with-interpolation arm :y (- grasp-half-limit-right-side) :time 1000 :force t)
        )
-      )
+      ) ;; case pattern
 
-    (if
-      (and
-        (not *simulator-p*)
-        call-see-if-grabbed-function
-        (see-if-grabbed arm)
-        )
-      (progn
-        (ros::ros-info "finish because see if grabbed")
-        (insert-to-pick-object-avs arm bin)
-        (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
-        (send *irtviewer* :draw-objects)
-        (return-from try-to-pick-object t)
-        )
-      (progn
-        (insert-to-pick-object-avs arm bin)
-        (return-from try-to-pick-object nil)))
+    (when call-see-if-grabbed-function
+      (if (and (not *simulator-p*) (see-if-grabbed arm))
+          (progn
+            (ros::ros-info "finish because see if grabbed")
+            (insert-to-pick-object-avs arm bin)
+            (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
+            (send *irtviewer* :draw-objects)
+            (return-from try-to-pick-object t)
+            )
+        (progn
+          (ros::ros-info "continue because see if grabbed")
+          (insert-to-pick-object-avs arm bin)
+          (return-from try-to-pick-object nil)))) ;; if use see-if-grabbed
 
+    (ros::ros-info "call (check-if-grabbed)")
     (unless (or debug-mode (check-if-grabbed arm))
       (ros::ros-info "go back to original position")
       ;; make vacuume OFF
@@ -197,7 +195,7 @@
        ;; (move-end-pos-with-interpolation arm :z (+ 50 (- grasp-depth-z check-depth-z)) :revert-if-fail nil :rotation-axis nil :time 4000)
        )
       ((:rotate-and-left :rotate-and-right)
-       (move-end-pos-with-interpolation arm :z grasp-side-z-down :revert-if-fail nil :rotation-axis nil :time 4000 :force t)
+       (move-end-pos-with-interpolation arm :z grasp-side-z-down :revert-if-fail nil :rotation-axis nil :time 4000)
        )
       )
 
@@ -227,21 +225,21 @@
        (rotate-wrist arm -45)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
-       (move-end-pos-with-interpolation arm :z grasp-z-offset :force t :time 1000)
+       (move-end-pos-with-interpolation arm :z grasp-z-offset :time 1000)
        (move-end-pos-with-interpolation arm
 					:y (- grasp-half-limit-left-side grasp-limit-left-side) 
 					:time 1000
-					:force t)
+                                        :force t)
        )
       (:rotate-and-right
        (rotate-wrist arm 45)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
-       (move-end-pos-with-interpolation arm :z grasp-z-offset :force t :time 1000)       
+       (move-end-pos-with-interpolation arm :z grasp-z-offset :time 1000)
        (move-end-pos-with-interpolation arm 
 					:y (- grasp-half-limit-left-side grasp-limit-right-side)
 					:time 1000
-					:force t)
+                                        :force t)
        )
       )
 
