@@ -252,11 +252,11 @@
         )
     (labels ((neighbor (index)
                        (let ((counter 0))
-                         (dolist (c '(1 -1 6 -6))
-                           (if (and (<= 0 (+ c index)) (< c 19)
-                                    (not (and (= c 1) (or (= index 6) (= index 12) (= index 18))))
-                                    (not (and (= c -1) (or (= index 1) (= index 7) (= index 13))))
-                                    (not (null (find (* 1.0 (+ c index)) target-labels)))
+                         (dolist (c '(1 -1 4 -4))
+                           (if (and (<= 0 (+ c index)) (< c 13)
+                                    (not (and (= c 1) (or (= index 4) (= index 8) (= index 12))))
+                                    (not (and (= c -1) (or (= index 1) (= index 5) (= index 9))))
+                                    (not (null (find (+ c index) target-labels)))
                                     )
                                (setq counter (1+ counter))
                              )
@@ -268,119 +268,110 @@
           (setq cnt (neighbor label))
           ;; (format t "label = ~A, cnt = ~A~%" label cnt)
           (case label
-            (1.0
+            (1
              (case cnt
-               (0 (pushback (cons :left-most long-range) patterns))
+               (0
+                (pushback (cons :left-most long-range) patterns)
+                )
                ((1 2 3) (pushback (cons :rotate-and-left middle-range) patterns)
                 (pushback (cons :left-most middle-range) patterns)
                 )))
-            (2.0
-             (case cnt
-               ((1 2 3) (pushback (cons :left long-range) patterns))))
-            (3.0
+            (2
              (case cnt
                ((1 2 3)
+                (pushback (cons :left long-range) patterns)
                 (pushback (cons :middle-left long-range) patterns)
-                (pushback (cons :middle middle-range) patterns))))
-            (4.0
+                )))
+            (3
              (case cnt
                ((1 2 3)
-                (pushback (cons :middle long-range) patterns)))
-             )
-            (5.0
+                (pushback (cons :middle-right long-range) patterns)
+                (pushback (cons :right long-range) patterns))))
+            (4
              (case cnt
-               ((1 2 3) (pushback (cons :right long-range) patterns))))
-            (6.0
-             (case cnt
-               (0 (pushback (cons :right-most long-range) patterns))
+               (0
+                (pushback (cons :rotate-and-right long-range) patterns)
+                )
                ((1 2 3)
-                (pushback (cons :rotate-and-right middle-range) patterns)
-                (pushback (cons :right-most middle-range) patterns))))
-            (7.0
-             (pushback (cons :rotate-and-left middle-range) patterns)
-             (pushback (cons :left-most middle-range) patterns)
+                (pushback (cons :rotate-and-right long-range) patterns)
+                (pushback (cons :right-most long-range) patterns)
+                ))
+               )
+            (5
+             (case cnt
+               ((0)
+                (pushback (cons :rotate-and-left middle-range) patterns)
+                )
+               ((1 2 3)
+                (pushback (cons :rotate-and-left middle-range) patterns)
+                (pushback (cons :left-most long-range) patterns)))
              )
-            (8.0
+            (6
              (case cnt
                (0
                 (pushback (cons :left middle-range) patterns)
+                )
+               ((1 2 3)
                 (pushback (cons :middle-left middle-range) patterns)
-                )
-               )
-             )
-            (9.0
-             (case cnt
-               (0
-                (pushback (cons :middle-left middle-range) patterns)
-                (pushback (cons :middle middle-range) patterns)
-                )
-               )
-             )
-            (10.0
-             (case cnt
-               (0
-                (pushback (cons :middle middle-range) patterns)
-                (pushback (cons :middle-right middle-range) patterns)
-                )
-               )
-             )
-            (11.0
+                (pushback (cons :left middle-range) patterns))))
+            (7
              (case cnt
                (0
                 (pushback (cons :right middle-range) patterns)
+                )
+               ((1 2 3)
                 (pushback (cons :middle-right middle-range) patterns)
-                ))
-             )
-            (12.0
-             (pushback (cons :rotate-and-right middle-range) patterns)
-             (pushback (cons :right-most middle-range) patterns)
-             )
-            (13.0
-             (case cnt
-               ((0 1 2 3)
-                (pushback (cons :rotate-and-left short-range) patterns)
-                (pushback (cons :left-most short-range) patterns))
-               )
-             )
-            (14.0
-             (case cnt
-               (0
-                (pushback (cons :left short-range) patterns)
-                (pushback (cons :left-most short-range) patterns)
+                (pushback (cons :right middle-range) patterns)
                 )
                )
              )
-            (15.0
+            (8
              (case cnt
                (0
-                (pushback (cons :middle-left short-range) patterns)
-                (pushback (cons :left short-range) patterns)
-                (pushback (cons :middle short-range) patterns)
-                ))
+                (pushback (cons :right-most middle-range) patterns)
+                )
+               ((1 2 3)
+                (pushback (cons :rotate-and-right middle-range) patterns)
+                (pushback (cons :right-most middle-range) patterns)
+                )
+               )
              )
-            (16.0
+            (9
              (case cnt
                (0
+                (pushback (cons :left-most short-range) patterns)
+                )
+               ((1 2 3)
+                (pushback (cons :rotate-and-left short-range) patterns)
+                (pushback (cons :left-most short-range) patterns)
+                )))
+            (10
+             (case cnt
+               (0
+                (pushback (cons :left short-range) patterns)
+                )
+               ((1 2 3)
+                (pushback (cons :middle-right short-range) patterns)
+                (pushback (cons :middle short-range) patterns))))
+            (11
+             (case cnt
+               (0
+                (pushback (cons :right short-range) patterns)
+                )
+               ((1 2 3)
                 (pushback (cons :middle-right short-range) patterns)
                 (pushback (cons :middle short-range) patterns)
-                (pushback (cons :left short-range) patterns)
-                )
+                ))
                )
-             )
-            (17.0
+            (12
              (case cnt
                (0
-                (pushback (cons :left short-range) patterns)
-                (pushback (cons :left-most short-range) patterns)
-                (pushback (cons :middle-left short-range) patterns)
-                )
-               )
-             )
-            (18.0
-             (case cnt
-               ((0 1 2 3)
                 (pushback (cons :rotate-and-right short-range) patterns)
-                (pushback (cons :right-most short-range) patterns)))
+                )
+               ((1 2 3)
+                (pushback (cons :rotate-and-right short-range) patterns)
+                (pushback (cons :right-most short-range) patterns)
+                ))
              )
             )
           )
@@ -445,7 +436,7 @@
 
     (setq target-labels (detect-object-pos-in-bin arm))
     (setq patterns (append (select-target-pattern-from-labels target-labels) patterns))
-    ;; (setq patterns (append (select-target-pattern-from-labels #f(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18))))
+    ;; (setq patterns (append (select-target-pattern-from-labels #i(1 2 3 4 5 6 7 8 9 10 11 12))))
     (setq patterns (delete-duplicate-patterns patterns :overlap 1))
     ;; (format t "patterns = ~A~%" patterns)
 
