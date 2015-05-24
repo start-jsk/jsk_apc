@@ -109,6 +109,15 @@
     (setq simulator-coords (send (send *baxter* arm :end-coords) :transformation (car (send *baxter* arm :links)) :local))
     (setq real-v (send real-coords :worldpos)) 
     (setq simulator-v (send simulator-coords :worldpos))
+
+    (setq to-other-coords (send simulator-coords :transformation real-coords :local))
+    (ros::ros-info "Simulator-coords : ~A" simulator-coords)
+    (ros::ros-info "Real-coords      : ~A" real-coords)
+    (ros::ros-info "To-Other-coords      : ~A" to-other-coords)
+    (ros::ros-info "To-Other-coords-pos  : ~A" (send to-other-coords :pos))
+    (objects (list *baxter* *pod* simulator-coords real-coords))
+
+    (ros::ros-info "check-rel-sim-end-coords-diff diff:~A thre:~A" (norm (v- real-v simulator-v)) *end-coords-diff-threshold*)
     (if (and ( > (norm (v- real-v simulator-v)) *end-coords-diff-threshold*) (< (elt (v- real-v simulator-v) 2) 0))
 	(progn
 	  (ros::ros-error "real and sim's end-coords diff is over threshold!!  diff: ~A >  threshold: ~A  z direction: ~A. Seems to catch the bottom of bin...." (norm (v- real-v simulator-v)) *end-coords-diff-threshold* (elt (v- real-v simulator-v) 2))
@@ -120,6 +129,7 @@
   (ros::spin-once)
   (let (state)
     (unless (check-real-sim-end-coords-diff arm)
+      (ros::ros-info "check real sim end coords")
       (return-from check-if-grabbed nil)
       )
     (setq state (gethash arm *gripper-grabbed*))
