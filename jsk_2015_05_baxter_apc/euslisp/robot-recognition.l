@@ -64,21 +64,21 @@
     ))
 
 (defparameter *image-time-diff-threshold* 0.1)  ;; 0.03 : too sensitive
-(defun see-if-grabbed (arm)
-  (while
-    (not (gethash arm *image-time-diff*))
-    (unix::usleep 1000)
-    (ros::spin-once))
+(defun see-if-grabbed (arm &key (timeout 10))
   (let* ((now (ros::time-now))
-         (msg (gethash arm *image-time-diff*))
-         (stamp (send (send msg :header) :stamp)))
+         (msg (gethash arm *image-time-diff*)))
     ;; wait for msg to synchronize
     (while
-      (< (send stamp :sec) (send now :sec))
+      (or (null msg) (< (send (send (send msg :header) :stamp) :sec) (send now :sec)))
       (unix::usleep 1000)
       (ros::spin-once)
       (setq msg (gethash arm *image-time-diff*))
-      (setq stamp (send (send msg :header) :stamp)))
+      ;; timeout
+      (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout)
+        (ros::ros-error "timeout in see_if_grabbed ~A" (arm-to-str arm))
+        (return-from see-if-grabbed nil)
+        )
+      )
     (unix::sleep 1)
     (ros::spin-once)
     (setq msg (gethash arm *image-time-diff*))
