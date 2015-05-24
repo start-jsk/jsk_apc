@@ -64,6 +64,7 @@
                                  ))
                               grasp-depth-z)))
 
+    ;; (format t "depth ~A ~A~%" depth depth-threshold)
     (if (and (> depth depth-threshold)
              (or (eq bin :a) (eq bin :b) (eq bin :c)))
         (setq grasp-side-z 70))
@@ -387,18 +388,28 @@
       )
     result-patterns))
 
-(defun pick-object (arm bin &key (to-see-if-grabbed nil))
+(defun delete-arbitrary-patterns (patterns arbitrary-patterns)
+  (let ((result-patterns patterns))
+    (dolist (a-pat arbitrary-patterns)
+      (setq result-patterns (remove-if #'(lambda (x) (equal x a-pat)) result-patterns))
+      )
+    result-patterns))
+
+(defun pick-object (arm bin &key (to-see-if-grabbed nil) (n-tried nil))
   (let* (av avs target-labels
+            (short-range 30)
+            (middle-range 80)
+            (long-range 150)
             (patterns ;; pair of (pattern . depth)
-             '((:middle . 30) (:middle . 80) (:middle . 150)
-                       (:rotate-and-left . 30 ) (:left-most . 30)
-                       (:rotate-and-right . 30) (:right-most . 30) ;;
-                       (:rotate-and-left . 80) (:left-most . 80)
-                       (:rotate-and-right . 80) (:right-most . 80) ;;
-                       (:rotate-and-left . 150) (:left-most . 150)
-                       (:rotate-and-right . 150) (:right-most . 150) ;;
-                       (:left . 80) (:right . 80) (:left . 30) (:right . 30) (:left . 150) (:right . 150)
-                       (:middle-left . 80) (:middle-right . 80) (:middle-left . 30) (:middle-right . 30) (:middle-left . 150) (:middle-right . 150)
+             '((:middle . short-range) (:middle . middle-range) (:middle . long-range)
+                       (:rotate-and-left . short-range ) (:left-most . short-range)
+                       (:rotate-and-right . short-range) (:right-most . short-range) ;;
+                       (:rotate-and-left . middle-range) (:left-most . middle-range)
+                       (:rotate-and-right . middle-range) (:right-most . middle-range) ;;
+                       (:rotate-and-left . long-range) (:left-most . long-range)
+                       (:rotate-and-right . long-range) (:right-most . long-range) ;;
+                       (:left . middle-range) (:right . middle-range) (:left . short-range) (:right . short-range) (:left . long-range) (:right . long-range)
+                       (:middle-left . middle-range) (:middle-right . middle-range) (:middle-left . short-range) (:middle-right . short-range) (:middle-left . long-range) (:middle-right . long-range)
                        ))
             )
     (send *baxter* arm :inverse-kinematics
@@ -411,6 +422,12 @@
     (setq target-labels (detect-object-pos-in-bin arm))
     (setq patterns (append (select-target-pattern-from-labels target-labels) patterns))
     (setq patterns (delete-duplicate-patterns patterns :overlap 2))
+
+    (if n-tried
+        (setq patterns (delete-arbitrary-patterns patterns '((:middle . long-range)))))
+
+    ;; (setq patterns (delete-arbitrary-patterns patterns '((:middle . 30) (:middle . 80) (:middle . 150))))
+    ;; (format t "patterns = ~A~%" patterns)
 
     ;; insert arm to target bin
     (dolist (av (insert-to-pick-object-avs arm bin))
@@ -427,7 +444,7 @@
     (ros::ros-info "try to pick object ~A ~A" arm bin)
     (while
         (and patterns
-             (not (try-to-pick-object arm bin (caar patterns) (cdar patterns):call-see-if-grabbed-function to-see-if-grabbed)))
+             (not (try-to-pick-object arm bin (caar patterns) (eval (cdar patterns)) :call-see-if-grabbed-function to-see-if-grabbed)))
       (pop patterns)
       (unless *simulator-p* (speak-en  "Fail to catch the target" :google t)))
     ;; take arm out of bin
