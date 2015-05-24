@@ -103,15 +103,18 @@
 
 (defparameter *end-coords-diff-threshold* 30)
 (defun check-real-sim-end-coords-diff(arm)
-  (let (real-coords simulator-coords real-v simulator-v)
+  (let (real-coords simulator-coords to-other-coords)
     (send *ri* :update-robot-state)
     (setq real-coords (send (send (*ri* . robot) arm :end-coords) :transformation (car (send (*ri* . robot) arm :links)) :local))
     (setq simulator-coords (send (send *baxter* arm :end-coords) :transformation (car (send *baxter* arm :links)) :local))
-    (setq real-v (send real-coords :worldpos)) 
-    (setq simulator-v (send simulator-coords :worldpos))
-    (if (and ( > (norm (v- real-v simulator-v)) *end-coords-diff-threshold*) (< (elt (v- real-v simulator-v) 2) 0))
+    (setq to-other-coords (send simulator-coords :transformation real-coords :local))
+    (ros::ros-info "Simulator-coords : ~A" simulator-coords)
+    (ros::ros-info "Real-coords      : ~A" real-coords)
+    (ros::ros-info "To-Other-coords      : ~A" to-other-coords)
+    (ros::ros-info "To-Other-coords-pos  : ~A" (send to-other-coords :pos))
+    (if (and ( > (norm (send to-other-coords :pos)) *end-coords-diff-threshold*) (< (elt (send to-other-coords :pos) 2) 0))
 	(progn
-	  (ros::ros-error "real and sim's end-coords diff is over threshold!!  diff: ~A >  threshold: ~A  z direction: ~A. Seems to catch the bottom of bin...." (norm (v- real-v simulator-v)) *end-coords-diff-threshold* (elt (v- real-v simulator-v) 2))
+	  (ros::ros-error "real and sim's end-coords diff is over threshold!!  diff: ~A >  threshold: ~A  z direction: ~A. Seems to catch the bottom of bin...." (norm (send to-other-coords :pos)) *end-coords-diff-threshold* (elt (send to-other-coords :pos) 2))
 	  nil
 	  )
       t)))
