@@ -22,12 +22,14 @@
   <node ns="left_process" pkg="jsk_2014_picking_challenge" type="object_verification.py"
     name="object_verification" respawn="true">
     <param name="json" value="$(arg json)" />
+    <param name="weight" value="$(find jsk_2014_picking_challenge)/data/classifier_weight.yml" />
     <remap from="~input/bof" to="bof_object_matcher/output" />
     <remap from="~input/color_hist" to="color_object_matcher/output" />
   </node>
   <node ns="right_process" pkg="jsk_2014_picking_challenge" type="object_verification.py"
     name="object_verification" respawn="true">
     <param name="json" value="$(arg json)" />
+    <param name="weight" value="$(find jsk_2014_picking_challenge)/data/classifier_weight.yml" />
     <remap from="~input/bof" to="bof_object_matcher/output" />
     <remap from="~input/color_hist" to="color_object_matcher/output" />
   </node>
@@ -41,8 +43,12 @@
   <!-- robot main -->
   <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
     args="&quot;(progn (apc-init :larm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :larm))&quot;"
-    respawn="true" output="screen" />
+    respawn="true" output="screen">
+    <env name="DISPLAY" value="" />
+  </node>
   <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_right"
     args="&quot;(progn (apc-init :rarm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :rarm))&quot;"
-    respawn="true" output="screen" />
+    respawn="true" output="screen">
+    <env name="DISPLAY" value="" />
+  </node>
 </launch>

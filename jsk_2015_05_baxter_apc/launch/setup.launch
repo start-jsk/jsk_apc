@@ -51,10 +51,10 @@
   </include>
 
   <!-- object pos detection -->
-  <include ns="left_process" file="$(find jsk_2014_picking_challenge)/launch/feature_label_object_detector.launch">
+  <include ns="left_hand_process" file="$(find jsk_2014_picking_challenge)/launch/feature_label_object_detector.launch">
     <arg name="left_or_right" value="left" />
   </include>
-  <include ns="right_process" file="$(find jsk_2014_picking_challenge)/launch/feature_label_object_detector.launch">
+  <include ns="right_hand_process" file="$(find jsk_2014_picking_challenge)/launch/feature_label_object_detector.launch">
     <arg name="left_or_right" value="right" />
   </include>
 

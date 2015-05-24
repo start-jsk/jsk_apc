@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 from __future__ import division
+import yaml
 
 import rospy
 
@@ -23,6 +24,9 @@ class ObjectVerification(object):
         if weight_yaml is None:
             rospy.logerr('must set weight yaml file path to ~weight')
             return
+        self.bof_data = None
+        self.cfeature = None
+        self._init_weight(weight_yaml)
         self._init_bin_contents(json_file)
         self._init_work_order(json_file)
         self.bof_sub = rospy.Subscriber('~input/bof',
@@ -34,9 +38,6 @@ class ObjectVerification(object):
         self.pub = rospy.Publisher('~output', ObjectRecognition, queue_size=1)
         self.pub_debug = rospy.Publisher('~debug', ObjectRecognition,
                                          queue_size=1)
-        self.weight = self._init_weight(weight_yaml)
-        self.bof_data = None
-        self.cfeature = None
 
     def _init_weight(self, yaml_file):
         with open(yaml_file) as f:
