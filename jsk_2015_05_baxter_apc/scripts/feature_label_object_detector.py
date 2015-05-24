@@ -43,6 +43,8 @@ class FeatureLabelObjectDetector(object):
         detected_labels = [label_img[y][x] for x, y in feature_pos
                                            if mask[y][x] != 0]
         count = Counter(detected_labels)
+        if len(count) == 0:
+            return
         labels, proba = zip(*sorted(count.items(), key=lambda x:x[1],
                                     reverse=True))
         proba = np.array(proba) / np.array(proba).sum()
