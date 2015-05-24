@@ -35,7 +35,7 @@
                                (check-depth-z  10) ;; move z up to check grabbed
                                (grasp-side-z   80) ;; move z down to side grasp
                                (grasp-side-z-down   50) ;; move z down to side (grasp after rotate)
-			       (grasp-z-offset 30) ;; z for returning to original pose
+                               (grasp-z-offset 30) ;; z for returning to original pose
                                (debug-mode nil)
                                (bin-objects nil)
                                )
@@ -220,8 +220,8 @@
        (send *ri* :wait-interpolation)
        (move-end-pos-with-interpolation arm :z grasp-z-offset :time 1000)
        (move-end-pos-with-interpolation arm
-					:y (- grasp-half-limit-left-side grasp-limit-left-side) 
-					:time 1000
+                                        :y (- grasp-half-limit-left-side grasp-limit-left-side)
+                                        :time 1000
                                         :force t)
        )
       (:rotate-and-right
@@ -229,9 +229,9 @@
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
        (move-end-pos-with-interpolation arm :z grasp-z-offset :time 1000)
-       (move-end-pos-with-interpolation arm 
-					:y (- grasp-half-limit-left-side grasp-limit-right-side)
-					:time 1000
+       (move-end-pos-with-interpolation arm
+                                        :y (- grasp-half-limit-left-side grasp-limit-right-side)
+                                        :time 1000
                                         :force t)
        )
       )
@@ -242,6 +242,151 @@
        )
       )
     t))
+
+(defun select-target-pattern-from-labels (target-labels)
+  (let ((len (length target-labels))
+        patterns
+        (short-range 30)
+        (middle-range 80)
+        (long-range 150)
+        )
+    (labels ((neighbor (index)
+                       (let ((counter 0))
+                         (dolist (c '(1 -1 6 -6))
+                           (if (and (<= 0 (+ c index)) (< c 19)
+                                    (not (and (= c 1) (or (= index 6) (= index 12) (= index 18))))
+                                    (not (and (= c -1) (or (= index 1) (= index 7) (= index 13))))
+                                    (not (null (find (* 1.0 (+ c index)) target-labels)))
+                                    )
+                               (setq counter (1+ counter))
+                             )
+                           )
+                         counter)))
+      (dotimes (i len)
+        (let* ((label (elt target-labels i))
+               (cnt))
+          (setq cnt (neighbor label))
+          ;; (format t "label = ~A, cnt = ~A~%" label cnt)
+          (case label
+            (1.0
+             (case cnt
+               (0 (pushback (cons :left-most long-range) patterns))
+               ((1 2 3) (pushback (cons :rotate-and-left middle-range) patterns)
+                (pushback (cons :left-most middle-range) patterns)
+                )))
+            (2.0
+             (case cnt
+               ((1 2 3) (pushback (cons :left long-range) patterns))))
+            (3.0
+             (case cnt
+               ((1 2 3)
+                (pushback (cons :middle-left long-range) patterns)
+                (pushback (cons :middle middle-range) patterns))))
+            (4.0
+             (case cnt
+               ((1 2 3)
+                (pushback (cons :middle long-range) patterns)))
+             )
+            (5.0
+             (case cnt
+               ((1 2 3) (pushback (cons :right long-range) patterns))))
+            (6.0
+             (case cnt
+               (0 (pushback (cons :right-most long-range) patterns))
+               ((1 2 3)
+                (pushback (cons :rotate-and-right middle-range) patterns)
+                (pushback (cons :right-most middle-range) patterns))))
+            (7.0
+             (pushback (cons :rotate-and-left middle-range) patterns)
+             (pushback (cons :left-most middle-range) patterns)
+             )
+            (8.0
+             (case cnt
+               (0
+                (pushback (cons :left middle-range) patterns)
+                (pushback (cons :middle-left middle-range) patterns)
+                )
+               )
+             )
+            (9.0
+             (case cnt
+               (0
+                (pushback (cons :middle-left middle-range) patterns)
+                (pushback (cons :middle middle-range) patterns)
+                )
+               )
+             )
+            (10.0
+             (case cnt
+               (0
+                (pushback (cons :middle middle-range) patterns)
+                (pushback (cons :middle-right middle-range) patterns)
+                )
+               )
+             )
+            (11.0
+             (case cnt
+               (0
+                (pushback (cons :right middle-range) patterns)
+                (pushback (cons :middle-right middle-range) patterns)
+                ))
+             )
+            (12.0
+             (pushback (cons :rotate-and-right middle-range) patterns)
+             (pushback (cons :right-most middle-range) patterns)
+             )
+            (13.0
+             (case cnt
+               ((0 1 2 3)
+                (pushback (cons :rotate-and-left short-range) patterns)
+                (pushback (cons :left-most short-range) patterns))
+               )
+             )
+            (14.0
+             (case cnt
+               (0
+                (pushback (cons :left short-range) patterns)
+                (pushback (cons :left-most short-range) patterns)
+                )
+               )
+             )
+            (15.0
+             (case cnt
+               (0
+                (pushback (cons :middle-left short-range) patterns)
+                (pushback (cons :left short-range) patterns)
+                (pushback (cons :middle short-range) patterns)
+                ))
+             )
+            (16.0
+             (case cnt
+               (0
+                (pushback (cons :middle-right short-range) patterns)
+                (pushback (cons :middle short-range) patterns)
+                (pushback (cons :left short-range) patterns)
+                )
+               )
+             )
+            (17.0
+             (case cnt
+               (0
+                (pushback (cons :left short-range) patterns)
+                (pushback (cons :left-most short-range) patterns)
+                (pushback (cons :middle-left short-range) patterns)
+                )
+               )
+             )
+            (18.0
+             (case cnt
+               ((0 1 2 3)
+                (pushback (cons :rotate-and-right short-range) patterns)
+                (pushback (cons :right-most short-range) patterns)))
+             )
+            )
+          )
+        )
+      )
+    patterns))
 
 (defun delete-duplicate-patterns (patterns &key (overlap 1))
   (let ((pat-map (make-hash-table :test #'equal))
@@ -297,6 +442,11 @@
         (setq patterns (delete-arbitrary-patterns patterns '((:middle . long-range)))))
 
     ;; (setq patterns (delete-arbitrary-patterns patterns '((:middle . 30) (:middle . 80) (:middle . 150))))
+
+    (setq target-labels (detect-object-pos-in-bin arm))
+    (setq patterns (append (select-target-pattern-from-labels target-labels) patterns))
+    ;; (setq patterns (append (select-target-pattern-from-labels #f(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18))))
+    (setq patterns (delete-duplicate-patterns patterns :overlap 1))
     ;; (format t "patterns = ~A~%" patterns)
 
     ;; insert arm to target bin
