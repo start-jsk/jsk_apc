@@ -29,7 +29,6 @@ class ColorObjectMatcher(ObjectMatcher):
         """ Callback function fo Subscribers to listen sensor_msgs/Image """
         self.query_image = msg
     def predict_now(self):
-        print("predicting ... ")
         query_image = self.query_image
 
         object_list = get_object_list()
