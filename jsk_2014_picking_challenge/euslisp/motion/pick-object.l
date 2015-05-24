@@ -35,20 +35,20 @@
                                (check-depth-z  10) ;; move z up to check grabbed
                                (grasp-side-z   80) ;; move z down to side grasp
                                (grasp-side-z-down   50) ;; move z down to side (grasp after rotate)
-			       (grasp-z-offset 30) ;; z for returning to original pose
+                               (grasp-z-offset 30) ;; z for returning to original pose
                                (debug-mode nil)
                                )
   (let* ((grasp-left-most-dist 60)
-        (grasp-right-most-dist -60)
-        (grasp-left-dist 50)
-        (grasp-right-dist -50)
-        (grasp-middle-left-dist 20)
-        (grasp-middle-right-dist -20)
-        (grasp-limit-left-side 50)
-        (grasp-limit-right-side -50)
-        (grasp-half-limit-left-side (/ grasp-limit-left-side 2))
-        (grasp-half-limit-right-side (/ grasp-limit-right-side 2))
-        )
+         (grasp-right-most-dist -60)
+         (grasp-left-dist 50)
+         (grasp-right-dist -50)
+         (grasp-middle-left-dist 20)
+         (grasp-middle-right-dist -20)
+         (grasp-limit-left-side 50)
+         (grasp-limit-right-side -50)
+         (grasp-half-limit-left-side (/ grasp-limit-left-side 2))
+         (grasp-half-limit-right-side (/ grasp-limit-right-side 2))
+         )
     ;; load robot-test.l and run following command to get this information
     ;; (check-pick-offset :rarm '(:c :f :i :l) '((:middle . 30)))
     ;; (check-pick-offset :larm '(:a :d :g :j :b :e :h :k) '((:middle . 30)))
@@ -175,15 +175,15 @@
       (send *ri* :wait-interpolation)
 
       (if
-        (and
-          (not *simulator-p*)
-          call-see-if-grabbed-function
-          (see-if-grabbed arm)
-          )
-        (progn
-          (ros::ros-info "finish because see if grabbed")
-          (return-from try-to-pick-object t)
-          )
+          (and
+           (not *simulator-p*)
+           call-see-if-grabbed-function
+           (see-if-grabbed arm)
+           )
+          (progn
+            (ros::ros-info "finish because see if grabbed")
+            (return-from try-to-pick-object t)
+            )
         (return-from try-to-pick-object nil)))
     ;; patterns after grabbed
     (ros::ros-info "take arm from target bin")
@@ -227,8 +227,8 @@
        (send *ri* :wait-interpolation)
        (move-end-pos-with-interpolation arm :z grasp-z-offset :time 1000)
        (move-end-pos-with-interpolation arm
-					:y (- grasp-half-limit-left-side grasp-limit-left-side) 
-					:time 1000
+                                        :y (- grasp-half-limit-left-side grasp-limit-left-side)
+                                        :time 1000
                                         :force t)
        )
       (:rotate-and-right
@@ -236,9 +236,9 @@
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
        (move-end-pos-with-interpolation arm :z grasp-z-offset :time 1000)
-       (move-end-pos-with-interpolation arm 
-					:y (- grasp-half-limit-left-side grasp-limit-right-side)
-					:time 1000
+       (move-end-pos-with-interpolation arm
+                                        :y (- grasp-half-limit-left-side grasp-limit-right-side)
+                                        :time 1000
                                         :force t)
        )
       )
@@ -250,33 +250,69 @@
       )
     t))
 
-(defun pick-object (arm bin &key (to-see-if-grabbed nil))
-  (let* (av avs
-            (patterns
-             '(:middle :middle :middle
-                       :rotate-and-left :left-most
-		       :rotate-and-right :right-most
-                       :rotate-and-left :left-most
-		       :rotate-and-right :right-most
-                       :rotate-and-left :left-most
-		       :rotate-and-right :right-most
-                       :left :right :left :right :left :right
-                       :middle-left :middle-right :middle-left :middle-right :middle-left :middle-right
+(defun delete-duplicate-patterns (patterns &key (overlap 1))
+  (let ((pat-map (make-hash-table :test #'equal))
+        result-patterns)
+    (dolist (pat patterns)
+      (cond ((null (gethash pat pat-map))
+             (setf (gethash pat pat-map) 1)
+             (pushback pat result-patterns)
+             )
+            ((< (gethash pat pat-map) overlap)
+             (setf (gethash pat pat-map) (1+ (gethash pat pat-map)))
+             (pushback pat result-patterns)
+             )
+            (t
+             (format t "deleted pattern ~A~%" pat)
+             )
+          )
+      )
+    result-patterns))
+
+(defun delete-arbitrary-patterns (patterns arbitrary-patterns)
+  (let ((result-patterns patterns))
+    (dolist (a-pat arbitrary-patterns)
+      (setq result-patterns (remove-if #'(lambda (x) (equal x a-pat)) result-patterns))
+      )
+    result-patterns))
+
+(defun pick-object (arm bin &key (to-see-if-grabbed nil) (n-tried nil))
+  (let* (av avs target-labels
+            (short-range 30)
+            (middle-range 80)
+            (long-range 150)
+            (patterns ;; pair of (pattern . depth)
+             '((:middle . short-range) (:middle . middle-range) (:middle . long-range)
+                       (:rotate-and-left . short-range ) (:left-most . short-range)
+                       (:rotate-and-right . short-range) (:right-most . short-range) ;;
+                       (:rotate-and-left . middle-range) (:left-most . middle-range)
+                       (:rotate-and-right . middle-range) (:right-most . middle-range) ;;
+                       (:rotate-and-left . long-range) (:left-most . long-range)
+                       (:rotate-and-right . long-range) (:right-most . long-range) ;;
+                       (:left . middle-range) (:right . middle-range) (:left . short-range) (:right . short-range) (:left . long-range) (:right . long-range)
+                       (:middle-left . middle-range) (:middle-right . middle-range) (:middle-left . short-range) (:middle-right . short-range) (:middle-left . long-range) (:middle-right . long-range)
                        ))
-            (depths '(30 80 150
-                         30 30 30 30
-			 80 80 80 80
-			 150 150 150 150
-                         80 80 30 30 150 150
-                         80 80 30 30 150 150
-                         ))
             )
+    (send *baxter* arm :inverse-kinematics
+          (make-cascoords :pos (v+ (send *pod* bin) #f(90 0 0)))
+          :revert-if-fail nil
+          :rotation-axis :z)
+    (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+    (send *irtviewer* :draw-objects)
+
+    (if n-tried
+        (setq patterns (delete-arbitrary-patterns patterns '((:middle . long-range)))))
+
+    ;; (setq patterns (delete-arbitrary-patterns patterns '((:middle . 30) (:middle . 80) (:middle . 150))))
+    ;; (format t "patterns = ~A~%" patterns)
 
     ;; insert arm to target bin
     (dolist (av (insert-to-pick-object-avs arm bin))
       (send *irtviewer* :draw-objects)
       (send *ri* :angle-vector av 3000)
       (send *ri* :wait-interpolation))
+
+    ;; detect object from arm's camera
     ;; store image to compare it with one after trying to pick
     (start-image-time-diff arm)
     ;; make vacuum on
@@ -285,7 +321,8 @@
     (ros::ros-info "try to pick object ~A ~A" arm bin)
     (while
         (and patterns
-             (not (try-to-pick-object arm bin (pop patterns) (pop depths) :call-see-if-grabbed-function to-see-if-grabbed)))
+             (not (try-to-pick-object arm bin (caar patterns) (eval (cdar patterns)) :call-see-if-grabbed-function to-see-if-grabbed)))
+      (pop patterns)
       (unless *simulator-p* (speak-en  "Fail to catch the target" :google t)))
     ;; take arm out of bin
     (ros::ros-info "take arm out of bin ~A ~A" arm bin)
