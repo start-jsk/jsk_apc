@@ -140,6 +140,7 @@
                 jsk_2014_picking_challenge::ProbabilisticLabels
                 #'detect-object-pos-rarm-cb)
 (defun detect-object-pos-in-bin (arm)
+  (unix::sleep 1)
   (ros::spin-once)
   (gethash arm *detected-labels*)
   )
