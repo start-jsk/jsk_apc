@@ -19,6 +19,19 @@
            :revert-if-fail nil) avs)
     avs))
 
+(defun insert-to-pick-object (arm bin)
+  (send *baxter* arm :invert
+        (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 50)))
+        :revert-if-fail nil
+        :rotation-axis :z)
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *baxter* arm :move-end-pos #f(200 0 0) :world
+        :revert-if-fail nil)
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  )
+
 ;; (setq arm :larm bin :k)
 ;; (progn (load "motion/pick-object.l ")
 ;;        (dolist (av (insert-to-pick-object-avs arm bin))
@@ -488,10 +501,7 @@
     ;; (format t "patterns = ~A~%" patterns)
 
     ;; insert arm to target bin
-    (dolist (av (insert-to-pick-object-avs arm bin))
-      (send *irtviewer* :draw-objects)
-      (send *ri* :angle-vector av 3000)
-      (send *ri* :wait-interpolation))
+    (insert-to-pick-object arm bin)
 
     ;; detect object from arm's camera
     ;; store image to compare it with one after trying to pick
