@@ -58,7 +58,7 @@
     <arg name="left_or_right" value="right" />
   </include>
 
-  <include file="$(arg jsk_2014_picking_challenge)/launch/extract_each_bin.launch"/>
+  <include file="$(find jsk_2014_picking_challenge)/launch/extract_each_bin.launch"/>
 
   <!-- force sensor -->
   <include file="$(find jsk_2014_picking_challenge)/launch/virtual_force_publisher.launch">
