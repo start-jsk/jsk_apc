@@ -36,8 +36,11 @@
                                (grasp-side-z   80) ;; move z down to side grasp
                                (grasp-side-z-down   50) ;; move z down to side (grasp after rotate)
                                (grasp-z-offset 30) ;; z for returning to original pose
+                               (grasp-limit-left-side 50)
+                               (grasp-limit-right-side -50)
                                (debug-mode nil)
                                (bin-objects nil)
+                               (adjust-offset nil)
                                )
   (let* ((grasp-left-most-dist 60)
         (grasp-right-most-dist -60)
@@ -45,8 +48,6 @@
         (grasp-right-dist -50)
         (grasp-middle-left-dist 20)
         (grasp-middle-right-dist -20)
-        (grasp-limit-left-side 50)
-        (grasp-limit-right-side -50)
         (grasp-half-limit-left-side (* grasp-limit-left-side 0.9))
         (grasp-half-limit-right-side (* grasp-limit-right-side 0.9))
         )
@@ -124,6 +125,19 @@
       )
 
     (unix::sleep 1)
+
+    ;; for examine offset, return from
+    (if adjust-offset
+        (progn
+          (insert-to-pick-object-avs arm bin)
+          (send *irtviewer* :draw-objects)
+          (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+          (if (check-if-grabbed arm pattern bin-objects)
+              (return-from try-to-pick-object nil)
+            (return-from try-to-pick-object t)
+            )
+          )
+      )
 
     ;; for check grabbed, seperate gripper from wall.
     (case pattern
@@ -497,4 +511,67 @@
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 8.0)
     (send *ri* :wait-interpolation)
+    ))
+
+
+(defun check-pick-object-offset-from-wall-impl (arm bin &key (to-see-if-grabbed nil) (n-tried nil) (bin-objects nil))
+  (let* (av avs target-labels
+            (short-range 30)
+            (middle-range 80)
+            (long-range 150)
+            (last-left-y 40)
+            (last-right-y -40)
+            )
+    (send *baxter* arm :inverse-kinematics
+          (make-cascoords :pos (v+ (send *pod* bin) #f(90 0 0)))
+          :revert-if-fail nil
+          :rotation-axis :z)
+    (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+    (send *irtviewer* :draw-objects)
+
+    ;; insert arm to target bin
+    (dolist (av (insert-to-pick-object-avs arm bin))
+      (send *irtviewer* :draw-objects)
+      (send *ri* :angle-vector av 3000)
+      (send *ri* :wait-interpolation))
+
+    ;; make vacuum on
+    (send *ri* :start-grasp arm)
+    ;; try to pick object while not grabbed
+    (ros::ros-info "try to pick object ~A ~A" arm bin)
+    (let ( ;; (limit-map (make-hash-table :test #'equal))
+          )
+      (dolist (y '(40 45 50 55 60 65 60 75 80))
+        (if (try-to-pick-object arm bin :rotate-and-left short-range :grasp-limit-left-side y :adjust-offset t)
+            (setq last-left-y y))
+        )
+      (dolist (y '(-40 -45 -50 -55 -60 -65 -60 -75 -80))
+        (setq last-right-y -40)
+        (if (try-to-pick-object arm bin :rotate-and-right short-range :grasp-limit-right-side y :adjust-offset t)
+            (setq last-right-y y))
+        )
+      (ros::ros-info "bin ~A, depth ~A, (left . right) (~A . ~A)" bin short-range last-left-y last-right-y)
+      )
+
+    ;; take arm out of bin
+    (setq avs (list (send *baxter* arm :move-end-pos #f(-250 0 0) :world :revert-if-fail nil :rotation-axis :z)))
+    (pushback (avoid-shelf-pose-for-bin arm bin) avs)
+    (send *irtviewer* :draw-objects)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 8.0)
+    (send *ri* :wait-interpolation)
+    (cons last-left-y last-right-y)))
+
+(defun check-pick-object-offset-from-wall ()
+  (let ((limit-map (make-hash-table :test #'equal))
+        (bins '((:a . :c) (:d . :f) (:g . :i) (:j . :l))))
+    (dolist (bin bins)
+      (move-to-target-bin :rarm (cdr bin))
+      (move-to-target-bin :larm (car bin))
+      (setf (gethash bin limit-map)
+            (list (check-pick-object-offset-from-wall-impl :larm (car bin))
+                  (check-pick-object-offset-from-wall-impl :rarm (cdr bin)))))
+    (dolist (bin bins)
+      (format t "bin ~A side ~A~% bin ~A side ~A~%" (cdr bin) (cdr (gethash bin limit-map))
+              (car bin) (car (gethash bin limit-map))
+              ))
     ))
