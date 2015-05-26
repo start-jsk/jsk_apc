@@ -156,3 +156,38 @@
   (gethash arm *detected-labels*)
   )
 
+
+
+;;--------------------------------
+;; Bounding Box Array in the bin
+;;--------------------------------
+(setq *bounding-box-array-in-bin* (make-hash-table))
+(setq *now-bin-id* nil)
+(defun bounding-box-array-in-bin-cb (msg)
+  (ros::ros-info "~A" *now-bin-id*)
+  (setf (gethash *now-bin-id* *bounding-box-array-in-bin*) msg))
+
+(defun bounding-box-array-in-bin ( &key (timeout 20))
+  (let* ((now (ros::time-now))
+         (msg nil))
+    (dolist (bin (list :a :b :c :d :e :f :g :h :i :j :k :l))
+      (setq now (ros::time-now))
+      (setq *now-bin-id* bin)
+      (ros::ros-info "wait for bounding_box_array msg: ~A" (key-to-str bin))
+      (ros::subscribe (format nil "/extract_~A_indices/box_array" (key-to-str bin))
+		      jsk_recognition_msgs::BoundingBoxArray
+		      #'bounding-box-array-in-bin-cb)
+      (setq msg nil)
+      
+      (while  ;; wait for msg to synchronize
+	  (or (null msg))
+	(unix::sleep 1)
+	(ros::spin-once)
+	(setq msg (gethash bin *bounding-box-array-in-bin*))
+	;; timeout
+	(when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout)
+	  (ros::ros-error "timeout in bounding_box_array: ~A" (key-to-str bin))
+	  (return)))
+      (ros::unsubscribe (format nil "/extract_~A_indices/box_array" (key-to-str bin)))
+      )
+    *bounding-box-array-in-bin*))
