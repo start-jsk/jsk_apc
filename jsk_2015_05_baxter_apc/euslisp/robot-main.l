@@ -15,6 +15,7 @@
 (load "package://jsk_2014_picking_challenge/euslisp/robot-communication.l")
 
 (defun main (arm)
+  (bounding-box-array-in-bin :timeout 3)
   (while  ;; wait for user input to start
     (equal (ros::get-param (format nil "~A_process/state" (arm-to-str arm))) "wait_for_user_input")
     (ros::ros-info "waiting for user input to start: ~A" arm)
