@@ -491,7 +491,7 @@
                 ((> y-pos -60) (setq y-label :right))
                 (t (setq y-label :right-most))
                 )
-          (setq patterns (append (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000)) patterns))
+          (setq patterns (append (list (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000))) patterns))
           (ros::ros-info "Boundging Box Hints Suggest ~A" (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000)))
           (setq relative-pos-x ( - (* (send target-bounding-box :pose :position :x) 1000) (elt (send *pod* bin) 0)))
           (setq relative-pos-y ( - (* (send target-bounding-box :pose :position :y) 1000) (elt (send *pod* bin) 1)))
@@ -517,7 +517,7 @@
     ;; make vacuum on
     (send *ri* :start-grasp arm)
     ;; try to pick object while not grabbed
-    (ros::ros-info "try to pick object ~A ~A" arm bin)
+    (ros::ros-info "try to pick object ~A ~A ~A" arm bin patterns)
     (while
         (and patterns
              (not (try-to-pick-object arm bin (caar patterns) (eval (cdar patterns))
