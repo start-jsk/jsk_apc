@@ -1,6 +1,6 @@
 <launch>
   <arg name="launch_main" default="true" />
-  <arg name="json" default="" />
+  <arg name="json" />
 
   <!-- bin contents data -->
   <node pkg="jsk_2014_picking_challenge" type="bin_contents.py" name="bin_contents" respawn="true">
