@@ -12,7 +12,7 @@
     <arg name="base_name" value="kinect2_doura"/>
   </include>
 
-  <node pkg="tf" type="static_transform_publisher" name="doura_static_tf_publisher" args="0.2 0.11 0.46 -0.08 -1.55 3.14 base kinect2_doura_rgb_optical_frame 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="doura_static_tf_publisher" args="0.15 0.08 0.48 -0.08 -1.55 3.14 base kinect2_doura_rgb_optical_frame 100"/>
   <group ns="doura">
     <node pkg="nodelet" type="nodelet" name="passthrough_z_for_extract"
           args="load pcl/PassThrough /$(arg manager)" respawn="true">
@@ -44,9 +44,9 @@
       <remap from="~input/points" to="cloud_from_base/output" />
       <rosparam>
         use_multiple_attention: true
-        initial_pos_list: [[1.16,0.33,0.26], [1.16,0,0.26], [1.16,-0.31,0.26],[1.16,0.33,0], [1.16,0,0], [1.16,-0.31,0]]
+        initial_pos_list: [[1.08,0.31,0.22], [1.08,0,0.22], [1.08,-0.31,0.22],[1.12,0.31,-0.07], [1.12,0,-0.07], [1.12,-0.31,-0.07]]
         initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-        dimensions: [[0.22, 0.22, 0.22],[0.22, 0.28, 0.22],[0.22, 0.22, 0.22], [0.22, 0.22, 0.22],[0.22, 0.28, 0.22],[0.22, 0.22, 0.22]]
+        dimensions: [[0.22, 0.22, 0.2],[0.22, 0.28, 0.2],[0.22, 0.22, 0.2], [0.22, 0.22, 0.2],[0.22, 0.28, 0.2],[0.22, 0.22, 0.2]]
         frame_id_list: [base, base, base, base, base, base]
         prefixes: [bin_g, bin_h, bin_i, bin_j, bin_k, bin_l]
       </rosparam>
