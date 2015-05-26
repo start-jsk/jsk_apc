@@ -19,6 +19,26 @@
            :revert-if-fail nil) avs)
     avs))
 
+(defun insert-to-pick-object (arm bin)
+  (send *baxter* arm :inverse-kinematics
+        (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 50)))
+        :revert-if-fail nil
+        :rotation-axis :z)
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
+  (send *baxter* arm :move-end-pos #f(50 0 0) :world
+        :revert-if-fail nil)
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)  
+  (send *ri* :wait-interpolation)
+  (send *baxter* arm :move-end-pos #f(150 0 0) :world
+        :revert-if-fail nil)
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
+  )
+
 ;; (setq arm :larm bin :k)
 ;; (progn (load "motion/pick-object.l ")
 ;;        (dolist (av (insert-to-pick-object-avs arm bin))
@@ -436,12 +456,12 @@
                        (:middle-left . middle-range) (:middle-right . middle-range) (:middle-left . short-range) (:middle-right . short-range) (:middle-left . long-range) (:middle-right . long-range)
                        ))
             )
-    (send *baxter* arm :inverse-kinematics
-          (make-cascoords :pos (v+ (send *pod* bin) #f(90 0 0)))
-          :revert-if-fail nil
-          :rotation-axis :z)
-    (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-    (send *irtviewer* :draw-objects)
+;    (send *baxter* arm :inverse-kinematics
+;          (make-cascoords :pos (v+ (send *pod* bin) #f(90 0 0)))
+;          :revert-if-fail nil
+;          :rotation-axis :z)
+;    (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+;    (send *irtviewer* :draw-objects)
 
     (if n-tried
         (setq patterns (delete-arbitrary-patterns patterns '((:middle . long-range)))))
@@ -450,34 +470,36 @@
     (setq bounding-box-hint (gethash bin *bounding-box-array-in-bin*))
     (setq max-volume 0)
     (setq target-bounding-box nil)
+
     (when bounding-box-hint
       (dolist (bbox (send bounding-box-hint :boxes))
-	(if (< max-volume (* (send bbox :dimensions :x) (send bbox :dimensions :y) (send bbox :dimensions :z)))
-	    (progn
-	      (setq max-volumet (* (send bbox :dimensions :x) (send bbox :dimensions :y) (send bbox :dimensions :z)))
-	      (setq target-bounding-box bbox)
-	      )
-	  )
-	)
+        (if (< max-volume (* (send bbox :dimensions :x) (send bbox :dimensions :y) (send bbox :dimensions :z)))
+            (progn
+              (setq max-volumet (* (send bbox :dimensions :x) (send bbox :dimensions :y) (send bbox :dimensions :z)))
+              (setq target-bounding-box bbox)
+              )
+          )
+        )
       (when target-bounding-box
-	(let ((depth-offset 1.12) (y-pos ( - (* (send target-bounding-box :pose :position :y) 1000) (case bin ((:a :d :g :j) 309) ((:b :e :h :k) 0) ((:c :f :i :l) -309)))) y-label)
-	  (cond ((> y-pos 60) (setq y-label :left-most))
-		((> y-pos 50) (setq y-label :left))
-		((> y-pos 20) (setq y-label :middle-left))
-		((> y-pos -20) (setq y-label :middle))
-		((> y-pos -50) (setq y-label :middle-right))
-		((> y-pos -60) (setq y-label :right))
-		(t (setq y-label :right-most))
-		)
-	  (setq patterns (append (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000)) patterns))
-	  (ros::ros-info "Boundging Box Hints Suggest ~A" (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000)))
-	  (setq relative-pos-x ( - (* (send target-bounding-box :pose :position :x) 1000) (elt (send *pod* bin) 0)))
-	  (setq relative-pos-y ( - (* (send target-bounding-box :pose :position :y) 1000) (elt (send *pod* bin) 1)))
-	  (setq relative-pos-z ( - (* (send target-bounding-box :pose :position :z) 1000) (elt (send *pod* bin) 2)))
-	  (ros::ros-info " Bounding Box Absolute Pos x,y,z = ~A, ~A, ~A" (send target-bounding-box :pose :position :x) (send target-bounding-box :pose :position :y) (send target-bounding-box :pose :position :z))
-	  (ros::ros-info " Bounding Box Relative Pos x,y,z = ~A, ~A, ~A" relative-pos-x relative-pos-y relative-pos-z)
-	  (setq patterns (delete-duplicate-patterns patterns :overlap 1))
-	  )))
+        (let ((depth-offset 1.12) (y-pos ( - (* (send target-bounding-box :pose :position :y) 1000) (elt (send *pod* bin) 1))) y-label)
+          (cond ((> y-pos 60) (setq y-label :left-most))
+                ((> y-pos 50) (setq y-label :left))
+                ((> y-pos 20) (setq y-label :middle-left))
+                ((> y-pos 0) (setq y-label :middle))
+                ((> y-pos -20) (setq y-label :middle-right))
+                ((> y-pos -50) (setq y-label :right))
+                (t (setq y-label :right-most))
+                )
+          (setq patterns (append (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000)) patterns))
+          (ros::ros-info "Boundging Box Hints Suggest ~A" (cons y-label ( * (- (send target-bounding-box :pose :position :x) depth-offset) 1000)))
+          (setq relative-pos-x ( - (* (send target-bounding-box :pose :position :x) 1000) (elt (send *pod* bin) 0)))
+          (setq relative-pos-y ( - (* (send target-bounding-box :pose :position :y) 1000) (elt (send *pod* bin) 1)))
+          (setq relative-pos-z ( - (* (send target-bounding-box :pose :position :z) 1000) (elt (send *pod* bin) 2)))
+          (ros::ros-info " Bounding Box Absolute Pos x,y,z = ~A, ~A, ~A" (send target-bounding-box :pose :position :x) (send target-bounding-box :pose :position :y) (send target-bounding-box :pose :position :z))
+          (ros::ros-info " Bounding Box Relative Pos x,y,z = ~A, ~A, ~A" relative-pos-x relative-pos-y relative-pos-z)
+          (setq patterns (delete-duplicate-patterns patterns :overlap 1))
+          ))
+      )
 
     (setq target-labels (detect-object-pos-in-bin arm))
     (setq patterns (append (select-target-pattern-from-labels target-labels) patterns))
@@ -486,10 +508,7 @@
     ;; (format t "patterns = ~A~%" patterns)
 
     ;; insert arm to target bin
-    (dolist (av (insert-to-pick-object-avs arm bin))
-      (send *irtviewer* :draw-objects)
-      (send *ri* :angle-vector av 3000)
-      (send *ri* :wait-interpolation))
+    (insert-to-pick-object arm bin)
 
     ;; detect object from arm's camera
     ;; store image to compare it with one after trying to pick
