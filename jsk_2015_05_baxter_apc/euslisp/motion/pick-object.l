@@ -129,6 +129,7 @@
     ;; for examine offset, return from
     (if adjust-offset
         (progn
+          (send *ri* :stop-grasp arm)
           (insert-to-pick-object-avs arm bin)
           (send *irtviewer* :draw-objects)
           (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
