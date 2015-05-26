@@ -20,16 +20,23 @@
     avs))
 
 (defun insert-to-pick-object (arm bin)
-  (send *baxter* arm :invert
+  (send *baxter* arm :inverse-kinematics
         (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 50)))
         :revert-if-fail nil
         :rotation-axis :z)
   (send *irtviewer* :draw-objects)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-  (send *baxter* arm :move-end-pos #f(200 0 0) :world
+  (send *ri* :wait-interpolation)
+  (send *baxter* arm :move-end-pos #f(50 0 0) :world
+        :revert-if-fail nil)
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)  
+  (send *ri* :wait-interpolation)
+  (send *baxter* arm :move-end-pos #f(150 0 0) :world
         :revert-if-fail nil)
   (send *irtviewer* :draw-objects)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
   )
 
 ;; (setq arm :larm bin :k)
@@ -449,12 +456,12 @@
                        (:middle-left . middle-range) (:middle-right . middle-range) (:middle-left . short-range) (:middle-right . short-range) (:middle-left . long-range) (:middle-right . long-range)
                        ))
             )
-    (send *baxter* arm :inverse-kinematics
-          (make-cascoords :pos (v+ (send *pod* bin) #f(90 0 0)))
-          :revert-if-fail nil
-          :rotation-axis :z)
-    (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
-    (send *irtviewer* :draw-objects)
+;    (send *baxter* arm :inverse-kinematics
+;          (make-cascoords :pos (v+ (send *pod* bin) #f(90 0 0)))
+;          :revert-if-fail nil
+;          :rotation-axis :z)
+;    (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+;    (send *irtviewer* :draw-objects)
 
     (if n-tried
         (setq patterns (delete-arbitrary-patterns patterns '((:middle . long-range)))))
