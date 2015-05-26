@@ -25,7 +25,7 @@
     ;; insert
     (send *baxter* arm :move-end-pos #f(200 0 20) :world :revert-if-fail nil :rotation-axis :z)
     (pushback (send *baxter* :angle-vector) insert-avs)
-    (send *baxter* arm :move-end-pos #f(200 0 0) :world :revert-if-fail nil :rotation-axis :z)
+    (send *baxter* arm :move-end-pos #f(250 0 0) :world :revert-if-fail nil :rotation-axis :z)
     (pushback (send *baxter* :angle-vector) insert-avs)
     (send *ri* :angle-vector-sequence insert-avs :fast nil 0 :scale 4.0)
     (send *ri* :wait-interpolation)
