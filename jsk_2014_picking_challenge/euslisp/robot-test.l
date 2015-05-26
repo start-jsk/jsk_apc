@@ -100,7 +100,8 @@
     ))
 
 (defun check-pick-offset-impl (arm bin &key (pattern '((:middle . 30) (:middle . 80) (:middle . 150))))
-  (let ((last-z nil))
+  (let ((last-z nil)
+        (ret-zs nil))
     (dolist (pat pattern)
       (send *ri* :start-grasp arm)
       (catch 'loop
@@ -110,13 +111,14 @@
           (move-end-rot-with-interpolation arm :y 2 :time 1000)
           (move-end-pos-with-interpolation arm :z (- z) :time 1000)
           (unix:sleep 1)
-          (when (check-if-grabbed arm)
+          (when (check-if-grabbed arm (car pat) nil)
             (throw 'loop last-z))
           (setq last-z z)))
+      (pushback last-z ret-zs)
       (ros::ros-info "~A ~A ~A ~A safe z is ~A" arm bin (car pat) (cdr pat) last-z)
       (send *ri* :stop-grasp arm)
       ) ;; dolist
-    last-z))
+    ret-zs))
 
 ;; (check-pick-offset :rarm '(:c :f :i :l) '((:middle . 30)))
 ;; (check-pick-offset :larm '(:a :d :g :j) '((:middle . 30)))
