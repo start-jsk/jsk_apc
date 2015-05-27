@@ -467,6 +467,11 @@
     (if n-tried
         (setq patterns (delete-arbitrary-patterns patterns '((:middle . long-range)))))
 
+    (setq target-labels (detect-object-pos-in-bin arm))
+    (setq patterns (append (select-target-pattern-from-labels target-labels) patterns))
+    ;; (setq patterns (append (select-target-pattern-from-labels #i(1 2 3 4 5 6 7 8 9 10 11 12))))
+    (setq patterns (delete-duplicate-patterns patterns :overlap 1))
+
     ;; (setq patterns (delete-arbitrary-patterns patterns '((:middle . 30) (:middle . 80) (:middle . 150))))
     (setq bounding-box-hint (gethash bin *bounding-box-array-in-bin*))
     (setq max-volume 0)
@@ -482,7 +487,7 @@
           )
         )
       (when target-bounding-box
-        (let ((depth-offset 1.12) (y-pos ( - (* (send target-bounding-box :pose :position :y) 1000) (case bin ((:a :d :g :j) 309) ((:b :e :h :k) 0) ((:c :f :i :l) -309)))) y-label)
+        (let ((depth-offset 1.02) (y-pos ( - (* (send target-bounding-box :pose :position :y) 1000) (case bin ((:a :d :g :j) 309) ((:b :e :h :k) 0) ((:c :f :i :l) -309)))) y-label)
           (cond ((> y-pos 60) (setq y-label :left-most))
                 ((> y-pos 50) (setq y-label :left))
                 ((> y-pos 20) (setq y-label :middle-left))
@@ -502,10 +507,6 @@
           ))
       )
 
-    (setq target-labels (detect-object-pos-in-bin arm))
-    (setq patterns (append (select-target-pattern-from-labels target-labels) patterns))
-    ;; (setq patterns (append (select-target-pattern-from-labels #i(1 2 3 4 5 6 7 8 9 10 11 12))))
-    (setq patterns (delete-duplicate-patterns patterns :overlap 1))
     ;; (format t "patterns = ~A~%" patterns)
 
     ;; insert arm to target bin
