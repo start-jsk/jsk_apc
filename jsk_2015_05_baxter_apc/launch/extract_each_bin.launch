@@ -3,7 +3,7 @@
   <arg name="input_image" default="/kinect2/rgb/image"/>
 
   <arg name="custom" default="true"/>
-  <arg name="manager" default="extract_manager"/>
+  <arg name="manager" default="sheeta_extract_manager"/>
   <arg name="rect" default="false" />
 
   <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
@@ -31,9 +31,9 @@
     <remap from="~input/points" to="cloud_from_base/output" />
     <rosparam>
       use_multiple_attention: true
-      initial_pos_list: [[1.12,0.3,0.75], [1.12,0,0.75], [1.12,-0.3,0.75], [1.12,0.3,0.45], [1.12,0,0.45], [1.12,-0.3,0.45]]
+      initial_pos_list: [[1.14,0.32,0.68], [1.14,0,0.68], [1.14,-0.28,0.68], [1.14,0.32,0.32], [1.14,0,0.32], [1.14,-0.28,0.32]]
       initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-      dimensions: [[0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22], [0.25, 0.26, 0.22],[0.25, 0.30, 0.22],[0.25, 0.26, 0.22]]
+      dimensions: [[0.25, 0.22, 0.22],[0.25, 0.26, 0.22],[0.25, 0.22, 0.22], [0.25, 0.22, 0.22],[0.25, 0.26, 0.22],[0.25, 0.22, 0.22]]
       frame_id_list: [base, base, base, base, base, base]
       prefixes: [bin_a, bin_b, bin_c, bin_d, bin_e, bin_f]
     </rosparam>
