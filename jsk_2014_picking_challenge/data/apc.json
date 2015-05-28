@@ -1,0 +1,118 @@
+{
+  "bin_contents":
+  {
+    "bin_A":
+    [
+      "kong_sitting_frog_dog_toy"
+    ],
+    "bin_B":
+    [
+      "paper_mate_12_count_mirado_black_warrior",
+      "genuine_joe_plastic_stir_sticks"
+    ],
+    "bin_C":
+    [
+      "stanley_66_052",
+      "sharpie_accent_tank_style_highlighters",
+      "kong_duck_dog_toy",
+      "mead_index_cards"
+    ],
+    "bin_D":
+    [
+      "champion_copper_plus_spark_plug",
+      "rolodex_jumbo_pencil_cup"
+    ],
+    "bin_E":
+    [
+      "elmers_washable_no_run_school_glue"
+    ],
+    "bin_F":
+    [
+      "safety_works_safety_glasses",
+      "laugh_out_loud_joke_book"
+    ],
+    "bin_G":
+    [
+      "oreo_mega_stuf"
+    ],
+    "bin_H":
+    [
+      "first_years_take_and_toss_straw_cup",
+      "feline_greenies_dental_treats"
+    ],
+    "bin_I":
+    [
+      "crayola_64_ct",
+      "mommys_helper_outlet_plugs"
+    ],
+    "bin_J":
+    [
+      "highland_6539_self_stick_notes",
+      "munchkin_white_hot_duck_bath_toy",
+      "kong_air_dog_squeakair_tennis_ball"
+    ],
+    "bin_K":
+    [
+      "cheezit_big_original",
+      "expo_dry_erase_board_eraser"
+    ],
+    "bin_L":
+    [
+      "mark_twain_huckleberry_finn",
+      "kyjen_squeakin_eggs_plush_puppies",
+      "dr_browns_bottle_brush"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_A",
+      "item": "kong_sitting_frog_dog_toy"
+    },
+    {
+      "bin": "bin_B",
+      "item": "paper_mate_12_count_mirado_black_warrior"
+    },
+    {
+      "bin": "bin_C",
+      "item": "stanley_66_052"
+    },
+    {
+      "bin": "bin_D",
+      "item": "champion_copper_plus_spark_plug"
+    },
+    {
+      "bin": "bin_E",
+      "item": "elmers_washable_no_run_school_glue"
+    },
+    {
+      "bin": "bin_F",
+      "item": "safety_works_safety_glasses"
+    },
+    {
+      "bin": "bin_G",
+      "item": "oreo_mega_stuf"
+    },
+    {
+      "bin": "bin_H",
+      "item": "first_years_take_and_toss_straw_cup"
+    },
+    {
+      "bin": "bin_I",
+      "item": "crayola_64_ct"
+    },
+    {
+      "bin": "bin_J",
+      "item": "highland_6539_self_stick_notes"
+    },
+    {
+      "bin": "bin_K",
+      "item": "cheezit_big_original"
+    },
+    {
+      "bin": "bin_L",
+      "item": "mark_twain_huckleberry_finn"
+    }
+  ]
+}
