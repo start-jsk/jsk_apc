@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
     rosserial_client
     dynamic_reconfigure
     rostest
+    roseus
 )
 
 ## System dependencies are found with CMake's conventions
