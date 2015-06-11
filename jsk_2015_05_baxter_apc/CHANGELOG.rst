@@ -2,8 +2,8 @@
 Changelog for package jsk_2014_picking_challenge
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2015-06-11)
+------------------
 * [CMakeLists.txt] Add roseus in find_package
 * [data/apc.json] Add real challenge json file
 * final change
