@@ -13,8 +13,8 @@
             (:larm :larm-controller)
             (:rarm :rarm-controller))))
     (baxter-init :safe nil :type ctype)
-    ;; (send *baxter* :locate #f(0 0 950) :world)
-    (send *baxter* :locate #f(0 0 1040) :world)
+    (send *baxter* :locate #f(0 0 950) :world)  ;; baxter in the lab
+    ;; (send *baxter* :locate #f(0 0 1040) :world)  ;; baxter in the challenge
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (send (send *baxter* :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
     (send (send *baxter* :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
