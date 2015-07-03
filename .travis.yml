@@ -18,6 +18,9 @@ matrix:
 script: source .travis/travis.sh
 before_script:
   - export ROS_PARALLEL_JOBS="-j2 -l2"
+after_failure:
+  - rosrun roseus generate-all-msg-srv.sh --all
+  - rostest jsk_2014_picking_challenge test_robot_motion.test
 notifications:
   email:
     on_success: always
