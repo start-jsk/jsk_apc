@@ -1,0 +1,3 @@
+- git:
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    local-name: jsk-ros-pkg/jsk_robot
