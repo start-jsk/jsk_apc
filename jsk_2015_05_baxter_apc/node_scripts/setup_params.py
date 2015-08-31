@@ -5,7 +5,7 @@
 import rospy
 
 from work_order import get_sorted_work_order
-from rqt_yn_btn.srv import YesNo
+from jsk_rqt_plugins.srv import YesNo
 
 
 def main():
