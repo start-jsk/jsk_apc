@@ -34,67 +34,29 @@
 (send (send *baxter* :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
 (send (send *baxter* :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
 (setq *ri* (instance baxter-test-interface :init))
-
-(defclass baxter-test-robot
-  :super baxter-robot)
-(defmethod baxter-test-robot
-  (:inverse-kinematics (&rest args)
-   (let (ret)
-    (setq ret (send-super* :inverse-kinematics args))
-    (assert (null ret) "ik failed")
-    ret)))
+(send (send (*ri* . robot) :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
+(send (send (*ri* . robot) :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
 
 (init-unit-test)
 
-(deftest
-  test-move-to-target-bin
-  (dolist (bin '(:a :b :c :d :e :f :g :h :i :j :k :l))
-    (case (which-bin-region bin)
-      (:left :center (setq arm :larm))
-      (:right (setq arm :rarm)))
-    (setq test-passed nil)
-    (catch 'ik-error (move-to-target-bin arm bin) (setq test-passed t))
-    (assert test-passed (format nil "ik failed in move-to-target-bin: ~A ~A" arm bin))
-    ))
+;; left/right side is symmetric
+(setq test-patterns (cons :larm '(:a :b :d :e :g :h :j :k)))
+(setq test-names '("move-to-target-bin" "pick-object" "move-for-verification" "place-object"))
 
 (deftest
-  test-pick-object
-  (dolist (bin '(:a :b :c :d :e :f :g :h :i :j :k :l))
-    (case (which-bin-region bin)
-      (:left :center (setq arm :larm))
-      (:right (setq arm :rarm)))
-    (setq test-passed nil)
-    (move-to-target-bin arm bin)
-    (catch 'ik-error (pick-object arm bin) (setq test-passed t))
-    (assert test-passed (format nil "ik failed in pick-object ~A ~A" arm bin))
-    ))
-
-(deftest
-  test-move-for-verification
-  (dolist (bin '(:a :b :c :d :e :f :g :h :i :j :k :l))
-    (case (which-bin-region bin)
-      (:left :center (setq arm :larm))
-      (:right (setq arm :rarm)))
-    (setq test-passed nil)
-    (move-to-target-bin arm bin)
-    (pick-object arm bin)
-    (catch 'ik-error (move-for-verification arm bin) (setq test-passed t))
-    (assert test-passed (format nil "ik failed in move-for-verification ~A ~A" arm bin))
-    ))
-
-(deftest
-  test-place-object
-  (dolist (bin '(:a :b :c :d :e :f :g :h :i :j :k :l))
-    (case (which-bin-region bin)
-      (:left :center (setq arm :larm))
-      (:right (setq arm :rarm)))
-    (setq test-passed nil)
-    (move-to-target-bin arm bin)
-    (pick-object arm bin)
-    (move-for-verification arm bin)
-    (catch 'ik-error (place-object arm) (setq test-passed t))
-    (assert test-passed (format nil "ik failed in place-object ~A ~A" arm bin))
-    ))
+  test-apc-inverse-kinematics
+  (let ((arm (car test-patterns))
+        (bins (cdr test-patterns)))
+    (setq passed nil)
+    (dolist (bin bins)
+      (catch 'ik-error (move-to-target-bin arm bin) (push 0 passed))
+      (catch 'ik-error (pick-object arm bin) (push 1 passed))
+      (catch 'ik-error (move-for-verification arm bin) (push 2 passed))
+      (catch 'ik-error (place-object arm) (push 3 passed))
+      (dotimes (i (length test-names))
+        (unless (member i passed)
+          (assert nil (format nil "ik failed in ~A ~A ~A" (elt test-names i) arm bin))))
+    )))
 
 (run-all-tests)
 (exit)
