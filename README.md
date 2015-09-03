@@ -1,21 +1,23 @@
-2014-semi
-=========
+jsk_picking_challenge
+=====================
 
-[![CI Status at https://travis-ci.org/start-jsk/2014-semi/](https://travis-ci.org/start-jsk/2014-semi.svg)](https://travis-ci.org/start-jsk/2014-semi)
-[![Slack](https://img.shields.io/badge/slack-jsk--seminar--2014-blue.svg)](https://jsk-seminar-2014.slack.com)
+[![](https://travis-ci.org/start-jsk/2014-semi.svg)](https://travis-ci.org/start-jsk/2014-semi)
 
-2014 機械工学少人数ゼミ　プロジェクトページ
 
-環境の構築
-----------
-[Ros Wiki](http://wiki.ros.org/indigo/Installation/Ubuntu)のインストール手順に従ってindigoの環境設定をしたのち,
-以下の手順で環境構築をしてください.
-```
-$ mkdir -p catkin_ws/semi/src
-$ cd catkin_ws/semi/src
-$ wstool init
-$ wstool merge https://raw.githubusercontent.com/start-jsk/2014-semi/master/jsk_2014_picking_challenge.rosinstall
-$ wstool update
+Install
+-------
+
+
+### Required
+
+1. Install the ROS. [Instructions for ROS indigo on Ubuntu 14.04](http://wiki.ros.org/indigo/Installation/Ubuntu).
+2. [Setup your ROS environment](http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment).
+3. Build catkin workspace for [jsk_picking_challenge](https://github.com/wkentaro/2014-semi):
+
+```sh
+$ mkdir -p ~/ros/ws_jsk_picking_challenge/src
+$ cd ~/ros/ws_jsk_picking_challenge/src
+$ wstool init . https://raw.githubusercontent.com/start-jsk/2014-semi/master/jsk_picking_challenge.rosinstall
 $ cd ..
 $ rosdep install -y -r --from-paths .
 $ sudo apt-get install python-catkin-tools ros-indigo-jsk-tools
@@ -23,93 +25,64 @@ $ catkin build
 $ source devel/setup.bash
 ```
 
-Udev Setup
-----------
+* Edit `/etc/hosts`:
 
-Write Below in /etc/udev/rules.d/90-rosserial.rules.
+```
+133.11.216.214 baxter 011310P0014.local
+```
+
+* Add below in your `~/.bashrc`:
+```
+$ rossetmaster baxter.jsk.imi.i.u-tokyo.ac.jp
+$ rossetip
+```
+
+
+### Optional
+
+* Setup Kinect2: [Instructions at code-iai/iai_kinect2](https://github.com/code-iai/iai_kinect2#install)
+* Setup rosserial + vacuum gripper: Write below in `/etc/udev/rules.d/90-rosserial.rules`:
+
 ```
 # ATTR{product}=="rosserial"
 SUBSYSTEM=="tty", MODE="0666"
 ```
 
-Hosts Setup
------------
-Write Below in /etc/hosts .
-```
-133.11.216.214 baxter 011310P0014.local
-```
+* Setup SSH: Write below in `~/.ssh/config`:
 
-SSH Setup
----------
-Write Below in ~/.ssh/config
 ```
 Host baxter
   HostName baxter.jsk.imi.i.u-tokyo.ac.jp
-  User ruser
+  User ruser  # password: rethink
 ```
 
 
-実機を使うときの環境設定
------------------------
+Usage
+-----
+
+### Run Demo
+
+```sh
+$ roslaunch jsk_2014_picking_challenge baxter.launch
+$ roslaunch jsk_2014_picking_challenge setup.launch
+$ roslaunch jsk_2014_picking_challenge main.launch json:=`rospack find jsk_2014_picking_challenge`/data/apc-a.json
+$ roslaunch jsk_2014_picking_challenge record.launch  # rosbag record
 ```
-$ rossetmaster baxter.jsk.imi.i.u-tokyo.ac.jp
-$ rossetip
+
+
+If you have problem...
+----------------------
+
+* Run below to synchronize the time with robot. Time synchronization is crucial.:
+
+```
 $ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
 ```
 
-euslispからロボットを動かす
---------------------------
-```
-> rosrun jsk_2014_picking_challenge robot-main.l
-$ (move-to-target-bin :rarm :c)
-```
 
-最新のデモの実行方法
------------------------
-できるだけ、ビデオも取るようにしてください.
-```sh
-roslaunch jsk_2014_picking_challenge baxter.launch
-roslaunch jsk_2014_picking_challenge setup.launch
-roslaunch jsk_2014_picking_challenge main.launch json:=`rospack find jsk_2014_picking_challenge`/data/apc-a.json
-roslaunch jsk_2014_picking_challenge record.launch  # rosbag record
-```
-
-テストの実行の仕方
-------------------
+Testing
+-------
 
 ```sh
-catkin run_tests jsk_2014_picking_challenge --start-with-this --no-deps
+$ catkin run_tests jsk_2014_picking_challenge --start-with-this --no-deps
 ```
-
-
-rvizで今の状態を表示する
-------------------------
-
-```
-$ rosrun rviz rviz
-```
-
-launchファイルを使う
------------------------
-
-```
-$ roslaunch jsk_2014_picking_challenge baxter_oneclick_grasp.launch
-```
-
-* baxter_oneclick_grasp.launch
-
-rviz上で表示されているboxをクリックをすることでつかみにいきます
-このlaunchではbaxter_organized_multi.launchをincludeしています。
-
-* baxter_organized_multi.launch
-
-平面と平面上の物体を分離し,平面とBounding Boxをpublishします。
-jsk_pcl_rosのorganized_multi_planeのlaunchをincludeしています。
-
-
-addを選択しRobotModelを追加, FixedFrame base に設定
-
-Kinect2のlocalセットアップについて
-----------------------------------
-https://github.com/code-iai/iai_kinect2 のinstall手順に従い
-インストールしてください。
