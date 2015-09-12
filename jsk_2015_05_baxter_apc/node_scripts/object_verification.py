@@ -68,8 +68,6 @@ class ObjectVerification(object):
         weight = self.weight
 
         target_bin = rospy.get_param('target', None)
-        if target_bin is None or target_bin == '':
-            return
 
         object_list = get_object_list()
         all_proba = [
@@ -79,14 +77,30 @@ class ObjectVerification(object):
              ) for o in object_list
             ]
 
-        candidates = self.bin_contents[target_bin]
+        # verification result for debug
+        candidates = self.bin_contents.get(target_bin, None)
+        if candidates is None:
+            candidates = object_list
+        matched = sorted(all_proba, key=lambda x: x[1])[-1][0]
+        # compose msg
+        msg = ObjectRecognition()
+        msg.header.stamp = stamp
+        msg.matched = matched
+        msg.probability = dict(all_proba)[matched] / sum(dict(all_proba).values())
+        msg.candidates = candidates
+        msg.probabilities = np.array([dict(all_proba)[c] for c in candidates])
+        msg.probabilities /= msg.probabilities.sum()
+        self.pub_debug.publish(msg)
+
+        # verification result with json target
+        if target_bin is None or target_bin == '':
+            return
         proba = [
             (c,
              (weight[c]['bof'] * bof_objects_proba[c]) +
              (weight[c]['color'] * cfeature_objects_proba[c])
              ) for c in candidates
             ]
-
         matched = sorted(proba, key=lambda x: x[1])[-1][0]
         # compose msg
         msg = ObjectRecognition()
