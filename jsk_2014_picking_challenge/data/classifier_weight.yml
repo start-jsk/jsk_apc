@@ -62,8 +62,8 @@ paper_mate_12_count_mirado_black_warrior:
   bof: 0.05
   color: 0.95
 rolodex_jumbo_pencil_cup:
-  bof: 0.05
-  color: 0.05
+  bof: 0.5
+  color: 0.5
 safety_works_safety_glasses:
   bof: 0.05
   color: 0.95
