@@ -7,6 +7,7 @@ this script will test classification by the color_histogram
 
 import rospy
 from sensor_msgs.msg import Image
+from jsk_recognition_msgs.msg import ColorHistogram
 from jsk_2014_picking_challenge.msg import ObjectRecognition
 from common import ObjectMatcher, get_object_list
 from color_histogram_features import ColorHistogramFeatures
@@ -21,6 +22,8 @@ class ColorObjectMatcher(ObjectMatcher):
         rospy.Subscriber('~input', Image, self._cb_image)
         self._pub_recog = rospy.Publisher('~output', ObjectRecognition,
                                           queue_size=1)
+        self._pub_debug = rospy.Publisher(
+            '~debug', ColorHistogram, queue_size=1)
 
         self.query_image = Image()
         self.estimator = ColorHistogramFeatures()
@@ -47,9 +50,14 @@ class ColorObjectMatcher(ObjectMatcher):
         stamp = rospy.Time.now()
         while (self.query_image.header.stamp < stamp) or (self.query_image.height == 0):
             rospy.sleep(0.3)
+        query_image = self.query_image
         # convert image
         bridge = cv_bridge.CvBridge()
-        input_image = bridge.imgmsg_to_cv2(self.query_image, 'rgb8')
+        input_image = bridge.imgmsg_to_cv2(query_image, 'rgb8')
+
+        hist = self.estimator.color_hist(input_image)
+        self._pub_debug.publish(
+            ColorHistogram(header=query_image.header, histogram=hist))
 
         object_list = get_object_list()
         obj_indices = [object_list.index(o) for o in obj_names]
