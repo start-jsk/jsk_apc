@@ -11,6 +11,7 @@ from sklearn.preprocessing import normalize
 
 import rospy
 from posedetection_msgs.msg import ImageFeature0D
+from jsk_recognition_msgs.msg import Histogram
 from jsk_2014_picking_challenge.msg import ObjectRecognition
 
 from bag_of_features import BagOfFeatures
@@ -23,6 +24,8 @@ class BofObjectMatcher(ObjectMatcher):
         rospy.Subscriber('~input', ImageFeature0D, self._cb_imgfeature)
         self._pub_recog = rospy.Publisher('~output', ObjectRecognition,
                                           queue_size=1)
+        self._pub_debug = rospy.Publisher(
+            '~debug', Histogram, queue_size=1)
         self._init_bof()
         self._init_clf()
         self.query_features = ImageFeature0D().features
@@ -64,6 +67,9 @@ class BofObjectMatcher(ObjectMatcher):
         descs = np.array(query_features.descriptors)
         X = self.bof.transform([descs])
         normalize(X, copy=False)
+        self._pub_debug.publish(Histogram(header=query_features.header,
+                                          histogram=X[0]))
+
         object_list = get_object_list()
         proba = self.clf.predict_proba(X)[0]
         matched_idx = np.argmax(proba)
