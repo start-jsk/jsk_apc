@@ -59,8 +59,6 @@ add_message_files(
   FILES
   WorkOrder.msg
   WorkOrderArray.msg
-  BinContents.msg
-  BinContentsArray.msg
   QrStamp.msg
   QrStampes.msg
   ObjectRecognition.msg

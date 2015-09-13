@@ -12,5 +12,9 @@
 
   <run_depend>jsk_2014_baxter_apc</run_depend>
 
+  <build_depend>message_generation</build_depend>
+
+  <run_depend>message_generation</run_depend>
+
   <export></export>
 </package>

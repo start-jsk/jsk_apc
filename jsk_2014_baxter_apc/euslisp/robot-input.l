@@ -41,7 +41,7 @@
     (setq *bin-contents* nil))
 (defun bin-contents-cb (msg) (setq *bin-contents* (send msg :array)))
 
-(ros::subscribe "/bin_contents" jsk_2014_baxter_apc::BinContentsArray
+(ros::subscribe "/bin_contents" jsk_2014_apc::BinContentsArray
                 #'bin-contents-cb)
 (defun get-bin-contents (bin)
   (ros::spin-once)
