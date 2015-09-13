@@ -13,7 +13,7 @@ matrix:
     - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin   USE_DEB=true
 script: source .travis/travis.sh
 before_script:
-  - export ROS_PARALLEL_JOBS="-j2 -l2"
+  - export ROS_PARALLEL_JOBS="-j8"
 notifications:
   email:
     on_success: always
