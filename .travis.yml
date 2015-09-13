@@ -9,6 +9,7 @@ compiler:
 env:
   - ROS_DISTRO=hydro  USE_JENKINS=true NO_SUDO=true ROSWS=wstool BUILDER=catkin USE_DEB=true
   - ROS_DISTRO=indigo                  NO_SUDO=true ROSWS=wstool BUILDER=catkin USE_DEB=true
+  - ROS_DISTRO=jade                    NO_SUDO=true ROSWS=wstool BUILDER=catkin USE_DEB=false
 script: source .travis/travis.sh
 before_script:
   - export ROS_PARALLEL_JOBS="-j8"
