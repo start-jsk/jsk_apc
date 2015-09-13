@@ -1,7 +1,7 @@
 jsk_picking_challenge
 =====================
 
-[![](https://travis-ci.org/start-jsk/2014-semi.svg)](https://travis-ci.org/start-jsk/2014-semi)
+[![](https://travis-ci.org/start-jsk/jsk_picking_challenge.svg)](https://travis-ci.org/start-jsk/jsk_picking_challenge)
 
 
 Install
