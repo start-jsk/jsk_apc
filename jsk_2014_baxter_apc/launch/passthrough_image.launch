@@ -28,7 +28,7 @@
     <param name="use_rgb" type="bool" value="true"/>
     <param name="keep_organized" type="bool" value="true"/>
     <!-- The names of the links the sensor can see -->
-    <rosparam if="$(arg custom)" command="load" file="$(find jsk_2014_picking_challenge)/config/openni_self_filter_custom.yaml" />
+    <rosparam if="$(arg custom)" command="load" file="$(find jsk_2014_baxter_apc)/config/openni_self_filter_custom.yaml" />
     <rosparam unless="$(arg custom)" command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/openni_self_filter.yaml" />
   </node>
 

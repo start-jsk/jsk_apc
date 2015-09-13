@@ -3,12 +3,12 @@
   <arg name="json" />
 
   <!-- bin contents data -->
-  <node pkg="jsk_2014_picking_challenge" type="bin_contents.py" name="bin_contents" respawn="true">
+  <node pkg="jsk_2014_baxter_apc" type="bin_contents.py" name="bin_contents" respawn="true">
     <param name="json" value="$(arg json)" />
   </node>
 
   <!-- work order data -->
-  <node pkg="jsk_2014_picking_challenge" type="work_order.py" name="work_order" respawn="true">
+  <node pkg="jsk_2014_baxter_apc" type="work_order.py" name="work_order" respawn="true">
     <param name="json" value="$(arg json)" />
   </node>
 
@@ -19,34 +19,34 @@
   <param name="/right_process/state" value="" />
 
   <!-- object verification -->
-  <node ns="left_process" pkg="jsk_2014_picking_challenge" type="object_verification.py"
+  <node ns="left_process" pkg="jsk_2014_baxter_apc" type="object_verification.py"
     name="object_verification" respawn="true">
     <param name="json" value="$(arg json)" />
-    <param name="weight" value="$(find jsk_2014_picking_challenge)/data/classifier_weight.yml" />
+    <param name="weight" value="$(find jsk_2014_baxter_apc)/data/classifier_weight.yml" />
     <remap from="~input/bof" to="bof_object_matcher/output" />
     <remap from="~input/color_hist" to="color_object_matcher/output" />
   </node>
-  <node ns="right_process" pkg="jsk_2014_picking_challenge" type="object_verification.py"
+  <node ns="right_process" pkg="jsk_2014_baxter_apc" type="object_verification.py"
     name="object_verification" respawn="true">
     <param name="json" value="$(arg json)" />
-    <param name="weight" value="$(find jsk_2014_picking_challenge)/data/classifier_weight.yml" />
+    <param name="weight" value="$(find jsk_2014_baxter_apc)/data/classifier_weight.yml" />
     <remap from="~input/bof" to="bof_object_matcher/output" />
     <remap from="~input/color_hist" to="color_object_matcher/output" />
   </node>
 
   <!-- setup params -->
   <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="rqt_yn_btn" />
-  <node pkg="jsk_2014_picking_challenge" type="setup_params.py" name="setup_params">
+  <node pkg="jsk_2014_baxter_apc" type="setup_params.py" name="setup_params">
     <param name="json" value="$(arg json)" />
   </node>
 
   <!-- robot main -->
-  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_left"
+  <node if="$(arg launch_main)" pkg="jsk_2014_baxter_apc" type="robot-main.l" name="challenge_main_left"
     args="&quot;(progn (apc-init :larm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :larm))&quot;"
     respawn="true" output="screen">
     <env name="DISPLAY" value="" />
   </node>
-  <node if="$(arg launch_main)" pkg="jsk_2014_picking_challenge" type="robot-main.l" name="challenge_main_right"
+  <node if="$(arg launch_main)" pkg="jsk_2014_baxter_apc" type="robot-main.l" name="challenge_main_right"
     args="&quot;(progn (apc-init :rarm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :rarm))&quot;"
     respawn="true" output="screen">
     <env name="DISPLAY" value="" />

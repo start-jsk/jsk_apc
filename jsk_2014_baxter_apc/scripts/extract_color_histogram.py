@@ -11,8 +11,8 @@ Usage
 1. Download dataset(Raw High Resolution RGB) to data dir, and extract it.
 2. Execute following::
 
-    $ roslaunch jsk_2014_picking_challenge extract_color_histogram.launch
-    $ rosrun jsk_2014_picking_challenge extract_color_histogram.py \
+    $ roslaunch jsk_2014_baxter_apc extract_color_histogram.launch
+    $ rosrun jsk_2014_baxter_apc extract_color_histogram.py \
             _object:=all _color_space:=rgb
 
 """

@@ -10,7 +10,7 @@
   <node pkg="jsk_perception" type="lab_decomposer" name="lab_decomposer" output="screen">
     <remap from="~input" to="$(arg input_image)" />
   </node>
-  <node pkg="jsk_2014_picking_challenge" type="color_cutback.py" name="color_cutback" output="screen">
+  <node pkg="jsk_2014_baxter_apc" type="color_cutback.py" name="color_cutback" output="screen">
     <remap from="~input/red" to="/rgb_decomposer/output/red" />
     <remap from="~input/green" to="/rgb_decomposer/output/green" />
     <remap from="~input/blue" to="/rgb_decomposer/output/blue" />

@@ -1,10 +1,10 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/motion/move-to-target-bin.l")
-(load "package://jsk_2014_picking_challenge/euslisp/motion/robot-motion-common.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-recognition.l")
+(load "package://jsk_2014_baxter_apc/euslisp/utils.l")
+(load "package://jsk_2014_baxter_apc/euslisp/motion/move-to-target-bin.l")
+(load "package://jsk_2014_baxter_apc/euslisp/motion/robot-motion-common.l")
+(load "package://jsk_2014_baxter_apc/euslisp/robot-recognition.l")
 
 (defun insert-to-pick-object-avs (arm bin)
   (let (avs)

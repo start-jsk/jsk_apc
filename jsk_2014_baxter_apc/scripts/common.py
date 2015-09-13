@@ -10,7 +10,7 @@ import cv2
 from catkin import terminal_color
 
 import rospy
-from jsk_2014_picking_challenge.srv import ObjectMatch, ObjectMatchResponse
+from jsk_2014_baxter_apc.srv import ObjectMatch, ObjectMatchResponse
 
 
 def get_data_dir():

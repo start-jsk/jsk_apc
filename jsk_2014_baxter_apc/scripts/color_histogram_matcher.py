@@ -9,7 +9,7 @@ Usage
 -----
 
     $ roslaunch kinect2_bridge kinect2_bridge.launch
-    $ roslaunch jsk_2014_picking_challenge rgb_color_histogram_matcher.launch
+    $ roslaunch jsk_2014_baxter_apc rgb_color_histogram_matcher.launch
     $ rosservice call /semi/color_histogram_matcher \
         "{objects: oreo_mega_stuf, crayola_64_ct}"
 
@@ -23,7 +23,7 @@ import numpy as np
 import os
 
 from sensor_msgs.msg import Image
-from jsk_2014_picking_challenge.srv import ObjectMatch, ObjectMatchResponse
+from jsk_2014_baxter_apc.srv import ObjectMatch, ObjectMatchResponse
 from jsk_recognition_msgs.msg import ColorHistogram
 
 

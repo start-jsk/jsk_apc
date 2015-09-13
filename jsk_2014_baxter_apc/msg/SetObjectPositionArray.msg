@@ -1,1 +1,1 @@
-jsk_2014_picking_challenge/SetObjectPosition[] objects
+jsk_2014_baxter_apc/SetObjectPosition[] objects

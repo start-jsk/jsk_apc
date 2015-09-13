@@ -1,1 +1,1 @@
-jsk_2014_picking_challenge/BinContents[] array
+jsk_2014_baxter_apc/BinContents[] array

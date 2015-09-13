@@ -2,12 +2,12 @@
   <arg name="custom" default="true"/>
   
   <!-- send baxter urdf to param server -->
-  <param if="$(arg custom)" name="robot_description" command="$(find xacro)/xacro.py $(find jsk_2014_picking_challenge)/config/baxter_white_hand.urdf.xacro" />
+  <param if="$(arg custom)" name="robot_description" command="$(find xacro)/xacro.py $(find jsk_2014_baxter_apc)/config/baxter_white_hand.urdf.xacro" />
   <param unless="$(arg custom)" name="robot_description" command="$(find xacro)/xacro.py $(find baxter_description)/urdf/baxter.urdf" />
     
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
     <remap from="joint_states" to="/robot/joint_states"/>
   </node>
 
-  <rosparam param="/baxter_joint_trajectory" file="$(find jsk_2014_picking_challenge)/config/baxter_joint_trajectory.yaml"/>
+  <rosparam param="/baxter_joint_trajectory" file="$(find jsk_2014_baxter_apc)/config/baxter_joint_trajectory.yaml"/>
 </launch>

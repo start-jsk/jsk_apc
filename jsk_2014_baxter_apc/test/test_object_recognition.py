@@ -3,7 +3,7 @@
 #
 import sys
 import rospy
-from jsk_2014_picking_challenge.msg import ObjectRecognition
+from jsk_2014_baxter_apc.msg import ObjectRecognition
 
 left_result = None
 right_result = None

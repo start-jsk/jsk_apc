@@ -1,1 +1,1 @@
-jsk_2014_picking_challenge/QrStamp[] qrcode_stampes
+jsk_2014_baxter_apc/QrStamp[] qrcode_stampes

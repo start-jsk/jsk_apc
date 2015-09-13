@@ -3,11 +3,11 @@
 
 (ros::roseus "test_robot_motion")
 
-(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-interface.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
+(load "package://jsk_2014_baxter_apc/euslisp/utils.l")
+(load "package://jsk_2014_baxter_apc/euslisp/robot-utils.l")
+(load "package://jsk_2014_baxter_apc/euslisp/robot-init.l")
+(load "package://jsk_2014_baxter_apc/euslisp/robot-interface.l")
+(load "package://jsk_2014_baxter_apc/euslisp/robot-motions.l")
 
 ;; -------------------
 ;; Overwrite functions

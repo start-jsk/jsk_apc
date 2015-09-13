@@ -9,9 +9,9 @@ function: PoseStampedで指定された位置へ右腕を移動させる。
 How to use
 ---
 
-    $ rosrun jsk_2014_picking_challenge move_arm_listener.py
+    $ rosrun jsk_2014_baxter_apc move_arm_listener.py
     # in another terminal
-    $ rosrun jsk_2014_picking_challenge test_move_arm.py
+    $ rosrun jsk_2014_baxter_apc test_move_arm.py
 
 """
 import struct

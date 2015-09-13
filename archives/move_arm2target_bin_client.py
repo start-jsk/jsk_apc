@@ -5,7 +5,7 @@ import argparse
 
 import rospy
 import actionlib
-from jsk_2014_picking_challenge.msg import (
+from jsk_2014_baxter_apc.msg import (
     MoveArm2TargetBinAction,
     MoveArm2TargetBinGoal,
     )

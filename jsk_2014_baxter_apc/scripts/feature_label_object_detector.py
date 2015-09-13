@@ -12,7 +12,7 @@ import cv_bridge
 import message_filters
 from sensor_msgs.msg import Image
 from posedetection_msgs.msg import ImageFeature0D
-from jsk_2014_picking_challenge.msg import ProbabilisticLabels
+from jsk_2014_baxter_apc.msg import ProbabilisticLabels
 
 
 class FeatureLabelObjectDetector(object):

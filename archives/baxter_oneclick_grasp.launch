@@ -1,6 +1,6 @@
 <launch>
-  <include file="$(find jsk_2014_picking_challenge)/launch/baxter_organized_multi.launch">
-    <arg name="rviz_config" value="$(find jsk_2014_picking_challenge)/config/baxter_oneclick_grasp_demo.rviz"/>
+  <include file="$(find jsk_2014_baxter_apc)/launch/baxter_organized_multi.launch">
+    <arg name="rviz_config" value="$(find jsk_2014_baxter_apc)/config/baxter_oneclick_grasp_demo.rviz"/>
   </include>
 
   <!-- for interactive controller -->

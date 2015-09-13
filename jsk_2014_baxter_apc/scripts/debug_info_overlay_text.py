@@ -6,7 +6,7 @@ except:
   from jsk_rviz_plugins.msg import *
 
 from std_msgs.msg import ColorRGBA, Float32, String, Bool
-from jsk_2014_picking_challenge.msg import ObjectRecognition
+from jsk_2014_baxter_apc.msg import ObjectRecognition
 import rospy
 import math
 rospy.init_node("debug_info_overlay_text")

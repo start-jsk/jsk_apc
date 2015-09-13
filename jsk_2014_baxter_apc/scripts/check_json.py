@@ -7,7 +7,7 @@ import rospkg
 
 
 rp = rospkg.RosPack()
-pkg_path = rp.get_path('jsk_2014_picking_challenge')
+pkg_path = rp.get_path('jsk_2014_baxter_apc')
 
 test_path = os.path.join(pkg_path, 'test/test_robot_input.py')
 

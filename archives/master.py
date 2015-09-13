@@ -9,7 +9,7 @@ import rospy
 import actionlib
 
 from jsk_rviz_plugins.msg import OverlayText
-from jsk_2014_picking_challenge.msg import (
+from jsk_2014_baxter_apc.msg import (
     order_list,
     bins_content,
     MoveArm2TargetBinAction,
@@ -17,7 +17,7 @@ from jsk_2014_picking_challenge.msg import (
     ObjectPickingAction,
     ObjectPickingGoal,
     )
-from jsk_2014_picking_challenge.srv import (
+from jsk_2014_baxter_apc.srv import (
     MoveArm,
     ReleaseItem,
     ObjectMatch
