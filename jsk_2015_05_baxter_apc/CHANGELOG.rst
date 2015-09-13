@@ -2,6 +2,19 @@
 Changelog for package jsk_2014_picking_challenge
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.1 (2015-09-14)
+------------------
+* Remove actionlib msgs which is not used
+* Sort depends in alphabetical order
+* Show debug info for object recognition
+* Change weight of rolodex_jumbo_pencil_cup
+* Remove no need dependencies and add jsk_recognition_msgs
+* [euslisp/robot-init.l] Baxter position in lab
+* Add toggle_vacuum.py
+* Fix test-robot-motion
+* Fix jsk_rqt_plugins.srv YesNo
+* Contributors: Kentaro Wada
+
 0.1.0 (2015-06-11)
 ------------------
 * [CMakeLists.txt] Add roseus in find_package
