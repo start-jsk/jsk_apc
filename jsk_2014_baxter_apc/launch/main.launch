@@ -3,12 +3,12 @@
   <arg name="json" />
 
   <!-- bin contents data -->
-  <node pkg="jsk_2014_baxter_apc" type="bin_contents.py" name="bin_contents" respawn="true">
+  <node pkg="jsk_2014_apc" type="bin_contents.py" name="bin_contents" respawn="true">
     <param name="json" value="$(arg json)" />
   </node>
 
   <!-- work order data -->
-  <node pkg="jsk_2014_baxter_apc" type="work_order.py" name="work_order" respawn="true">
+  <node pkg="jsk_2014_apc" type="work_order.py" name="work_order" respawn="true">
     <param name="json" value="$(arg json)" />
   </node>
 

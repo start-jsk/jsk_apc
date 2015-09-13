@@ -39,7 +39,8 @@ from geometry_msgs.msg import *
 from visualization_msgs.msg import *
 from tf import transformations
 from tf import TransformListener
-from jsk_2014_baxter_apc.msg import SetObjectPositionArray, WorkOrderArray
+from jsk_2014_apc.msg import WorkOrderArray
+from jsk_2014_baxter_apc.msg import SetObjectPositionArray
 import rospkg
 import yaml
 server = None

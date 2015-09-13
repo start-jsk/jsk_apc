@@ -46,6 +46,8 @@ add_message_files(
   FILES
   BinContents.msg
   BinContentsArray.msg
+  WorkOrder.msg
+  WorkOrderArray.msg
 )
 
 ## Generate services in the 'srv' folder

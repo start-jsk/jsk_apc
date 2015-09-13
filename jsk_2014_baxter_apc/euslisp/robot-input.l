@@ -24,10 +24,10 @@
 (defun work-order-cb-rarm (msg) (work-order-cb msg :rarm))
 
 (ros::subscribe "work_order/left_process"
-                jsk_2014_baxter_apc::WorkOrderArray
+                jsk_2014_apc::WorkOrderArray
                 #'work-order-cb-larm)
 (ros::subscribe "work_order/right_process"
-                jsk_2014_baxter_apc::WorkOrderArray
+                jsk_2014_apc::WorkOrderArray
                 #'work-order-cb-rarm)
 
 (defun get-work-order (arm)
