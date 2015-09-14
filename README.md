@@ -63,10 +63,10 @@ Usage
 ### Run Demo
 
 ```sh
-$ roslaunch jsk_2014_picking_challenge baxter.launch
-$ roslaunch jsk_2014_picking_challenge setup.launch
-$ roslaunch jsk_2014_picking_challenge main.launch json:=`rospack find jsk_2014_picking_challenge`/data/apc-a.json
-$ roslaunch jsk_2014_picking_challenge record.launch  # rosbag record
+$ roslaunch jsk_2014_baxter_apc baxter.launch
+$ roslaunch jsk_2014_baxter_apc setup.launch
+$ roslaunch jsk_2014_baxter_apc main.launch json:=`rospack find jsk_2014_baxter_apc`/data/apc-a.json
+$ roslaunch jsk_2014_baxter_apc record.launch  # rosbag record
 ```
 
 
@@ -84,5 +84,5 @@ Testing
 -------
 
 ```sh
-$ catkin run_tests jsk_2014_picking_challenge --start-with-this --no-deps
+$ catkin run_tests jsk_2014_baxter_apc --start-with-this --no-deps
 ```

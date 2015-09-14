@@ -1,1 +1,0 @@
-jsk_2014_picking_challenge/SetObjectPosition[] objects

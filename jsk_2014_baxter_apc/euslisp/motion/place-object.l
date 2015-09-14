@@ -1,0 +1,37 @@
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
+
+(load "package://jsk_2014_baxter_apc/euslisp/motion/robot-motion-common.l")
+
+(defun place-object-avs (arm)
+  (let (avs (av-map (make-hash-table)))
+    (setf (gethash :larm av-map) #f(5.05371 1.58203 -39.5068 89.3188 -1.29639 8.10791 100.085))
+    (setf (gethash :rarm av-map) #f(-5.05371 1.58203 39.5068 89.3188 1.29639 8.10791 -100.085))
+    (pushback (fold-to-keep-object-av arm) avs)
+    (send *baxter* arm :angle-vector (gethash arm av-map))
+    (pushback (send *baxter* :angle-vector) avs)
+    avs))
+
+(defun place-object (arm)
+  (let (avs shake-avs)
+    (setq avs (append avs (place-object-avs arm)))
+    (send *irtviewer* :draw-objects)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 3.0)
+    (send *ri* :wait-interpolation)
+    (send *ri* :stop-grasp arm)
+    (unix::sleep 3)
+    ;; shake to have object leave from hand
+    (dotimes (i 10)
+      (pushback (rotate-wrist arm 10) shake-avs)
+      (pushback (rotate-wrist arm -20) shake-avs)
+      (pushback (rotate-wrist arm 20) shake-avs)
+      (pushback (rotate-wrist arm -10) shake-avs))
+    (send *ri* :angle-vector-sequence shake-avs)
+    (send *ri* :wait-interpolation)
+    (setq avs nil)
+    (pushback (fold-to-keep-object-av arm) avs)
+    (setq avs (append avs (fold-pose-back arm)))
+    (send *irtviewer* :draw-objects)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 3.0)
+    (send *ri* :wait-interpolation)
+    ))
