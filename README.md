@@ -84,5 +84,5 @@ Testing
 -------
 
 ```sh
-$ catkin run_tests jsk_2014_baxter_apc --start-with-this --no-deps
+$ catkin run_tests jsk_2014_baxter_apc --no-deps
 ```
