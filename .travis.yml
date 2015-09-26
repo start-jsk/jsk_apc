@@ -7,11 +7,15 @@ python:
 compiler:
   - gcc
 env:
-  - ROS_DISTRO=hydro  USE_JENKINS=true NO_SUDO=true ROSWS=wstool BUILDER=catkin USE_DEB=true
-  - ROS_DISTRO=indigo                  NO_SUDO=true ROSWS=wstool BUILDER=catkin USE_DEB=true
+  global:
+    - ROS_PARALLEL_JOBS="-j8"
+  matrix:
+    - ROS_DISTRO=hydro  USE_JENKINS=true ROSWS=wstool BUILDER=catkin USE_DEB=true
+    - ROS_DISTRO=indigo                  ROSWS=wstool BUILDER=catkin USE_DEB=true
+matrix:
+  allow_failures:
+    - env: ROS_DISTRO=hydro  USE_JENKINS=true ROSWS=wstool BUILDER=catkin USE_DEB=true
 script: source .travis/travis.sh
-before_script:
-  - export ROS_PARALLEL_JOBS="-j8"
 notifications:
   email:
     on_success: always
