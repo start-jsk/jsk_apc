@@ -12,6 +12,9 @@ env:
   matrix:
     - ROS_DISTRO=hydro  USE_JENKINS=true ROSWS=wstool BUILDER=catkin USE_DEB=true
     - ROS_DISTRO=indigo                  ROSWS=wstool BUILDER=catkin USE_DEB=true
+matrix:
+  allow_failures:
+    - env: ROS_DISTRO=hydro  USE_JENKINS=true ROSWS=wstool BUILDER=catkin USE_DEB=true
 script: source .travis/travis.sh
 notifications:
   email:
