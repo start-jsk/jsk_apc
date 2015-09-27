@@ -57,8 +57,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  QrStamp.msg
-  QrStampes.msg
   ObjectRecognition.msg
   BoolStamped.msg
   SetObjectPosition.msg
@@ -70,7 +68,6 @@ add_message_files(
 add_service_files(
   FILES
   MoveArm.srv
-  QrStampsrv.srv
   ReleaseItem.srv
   Cue.srv
   ObjectMatch.srv
@@ -94,7 +91,6 @@ generate_messages(
 generate_dynamic_reconfigure_options(
   cfg/SIFTMatcher.cfg
   cfg/ColorCutback.cfg
-  cfg/DilateImage.cfg
 )
 
 ###################################

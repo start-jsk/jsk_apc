@@ -1,1 +1,0 @@
-jsk_2014_baxter_apc/QrStamp[] qrcode_stampes
