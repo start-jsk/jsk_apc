@@ -91,7 +91,6 @@ generate_messages(
 generate_dynamic_reconfigure_options(
   cfg/SIFTMatcher.cfg
   cfg/ColorCutback.cfg
-  cfg/DilateImage.cfg
 )
 
 ###################################
