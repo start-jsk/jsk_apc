@@ -8,13 +8,17 @@ compiler:
   - gcc
 env:
   global:
-    - ROS_PARALLEL_JOBS="-j8"
+    - ROSWS=wstool
+    - BUILDER=catkin
+    - USE_DEB=true
   matrix:
-    - ROS_DISTRO=hydro  USE_JENKINS=true ROSWS=wstool BUILDER=catkin USE_DEB=true
-    - ROS_DISTRO=indigo                  ROSWS=wstool BUILDER=catkin USE_DEB=true
+    - ROS_DISTRO=hydro  USE_JENKINS=true
+    - ROS_DISTRO=indigo
+    - ROS_DISTRO=jade
 matrix:
   allow_failures:
-    - env: ROS_DISTRO=hydro  USE_JENKINS=true ROSWS=wstool BUILDER=catkin USE_DEB=true
+    - env: ROS_DISTRO=hydro  USE_JENKINS=true
+    - env: ROS_DISTRO=jade
 script: source .travis/travis.sh
 notifications:
   email:
