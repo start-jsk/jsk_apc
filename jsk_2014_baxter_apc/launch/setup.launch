@@ -6,12 +6,6 @@
 
   <env name="OMP_NUM_THREADS" value="4"/>
 
-  <!-- tf of baxter's footprint -->
-  <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
-
-  <!-- tf of kinect2 -->
-  <include file="$(find jsk_2014_baxter_apc)/launch/kinect2_tf.launch"></include>
-
   <!-- rosserial -->
   <include if="$(arg rosserial)" file="$(find jsk_2014_baxter_apc)/launch/rosserial.launch" />
 
