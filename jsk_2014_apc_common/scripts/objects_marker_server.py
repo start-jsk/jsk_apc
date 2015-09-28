@@ -39,7 +39,7 @@ from geometry_msgs.msg import *
 from visualization_msgs.msg import *
 from tf import transformations
 from tf import TransformListener
-from jsk_2014_apc.msg import WorkOrderArray
+from jsk_2014_apc_common.msg import WorkOrderArray
 from jsk_2014_baxter_apc.msg import SetObjectPositionArray
 import rospkg
 import yaml
@@ -77,7 +77,7 @@ def makeTargetObject( msg, object_name ):
     marker.scale.x = msg.scale * 3
     marker.scale.y = msg.scale * 3
     marker.scale.z = msg.scale * 3
-    marker.mesh_resource = "package://jsk_2014_apc/meshes/" + object_name +"/" + object_name + ".dae"
+    marker.mesh_resource = "package://jsk_2014_apc_common/meshes/" + object_name +"/" + object_name + ".dae"
     marker.mesh_use_embedded_materials = True
     return marker
 

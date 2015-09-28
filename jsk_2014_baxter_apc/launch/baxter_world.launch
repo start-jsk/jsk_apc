@@ -11,7 +11,7 @@
 
   <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg if="$(arg kiva)" name="world_name" value="$(find jsk_2014_apc)/worlds/empty_kiva.world"/>
+    <arg if="$(arg kiva)" name="world_name" value="$(find jsk_2014_apc_common)/worlds/empty_kiva.world"/>
     <arg unless="$(arg kiva)" name="world_name" value="$(find baxter_gazebo)/worlds/baxter.world"/>
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />

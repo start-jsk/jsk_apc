@@ -11,7 +11,7 @@ import rospkg
 from jsk_rqt_plugins.srv import YesNo
 
 rp = rospkg.RosPack()
-sys.path.append(os.path.join(rp.get_path('jsk_2014_apc'), 'scripts'))
+sys.path.append(os.path.join(rp.get_path('jsk_2014_apc_common'), 'scripts'))
 from work_order import get_sorted_work_order
 
 
