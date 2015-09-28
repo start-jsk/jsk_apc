@@ -28,7 +28,8 @@ from posedetection_msgs.msg import ImageFeature0D
 from posedetection_msgs.srv import Feature0DDetect
 from jsk_2015_05_baxter_apc.cfg import SIFTMatcherConfig
 
-from common import ObjectMatcher, get_object_list, load_siftdata
+from common import ObjectMatcher, load_siftdata
+import jsk_2015_apc_common
 
 
 class SiftMatcher(object):
@@ -70,7 +71,7 @@ class SiftObjectMatcher(SiftMatcher, ObjectMatcher):
     def __init__(self):
         SiftMatcher.__init__(self)
         ObjectMatcher.__init__(self, '/semi/sift_matcher')
-        self.object_list = get_object_list()
+        self.object_list = jsk_2015_apc_common.data.object_list()
         self.siftdata_cache = {}
 
     def match(self, obj_names):
