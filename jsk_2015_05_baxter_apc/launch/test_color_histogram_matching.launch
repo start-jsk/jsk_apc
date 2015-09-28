@@ -1,0 +1,11 @@
+<launch>
+  <arg name="color_space" default="lab" />
+  <node pkg="jsk_2015_05_baxter_apc" type="empty_camera_info.py" name="empty_camera_info" output="screen"></node>
+  <node pkg="jsk_2015_05_baxter_apc" type="image_publish_server.py" name="image_publish_server" output="screen"></node>
+
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/$(arg color_space)_color_histogram_matcher.launch">
+    <arg name="input_image" value="/image_publish_server/output" />
+    <arg name="respawn" value="true" />
+  </include>
+</launch>
+

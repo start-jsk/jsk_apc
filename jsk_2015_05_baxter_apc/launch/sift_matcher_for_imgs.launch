@@ -1,0 +1,33 @@
+<launch>
+    <arg name="input_image" default="/image_raw" />
+    <arg name="input_info" default="/camera_info" />
+    <arg name="image_file" default="$(find jsk_2015_05_baxter_apc)/data/paste.png" />
+    <arg name="mask_file" default="$(find jsk_2015_05_baxter_apc)/data/paste_mask.png" />
+
+    <node pkg="jsk_perception" type="image_publisher.py" name="image_publisher" output="screen">
+        <param name="file_name" value="$(arg image_file)" />
+    </node>
+    <node pkg="jsk_perception" type="image_publisher.py" name="mask_publisher" output="screen">
+        <param name="file_name" value="$(arg mask_file)" />
+    </node>
+    <node pkg="jsk_2015_05_baxter_apc" type="reversed_color.py" name="reversed_color" output="screen">
+        <remap from="~input" to="/mask_publisher/output" />
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="apply_mask"
+        args="standalone jsk_perception/ApplyMaskImage">
+        <remap from="~input" to="/image_publisher/output" />
+        <remap from="~input/mask" to="/reversed_color/output" />
+        <param name="approximate_sync" value="true" />
+    </node>
+
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/sift_matcher.launch">
+        <arg name="input_image" value="$(arg input_image)" />
+        <arg name="input_info" value="$(arg input_info)" />
+    </include>
+
+    <node pkg="jsk_2015_05_baxter_apc" type="sift_matcher_for_imgs.py" name="sift_matcher_for_imgs" output="screen">
+        <remap from="~input" to="$(arg input_image)" />
+        <remap from="~input/reference" to="/apply_mask/output" />
+    </node>
+</launch>

@@ -1,0 +1,127 @@
+<launch>
+  <arg name="input_cloud" default="/kinect2/depth_highres/points"/>
+  <arg name="input_image" default="/kinect2/rgb/image"/>
+
+  <arg name="custom" default="true"/>
+  <arg name="manager" default="passthrough_manager"/>
+  <arg name="rect" default="false" />
+
+  <node pkg="nodelet" type="nodelet" name="passthrough_z"
+        args="load pcl/PassThrough $(arg manager)" respawn="true">
+    <remap from="~input" to="$(arg input_cloud)" />
+    <rosparam>
+      filter_field_name: z
+      filter_limit_min: 0
+      filter_limit_max: 0.9
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <!-- <node pkg="nodelet" type="nodelet" name="organized_resize_x" -->
+  <!--       args="load jsk_pcl/OrganizedPassThrough $(arg manager)"> -->
+  <!--   <remap from="~input" to="passthrough_z/output" /> -->
+  <!--   <rosparam> -->
+  <!--     filter_field: 0 -->
+  <!--     min_index: 0 -->
+  <!--     max_index: 1500 -->
+  <!--   </rosparam> -->
+  <!-- </node> -->
+  <!-- <node pkg="nodelet" type="nodelet" name="organized_resize_y" -->
+  <!--       args="load jsk_pcl/OrganizedPassThrough $(arg manager)"> -->
+  <!--   <remap from="~input" to="organized_resize_x/output" /> -->
+  <!--   <rosparam> -->
+  <!--     filter_field: 1 -->
+  <!--     min_index: 140 -->
+  <!--     max_index: 700 -->
+  <!--   </rosparam> -->
+  <!-- </node> -->
+
+  <node pkg="pr2_navigation_self_filter"
+        type="self_filter" clear_params="true"
+        name="robot_shadow_self_filter2" respawn="true" output="screen">
+    <!-- The topic for the input cloud -->
+    <!-- <remap from="cloud_in" to="$(arg input_cloud)" /> -->
+    <remap from="cloud_in" to="passthrough_z/output" />
+    <!-- <remap from="cloud_in" to="organized_resize_y/output" /> -->
+    <!-- The topic for the output cloud -->
+    <remap from="cloud_out" to="$(arg input_cloud)_filtered" />
+    <param name="subsample_value" type="double" value="0.0"/>
+    <param name="use_rgb" type="bool" value="true"/>
+    <param name="keep_organized" type="bool" value="true"/>
+    <!-- The names of the links the sensor can see -->
+    <rosparam if="$(arg custom)" command="load" file="$(find jsk_2015_05_baxter_apc)/config/openni_self_filter_custom.yaml" />
+    <rosparam unless="$(arg custom)" command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/openni_self_filter.yaml" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+
+
+  <!-- <node pkg="nodelet" type="nodelet" name="left_right_divider" -->
+  <!--       args="load jsk_pcl/AttentionClipper /$(arg manager)" respawn="true"> -->
+  <!--   <remap from="~input/points" to="/kinect2/depth_highres/points_filtered" /> -->
+  <!--   <rosparam> -->
+  <!--     use_multiple_attention: true -->
+  <!--     initial_pos_list: [[0.1,0,0.3], [0.1,0,0.3]] -->
+  <!--     initial_rot_list: [[0,0,0], [0,0,0]] -->
+  <!--     dimensions: [[0.25, 0.35, 0.35],[0.25, 0.35, 0.35]] -->
+  <!--     frame_id_list: [right_hand, left_hand] -->
+  <!--     prefixes: [right_hand, left_hand] -->
+  <!--   </rosparam> -->
+  <!-- </node> -->
+
+
+
+  <node pkg="nodelet" type="nodelet" name="left_hand"
+        args="standalone pcl/PassThrough" respawn="true">
+    <remap from="~input" to="/kinect2/depth_highres/points_filtered" />
+    <!-- suppose QVGA -->
+    <rosparam>
+      filter_field_name: x
+      filter_limit_min: -0.5
+      filter_limit_max: 0.0
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="right_hand"
+        args="standalone pcl/PassThrough" respawn="true">
+    <remap from="~input" to="/kinect2/depth_highres/points_filtered" />
+    <!-- suppose QVGA -->
+    <rosparam>
+      filter_field_name: x
+      filter_limit_min: 0.0
+      filter_limit_max: 0.5
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="organized_to_pi_right"
+        args="load jsk_pcl/OrganizedPointCloudToPointIndices $(arg manager)" respawn="true">
+    <remap from="~input" to="right_hand/output" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="organized_to_pi_left"
+        args="load jsk_pcl/OrganizedPointCloudToPointIndices $(arg manager)" respawn="true">
+    <remap from="~input" to="left_hand/output" />
+  </node>
+
+  <group ns="left_process">
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/process_mask_image.launch">
+      <arg name="arm" value="left"/>
+      <arg name="original_image" value="$(arg input_image)"/>
+      <arg name="input_point_indices" value="/organized_to_pi_left/output"/>
+      <arg name="input_depth_camera_info" value="/kinect2/depth_highres/camera_info"/>
+      <arg name="rect" value="$(arg rect)"/>
+    </include>
+  </group>
+
+  <group ns="right_process">
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/process_mask_image.launch">
+      <arg name="arm" value="right"/>
+      <arg name="original_image" value="$(arg input_image)"/>
+      <arg name="input_point_indices" value="/organized_to_pi_right/output"/>
+      <arg name="input_depth_camera_info" value="/kinect2/depth_highres/camera_info"/>
+      <arg name="rect" value="$(arg rect)"/>
+    </include>
+  </group>
+</launch>

@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter">
+  <xacro:include filename="$(find baxter_description)/urdf/baxter_simple.urdf" />
+
+  <xacro:property name="width" value=".02" />
+  <xacro:property name="width_base" value=".1" />
+  <xacro:property name="width_side2_base" value=".035" />
+  <xacro:property name="bodylen" value=".49" />
+  <xacro:property name="bodylen_base" value=".12" />
+  <xacro:property name="right_wrist_offset_x" value="-0.01" />
+  <xacro:property name="left_wrist_offset_x" value="-0.01" />
+  <link name="right_custom_vacuum_link">
+    <visual>
+      <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
+      <geometry>
+        <mesh filename="package://jsk_2015_05_baxter_apc/config/mesh/long1_simple.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${width}" length="${bodylen}"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="right_custom_vacuum_link_base">
+    <visual>
+      <geometry>
+        <mesh filename="package://jsk_2015_05_baxter_apc/config/mesh/light/jigu_long2_right_kari1.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${width_base}" length="${bodylen_base}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="left_custom_vacuum_link">
+    <visual>
+      <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
+      <geometry>
+        <mesh filename="package://jsk_2015_05_baxter_apc/config/mesh/long1_simple.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${width}" length="${bodylen}"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="left_custom_vacuum_link_base">
+    <visual>
+      <geometry>
+        <mesh filename="package://jsk_2015_05_baxter_apc/config/mesh/light/jigu_long2_left_kari2.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${width_base}" length="${bodylen_base}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="right_custom_joint" type="fixed">
+    <parent link="right_wrist"/>
+    <child link="right_custom_vacuum_link"/>
+    <origin rpy="0 0 0" xyz="${right_wrist_offset_x} 0 0.19" />
+  </joint>
+  <joint name="right_custom_joint_base" type="fixed">
+    <parent link="right_wrist"/>
+    <child link="right_custom_vacuum_link_base"/>
+    <origin rpy="0 0 1.57" xyz="${right_wrist_offset_x} -0 0.13" />
+  </joint>
+  <joint name="left_custom_joint" type="fixed">
+    <parent link="left_wrist"/>
+    <child link="left_custom_vacuum_link"/>
+    <origin rpy="0 0 0" xyz="${left_wrist_offset_x} 0 0.19" />
+  </joint>
+  <joint name="left_custom_joint_base" type="fixed">
+    <parent link="left_wrist"/>
+    <child link="left_custom_vacuum_link_base"/>
+    <origin rpy="0 0 1.57" xyz="${left_wrist_offset_x} -0 0.13" />
+  </joint>
+
+</robot>

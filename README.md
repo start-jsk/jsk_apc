@@ -63,10 +63,10 @@ Usage
 ### Run Demo
 
 ```sh
-$ roslaunch jsk_2014_baxter_apc baxter.launch
-$ roslaunch jsk_2014_baxter_apc setup.launch
-$ roslaunch jsk_2014_baxter_apc main.launch json:=`rospack find jsk_2014_baxter_apc`/data/apc-a.json
-$ roslaunch jsk_2014_baxter_apc record.launch  # rosbag record
+$ roslaunch jsk_2015_05_baxter_apc baxter.launch
+$ roslaunch jsk_2015_05_baxter_apc setup.launch
+$ roslaunch jsk_2015_05_baxter_apc main.launch json:=`rospack find jsk_2015_05_baxter_apc`/data/apc-a.json
+$ roslaunch jsk_2015_05_baxter_apc record.launch  # rosbag record
 ```
 
 
@@ -84,5 +84,5 @@ Testing
 -------
 
 ```sh
-$ catkin run_tests jsk_2014_baxter_apc --no-deps
+$ catkin run_tests jsk_2015_05_baxter_apc --no-deps
 ```

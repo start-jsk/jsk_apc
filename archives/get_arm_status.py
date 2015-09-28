@@ -6,7 +6,7 @@ function: get arm joints and end effector positions
 How to use
 ---
 
-    $ rosrun jsk_2014_baxter_apc get_arm_status.py
+    $ rosrun jsk_2015_05_baxter_apc get_arm_status.py
 
 """
 

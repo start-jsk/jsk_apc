@@ -1,0 +1,16 @@
+<launch>
+    <!-- <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch"></include> -->
+    <!-- <include file="$(find freenect_launch)/launch/freenect.launch"></include> -->
+    <!-- <include file="$(find roseus_tutorials)/launch/usb-camera.launch"></include> -->
+
+    <!-- In default, it is expected that kinect2 is launched. -->
+    <arg name="input_image" default="/kinect2/rgb/image" />
+    <arg name="input_info" default="/kinect2/rgb/camera_info" />
+    <arg name="respawn" default="false" />
+
+    <node pkg="imagesift" type="imagesift" name="imagesift">
+        <remap from="/image" to="$(arg input_image)" />
+        <remap from="/camera_info" to="$(arg input_info)" />
+    </node>
+    <node pkg="jsk_2015_05_baxter_apc" type="sift_matcher.py" name="sift_matcher" output="screen" respawn="$(arg respawn)"></node>
+</launch>

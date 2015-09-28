@@ -1,0 +1,21 @@
+<launch>
+    <arg name="knn_threshold" default="0.75" />
+
+    <node pkg="jsk_2015_05_baxter_apc" type="empty_camera_info.py" name="empty_camera_info" output="screen"></node>
+    <node pkg="jsk_2015_05_baxter_apc" type="image_publish_server.py" name="image_publish_server" output="screen"></node>
+
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/sift_matcher.launch">
+        <arg name="input_image" value="/image_publish_server/output" />
+        <arg name="input_info" value="/empty_camera_info/output" />
+        <arg name="respawn" value="true" />
+    </include>
+
+    <node pkg="dynamic_reconfigure" type="dynparam" name="$(anon dyparam)" args="set_from_parameters /sift_matcher" >
+        <param name="knn_threshold" type="double" value="$(arg knn_threshold)" />
+    </node>
+
+    <node pkg="jsk_2015_05_baxter_apc" type="test_object_matching.py" name="test_object_matching" output="screen" respawn="true">
+        <param name="matcher" type="string" value="sift" />
+    </node>
+</launch>
+

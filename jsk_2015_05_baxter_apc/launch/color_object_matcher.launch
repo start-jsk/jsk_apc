@@ -1,0 +1,8 @@
+<launch>
+  <arg name="input_image" default="/apply_mask/output" />
+  <arg name="respawn" default="false" />
+
+  <node pkg="jsk_2015_05_baxter_apc" type="color_object_matcher.py" name="color_object_matcher" output="screen" respawn="$(arg respawn)">
+    <remap from="~input" to="$(arg input_image)" />
+  </node>
+</launch>

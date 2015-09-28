@@ -1,0 +1,18 @@
+<launch>
+    <node pkg="jsk_perception" type="image_publisher.py" name="image_publisher" output="screen">
+        <param name="~file_name" type="string" value="$(find jsk_2015_05_baxter_apc)/data/paste.png" />
+    </node>
+    <node pkg="jsk_perception" type="rgb_decomposer" name="rgb_decomposer" output="screen">
+        <remap from="~input" to="/image_publisher/output" />
+    </node>
+    <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram1" output="screen">
+        <remap from="~input" to="/rgb_decomposer/output/red" />
+    </node>
+    <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram2" output="screen">
+        <remap from="~input" to="/rgb_decomposer/output/blue" />
+    </node>
+    <node pkg="jsk_2015_05_baxter_apc" type="histogram_coefficient" name="histogram_coefficient">
+        <remap from="/histogram1" to="/single_channel_histogram1/output" />
+        <remap from="/histogram2" to="/single_channel_histogram2/output" />
+    </node>
+</launch>

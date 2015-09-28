@@ -2,7 +2,7 @@
 
 (ros::load-ros-manifest "roseus")
 (ros::roseus "qrcode_pos_server")
-(ros::load-ros-manifest "jsk_2014_baxter_apc")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 (ros::load-ros-manifest "zbar_ros")
 
 (defclass baxter-qrcode-pos-server
@@ -31,7 +31,7 @@
 
      ;; service initialization;
      (ros::advertise-service "/semi/qrcode_pos"
-                             jsk_2014_baxter_apc::QrStampsrv
+                             jsk_2015_05_baxter_apc::QrStampsrv
                              #'send self :baxter-qrcode-pos-callback)
      (ros::ros-info "baxter's qrcode-pos-server initialized")
      )
@@ -43,11 +43,11 @@
                                                      #f(-7.58057 20.061 -25.0269 -40.0342 59.9854 -19.9731 79.519 0.021973 72.8394 -39.0674 -20.3906 90.7251 25.4883 -47.395 10.1953)
                                                          )))
                                  (setq return-qrstampes
-                                       (instance jsk_2014_baxter_apc::QrStampes :init))
+                                       (instance jsk_2015_05_baxter_apc::QrStampes :init))
                                  (setq pm -1)
                                  (dolist (angle baxter-angles)
                                    (setq stamp
-                                         (instance jsk_2014_baxter_apc::QrStamp :init))
+                                         (instance jsk_2015_05_baxter_apc::QrStamp :init))
                                    (format t "~A" angle)
 
                                    (send *baxter* :angle-vector angle)
@@ -58,7 +58,7 @@
 
                                    (setq tmp (ros::coords->tf-pose-stamped
                                               (send *baxter* :rarm :end-coords) "base"))
-                                   (setq m (instance jsk_2014_baxter_apc::QrStamp
+                                   (setq m (instance jsk_2015_05_baxter_apc::QrStamp
                                                      :init
                                                      :label (instance std_msgs::String :init :data current-detected-marker)
                                                      :qrcode_pose_stamp tmp))

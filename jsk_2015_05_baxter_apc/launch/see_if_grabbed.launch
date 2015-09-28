@@ -1,0 +1,36 @@
+<launch>
+  <arg name="manager" default="see_if_grabbed_manager"/>
+  <arg name="left_or_right" default="left" />
+  <arg name="input_image" default="/cameras/$(arg left_or_right)_hand_camera/image" />
+  <arg name="mask_file" default="$(find jsk_2015_05_baxter_apc)/data/$(arg left_or_right)_hand_mask.jpg"/>
+
+  <node pkg="jsk_perception" type="image_publisher.py" name="mask_publisher">
+    <param name="publish_info" type="bool" value="false" />
+    <param name="file_name" value="$(arg mask_file)" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+
+  <node pkg="nodelet" type="nodelet" name="apply_mask"
+        args="load jsk_perception/ApplyMaskImage $(arg manager)">
+    <remap from="~input" to="$(arg input_image)" />
+    <remap from="~input/mask" to="mask_publisher/output" />
+    <param name="approximate_sync" value="true" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="gaussian_blur"
+        args="load jsk_perception/GaussianBlur $(arg manager)">
+    <remap from="~input" to="apply_mask/output" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="hsv_decomposer"
+        args="load jsk_perception/HSVDecomposer $(arg manager)">
+    <remap from="~input" to="gaussian_blur/output" />
+  </node>
+
+  <node pkg="jsk_perception" type="image_time_diff.py" name="image_time_diff">
+    <remap from="~input/hue" to="hsv_decomposer/output/hue" />
+    <remap from="~input/saturation" to="hsv_decomposer/output/saturation" />
+    <param name="saturation_threshold" type="int" value="50" />
+  </node>
+</launch>

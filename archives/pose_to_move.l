@@ -1,7 +1,7 @@
 #!/usr/bin/env roseus
 
 (ros::roseus "move_arm_server")
-(ros::load-ros-manifest "jsk_2014_baxter_apc")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
 (defun baxter-ik-init ()
   (load "package://baxtereus/baxter-interface.l")
@@ -44,8 +44,8 @@
     (setq *tfl* (instance ros::transform-listener :init)));;;_??????
   (ros::subscribe "/move_left_arm" geometry_msgs::PoseStamped #'start_move_left) 
   (ros::subscribe "/move_right_arm" geometry_msgs::PoseStamped #'start_move_right) 
-  (ros::advertise-service "/move_left_arm_service" jsk_2014_baxter_apc::MoveArm #'service-right-cb)
-  (ros::advertise-service "/move_right_arm_service" jsk_2014_baxter_apc::MoveArm #'service-left-cb)
+  (ros::advertise-service "/move_left_arm_service" jsk_2015_05_baxter_apc::MoveArm #'service-right-cb)
+  (ros::advertise-service "/move_right_arm_service" jsk_2015_05_baxter_apc::MoveArm #'service-left-cb)
   (ros::ros-info "subscriber initialized")
   (ros::spin)   ;;;;?????????
   )

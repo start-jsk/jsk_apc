@@ -1,0 +1,53 @@
+<launch>
+  <arg name="debug" default="false" />
+  <arg name="manager" default="object_pos_manager"/>
+  <arg name="left_or_right" default="left" />
+  <arg name="mask_file" default="$(find jsk_2015_05_baxter_apc)/data/object_pos/$(arg left_or_right)_hand_mask.png"/>
+
+  <arg if="$(arg debug)" name="input_image" default="image_publisher/output" />
+  <arg unless="$(arg debug)" name="input_image" default="/cameras/$(arg left_or_right)_hand_camera/image" />
+  <arg if="$(arg debug)" name="input_info" default="image_publisher/output/camera_info" />
+  <arg unless="$(arg debug)" name="input_info" default="/cameras/$(arg left_or_right)_hand_camera/camera_info" />
+
+  <node if="$(arg debug)" pkg="jsk_perception" type="image_publisher.py" name="image_publisher">
+    <param name="publish_info" type="bool" value="true" />
+    <param name="file_name" value="$(find jsk_2015_05_baxter_apc)/data/object_pos/b_sample.jpg" />
+  </node>
+
+  <node pkg="jsk_perception" type="image_publisher.py" name="mask_publisher">
+    <param name="publish_info" type="bool" value="false" />
+    <param name="file_name" value="$(arg mask_file)" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+
+  <node pkg="nodelet" type="nodelet" name="apply_mask"
+        args="load jsk_perception/ApplyMaskImage $(arg manager)">
+    <remap from="~input" to="$(arg input_image)" />
+    <remap from="~input/mask" to="mask_publisher/output" />
+    <param name="approximate_sync" value="true" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="grid_label"
+        args="load jsk_perception/GridLabel $(arg manager)">
+    <remap from="~input" to="apply_mask/output" />
+    <param name="label_size" type="int" value="65" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="colorize_labels"
+        args="load jsk_perception/ColorizeLabels $(arg manager)">
+    <remap from="~input" to="grid_label/output" />
+  </node>
+
+  <node pkg="imagesift" type="imagesift" name="imagesift">
+    <remap from="image" to="apply_mask/output" />
+    <remap from="camera_info" to="$(arg input_info)" />
+  </node>
+
+  <node pkg="posedetection_msgs" type="feature0d_to_image" name="feature0d_to_image" />
+
+  <node pkg="jsk_2015_05_baxter_apc" type="feature_label_object_detector.py" name="feature_label_object_detector">
+    <remap from="~input/mask" to="apply_mask/output/mask" />
+    <remap from="~input/label" to="grid_label/output" />
+    <remap from="~input/ImageFeature0D" to="ImageFeature0D" />
+  </node>
+</launch>

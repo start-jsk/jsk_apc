@@ -4,14 +4,14 @@ import pprint
 import time
 
 import roslib
-roslib.load_manifest('jsk_2014_baxter_apc')
+roslib.load_manifest('jsk_2015_05_baxter_apc')
 import rospy
 
 import baxter_interface
 
 from zbar_ros.msg import Marker
-from jsk_2014_baxter_apc.srv import *
-from jsk_2014_baxter_apc.msg import *
+from jsk_2015_05_baxter_apc.srv import *
+from jsk_2015_05_baxter_apc.msg import *
 
 from std_msgs.msg import Header
 from geometry_msgs.msg import (

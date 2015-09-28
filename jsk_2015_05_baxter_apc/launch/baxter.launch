@@ -1,0 +1,35 @@
+<launch>
+  <include file="$(find jsk_baxter_startup)/baxter.launch">
+    <arg name="launch_servo" default="true"/>
+    <arg name="launch_joint_trajectory" default="true"/>
+    <arg name="launch_gripper_action" default="false"/>
+    <arg name="launch_openni" default="false"/>
+    <arg name="launch_kinect2" default="false"/>
+    <arg name="launch_voice_echo" default="true"/>
+    <arg name="launch_moveit" default="false"/>
+    <arg name="launch_teleop" default="false"/>
+    <arg name="launch_tweet" default="true"/>
+    <arg name="launch_mongodb" default="false"/>
+    <arg name="launch_wrench" default="false"/>
+    <arg name="launch_time_signal" default="false"/>
+    <arg name="start_openni" default="false"/>
+    <arg name="USER_NAME" default="false"/>
+  </include>
+
+  <!-- In future we might need machine tag for othre machine which launch another kinect2 -->
+
+  <!-- custom vacuum link -->
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/upload_baxter.launch"/>
+
+  <!-- Launch Kinect2s -->
+  <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
+    <arg name="use_machine" value="false"/>
+    <!-- <arg name="sensor" value="502986542542"/> -->
+  </include>
+
+  <!-- tf of baxter's footprint -->
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
+
+  <!-- tf of kinect2 -->
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/kinect2_tf.launch"></include>
+</launch>

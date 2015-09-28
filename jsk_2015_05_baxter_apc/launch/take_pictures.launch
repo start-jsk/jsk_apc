@@ -1,0 +1,15 @@
+<launch>
+  <node pkg="image_view" type="image_saver" name="larm_image_saver">
+    <remap from="image" to="/cameras/left_hand_camera/image"/>
+    <param name="save_all_image" value="false"/>
+  </node>
+  <node pkg="image_view" type="image_saver" name="rarm_image_saver">
+    <remap from="image" to="/cameras/right_hand_camera/image"/>
+    <param name="save_all_image" value="false"/>
+  </node>
+
+  <!-- <param name="close_head" command="rosrun baxter_tools camera_control.py -c head_camera"/> -->
+  <!-- <node pkg="baxter_tools" type="camera_control.py" name="open_laram" args="-o left_hand_camera"/> -->
+  <node pkg="jsk_2015_05_baxter_apc" type="collect-camera.l" name="collect_camera"
+	args="&quot;(progn(apc-init)(main))&quot;"/>
+</launch>

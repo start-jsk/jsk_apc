@@ -1,0 +1,10 @@
+<launch>
+  <arg name="json" default="$(find jsk_2015_05_baxter_apc)/data/apc-a.json" />
+
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/color_object_matcher.launch" />
+
+  <node pkg="jsk_2015_05_baxter_apc" type="color_object_verification.py" name="color_object_verification" output="screen">
+    <param name="json" value="$(arg json)" />
+  </node>
+
+</launch>

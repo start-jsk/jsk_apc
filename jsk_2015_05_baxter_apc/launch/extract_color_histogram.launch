@@ -1,0 +1,41 @@
+<launch>
+  <arg name="input_image" default="/extract_color_histogram/train_image" />
+
+  <node pkg="jsk_perception" type="rgb_decomposer" name="rgb_decomposer" output="screen">
+    <remap from="~input" to="$(arg input_image)" />
+  </node>
+  <node pkg="jsk_perception" type="hsv_decomposer" name="hsv_decomposer" output="screen">
+    <remap from="~input" to="$(arg input_image)" />
+  </node>
+  <node pkg="jsk_perception" type="lab_decomposer" name="lab_decomposer" output="screen">
+    <remap from="~input" to="$(arg input_image)" />
+  </node>
+  <node pkg="jsk_2015_05_baxter_apc" type="color_cutback.py" name="color_cutback" output="screen">
+    <remap from="~input/red" to="/rgb_decomposer/output/red" />
+    <remap from="~input/green" to="/rgb_decomposer/output/green" />
+    <remap from="~input/blue" to="/rgb_decomposer/output/blue" />
+    <remap from="~input/l" to="/lab_decomposer/output/l" />
+    <remap from="~input/a" to="/lab_decomposer/output/a" />
+    <remap from="~input/b" to="/lab_decomposer/output/b" />
+    <remap from="~input/reference" to="/hsv_decomposer/output/saturation" />
+    <param name="threshold" value="10" />
+  </node>
+  <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_red" output="screen">
+    <remap from="~input" to="/color_cutback/output/red" />
+  </node>
+  <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_blue" output="screen">
+    <remap from="~input" to="/color_cutback/output/blue" />
+  </node>
+  <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_green" output="screen">
+    <remap from="~input" to="/color_cutback/output/green" />
+  </node>
+  <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_l" output="screen">
+    <remap from="~input" to="/color_cutback/output/l" />
+  </node>
+  <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_a" output="screen">
+    <remap from="~input" to="/color_cutback/output/a" />
+  </node>
+  <node pkg="jsk_perception" type="single_channel_histogram" name="single_channel_histogram_b" output="screen">
+    <remap from="~input" to="/color_cutback/output/b" />
+  </node>
+</launch>
