@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_apc</name>
+  <version>0.0.1</version>
+  <description>
+   <p>Metapackage for Amazon Picking Challenge</p>
+  </description>
+
+  <maintainer email="baxter@jsk.imi.i.u-tokyo.ac.jp">baxter</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>jsk_2015_05_baxter_apc</run_depend>
+  <export>
+    <metapackage/>
+  </export>
+</package>
