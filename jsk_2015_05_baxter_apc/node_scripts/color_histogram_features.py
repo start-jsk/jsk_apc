@@ -14,7 +14,10 @@ import cPickle as pickle
 
 from sklearn.svm import SVC
 
-from common import get_data_dir, get_object_list
+from common import get_data_dir
+
+import jsk_2015_apc_common
+
 
 def get_imlist(path, extension='jpg'):
     """ return all image files list in path"""
@@ -23,7 +26,7 @@ def get_imlist(path, extension='jpg'):
 class ColorHistogramFeatures(object):
     def __init__(self):
         self.file_name = 'rgb'
-        self.object_names = get_object_list()
+        self.object_names = jsk_2015_apc_common.data.object_list()
         self.cfeatures = []
         self.labels = []
     def save_data(self):

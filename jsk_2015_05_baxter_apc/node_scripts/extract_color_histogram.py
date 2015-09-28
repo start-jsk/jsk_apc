@@ -97,11 +97,12 @@ class ExtractColorHistogram(object):
 
 
 def main():
-    from common import get_object_list, get_train_imgpaths
+    from common import get_train_imgpaths
+    import jsk_2015_apc_common
 
     rospy.init_node('extract_color_histogram')
 
-    all_objects = get_object_list()
+    all_objects = jsk_2015_apc_common.data.object_list()
 
     color_space_param = rospy.get_param('~color_space', 'lab')
     if color_space_param == 'rgb':

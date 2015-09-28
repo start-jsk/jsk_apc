@@ -30,13 +30,6 @@ def load_img(imgpath):
     return img
 
 
-def get_object_list():
-    data_dir = get_data_dir()
-    yaml_file = os.path.join(data_dir, 'object_list.yml')
-    with open(yaml_file, 'rb') as f:
-        return yaml.load(f)
-
-
 def save_siftdata(obj_name, siftdata):
     """Save sift data to data/siftdata/{obj_name}.pkl.gz"""
     data_dir = get_data_dir()

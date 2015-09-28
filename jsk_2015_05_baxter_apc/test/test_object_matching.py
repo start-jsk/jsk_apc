@@ -29,7 +29,7 @@ import rospy
 from jsk_2015_05_baxter_apc.srv import ObjectMatch, StringEmpty
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../scripts'))
-from common import get_object_list
+import jsk_2015_apc_common
 
 
 def load_csv(filename):
@@ -60,7 +60,7 @@ class TestObjectMatching(object):
 
     def save_result(self, target_obj, probabilities):
         """Save test result to csv"""
-        object_list = get_object_list()
+        object_list = jsk_2015_apc_common.data.object_list()
         filename = os.path.join(os.path.dirname(os.path.abspath(__file__)),
             '../data/test_{m}_matching_result.csv'.format(m=self.matcher))
         if not os.path.exists(filename):
@@ -89,7 +89,7 @@ class TestObjectMatching(object):
         rospy.loginfo('found the service [{p}]'.format(p=os.getpid()))
 
     def run(self):
-        object_list = get_object_list()
+        object_list = jsk_2015_apc_common.data.object_list()
         already_tested = self.get_already_tested()
         for target_obj in object_list:
             if target_obj in already_tested:
