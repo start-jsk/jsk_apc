@@ -11,6 +11,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>jsk_2015_apc_common</run_depend>
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <export>
     <metapackage/>
