@@ -17,7 +17,7 @@ Install
 ```sh
 $ mkdir -p ~/ros/ws_jsk_picking_challenge/src
 $ cd ~/ros/ws_jsk_picking_challenge/src
-$ wstool init . https://raw.githubusercontent.com/start-jsk/2014-semi/master/jsk_picking_challenge.rosinstall
+$ wstool init . https://raw.githubusercontent.com/start-jsk/2014-semi/master/jsk_2015_05_baxter_apc.rosinstall
 $ cd ..
 $ rosdep install -y -r --from-paths .
 $ sudo apt-get install python-catkin-tools ros-indigo-jsk-tools
