@@ -7,16 +7,17 @@ import argparse
 
 from termcolor import cprint, colored
 
-from common import get_object_list
 from bin_contents import get_bin_contents
 from work_order import get_work_order
+
+import jsk_2015_apc_common
 
 
 parser = argparse.ArgumentParser('score_calculator')
 parser.add_argument('json', help='contest interface json')
 args = parser.parse_args(sys.argv[1:])
 
-OBJECTS = get_object_list()
+OBJECTS = jsk_2015_apc_common.data.object_list()
 BONUS = {
         'munchkin_white_hot_duck_bath_toy': 1,
         'stanley_66_052': 3,
