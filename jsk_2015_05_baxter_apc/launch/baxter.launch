@@ -25,5 +25,5 @@
   </include>
 
   <!-- custom vacuum link -->
-  <include file="$(find jsk_2014_picking_challenge)/launch/upload_baxter.launch"/>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/upload_baxter.launch"/>
 </launch>

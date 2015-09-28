@@ -1,10 +1,10 @@
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/robot-utils.l")
 
 (ros::load-ros-manifest "roseus")
-(ros::load-ros-manifest "jsk_2014_picking_challenge")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
 ;; -------------------
 ;; Get work order data
@@ -24,10 +24,10 @@
 (defun work-order-cb-rarm (msg) (work-order-cb msg :rarm))
 
 (ros::subscribe "work_order/left_process"
-                jsk_2014_picking_challenge::WorkOrderArray
+                jsk_2015_05_baxter_apc::WorkOrderArray
                 #'work-order-cb-larm)
 (ros::subscribe "work_order/right_process"
-                jsk_2014_picking_challenge::WorkOrderArray
+                jsk_2015_05_baxter_apc::WorkOrderArray
                 #'work-order-cb-rarm)
 
 (defun get-work-order (arm)
@@ -41,7 +41,7 @@
     (setq *bin-contents* nil))
 (defun bin-contents-cb (msg) (setq *bin-contents* (send msg :array)))
 
-(ros::subscribe "/bin_contents" jsk_2014_picking_challenge::BinContentsArray
+(ros::subscribe "/bin_contents" jsk_2015_05_baxter_apc::BinContentsArray
                 #'bin-contents-cb)
 (defun get-bin-contents (bin)
   (ros::spin-once)

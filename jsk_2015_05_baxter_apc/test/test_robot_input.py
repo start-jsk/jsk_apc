@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-PKG = 'jsk_2014_picking_challenge'
+PKG = 'jsk_2015_05_baxter_apc'
 import os
 import sys
 import re
@@ -11,7 +11,7 @@ from termcolor import cprint, colored
 
 import rospkg
 rp = rospkg.RosPack()
-pkg_path = rp.get_path('jsk_2014_picking_challenge')
+pkg_path = rp.get_path('jsk_2015_05_baxter_apc')
 sys.path.append(os.path.join(pkg_path, 'scripts'))
 sys.path.append(os.path.join(pkg_path, 'test'))
 

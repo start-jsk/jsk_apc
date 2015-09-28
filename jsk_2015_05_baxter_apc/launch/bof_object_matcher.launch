@@ -9,7 +9,7 @@
   </node>
   <node pkg="posedetection_msgs" type="feature0d_to_image" name="feature0d_to_image" output="log" />
 
-  <node pkg="jsk_2014_picking_challenge" type="bof_object_matcher.py" name="bof_object_matcher" output="screen" respawn="$(arg respawn)">
+  <node pkg="jsk_2015_05_baxter_apc" type="bof_object_matcher.py" name="bof_object_matcher" output="screen" respawn="$(arg respawn)">
     <remap from="~input" to="ImageFeature0D" />
   </node>
 </launch>

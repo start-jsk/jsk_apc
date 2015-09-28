@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-import roslib; roslib.load_manifest('jsk_2014_picking_challenge')
+import roslib; roslib.load_manifest('jsk_2015_05_baxter_apc')
 
 import struct
 import rospy
@@ -13,7 +13,7 @@ from geometry_msgs.msg import (
 )
 from std_msgs.msg import Header
 from sensor_msgs.msg import JointState
-from jsk_2014_picking_challenge.srv import (
+from jsk_2015_05_baxter_apc.srv import (
     MoveArm,
     MoveArmResponse,
 )
