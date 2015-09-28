@@ -9,12 +9,14 @@ import cPickle as pickle
 
 import numpy as np
 
-from common import get_object_list, load_siftdata
+from common import load_siftdata
 from bag_of_features import BagOfFeatures
+
+import jsk_2015_apc_common
 
 
 def get_sift_descriptors(n_imgs=None, data_dir=None):
-    objects = get_object_list()
+    objects = jsk_2015_apc_common.data.object_list()
     obj_descs = []
     for obj in objects:
         descs = load_siftdata(obj_name=obj,
