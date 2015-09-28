@@ -4,7 +4,7 @@ import os
 import sys
 import argparse
 
-import roslib; roslib.load_manifest('jsk_2014_baxter_apc')
+import roslib; roslib.load_manifest('jsk_2015_05_baxter_apc')
 import rospy
 
 from sound_play.msg import *

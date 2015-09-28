@@ -1,7 +1,7 @@
 #!/usr/bin/env roseus
 ;;
 (load "package://baxtereus/baxter-interface.l")
-(load "package://jsk_2014_baxter_apc/euslisp/target-pick-region.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/target-pick-region.l")
 
 (ros::roseus "move_arm2target_bin_listener")
 (ros::load-ros-manifest "roseus")
@@ -13,7 +13,7 @@
   (send *baxter* :locate #f(0 0 950) :world)
   ;; pod-lowres model
   (when (not (boundp '*pod*))
-    (load "package://jsk_2014_baxter_apc/euslisp/pod-lowres.l")
+    (load "package://jsk_2015_05_baxter_apc/euslisp/pod-lowres.l")
     (send *pod* :locate #f(1300 0 0) :world)
     (send *pod* :rotate pi/2 :x :world)
     (send *pod* :rotate (- pi/2) :z :world))

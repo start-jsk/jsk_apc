@@ -12,8 +12,8 @@ from std_msgs.msg import (
 from geometry_msgs.msg import PoseStamped, Pose
 from jsk_rviz_plugins.msg import OverlayText
 
-from jsk_2014_baxter_apc.msg import *
-from jsk_2014_baxter_apc.srv import *
+from jsk_2015_05_baxter_apc.msg import *
+from jsk_2015_05_baxter_apc.srv import *
 
 class DemoReal(object):
     """Demo for video sending to Amazon Official to get Kiva & Items"""

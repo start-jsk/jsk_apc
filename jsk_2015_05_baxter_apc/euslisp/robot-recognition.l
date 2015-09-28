@@ -1,11 +1,11 @@
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2014_baxter_apc/euslisp/utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
 
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")
 (ros::load-ros-manifest "jsk_recognition_msgs")
-(ros::load-ros-manifest "jsk_2014_baxter_apc")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
 ;; -------------
 ;; Verify object
@@ -13,10 +13,10 @@
 (setq *verify-object* (make-hash-table))
 (defun verify-object-cb (msg arm) (setf (gethash arm *verify-object*) msg))
 (ros::subscribe "left_process/object_verification/output"
-                jsk_2014_baxter_apc::ObjectRecognition
+                jsk_2015_05_baxter_apc::ObjectRecognition
                 #'(lambda (msg) (verify-object-cb msg :larm)))
 (ros::subscribe "right_process/object_verification/output"
-                jsk_2014_baxter_apc::ObjectRecognition
+                jsk_2015_05_baxter_apc::ObjectRecognition
                 #'(lambda (msg) (verify-object-cb msg :rarm)))
 
 (defun verify-object (arm target-object &key (timeout 20))
@@ -145,10 +145,10 @@
 (defun detect-object-pos-larm-cb (msg) (detect-object-pos-cb msg :larm))
 (defun detect-object-pos-rarm-cb (msg) (detect-object-pos-cb msg :rarm))
 (ros::subscribe "/left_object_detection/feature_label_object_detector/output"
-                jsk_2014_baxter_apc::ProbabilisticLabels
+                jsk_2015_05_baxter_apc::ProbabilisticLabels
                 #'detect-object-pos-larm-cb)
 (ros::subscribe "/right_object_detection/feature_label_object_detector/output"
-                jsk_2014_baxter_apc::ProbabilisticLabels
+                jsk_2015_05_baxter_apc::ProbabilisticLabels
                 #'detect-object-pos-rarm-cb)
 (defun detect-object-pos-in-bin (arm)
   (unix::sleep 1)

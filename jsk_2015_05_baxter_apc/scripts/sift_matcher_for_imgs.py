@@ -8,7 +8,7 @@ Usage
 -----
 
     $ roslaunch roseus_tutorials usb-camera.launch
-    $ roslaunch jsk_2014_baxter_apc sift_matcher_for_imgs.launch
+    $ roslaunch jsk_2015_05_baxter_apc sift_matcher_for_imgs.launch
     $ rosrun image_view image_view image:=/sift_matcher_for_imgs/output
 
 """

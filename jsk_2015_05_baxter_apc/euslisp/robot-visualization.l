@@ -1,10 +1,10 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 (ros::load-ros-manifest "jsk_rviz_plugins")
-(ros::load-ros-manifest "jsk_2014_baxter_apc")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
-(load "package://jsk_2014_baxter_apc/euslisp/utils.l")
-(load "package://jsk_2014_baxter_apc/euslisp/model/score-board.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/model/score-board.l")
 (setq *overlay-text-width* 1200)
 (setq *overlay-text-height* 50)
 
@@ -37,11 +37,11 @@
 (defun publish-work-order-list(arm-str work-order)
   (let (msg object-array work-order-msg topic-name)
     (setq topic-name (format nil "/~A/work_order_list" arm-str))
-    (ros::advertise-if-yet topic-name jsk_2014_baxter_apc::workorderarray 5)
-    (setq msg (instance jsk_2014_baxter_apc::workorderarray :init))
+    (ros::advertise-if-yet topic-name jsk_2015_05_baxter_apc::workorderarray 5)
+    (setq msg (instance jsk_2015_05_baxter_apc::workorderarray :init))
     (setq object-array nil)
     (dolist (target work-order)
-      (setq work-order-msg (instance jsk_2014_baxter_apc::workorder :init))
+      (setq work-order-msg (instance jsk_2015_05_baxter_apc::workorder :init))
       (send work-order-msg :bin (key-to-str (str-to-key (elt target 0))))
       (send work-order-msg :object (key-to-str (str-to-key (elt target 1))))
       (push work-order-msg object-array)

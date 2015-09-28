@@ -7,16 +7,16 @@ Usage
 -----
 
     $ # for sift
-    $ roslaunch jsk_2014_baxter_apc test_sift_matching.launch \
+    $ roslaunch jsk_2015_05_baxter_apc test_sift_matching.launch \
         knn_threshold:=0.8
 
     $ # for color_histogram
-    $ rolaunch jsk_2014_baxter_apc test_color_histogram_matching.launch
-    $ rosrun jsk_2014_baxter_apc test_object_matching \
+    $ rolaunch jsk_2015_05_baxter_apc test_color_histogram_matching.launch
+    $ rosrun jsk_2015_05_baxter_apc test_object_matching \
         _matcher:=color_histogram
 
     $ # for bof
-    $ roslaunch jsk_2014_baxter_apc test_bof_object_matcher.launch
+    $ roslaunch jsk_2015_05_baxter_apc test_bof_object_matcher.launch
 
 """
 import os
@@ -26,7 +26,7 @@ import csv
 import numpy as np
 
 import rospy
-from jsk_2014_baxter_apc.srv import ObjectMatch, StringEmpty
+from jsk_2015_05_baxter_apc.srv import ObjectMatch, StringEmpty
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../scripts'))
 from common import get_object_list

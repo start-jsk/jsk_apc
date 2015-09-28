@@ -3,11 +3,11 @@
 (load "package://baxtereus/baxter-interface.l")
 
 (ros::roseus "move_arm_server")
-(ros::load-ros-manifest "jsk_2014_baxter_apc")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
 (defun subscribe-init ()
   ;(unless (boundp '*tfl*) (setq *tfl* (instance ros::transform-listener :init)))
-  (ros::advertise-service "/semi/release_item" jsk_2014_baxter_apc::ReleaseItem #'release-item-cb)
+  (ros::advertise-service "/semi/release_item" jsk_2015_05_baxter_apc::ReleaseItem #'release-item-cb)
   (ros::ros-info "subscriber initialized")
   )
 

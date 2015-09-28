@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 """
-this script will extract color_histogram from masked_data($(jsk_2014_baxter_apc)/data/masked_data)
+this script will extract color_histogram from masked_data($(jsk_2015_05_baxter_apc)/data/masked_data)
 and save it.
 """
 

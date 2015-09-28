@@ -10,7 +10,7 @@
     <remap from="~input" to="$(arg input_image)" />
   </node>
 
-  <node pkg="jsk_2014_baxter_apc" type="color_cutback.py" name="color_cutback" output="screen">
+  <node pkg="jsk_2015_05_baxter_apc" type="color_cutback.py" name="color_cutback" output="screen">
     <remap from="~input/red" to="/rgb_decomposer/output/red" />
     <remap from="~input/green" to="/rgb_decomposer/output/green" />
     <remap from="~input/blue" to="/rgb_decomposer/output/blue" />
@@ -28,7 +28,7 @@
     <remap from="~input" to="/color_cutback/output/blue" />
   </node>
 
-  <node pkg="jsk_2014_baxter_apc" type="color_histogram_matcher.py" name="color_histogram_matcher" output="screen" respawn="$(arg respawn)">
+  <node pkg="jsk_2015_05_baxter_apc" type="color_histogram_matcher.py" name="color_histogram_matcher" output="screen" respawn="$(arg respawn)">
     <param name="color_space" value="rgb" />
     <remap from="~input/histogram/red" to="/single_channel_histogram_red/output" />
     <remap from="~input/histogram/green" to="/single_channel_histogram_green/output" />

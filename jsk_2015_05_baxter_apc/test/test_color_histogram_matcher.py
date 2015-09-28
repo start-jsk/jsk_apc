@@ -7,14 +7,14 @@ Usage
 -----
 
     $ # to extract color histogram
-    $ roslaunch jsk_2014_baxter_apc extract_color_histogram.launch
+    $ roslaunch jsk_2015_05_baxter_apc extract_color_histogram.launch
         input_image:=/test_color_histogram/train_image
-    $ rosrun jsk_2014_baxter_apc test_color_histogram.py --extract
+    $ rosrun jsk_2015_05_baxter_apc test_color_histogram.py --extract
 
     $ # to test color histogram matcher
-    $ roslaunch jsk_2014_baxter_apc \
+    $ roslaunch jsk_2015_05_baxter_apc \
         test_color_histogram_matching.launch
-    $ rosrun jsk_2014_baxter_apc test_color_histogram.py --test
+    $ rosrun jsk_2015_05_baxter_apc test_color_histogram.py --test
 
 """
 from __future__ import division
@@ -26,7 +26,7 @@ import unittest
 import numpy as np
 
 import rospy
-from jsk_2014_baxter_apc.srv import ObjectMatch, StringEmpty
+from jsk_2015_05_baxter_apc.srv import ObjectMatch, StringEmpty
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../scripts'))
 from extract_color_histogram import ExtractColorHistogram

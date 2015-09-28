@@ -19,7 +19,7 @@
   <!-- In future we might need machine tag for othre machine which launch another kinect2 -->
 
   <!-- custom vacuum link -->
-  <include file="$(find jsk_2014_baxter_apc)/launch/upload_baxter.launch"/>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/upload_baxter.launch"/>
 
   <!-- Launch Kinect2s -->
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
@@ -31,5 +31,5 @@
   <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
 
   <!-- tf of kinect2 -->
-  <include file="$(find jsk_2014_baxter_apc)/launch/kinect2_tf.launch"></include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/kinect2_tf.launch"></include>
 </launch>

@@ -11,7 +11,7 @@ import numpy as np
 from bin_contents import get_bin_contents
 from work_order import get_work_order
 from common import get_object_list
-from jsk_2014_baxter_apc.msg import ObjectRecognition
+from jsk_2015_05_baxter_apc.msg import ObjectRecognition
 
 
 class ObjectVerification(object):

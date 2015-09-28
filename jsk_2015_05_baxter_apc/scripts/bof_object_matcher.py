@@ -12,7 +12,7 @@ from sklearn.preprocessing import normalize
 import rospy
 from posedetection_msgs.msg import ImageFeature0D
 from jsk_recognition_msgs.msg import Histogram
-from jsk_2014_baxter_apc.msg import ObjectRecognition
+from jsk_2015_05_baxter_apc.msg import ObjectRecognition
 
 from bag_of_features import BagOfFeatures
 from common import ObjectMatcher, get_data_dir, get_object_list

@@ -2,7 +2,7 @@
   <arg name="manager" default="see_if_grabbed_manager"/>
   <arg name="left_or_right" default="left" />
   <arg name="input_image" default="/cameras/$(arg left_or_right)_hand_camera/image" />
-  <arg name="mask_file" default="$(find jsk_2014_baxter_apc)/data/$(arg left_or_right)_hand_mask.jpg"/>
+  <arg name="mask_file" default="$(find jsk_2015_05_baxter_apc)/data/$(arg left_or_right)_hand_mask.jpg"/>
 
   <node pkg="jsk_perception" type="image_publisher.py" name="mask_publisher">
     <param name="publish_info" type="bool" value="false" />

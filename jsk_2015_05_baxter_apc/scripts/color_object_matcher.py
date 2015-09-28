@@ -8,7 +8,7 @@ this script will test classification by the color_histogram
 import rospy
 from sensor_msgs.msg import Image
 from jsk_recognition_msgs.msg import ColorHistogram
-from jsk_2014_baxter_apc.msg import ObjectRecognition
+from jsk_2015_05_baxter_apc.msg import ObjectRecognition
 from common import ObjectMatcher, get_object_list
 from color_histogram_features import ColorHistogramFeatures
 import cv_bridge

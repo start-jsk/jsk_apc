@@ -40,7 +40,7 @@ from visualization_msgs.msg import *
 from tf import transformations
 from tf import TransformListener
 from jsk_2014_apc_common.msg import WorkOrderArray
-from jsk_2014_baxter_apc.msg import SetObjectPositionArray
+from jsk_2015_05_baxter_apc.msg import SetObjectPositionArray
 import rospkg
 import yaml
 server = None
@@ -106,7 +106,7 @@ def makeDaeObject( msg , object_name):
     marker.scale.x = msg.scale * 2
     marker.scale.y = msg.scale * 2
     marker.scale.z = msg.scale * 2
-    marker.mesh_resource = "package://jsk_2014_baxter_apc/meshes/" + object_name +"/" + object_name + ".dae"
+    marker.mesh_resource = "package://jsk_2015_05_baxter_apc/meshes/" + object_name +"/" + object_name + ".dae"
     marker.mesh_use_embedded_materials = True
     return marker
 
@@ -229,7 +229,7 @@ if __name__=="__main__":
     rospy.Timer(rospy.Duration(0.01), frameCallback)
     server = InteractiveMarkerServer("target_object_marker_server")    
     rospack = rospkg.RosPack()
-    with open(rospack.get_path("jsk_2014_baxter_apc") + "/data/object_list.yml", 'rb') as f:
+    with open(rospack.get_path("jsk_2015_05_baxter_apc") + "/data/object_list.yml", 'rb') as f:
         objects_name_list = yaml.load(f)
     
     for i,object_name in enumerate(objects_name_list):

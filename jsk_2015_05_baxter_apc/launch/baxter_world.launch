@@ -52,6 +52,6 @@
   <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch" />
 
   <!-- setup baxter gazebo -->
-  <node pkg="jsk_2014_baxter_apc" type="setup_baxter_gazebo.py" name="setup_baxter_gazebo" output="screen" />
+  <node pkg="jsk_2015_05_baxter_apc" type="setup_baxter_gazebo.py" name="setup_baxter_gazebo" output="screen" />
 
 </launch>

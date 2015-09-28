@@ -1,7 +1,7 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2014_baxter_apc/euslisp/motion/robot-motion-common.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/motion/robot-motion-common.l")
 
 (defun move-to-target-bin-av (arm bin)
   (cond ((find bin '(:a :b :c)) (fold-pose-up arm))

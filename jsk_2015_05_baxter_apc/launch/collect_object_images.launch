@@ -2,13 +2,13 @@
   <arg name="custom" default="true"/>
   <arg name="rect" default="false" />
 
-  <include file="$(find jsk_2014_baxter_apc)/launch/upload_baxter.launch">
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/upload_baxter.launch">
     <arg name="custom" value="$(arg custom)"/>
   </include>
 
-  <include file="$(find jsk_2014_baxter_apc)/launch/kinect2_tf.launch"></include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/kinect2_tf.launch"></include>
 
-  <include file="$(find jsk_2014_baxter_apc)/launch/passthrough_image.launch">
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/passthrough_image.launch">
     <arg name="custom" value="$(arg custom)"/>
     <arg name="rect" value="$(arg rect)" />
   </include>

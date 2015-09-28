@@ -1,8 +1,8 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 (load "package://baxtereus/baxter-interface.l")
-(load "package://jsk_2014_baxter_apc/euslisp/model/pod-lowres.l")
-(load "package://jsk_2014_baxter_apc/euslisp/model/order-bin.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/model/pod-lowres.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/model/order-bin.l")
 
 (setq *debug-view* nil)
 (setq *simulator-p* nil)
