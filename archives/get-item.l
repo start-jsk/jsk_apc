@@ -6,7 +6,7 @@
 (ros::roseus "get_item")
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")
-(ros::load-ros-manifest "jsk_2014_picking_challenge")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
 (defun init ()
   (baxter-init)
@@ -15,7 +15,7 @@
   (unix::sleep 3))
 
 (defun subscribe-init ()
-  (ros::advertise-service "/semi/get_item" jsk_2014_picking_challenge::Cue #'callback)
+  (ros::advertise-service "/semi/get_item" jsk_2015_05_baxter_apc::Cue #'callback)
   (ros::ros-info "subscriber initialized"))
 
 (defun callback (req)

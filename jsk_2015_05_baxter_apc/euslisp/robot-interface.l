@@ -1,7 +1,7 @@
 ;; -*- mode: lisp;-*-
 
 (load "package://baxtereus/baxter-interface.l")
-(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
 
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")

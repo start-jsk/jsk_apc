@@ -76,7 +76,7 @@
     <param name="approximate_sync" value="true" />
   </node>
 
-  <include file="$(find jsk_2014_picking_challenge)/launch/bof_object_matcher.launch">
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/bof_object_matcher.launch">
     <arg name="input_image" value="/apply_mask/output" />
   </include>
 </launch>

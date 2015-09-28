@@ -1,7 +1,7 @@
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-input.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/robot-input.l")
 
 (ros::load-ros-manifest "std_msgs")
 

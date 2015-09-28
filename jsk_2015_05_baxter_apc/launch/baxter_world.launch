@@ -11,7 +11,7 @@
 
   <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg if="$(arg kiva)" name="world_name" value="$(find jsk_2014_picking_challenge)/worlds/empty_kiva.world"/>
+    <arg if="$(arg kiva)" name="world_name" value="$(find jsk_2015_05_baxter_apc)/worlds/empty_kiva.world"/>
     <arg unless="$(arg kiva)" name="world_name" value="$(find baxter_gazebo)/worlds/baxter.world"/>
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
@@ -52,6 +52,6 @@
   <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch" />
 
   <!-- setup baxter gazebo -->
-  <node pkg="jsk_2014_picking_challenge" type="setup_baxter_gazebo.py" name="setup_baxter_gazebo" output="screen" />
+  <node pkg="jsk_2015_05_baxter_apc" type="setup_baxter_gazebo.py" name="setup_baxter_gazebo" output="screen" />
 
 </launch>

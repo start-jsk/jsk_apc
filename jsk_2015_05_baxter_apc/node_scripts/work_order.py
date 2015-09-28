@@ -3,7 +3,7 @@
 import json
 
 import rospy
-from jsk_2014_picking_challenge.msg import WorkOrder, WorkOrderArray
+from jsk_2015_05_baxter_apc.msg import WorkOrder, WorkOrderArray
 
 from bin_contents import get_bin_contents
 

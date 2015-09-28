@@ -1,7 +1,7 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
 
 (defun fold-pose-up (arm)
   (let ((av-init (send *baxter* :angle-vector))
