@@ -1,8 +1,8 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/motion/robot-motion-common.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/motion/robot-motion-common.l")
 
 (defun insert-arm-to-return (arm bin)
   (let (avs insert-avs)

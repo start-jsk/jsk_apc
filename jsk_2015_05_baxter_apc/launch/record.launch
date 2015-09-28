@@ -14,7 +14,7 @@
   <arg name="save_all_button" default="false" />
   <arg name="save_hand_range" default="false" />
   <arg name="camera_namespace" default="kinect2"/>
-  <arg name="save_dir" default="$(env HOME)/.ros/jsk_2014_picking_challenge/"/>
+  <arg name="save_dir" default="$(env HOME)/.ros/jsk_2015_05_baxter_apc/"/>
   <param name="mk_save_dir" command="mkdir -p $(arg save_dir)" />
   <!--                          -->
   <!--       Conditions         -->

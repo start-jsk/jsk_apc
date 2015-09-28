@@ -8,7 +8,7 @@
     <param name="frame_id" value="$(arg frame_pcd)"/>
   </node>
 
-  <include file="$(find jsk_2014_picking_challenge)/launch/edge_publisher.launch">
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/edge_publisher.launch">
     <arg name="manager" value="icp_manager"/>
     <arg name="base_name" value="kinect2_doura"/>
   </include>

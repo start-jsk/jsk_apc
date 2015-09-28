@@ -4,7 +4,7 @@
 import rospy
 import sys
 
-from jsk_2014_picking_challenge.srv import ObjectMatch, ObjectMatchResponse
+from jsk_2015_05_baxter_apc.srv import ObjectMatch, ObjectMatchResponse
 
 def color_histogram_matcher_client(object_names):
     rospy.wait_for_service('/semi/color_histogram_matcher')

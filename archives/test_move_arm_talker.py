@@ -7,9 +7,9 @@ Test script for move_arm_listener.py
 How to use
 ---
 
-    $ rosrun jsk_2014_picking_challenge move_arm_listener.py
+    $ rosrun jsk_2015_05_baxter_apc move_arm_listener.py
     # on another terminal
-    $ rosrun jsk_2014_picking_challenge test_move_arm_talker.py
+    $ rosrun jsk_2015_05_baxter_apc test_move_arm_talker.py
 
 """
 

@@ -3,13 +3,13 @@
 #
 """
 This script is to match objects with sift features which is extracted by
-jsk_2014_picking_challenge/scripts/extract_sift_from_objdata.py.
+jsk_2015_05_baxter_apc/scripts/extract_sift_from_objdata.py.
 
 Usage
 -----
 
-    $ roslaunch jsk_2014_picking_challenge sift_matcher_usbcamera.launch
-    $ rosrun jsk_2014_picking_challenge sift_matcher.py
+    $ roslaunch jsk_2015_05_baxter_apc sift_matcher_usbcamera.launch
+    $ rosrun jsk_2015_05_baxter_apc sift_matcher.py
     $ rosservice call /semi/sift_matcher \
         "{objects: ['oreo_mega_stuf', 'safety_works_safety_glasses']}"
 
@@ -26,7 +26,7 @@ import cv_bridge
 import dynamic_reconfigure.server
 from posedetection_msgs.msg import ImageFeature0D
 from posedetection_msgs.srv import Feature0DDetect
-from jsk_2014_picking_challenge.cfg import SIFTMatcherConfig
+from jsk_2015_05_baxter_apc.cfg import SIFTMatcherConfig
 
 from common import ObjectMatcher, get_object_list, load_siftdata
 

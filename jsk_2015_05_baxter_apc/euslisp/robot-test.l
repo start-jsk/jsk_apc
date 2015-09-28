@@ -4,13 +4,13 @@
 
 (ros::roseus "robot_test")
 
-(load "package://jsk_2014_picking_challenge/euslisp/utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-init.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-utils.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-interface.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-motions.l")
-(load "package://jsk_2014_picking_challenge/euslisp/robot-communication.l")
-(load "package://jsk_2014_picking_challenge/euslisp/debug.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/robot-utils.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/robot-interface.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/robot-motions.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/robot-communication.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/debug.l")
 
 (defun test-for-bin (arm bin &key (verify nil))
   (ros::ros-info "test for ~A" bin)

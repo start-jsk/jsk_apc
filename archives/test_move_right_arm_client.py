@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-import roslib; roslib.load_manifest('jsk_2014_picking_challenge')
+import roslib; roslib.load_manifest('jsk_2015_05_baxter_apc')
 
 import rospy
 
@@ -11,7 +11,7 @@ from geometry_msgs.msg import (
     Quaternion,
 )
 from std_msgs.msg import Header
-from jsk_2014_picking_challenge.srv import MoveArm
+from jsk_2015_05_baxter_apc.srv import MoveArm
 
 
 def move_arm_client(pose):

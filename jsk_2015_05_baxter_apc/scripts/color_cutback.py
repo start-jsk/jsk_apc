@@ -6,7 +6,7 @@
 import rospy
 import cv_bridge
 import dynamic_reconfigure.server
-from jsk_2014_picking_challenge.cfg import ColorCutbackConfig
+from jsk_2015_05_baxter_apc.cfg import ColorCutbackConfig
 from sensor_msgs.msg import Image
 
 

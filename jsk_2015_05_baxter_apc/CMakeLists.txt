@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(jsk_2014_picking_challenge)
+project(jsk_2015_05_baxter_apc)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -112,7 +112,7 @@ generate_dynamic_reconfigure_options(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES jsk_2014_picking_challenge
+#  LIBRARIES jsk_2015_05_baxter_apc
   CATKIN_DEPENDS message_runtime rosserial_arduino rosserial_client
 #  DEPENDS system_lib
 )
@@ -143,19 +143,19 @@ endif()
 # include_directories(include)
 
 ## Declare a cpp library
-# add_library(jsk_2014_picking_challenge
-#   src/${PROJECT_NAME}/jsk_2014_picking_challenge.cpp
+# add_library(jsk_2015_05_baxter_apc
+#   src/${PROJECT_NAME}/jsk_2015_05_baxter_apc.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(jsk_2014_picking_challenge_node src/jsk_2014_picking_challenge_node.cpp)
+# add_executable(jsk_2015_05_baxter_apc_node src/jsk_2015_05_baxter_apc_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(jsk_2014_picking_challenge_node jsk_2014_picking_challenge_generate_messages_cpp)
+# add_dependencies(jsk_2015_05_baxter_apc_node jsk_2015_05_baxter_apc_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(jsk_2014_picking_challenge_node
+# target_link_libraries(jsk_2015_05_baxter_apc_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -174,7 +174,7 @@ endif()
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS jsk_2014_picking_challenge jsk_2014_picking_challenge_node
+# install(TARGETS jsk_2015_05_baxter_apc jsk_2015_05_baxter_apc_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -199,7 +199,7 @@ endif()
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_jsk_2014_picking_challenge.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_jsk_2015_05_baxter_apc.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
