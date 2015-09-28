@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_2014_apc</name>
-  <version>0.1.1</version>
-  <description>The jsk_2014_apc package</description>
-  <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+  <version>0.0.1</version>
+  <description>
+   <p>Metapackage named jsk_2014_apc</p>
+  </description>
+
+  <maintainer email="baxter@jsk.imi.i.u-tokyo.ac.jp">baxter</maintainer>
+
   <license>BSD</license>
-  <url type="website">https://github.com/start-jsk/jsk_picking_challenge</url>
-  <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>jsk_2014_apc_common</run_depend>
   <run_depend>jsk_2014_baxter_apc</run_depend>
-
-  <build_depend>message_generation</build_depend>
-
-  <run_depend>message_generation</run_depend>
-
-  <export></export>
+  <export>
+    <metapackage/>
+  </export>
 </package>

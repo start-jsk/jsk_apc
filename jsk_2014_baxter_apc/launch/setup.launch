@@ -68,6 +68,6 @@
 
   <!-- rviz -->
   <node if="$(arg rviz)" pkg="rviz" name="rviz_for_challenge" type="rviz" args="-d $(find jsk_2014_baxter_apc)/config/challenge.rviz"/>
-  <node pkg="jsk_2014_apc" name="visuazliation_objects" type="objects_marker_server.py"/>
+  <node pkg="jsk_2014_apc_common" name="visuazliation_objects" type="objects_marker_server.py"/>
   <node pkg="jsk_2014_baxter_apc" name="debug_info_publisher" type="debug_info_overlay_text.py"/>
 </launch>

@@ -3,7 +3,7 @@
 import json
 
 import rospy
-from jsk_2014_apc.msg import BinContents, BinContentsArray
+from jsk_2014_apc_common.msg import BinContents, BinContentsArray
 
 
 def get_bin_contents(json_file):

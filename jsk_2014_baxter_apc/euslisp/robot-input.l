@@ -24,10 +24,10 @@
 (defun work-order-cb-rarm (msg) (work-order-cb msg :rarm))
 
 (ros::subscribe "work_order/left_process"
-                jsk_2014_apc::WorkOrderArray
+                jsk_2014_apc_common::WorkOrderArray
                 #'work-order-cb-larm)
 (ros::subscribe "work_order/right_process"
-                jsk_2014_apc::WorkOrderArray
+                jsk_2014_apc_common::WorkOrderArray
                 #'work-order-cb-rarm)
 
 (defun get-work-order (arm)
@@ -41,7 +41,7 @@
     (setq *bin-contents* nil))
 (defun bin-contents-cb (msg) (setq *bin-contents* (send msg :array)))
 
-(ros::subscribe "/bin_contents" jsk_2014_apc::BinContentsArray
+(ros::subscribe "/bin_contents" jsk_2014_apc_common::BinContentsArray
                 #'bin-contents-cb)
 (defun get-bin-contents (bin)
   (ros::spin-once)
