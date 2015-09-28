@@ -15,15 +15,16 @@ pkg_path = rp.get_path('jsk_2015_05_baxter_apc')
 sys.path.append(os.path.join(pkg_path, 'scripts'))
 sys.path.append(os.path.join(pkg_path, 'test'))
 
+import jsk_2015_apc_common
+
 
 class TestRobotInput(unittest.TestCase):
     def test_bin_contents(self,  json_file=None):
         from bin_contents import get_bin_contents
-        from common import get_object_list
         if json_file is None:
             json_file = os.path.join(pkg_path, 'data/apc-a.json')
         bin_contents = list(get_bin_contents(json_file))
-        object_list = list(get_object_list())
+        object_list = jsk_2015_apc_common.data.object_list()
         for bin_, objects in bin_contents:
             self.assertIn(bin_, 'abcdefghijkl')
             for object_ in objects:
@@ -36,13 +37,12 @@ class TestRobotInput(unittest.TestCase):
             get_sorted_work_order,
             get_work_order_msg,
             )
-        from common import get_object_list
         if json_file is None:
             json_file = os.path.join(pkg_path, 'data/apc-a.json')
         # for original work order
         work_order = list(get_work_order(json_file))
         self.assertEqual(len(work_order), len('abcdefghijkl'))
-        object_list = get_object_list()
+        object_list = jsk_2015_apc_common.data.object_list()
         for bin_, object_ in work_order:
             self.assertIn(bin_, 'abcdefghijkl')
             self.assertIn(object_, object_list)
@@ -74,11 +74,10 @@ class TestRobotInput(unittest.TestCase):
             interface_test(json)
 
     def test_classifier_weight_yaml(self):
-        from common import get_object_list
         yaml_file = os.path.join(pkg_path, 'data/classifier_weight.yml')
         with open(yaml_file) as f:
             weight = yaml.load(f)
-        object_list = get_object_list()
+        object_list = jsk_2015_apc_common.data.object_list()
         for object_, weights in weight.items():
             self.assertIn(object_, object_list)
             for clf, weight in weights.items():
