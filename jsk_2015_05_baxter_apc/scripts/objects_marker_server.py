@@ -76,7 +76,7 @@ def makeTargetObject( msg, object_name ):
     marker.scale.x = msg.scale * 3
     marker.scale.y = msg.scale * 3
     marker.scale.z = msg.scale * 3
-    marker.mesh_resource = "package://jsk_2015_05_baxter_apc/meshes/" + object_name +"/" + object_name + ".dae"
+    marker.mesh_resource = "package://jsk_2015_apc_common/meshes/" + object_name +"/" + object_name + ".dae"
     marker.mesh_use_embedded_materials = True
     return marker
 
@@ -105,7 +105,7 @@ def makeDaeObject( msg , object_name):
     marker.scale.x = msg.scale * 2
     marker.scale.y = msg.scale * 2
     marker.scale.z = msg.scale * 2
-    marker.mesh_resource = "package://jsk_2015_05_baxter_apc/meshes/" + object_name +"/" + object_name + ".dae"
+    marker.mesh_resource = "package://jsk_2015_apc_common/meshes/" + object_name +"/" + object_name + ".dae"
     marker.mesh_use_embedded_materials = True
     return marker
 
