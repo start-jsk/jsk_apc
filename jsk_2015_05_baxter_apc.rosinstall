@@ -1,6 +1,6 @@
 - git:
-    local-name: start-jsk/jsk_picking_challenge
-    uri: https://github.com/start-jsk/2014-semi.git
+    local-name: start-jsk/jsk_apc
+    uri: https://github.com/start-jsk/jsk_apc.git
     version: master
 - git:
     local-name: jsk-ros-pkg/jsk_robot
