@@ -41,6 +41,7 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>jsk_demo_common</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
