@@ -1,0 +1,21 @@
+subsample_value: 0.0
+use_rgb: true
+keep_organized: true
+min_sensor_dist: .2
+self_see_default_padding: .01
+self_see_default_scale: 1.0
+self_see_links:
+  - name: kiva_pod_base
+    padding: 0.04
+  - name: kiva_pod_z_part0
+  - name: kiva_pod_z_part1
+  - name: kiva_pod_z_part2
+  - name: kiva_pod_z_part3
+  - name: kiva_pod_z_part4
+    padding: 0.04
+  - name: kiva_pod_y_part0
+  - name: kiva_pod_y_part1
+    padding: 0.04
+  - name: kiva_pod_y_part2
+    padding: 0.04
+  - name: kiva_pod_y_part3
