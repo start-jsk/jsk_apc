@@ -1,7 +1,7 @@
 jsk_apc
 =======
 
-[![](https://travis-ci.org/start-jsk/jsk_picking_challenge.svg)](https://travis-ci.org/start-jsk/jsk_picking_challenge)
+[![](https://travis-ci.org/start-jsk/jsk_apc.svg)](https://travis-ci.org/start-jsk/jsk_apc)
 
 
 Install
@@ -12,11 +12,11 @@ Install
 
 1. Install the ROS. [Instructions for ROS indigo on Ubuntu 14.04](http://wiki.ros.org/indigo/Installation/Ubuntu).
 2. [Setup your ROS environment](http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment).
-3. Build catkin workspace for [jsk_picking_challenge](https://github.com/start-jsk/jsk_picking_challenge):
+3. Build catkin workspace for [jsk_apc](https://github.com/start-jsk/jsk_apc):
 
 ```sh
 $ mkdir -p ~/ros/ws_jsk_apc/src && cd ~/ros/ws_jsk_apc/src
-$ wstool init . https://raw.githubusercontent.com/start-jsk/jsk_picking_challenge/master/jsk_2015_05_baxter_apc.rosinstall
+$ wstool init . https://raw.githubusercontent.com/start-jsk/jsk_apc/master/jsk_2015_05_baxter_apc.rosinstall
 $ cd ..
 $ rosdep install -y -r --from-paths .
 $ sudo apt-get install python-catkin-tools ros-indigo-jsk-tools
