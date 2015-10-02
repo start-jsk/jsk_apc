@@ -1,0 +1,47 @@
+<launch>
+
+  <arg name="input_cloud" default="/kinect2/qhd/points_kiva_pod_filtered" />
+  <arg name="nodelet_manager" default="nodelet_manager" />
+
+  <group ns="object_clouds">
+
+    <node name="$(arg nodelet_manager)"
+          pkg="nodelet" type="nodelet" args="manager" />
+
+    <node name="cloud_from_kiva_pod_base"
+          pkg="jsk_pcl_ros" type="tf_transform_cloud" >
+      <remap from="~input" to="$(arg input_cloud)" />
+      <rosparam>
+        target_frame_id: /kiva_pod_base
+      </rosparam>
+    </node>
+
+    <node name="in_kiva_pod_clipper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg nodelet_manager)"
+          output="screen">
+      <remap from="~input/points" to="cloud_from_kiva_pod_base/output" />
+      <rosparam>
+        initial_pos: [0, 0, 0]
+        initial_rot: [0, 0, 0]
+        dimension_x: 0.865
+        dimension_y: 0.865
+        dimension_z: 1.
+        frame_id: /kiva_pod_base
+      </rosparam>
+    </node>
+
+    <node name="pi_to_pc"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/PointIndicesToPointCloud $(arg nodelet_manager)"
+          output="screen">
+      <remap from="~input" to="in_kiva_pod_clipper/output/point_indices" />
+      <remap from="~input/cloud" to="cloud_from_kiva_pod_base/output" />
+      <rosparam>
+        <!-- publish_clouds: true -->
+      </rosparam>
+    </node>
+
+  </group>
+
+</launch>
