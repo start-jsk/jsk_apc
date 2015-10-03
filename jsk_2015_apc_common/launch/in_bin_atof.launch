@@ -1,11 +1,7 @@
 <launch>
 
+  <arg name="manager" />
   <arg name="input_cloud" default="/kiva_pod_filter/output"/>
-
-  <arg name="manager" value="manager" />
-  <node name="$(arg manager)"
-        pkg="nodelet" type="nodelet"
-        args="manager" />
 
   <node name="cloud_from_kiva_pod_base"
         pkg="nodelet" type="nodelet"
