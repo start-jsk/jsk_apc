@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="input_cloud" default="/kinect2/qhd/points_kiva_pod_filtered" />
+  <arg name="input_cloud" default="/kiva_pod_filter/output" />
   <arg name="nodelet_manager" default="nodelet_manager" />
 
   <group ns="object_clouds">
@@ -37,6 +37,7 @@
           output="screen">
       <remap from="~input" to="in_kiva_pod_clipper/output/point_indices" />
       <remap from="~input/cloud" to="cloud_from_kiva_pod_base/output" />
+      <remap from="~output" to="output" />
       <rosparam>
         <!-- publish_clouds: true -->
       </rosparam>
