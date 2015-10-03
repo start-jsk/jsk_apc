@@ -1,0 +1,43 @@
+<launch>
+
+  <arg name="manager" />
+  <arg name="input_cloud" default="/cloud_from_kiva_pod_base/output"/>
+
+  <arg name="bin_a_indices" default="/in_bin_atof/bin_clipper/bin_a/point_indices" />
+  <arg name="bin_b_indices" default="/in_bin_atof/bin_clipper/bin_b/point_indices" />
+  <arg name="bin_c_indices" default="/in_bin_atof/bin_clipper/bin_c/point_indices" />
+  <arg name="bin_d_indices" default="/in_bin_atof/bin_clipper/bin_d/point_indices" />
+  <arg name="bin_e_indices" default="/in_bin_atof/bin_clipper/bin_e/point_indices" />
+  <arg name="bin_f_indices" default="/in_bin_atof/bin_clipper/bin_f/point_indices" />
+
+  <group ns="in_bin_each_object">
+
+    <node name="bin_a_extract_pi"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices /$(arg manager)"
+          output="screen">
+      <remap from="~input" to="$(arg input_cloud)" />
+      <remap from="~indices" to="$(arg bin_a_indices)" />
+    </node>
+
+    <node name="bin_a_euclid_clustering"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/EuclideanClustering /$(arg manager)"
+          output="screen">
+      <remap from="~input" to="bin_a_extract_pi/output" />
+      <rosparam>
+        min_size: 1000
+      </rosparam>
+    </node>
+
+    <node name="bin_a_cpi_decomposer"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer /$(arg manager)"
+          output="screen">
+      <remap from="~input" to="bin_a_extract_pi/output" />
+      <remap from="~target" to="bin_a_euclid_clustering/output" />
+    </node>
+
+  </group>
+
+</launch>
