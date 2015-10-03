@@ -1,0 +1,26 @@
+<launch>
+
+  <node name="nodelet_manager"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+  <include file="$(find jsk_2015_apc_common)/launch/kiva_pod_filter.launch">
+    <arg name="input_cloud" value="/kinect2/hd/points" />
+  </include>
+
+  <include file="$(find jsk_2015_apc_common)/launch/in_bin_atof.launch">
+    <arg name="manager" value="nodelet_manager" />
+    <arg name="input_cloud" value="/kiva_pod_filter/output" />
+  </include>
+
+  <include file="$(find jsk_2015_apc_common)/launch/in_bin_each_object.launch">
+    <arg name="manager" value="nodelet_manager" />
+    <arg name="input_cloud" value="/cloud_from_kiva_pod_base/output" />
+    <arg name="bin_a_indices" value="/in_bin_atof/bin_clipper/bin_a/point_indices" />
+    <arg name="bin_b_indices" value="/in_bin_atof/bin_clipper/bin_b/point_indices" />
+    <arg name="bin_c_indices" value="/in_bin_atof/bin_clipper/bin_c/point_indices" />
+    <arg name="bin_d_indices" value="/in_bin_atof/bin_clipper/bin_d/point_indices" />
+    <arg name="bin_e_indices" value="/in_bin_atof/bin_clipper/bin_e/point_indices" />
+    <arg name="bin_f_indices" value="/in_bin_atof/bin_clipper/bin_f/point_indices" />
+  </include>
+
+</launch>
