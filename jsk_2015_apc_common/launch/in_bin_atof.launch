@@ -2,27 +2,27 @@
 
   <arg name="input_cloud" default="/kiva_pod_filter/output"/>
 
+  <arg name="manager" value="manager" />
+  <node name="$(arg manager)"
+        pkg="nodelet" type="nodelet"
+        args="manager" />
+
+  <node name="cloud_from_kiva_pod_base"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/TfTransformCloud /$(arg manager)">
+    <remap from="~input" to="$(arg input_cloud)" />
+    <rosparam>
+      target_frame_id: /kiva_pod_base
+    </rosparam>
+  </node>
+
   <group ns="in_bin_atof">
-
-    <arg name="manager" value="manager" />
-    <node name="$(arg manager)"
-          pkg="nodelet" type="nodelet"
-          args="manager" />
-
-    <node name="cloud_from_kiva_pod_base"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/TfTransformCloud $(arg manager)">
-      <remap from="~input" to="$(arg input_cloud)" />
-      <rosparam>
-        target_frame_id: /kiva_pod_base
-      </rosparam>
-    </node>
 
     <node name="bin_clipper"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/AttentionClipper $(arg manager)"
+          args="load jsk_pcl/AttentionClipper /$(arg manager)"
           output="screen">
-      <remap from="~input/points" to="cloud_from_kiva_pod_base/output" />
+      <remap from="~input/points" to="/cloud_from_kiva_pod_base/output" />
       <rosparam>
         use_multiple_attention: true
         initial_pos_list: [[-0.21, 0.29, 0.36], [-0.21, 0, 0.36], [-0.21, -0.29, 0.36], [-0.21, 0.29, 0.11], [-0.21, 0, 0.11], [-0.21, -0.29, 0.11]]
@@ -37,7 +37,7 @@
           pkg="nodelet" type="nodelet"
           args="standalone jsk_pcl/ClusterPointIndicesDecomposer"
           output="screen">
-      <remap from="~input" to="cloud_from_kiva_pod_base/output" />
+      <remap from="~input" to="/cloud_from_kiva_pod_base/output" />
       <remap from="~target" to="bin_clipper/output/cluster_point_indices" />
     </node>
 
