@@ -1,4 +1,4 @@
-jsk_apc
+jsk\_apc
 =======
 
 [![](https://travis-ci.org/start-jsk/jsk_apc.svg)](https://travis-ci.org/start-jsk/jsk_apc)
@@ -12,7 +12,7 @@ Install
 
 1. Install the ROS. [Instructions for ROS indigo on Ubuntu 14.04](http://wiki.ros.org/indigo/Installation/Ubuntu).
 2. [Setup your ROS environment](http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment).
-3. Build catkin workspace for [jsk_apc](https://github.com/start-jsk/jsk_apc):
+3. Build catkin workspace for [jsk\_apc](https://github.com/start-jsk/jsk_apc):
 
 ```sh
 $ mkdir -p ~/ros/ws_jsk_apc/src && cd ~/ros/ws_jsk_apc/src
@@ -39,7 +39,7 @@ $ rossetip
 
 ### Optional
 
-* Setup Kinect2: [Instructions at code-iai/iai_kinect2](https://github.com/code-iai/iai_kinect2#install)
+* Setup Kinect2: [Instructions at code-iai/iai\_kinect2](https://github.com/code-iai/iai_kinect2#install)
 * Setup rosserial + vacuum gripper: Write below in `/etc/udev/rules.d/90-rosserial.rules`:
 
 ```
