@@ -1,17 +1,17 @@
 <launch>
 
-  <arg name="input_cloud" default="/kiva_pod_filter/output" />
+  <arg name="INPUT_CLOUD" default="/kiva_pod_filter/output" />
 
   <group ns="in_kiva_pod">
 
     <arg name="manager" value="manager" />
-    <node name="$(arg manager)"
+    <node name="$(arg MANAGER)"
           pkg="nodelet" type="nodelet"
           args="manager" />
 
     <node name="cloud_from_kiva_pod_base"
           pkg="jsk_pcl_ros" type="tf_transform_cloud" >
-      <remap from="~input" to="$(arg input_cloud)" />
+      <remap from="~input" to="$(arg INPUT_CLOUD)" />
       <rosparam>
         target_frame_id: /kiva_pod_base
       </rosparam>
@@ -19,7 +19,7 @@
 
     <node name="in_kiva_pod_clipper"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/AttentionClipper $(arg manager)"
+          args="load jsk_pcl/AttentionClipper $(arg MANAGER)"
           output="screen">
       <remap from="~input/points" to="cloud_from_kiva_pod_base/output" />
       <rosparam>
@@ -34,7 +34,7 @@
 
     <node name="pi_to_pc"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/PointIndicesToPointCloud $(arg manager)"
+          args="load jsk_pcl/PointIndicesToPointCloud $(arg MANAGER)"
           output="screen">
       <remap from="~input" to="in_kiva_pod_clipper/output/point_indices" />
       <remap from="~input/cloud" to="cloud_from_kiva_pod_base/output" />
