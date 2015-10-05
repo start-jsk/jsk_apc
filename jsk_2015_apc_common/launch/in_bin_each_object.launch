@@ -1,41 +1,36 @@
 <launch>
 
-  <arg name="manager" />
-  <arg name="input_cloud" default="/cloud_from_kiva_pod_base/output"/>
-
-  <arg name="bin_a_indices" default="/in_bin_atof/bin_clipper/bin_a/point_indices" />
-  <arg name="bin_b_indices" default="/in_bin_atof/bin_clipper/bin_b/point_indices" />
-  <arg name="bin_c_indices" default="/in_bin_atof/bin_clipper/bin_c/point_indices" />
-  <arg name="bin_d_indices" default="/in_bin_atof/bin_clipper/bin_d/point_indices" />
-  <arg name="bin_e_indices" default="/in_bin_atof/bin_clipper/bin_e/point_indices" />
-  <arg name="bin_f_indices" default="/in_bin_atof/bin_clipper/bin_f/point_indices" />
+  <arg name="MANAGER" />
+  <arg name="BIN_NAME" />
+  <arg name="INPUT_CLOUD" />
+  <arg name="INPUT_INDICES" />
 
   <group ns="in_bin_each_object">
 
-    <node name="bin_a_extract_pi"
+    <node name="bin_$(arg BIN_NAME)_extract_pi"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/ExtractIndices /$(arg manager)"
+          args="load jsk_pcl/ExtractIndices /$(arg MANAGER)"
           output="screen">
-      <remap from="~input" to="$(arg input_cloud)" />
-      <remap from="~indices" to="$(arg bin_a_indices)" />
+      <remap from="~input" to="$(arg INPUT_CLOUD)" />
+      <remap from="~indices" to="$(arg INPUT_INDICES)" />
     </node>
 
-    <node name="bin_a_euclid_clustering"
+    <node name="bin_$(arg BIN_NAME)_euclid_clustering"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/EuclideanClustering /$(arg manager)"
+          args="load jsk_pcl/EuclideanClustering /$(arg MANAGER)"
           output="screen">
-      <remap from="~input" to="bin_a_extract_pi/output" />
+      <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
       <rosparam>
         min_size: 1000
       </rosparam>
     </node>
 
-    <node name="bin_a_cpi_decomposer"
+    <node name="bin_$(arg BIN_NAME)_cpi_decomposer"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/ClusterPointIndicesDecomposer /$(arg manager)"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer /$(arg MANAGER)"
           output="screen">
-      <remap from="~input" to="bin_a_extract_pi/output" />
-      <remap from="~target" to="bin_a_euclid_clustering/output" />
+      <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
+      <remap from="~target" to="bin_$(arg BIN_NAME)_euclid_clustering/output" />
     </node>
 
   </group>
