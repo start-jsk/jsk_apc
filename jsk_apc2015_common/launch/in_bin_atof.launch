@@ -1,12 +1,12 @@
 <launch>
 
-  <arg name="manager" />
-  <arg name="input_cloud" default="/kiva_pod_filter/output"/>
+  <arg name="MANAGER" />
+  <arg name="INPUT_CLOUD" default="/kiva_pod_filter/output"/>
 
   <node name="cloud_from_kiva_pod_base"
         pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/TfTransformCloud /$(arg manager)">
-    <remap from="~input" to="$(arg input_cloud)" />
+        args="load jsk_pcl/TfTransformCloud /$(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <rosparam>
       target_frame_id: /kiva_pod_base
     </rosparam>
@@ -16,7 +16,7 @@
 
     <node name="bin_clipper"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/AttentionClipper /$(arg manager)"
+          args="load jsk_pcl/AttentionClipper /$(arg MANAGER)"
           output="screen">
       <remap from="~input/points" to="/cloud_from_kiva_pod_base/output" />
       <rosparam>
