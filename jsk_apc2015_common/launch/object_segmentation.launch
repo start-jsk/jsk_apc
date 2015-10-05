@@ -4,12 +4,12 @@
         pkg="nodelet" type="nodelet" args="manager" />
 
   <include file="$(find jsk_2015_apc_common)/launch/kiva_pod_filter.launch">
-    <arg name="input_cloud" value="/kinect2/hd/points" />
+    <arg name="INPUT_CLOUD" value="/kinect2/hd/points" />
   </include>
 
   <include file="$(find jsk_2015_apc_common)/launch/in_bin_atof.launch">
-    <arg name="manager" value="nodelet_manager" />
-    <arg name="input_cloud" value="/kiva_pod_filter/output" />
+    <arg name="MANAGER" value="nodelet_manager" />
+    <arg name="INPUT_CLOUD" value="/kiva_pod_filter/output" />
   </include>
 
   <include file="$(find jsk_2015_apc_common)/launch/in_bin_each_object.launch">
