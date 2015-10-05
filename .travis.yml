@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 language:
   - cpp
   - python
@@ -11,15 +11,16 @@ env:
     - ROSWS=wstool
     - BUILDER=catkin
     - USE_DEB=true
+    - USE_TRAVIS=true
     - ROS_PARALLEL_JOBS="-j8"
   matrix:
-    - ROS_DISTRO=hydro  USE_JENKINS=true
     - ROS_DISTRO=indigo
-    - ROS_DISTRO=jade   USE_JENKINS=true
+    - ROS_DISTRO=jade
+services:
+  - docker
 matrix:
   allow_failures:
-    - env: ROS_DISTRO=hydro  USE_JENKINS=true
-    - env: ROS_DISTRO=jade   USE_JENKINS=true
+    - env: ROS_DISTRO=jade
 script: source .travis/travis.sh
 notifications:
   email:
