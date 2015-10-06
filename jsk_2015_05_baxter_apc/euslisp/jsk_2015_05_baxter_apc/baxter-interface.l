@@ -1,10 +1,11 @@
 ;; -*- mode: lisp;-*-
 
-(load "package://baxtereus/baxter-interface.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(require "package://baxtereus/baxter-interface.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
 
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "std_msgs")
+
 
 (defmethod baxter-interface
   ;; ----------------------
@@ -39,4 +40,14 @@
       (t nil)
       )
     )
+  )
+
+
+(defun custom-baxter-init (&key ctype)
+  (baxter-init :safe nil :type ctype)
+  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+  (send (send *baxter* :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
+  (send (send *baxter* :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
+  (send (send (*ri* . robot) :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
+  (send (send (*ri* . robot) :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
   )
