@@ -3,17 +3,18 @@
 
 (ros::roseus "test_robot_motion")
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-utils.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-interface.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-motions.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-utils.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-motions.l")
 
 ;; -------------------
 ;; Overwrite functions
 ;; -------------------
 (defclass baxter-test-robot
-  :super baxter-robot)
+  :super jsk_2015_05_baxter_apc::baxter-robot)
 (defmethod baxter-test-robot
   (:inverse-kinematics
     (&rest args)
@@ -22,7 +23,7 @@
       (unless ret (throw 'ik-error nil))
       ret)))
 (defclass baxter-test-interface
-  :super baxter-interface)
+  :super jsk_2015_05_baxter_apc::baxter-interface)
 (defmethod baxter-test-interface
   (:wait-interpolation (&rest args) t)
   (:angle-vector-sequence (&rest args) t))
@@ -31,11 +32,7 @@
 (apc-init)
 (setq *baxter* (instance baxter-test-robot :init))
 (send *baxter* :locate #f(0 0 950) :world)
-(send (send *baxter* :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
-(send (send *baxter* :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
 (setq *ri* (instance baxter-test-interface :init))
-(send (send (*ri* . robot) :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
-(send (send (*ri* . robot) :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
 
 (init-unit-test)
 
