@@ -42,12 +42,12 @@
 
   <!-- robot main -->
   <node if="$(arg launch_main)" pkg="jsk_2015_05_baxter_apc" type="robot-main.l" name="challenge_main_left"
-    args="&quot;(progn (apc-init :larm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :larm))&quot;"
+    args="&quot;(progn (apc-init :larm-controller) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :larm))&quot;"
     respawn="true" output="screen">
     <env name="DISPLAY" value="" />
   </node>
   <node if="$(arg launch_main)" pkg="jsk_2015_05_baxter_apc" type="robot-main.l" name="challenge_main_right"
-    args="&quot;(progn (apc-init :rarm) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :rarm))&quot;"
+    args="&quot;(progn (apc-init :rarm-controller) (send *ri* :angle-vector (send *baxter* :fold-pose)) (main :rarm))&quot;"
     respawn="true" output="screen">
     <env name="DISPLAY" value="" />
   </node>
