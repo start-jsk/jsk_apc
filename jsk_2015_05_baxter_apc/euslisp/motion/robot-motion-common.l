@@ -3,14 +3,6 @@
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
 
-(defun untuck-pose (arm)
-  (let ((av-init (send *baxter* :angle-vector)) av-arm)
-    (send *baxter* :untuck-pose)
-    (setq av-arm (send *baxter* arm :angle-vector))
-    (send *baxter* :angle-vector av-init)     ; back to initial pose
-    (send *baxter* arm :angle-vector av-arm)  ; only move one arm
-    (list (send *baxter* :angle-vector))))
-
 (defparameter *larm-height-offset* 12)
 (defparameter *larm-depth-angle* 5)
 (defparameter *rarm-height-offset* 20)
