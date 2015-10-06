@@ -13,6 +13,9 @@
           output="screen">
       <remap from="~input" to="$(arg INPUT_CLOUD)" />
       <remap from="~indices" to="$(arg INPUT_INDICES)" />
+      <rosparam>
+        keep_organized: true
+      </rosparam>
     </node>
 
     <node name="bin_$(arg BIN_NAME)_euclid_clustering"
