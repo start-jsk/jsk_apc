@@ -25,7 +25,7 @@
 (defun move-for-verification (arm bin)
   (let (avs)
     (pushback (avoid-shelf-pose-for-bin arm bin) avs)
-    (pushback (fold-to-keep-object-av arm) avs)
+    (pushback (send *baxter* :fold-to-keep-object arm) avs)
     (send *irtviewer* :draw-objects)
     (setq avs (append avs (move-for-verification-avs-ik arm)))
     (send *irtviewer* :draw-objects)
