@@ -37,7 +37,7 @@
     (setq elapsed-msg (format nil "It takes ~d min ~d sec" (/ (send elapsed-time :sec) 60) (mod (send elapsed-time :sec) 60)))
     (when tweet? (tweet elapsed-msg))  ;; tweet elapsed time
     ;; return to fold pose and speak
-    (send *ri* :angle-vector-sequence (fold-pose-back arm))
+    (send *ri* :angle-vector-sequence (send *baxter* :fold-pose-back arm))
     (send *ri* :wait-interpolation)
     (speak-en "Finished picking test." :google t)
     ))
