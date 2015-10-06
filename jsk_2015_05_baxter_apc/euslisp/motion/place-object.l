@@ -30,7 +30,7 @@
     (send *ri* :wait-interpolation)
     (setq avs nil)
     (pushback (fold-to-keep-object-av arm) avs)
-    (setq avs (append avs (fold-pose-back arm)))
+    (pushback (send *baxter* :fold-pose-back arm) avs)
     (send *irtviewer* :draw-objects)
     (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 3.0)
     (send *ri* :wait-interpolation)
