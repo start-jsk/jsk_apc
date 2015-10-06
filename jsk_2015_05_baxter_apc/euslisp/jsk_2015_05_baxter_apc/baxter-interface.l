@@ -84,16 +84,24 @@
     (&optional (tm 3000))
     (send self :angle-vector (send *baxter* :angle-vector) tm))
   (:move-to-bin
-    (arm bin)
-    (let (bin-box bin-coords bin-dim-x)
+    (arm bin &key (offset #f(-150 0 0)))
+    (cond
+      ((find bin '(:a :b :c)) (progn (send *baxter* :fold-pose-upper arm)))
+      ((find bin '(:d :e :f :g :i)) (progn (send *baxter* :fold-pose-upper arm)))
+      ((find bin '(:j :k :l :h)) (progn (send *baxter* :fold-pose-lower arm)))
+      )
+    (let (avs bin-box bin-coords bin-dim-x)
+      (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (setq bin-box (send self :recognize-bin-box bin))
       (setq bin-coords (send self :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
       (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
       (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0))
-      (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis nil)
-      (send self :send-av 3000)
+      (send bin-coords :translate offset :world)
+      (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis nil) avs)
+      (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis :z) avs)
+      (send self :angle-vector-sequence avs)
       ))
   )
 
