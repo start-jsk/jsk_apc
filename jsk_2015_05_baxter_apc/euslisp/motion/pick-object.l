@@ -2,13 +2,11 @@
 ;; -*- mode: lisp;-*-
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/motion/move-to-target-bin.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/motion/robot-motion-common.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/robot-recognition.l")
 
 (defun insert-to-pick-object-avs (arm bin)
   (let (avs)
-    (move-to-target-bin-av arm bin)
     (pushback
      (send *baxter* arm :inverse-kinematics
            (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 50)))
