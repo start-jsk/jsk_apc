@@ -3,43 +3,6 @@
 
 (load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
 
-(defun fold-pose-up (arm)
-  (let ((av-init (send *baxter* :angle-vector))
-        (av-l #f(-7.80029 -1.12061 -82.9248 141.438 116.477 -6.48193 8.10791))
-        (av-r #f(7.80029 -1.12061 82.9248 141.438 -116.477 -6.48193 -8.10791)))
-    (case arm
-      (:rarm (send *baxter* arm :angle-vector av-r))
-      (:larm (send *baxter* arm :angle-vector av-l)))
-    (list (midpoint 0.5 av-init (send *baxter* :angle-vector)) (send *baxter* :angle-vector))))
-
-(defun fold-pose-mid (&optional (arm :arms))
-  (let ((av-init (send *baxter* :angle-vector))
-        (av-l #f(48.8672 -10.437 -80.6616 148.645 80.9033 1.38428 18.8745))
-        (av-r #f(-48.8672 -10.437 80.6616 148.645 -80.9033 1.38428 -18.8745)))
-    (case arm
-      (:arms (progn (send *baxter* :larm :angle-vector av-l) (send *baxter* :rarm :angle-vector av-r)))
-      (:larm (send *baxter* :larm :angle-vector av-l))
-      (:rarm (send *baxter* :rarm :angle-vector av-r)))
-    (list (midpoint 0.5 av-init (send *baxter* :angle-vector)) (send *baxter* :angle-vector))))
-
-(defun fold-pose-low (arm)
-  (let ((av-init (send *baxter* :angle-vector))
-        (av-l #f(-7.27295 52.6465 -59.9414 91.582 123.574 13.3374 159.675))
-        (av-r #f(7.27295 52.6465 59.9414 91.582 -123.574 13.3374 -159.675)))
-    (case arm
-      (:rarm (send *baxter* arm :angle-vector av-r))
-      (:larm (send *baxter* arm :angle-vector av-l)))
-    (list (midpoint 0.5 av-init (send *baxter* :angle-vector)) (send *baxter* :angle-vector))))
-
-(defun fold-pose-back (arm)
-  (let ((av-init (send *baxter* :angle-vector))
-        (av-l #f(97.4707 -2.39502 -94.5483 134.67 91.4062 8.70117 0))
-        (av-r #f(-97.4707 -2.39502 94.5483 134.67 -91.4062 8.70117 0)))
-    (case arm
-      (:rarm (send *baxter* arm :angle-vector av-r))
-      (:larm (send *baxter* arm :angle-vector av-l)))
-    (list (midpoint 0.5 av-init (send *baxter* :angle-vector)) (send *baxter* :angle-vector))))
-
 (defun fold-to-keep-object-av (arm)
   (let ((av-l #f(77.1899 4.37256 -86.1548 123.904 11.8213 59.8096 74.5532))
         (av-r #f(-77.1899 4.37256 86.1548 123.904 -11.8213 59.8096 -74.5532)))
@@ -118,8 +81,8 @@
   (:fold-pose
     ()
     (let (av)
-      (fold-pose-back :larm)
-      (fold-pose-back :rarm)
+      (send *baxter* :fold-pose-back :larm)
+      (send *baxter* :fold-pose-back :rarm)
       (setq av (send *baxter* :angle-vector))
       (setf (aref av 0) 0)
       (send *baxter* :angle-vector av))))
