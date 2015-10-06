@@ -14,7 +14,7 @@
 
 (defun move-to-target-bin (arm bin &key (fast t))
   (let (avs)
-    (pushback (fold-to-keep-object-av arm) avs)
+    (pushback (send *baxter* :fold-to-keep-object arm) avs)
     (pushback (avoid-shelf-pose-for-bin arm bin) avs)
     (pushback (move-to-target-bin-av arm bin) avs)
     (send *irtviewer* :draw-objects)
