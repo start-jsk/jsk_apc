@@ -3,8 +3,8 @@
 (ros::load-ros-manifest "jsk_rviz_plugins")
 (ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/model/score-board.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/model/score-board.l")
 (setq *overlay-text-width* 1200)
 (setq *overlay-text-height* 50)
 

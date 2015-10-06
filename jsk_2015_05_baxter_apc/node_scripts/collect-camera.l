@@ -4,11 +4,11 @@
 
 (ros::roseus "robot_main")
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-motions.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-test.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-visualization.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-motions.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-test.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-visualization.l")
 
 (setq *rarm-bin-lists* (list :c :f :i :l))
 (setq *larm-bin-lists* (list :a :b :d :e :g :h :j :k))
