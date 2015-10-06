@@ -97,7 +97,7 @@
       ))
   )
 
-(defun jsk_2015_05_baxter_apc::baxter-init (&key ctype)
+(defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
   (unless (boundp '*ri*)
     (setq *ri* (instance jsk_2015_05_baxter_apc::baxter-interface :init :type ctype)))
   (unless (boundp '*baxter*)
