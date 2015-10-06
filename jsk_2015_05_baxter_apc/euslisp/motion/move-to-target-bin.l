@@ -4,9 +4,9 @@
 (load "package://jsk_2015_05_baxter_apc/euslisp/motion/robot-motion-common.l")
 
 (defun move-to-target-bin-av (arm bin)
-  (cond ((find bin '(:a :b :c)) (fold-pose-up arm))
-        ((find bin '(:d :e :f :g :i)) (fold-pose-mid arm))
-        ((find bin '(:j :k :l :h)) (fold-pose-low arm))
+  (cond ((find bin '(:a :b :c)) (send *baxter* :fold-pose-upper arm))
+        ((find bin '(:d :e :f :g :i)) (send *baxter* :fold-pose-middle arm))
+        ((find bin '(:j :k :l :h)) (send *baxter* :fold-pose-lower arm))
         (t (return-from move-to-target-bin-av nil)))
   ;; move arm to the position 90mm away from the target bin
   (send *baxter* arm :inverse-kinematics (make-cascoords :pos (v+ (send *pod* bin) #f(-90 0 0))) :rotation-axis t)
