@@ -3,15 +3,6 @@
 
 (load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
 
-(defun fold-pose-back (arm)
-  (let ((av-init (send *baxter* :angle-vector))
-        (av-l #f(97.4707 -2.39502 -94.5483 134.67 91.4062 8.70117 0))
-        (av-r #f(-97.4707 -2.39502 94.5483 134.67 -91.4062 8.70117 0)))
-    (case arm
-      (:rarm (send *baxter* arm :angle-vector av-r))
-      (:larm (send *baxter* arm :angle-vector av-l)))
-    (list (midpoint 0.5 av-init (send *baxter* :angle-vector)) (send *baxter* :angle-vector))))
-
 (defun fold-to-keep-object-av (arm)
   (let ((av-l #f(77.1899 4.37256 -86.1548 123.904 11.8213 59.8096 74.5532))
         (av-r #f(-77.1899 4.37256 86.1548 123.904 -11.8213 59.8096 -74.5532)))
@@ -90,8 +81,8 @@
   (:fold-pose
     ()
     (let (av)
-      (fold-pose-back :larm)
-      (fold-pose-back :rarm)
+      (send *baxter* :fold-pose-back :larm)
+      (send *baxter* :fold-pose-back :rarm)
       (setq av (send *baxter* :angle-vector))
       (setf (aref av 0) 0)
       (send *baxter* :angle-vector av))))
