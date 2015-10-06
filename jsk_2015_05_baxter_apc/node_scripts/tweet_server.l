@@ -1,6 +1,6 @@
 #!/usr/bin/env roseus
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
 (ros::load-ros-manifest "std_msgs")
 
 (defun tweet (str)

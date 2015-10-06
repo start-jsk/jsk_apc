@@ -1,10 +1,10 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/motion/move-to-target-bin.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/motion/robot-motion-common.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-recognition.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/motion/move-to-target-bin.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/motion/robot-motion-common.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-recognition.l")
 
 (defun insert-to-pick-object-avs (arm bin)
   (let (avs)
@@ -40,7 +40,7 @@
   )
 
 ;; (setq arm :larm bin :k)
-;; (progn (load "motion/pick-object.l ")
+;; (progn (require "motion/pick-object.l ")
 ;;        (dolist (av (insert-to-pick-object-avs arm bin))
 ;;          (send *irtviewer* :draw-objects) (send *ri* :angle-vector av 3000)
 ;;          (send *ri* :wait-interpolation))

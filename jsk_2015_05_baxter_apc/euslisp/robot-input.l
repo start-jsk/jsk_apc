@@ -1,7 +1,7 @@
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-utils.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-utils.l")
 
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-manifest "jsk_2015_05_baxter_apc")

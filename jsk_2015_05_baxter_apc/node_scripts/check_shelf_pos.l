@@ -3,8 +3,8 @@
 ;; -*- mode: lisp;-*-
 
 (ros::roseus "robot_main")
-(load "package://baxtereus/baxter-interface.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
+(require "package://baxtereus/baxter-interface.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
 
 (apc-init)
 (send *baxter* :reset-pose)

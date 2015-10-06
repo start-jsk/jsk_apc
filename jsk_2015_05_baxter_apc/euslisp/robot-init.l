@@ -2,8 +2,8 @@
 ;; -*- mode: lisp;-*-
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/model/pod-lowres.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/model/order-bin.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/model/pod-lowres.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/model/order-bin.l")
 
 (setq *debug-view* nil)
 (setq *simulator-p* nil)
