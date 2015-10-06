@@ -8,7 +8,7 @@
 (load "package://jsk_2015_05_baxter_apc/euslisp/robot-utils.l")
 (load "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
 (load "package://jsk_2015_05_baxter_apc/euslisp/robot-input.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/robot-interface.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
 (load "package://jsk_2015_05_baxter_apc/euslisp/robot-motions.l")
 (load "package://jsk_2015_05_baxter_apc/euslisp/robot-visualization.l")
 (load "package://jsk_2015_05_baxter_apc/euslisp/robot-recognition.l")
