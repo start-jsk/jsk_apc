@@ -1,7 +1,7 @@
 ;; vim: set ft=lisp:
 ;; -*- mode: lisp;-*-
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/motion/robot-motion-common.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/motion/robot-motion-common.l")
 
 (defun place-object-avs (arm)
   (let (avs (av-map (make-hash-table)))
