@@ -14,7 +14,7 @@
             (:default :default-controller)
             (:larm :larm-controller)
             (:rarm :rarm-controller)))
-    (custom-baxter-init :ctype ctype)
+    (jsk_2015_05_baxter_apc::baxter-init :ctype ctype)
     (send *baxter* :locate #f(0 0 950) :world)  ;; baxter in the lab
     ;; (send *baxter* :locate #f(0 0 1040) :world)  ;; baxter in the challenge
     (if (not (boundp '*tfb*)) (setq *tfb* (instance ros::transform-broadcaster :init)))
