@@ -1,3 +1,16 @@
 <launch>
-  <test pkg="jsk_2015_05_baxter_apc" type="test-robot-motion.l" test-name="robot_test" time-limit="6000"></test>
+
+  <rosparam>
+    use_sim_time: true
+  </rosparam>
+
+  <!-- download 2015-10-07-10-20-12_bin-box-array.bag from Google Drive -->
+  <node name="rosbag"
+        pkg="rosbag" type="play"
+        args="$(find jsk_2015_05_baxter_apc)/test/2015-10-07-10-20-12_bin-box-array.bag --clock" />
+
+  <test test-name="robot_test"
+        pkg="jsk_2015_05_baxter_apc" type="test-robot-motion.l"
+        time-limit="6000" />
+
 </launch>
