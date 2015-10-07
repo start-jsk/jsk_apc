@@ -47,7 +47,7 @@
     (setq passed nil)
     (dolist (bin bins)
       (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
-      (catch 'ik-error (send *ri* :move-to-bin arm bin) (push 0 passed))
+      (catch 'ik-error (send *ri* :move-arm-body->bin arm bin) (push 0 passed))
       (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
       (catch 'ik-error (pick-object arm bin) (push 1 passed))
       (catch 'ik-error (move-for-verification arm bin) (push 2 passed))
