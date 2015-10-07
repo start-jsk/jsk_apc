@@ -68,7 +68,7 @@
       ;; pos of bin G-L is minus z of A-F
       (dotimes (i 6)
         (setq bin (elt '(:j :k :l :g :h :i) i))
-        (setq bin-box (elt (send msg :boxes) i))
+        (setq bin-box (copy-object (elt (send msg :boxes) i)))
         (setq bin-box-pos-z (send (send (send bin-box :pose) :position) :z))
         (send (send (send bin-box :pose) :position) :z (- bin-box-pos-z))
         (sethash bin bin-boxes bin-box)
