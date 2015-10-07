@@ -91,7 +91,7 @@
   (:send-av
     (&optional (tm 3000))
     (send self :angle-vector (send *baxter* :angle-vector) tm))
-  (:move-to-bin
+  (:move-arm-body->bin
     (arm bin &key (offset #f(-150 0 0)))
     (cond
       ((find bin '(:a :b :c)) (progn (send *baxter* :fold-pose-upper arm)))

@@ -78,7 +78,7 @@
                                *overlay-text-width* *overlay-text-height* 0 (if (equal "left" (arm-to-str arm)) (* *overlay-text-height* 2) (* *overlay-text-height* 5)) :text-size 20)
          (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) (underscore-to-space target-object)) :google t)
          (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
-         (send *ri* :move-to-bin arm target)
+         (send *ri* :move-arm-body->bin arm target)
          (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
          (if (and  ;; decide if going to see if grabbed
@@ -117,7 +117,7 @@
         ((string= state "return_object")
          (speak-en (format nil "Return object to Bin ~A." (key-to-str target)) :google t)
          (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
-         (send *ri* :move-to-bin arm target)
+         (send *ri* :move-arm-body->bin arm target)
          (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
          (return-object arm target)
          ;; if have tried N times and N is larger than number of bin contents,
