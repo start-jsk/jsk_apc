@@ -51,7 +51,7 @@
       (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
       (catch 'ik-error (pick-object arm bin) (push 1 passed))
       (catch 'ik-error (move-for-verification arm bin) (push 2 passed))
-      (catch 'ik-error (place-object arm) (push 3 passed))
+      (catch 'ik-error (send *ri* :move-arm-body->order-bin arm) (push 3 passed))
       (dotimes (i (length test-names))
         (unless (member i passed)
           (assert nil (format nil "ik failed in ~A ~A ~A" (elt test-names i) arm bin))))

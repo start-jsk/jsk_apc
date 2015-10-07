@@ -128,7 +128,10 @@
         ((string= state "place_object")
          (speak-en  "Target is verified. Put in Order bin." :google t)
          (tweet-with-image (format nil "I got ~a!!" target-object) (arm-to-str arm))
-         (place-object arm)
+         (send *ri* :move-arm-body->order-bin arm)
+         (send *ri* :wait-interpolation)
+         (send *ri* :spin-off-by-wrist arm)
+         (send *ri* :wait-interpolation)
 
 	 ;;publish score
 	 (update-score target)
