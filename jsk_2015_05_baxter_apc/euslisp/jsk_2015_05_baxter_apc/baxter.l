@@ -66,12 +66,4 @@
       (setf (gethash :rarm av-table) (send self :swap-arm-av larm-av))
       (send self arm :angle-vector (gethash arm av-table)))
     (send self :angle-vector))
-  (:untuck-pose
-    (arm)
-    (let ((av-table (make-hash-table))
-          (larm-av #f(5.000000 -57.000000 68.000000 111.000000 -38.000000 59.000000 -0.000000)))
-      (setf (gethash arm av-table) larm-av)
-      (setf (gethash arm av-table) (send self :swap-arm-av larm-av))
-      (send self arm :angle-vector (gethash arm av-table)))
-    (send self :angle-vector))
   )

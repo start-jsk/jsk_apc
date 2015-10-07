@@ -38,7 +38,7 @@
 
 ;; left/right side is symmetric
 (setq test-patterns (cons :larm '(:a :b :d :e :g :h :j :k)))
-(setq test-names '("move-to-target-bin" "pick-object" "move-for-verification" "place-object"))
+(setq test-names '("move-to-bin" "pick-object" "move-for-verification" "place-object"))
 
 (deftest
   test-apc-inverse-kinematics
@@ -46,7 +46,9 @@
         (bins (cdr test-patterns)))
     (setq passed nil)
     (dolist (bin bins)
-      (catch 'ik-error (move-to-target-bin arm bin) (push 0 passed))
+      (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
+      (catch 'ik-error (send *ri* :move-to-bin arm bin) (push 0 passed))
+      (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
       (catch 'ik-error (pick-object arm bin) (push 1 passed))
       (catch 'ik-error (move-for-verification arm bin) (push 2 passed))
       (catch 'ik-error (place-object arm) (push 3 passed))
