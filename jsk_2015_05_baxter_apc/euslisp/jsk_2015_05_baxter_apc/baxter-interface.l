@@ -120,7 +120,7 @@
       (send self :angle-vector-sequence avs)
     ))
   (:spin-off-by-wrist
-    (arm)
+    (arm &key (times 10))
     (let (avs)
       (pushback (send *baxter* :angle-vector) avs)
       (dotimes (i 10)
