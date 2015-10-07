@@ -44,14 +44,6 @@
   (send *ri* :wait-interpolation)
   t)
 
-(defun look-at-other-side (arm)
-  (let (av)
-    (setq av (send *baxter* :angle-vector))
-    (case arm
-      (:larm (setf (aref av 0) -90))
-      (:rarm (setf (aref av 0) 90)))
-    (send *baxter* :angle-vector av)))
-
 (defmethod baxter-robot
   (:fold-pose
     ()
