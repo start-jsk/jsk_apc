@@ -91,34 +91,33 @@
   (:send-av
     (&optional (tm 3000))
     (send self :angle-vector (send *baxter* :angle-vector) tm))
-  (:move-arm-body->bin
-    (arm bin &key (offset #f(-150 0 0)))
-    (cond
-      ((find bin '(:a :b :c)) (progn (send *baxter* :fold-pose-upper arm)))
-      ((find bin '(:d :e :f :g :i)) (progn (send *baxter* :fold-pose-upper arm)))
-      ((find bin '(:j :k :l :h)) (progn (send *baxter* :fold-pose-lower arm)))
-      )
+  (:ik-avs->bin-entrance
+    (arm bin &key (offset #f(0 0 0)))
     (let (avs bin-box bin-coords bin-dim-x)
-      (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (setq bin-box (send self :recognize-bin-box bin))
       (setq bin-coords (send self :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
       (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-      (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0))
+      (send bin-coords :translate (float-vector (- bin-dim-x) 0 0) :world)
       (send bin-coords :translate offset :world)
       (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis nil) avs)
       (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis :z) avs)
       (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t :revert-if-fail nil) avs)
-      (send self :angle-vector-sequence avs)
-      ))
+      avs))
+  (:move-arm-body->bin
+    (arm bin)
+    (let (avs)
+      (pushback (send *baxter* :fold-to-keep-object arm) avs)
+      (setq avs (append avs (send *ri* :ik-avs->bin-entrance arm bin :offset #f(-150 0 0))))
+    avs))
   (:move-arm-body->order-bin
     (arm)
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :place-object-pose arm) avs)
       (send self :angle-vector-sequence avs)
-    ))
+      ))
   (:spin-off-by-wrist
     (arm &key (times 10))
     (let (avs)
@@ -130,7 +129,19 @@
         (pushback (send *baxter* :rotate-wrist arm -10) avs)
         )
       (send self :angle-vector-sequence avs)
-    ))
+      ))
+  (:move-arm-body->head-view-point
+    (arm)
+    (let (avs coords-tmp)
+      (setq coords-tmp
+            (if (eq arm :larm)
+              (make-coords :pos #f(690.508 171.959 1034.31) :rpy #f(-1.0497 -0.422017 -1.71354))
+              (make-coords :pos #f(649.331 -319.89 1028.69) :rpy #f(1.0497 -0.422017 1.71354))))
+      (pushback (send *baxter* :fold-to-keep-object arm) avs)
+      (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis nil) avs)
+      (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis t) avs)
+      (send self :angle-vector-sequence avs)
+      ))
   )
 
 (defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
