@@ -110,13 +110,13 @@
        (move-end-pos-with-interpolation arm :y grasp-middle-right-dist :time 1000)
        )
       (:rotate-and-left
-       (rotate-wrist arm 90)
+       (send *baxter* :rotate-wrist arm 90)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
        (move-end-pos-with-interpolation arm :z (- grasp-side-z))
        )
       (:rotate-and-right
-       (rotate-wrist arm -90)
+       (send *baxter* :rotate-wrist arm -90)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
        (move-end-pos-with-interpolation arm :z (- grasp-side-z))
@@ -249,7 +249,7 @@
        (move-end-pos-with-interpolation arm :y (- grasp-middle-right-dist) :time 1500)
        )
       (:rotate-and-left
-       (rotate-wrist arm -45)
+       (send *baxter* :rotate-wrist arm -45)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
        (move-end-pos-with-interpolation arm :z grasp-z-offset :time 1000)
@@ -259,7 +259,7 @@
                                         :force t)
        )
       (:rotate-and-right
-       (rotate-wrist arm 45)
+       (send *baxter* :rotate-wrist arm 45)
        (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
        (send *ri* :wait-interpolation)
        (move-end-pos-with-interpolation arm :z grasp-z-offset :time 1000)
