@@ -44,12 +44,7 @@
     (ros::ros-info "[return_object] wait for object to leave from hand")
     (unix::sleep 5)
     ;; shake to have object leave from hand
-    (dotimes (i 3)
-      (pushback (rotate-wrist arm 10) shake-avs)
-      (pushback (rotate-wrist arm -20) shake-avs)
-      (pushback (rotate-wrist arm 20) shake-avs)
-      (pushback (rotate-wrist arm -10) shake-avs))
-    (send *ri* :angle-vector-sequence shake-avs)
+    (send *ri* :spin-off-by-wrist arm :times 3)
     (send *ri* :wait-interpolation)
     (unix::sleep 2)
     (ros::ros-info "[return_object] finish waiting")

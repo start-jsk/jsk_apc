@@ -44,15 +44,6 @@
   (send *ri* :wait-interpolation)
   t)
 
-(defun rotate-wrist (arm angle &key (angle-method :relative))
-  (let (wrist-index)
-    (case arm
-      (:larm (setq wrist-index 7))
-      (:rarm (setq wrist-index 14)))
-    (setq av (send *baxter* :angle-vector))
-    (setf (elt av wrist-index) (+ (elt av wrist-index) angle))
-    (send *baxter* :angle-vector av)))
-
 (defun look-at-other-side (arm)
   (let (av)
     (setq av (send *baxter* :angle-vector))

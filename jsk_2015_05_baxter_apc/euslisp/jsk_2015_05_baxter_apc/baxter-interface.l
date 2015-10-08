@@ -91,7 +91,7 @@
   (:send-av
     (&optional (tm 3000))
     (send self :angle-vector (send *baxter* :angle-vector) tm))
-  (:move-to-bin
+  (:move-arm-body->bin
     (arm bin &key (offset #f(-150 0 0)))
     (cond
       ((find bin '(:a :b :c)) (progn (send *baxter* :fold-pose-upper arm)))
@@ -112,6 +112,25 @@
       (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t :revert-if-fail nil) avs)
       (send self :angle-vector-sequence avs)
       ))
+  (:move-arm-body->order-bin
+    (arm)
+    (let (avs)
+      (pushback (send *baxter* :fold-to-keep-object arm) avs)
+      (pushback (send *baxter* :place-object-pose arm) avs)
+      (send self :angle-vector-sequence avs)
+    ))
+  (:spin-off-by-wrist
+    (arm &key (times 10))
+    (let (avs)
+      (pushback (send *baxter* :angle-vector) avs)
+      (dotimes (i 10)
+        (pushback (send *baxter* :rotate-wrist arm 10) avs)
+        (pushback (send *baxter* :rotate-wrist arm -20) avs)
+        (pushback (send *baxter* :rotate-wrist arm 20) avs)
+        (pushback (send *baxter* :rotate-wrist arm -10) avs)
+        )
+      (send self :angle-vector-sequence avs)
+    ))
   )
 
 (defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
