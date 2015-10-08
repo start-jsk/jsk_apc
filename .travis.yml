@@ -10,7 +10,7 @@ env:
   global:
     - ROSWS=wstool
     - BUILDER=catkin
-    - USE_DEB=true
+    - USE_DEB=false
     - USE_TRAVIS=true
     - ROS_PARALLEL_JOBS="-j8"
   matrix:
