@@ -79,6 +79,7 @@
          (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) (underscore-to-space target-object)) :google t)
          (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
          (send *ri* :move-arm-body->bin arm target)
+         (send *ri* :wait-interpolation)
          (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
          (if (and  ;; decide if going to see if grabbed
@@ -94,7 +95,8 @@
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "move_for_verification")))  ;; MULTI-ITEM-BIN
         ((string= state "move_for_verification")
          (speak-en  "Move for verification." :google t)
-         (move-for-verification arm target)
+         (send *ri* :move-arm-body->head-view-point arm)
+         (send *ri* :wait-interpolation)
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "verify_object"))
         ((string= state "verify_object")
          (let ((correct? (verify-object arm target-object)) overlay-text-msg overlay-text-color)
