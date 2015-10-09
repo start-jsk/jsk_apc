@@ -31,7 +31,7 @@
     )
   (:start-grasp
    (&optional (arm :arms))
-   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (arm-to-str arm))))
+   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol-to-str arm))))
      (ros::advertise-if-yet (format nil "/vacuum_gripper/limb/~A" l/r) std_msgs::Bool 1)
      (setq msg (instance std_msgs::Bool :init))
      (send msg :data t)
@@ -42,7 +42,7 @@
   (:go-grasp (&optional (arm :arms)) (send self :start-grasp arm))
   (:stop-grasp
    (&optional (arm :arms))
-   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (arm-to-str arm))))
+   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol-to-str arm))))
      (ros::advertise-if-yet (format nil "/vacuum_gripper/limb/~A" l/r) std_msgs::Bool 1)
      (setq msg (instance std_msgs::Bool :init))
      (send msg :data nil)
@@ -50,6 +50,11 @@
      (ros::publish (format nil "/vacuum_gripper/limb/~A" l/r) msg)
      (ros::sleep)
      ))
+  (:arm-symbol-to-str
+    (arm)
+    (case arm
+      (:larm "left")
+      (:rarm "right")))
   (:arm-potentio-vector
     (arm)
     (case arm
