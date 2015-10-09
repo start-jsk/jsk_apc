@@ -99,7 +99,7 @@
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
       (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-      (send bin-coords :translate (float-vector (- bin-dim-x) 0 0) :world)
+      (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
       (send bin-coords :translate offset :world)
       (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis nil) avs)
       (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis :z) avs)
