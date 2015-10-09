@@ -152,6 +152,7 @@
     (arm bin)
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
+      (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
       (setq avs (append avs (send *ri* :ik-avs->bin-entrance arm bin :offset #f(-150 0 0))))
     avs))
   (:move-arm-body->order-bin
