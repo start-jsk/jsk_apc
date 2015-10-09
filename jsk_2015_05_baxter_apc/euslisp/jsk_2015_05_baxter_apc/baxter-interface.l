@@ -14,13 +14,20 @@
 
 (defclass jsk_2015_05_baxter_apc::baxter-interface
   :super baxter-interface
-  :slots (tfl bin-atof-pos-stamp bin-boxes))
+  :slots
+  (
+   tfl
+   bin-atof-pos-stamp bin-boxes
+   objects-in-bin-stamp objects-in-bin-boxes objects-in-bin-target
+   )
+  )
 
 (defmethod jsk_2015_05_baxter_apc::baxter-interface
   (:init
     (&rest args)
     (send-super* :init args)
     (setq tfl (instance ros::transform-listener :init))
+    (setq objects-in-bin-boxes (make-hash-table))
     )
   (:start-grasp
    (&optional (arm :arms))
@@ -87,6 +94,34 @@
         (unix::sleep 1)
         (ros::spin-once))
       (ros::unsubscribe "in_bin_atof/bin_clipper/output/box_array")
+      ))
+  (:recognize-objects-in-bin-cb
+    (msg)
+    (setq objects-in-bin-stamp (send (send msg :header) :stamp))
+    (sethash objects-in-bin-target objects-in-bin-boxes (send msg :boxes))
+    )
+  (:recognize-objects-in-bin
+    (bin)
+    (let ((now (ros::time-now)))
+      (ros::subscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (key-to-str bin))
+                      jsk_recognition_msgs::BoundingBoxArray
+                      #'send self :recognize-objects-in-bin-cb)
+      (setq objects-in-bin-target bin)
+      (while
+        (or (null objects-in-bin-stamp)
+            (< (send objects-in-bin-stamp :sec) (send now :sec)))
+        (ros::ros-info "[:recognize-objects-in-bin] Waiting to synchronize")
+        (unix::sleep 1)
+        (ros::spin-once))
+      (ros::unsubscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (key-to-str bin)))
+      ))
+  (:ik-avs->object-in-bin
+    (arm bin object-index &key (offset #f(0 0 0)))
+    (let (object-box coords)
+      (setq object-box (elt (gethash bin (send self :get-val 'objects-in-bin-boxes)) object-index))
+      (setq coords (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :translate offset :world))
+      (list (send *baxter* arm :inverse-kinematics coords :rotation-axis nil)
+            (send *baxter* arm :inverse-kinematics coords :rotation-axis t))
       ))
   (:send-av
     (&optional (tm 3000))
