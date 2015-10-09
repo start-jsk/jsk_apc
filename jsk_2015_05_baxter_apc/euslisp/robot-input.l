@@ -48,27 +48,3 @@
   (dolist (bc *bin-contents*)
     (when (string= (key-to-str bin) (send bc :bin))
       (return-from get-bin-contents (send bc :objects)))))
-
-;;----------------------
-;; Calculate Score
-;;----------------------
-(setq *total-score* 0)
-(setq *score-points* 0)
-(defun update-score(bin)
-  (ros::ros-info "update-score ~A" bin)
-  (setq *score-points*
-	(case (length (get-bin-contents bin))
-	  (1 10) (2 15) (t 20)))
-  (setq *total-score* (ros::get-param "/total_score"))
-  (setq *total-score* (+ *total-score* *score-points*))
-  (ros::set-param "/total_score" *total-score*)
-  )
-
-
-;; ---------------
-;; Get object info
-;; ---------------
-(defun get-objects-to-see-if-grabbed ()
-  (list
-    "champion_copper_plus_spark_plug"
-    ))
