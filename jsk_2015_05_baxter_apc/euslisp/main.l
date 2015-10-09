@@ -21,6 +21,7 @@
     (unix::sleep 1))
   (let (target param-target state work-order work)
     (setq work-order (get-work-order arm))
+    (send *ri* :recognize-bin-boxes)
 
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
@@ -65,17 +66,17 @@
            (unix::sleep 1))
          (ros::ros-info "Move to Bin ~A. Target is ~A." (key-to-str target) target-object)
          (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) (underscore-to-space target-object)) :google t)
-         (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
          (send *ri* :move-arm-body->bin arm target)
          (send *ri* :wait-interpolation)
-         (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
          (if (and  ;; decide if going to see if grabbed
                (member target-object (get-objects-to-see-if-grabbed))
                (= (length (get-bin-contents target)) 1)
                )
+           (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
            (pick-object arm target :to-see-if-grabbed t :n-tried n-tried :bin-objects (get-bin-contents target))
            (pick-object arm target :to-see-if-grabbed nil :n-tried n-tried :bin-objects (get-bin-contents target))
+           (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
            )
          (incf n-tried)  ;; how many times to try to pick
          (if (= (length (get-bin-contents target)) 1)
@@ -93,7 +94,6 @@
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "return_object"))))
         ((string= state "return_object")
          (speak-en (format nil "Return object to Bin ~A." (key-to-str target)) :google t)
-         (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
          (send *ri* :move-arm-body->bin arm target)
          (send *ri* :wait-interpolation)
          (send *ri* :angle-vector-sequence (send *ri* :ik-avs->bin-entrance arm target :offset #f(300 0 80)))
@@ -101,7 +101,6 @@
          (send *ri* :stop-grasp)
          (send *ri* :spin-off-by-wrist arm)
          (send *ri* :wait-interpolation)
-         (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
          ;; if have tried N times and N is larger than number of bin contents,
          ;; robot should abort the target
          (when (<= (length (get-bin-contents target)) n-tried)
