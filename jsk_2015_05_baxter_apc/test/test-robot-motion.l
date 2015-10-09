@@ -31,7 +31,6 @@
 
 (apc-init)
 (setq *baxter* (instance baxter-test-robot :init))
-(send *baxter* :locate #f(0 0 950) :world)
 (setq *ri* (instance baxter-test-interface :init))
 
 (init-unit-test)
@@ -44,15 +43,20 @@
   test-apc-inverse-kinematics
   (let ((arm (car test-patterns))
         (bins (cdr test-patterns)))
+    (send *ri* :recognize-bin-boxes)
     (setq passed nil)
     (dolist (bin bins)
-      (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
       (catch 'ik-error
              (progn (send *ri* :move-arm-body->bin arm bin)
                     (send *ri* :wait-interpolation))
              (push 0 passed))
-      (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
-      (catch 'ik-error (pick-object arm bin) (push 1 passed))
+      (catch 'ik-error
+             (progn
+               (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
+               (pick-object arm bin)
+               (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
+               )
+             (push 1 passed))
       (catch 'ik-error
              (progn (send *ri* :move-arm-body->head-view-point arm)
                     (send *ri* :wait-interpolation))
