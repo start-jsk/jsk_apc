@@ -21,6 +21,7 @@
     (unix::sleep 1))
   (let (target param-target state work-order work)
     (setq work-order (get-work-order arm))
+    (send *ri* :recognize-bin-boxes)
 
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
