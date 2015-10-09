@@ -95,8 +95,13 @@
          (speak-en (format nil "Return object to Bin ~A." (key-to-str target)) :google t)
          (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
          (send *ri* :move-arm-body->bin arm target)
+         (send *ri* :wait-interpolation)
+         (send *ri* :angle-vector-sequence (send *ri* :ik-avs->bin-entrance arm target :offset #f(300 0 80)))
+         (send *ri* :wait-interpolation)
+         (send *ri* :stop-grasp)
+         (send *ri* :spin-off-by-wrist arm)
+         (send *ri* :wait-interpolation)
          (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
-         (return-object arm target)
          ;; if have tried N times and N is larger than number of bin contents,
          ;; robot should abort the target
          (when (<= (length (get-bin-contents target)) n-tried)
