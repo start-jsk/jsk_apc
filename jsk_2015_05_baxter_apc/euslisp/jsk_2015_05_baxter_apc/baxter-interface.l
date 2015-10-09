@@ -56,7 +56,7 @@
     (let (coords)
       (setq coords (ros::tf-pose->coords pose))
       (send coords :transform (send tfl :lookup-transform "base" frame_id (ros::time 0)))))
-  (:recognize-bin-box-cb
+  (:recognize-bin-boxes-cb
     (msg)
     (let (bin bin-box-pos-z)
       (setq bin-atof-pos-stamp (send (send msg :header) :stamp))
@@ -74,27 +74,30 @@
         (sethash bin bin-boxes bin-box)
         )
     ))
-  (:recognize-bin-box
-    (bin)
+  (:recognize-bin-boxes
+    ()
     (let ((now (ros::time-now)))
       (ros::subscribe "in_bin_atof/bin_clipper/output/box_array"
                       jsk_recognition_msgs::BoundingBoxArray
-                      #'send self :recognize-bin-box-cb)
+                      #'send self :recognize-bin-boxes-cb)
       (while
         (or (null bin-atof-pos-stamp)
             (< (send bin-atof-pos-stamp :sec) (send now :sec)))
-        (ros::ros-info "[:recognize-bin-box] waiting to synchronize")
+        (ros::ros-info "[:recognize-bin-boxes] waiting to synchronize")
         (unix::sleep 1)
         (ros::spin-once))
       (ros::unsubscribe "in_bin_atof/bin_clipper/output/box_array")
-    (gethash bin bin-boxes)))
+      ))
   (:send-av
     (&optional (tm 3000))
     (send self :angle-vector (send *baxter* :angle-vector) tm))
   (:ik-avs->bin-entrance
     (arm bin &key (offset #f(0 0 0)))
     (let (avs bin-box bin-coords bin-dim-x)
-      (setq bin-box (send self :recognize-bin-box bin))
+      (setq bin-box (gethash bin bin-boxes))
+      (unless bin-box
+        (ros::ros-error "[:ik-avs->bin-entrance] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
+        (return-from :ik-avs->bin-entrance))
       (setq bin-coords (send self :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))

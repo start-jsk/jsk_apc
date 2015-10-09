@@ -43,6 +43,7 @@
   test-apc-inverse-kinematics
   (let ((arm (car test-patterns))
         (bins (cdr test-patterns)))
+    (send *ri* :recognize-bin-boxes)
     (setq passed nil)
     (dolist (bin bins)
       (catch 'ik-error
