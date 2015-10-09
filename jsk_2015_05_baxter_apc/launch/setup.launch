@@ -62,10 +62,6 @@
     <arg name="limb" value="left" />
   </include>
 
-  <!-- tweet -->
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/image_saver.launch" />
-  <node pkg="jsk_2015_05_baxter_apc" type="tweet_server.l" name="tweet_server" />
-
   <!-- rviz -->
   <node if="$(arg rviz)" pkg="rviz" name="rviz_for_challenge" type="rviz" args="-d $(find jsk_2015_05_baxter_apc)/config/challenge.rviz"/>
   <node pkg="jsk_2015_05_baxter_apc" name="visuazliation_objects" type="objects_marker_server.py"/>
