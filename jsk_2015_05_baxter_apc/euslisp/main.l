@@ -20,7 +20,7 @@
     (ros::ros-info "waiting for user input to start: ~A" arm)
     (unix::sleep 1))
   (let (target param-target state work-order work)
-    (setq work-order (get-work-order arm))
+    (setq work-order (send *ri* :get-work-order arm))
     (send *ri* :recognize-bin-boxes)
 
     ; get previous target from parameter server
@@ -71,7 +71,7 @@
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
          (if (and  ;; decide if going to see if grabbed
                (member target-object (get-objects-to-see-if-grabbed))
-               (= (length (get-bin-contents target)) 1)
+               (= (length (send *ri* :get-bin-contents target)) 1)
                )
            (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
            (pick-object arm target :to-see-if-grabbed t :n-tried n-tried :bin-objects (get-bin-contents target))
