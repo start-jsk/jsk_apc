@@ -127,7 +127,7 @@
     (arm bin object-index &key (offset #f(0 0 0)))
     (let (object-box coords)
       (setq object-box (elt (gethash bin (send self :get-val 'objects-in-bin-boxes)) object-index))
-      (setq coords (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :translate offset :world))
+      (setq coords (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :translate offset))
       (list (send *baxter* arm :inverse-kinematics coords :rotation-axis nil)
             (send *baxter* arm :inverse-kinematics coords :rotation-axis t))
       ))
