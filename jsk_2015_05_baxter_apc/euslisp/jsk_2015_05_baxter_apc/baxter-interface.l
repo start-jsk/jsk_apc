@@ -19,6 +19,8 @@
    tfl
    bin-atof-pos-stamp bin-boxes
    objects-in-bin-stamp objects-in-bin-boxes objects-in-bin-target
+   work-order get-work-order-arm
+   bin-contents
    )
   )
 
@@ -28,6 +30,7 @@
     (send-super* :init args)
     (setq tfl (instance ros::transform-listener :init))
     (setq objects-in-bin-boxes (make-hash-table))
+    (setq work-order (make-hash-table))
     )
   (:start-grasp
    (&optional (arm :arms))
@@ -186,6 +189,37 @@
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis t) avs)
       (send self :angle-vector-sequence avs)
       ))
+  (:get-work-order-cb
+    (msg)
+    (let (one-order)
+      (dolist (data (send msg :array))
+        (pushback
+          (list (str-to-key (send data :bin)) (send data :object))
+          one-order))
+      (sethash get-work-order-arm work-order one-order)))
+  (:get-work-order
+    (arm)
+    (setq get-work-order-arm arm)
+    (ros::subscribe "work_order/left_process"
+                    jsk_2015_05_baxter_apc::WorkOrderArray
+                    #'send self :get-work-order-cb)
+    (unix:sleep 1)
+    (ros::spin-once)
+    (ros::unsubscribe "work_order/left_process")
+    (gethash arm work-order))
+  (:get-bin-contents-cb (msg) (setq bin-contents (send msg :array)))
+  (:get-bin-contents
+    (bin)
+    (ros::subscribe "bin_contents"
+                    jsk_2015_05_baxter_apc::BinContentsArray
+                    #'bin-contents-cb)
+    (unix::sleep 1)
+    (ros::spin-once)
+    (dolist (content bin-contents)
+      (when (eq bin (str-to-key (send content :bin)))
+        (ros::unsubscribe "bin_contents")
+        (return-from :get-bin-contents (send content :objects))))
+    )
   )
 
 (defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
