@@ -134,30 +134,36 @@
   (:send-av
     (&optional (tm 3000))
     (send self :angle-vector (send *baxter* :angle-vector) tm))
-  (:ik-avs->bin-entrance
+  (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)))
-    (let (avs bin-box bin-coords bin-dim-x)
+    (let (bin-box bin-coords bin-dim-x)
       (setq bin-box (gethash bin bin-boxes))
       (unless bin-box
-        (ros::ros-error "[:ik-avs->bin-entrance] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
-        (return-from :ik-avs->bin-entrance))
+        (ros::ros-error "[:ik->bin-entrance] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
+        (return-from :ik->bin-entrance))
       (setq bin-coords (send self :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
       (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
       (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
       (send bin-coords :translate offset :world)
-      (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis nil) avs)
-      (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis :z) avs)
-      (pushback (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t :revert-if-fail nil) avs)
-      avs))
+      (send *baxter* :fold-pose-lower arm)
+      (case bin
+        (:a (send *baxter* :fold-pose-upper arm))
+        (:c (send *baxter* :fold-pose-upper arm))
+        (:j (send *baxter* :fold-pose-middle arm))
+        (:k (send *baxter* :fold-pose-middle arm))
+        (:l (send *baxter* :fold-pose-middle arm))
+        )
+      (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t)))
   (:move-arm-body->bin
     (arm bin)
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
-      (setq avs (append avs (send *ri* :ik-avs->bin-entrance arm bin :offset #f(-150 0 0))))
-    avs))
+      (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 0)) avs)
+      (send self :angle-vector-sequence avs)
+      ))
   (:move-arm-body->order-bin
     (arm)
     (let (avs)
