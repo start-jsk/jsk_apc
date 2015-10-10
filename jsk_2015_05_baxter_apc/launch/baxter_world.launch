@@ -8,6 +8,7 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
+  <arg name="shelf_model_path" default="$(find jsk_2015_apc_common)"/>
 
   <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -18,6 +19,7 @@
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="headless" value="$(arg headless)"/>
+    <env name="GAZEBO_MODEL_PATH" value="$(arg shelf_model_path)" />
   </include>
 
   <!-- Load the URDF into the ROS Parameter Server -->
