@@ -22,6 +22,7 @@ matrix:
   allow_failures:
     - env: ROS_DISTRO=jade
 before_script:
+  - (cd .travis && patch -p0 travis.sh < ../travis.sh.patch)
   # prepare rosbag for test
   - wget https://raw.githubusercontent.com/Nanolx/patchimage/master/tools/gdown.pl -O jsk_2015_05_baxter_apc/test/gdown.pl  # script to download large file from Google Drive
   - (cd jsk_2015_05_baxter_apc/test/; perl gdown.pl 'https://drive.google.com/uc?id=0B9P1L--7Wd2vTkdoUXAzdnVobWc' 2015-10-07-10-20-12_bin-box-array.bag)
