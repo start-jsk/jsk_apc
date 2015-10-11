@@ -52,7 +52,7 @@
              (push 0 passed))
       (catch 'ik-error
              (progn
-               (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
+               (send *baxter* :lote #f(0 0 0) :world)  ;; TODO: historical reason
                (pick-object arm bin)
                (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
                )
