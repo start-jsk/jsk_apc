@@ -6,7 +6,7 @@
     <visual>
       <origin rpy="1.57 0 1.57" xyz="0 0 -1.18"/>
       <geometry>
-        <mesh filename="package://jsk_2015_apc_common/kiva_pod/meshes/pod_lowres.stl"/>
+        <mesh filename="package://jsk_2015_apc_common/meshes/pod_lowres/pod_lowres.stl"/>
       </geometry>
       <material name="darkgray">
         <color rgba=".2 .2 .2 1"/>
@@ -15,7 +15,7 @@
     <collision>
       <origin rpy="1.57 0 1.57" xyz="0 0 -1.18"/>
       <geometry>
-        <mesh filename="package://jsk_2015_apc_common/kiva_pod/meshes/pod_lowres.stl"/>
+        <mesh filename="package://jsk_2015_apc_common/meshes/pod_lowres/pod_lowres.stl"/>
       </geometry>
     </collision>
   </link>
