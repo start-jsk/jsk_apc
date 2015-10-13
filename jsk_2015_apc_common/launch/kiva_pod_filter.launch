@@ -12,7 +12,7 @@
 
     <include file="$(find jsk_demo_common)/launch/model_filter.launch">
       <arg name="model_name" value="kiva_pod" />
-      <arg name="model" value="$(find jsk_2015_apc_common)/kiva_pod/urdf/kiva_pod_convex.urdf.xacro" />
+      <arg name="model" value="$(find jsk_2015_apc_common)/models/kiva_pod/urdf/kiva_pod_convex.urdf.xacro" />
       <arg name="input_cloud" value="$(arg INPUT_CLOUD)" />
       <arg name="output_cloud" value="output" />
       <arg name="model_filter_config" value="$(find jsk_2015_apc_common)/config/kiva_pod_filter.yaml" />
