@@ -41,11 +41,12 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
 
+  <!-- list dependencies in alphabetical order -->
+  <run_depend>gazebo_ros</run_depend>
   <run_depend>jsk_demo_common</run_depend>
 
-  <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- Other tools can request additional information be placed here -->
-
+    <gazebo_ros gazebo_model_path="${prefix}/models" />
   </export>
+
 </package>
