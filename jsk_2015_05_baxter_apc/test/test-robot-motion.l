@@ -8,7 +8,6 @@
 (require "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/robot-motions.l")
 
 ;; -------------------
 ;; Overwrite functions
@@ -52,10 +51,10 @@
              (push 0 passed))
       (catch 'ik-error
              (progn
-               (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
-               (pick-object arm bin)
-               (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
-               )
+               (send *ri* :pick-object arm bin)
+               (send *baxter* :fold-to-keep-object arm)
+               (send *ri* :send-av)
+               (send *ri* :wait-interpolation))
              (push 1 passed))
       (catch 'ik-error
              (progn (send *ri* :move-arm-body->head-view-point arm)
