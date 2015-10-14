@@ -9,7 +9,6 @@
 (require "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/robot-input.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/robot-motions.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/robot-recognition.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/robot-communication.l")
 
@@ -69,15 +68,7 @@
          (send *ri* :move-arm-body->bin arm target)
          (send *ri* :wait-interpolation)
          (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
-         (if (and  ;; decide if going to see if grabbed
-               (member target-object (get-objects-to-see-if-grabbed))
-               (= (length (send *ri* :get-bin-contents target)) 1)
-               )
-           (send *baxter* :locate #f(0 0 950) :world)  ;; TODO: historical reason
-           (pick-object arm target :to-see-if-grabbed t :n-tried n-tried :bin-objects (get-bin-contents target))
-           (pick-object arm target :to-see-if-grabbed nil :n-tried n-tried :bin-objects (get-bin-contents target))
-           (send *baxter* :locate #f(0 0 0) :world)  ;; TODO: historical reason
-           )
+         (send *ri* :pick-object arm target)
          (incf n-tried)  ;; how many times to try to pick
          (if (= (length (get-bin-contents target)) 1)
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object")  ;; SINGLE-ITEM-BIN
