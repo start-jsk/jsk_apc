@@ -124,12 +124,56 @@
       (ros::unsubscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (key-to-str bin)))
       ))
   (:ik-avs->object-in-bin
-    (arm bin object-index &key (offset #f(0 0 0)))
-    (let (object-box coords)
-      (setq object-box (elt (gethash bin (send self :get-val 'objects-in-bin-boxes)) object-index))
+    (arm bin &key (object-index 0) (offset #f(0 0 0)))
+    (let (object-boxes object-box coords)
+      (unless
+        (setq object-boxes (gethash bin (send self :get-val 'objects-in-bin-boxes)))
+        (ros::ros-warn "No object is found")
+        (return-from :ik-avs->object-in-bin nil))
+      (unless
+        (setq object-box (elt object-boxes object-index))
+        (ros::ros-warn "The object is not found: ~a" object-index)
+        (return-from :ik-avs->object-in-bin nil)
+        )
       (setq coords (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :translate offset))
       (list (send *baxter* arm :inverse-kinematics coords :rotation-axis nil)
             (send *baxter* arm :inverse-kinematics coords :rotation-axis t))
+      ))
+  (:pick-object
+    (arm bin &key (object-index 0))
+    (let (bin-box)
+      ;; move arm bin-entrance -> pos above object to z direction
+      (setq bin-box (gethash bin bin-boxes))
+      (unless
+        (setq avs
+              (send self :ik-avs->object-in-bin
+                    :rarm
+                    bin
+                    :object-index 0
+                    :offset (float-vector 0 0 (m->mm (/ (send bin-box :dimensions :z) 2)))
+                    )
+              )
+        (ros::warn "Cannot pick the object: ~a" object-index)
+        (return-from :pick-object nil))
+      (send self :angle-vector-sequence avs :scale 3.0)
+      (send self :wait-interpolation)
+      ;; start the vacuum gripper
+      (send self :start-grasp)
+      ;; grasp object
+      (send self :angle-vector-sequence (send self :ik-avs->object-in-bin :rarm bin 0))
+      (send self :wait-interpolation)
+      ;; lift object
+      (send *baxter* :rarm :move-end-pos #f(0 0 100) :world :rotation-axis :z)
+      (send self :send-av)
+      (send self :wait-interpolation)
+      ;; move arm in-bin -> bin-entrance
+      (send self :ik->bin-entrance :rarm bin :offset #f(-150 0 50))
+      (send self :send-av)
+      (send self :wait-interpolation)
+      ;; move arm bin-entrance -> body
+      (send *baxter* :avoid-shelf-pose :rarm bin)
+      (send self :send-av)
+      (send self :wait-interpolation)
       ))
   (:send-av
     (&optional (tm 3000))
