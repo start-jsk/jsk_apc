@@ -125,8 +125,16 @@
       ))
   (:ik-avs->object-in-bin
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
-    (let (object-box coords)
-      (setq object-box (elt (gethash bin (send self :get-val 'objects-in-bin-boxes)) object-index))
+    (let (object-boxes object-box coords)
+      (unless
+        (setq object-boxes (gethash bin (send self :get-val 'objects-in-bin-boxes)))
+        (ros::ros-warn "No object is found")
+        (return-from :ik-avs->object-in-bin nil))
+      (unless
+        (setq object-box (elt object-boxes object-index))
+        (ros::ros-warn "The object is not found: ~a" object-index)
+        (return-from :ik-avs->object-in-bin nil)
+        )
       (setq coords (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :translate offset))
       (list (send *baxter* arm :inverse-kinematics coords :rotation-axis nil)
             (send *baxter* arm :inverse-kinematics coords :rotation-axis t))
@@ -136,15 +144,18 @@
     (let (bin-box)
       ;; move arm bin-entrance -> pos above object to z direction
       (setq bin-box (gethash bin bin-boxes))
-      (send self :angle-vector-sequence
-        (send self :ik-avs->object-in-bin
-              :rarm
-              bin
-              :object-index 0
-              :offset (float-vector 0 0 (m->mm (/ (send bin-box :dimensions :z) 2)))
+      (unless
+        (setq avs
+              (send self :ik-avs->object-in-bin
+                    :rarm
+                    bin
+                    :object-index 0
+                    :offset (float-vector 0 0 (m->mm (/ (send bin-box :dimensions :z) 2)))
+                    )
               )
-        :scale 3.0
-        )
+        (ros::warn "Cannot pick the object: ~a" object-index)
+        (return-from :pick-object nil))
+      (send self :angle-vector-sequence avs :scale 3.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper
       (send self :start-grasp)
