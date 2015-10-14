@@ -1,0 +1,14 @@
+<launch>
+
+  <arg name="use_machine" default="true" />
+
+  <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
+    <arg name="base_name" value="kinect2_torso"/>
+    <arg name="use_machine" value="$(arg use_machine)"/>
+  </include>
+
+  <node name="doura_static_tf_publisher"
+        pkg="tf" type="static_transform_publisher"
+        args="0.16 0.09 0.49 -0.04 -1.53 3.14 base kinect2_torso_rgb_optical_frame 100"/>
+
+</launch>
