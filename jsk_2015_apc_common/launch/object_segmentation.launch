@@ -1,10 +1,12 @@
 <launch>
 
+  <arg name="INPUT_CLOUD" />
+
   <node name="nodelet_manager"
         pkg="nodelet" type="nodelet" args="manager" />
 
   <include file="$(find jsk_2015_apc_common)/launch/kiva_pod_filter.launch">
-    <arg name="INPUT_CLOUD" value="/kinect2/hd/points" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
   </include>
 
   <include file="$(find jsk_2015_apc_common)/launch/in_bin_atof.launch">
