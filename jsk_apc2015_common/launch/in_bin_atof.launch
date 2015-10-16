@@ -8,6 +8,7 @@
         args="load jsk_pcl/TfTransformCloud /$(arg MANAGER)">
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <rosparam>
+      use_latest_tf: true
       target_frame_id: /kiva_pod_base
     </rosparam>
   </node>
