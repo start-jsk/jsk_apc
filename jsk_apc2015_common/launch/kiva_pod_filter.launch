@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="INPUT_CLOUD" default="/kinect2/hd/points" />
+  <arg name="INPUT_CLOUD" />
 
   <group ns="kiva_pod_filter">
 
