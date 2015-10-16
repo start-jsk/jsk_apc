@@ -11,10 +11,11 @@ from jsk_recognition_utils import bounding_rect_of_mask
 
 parser = argparse.ArgumentParser()
 parser.add_argument('container_path')
+parser.add_argument('-O', '--output')
 args = parser.parse_args()
 
 container_path = args.container_path
-output_dir = os.path.abspath(container_path + '_mask_applied')
+output_dir = args.output or os.path.abspath(container_path + '_mask_applied')
 
 if not os.path.exists(output_dir):
     print('creating output directory: {}'.format(output_dir))
