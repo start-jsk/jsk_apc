@@ -1,11 +1,6 @@
 sudo: required
-language:
-  - cpp
-  - python
-python:
-  - "2.7"
-compiler:
-  - gcc
+dist: trusty
+language: generic
 env:
   global:
     - ROSWS=wstool
@@ -16,8 +11,6 @@ env:
   matrix:
     - ROS_DISTRO=indigo
     - ROS_DISTRO=jade
-services:
-  - docker
 matrix:
   allow_failures:
     - env: ROS_DISTRO=jade
