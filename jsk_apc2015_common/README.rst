@@ -18,4 +18,4 @@ Process dataset
 ---------------
 Firstly, you need to create mask applied image dataset::
 
-  python scripts/create_mask_applied_dataset.py berkeley_dataset
+  python scripts/create_mask_applied_dataset.py berkeley_dataset -O berkeley_dataset_mask_applied
