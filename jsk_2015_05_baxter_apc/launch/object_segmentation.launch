@@ -1,0 +1,15 @@
+<launch>
+
+  <group ns="kinect_head">
+    <include file="$(find jsk_2015_apc_common)/launch/object_segmentation.launch">
+      <arg name="INPUT_CLOUD" value="/kinect2/hd/points" />
+    </include>
+  </group>
+
+  <group ns="kinect_torso">
+    <include file="$(find jsk_2015_apc_common)/launch/object_segmentation.launch">
+      <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
+    </include>
+  </group>
+
+</launch>
