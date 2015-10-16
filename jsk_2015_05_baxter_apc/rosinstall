@@ -15,6 +15,10 @@
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
     version: master
 - git:
+    local-name: iai_kinect2
+    uri: https://github.com/wkentaro/iai_kinect2.git
+    version: jsk_apc
+- git:
     local-name: ros-drivers/audio_common
     uri: https://github.com/ros-drivers/audio_common.git
     version: master
