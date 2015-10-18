@@ -4,13 +4,11 @@
 
 (ros::roseus "robot_main")
 
-(require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/robot-utils.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/robot-init.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/robot-input.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/robot-recognition.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/robot-communication.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
+
 
 (defun main (arm)
   (bounding-box-array-in-bin :timeout 3)
