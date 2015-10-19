@@ -25,8 +25,8 @@
 
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
-    (while (not (ros::get-param (format nil "~A_process/target" (arm-to-str arm)))) (unix::sleep 1))
-    (setq param-target (str-to-key (ros::get-param (format nil "~A_process/target" (arm-to-str arm)))))
+    (setq target (send *ri* :get-target-bin-name arm))
+
     ; remove already picked target bins
     ; this does work when this robot_main node respawned
     (while
