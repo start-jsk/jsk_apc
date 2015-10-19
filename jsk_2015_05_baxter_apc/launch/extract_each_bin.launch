@@ -1,6 +1,6 @@
 <launch>
-  <arg name="input_cloud" default="/kinect2/depth_lowres/points"/>
-  <arg name="input_image" default="/kinect2/rgb/image"/>
+  <arg name="input_cloud" default="/kinect2_head/depth_lowres/points"/>
+  <arg name="input_image" default="/kinect2_head/rgb/image"/>
 
   <arg name="custom" default="true"/>
   <arg name="manager" default="sheeta_extract_manager"/>

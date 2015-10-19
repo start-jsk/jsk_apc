@@ -13,7 +13,7 @@
   <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
   <node pkg="nodelet" type="nodelet" name="pass_through_x"
         args="load pcl/PassThrough $(arg manager)" respawn="true">
-    <remap from="~input" to="/kinect2/depth_highres/points" />
+    <remap from="~input" to="/kinect2_head/depth_highres/points" />
     <!-- suppose QVGA -->
     <rosparam>
       filter_field_name: x
@@ -51,7 +51,7 @@
   <node pkg="nodelet" type="nodelet" name="pi_to_maskimage"
         args="load jsk_pcl/PointIndicesToMaskImage $(arg manager)">
     <remap from="~input" to="organized_to_pi/output" />
-    <remap from="~input/image" to="/kinect2/rgb/image" />
+    <remap from="~input/image" to="/kinect2_head/rgb/image" />
     <param name="approximate_sync" value="true" />
   </node>
   <!-- process mask image -->
@@ -71,7 +71,7 @@
   </node>
   <node pkg="nodelet" type="nodelet" name="apply_mask"
         args="load jsk_perception/ApplyMaskImage $(arg manager)">
-    <remap from="~input" to="/kinect2/rgb/image" />
+    <remap from="~input" to="/kinect2_head/rgb/image" />
     <remap from="~input/mask" to="/erode_mask_image/output" />
     <param name="approximate_sync" value="true" />
   </node>
