@@ -27,6 +27,14 @@
   (:init
     (&rest args)
     (send-super* :init args)
+    ;; change robot model in robot-interface class
+    (send (send robot :rarm :end-coords)
+          :newcoords (make-coords :pos #f(50 0 310)
+                                  :rpy (float-vector 0 -pi/2 0)))
+    (send (send robot :larm :end-coords)
+          :newcoords (make-coords :pos #f(50 0 310)
+                                  :rpy (float-vector 0 -pi/2 0)))
+    ;; initialize slots
     (setq tfl (instance ros::transform-listener :init))
     (setq objects-in-bin-boxes (make-hash-table))
     (setq work-order (make-hash-table))
@@ -315,6 +323,14 @@
         (ros::unsubscribe "bin_contents")
         (return-from :get-bin-contents (send content :objects))))
     )
+  (:real-sim-end-coords-diff
+    (arm)
+    (let (real-coords sim-coords diff-coords thresh)
+      (send self :update-robot-state)
+      (setq real-coords (send (send robot arm :root-link) :transformation (send robot arm :end-coords)))
+      (setq sim-coords (send (send *baxter* arm :root-link) :transformation (send *baxter* arm :end-coords)))
+      (setq diff-coords (send real-coords :transformation sim-coords :local))
+      (elt (send diff-coords :pos) 2)))
   )
 
 (defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
