@@ -1,8 +1,8 @@
 <launch>
 
-  <arg name="original_image" default="/kinect2/rgb/image"/>
+  <arg name="original_image" default="/kinect2_head/rgb/image"/>
   <arg name="input_point_indices" default="/organized_to_pi/output"/>
-  <arg name="input_depth_camera_info" default="/kinect2/depth_highres/camera_info"/>
+  <arg name="input_depth_camera_info" default="/kinect2_head/depth_highres/camera_info"/>
   <arg name="arm" default=""/>
   <arg name="manager" default="$(arg arm)_process_manager"/>
   <arg name="rect" default="false" />
