@@ -127,7 +127,7 @@
   (:recognize-objects-in-bin
     (bin)
     (let ((now (ros::time-now)))
-      (ros::subscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (key-to-str bin))
+      (ros::subscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (symbol2str bin))
                       jsk_recognition_msgs::BoundingBoxArray
                       #'send self :recognize-objects-in-bin-cb)
       (setq objects-in-bin-target bin)
@@ -137,7 +137,7 @@
         (ros::ros-info "[:recognize-objects-in-bin] Waiting to synchronize")
         (unix::sleep 1)
         (ros::spin-once))
-      (ros::unsubscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (key-to-str bin)))
+      (ros::unsubscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (symbol2str bin)))
       ))
   (:recognize-object-in-hand
     (arm &key (timeout 20))
@@ -297,7 +297,7 @@
     (let (one-order)
       (dolist (data (send msg :array))
         (pushback
-          (list (str-to-key (send data :bin)) (send data :object))
+          (list (str2symbol (send data :bin)) (send data :object))
           one-order))
       (sethash get-work-order-arm work-order one-order)))
   (:get-work-order
@@ -319,7 +319,7 @@
     (unix::sleep 1)
     (ros::spin-once)
     (dolist (content bin-contents)
-      (when (eq bin (str-to-key (send content :bin)))
+      (when (eq bin (str2symbol (send content :bin)))
         (ros::unsubscribe "bin_contents")
         (return-from :get-bin-contents (send content :objects))))
     )
@@ -330,7 +330,7 @@
       (while (not bin-name)
         (setq bin-name (ros::get-param (format nil "~A_process/target" (arm-to-str arm))))
         (unix::sleep 1))
-    (str-to-key arm)))
+    (str2symbol arm)))
   (:real-sim-end-coords-diff
     (arm)
     (let (real-coords sim-coords diff-coords thresh)

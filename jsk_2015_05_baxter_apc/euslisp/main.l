@@ -40,17 +40,17 @@
       work
       ;; get status from parameter server
       ;; (speak-en  (format nil "Next Target is ~A" "OREO") :google t  :wait t)
-      (setq target (str-to-key (elt work 0)) target-object (elt work 1))
-      (ros::set-param (format nil "~A_process/target" (arm-to-str arm)) (key-to-str target))
+      (setq target (str2symbol (elt work 0)) target-object (elt work 1))
+      (ros::set-param (format nil "~A_process/target" (arm-to-str arm)) (symbol2str target))
       (setq state (ros::get-param (format nil "~A_process/state" (arm-to-str arm))))
       (ros::ros-info "state: ~A, arm: ~A, target: ~A, object: ~A"
-                     state (arm-to-str arm) (key-to-str target) target-object)
+                     state (arm-to-str arm) (symbol2str target) target-object)
       (cond
         ((string= state "pick_object")
          ;; wait for opposite arm if opposite arm's target is center bin
          (while
            (eq
-             (which-bin-region (str-to-key (ros::get-param (format nil "~A_process/target" (arm-to-str (opposite-arm arm))))))
+             (which-bin-region (str2symbol (ros::get-param (format nil "~A_process/target" (arm-to-str (opposite-arm arm))))))
              :center)
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "wait_for_opposite")
            (ros::ros-info "waiting for opposite arm to finish one order for center bin")
@@ -64,11 +64,11 @@
              (not (string= (ros::get-param (format nil "~A_process/state" (arm-to-str (opposite-arm arm)))) "wait_for_opposite")))
            (ros::ros-info "waiting for opposite arm to do order for center bin")
            (unix::sleep 1))
-         (ros::ros-info "Move to Bin ~A. Target is ~A." (key-to-str target) target-object)
-         (speak-en (format nil "Move to Bin ~A. Target is ~A." (key-to-str target) (underscore-to-space target-object)) :google t)
+         (ros::ros-info "Move to Bin ~A. Target is ~A." (symbol2str target) target-object)
+         (speak-en (format nil "Move to Bin ~A. Target is ~A." (symbol2str target) (underscore-to-space target-object)) :google t)
          (send *ri* :move-arm-body->bin arm target)
          (send *ri* :wait-interpolation)
-         (speak-en (format nil "Pick Object in ~A." (key-to-str target)) :google t)
+         (speak-en (format nil "Pick Object in ~A." (symbol2str target)) :google t)
          (send *ri* :pick-object arm target)
          (incf n-tried)  ;; how many times to try to pick
          (if (= (length (get-bin-contents target)) 1)
@@ -85,7 +85,7 @@
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object")
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "return_object"))))
         ((string= state "return_object")
-         (speak-en (format nil "Return object to Bin ~A." (key-to-str target)) :google t)
+         (speak-en (format nil "Return object to Bin ~A." (symbol2str target)) :google t)
          (send *ri* :move-arm-body->bin arm target)
          (send *ri* :wait-interpolation)
          (send *ri* :angle-vector-sequence (send *ri* :ik-avs->bin-entrance arm target :offset #f(300 0 80)))
