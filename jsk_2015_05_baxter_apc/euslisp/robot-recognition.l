@@ -58,20 +58,6 @@
     (if (> diff *image-time-diff-threshold*) t nil)
     ))
 
-;; -------------------------------------------------------
-;; Check if grabbed with pressure sensor in vacuum cleaner
-;; -------------------------------------------------------
-(setq *gripper-grabbed* (make-hash-table))
-(defun gripper-grabbed-cb (msg arm)
-  (setf (gethash arm *gripper-grabbed*) (send msg :data)))
-
-(defun gripper-grabbed-larm-cb (msg) (gripper-grabbed-cb msg :larm))
-(defun gripper-grabbed-rarm-cb (msg) (gripper-grabbed-cb msg :rarm))
-(ros::subscribe "/gripper_grabbed/limb/left/state" std_msgs::Bool
-                #'gripper-grabbed-larm-cb) 
-(ros::subscribe "/gripper_grabbed/limb/right/state" std_msgs::Bool
-                #'gripper-grabbed-rarm-cb)
-
 (defparameter *end-coords-diff-threshold-vertical* 65)
 (defparameter *end-coords-diff-threshold-horizontal* 30)
 (defun check-real-sim-end-coords-diff(arm pattern bin-objects)
