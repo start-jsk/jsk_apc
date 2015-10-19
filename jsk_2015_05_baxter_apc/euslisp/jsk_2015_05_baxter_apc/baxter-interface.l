@@ -52,6 +52,15 @@
      (ros::publish (format nil "/vacuum_gripper/limb/~A" l/r) msg)
      (ros::sleep)
      ))
+  (:graspingp
+    (arm)
+    (send
+      (one-shot-subscribe
+        (format nil "gripper_grabbed/limb/~a/state" (arm-to-str arm))
+        std_msgs::Bool
+        )
+      :data)
+    )
   (:arm-symbol-to-str
     (arm)
     (case arm
