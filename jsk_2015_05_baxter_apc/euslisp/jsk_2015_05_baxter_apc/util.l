@@ -20,11 +20,11 @@
     ret))
 
 
-(defun str-to-key (str)
+(defun str2symbol (str)
   (intern (string-upcase str) "KEYWORD"))
 
 
-(defun key-to-str (_symbol)
+(defun symbol2str (_symbol)
   (string-downcase (symbol-string _symbol)))
 
 
