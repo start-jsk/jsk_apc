@@ -1,6 +1,6 @@
 <launch>
-  <arg name="input_image" default="/kinect2/rgb/image" />
-  <arg name="input_info" default="/kinect2/rgb/camera_info" />
+  <arg name="input_image" default="/kinect2_head/rgb/image" />
+  <arg name="input_info" default="/kinect2_head/rgb/camera_info" />
   <arg name="respawn" default="false" />
 
   <node pkg="jsk_perception" type="hsv_decomposer" name="hsv_decomposer" output="screen">
