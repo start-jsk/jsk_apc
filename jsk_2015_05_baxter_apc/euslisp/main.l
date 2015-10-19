@@ -14,11 +14,9 @@
   t)
 
 (defun main (arm)
-  (bounding-box-array-in-bin :timeout 3)
-  (while  ;; wait for user input to start
-    (equal (ros::get-param (format nil "~A_process/state" (arm-to-str arm))) "wait_for_user_input")
-    (ros::ros-info "waiting for user input to start: ~A" arm)
-    (unix::sleep 1))
+
+  (send *ri* :wait-for-user-input-to-start)
+
   (let (target param-target state work-order work)
     (setq work-order (send *ri* :get-work-order arm))
     (send *ri* :recognize-bin-boxes)
