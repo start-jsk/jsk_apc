@@ -6,7 +6,7 @@
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/robot-main.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/main.l")
 
 ;; -------------------
 ;; Overwrite functions
