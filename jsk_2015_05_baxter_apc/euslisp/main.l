@@ -81,7 +81,7 @@
          (send *ri* :wait-interpolation)
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "verify_object"))
         ((string= state "verify_object")
-         (let ((correct? (verify-object arm target-object)))
+         (let ((correct? (send *ri* :verify-object arm target-object)))
            (if correct?
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object")
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "return_object"))))

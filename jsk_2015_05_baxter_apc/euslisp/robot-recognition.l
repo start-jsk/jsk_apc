@@ -7,35 +7,6 @@
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
-;; -------------
-;; Verify object
-;; -------------
-(setq *verify-object* (make-hash-table))
-(defun verify-object-cb (msg arm) (setf (gethash arm *verify-object*) msg))
-(ros::subscribe "left_process/object_verification/output"
-                jsk_2015_05_baxter_apc::ObjectRecognition
-                #'(lambda (msg) (verify-object-cb msg :larm)))
-(ros::subscribe "right_process/object_verification/output"
-                jsk_2015_05_baxter_apc::ObjectRecognition
-                #'(lambda (msg) (verify-object-cb msg :rarm)))
-
-(defun verify-object (arm target-object &key (timeout 20))
-  (let* ((now (ros::time-now))
-         (msg (gethash arm *verify-object*))
-         correct?)
-    (ros::ros-info "wait for object_verification msg: ~A" (arm-to-str arm))
-    (while  ;; wait for msg to synchronize
-      (or (null msg) (< (send (send (send msg :header) :stamp) :sec) (send now :sec)))
-      (unix::sleep 1)
-      (ros::spin-once)
-      (setq msg (gethash arm *verify-object*))
-      (when msg (setq correct? (string= target-object (send msg :matched))))
-      ;; timeout
-      (when (> (- (send (ros::time-now) :sec) (send now :sec)) timeout)
-        (ros::ros-error "timeout in verify_object: ~A" (arm-to-str arm))
-        (return)))
-    (ros::ros-info "got object_verification msg: ~A" (arm-to-str arm))
-    correct?))
 
 ;; -------------------------------------
 ;; Check if grabbed with image_time_diff
