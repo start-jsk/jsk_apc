@@ -30,6 +30,24 @@
   -->
   <!-- <include file="$(find jsk_2015_05_baxter_apc)/launch/kinect2_torso.launch" /> -->
 
+
+  <node name="baxter_nodelet_manager"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+  <node name="concatenate_clouds"
+        pkg="nodelet" type="nodelet"
+        args="load pcl/PointCloudConcatenateDataSynchronizer baxter_nodelet_manager">
+    <rosparam>
+      approximate_sync: true
+      max_queue_size: 10
+      use_latest_tf: true
+      output_frame: base
+      input_topics: [/kinect2_head/hd/points, /kinect2_torso/hd/points]
+    </rosparam>
+    <remap from="~output" to="~points" />
+  </node>
+
+
   <!-- tf of baxter's footprint -->
   <node pkg="tf" type="static_transform_publisher" name="base_footprint" args="0 0 -0.95 0 0 0 base base_footprint 100"/>
 

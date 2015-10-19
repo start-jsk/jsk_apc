@@ -5,6 +5,7 @@
     <rosparam>
       approximate_sync: true
       max_queue_size: 10
+      use_latest_tf: true
       output_frame: kinect2_head_rgb_optical_frame
       input_topics: [/kinect2_head/hd/points, /kinect2_torso/hd/points]
     </rosparam>
