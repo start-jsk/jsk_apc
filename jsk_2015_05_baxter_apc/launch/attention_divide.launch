@@ -1,6 +1,6 @@
 <launch>
-  <arg name="input_cloud" default="/kinect2/depth_highres/points"/>
-  <arg name="input_image" default="/kinect2/rgb/image"/>
+  <arg name="input_cloud" default="/kinect2_head/depth_highres/points"/>
+  <arg name="input_image" default="/kinect2_head/rgb/image"/>
 
   <arg name="custom" default="true"/>
   <arg name="manager" default="passthrough_manager"/>
@@ -58,7 +58,7 @@
 
   <!-- <node pkg="nodelet" type="nodelet" name="left_right_divider" -->
   <!--       args="load jsk_pcl/AttentionClipper /$(arg manager)" respawn="true"> -->
-  <!--   <remap from="~input/points" to="/kinect2/depth_highres/points_filtered" /> -->
+  <!--   <remap from="~input/points" to="/kinect2_head/depth_highres/points_filtered" /> -->
   <!--   <rosparam> -->
   <!--     use_multiple_attention: true -->
   <!--     initial_pos_list: [[0.1,0,0.3], [0.1,0,0.3]] -->
@@ -73,7 +73,7 @@
 
   <node pkg="nodelet" type="nodelet" name="left_hand"
         args="standalone pcl/PassThrough" respawn="true">
-    <remap from="~input" to="/kinect2/depth_highres/points_filtered" />
+    <remap from="~input" to="/kinect2_head/depth_highres/points_filtered" />
     <!-- suppose QVGA -->
     <rosparam>
       filter_field_name: x
@@ -85,7 +85,7 @@
 
   <node pkg="nodelet" type="nodelet" name="right_hand"
         args="standalone pcl/PassThrough" respawn="true">
-    <remap from="~input" to="/kinect2/depth_highres/points_filtered" />
+    <remap from="~input" to="/kinect2_head/depth_highres/points_filtered" />
     <!-- suppose QVGA -->
     <rosparam>
       filter_field_name: x
@@ -110,7 +110,7 @@
       <arg name="arm" value="left"/>
       <arg name="original_image" value="$(arg input_image)"/>
       <arg name="input_point_indices" value="/organized_to_pi_left/output"/>
-      <arg name="input_depth_camera_info" value="/kinect2/depth_highres/camera_info"/>
+      <arg name="input_depth_camera_info" value="/kinect2_head/depth_highres/camera_info"/>
       <arg name="rect" value="$(arg rect)"/>
     </include>
   </group>
@@ -120,7 +120,7 @@
       <arg name="arm" value="right"/>
       <arg name="original_image" value="$(arg input_image)"/>
       <arg name="input_point_indices" value="/organized_to_pi_right/output"/>
-      <arg name="input_depth_camera_info" value="/kinect2/depth_highres/camera_info"/>
+      <arg name="input_depth_camera_info" value="/kinect2_head/depth_highres/camera_info"/>
       <arg name="rect" value="$(arg rect)"/>
     </include>
   </group>

@@ -1,5 +1,5 @@
 <launch>
-  <arg name="input_cloud" default="/kinect2/depth_highres/points"/>
+  <arg name="input_cloud" default="/kinect2_head/depth_highres/points"/>
   <arg name="custom" default="true"/>
   <arg name="manager" default="passthrough_manager"/>
   <arg name="manager2" default="process_mask_image"/>
@@ -7,7 +7,7 @@
 
   <node pkg="nodelet" type="nodelet" name="pass_through_z"
         args="load pcl/PassThrough $(arg manager)" respawn="true">
-    <remap from="~input" to="/kinect2/depth_highres/points" />
+    <remap from="~input" to="/kinect2_head/depth_highres/points" />
     <!-- suppose QVGA -->
     <rosparam>
       filter_field_name: z
@@ -42,7 +42,7 @@
   <node pkg="nodelet" type="nodelet" name="pi_to_maskimage"
         args="load jsk_pcl/PointIndicesToMaskImage $(arg manager)">
     <remap from="~input" to="organized_to_pi/output" />
-    <remap from="~input/image" to="/kinect2/rgb/image" />
+    <remap from="~input/image" to="/kinect2_head/rgb/image" />
     <param name="approximate_sync" value="true" />
   </node>
 
@@ -66,7 +66,7 @@
     <node pkg="nodelet" type="nodelet" name="mask_image_to_roi"
           args="load jsk_perception/MaskImageToROI $(arg manager2)">
       <remap from="~input" to="/erode_mask_image/output" />
-      <remap from="~input/camera_info" to="/kinect2/depth_highres/camera_info" />
+      <remap from="~input/camera_info" to="/kinect2_head/depth_highres/camera_info" />
       <param name="approximate_sync" value="true" />
     </node>
     <node pkg="nodelet" type="nodelet" name="roi_to_mask_image"
@@ -77,7 +77,7 @@
   </group>
   <node pkg="nodelet" type="nodelet" name="apply_mask"
         args="load jsk_perception/ApplyMaskImage $(arg manager2)">
-    <remap from="~input" to="/kinect2/rgb/image" />
+    <remap from="~input" to="/kinect2_head/rgb/image" />
     <remap from="~input/mask" to="/erode_mask_image/output" unless="$(arg rect)" />
     <remap from="~input/mask" to="/roi_to_mask_image/output" if="$(arg rect)" />
     <param name="approximate_sync" value="true" />
@@ -85,7 +85,7 @@
 
   <!-- <node pkg="nodelet" type="nodelet" name="laser_registration_depth_image_creator" -->
   <!--       args="load jsk_pcl/DepthImageCreator $(arg manager)"> -->
-  <!--   <remap from="~info" to="/kinect2/rgb_lowres/camera_info" /> -->
+  <!--   <remap from="~info" to="/kinect2_head/rgb_lowres/camera_info" /> -->
   <!--   <remap from="~input" to="pass_through_z/output" /> -->
   <!--   <remap from="~output" to="pass_through_z/depth/image_rect" /> -->
   <!--   <param name="use_approximate" value="true" /> -->
