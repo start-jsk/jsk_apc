@@ -323,6 +323,14 @@
         (ros::unsubscribe "bin_contents")
         (return-from :get-bin-contents (send content :objects))))
     )
+  (:get-target-bin
+    (arm)
+    (let (bin-name)
+      (ros::ros-info "[:get-target-bin-name] wait for target is set: ~a" arm)
+      (while (not bin-name)
+        (setq bin-name (ros::get-param (format nil "~A_process/target" (arm-to-str arm))))
+        (unix::sleep 1))
+    (str-to-key arm)))
   (:real-sim-end-coords-diff
     (arm)
     (let (real-coords sim-coords diff-coords thresh)
