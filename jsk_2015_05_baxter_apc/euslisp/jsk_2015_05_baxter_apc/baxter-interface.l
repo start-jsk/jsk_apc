@@ -122,6 +122,25 @@
         (ros::spin-once))
       (ros::unsubscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (key-to-str bin)))
       ))
+  (:recognize-object-in-hand
+    (arm &key (timeout 20))
+    (let* (msg)
+      (setq msg
+            (one-shot-subscribe
+              (format nil "~a_process/object_verification/output" (arm-to-str arm))
+              jsk_2015_05_baxter_apc::ObjectRecognition
+              :timeout timeout
+              :after-stamp (ros::time-now)))
+      (if msg (send msg :matched) nil)
+      ))
+  (:verify-object
+    (arm object-name &key (timeout 20))
+    (let (msg)
+      (setq msg (send self :verify-object arm :timeout timeout))
+      (if msg
+        (string= object-name (send msg :matched))
+        nil
+        )))
   (:ik-avs->object-in-bin
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (object-boxes object-box coords)
