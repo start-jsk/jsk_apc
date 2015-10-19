@@ -339,6 +339,16 @@
       (setq sim-coords (send (send *baxter* arm :root-link) :transformation (send *baxter* arm :end-coords)))
       (setq diff-coords (send real-coords :transformation sim-coords :local))
       (elt (send diff-coords :pos) 2)))
+  (:wait-for-user-input-to-start
+    (arm)
+    """wait for user input to start"""
+    (ros::ros-info "[:wait-for-user-input-to-start] wait for user input to start: ~A" arm)
+    (while
+      (string=
+        (ros::get-param (format nil "~A_process/state" (arm-to-str arm)))
+        "wait_for_user_input")
+      (unix::sleep 1))
+    (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~A" arm))
   )
 
 (defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
