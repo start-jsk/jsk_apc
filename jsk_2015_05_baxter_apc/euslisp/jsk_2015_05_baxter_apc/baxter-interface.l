@@ -4,9 +4,7 @@
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 
-(ros::load-ros-manifest "roseus")
-(ros::load-ros-manifest "std_msgs")
-(ros::load-ros-manifest "jsk_recognition_msgs")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
 (unless (find-package "JSK_2015_05_BAXTER_APC")
   (make-package "JSK_2015_05_BAXTER_APC"))
@@ -15,11 +13,9 @@
   :super baxter-interface
   :slots
   (
-   tfl
-   bin-atof-pos-stamp bin-boxes
-   objects-in-bin-stamp objects-in-bin-boxes objects-in-bin-target
-   work-order get-work-order-arm
-   bin-contents
+   _tfl
+   _bin-boxes
+   _objects-in-bin-boxes
    )
   )
 
@@ -35,30 +31,21 @@
           :newcoords (make-coords :pos #f(50 0 310)
                                   :rpy (float-vector 0 -pi/2 0)))
     ;; initialize slots
-    (setq tfl (instance ros::transform-listener :init))
-    (setq objects-in-bin-boxes (make-hash-table))
-    (setq work-order (make-hash-table))
+    (setq _tfl (instance ros::transform-listener :init))
+    (setq _bin-boxes (make-hash-table))
+    (setq _objects-in-bin-boxes (make-hash-table))
     )
   (:start-grasp
    (&optional (arm :arms))
-   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol-to-str arm))))
-     (ros::advertise-if-yet (format nil "/vacuum_gripper/limb/~A" l/r) std_msgs::Bool 1)
-     (setq msg (instance std_msgs::Bool :init))
-     (send msg :data t)
-     (ros::ros-info (format nil "start ~A vacuum gripper" l/r))
-     (ros::publish (format nil "/vacuum_gripper/limb/~A" l/r) msg)
-     (ros::sleep)
+   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
+     (one-shot-publish (format nil "/vacuum_gripper/limb/~A" l/r)
+                       (instance std_msgs::Bool :init :data t))
      ))
-  (:go-grasp (&optional (arm :arms)) (send self :start-grasp arm))
   (:stop-grasp
    (&optional (arm :arms))
-   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol-to-str arm))))
-     (ros::advertise-if-yet (format nil "/vacuum_gripper/limb/~A" l/r) std_msgs::Bool 1)
-     (setq msg (instance std_msgs::Bool :init))
-     (send msg :data nil)
-     (ros::ros-info (format nil "stop ~A vacuum gripper" l/r))
-     (ros::publish (format nil "/vacuum_gripper/limb/~A" l/r) msg)
-     (ros::sleep)
+   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
+     (one-shot-publish (format nil "/vacuum_gripper/limb/~A" l/r)
+                       (instance std_msgs::Bool :init :data nil))
      ))
   (:graspingp
     (arm)
@@ -69,7 +56,7 @@
         )
       :data)
     )
-  (:arm-symbol-to-str
+  (:arm-symbol2str
     (arm)
     (case arm
       (:larm "left")
@@ -86,59 +73,38 @@
     (frame_id pose)
     (let (coords)
       (setq coords (ros::tf-pose->coords pose))
-      (send coords :transform (send tfl :lookup-transform "base" frame_id (ros::time 0)))))
-  (:recognize-bin-boxes-cb
-    (msg)
-    (let (bin bin-box-pos-z)
-      (setq bin-atof-pos-stamp (send (send msg :header) :stamp))
-      (setq bin-boxes (make-hash-table))
+      (send coords :transform (send _tfl :lookup-transform "base" frame_id (ros::time 0)))))
+  (:recognize-bin-boxes
+    ()
+    (let (msg bin bin-box-pos-z)
+      (setq
+        msg
+        (one-shot-subscribe "in_bin_atof/bin_clipper/output/box_array"
+                            jsk_recognition_msgs::BoundingBoxArray
+                            :after-stamp (ros::time-now)))
+      ;; for bin A-F
       (dotimes (i 6)
         (setq bin (elt '(:a :b :c :d :e :f) i))
-        (setf (gethash bin bin-boxes) (elt (send msg :boxes) i))
-        )
-      ;; pos of bin G-L is minus z of A-F
+        (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+      ;; for bin G-L
+      ;; pos of these bin is minus z of A-F
       (dotimes (i 6)
         (setq bin (elt '(:j :k :l :g :h :i) i))
         (setq bin-box (copy-object (elt (send msg :boxes) i)))
         (setq bin-box-pos-z (send (send (send bin-box :pose) :position) :z))
         (send (send (send bin-box :pose) :position) :z (- bin-box-pos-z))
-        (sethash bin bin-boxes bin-box)
-        )
-    ))
-  (:recognize-bin-boxes
-    ()
-    (let ((now (ros::time-now)))
-      (ros::subscribe "in_bin_atof/bin_clipper/output/box_array"
-                      jsk_recognition_msgs::BoundingBoxArray
-                      #'send self :recognize-bin-boxes-cb)
-      (while
-        (or (null bin-atof-pos-stamp)
-            (< (send bin-atof-pos-stamp :sec) (send now :sec)))
-        (ros::ros-info "[:recognize-bin-boxes] waiting to synchronize")
-        (unix::sleep 1)
-        (ros::spin-once))
-      (ros::unsubscribe "in_bin_atof/bin_clipper/output/box_array")
+        (sethash bin _bin-boxes bin-box))
       ))
-  (:recognize-objects-in-bin-cb
-    (msg)
-    (setq objects-in-bin-stamp (send (send msg :header) :stamp))
-    (sethash objects-in-bin-target objects-in-bin-boxes (send msg :boxes))
-    )
   (:recognize-objects-in-bin
     (bin)
     (let ((now (ros::time-now)))
-      (ros::subscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (key-to-str bin))
-                      jsk_recognition_msgs::BoundingBoxArray
-                      #'send self :recognize-objects-in-bin-cb)
-      (setq objects-in-bin-target bin)
-      (while
-        (or (null objects-in-bin-stamp)
-            (< (send objects-in-bin-stamp :sec) (send now :sec)))
-        (ros::ros-info "[:recognize-objects-in-bin] Waiting to synchronize")
-        (unix::sleep 1)
-        (ros::spin-once))
-      (ros::unsubscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (key-to-str bin)))
-      ))
+      (setq
+        msg
+        (one-shot-subscribe
+          (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (symbol2str bin))
+          jsk_recognition_msgs::BoundingBoxArray
+          :after-stamp (ros::time-now)))
+      (sethash bin _objects-in-bin-boxes (send msg :boxes))))
   (:recognize-object-in-hand
     (arm &key (timeout 20))
     (let* (msg)
@@ -162,7 +128,7 @@
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (object-boxes object-box coords)
       (unless
-        (setq object-boxes (gethash bin (send self :get-val 'objects-in-bin-boxes)))
+        (setq object-boxes (gethash bin (send self :get-val '_objects-in-bin-boxes)))
         (ros::ros-warn "No object is found")
         (return-from :ik-avs->object-in-bin nil))
       (unless
@@ -178,7 +144,7 @@
     (arm bin &key (object-index 0))
     (let (bin-box)
       ;; move arm bin-entrance -> pos above object to z direction
-      (setq bin-box (gethash bin bin-boxes))
+      (setq bin-box (gethash bin _bin-boxes))
       (unless
         (setq avs
               (send self :ik-avs->object-in-bin
@@ -234,7 +200,7 @@
   (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)))
     (let (bin-box bin-coords bin-dim-x)
-      (setq bin-box (gethash bin bin-boxes))
+      (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
         (ros::ros-error "[:ik->bin-entrance] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
         (return-from :ik->bin-entrance))
@@ -292,37 +258,29 @@
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis t) avs)
       (send self :angle-vector-sequence avs)
       ))
-  (:get-work-order-cb
-    (msg)
-    (let (one-order)
-      (dolist (data (send msg :array))
-        (pushback
-          (list (str-to-key (send data :bin)) (send data :object))
-          one-order))
-      (sethash get-work-order-arm work-order one-order)))
-  (:get-work-order
+  (:get-work-orders
     (arm)
-    (setq get-work-order-arm arm)
-    (ros::subscribe "work_order/left_process"
-                    jsk_2015_05_baxter_apc::WorkOrderArray
-                    #'send self :get-work-order-cb)
-    (unix:sleep 1)
-    (ros::spin-once)
-    (ros::unsubscribe "work_order/left_process")
-    (gethash arm work-order))
-  (:get-bin-contents-cb (msg) (setq bin-contents (send msg :array)))
+    (setq
+      msg
+      (one-shot-subscribe
+        (format nil "work_order/~a_process" (send self :arm-symbol2str arm))
+        jsk_2015_05_baxter_apc::WorkOrderArray))
+    (send msg :array))
+  (:get-next-work-order
+    (arm current-order)
+    (let (orders (send self :get-work-orders arm))
+      (dotimes (i (- (length orders) 1))
+        (when (null current-order)
+          (return-from :get-next-work-order (elt orders 0)))
+        (when (string= (send (elt orders i) :bin) (send current-order :bin))
+          (return-from :get-next-work-order (elt orders (+ i 1)))))))
   (:get-bin-contents
     (bin)
-    (ros::subscribe "bin_contents"
-                    jsk_2015_05_baxter_apc::BinContentsArray
-                    #'bin-contents-cb)
-    (unix::sleep 1)
-    (ros::spin-once)
-    (dolist (content bin-contents)
-      (when (eq bin (str-to-key (send content :bin)))
-        (ros::unsubscribe "bin_contents")
-        (return-from :get-bin-contents (send content :objects))))
-    )
+    (let (msg)
+      (setq msg (one-shot-subscribe "bin_contents" jsk_2015_05_baxter_apc::BinContentsArray))
+      (dolist (c (send msg :array))
+        (when (string= (symbol2str bin) (send c :bin))
+          (return-from :get-bin-contents (send c :objects))))))
   (:real-sim-end-coords-diff
     (arm)
     (let (real-coords sim-coords diff-coords thresh)
@@ -331,6 +289,18 @@
       (setq sim-coords (send (send *baxter* arm :root-link) :transformation (send *baxter* arm :end-coords)))
       (setq diff-coords (send real-coords :transformation sim-coords :local))
       (elt (send diff-coords :pos) 2)))
+  (:wait-for-user-input-to-start
+    (arm)
+    """wait for user input to start"""
+    (let (can-start)
+      (ros::ros-info "[:wait-for-user-input-to-start] wait for user input to start: ~a" arm)
+      (ros::wait-for-service "rqt_yn_btn")
+      (while
+        (not can-start)
+        (setq can-start (send (ros::service-call "rqt_yn_btn" (instance jsk_rqt_plugins::YesNoRequest)) :yes))
+        )
+      (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~a" arm)
+      ))
   )
 
 (defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
