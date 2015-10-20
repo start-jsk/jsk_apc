@@ -18,7 +18,6 @@
    _tfl
    _bin-boxes
    _objects-in-bin-boxes
-   _work-order _get-work-order-arm
    _bin-contents
    )
   )
@@ -38,7 +37,6 @@
     (setq _tfl (instance ros::transform-listener :init))
     (setq _bin-boxes (make-hash-table))
     (setq _objects-in-bin-boxes (make-hash-table))
-    (setq _work-order (make-hash-table))
     )
   (:start-grasp
    (&optional (arm :arms))
@@ -263,27 +261,17 @@
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis t) avs)
       (send self :angle-vector-sequence avs)
       ))
-  (:get-work-order-cb
-    (msg)
-    (let (one-order)
-      (dolist (data (send msg :array))
-        (pushback
-          (list (str2symbol (send data :bin)) (send data :object))
-          one-order))
-      (sethash _get-work-order-arm _work-order one-order)))
-  (:get-work-order
+  (:get-work-orders
     (arm)
-    (setq _get-work-order-arm arm)
-    (ros::subscribe "work_order/left_process"
-                    jsk_2015_05_baxter_apc::WorkOrderArray
-                    #'send self :get-work-order-cb)
-    (unix:sleep 1)
-    (ros::spin-once)
-    (ros::unsubscribe "work_order/left_process")
-    (gethash arm _work-order))
+    (setq
+      msg
+      (one-shot-subscribe
+        (format nil "work_order/~a_process" (send self :arm-symbol2str arm))
+        jsk_2015_05_baxter_apc::WorkOrderArray))
+    (send msg :array))
   (:get-a-work-order
     (bin)
-    (let (orders (send self :get-work-order arm))
+    (let (orders (send self :get-work-orders arm))
       (dotimes (o orders)
         (when (string= (send o :bin) (symbol2str bin))
           (return-from :get-a-work-order o)

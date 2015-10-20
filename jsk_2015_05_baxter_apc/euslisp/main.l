@@ -18,7 +18,7 @@
   (send *ri* :wait-for-user-input-to-start)
 
   (let (target param-target state work-order work)
-    (setq work-order (send *ri* :get-work-order arm))
+    (setq work-orders (send *ri* :get-work-orders arm))
     (send *ri* :recognize-bin-boxes)
 
     ; get previous target from parameter server
