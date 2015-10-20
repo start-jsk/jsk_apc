@@ -1,0 +1,38 @@
+<launch>
+
+  <arg name="INPUT_CLOUD" />
+
+  <arg name="MANAGER" value="manager_0" />
+  <node name="manager_0"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+  <node name="in_hand_clipper"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/AttentionClipper $(arg MANAGER)"
+        clear_params="true">
+    <remap from="~input/points" to="$(arg INPUT_CLOUD)" />
+    <rosparam>
+      use_multiple_attention: true
+      initial_pos_list: [[0.0, -0.1, 0.3], [0.0, -0.1, 0.3]]
+      initial_rot_list: [[0, 0, 0], [0, 0, 0]]
+      dimensions: [[0.3, 0.2, 0.3], [0.3, 0.2, 0.3]]
+      frame_id_list: [left_custom_vacuum_link_base, right_custom_vacuum_link_base]
+      prefixes: [left_hand, right_hand]
+    </rosparam>
+  </node>
+
+  <node name="extract_indices_left_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="in_hand_clipper/left_hand/point_indices" />
+  </node>
+
+  <node name="extract_indices_right_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="in_hand_clipper/right_hand/point_indices" />
+  </node>
+
+</launch>
