@@ -1,7 +1,14 @@
 <launch>
 
-  <!-- Custom baxter model -->
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/upload_baxter.launch"/>
+  <!-- custom baxter params -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_2015_05_baxter_apc)/urdf/baxter_custom.xacro" />
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="joint_states" to="/robot/joint_states"/>
+  </node>
+  <rosparam param="/baxter_joint_trajectory"
+            file="$(find jsk_2015_05_baxter_apc)/config/baxter_joint_trajectory.yaml"/>
 
   <!-- vacuum gripper -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/vacuum_gripper.launch" />
