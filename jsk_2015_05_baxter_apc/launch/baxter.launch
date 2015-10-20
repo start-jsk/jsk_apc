@@ -53,4 +53,18 @@
     </include>
   </group>
 
+  <!-- filter self points -->
+  <group ns="self_filter1">
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/self_filter.launch">
+      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD1)_reachable" />
+      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD1)_filtered" />
+    </include>
+  </group>
+  <group ns="self_filter2">
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/self_filter.launch">
+      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD2)_reachable" />
+      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD2)_filtered" />
+    </include>
+  </group>
+
 </launch>
