@@ -1,0 +1,38 @@
+<launch>
+
+
+  <arg name="INPUT_CLOUD" />
+  <arg name="INPUT_INDICES" />
+  <arg name="BIN_NAME" />
+  <arg name="MANAGER" />
+
+
+  <node name="bin_$(arg BIN_NAME)_extract_pi"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="$(arg INPUT_INDICES)" />
+    <rosparam>
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node name="bin_$(arg BIN_NAME)_euclid_clustering"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/EuclideanClustering $(arg MANAGER)">
+    <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
+    <rosparam>
+      max_size: 100000
+    </rosparam>
+  </node>
+
+  <node name="bin_$(arg BIN_NAME)_cpi_decomposer"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg MANAGER)">
+    <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
+    <remap from="~target" to="bin_$(arg BIN_NAME)_euclid_clustering/output" />
+  </node>
+
+
+</launch>
+
