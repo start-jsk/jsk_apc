@@ -1,5 +1,6 @@
 <launch>
 
+
   <!-- custom baxter params -->
   <param name="/robot_description"
          command="$(find xacro)/xacro.py $(find jsk_2015_05_baxter_apc)/urdf/baxter_custom.xacro" />
@@ -10,8 +11,10 @@
   <rosparam param="/baxter_joint_trajectory"
             file="$(find jsk_2015_05_baxter_apc)/config/baxter_joint_trajectory.yaml"/>
 
+
   <!-- vacuum gripper -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/vacuum_gripper.launch" />
+
 
   <!-- baxter startup -->
   <include file="$(find jsk_baxter_startup)/baxter.launch">
@@ -31,50 +34,55 @@
     <arg name="USER_NAME" value="false"/>
   </include>
 
+
   <!-- kinect2 on head -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/kinect2_head.launch" />
-  <arg name="INPUT_CLOUD1" value="/kinect2_head/hd/points" />
-
   <!--
   kinect2 on torso. Actually, we can't use <machine> tag because of error.
   FIXME: https://github.com/code-iai/iai_kinect2/issues/166
   -->
   <!-- <include file="$(find jsk_2015_05_baxter_apc)/launch/kinect2_torso.launch" /> -->
-  <arg name="INPUT_CLOUD2" value="/kinect2_torso/hd/points" />
 
 
   <arg name="MANAGER" value="baxter_nodelet_manager" />
   <node name="$(arg MANAGER)"
         pkg="nodelet" type="nodelet" args="manager" />
 
+
+  <arg name="INPUT_CLOUD_0" value="/kinect2_head/hd/points" />
+  <arg name="INPUT_CLOUD_1" value="/kinect2_torso/hd/points" />
+
+
   <!-- filter reachable points -->
-  <group ns="filter_reachable1">
+  <group ns="filter_reachable_0">
     <include file="$(find jsk_2015_05_baxter_apc)/launch/filter_reachable_cloud.launch">
       <arg name="MANAGER" value="/$(arg MANAGER)" />
-      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD1)" />
-      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD1)_reachable" />
+      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_0)" />
+      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD_0)_reachable" />
     </include>
   </group>
-  <group ns="filter_reachable2">
+  <group ns="filter_reachable_1">
     <include file="$(find jsk_2015_05_baxter_apc)/launch/filter_reachable_cloud.launch">
       <arg name="MANAGER" value="/$(arg MANAGER)" />
-      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD2)" />
-      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD2)_reachable" />
+      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_1)" />
+      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD_1)_reachable" />
     </include>
   </group>
 
+
   <!-- filter self points -->
-  <group ns="self_filter1">
+  <group ns="self_filter_0">
     <include file="$(find jsk_2015_05_baxter_apc)/launch/self_filter.launch">
-      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD1)_reachable" />
-      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD1)_filtered" />
+      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_0)_reachable" />
+      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD_0)_filtered" />
     </include>
   </group>
-  <group ns="self_filter2">
+  <group ns="self_filter_1">
     <include file="$(find jsk_2015_05_baxter_apc)/launch/self_filter.launch">
-      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD2)_reachable" />
-      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD2)_filtered" />
+      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_1)_reachable" />
+      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD_1)_filtered" />
     </include>
   </group>
+
 
 </launch>
