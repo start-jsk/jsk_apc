@@ -83,7 +83,7 @@
         msg
         (one-shot-subscribe "in_bin_atof/bin_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :after-stamp (row::time-now)))
+                            :after-stamp (ros::time-now)))
       ;; for bin A-F
       (dotimes (i 6)
         (setq bin (elt '(:a :b :c :d :e :f) i))
@@ -268,15 +268,14 @@
         (format nil "work_order/~a_process" (send self :arm-symbol2str arm))
         jsk_2015_05_baxter_apc::WorkOrderArray))
     (send msg :array))
-  (:get-a-work-order
-    (bin)
+  (:get-next-work-order
+    (arm current-order)
     (let (orders (send self :get-work-orders arm))
-      (dotimes (o orders)
-        (when (string= (send o :bin) (symbol2str bin))
-          (return-from :get-a-work-order o)
-          )
-        )
-      ))
+      (dotimes (i (- (length orders) 1))
+        (when (null current-order)
+          (return-from :get-next-work-order (elt orders 0)))
+        (when (string= (send (elt orders i) :bin) (send current-order :bin))
+          (return-from :get-next-work-order (elt orders (+ i 1)))))))
   (:get-bin-contents
     (bin)
     (let (msg)
@@ -284,15 +283,6 @@
       (dolist (c (send msg :array))
         (when (string= (symbol2str bin) (send c :bin))
           (return-from :get-bin-contents (send c :objects))))))
-  (:get-target-bin
-    (arm)
-    (let (bin-name)
-      (ros::ros-info "[:get-target-bin-name] wait for target is set: ~a" arm)
-      (while (not bin-name)
-        (setq bin-name (ros::get-param (format nil "~A_process/target" (arm-to-str arm))))
-        (unix::sleep 1))
-      (ros::ros-info "[:get-target-bin-name] found target param [~a]: ~a" arm bin-name)
-    (str2symbol arm)))
   (:real-sim-end-coords-diff
     (arm)
     (let (real-coords sim-coords diff-coords thresh)
@@ -304,13 +294,15 @@
   (:wait-for-user-input-to-start
     (arm)
     """wait for user input to start"""
-    (ros::ros-info "[:wait-for-user-input-to-start] wait for user input to start: ~A" arm)
-    (while
-      (string=
-        (ros::get-param (format nil "~A_process/state" (arm-to-str arm)))
-        "wait_for_user_input")
-      (unix::sleep 1))
-    (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~A" arm))
+    (let (can-start)
+      (ros::ros-info "[:wait-for-user-input-to-start] wait for user input to start: ~a" arm)
+      (ros::wait-for-service "rqt_yn_btn")
+      (while
+        (not can-start)
+        (setq can-start (send (ros::service-call "rqt_yn_btn" (instance jsk_rqt_plugins::YesNoRequest)) :yes))
+        )
+      (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~a" arm)
+      ))
   )
 
 (defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
