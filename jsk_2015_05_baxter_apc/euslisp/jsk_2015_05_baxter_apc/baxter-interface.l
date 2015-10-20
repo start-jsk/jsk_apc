@@ -42,13 +42,13 @@
     )
   (:start-grasp
    (&optional (arm :arms))
-   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol-to-str arm))))
+   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
      (one-shot-publish (format nil "/vacuum_gripper/limb/~A" l/r)
                        (instance std_msgs::Bool :init :data t))
      ))
   (:stop-grasp
    (&optional (arm :arms))
-   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol-to-str arm))))
+   (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
      (one-shot-publish (format nil "/vacuum_gripper/limb/~A" l/r)
                        (instance std_msgs::Bool :init :data nil))
      ))
@@ -61,7 +61,7 @@
         )
       :data)
     )
-  (:arm-symbol-to-str
+  (:arm-symbol2str
     (arm)
     (case arm
       (:larm "left")
