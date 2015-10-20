@@ -15,11 +15,11 @@
   :super baxter-interface
   :slots
   (
-   tfl
-   bin-boxes
-   objects-in-bin-stamp objects-in-bin-boxes objects-in-bin-target
-   work-order get-work-order-arm
-   bin-contents
+   _tfl
+   _bin-boxes
+   _objects-in-bin-stamp _objects-in-bin-boxes _objects-in-bin-target
+   _work-order _get-work-order-arm
+   _bin-contents
    )
   )
 
@@ -35,10 +35,10 @@
           :newcoords (make-coords :pos #f(50 0 310)
                                   :rpy (float-vector 0 -pi/2 0)))
     ;; initialize slots
-    (setq tfl (instance ros::transform-listener :init))
-    (setq bin-boxes (make-hash-table))
-    (setq objects-in-bin-boxes (make-hash-table))
-    (setq work-order (make-hash-table))
+    (setq _tfl (instance ros::transform-listener :init))
+    (setq _bin-boxes (make-hash-table))
+    (setq _objects-in-bin-boxes (make-hash-table))
+    (setq _work-order (make-hash-table))
     )
   (:start-grasp
    (&optional (arm :arms))
@@ -87,7 +87,7 @@
     (frame_id pose)
     (let (coords)
       (setq coords (ros::tf-pose->coords pose))
-      (send coords :transform (send tfl :lookup-transform "base" frame_id (ros::time 0)))))
+      (send coords :transform (send _tfl :lookup-transform "base" frame_id (ros::time 0)))))
   (:recognize-bin-boxes
     ()
     (let (msg bin bin-box-pos-z)
@@ -99,7 +99,7 @@
       ;; for bin A-F
       (dotimes (i 6)
         (setq bin (elt '(:a :b :c :d :e :f) i))
-        (setf (gethash bin bin-boxes) (elt (send msg :boxes) i)))
+        (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
       ;; for bin G-L
       ;; pos of these bin is minus z of A-F
       (dotimes (i 6)
@@ -107,12 +107,12 @@
         (setq bin-box (copy-object (elt (send msg :boxes) i)))
         (setq bin-box-pos-z (send (send (send bin-box :pose) :position) :z))
         (send (send (send bin-box :pose) :position) :z (- bin-box-pos-z))
-        (sethash bin bin-boxes bin-box))
+        (sethash bin _bin-boxes bin-box))
       ))
   (:recognize-objects-in-bin-cb
     (msg)
-    (setq objects-in-bin-stamp (send (send msg :header) :stamp))
-    (sethash objects-in-bin-target objects-in-bin-boxes (send msg :boxes))
+    (setq _objects-in-bin-stamp (send (send msg :header) :stamp))
+    (sethash _objects-in-bin-target _objects-in-bin-boxes (send msg :boxes))
     )
   (:recognize-objects-in-bin
     (bin)
@@ -120,10 +120,10 @@
       (ros::subscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (symbol2str bin))
                       jsk_recognition_msgs::BoundingBoxArray
                       #'send self :recognize-objects-in-bin-cb)
-      (setq objects-in-bin-target bin)
+      (setq _objects-in-bin-target bin)
       (while
-        (or (null objects-in-bin-stamp)
-            (< (send objects-in-bin-stamp :sec) (send now :sec)))
+        (or (null _objects-in-bin-stamp)
+            (< (send _objects-in-bin-stamp :sec) (send now :sec)))
         (ros::ros-info "[:recognize-objects-in-bin] Waiting to synchronize")
         (unix::sleep 1)
         (ros::spin-once))
@@ -152,7 +152,7 @@
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (object-boxes object-box coords)
       (unless
-        (setq object-boxes (gethash bin (send self :get-val 'objects-in-bin-boxes)))
+        (setq object-boxes (gethash bin (send self :get-val '_objects-in-bin-boxes)))
         (ros::ros-warn "No object is found")
         (return-from :ik-avs->object-in-bin nil))
       (unless
@@ -168,7 +168,7 @@
     (arm bin &key (object-index 0))
     (let (bin-box)
       ;; move arm bin-entrance -> pos above object to z direction
-      (setq bin-box (gethash bin bin-boxes))
+      (setq bin-box (gethash bin _bin-boxes))
       (unless
         (setq avs
               (send self :ik-avs->object-in-bin
@@ -224,7 +224,7 @@
   (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)))
     (let (bin-box bin-coords bin-dim-x)
-      (setq bin-box (gethash bin bin-boxes))
+      (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
         (ros::ros-error "[:ik->bin-entrance] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
         (return-from :ik->bin-entrance))
@@ -289,17 +289,17 @@
         (pushback
           (list (str2symbol (send data :bin)) (send data :object))
           one-order))
-      (sethash get-work-order-arm work-order one-order)))
+      (sethash _get-work-order-arm _work-order one-order)))
   (:get-work-order
     (arm)
-    (setq get-work-order-arm arm)
+    (setq _get-work-order-arm arm)
     (ros::subscribe "work_order/left_process"
                     jsk_2015_05_baxter_apc::WorkOrderArray
                     #'send self :get-work-order-cb)
     (unix:sleep 1)
     (ros::spin-once)
     (ros::unsubscribe "work_order/left_process")
-    (gethash arm work-order))
+    (gethash arm _work-order))
   (:get-a-work-order
     (bin)
     (let (orders (send self :get-work-order arm))
@@ -309,7 +309,7 @@
           )
         )
       ))
-  (:get-bin-contents-cb (msg) (setq bin-contents (send msg :array)))
+  (:get-bin-contents-cb (msg) (setq _bin-contents (send msg :array)))
   (:get-bin-contents
     (bin)
     (ros::subscribe "bin_contents"
@@ -317,7 +317,7 @@
                     #'bin-contents-cb)
     (unix::sleep 1)
     (ros::spin-once)
-    (dolist (content bin-contents)
+    (dolist (content _bin-contents)
       (when (eq bin (str2symbol (send content :bin)))
         (ros::unsubscribe "bin_contents")
         (return-from :get-bin-contents (send content :objects))))
