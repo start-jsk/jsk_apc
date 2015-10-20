@@ -17,7 +17,7 @@
   (
    _tfl
    _bin-boxes
-   _objects-in-bin-stamp _objects-in-bin-boxes _objects-in-bin-target
+   _objects-in-bin-boxes
    _work-order _get-work-order-arm
    _bin-contents
    )
@@ -100,26 +100,16 @@
         (send (send (send bin-box :pose) :position) :z (- bin-box-pos-z))
         (sethash bin _bin-boxes bin-box))
       ))
-  (:recognize-objects-in-bin-cb
-    (msg)
-    (setq _objects-in-bin-stamp (send (send msg :header) :stamp))
-    (sethash _objects-in-bin-target _objects-in-bin-boxes (send msg :boxes))
-    )
   (:recognize-objects-in-bin
     (bin)
     (let ((now (ros::time-now)))
-      (ros::subscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (symbol2str bin))
-                      jsk_recognition_msgs::BoundingBoxArray
-                      #'send self :recognize-objects-in-bin-cb)
-      (setq _objects-in-bin-target bin)
-      (while
-        (or (null _objects-in-bin-stamp)
-            (< (send _objects-in-bin-stamp :sec) (send now :sec)))
-        (ros::ros-info "[:recognize-objects-in-bin] Waiting to synchronize")
-        (unix::sleep 1)
-        (ros::spin-once))
-      (ros::unsubscribe (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (symbol2str bin)))
-      ))
+      (setq
+        msg
+        (one-shot-subscribe
+          (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (symbol2str bin))
+          jsk_recognition_msgs::BoundingBoxArray
+          :after-stamp (ros::time-now)))
+      (sethash bin _objects-in-bin-boxes (send msg :boxes))))
   (:recognize-object-in-hand
     (arm &key (timeout 20))
     (let* (msg)
