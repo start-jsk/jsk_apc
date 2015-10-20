@@ -24,16 +24,11 @@
     ; get previous target from parameter server
     ; this does work when this robot_main node respawned
     (setq target (send *ri* :get-target-bin-name arm))
+    (setq work (send *ri* :get-a-work-order target))
 
-    ; remove already picked target bins
-    ; this does work when this robot_main node respawned
-    (while
-      t
-      (setq work (pop work-order))
-      (when (eq (elt work 0) param-target) (return)))
     ; loop of motions
     (setq n-tried 0)  ;; how many tried to pick
-    (speak-en "Let's start picking challenge" :google t)
+
     (while
       work
       ;; get status from parameter server
