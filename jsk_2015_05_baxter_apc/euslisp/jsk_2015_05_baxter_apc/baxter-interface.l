@@ -310,6 +310,15 @@
     (ros::spin-once)
     (ros::unsubscribe "work_order/left_process")
     (gethash arm work-order))
+  (:get-a-work-order
+    (bin)
+    (let (orders (send self :get-work-order arm))
+      (dotimes (o orders)
+        (when (string= (send o :bin) (symbol2str bin))
+          (return-from :get-a-work-order o)
+          )
+        )
+      ))
   (:get-bin-contents-cb (msg) (setq bin-contents (send msg :array)))
   (:get-bin-contents
     (bin)
@@ -330,6 +339,7 @@
       (while (not bin-name)
         (setq bin-name (ros::get-param (format nil "~A_process/target" (arm-to-str arm))))
         (unix::sleep 1))
+      (ros::ros-info "[:get-target-bin-name] found target param [~a]: ~a" arm bin-name)
     (str2symbol arm)))
   (:real-sim-end-coords-diff
     (arm)
