@@ -18,7 +18,6 @@
    _tfl
    _bin-boxes
    _objects-in-bin-boxes
-   _bin-contents
    )
   )
 
@@ -278,19 +277,13 @@
           )
         )
       ))
-  (:get-bin-contents-cb (msg) (setq _bin-contents (send msg :array)))
   (:get-bin-contents
     (bin)
-    (ros::subscribe "bin_contents"
-                    jsk_2015_05_baxter_apc::BinContentsArray
-                    #'bin-contents-cb)
-    (unix::sleep 1)
-    (ros::spin-once)
-    (dolist (content _bin-contents)
-      (when (eq bin (str2symbol (send content :bin)))
-        (ros::unsubscribe "bin_contents")
-        (return-from :get-bin-contents (send content :objects))))
-    )
+    (let (msg)
+      (setq msg (one-shot-subscribe "bin_contents" jsk_2015_05_baxter_apc::BinContentsArray))
+      (dolist (c (send msg :array))
+        (when (string= (symbol2str bin) (send c :bin))
+          (return-from :get-bin-contents (send c :objects))))))
   (:get-target-bin
     (arm)
     (let (bin-name)
