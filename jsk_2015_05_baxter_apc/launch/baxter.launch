@@ -3,6 +3,9 @@
   <!-- Custom baxter model -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/upload_baxter.launch"/>
 
+  <!-- vacuum gripper -->
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/vacuum_gripper.launch" />
+
   <!-- baxter startup -->
   <include file="$(find jsk_baxter_startup)/baxter.launch">
     <arg name="launch_servo" value="true"/>
