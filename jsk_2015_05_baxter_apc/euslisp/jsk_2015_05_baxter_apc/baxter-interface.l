@@ -4,9 +4,7 @@
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 
-(ros::load-ros-manifest "roseus")
-(ros::load-ros-manifest "std_msgs")
-(ros::load-ros-manifest "jsk_recognition_msgs")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
 (unless (find-package "JSK_2015_05_BAXTER_APC")
   (make-package "JSK_2015_05_BAXTER_APC"))
