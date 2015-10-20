@@ -32,7 +32,6 @@
     (while
       work
       ;; get status from parameter server
-      ;; (speak-en  (format nil "Next Target is ~A" "OREO") :google t  :wait t)
       (setq target (str2symbol (elt work 0)) target-object (elt work 1))
       (ros::set-param (format nil "~A_process/target" (arm-to-str arm)) (symbol2str target))
       (setq state (ros::get-param (format nil "~A_process/state" (arm-to-str arm))))
@@ -58,17 +57,14 @@
            (ros::ros-info "waiting for opposite arm to do order for center bin")
            (unix::sleep 1))
          (ros::ros-info "Move to Bin ~A. Target is ~A." (symbol2str target) target-object)
-         (speak-en (format nil "Move to Bin ~A. Target is ~A." (symbol2str target) (underscore-to-space target-object)) :google t)
          (send *ri* :move-arm-body->bin arm target)
          (send *ri* :wait-interpolation)
-         (speak-en (format nil "Pick Object in ~A." (symbol2str target)) :google t)
          (send *ri* :pick-object arm target)
          (incf n-tried)  ;; how many times to try to pick
          (if (= (length (get-bin-contents target)) 1)
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object")  ;; SINGLE-ITEM-BIN
            (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "move_for_verification")))  ;; MULTI-ITEM-BIN
         ((string= state "move_for_verification")
-         (speak-en  "Move for verification." :google t)
          (send *ri* :move-arm-body->head-view-point arm)
          (send *ri* :wait-interpolation)
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "verify_object"))
@@ -78,7 +74,6 @@
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "place_object")
              (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "return_object"))))
         ((string= state "return_object")
-         (speak-en (format nil "Return object to Bin ~A." (symbol2str target)) :google t)
          (send *ri* :move-arm-body->bin arm target)
          (send *ri* :wait-interpolation)
          (send *ri* :angle-vector-sequence (send *ri* :ik-avs->bin-entrance arm target :offset #f(300 0 80)))
@@ -92,7 +87,6 @@
            (setq work (pop work-order) n-tried 0))
          (ros::set-param (format nil "~A_process/state" (arm-to-str arm)) "pick_object"))
         ((string= state "place_object")
-         (speak-en  "Target is verified. Put in Order bin." :google t)
          (send *ri* :move-arm-body->order-bin arm)
          (send *ri* :wait-interpolation)
          (send *ri* :spin-off-by-wrist arm)
