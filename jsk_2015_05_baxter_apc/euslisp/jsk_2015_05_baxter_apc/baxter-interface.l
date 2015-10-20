@@ -16,7 +16,7 @@
   :slots
   (
    tfl
-   bin-atof-pos-stamp bin-boxes
+   bin-boxes
    objects-in-bin-stamp objects-in-bin-boxes objects-in-bin-target
    work-order get-work-order-arm
    bin-contents
@@ -36,6 +36,7 @@
                                   :rpy (float-vector 0 -pi/2 0)))
     ;; initialize slots
     (setq tfl (instance ros::transform-listener :init))
+    (setq bin-boxes (make-hash-table))
     (setq objects-in-bin-boxes (make-hash-table))
     (setq work-order (make-hash-table))
     )
@@ -87,37 +88,26 @@
     (let (coords)
       (setq coords (ros::tf-pose->coords pose))
       (send coords :transform (send tfl :lookup-transform "base" frame_id (ros::time 0)))))
-  (:recognize-bin-boxes-cb
-    (msg)
-    (let (bin bin-box-pos-z)
-      (setq bin-atof-pos-stamp (send (send msg :header) :stamp))
-      (setq bin-boxes (make-hash-table))
+  (:recognize-bin-boxes
+    ()
+    (let (msg bin bin-box-pos-z)
+      (setq
+        msg
+        (one-shot-subscribe "in_bin_atof/bin_clipper/output/box_array"
+                            jsk_recognition_msgs::BoundingBoxArray
+                            :after-stamp (row::time-now)))
+      ;; for bin A-F
       (dotimes (i 6)
         (setq bin (elt '(:a :b :c :d :e :f) i))
-        (setf (gethash bin bin-boxes) (elt (send msg :boxes) i))
-        )
-      ;; pos of bin G-L is minus z of A-F
+        (setf (gethash bin bin-boxes) (elt (send msg :boxes) i)))
+      ;; for bin G-L
+      ;; pos of these bin is minus z of A-F
       (dotimes (i 6)
         (setq bin (elt '(:j :k :l :g :h :i) i))
         (setq bin-box (copy-object (elt (send msg :boxes) i)))
         (setq bin-box-pos-z (send (send (send bin-box :pose) :position) :z))
         (send (send (send bin-box :pose) :position) :z (- bin-box-pos-z))
-        (sethash bin bin-boxes bin-box)
-        )
-    ))
-  (:recognize-bin-boxes
-    ()
-    (let ((now (ros::time-now)))
-      (ros::subscribe "in_bin_atof/bin_clipper/output/box_array"
-                      jsk_recognition_msgs::BoundingBoxArray
-                      #'send self :recognize-bin-boxes-cb)
-      (while
-        (or (null bin-atof-pos-stamp)
-            (< (send bin-atof-pos-stamp :sec) (send now :sec)))
-        (ros::ros-info "[:recognize-bin-boxes] waiting to synchronize")
-        (unix::sleep 1)
-        (ros::spin-once))
-      (ros::unsubscribe "in_bin_atof/bin_clipper/output/box_array")
+        (sethash bin bin-boxes bin-box))
       ))
   (:recognize-objects-in-bin-cb
     (msg)
