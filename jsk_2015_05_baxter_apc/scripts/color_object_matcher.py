@@ -9,6 +9,7 @@ import rospy
 from sensor_msgs.msg import Image
 from jsk_recognition_msgs.msg import ColorHistogram
 from jsk_2015_05_baxter_apc.msg import ObjectRecognition
+import jsk_2015_apc_common
 from common import ObjectMatcher
 from color_histogram_features import ColorHistogramFeatures
 import cv_bridge
