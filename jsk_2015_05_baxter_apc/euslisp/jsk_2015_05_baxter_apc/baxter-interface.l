@@ -77,23 +77,24 @@
   (:recognize-bin-boxes
     ()
     (let (msg bin bin-box-pos-z)
+      ;; for bin A-F
       (setq
         msg
-        (one-shot-subscribe "in_bin_atof/bin_clipper/output/box_array"
+        (one-shot-subscribe "bin_atof_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
                             :after-stamp (ros::time-now)))
-      ;; for bin A-F
       (dotimes (i 6)
         (setq bin (elt '(:a :b :c :d :e :f) i))
         (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
       ;; for bin G-L
-      ;; pos of these bin is minus z of A-F
+      (setq
+        msg
+        (one-shot-subscribe "bin_gtol_clipper/output/box_array"
+                            jsk_recognition_msgs::BoundingBoxArray
+                            :after-stamp (ros::time-now)))
       (dotimes (i 6)
-        (setq bin (elt '(:j :k :l :g :h :i) i))
-        (setq bin-box (copy-object (elt (send msg :boxes) i)))
-        (setq bin-box-pos-z (send (send (send bin-box :pose) :position) :z))
-        (send (send (send bin-box :pose) :position) :z (- bin-box-pos-z))
-        (sethash bin _bin-boxes bin-box))
+        (setq bin (elt '(:g :h :i :j :k :l) i))
+        (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
       ))
   (:recognize-objects-in-bin
     (bin)
