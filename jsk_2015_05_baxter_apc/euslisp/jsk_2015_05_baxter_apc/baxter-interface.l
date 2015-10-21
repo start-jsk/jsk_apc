@@ -73,7 +73,8 @@
     (frame_id pose)
     (let (coords)
       (setq coords (ros::tf-pose->coords pose))
-      (send coords :transform (send _tfl :lookup-transform "base" frame_id (ros::time 0)))))
+      (send (send _tfl :lookup-transform "base" frame_id (ros::time 0)) :transform coords)
+      ))
   (:recognize-bin-boxes
     ()
     (let (msg bin bin-box-pos-z)
@@ -96,6 +97,25 @@
         (setq bin (elt '(:g :h :i :j :k :l) i))
         (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
       ))
+  (:visualize-bins-pos
+    ()
+    (dolist (box (send _bin-boxes :list-values))
+      (send
+        (send self :tf-pose->coords
+              (send box :header :frame_id)
+              (send box :pose))
+        :draw-on :flush t :width 5 :color #f(0 1 0))
+      ))
+  (:visualize-objects-pos
+    ()
+    (dolist (boxes (send _objects-in-bin-boxes :list-values))
+      (dolist (box boxes)
+        (send
+          (send self :tf-pose->coords
+                (send box :header :frame_id)
+                (send box :pose))
+          :draw-on :flush t :width 5 :color #f(1 0 0))
+        )))
   (:recognize-objects-in-bin
     (bin)
     (let ((now (ros::time-now)))
@@ -129,7 +149,7 @@
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (object-boxes object-box coords)
       (unless
-        (setq object-boxes (gethash bin (send self :get-val '_objects-in-bin-boxes)))
+        (setq object-boxes (gethash bin _objects-in-bin-boxes))
         (ros::ros-warn "No object is found")
         (return-from :ik-avs->object-in-bin nil))
       (unless
