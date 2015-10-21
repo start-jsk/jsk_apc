@@ -102,7 +102,7 @@
       (setq
         msg
         (one-shot-subscribe
-          (format nil "in_bin_each_object/bin_~a_cpi_decomposer/boxes" (symbol2str bin))
+          (format nil "bin_~a_cpi_decomposer/boxes" (symbol2str bin))
           jsk_recognition_msgs::BoundingBoxArray
           :after-stamp (ros::time-now)))
       (sethash bin _objects-in-bin-boxes (send msg :boxes))))
