@@ -1,43 +1,32 @@
 <launch>
 
-  <arg name="MANAGER" />
-  <arg name="INPUT_CLOUD" default="/kiva_pod_filter/output"/>
+  <arg name="INPUT_CLOUD" />
 
-  <node name="cloud_from_kiva_pod_base"
+
+  <include file="$(find jsk_2015_apc_common)/launch/kiva_pod_filter.launch">
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD)_pod_filtered" />
+  </include>
+
+  <node name="bin_clipper"
         pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/TfTransformCloud /$(arg MANAGER)">
-    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+        args="standalone jsk_pcl/AttentionClipper">
+    <remap from="~input/points" to="$(arg INPUT_CLOUD)_pod_filtered" />
     <rosparam>
-      use_latest_tf: true
-      target_frame_id: /kiva_pod_base
+      use_multiple_attention: true
+      initial_pos_list: [[-0.21, 0.29, 0.36], [-0.21, 0, 0.36], [-0.21, -0.29, 0.36], [-0.21, 0.29, 0.11], [-0.21, 0, 0.11], [-0.21, -0.29, 0.11]]
+      initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+      dimensions: [[0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22], [0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22]]
+      frame_id_list: [kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base]
+      prefixes: [bin_a, bin_b, bin_c, bin_d, bin_e, bin_f]
     </rosparam>
   </node>
 
-  <group ns="in_bin_atof">
-
-    <node name="bin_clipper"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/AttentionClipper /$(arg MANAGER)"
-          output="screen">
-      <remap from="~input/points" to="/cloud_from_kiva_pod_base/output" />
-      <rosparam>
-        use_multiple_attention: true
-        initial_pos_list: [[-0.21, 0.29, 0.36], [-0.21, 0, 0.36], [-0.21, -0.29, 0.36], [-0.21, 0.29, 0.11], [-0.21, 0, 0.11], [-0.21, -0.29, 0.11]]
-        initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-        dimensions: [[0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22], [0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22]]
-        frame_id_list: [/kiva_pod_base, /kiva_pod_base, /kiva_pod_base, /kiva_pod_base, /kiva_pod_base, /kiva_pod_base]
-        prefixes: [bin_a, bin_b, bin_c, bin_d, bin_e, bin_f]
-      </rosparam>
-    </node>
-
-    <node name="cpi_decomposer"
-          pkg="nodelet" type="nodelet"
-          args="standalone jsk_pcl/ClusterPointIndicesDecomposer"
-          output="screen">
-      <remap from="~input" to="/cloud_from_kiva_pod_base/output" />
-      <remap from="~target" to="bin_clipper/output/cluster_point_indices" />
-    </node>
-
-  </group>
+  <node name="cpi_decomposer"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/ClusterPointIndicesDecomposer">
+    <remap from="~input" to="$(arg INPUT_CLOUD)_pod_filtered" />
+    <remap from="~target" to="bin_clipper/output/cluster_point_indices" />
+  </node>
 
 </launch>
