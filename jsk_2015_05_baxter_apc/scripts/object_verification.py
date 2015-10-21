@@ -68,7 +68,7 @@ class ObjectVerification(object):
         stamp, cfeature_objects_proba = self.cfeature
         weight = self.weight
 
-        target_bin = rospy.get_param('target-bin', None)
+        target_bin = rospy.get_param('target_bin', None)
 
         object_list = jsk_2015_apc_common.data.object_list()
         all_proba = [
