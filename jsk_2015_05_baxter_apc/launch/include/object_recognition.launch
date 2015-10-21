@@ -1,0 +1,28 @@
+<launch>
+
+
+  <arg name="INPUT_IMAGE" />
+
+
+  <node name="imagesift"
+        pkg="imagesift" type="imagesift">
+    <remap from="image" to="$(arg INPUT_IMAGE)" />
+  </node>
+
+  <node name="feature0d_to_image"
+        pkg="posedetection_msgs" type="feature0d_to_image" />
+
+  <node name="bof_object_matcher"
+        pkg="jsk_2015_05_baxter_apc" type="bof_object_matcher.py"
+        respawn="true">
+    <remap from="~input" to="Feature0D" />
+  </node>
+
+  <node name="color_object_matcher"
+        pkg="jsk_2015_05_baxter_apc" type="color_object_matcher.py"
+        respawn="true">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+  </node>
+
+
+</launch>

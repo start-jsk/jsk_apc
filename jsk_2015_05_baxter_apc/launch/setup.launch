@@ -1,69 +1,12 @@
 <launch>
-  <!-- args -->
-  <arg name="bof" default="true"/>
-  <arg name="rosserial" default="true"/>
-  <arg name="rviz" default="true" />
 
-  <env name="OMP_NUM_THREADS" value="4"/>
 
-  <!-- rosserial -->
-  <include if="$(arg rosserial)" file="$(find jsk_2015_05_baxter_apc)/launch/rosserial.launch" />
-
-  <!-- recognition -->
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/attention_divide.launch"/>
-  <group ns="left_process">
-    <include file="$(find jsk_2015_05_baxter_apc)/launch/bof_object_matcher.launch">
-      <arg name="input_image" value="/left_process/apply_mask/output" />
-      <arg name="input_info" value="/kinect2_head/rgb/camera_info" />
-      <arg name="respawn" value="true" />
-    </include>
-    <include file="$(find jsk_2015_05_baxter_apc)/launch/color_object_matcher.launch">
-      <arg name="input_image" value="/left_process/apply_mask/output" />
-      <arg name="respawn" value="true" />
-    </include>
-  </group>
-  <group ns="right_process">
-    <include file="$(find jsk_2015_05_baxter_apc)/launch/bof_object_matcher.launch">
-      <arg name="input_image" value="/right_process/apply_mask/output" />
-      <arg name="input_info" value="/kinect2_head/rgb/camera_info" />
-      <arg name="respawn" value="true" />
-    </include>
-    <include file="$(find jsk_2015_05_baxter_apc)/launch/color_object_matcher.launch">
-      <arg name="input_image" value="/right_process/apply_mask/output" />
-      <arg name="respawn" value="true" />
-    </include>
-  </group>
-
-  <!-- see if grabbed -->
-  <include ns="see_left_if_grabbed" file="$(find jsk_2015_05_baxter_apc)/launch/see_if_grabbed.launch">
-    <arg name="left_or_right" value="left" />
-    <arg name="input_image" value="/cameras/left_hand_camera/image" />
-  </include>
-  <include ns="see_right_if_grabbed" file="$(find jsk_2015_05_baxter_apc)/launch/see_if_grabbed.launch">
-    <arg name="left_or_right" value="right" />
-    <arg name="input_image" value="/cameras/right_hand_camera/image" />
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/recognition_in_hand.launch">
+    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_filtered" />
   </include>
 
-  <!-- object pos detection -->
-  <include ns="left_object_detection" file="$(find jsk_2015_05_baxter_apc)/launch/feature_label_object_detector.launch">
-    <arg name="left_or_right" value="left" />
-  </include>
-  <include ns="right_object_detection" file="$(find jsk_2015_05_baxter_apc)/launch/feature_label_object_detector.launch">
-    <arg name="left_or_right" value="right" />
-  </include>
 
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/extract_each_bin.launch"/>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin.launch" />
 
-  <!-- force sensor -->
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/virtual_force_publisher.launch">
-    <arg name="limb" value="right" />
-  </include>
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/virtual_force_publisher.launch">
-    <arg name="limb" value="left" />
-  </include>
 
-  <!-- rviz -->
-  <node if="$(arg rviz)" pkg="rviz" name="rviz_for_challenge" type="rviz" args="-d $(find jsk_2015_05_baxter_apc)/config/challenge.rviz"/>
-  <node pkg="jsk_2015_05_baxter_apc" name="visuazliation_objects" type="objects_marker_server.py"/>
-  <node pkg="jsk_2015_05_baxter_apc" name="debug_info_publisher" type="debug_info_overlay_text.py"/>
 </launch>
