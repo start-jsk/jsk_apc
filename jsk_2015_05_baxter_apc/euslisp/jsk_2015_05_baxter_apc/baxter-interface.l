@@ -58,6 +58,15 @@
         )
       :data)
     )
+  (:opposite-arm (arm) (if (eq arm :larm) :rarm :larm))
+  (:need-to-wait-opposite-arm
+    (arm)
+    (let (opposite-state)
+      (setq opposite-state (str2symbol (ros::get-param (format nil "~a_process/state" (send self :arm-symbol2str (send self :opposite-arm arm))))))
+      (setq opposite-target (str2symbol (ros::get-param (format nil "~a_process/target_bin" (send self :arm-symbol2str (send self :opposite-arm arm))))))
+      (if (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))
+        t
+        nil)))
   (:arm-symbol2str
     (arm)
     (case arm
@@ -294,7 +303,8 @@
     (send msg :array))
   (:get-next-work-order
     (arm current-order)
-    (let (orders (send self :get-work-orders arm))
+    (let ((orders (send self :get-work-orders arm)))
+      (ros::ros-warn "~a" orders)
       (dotimes (i (- (length orders) 1))
         (when (null current-order)
           (return-from :get-next-work-order (elt orders 0)))

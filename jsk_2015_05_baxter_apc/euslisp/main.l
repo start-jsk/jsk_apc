@@ -9,18 +9,21 @@
 
 (defun apc-init (&optional (ctype :default-controller))
   (jsk_2015_05_baxter_apc::baxter-init :ctype ctype)
+  (send *ri* :angle-vector (send *baxter* :fold-pose-back))
+  (send *ri* :wait-interpolation)
   (objects (list *baxter*))
   t)
 
 (defun apc-mainloop (arm)
   (let (state order target-n-tried target-bin target-obj)
     (setq state :wait_for_user_input)
+    (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
     (while
       t
-      (case
+      (case state
         (:wait_for_user_input
           ;; wait user input to start the task
-          (send *ri* :wait-for-user-input-to-start)
+          (send *ri* :wait-for-user-input-to-start arm)
           (setq state :initialize)
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
@@ -34,10 +37,14 @@
         (:set_target
           ;; next order
           (setq order (send *ri* :get-next-work-order arm order))
+          (ros::ros-warn "~a" order)
           ;; get target param
           (setq target-n-tried 0)
-          (setq target-bin (send order :bin))
+          (setq target-bin (str2symbol (send order :bin)))
           (setq target-obj (send order :object))
+          (print target-bin)
+          (print (symbol2str target-bin))
+          (ros::set-param (format nil "~a_process/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
           ;; logging
           (ros::ros-info "[main] state: ~a" state)
           (ros::ros-info "[main] arm: ~a" arm)
@@ -61,7 +68,7 @@
           (send *ri* :move-arm-body->bin arm target-bin)
           (send *ri* :wait-interpolation)
           (send *ri* :pick-object arm target-bin)
-          (incf n-tried)
+          (incf target-n-tried)
           (if (= (length (sed *ri* :get-bin-contents target-bin)) 1)
             (setq state :place_object)
             (setq state :move_for_verification))
