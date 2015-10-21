@@ -1,41 +1,52 @@
 <launch>
 
-  <arg name="MANAGER" />
   <arg name="BIN_NAME" />
   <arg name="INPUT_CLOUD" />
-  <arg name="INPUT_INDICES" />
 
-  <group ns="in_bin_each_object">
 
-    <node name="bin_$(arg BIN_NAME)_extract_pi"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/ExtractIndices /$(arg MANAGER)"
-          output="screen">
-      <remap from="~input" to="$(arg INPUT_CLOUD)" />
-      <remap from="~indices" to="$(arg INPUT_INDICES)" />
-      <rosparam>
-        keep_organized: true
-      </rosparam>
-    </node>
+  <include file="$(find jsk_2015_apc_common)/launch/kiva_pod_filter.launch">
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD)_pod_filtered" />
+  </include>
 
-    <node name="bin_$(arg BIN_NAME)_euclid_clustering"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/EuclideanClustering /$(arg MANAGER)"
-          output="screen">
-      <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
-      <rosparam>
-        max_size: 100000
-      </rosparam>
-    </node>
+  <node name="bin_clipper"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/AttentionClipper">
+    <remap from="~input/points" to="$(arg INPUT_CLOUD)_pod_filtered" />
+    <rosparam>
+      use_multiple_attention: true
+      initial_pos_list: [[-0.21, 0.29, 0.36], [-0.21, 0, 0.36], [-0.21, -0.29, 0.36], [-0.21, 0.29, 0.11], [-0.21, 0, 0.11], [-0.21, -0.29, 0.11]]
+      initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+      dimensions: [[0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22], [0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22]]
+      frame_id_list: [kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base]
+      prefixes: [bin_a, bin_b, bin_c, bin_d, bin_e, bin_f]
+    </rosparam>
+  </node>
 
-    <node name="bin_$(arg BIN_NAME)_cpi_decomposer"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/ClusterPointIndicesDecomposer /$(arg MANAGER)"
-          output="screen">
-      <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
-      <remap from="~target" to="bin_$(arg BIN_NAME)_euclid_clustering/output" />
-    </node>
+  <node name="bin_$(arg BIN_NAME)_extract_pi"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/ExtractIndices">
+    <remap from="~input" to="$(arg INPUT_CLOUD)_pod_filtered" />
+    <remap from="~indices" to="bin_clipper/bin_$(arg BIN_NAME)/point_indices" />
+    <rosparam>
+      keep_organized: true
+    </rosparam>
+  </node>
 
-  </group>
+  <node name="bin_$(arg BIN_NAME)_euclid_clustering"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/EuclideanClustering">
+    <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
+    <rosparam>
+      max_size: 100000
+    </rosparam>
+  </node>
+
+  <node name="bin_$(arg BIN_NAME)_cpi_decomposer"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/ClusterPointIndicesDecomposer">
+    <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
+    <remap from="~target" to="bin_$(arg BIN_NAME)_euclid_clustering/output" />
+  </node>
 
 </launch>
