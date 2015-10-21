@@ -10,7 +10,7 @@ import numpy as np
 from sklearn.preprocessing import normalize
 
 import rospy
-from posedetection_msgs.msg import ImageFeature0D
+from posedetection_msgs.msg import Feature0D
 from jsk_recognition_msgs.msg import Histogram
 from jsk_2015_05_baxter_apc.msg import ObjectRecognition
 
@@ -23,14 +23,14 @@ import jsk_2015_apc_common
 class BofObjectMatcher(ObjectMatcher):
     def __init__(self):
         super(BofObjectMatcher, self).__init__('/bof_object_matcher')
-        rospy.Subscriber('~input', ImageFeature0D, self._cb_imgfeature)
+        rospy.Subscriber('~input', Feature0D, self._cb_feature)
         self._pub_recog = rospy.Publisher('~output', ObjectRecognition,
                                           queue_size=1)
         self._pub_debug = rospy.Publisher(
             '~debug', Histogram, queue_size=1)
         self._init_bof()
         self._init_clf()
-        self.query_features = ImageFeature0D().features
+        self.query_features = Feature0D()
 
     def _init_bof(self):
         data_dir = get_data_dir()
@@ -46,9 +46,9 @@ class BofObjectMatcher(ObjectMatcher):
             lgr = pickle.load(f)
         self.clf = lgr
 
-    def _cb_imgfeature(self, msg):
-        """Callback function of Subscribers to listen ImageFeature0D"""
-        self.query_features = msg.features
+    def _cb_feature(self, msg):
+        """Callback function of Subscribers to listen Feature0D"""
+        self.query_features = msg
 
     def match(self, obj_names):
         stamp = rospy.Time.now()
