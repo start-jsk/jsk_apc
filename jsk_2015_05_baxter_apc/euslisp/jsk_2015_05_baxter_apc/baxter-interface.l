@@ -177,20 +177,18 @@
       (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis :z) avs)
       (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis t) avs)
       avs))
-  (:pick-object
-    (arm bin &key (object-index 0))
+  (:try-to-pick-object
+    (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (bin-box)
-      ;; move arm bin-entrance -> pos above object to z direction
       (setq bin-box (gethash bin _bin-boxes))
       (setq avs
             (send self :ik-avs->object-in-bin
                   :rarm
                   bin
                   :object-index 0
-                  :offset (float-vector 0 0 (m->mm (/ (send bin-box :dimensions :z) 2)))
-                  )
+                  :offset offset)
             )
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper
       (send self :start-grasp)
@@ -202,6 +200,21 @@
       (send *baxter* :rarm :move-end-pos #f(0 0 100) :world :rotation-axis :z)
       (send self :send-av)
       (send self :wait-interpolation)
+    ))
+  (:pick-object
+    (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1))
+    (let (bin-box)
+      ;; move arm bin-entrance -> pos above object to z direction
+      (setq bin-box (gethash bin _bin-boxes))
+      (dotimes (i n-trial)
+        (dotimes (j n-trial-same-pos)
+          ;; try to pick and the goal becomes far to x gradually
+          (send self :try-to-pick arm bin :object-index object-index
+                                          :offset (float-vector (+ 0 (* i 20)) 0 (m->mm (/ (send bin-box :dimensions :z) 2))))
+          (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
+          )
+        (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
+        )
       ;; move arm in-bin -> bin-entrance
       (send self :ik->bin-entrance :rarm bin :offset #f(-150 0 50))
       (send self :send-av)
