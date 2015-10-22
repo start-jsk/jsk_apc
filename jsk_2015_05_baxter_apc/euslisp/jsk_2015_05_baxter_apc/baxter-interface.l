@@ -156,6 +156,32 @@
         (string= object-name (send msg :matched))
         nil
         )))
+  (:try-to-pick-in-bin
+    (arm bin random-seed)
+    (let* ((bin-box (gethash bin _bin-boxes))
+           (dim-x (m->mm (send bin-box :dimensions :x)))
+           (dim-y (m->mm (send bin-box :dimensions :y)))
+           (dim-z (m->mm (send bin-box :dimensions :z)))
+           (step-x (/ dim-x 4))
+           (step-y (/ dim-y 4))
+           (step-z (/ dim-z 4)))
+      (send self :ik->bin-entrance arm bin
+            :offset (float-vector
+                      (* (random 4) step-x)
+                      (- (* (random 4) step-y) (/ dim-y 2))
+                      (/ dim-z 3)))
+      (send self :send-av)
+      ;; start vacuum gripper
+      (send self :start-grasp arm)
+      ;; grasp object
+      (send *baxter* arm :move-end-pos #f(0 0 -80) :world :rotation-axis :z)
+      (send self :send-av)
+      (send self :wait-interpolation)
+      ;; lift object
+      (send *baxter* arm :move-end-pos #f(0 0 100) :world :rotation-axis :z)
+      (send self :send-av)
+      (send self :wait-interpolation)
+      ))
   (:ik-avs->object-in-bin
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (object-boxes object-box coords avs)
@@ -179,15 +205,16 @@
       avs))
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
-    (let (bin-box)
-      (setq bin-box (gethash bin _bin-boxes))
-      (setq avs
-            (send self :ik-avs->object-in-bin
-                  :rarm
-                  bin
-                  :object-index 0
-                  :offset offset)
-            )
+    (let (avs)
+      (unless
+        (setq avs
+              (send self :ik-avs->object-in-bin
+                    arm
+                    bin
+                    :object-index 0
+                    :offset offset)
+              )
+        (return-from :try-to-pick-object nil))
       (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper
@@ -197,7 +224,7 @@
             (send self :ik-avs->object-in-bin arm bin :object-index object-index))
       (send self :wait-interpolation)
       ;; lift object
-      (send *baxter* :rarm :move-end-pos #f(0 0 100) :world :rotation-axis :z)
+      (send *baxter* arm :move-end-pos #f(0 0 100) :world :rotation-axis :z)
       (send self :send-av)
       (send self :wait-interpolation)
     ))
@@ -208,19 +235,20 @@
       (setq bin-box (gethash bin _bin-boxes))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
-          ;; try to pick and the goal becomes far to x gradually
-          (send self :try-to-pick arm bin :object-index object-index
-                                          :offset (float-vector (+ 0 (* i 20)) 0 (m->mm (/ (send bin-box :dimensions :z) 2))))
+          (unless
+            ;; try to pick and the goal becomes far to x gradually
+            (send self :try-to-pick-object arm bin :object-index object-index :offset (float-vector (+ 0 (* i 20)) 0 (m->mm (/ (send bin-box :dimensions :z) 2))))
+            (send self :try-to-pick-in-bin arm bin))
           (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
           )
         (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
         )
       ;; move arm in-bin -> bin-entrance
-      (send self :ik->bin-entrance :rarm bin :offset #f(-150 0 50))
+      (send self :ik->bin-entrance arm bin :offset #f(-150 0 50))
       (send self :send-av)
       (send self :wait-interpolation)
       ;; move arm bin-entrance -> body
-      (send *baxter* :avoid-shelf-pose :rarm bin)
+      (send *baxter* :avoid-shelf-pose arm bin)
       (send self :send-av)
       (send self :wait-interpolation)
       ))
