@@ -33,9 +33,9 @@ def get_work_order_msg(json_file):
     work_order = get_sorted_work_order(json_file=json_file)
     msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
     for bin_, target_object in work_order:
-        if bin_ in 'abdeghjk':
+        if bin_ in 'adgj':
             msg['left'].array.append(WorkOrder(bin=bin_, object=target_object))
-        elif bin_ in 'cfil':
+        elif bin_ in 'bcefhikl':
             msg['right'].array.append(WorkOrder(bin=bin_, object=target_object))
     return msg
 
@@ -48,10 +48,10 @@ def main():
 
     msg = get_work_order_msg(json_file)
 
-    pub_left = rospy.Publisher('/work_order/left_process',
+    pub_left = rospy.Publisher('/work_order/left_hand',
                                WorkOrderArray,
                                queue_size=1)
-    pub_right = rospy.Publisher('/work_order/right_process',
+    pub_right = rospy.Publisher('/work_order/right_hand',
                                 WorkOrderArray,
                                 queue_size=1)
     rate = rospy.Rate(rospy.get_param('rate', 1))
