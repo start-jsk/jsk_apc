@@ -103,6 +103,9 @@
           (send *ri* :stop-grasp)
           (send *ri* :spin-off-by-wrist arm)
           (send *ri* :wait-interpolation)
+          (send *baxter* :avoid-shelf-pose arm target-bin)
+          (send *ri* :send-av)
+          (send *ri* :wait-interpolation)
           ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
           (if (> (length (send *ri* :get-bin-contents target-bin)) target-n-tried)
             (setq state :pick_object)

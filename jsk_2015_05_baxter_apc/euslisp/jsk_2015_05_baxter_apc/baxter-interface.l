@@ -98,7 +98,7 @@
         msg
         (one-shot-subscribe "bin_atof_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :after-stamp (ros::time-now)))
+                            :after-stamp (ros::time)))
       (dotimes (i 6)
         (setq bin (elt '(:a :b :c :d :e :f) i))
         (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
@@ -107,7 +107,7 @@
         msg
         (one-shot-subscribe "bin_gtol_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :after-stamp (ros::time-now)))
+                            :after-stamp (ros::time)))
       (dotimes (i 6)
         (setq bin (elt '(:j :k :l :g :h :i) i))
         (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
