@@ -22,12 +22,14 @@
       t
       (case state
         (:wait_for_user_input
+          (ros::ros-info "[main] ~a, ~a" arm state)
           ;; wait user input to start the task
           (send *ri* :wait-for-user-input-to-start arm)
           (setq state :initialize)
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
         (:initialize
+          (ros::ros-info "[main] ~a, ~a" arm state)
           ;; recognize bin boxes position and dimension
           (send *ri* :recognize-bin-boxes)
           (setq order nil)
@@ -35,6 +37,7 @@
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
         (:set_target
+          (ros::ros-info "[main] ~a, ~a" arm state)
           ;; next order
           (setq order (send *ri* :get-next-work-order arm order))
           (ros::ros-warn "~a" order)
@@ -42,8 +45,6 @@
           (setq target-n-tried 0)
           (setq target-bin (str2symbol (send order :bin)))
           (setq target-obj (send order :object))
-          (print target-bin)
-          (print (symbol2str target-bin))
           (ros::set-param (format nil "~a_process/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
           ;; logging
           (ros::ros-info "[main] state: ~a" state)
@@ -54,34 +55,45 @@
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
         (:wait_for_opposite_arm
+          (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :wait-for-opposite-arm arm)
           (setq state :pick_object)
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
         (:pick_object
+          (ros::ros-info "[main] ~a, ~a" arm state)
           ;; if necessary wait for opposite arm
           (when (send *ri* :need-to-wait-opposite-arm arm)
             (setq state :wait_for_opposite_arm)
             (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
             (return-from :pick-object))
           ;; run motion
+          (send *ri* :recognize-objects-in-bin :c)
           (send *ri* :move-arm-body->bin arm target-bin)
           (send *ri* :wait-interpolation)
           (send *ri* :pick-object arm target-bin)
           (incf target-n-tried)
-          (if (= (length (sed *ri* :get-bin-contents target-bin)) 1)
+          (if (= (length (send *ri* :get-bin-contents target-bin)) 1)
             (setq state :place_object)
             (setq state :move_for_verification))
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
         (:move_for_verification
+          (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :move-arm-body->head-view-point arm)
           (send *ri* :wait-interpolation)
           (setq state :verify_object)
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
+        (:verify_object
+          (ros::ros-info "[main] ~a, ~a" arm state)
+          (if (send *ri* :verify-object arm target-obj)
+            (setq state :place_object)
+            (setq state :return_object))
+          (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:return_object
-          (send *ri* :move-arm-body->bin arm target)
+          (ros::ros-info "[main] ~a, ~a" arm state)
+          (send *ri* :move-arm-body->bin arm target-bin)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-sequence (send *ri* :ik-avs->bin-entrance arm target :offset #f(300 0 80)))
           (send *ri* :wait-interpolation)
@@ -95,9 +107,13 @@
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
         (:place_object
+          (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :move-arm-body->order-bin arm)
           (send *ri* :wait-interpolation)
           (send *ri* :spin-off-by-wrist arm)
+          (send *ri* :wait-interpolation)
+          (send *baxter* :fold-pose-back arm)
+          (send *ri* :send-av)
           (send *ri* :wait-interpolation)
           (setq state :set_target)
           (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
