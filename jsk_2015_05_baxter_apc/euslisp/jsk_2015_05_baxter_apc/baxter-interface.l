@@ -157,9 +157,9 @@
       ))
   (:verify-object
     (arm object-name)
-    (let (msg)
-      (if (setq msg (send self :recognize-object-in-hand arm))
-        (string= object-name (send msg :matched))
+    (let (matched)
+      (if (setq matched (send self :recognize-object-in-hand arm))
+        (string= object-name matched)
         nil)))
   (:try-to-pick-in-bin
     (arm bin)
@@ -174,7 +174,7 @@
             :offset (float-vector
                       (* (random 4) step-x)
                       (- (* (random 4) step-y) (/ dim-y 2))
-                      (/ dim-z 3)))
+                      0))
       (send self :send-av 3000)
       ;; start vacuum gripper
       (send self :start-grasp arm)
@@ -208,6 +208,7 @@
             )
         (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :pos) 1)) 1 -1)) ;; compare y
         (setq sign 0))
+      (ros::ros-info "[:try-to-pick-object] sign: ~a" sign)
       (pushback
         (send *baxter* arm :inverse-kinematics
             (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
