@@ -189,11 +189,11 @@
     (let (object-boxes object-box coords avs)
       (unless
         (setq object-boxes (gethash bin _objects-in-bin-boxes))
-        (ros::ros-warn "No object is found")
+        (ros::ros-warn "No object is found: ~a, ~a" arm bin)
         (return-from :ik-avs->object-in-bin nil))
       (unless
         (setq object-box (elt object-boxes object-index))
-        (ros::ros-warn "The object is not found: ~a" object-index)
+        (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
         (return-from :ik-avs->object-in-bin nil)
         )
       (setq coords
@@ -202,8 +202,8 @@
           (send
             (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :translate offset)
             :worldpos)))
-      (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis :z) avs)
-      (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis t) avs)
+      (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis :z :revert-if-fail nil) avs)
+      (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis t :revert-if-fail nil) avs)
       avs))
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
