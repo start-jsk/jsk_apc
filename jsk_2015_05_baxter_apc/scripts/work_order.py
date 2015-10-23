@@ -48,10 +48,10 @@ def main():
 
     msg = get_work_order_msg(json_file)
 
-    pub_left = rospy.Publisher('/work_order/left_process',
+    pub_left = rospy.Publisher('/work_order/left_hand',
                                WorkOrderArray,
                                queue_size=1)
-    pub_right = rospy.Publisher('/work_order/right_process',
+    pub_right = rospy.Publisher('/work_order/right_hand',
                                 WorkOrderArray,
                                 queue_size=1)
     rate = rospy.Rate(rospy.get_param('rate', 1))
