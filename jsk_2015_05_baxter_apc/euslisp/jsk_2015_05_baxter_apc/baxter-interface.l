@@ -62,8 +62,8 @@
   (:need-to-wait-opposite-arm
     (arm)
     (let (opposite-state)
-      (setq opposite-state (str2symbol (ros::get-param (format nil "~a_process/state" (send self :arm-symbol2str (send self :opposite-arm arm))))))
-      (setq opposite-target (str2symbol (ros::get-param (format nil "~a_process/target_bin" (send self :arm-symbol2str (send self :opposite-arm arm))))))
+      (setq opposite-state (str2symbol (ros::get-param (format nil "~a_hand/state" (send self :arm-symbol2str (send self :opposite-arm arm))))))
+      (setq opposite-target (str2symbol (ros::get-param (format nil "~a_hand/target_bin" (send self :arm-symbol2str (send self :opposite-arm arm))))))
       (if (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))
         t
         nil)))
@@ -150,8 +150,11 @@
               jsk_2015_05_baxter_apc::ObjectRecognition
               :timeout timeout
               :after-stamp (ros::time-now)))
-      (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched))
-      (if msg (send msg :matched) nil)
+      (if msg
+        (progn
+          (send msg :matched)
+          (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched)))
+        nil)
       ))
   (:verify-object
     (arm object-name &key (timeout 20))
@@ -345,7 +348,7 @@
     (setq
       msg
       (one-shot-subscribe
-        (format nil "work_order/~a_process" (send self :arm-symbol2str arm))
+        (format nil "work_order/~a_hand" (send self :arm-symbol2str arm))
         jsk_2015_05_baxter_apc::WorkOrderArray))
     (send msg :array))
   (:get-next-work-order
