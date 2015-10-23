@@ -117,6 +117,7 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :move-arm-body->order-bin arm)
           (send *ri* :wait-interpolation)
+          (send *ri* :stop-grasp arm)
           (send *ri* :spin-off-by-wrist arm)
           (send *ri* :wait-interpolation)
           (send *baxter* :fold-pose-back arm)
