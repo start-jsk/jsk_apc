@@ -86,6 +86,10 @@
       (setq coords (ros::tf-pose->coords pose))
       (send (send _tfl :lookup-transform "base" frame_id (ros::time 0)) :transform coords)
       ))
+  (:fold-pose-back
+    (&optional (arm :arms))
+    (send *baxter* :fold-pose-back arm)
+    (send *ri* :send-av))
   (:recognize-bin-boxes
     ()
     (let (msg bin bin-box-pos-z)
@@ -105,7 +109,7 @@
                             jsk_recognition_msgs::BoundingBoxArray
                             :after-stamp (ros::time-now)))
       (dotimes (i 6)
-        (setq bin (elt '(:g :h :i :j :k :l) i))
+        (setq bin (elt '(:j :k :l :g :h :i) i))
         (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
       ))
   (:visualize-bins-pos
@@ -142,7 +146,7 @@
     (let* (msg)
       (setq msg
             (one-shot-subscribe
-              (format nil "~a_process/object_verification/output" (arm-to-str arm))
+              (format nil "~a_hand/object_verification/output" (arm-to-str arm))
               jsk_2015_05_baxter_apc::ObjectRecognition
               :timeout timeout
               :after-stamp (ros::time-now)))
@@ -151,13 +155,11 @@
   (:verify-object
     (arm object-name &key (timeout 20))
     (let (msg)
-      (setq msg (send self :verify-object arm :timeout timeout))
-      (if msg
+      (if (setq msg (send self :recognize-object-in-hand arm :timeout timeout))
         (string= object-name (send msg :matched))
-        nil
-        )))
+        nil)))
   (:try-to-pick-in-bin
-    (arm bin random-seed)
+    (arm bin)
     (let* ((bin-box (gethash bin _bin-boxes))
            (dim-x (m->mm (send bin-box :dimensions :x)))
            (dim-y (m->mm (send bin-box :dimensions :y)))
@@ -218,7 +220,7 @@
       (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper
-      (send self :start-grasp)
+      (send self :start-grasp arm)
       ;; grasp object
       (send self :angle-vector-sequence
             (send self :ik-avs->object-in-bin arm bin :object-index object-index))
@@ -238,13 +240,16 @@
           (unless
             ;; try to pick and the goal becomes far to x gradually
             (send self :try-to-pick-object arm bin :object-index object-index :offset (float-vector (+ 0 (* i 20)) 0 (m->mm (/ (send bin-box :dimensions :z) 2))))
+            (ros::ros-warn "No objects found, try to pick without vision result")
             (send self :try-to-pick-in-bin arm bin))
           (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
+          (send self :stop-grasp arm)
           )
         (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
+        (send self :stop-grasp arm)
         )
       ;; move arm in-bin -> bin-entrance
-      (send self :ik->bin-entrance arm bin :offset #f(-150 0 50))
+      (send self :ik->bin-entrance arm bin :offset #f(-100 0 50))
       (send self :send-av)
       (send self :wait-interpolation)
       ;; move arm bin-entrance -> body
@@ -285,23 +290,24 @@
                              (send bin-box :pose)))
       (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
       (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
-      (send bin-coords :translate offset :world)
-      (send *baxter* :fold-pose-lower arm)
       (case bin
-        (:a (send *baxter* :fold-pose-upper arm))
-        (:c (send *baxter* :fold-pose-upper arm))
-        (:j (send *baxter* :fold-pose-middle arm))
-        (:k (send *baxter* :fold-pose-middle arm))
-        (:l (send *baxter* :fold-pose-middle arm))
+        ((:a :b :c) (send *baxter* :fold-pose-upper arm))
+        ((:e :j :k :l) (send *baxter* :fold-pose-middle arm))
+        ((:d :f :g :h :i) (send *baxter* :fold-pose-lower arm))
         )
-      (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t)))
+      (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t)
+      ;; apply offset
+      (send bin-coords :translate offset :world)
+      (send *baxter* arm :inverse-kinematics bin-coords
+            :rotation-axis :z
+            :revert-if-fail nil)))
   (:move-arm-body->bin
     (arm bin)
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
       (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 0)) avs)
-      (send self :angle-vector-sequence avs)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       ))
   (:move-arm-body->order-bin
     (arm)
