@@ -188,46 +188,45 @@
       (send self :send-av)
       (send self :wait-interpolation)
       ))
-  (:ik-avs->object-in-bin
-    (arm bin &key (object-index 0) (offset #f(0 0 0)))
-    (let (object-boxes object-box coords avs pos-tmp)
-      (unless
-        (setq object-boxes (gethash bin _objects-in-bin-boxes))
-        (ros::ros-warn "No object is found: ~a, ~a" arm bin)
-        (return-from :ik-avs->object-in-bin nil))
-      (unless
-        (setq object-box (elt object-boxes object-index))
-        (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
-        (return-from :ik-avs->object-in-bin nil)
-        )
-      (setq pos-tmp (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :pos))
-      (setq coords (make-coords :pos (v+ pos-tmp offset)))
-      (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis t :revert-if-fail nil) avs)
-      avs))
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
-    (let (avs)
+    (let (avs obj-boxes obj-box)
+      (pushback (send self :ik->bin-entrance arm bin) avs)
+      ;; validate
       (unless
-        (setq avs
-              (send self :ik-avs->object-in-bin
-                    arm
-                    bin
-                    :object-index object-index
-                    :offset offset)
-              )
+        (setq obj-boxes (gethash bin _objects-in-bin-boxes))
+        (ros::ros-warn "No object is found: ~a, ~a" arm bin)
         (return-from :try-to-pick-object nil))
+      (unless
+        (setq obj-box (elt obj-boxes object-index))
+        (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
+        (return-from :try-to-pick-object nil))
+      ;; ik to obj a bit distant
+      (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
+      (if (and
+            (< (send obj-box :dimensions :x) (send obj-box :dimensions :z))
+            (> (send obj-box :dimensions :z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
+            )
+        (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :pos) 1)) 1 -1)) ;; compare y
+        (setq sign 0))
+      (pushback
+        (send *baxter* arm :inverse-kinematics
+            (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
+        avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper
       (send self :start-grasp arm)
       ;; grasp object
-      (send self :angle-vector-sequence
-            (send self :ik-avs->object-in-bin arm bin :object-index object-index)
-            :fast nil 0 :scale 5.0)
+      (send self :angle-vector
+            (send *baxter* arm :inverse-kinematics
+                  (make-coords :pos (send obj-coords :pos) :rpy (list 0 0 (* sign pi/2))))
+            3000)
+      (send self :wait-interpolation)
+      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local) 3000)
       (send self :wait-interpolation)
       ;; lift object
-      (send *baxter* arm :move-end-pos #f(0 0 100) :world :rotation-axis :z)
-      (send self :send-av)
+      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)
       (send self :wait-interpolation)
     ))
   (:pick-object
@@ -251,9 +250,10 @@
         (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
         (send self :stop-grasp arm)
         )
+      (send self :angle-vector (send self :ik->bin-entrance arm bin) 3000)
+      (send self :wait-interpolation)
       ;; move arm in-bin -> bin-entrance
-      (send self :ik->bin-entrance arm bin :offset #f(-100 0 50))
-      (send self :send-av)
+      (send self :angle-vector (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)) 3000)
       (send self :wait-interpolation)
       ;; move arm bin-entrance -> body
       (send *baxter* :avoid-shelf-pose arm bin)
