@@ -19,20 +19,26 @@
   <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="rqt_yn_btn" />
 
   <!-- object verification -->
-  <node ns="left_process" pkg="jsk_2015_05_baxter_apc" type="object_verification.py"
-    name="object_verification" respawn="true">
-    <param name="json" value="$(arg json)" />
-    <param name="weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
-    <remap from="~input/bof" to="bof_object_matcher/output" />
-    <remap from="~input/color_hist" to="color_object_matcher/output" />
-  </node>
-  <node ns="right_process" pkg="jsk_2015_05_baxter_apc" type="object_verification.py"
-    name="object_verification" respawn="true">
-    <param name="json" value="$(arg json)" />
-    <param name="weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
-    <remap from="~input/bof" to="bof_object_matcher/output" />
-    <remap from="~input/color_hist" to="color_object_matcher/output" />
-  </node>
+  <group ns="left_hand">
+    <node name="object_verification"
+          pkg="jsk_2015_05_baxter_apc" type="object_verification.py"
+          respawn="true">
+      <param name="json" value="$(arg json)" />
+      <param name="weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
+      <remap from="~input/bof" to="bof_object_matcher/output" />
+      <remap from="~input/color_hist" to="color_object_matcher/output" />
+    </node>
+  </group>
+  <group ns="right_hand">
+    <node name="object_verification"
+          pkg="jsk_2015_05_baxter_apc" type="object_verification.py"
+          respawn="true">
+      <param name="json" value="$(arg json)" />
+      <param name="weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
+      <remap from="~input/bof" to="bof_object_matcher/output" />
+      <remap from="~input/color_hist" to="color_object_matcher/output" />
+    </node>
+  </group>
 
   <!-- robot main -->
   <node if="$(arg launch_main)" pkg="jsk_2015_05_baxter_apc" type="main.l" name="left_process"
