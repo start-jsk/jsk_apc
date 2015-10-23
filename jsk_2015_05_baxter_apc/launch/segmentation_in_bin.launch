@@ -5,32 +5,24 @@
         pkg="nodelet" type="nodelet" args="manager" />
 
 
-  <!-- kiva pod filter -->
-  <group ns="kinect2_head">
-    <include file="$(find jsk_2015_apc_common)/launch/kiva_pod_filter.launch">
-      <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_filtered" />
-      <arg name="OUTPUT_CLOUD" value="/kinect2_head/hd/points_pod_filtered" />
-    </include>
-  </group>
-  <group ns="kinect2_torso">
-    <include file="$(find jsk_2015_apc_common)/launch/kiva_pod_filter.launch">
-      <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_filtered" />
-      <arg name="OUTPUT_CLOUD" value="/kinect2_torso/hd/points_pod_filtered" />
-    </include>
-  </group>
+  <!-- interactive_marker to adjust kiva pod pose it means for /kiva_pod_base frame -->
+  <node name="interactive_adjust_kiva_pod"
+        pkg="jsk_interactive_marker" type="marker_6dof">
+    <rosparam command="load" file="$(find jsk_2015_apc_common)/config/kiva_pod_interactive_marker.yaml" />
+  </node>
 
 
   <!-- bin clipper -->
   <node name="bin_atof_clipper"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
-    <remap from="~input/points" to="/kinect2_head/hd/points_pod_filtered" />
+    <remap from="~input/points" to="/kinect2_head/hd/points" />
     <rosparam>
       debug: true
       use_multiple_attention: true
-      initial_pos_list: [[-0.21, 0.29, 0.36], [-0.21, 0, 0.36], [-0.21, -0.29, 0.36], [-0.21, 0.29, 0.11], [-0.21, 0, 0.11], [-0.21, -0.29, 0.11]]
+      initial_pos_list: [[-0.22, 0.29, 0.33], [-0.22, 0, 0.33], [-0.22, -0.29, 0.33], [-0.22, 0.29, 0.08], [-0.22, 0, 0.08], [-0.22, -0.29, 0.08]]
       initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-      dimensions: [[0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22], [0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22]]
+      dimensions: [[0.37, 0.25, 0.20],[0.37, 0.29, 0.20],[0.37, 0.25, 0.20], [0.37, 0.25, 0.18],[0.37, 0.29, 0.18],[0.37, 0.25, 0.18]]
       frame_id_list: [kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base]
       prefixes: [bin_a, bin_b, bin_c, bin_d, bin_e, bin_f]
     </rosparam>
@@ -38,12 +30,12 @@
   <node name="bin_gtol_clipper"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
-    <remap from="~input/points" to="/kinect2_torso/hd/points_pod_filtered" />
+    <remap from="~input/points" to="/kinect2_torso/hd/points" />
     <rosparam>
       use_multiple_attention: true
-      initial_pos_list: [[-0.21, 0.29, -0.36], [-0.21, 0, -0.36], [-0.21, -0.29, -0.36], [-0.21, 0.29, -0.11], [-0.21, 0, -0.11], [-0.21, -0.29, -0.11]]
+      initial_pos_list: [[-0.22, 0.29, -0.41], [-0.22, 0, -0.41], [-0.22, -0.29, -0.41], [-0.22, 0.29, -0.15], [-0.22, 0, -0.15], [-0.22, -0.29, -0.15]]
       initial_rot_list: [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-      dimensions: [[0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22], [0.37, 0.25, 0.22],[0.37, 0.29, 0.22],[0.37, 0.25, 0.22]]
+      dimensions: [[0.37, 0.25, 0.20],[0.37, 0.29, 0.20],[0.37, 0.25, 0.20], [0.37, 0.25, 0.18],[0.37, 0.29, 0.18],[0.37, 0.25, 0.18]]
       frame_id_list: [kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base]
       prefixes: [bin_j, bin_k, bin_l, bin_g, bin_h, bin_i]
     </rosparam>
