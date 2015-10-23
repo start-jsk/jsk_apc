@@ -150,6 +150,7 @@
               jsk_2015_05_baxter_apc::ObjectRecognition
               :timeout timeout
               :after-stamp (ros::time-now)))
+      (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched))
       (if msg (send msg :matched) nil)
       ))
   (:verify-object
@@ -172,21 +173,21 @@
                       (* (random 4) step-x)
                       (- (* (random 4) step-y) (/ dim-y 2))
                       (/ dim-z 3)))
-      (send self :send-av)
+      (send self :send-av 3000)
       ;; start vacuum gripper
       (send self :start-grasp arm)
       ;; grasp object
-      (send *baxter* arm :move-end-pos #f(0 0 -80) :world :rotation-axis :z)
+      (send *baxter* arm :move-end-pos #f(0 0 -80) :world :rotation-axis :z :revert-if-fail nil)
       (send self :send-av)
       (send self :wait-interpolation)
       ;; lift object
-      (send *baxter* arm :move-end-pos #f(0 0 100) :world :rotation-axis :z)
+      (send *baxter* arm :move-end-pos #f(0 0 100) :world :rotation-axis :z :revert-if-fail nil)
       (send self :send-av)
       (send self :wait-interpolation)
       ))
   (:ik-avs->object-in-bin
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
-    (let (object-boxes object-box coords avs)
+    (let (object-boxes object-box coords avs pos-tmp)
       (unless
         (setq object-boxes (gethash bin _objects-in-bin-boxes))
         (ros::ros-warn "No object is found: ~a, ~a" arm bin)
@@ -196,13 +197,8 @@
         (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
         (return-from :ik-avs->object-in-bin nil)
         )
-      (setq coords
-        (make-coords
-          :pos
-          (send
-            (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :translate offset)
-            :worldpos)))
-      (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis :z :revert-if-fail nil) avs)
+      (setq pos-tmp (send (send self :tf-pose->coords (send object-box :header :frame_id) (send object-box :pose)) :pos))
+      (setq coords (make-coords :pos (v+ pos-tmp offset)))
       (pushback (send *baxter* arm :inverse-kinematics coords :rotation-axis t :revert-if-fail nil) avs)
       avs))
   (:try-to-pick-object
@@ -213,7 +209,7 @@
               (send self :ik-avs->object-in-bin
                     arm
                     bin
-                    :object-index 0
+                    :object-index object-index
                     :offset offset)
               )
         (return-from :try-to-pick-object nil))
@@ -223,7 +219,8 @@
       (send self :start-grasp arm)
       ;; grasp object
       (send self :angle-vector-sequence
-            (send self :ik-avs->object-in-bin arm bin :object-index object-index))
+            (send self :ik-avs->object-in-bin arm bin :object-index object-index)
+            :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; lift object
       (send *baxter* arm :move-end-pos #f(0 0 100) :world :rotation-axis :z)
@@ -232,6 +229,9 @@
     ))
   (:pick-object
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1))
+    (send *baxter* arm :move-end-pos #f(50 0 0) :world)
+    (send *ri* :send-av)
+    (send *ri* :wait-interpolation)
     (let (bin-box)
       ;; move arm bin-entrance -> pos above object to z direction
       (setq bin-box (gethash bin _bin-boxes))
@@ -307,7 +307,7 @@
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
       (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 0)) avs)
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
   (:move-arm-body->order-bin
     (arm)
