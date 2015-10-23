@@ -63,21 +63,23 @@
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; if necessary wait for opposite arm
-          (when (send *ri* :need-to-wait-opposite-arm arm)
-            (setq state :wait_for_opposite_arm)
-            (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
-            (return-from :pick-object))
-          ;; run motion
-          (send *ri* :recognize-objects-in-bin :c)
-          (send *ri* :move-arm-body->bin arm target-bin)
-          (send *ri* :wait-interpolation)
-          (send *ri* :pick-object arm target-bin)
-          (incf target-n-tried)
-          (if (= (length (send *ri* :get-bin-contents target-bin)) 1)
-            (setq state :place_object)
-            (setq state :move_for_verification))
-          (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
-          )
+          (if (send *ri* :need-to-wait-opposite-arm arm)
+            (progn
+              (ros::ros-info "[main] Need to wait for opposite arm: ~a ~a" arm target-bin)
+              (setq state :wait_for_opposite_arm)
+              (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+            (progn
+              ;; run motion
+              (send *ri* :recognize-objects-in-bin target-bin)
+              (send *ri* :move-arm-body->bin arm target-bin)
+              (send *ri* :wait-interpolation)
+              (send *ri* :pick-object arm target-bin :n-trial 2 :n-trial-same-pos 2)
+              (incf target-n-tried)
+              (if (= (length (send *ri* :get-bin-contents target-bin)) 1)
+                (setq state :place_object)
+                (setq state :move_for_verification))
+              (ros::set-param (format nil "~a_process/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+            ))
         (:move_for_verification
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :move-arm-body->head-view-point arm)
@@ -95,7 +97,8 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :move-arm-body->bin arm target-bin)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector-sequence (send *ri* :ik-avs->bin-entrance arm target :offset #f(300 0 80)))
+          (send *ri* :ik->bin-entrance arm target-bin :offset #f(300 0 80))
+          (send *ri* :send-av)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp)
           (send *ri* :spin-off-by-wrist arm)
