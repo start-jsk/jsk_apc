@@ -84,5 +84,6 @@
     </include>
   </group>
 
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kiva_pod_state.launch" />
 
 </launch>
