@@ -6,9 +6,12 @@
   </include>
 
 
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin.launch">
-    <arg name="INPUT_CLOUD_HEAD" value="/kinect2_head/hd/points_filtered" />
-    <arg name="INPUT_CLOUD_TORSO" value="/kinect2_torso/hd/points_filtered" />
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin_atof.launch">
+    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_filtered" />
+  </include>
+
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin_gtol.launch">
+    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_filtered" />
   </include>
 
 
