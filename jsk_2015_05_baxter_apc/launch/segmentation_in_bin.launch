@@ -1,11 +1,23 @@
 <launch>
 
+  <arg name="INPUT_CLOUD_HEAD" />
+  <arg name="INPUT_CLOUD_TORSO" />
+
   <arg name="MANAGER" value="segmentation_in_bin_manager" />
   <node name="$(arg MANAGER)"
         pkg="nodelet" type="nodelet" args="manager" />
 
 
   <!-- interactive_marker to adjust kiva pod pose it means for /kiva_pod_base frame -->
+  <param name="kiva_pod_description" command="$(find xacro)/xacro.py $(find jsk_2015_apc_common)/models/kiva_pod/urdf/pod_lowres_convex.xacro" />
+  <node name="kiva_pod_joint_state_publisher"
+        pkg="joint_state_publisher" type="joint_state_publisher">
+    <remap from="robot_description" to="kiva_pod_description" />
+  </node>
+  <node name="kiva_pod_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="robot_description" to="kiva_pod_description" />
+  </node>
   <node name="interactive_adjust_kiva_pod"
         pkg="jsk_interactive_marker" type="marker_6dof">
     <rosparam command="load" file="$(find jsk_2015_apc_common)/config/kiva_pod_interactive_marker.yaml" />
@@ -16,7 +28,7 @@
   <node name="bin_atof_clipper"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
-    <remap from="~input/points" to="/kinect2_head/hd/points" />
+    <remap from="~input/points" to="$(arg INPUT_CLOUD_HEAD)" />
     <rosparam>
       debug: true
       use_multiple_attention: true
@@ -30,7 +42,7 @@
   <node name="bin_gtol_clipper"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
-    <remap from="~input/points" to="/kinect2_torso/hd/points" />
+    <remap from="~input/points" to="$(arg INPUT_CLOUD_TORSO)" />
     <rosparam>
       use_multiple_attention: true
       initial_pos_list: [[-0.22, 0.29, -0.41], [-0.22, 0, -0.41], [-0.22, -0.29, -0.41], [-0.22, 0.29, -0.15], [-0.22, 0, -0.15], [-0.22, -0.29, -0.15]]
@@ -45,37 +57,37 @@
   <!-- object segmentation -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="a" />
-    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_HEAD)" />
     <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_a/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="b" />
-    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_HEAD)" />
     <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_b/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="c" />
-    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_HEAD)" />
     <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_c/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="d" />
-    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_HEAD)" />
     <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_d/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="e" />
-    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_HEAD)" />
     <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_e/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="f" />
-    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_HEAD)" />
     <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_f/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
@@ -83,37 +95,37 @@
   <!-- object segmentation -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="g" />
-    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_TORSO)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_g/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="h" />
-    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_TORSO)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_h/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="i" />
-    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_TORSO)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_i/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="j" />
-    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_TORSO)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_j/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="k" />
-    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_TORSO)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_k/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="l" />
-    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_pod_filtered" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_TORSO)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_l/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
