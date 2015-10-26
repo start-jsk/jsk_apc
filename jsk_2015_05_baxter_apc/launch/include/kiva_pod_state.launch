@@ -1,0 +1,18 @@
+<launch>
+
+  <!-- interactive_marker to adjust kiva pod pose it means for /kiva_pod_base frame -->
+  <param name="kiva_pod_description" command="$(find xacro)/xacro.py $(find jsk_2015_apc_common)/models/kiva_pod/urdf/pod_lowres_convex.xacro" />
+  <node name="kiva_pod_joint_state_publisher"
+        pkg="joint_state_publisher" type="joint_state_publisher">
+    <remap from="robot_description" to="kiva_pod_description" />
+  </node>
+  <node name="kiva_pod_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="robot_description" to="kiva_pod_description" />
+  </node>
+  <node name="interactive_adjust_kiva_pod"
+        pkg="jsk_interactive_marker" type="marker_6dof">
+    <rosparam command="load" file="$(find jsk_2015_05_baxter_apc)/config/kiva_pod_interactive_marker.yaml" />
+  </node>
+
+</launch>
