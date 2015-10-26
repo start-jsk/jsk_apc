@@ -128,12 +128,12 @@
   </joint>
   <link name="kiva_pod_y_part1">
     <visual>
-      <origin rpy="0 0 0" xyz="0 0.15 0"/>
+      <origin rpy="0 0 0" xyz="0 0.16 0"/>
       <geometry><box size="${y_part_size}"/></geometry>
       <material name="darkgray"><color rgba=".2 .2 .2 1"/></material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0.15 0"/>
+      <origin rpy="0 0 0" xyz="0 0.16 0"/>
       <geometry><box size="${y_part_size}"/></geometry>
     </collision>
   </link>
@@ -144,12 +144,12 @@
   </joint>
   <link name="kiva_pod_y_part2">
     <visual>
-      <origin rpy="0 0 0" xyz="0 -.15 0"/>
+      <origin rpy="0 0 0" xyz="0 -.16 0"/>
       <geometry><box size="${y_part_size}"/></geometry>
       <material name="darkgray"><color rgba=".2 .2 .2 1"/></material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 -.15 0"/>
+      <origin rpy="0 0 0" xyz="0 -.16 0"/>
       <geometry><box size="${y_part_size}"/></geometry>
     </collision>
   </link>
