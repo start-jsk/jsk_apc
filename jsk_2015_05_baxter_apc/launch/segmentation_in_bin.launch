@@ -20,7 +20,7 @@
   </node>
   <node name="interactive_adjust_kiva_pod"
         pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" file="$(find jsk_2015_apc_common)/config/kiva_pod_interactive_marker.yaml" />
+    <rosparam command="load" file="$(find jsk_2015_05_baxter_apc)/config/kiva_pod_interactive_marker.yaml" />
   </node>
 
 
