@@ -1,0 +1,58 @@
+
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="crayola_64_ct">
+    <link name="crayola_64_ct_link">
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>3</mass>
+        <inertia>
+          <ixx>1e-03</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <izz>1e-03</izz>
+          <iyz>0</iyz>
+          <iyy>1e-03</iyy>
+        </inertia>
+      </inertial>
+
+      <visual name="crayola_64_ct_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <material>
+          <script>
+            <uri>model://crayola_64_ct/materials/scripts</uri>
+            <uri>model://crayola_64_ct/materials/textures</uri>
+            <name>crayola_64_ct</name>
+          </script>
+        </material>
+        <geometry>
+          <mesh>
+            <uri>model://crayola_64_ct/meshes/crayola_64_ct.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+
+
+      <collision name="crayola_64_ct_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://crayola_64_ct/meshes/crayola_64_ct.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <fdir1>0.0 0.0 0.0</fdir1>
+              <slip1>1.0</slip1>
+              <slip2>1.0</slip2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+    </link>
+  </model>
+</sdf>
