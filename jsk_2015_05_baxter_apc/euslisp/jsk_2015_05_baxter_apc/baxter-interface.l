@@ -354,10 +354,8 @@
   (:get-next-work-order
     (arm current-order)
     (let ((orders (send self :get-work-orders arm)))
-      (ros::ros-warn "~a" orders)
+      (when (null current-order) (return-from :get-next-work-order (elt orders 0)))
       (dotimes (i (- (length orders) 1))
-        (when (null current-order)
-          (return-from :get-next-work-order (elt orders 0)))
         (when (string= (send (elt orders i) :bin) (send current-order :bin))
           (return-from :get-next-work-order (elt orders (+ i 1)))))))
   (:get-bin-contents
