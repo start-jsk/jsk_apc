@@ -44,46 +44,7 @@
   <!-- <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_torso.launch" /> -->
 
 
-  <arg name="MANAGER" value="baxter_nodelet_manager" />
-  <node name="$(arg MANAGER)"
-        pkg="nodelet" type="nodelet" args="manager" />
-
-
-  <arg name="INPUT_CLOUD_0" value="/kinect2_head/hd/points" />
-  <arg name="INPUT_CLOUD_1" value="/kinect2_torso/hd/points" />
-
-
-  <!-- filter reachable points -->
-  <group ns="filter_reachable_0">
-    <include file="$(find jsk_2015_05_baxter_apc)/launch/include/filter_reachable_cloud.launch">
-      <arg name="MANAGER" value="/$(arg MANAGER)" />
-      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_0)" />
-      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD_0)_reachable" />
-    </include>
-  </group>
-  <group ns="filter_reachable_1">
-    <include file="$(find jsk_2015_05_baxter_apc)/launch/include/filter_reachable_cloud.launch">
-      <arg name="MANAGER" value="/$(arg MANAGER)" />
-      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_1)" />
-      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD_1)_reachable" />
-    </include>
-  </group>
-
-
-  <!-- filter self points -->
-  <group ns="self_filter_0">
-    <include file="$(find jsk_2015_05_baxter_apc)/launch/include/self_filter.launch">
-      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_0)_reachable" />
-      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD_0)_filtered" />
-    </include>
-  </group>
-  <group ns="self_filter_1">
-    <include file="$(find jsk_2015_05_baxter_apc)/launch/include/self_filter.launch">
-      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD_1)_reachable" />
-      <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD_1)_filtered" />
-    </include>
-  </group>
-
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kiva_pod_state.launch" />
+
 
 </launch>

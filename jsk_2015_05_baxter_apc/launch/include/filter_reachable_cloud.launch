@@ -3,17 +3,18 @@
   <arg name="MANAGER" />
   <arg name="INPUT_CLOUD" />
   <arg name="OUTPUT_CLOUD" />
+  <arg name="LIMIT_MAX" />
 
-  <node name="passthrough_x"
+  <node name="passthrough_z"
         pkg="nodelet" type="nodelet"
-        args="load pcl/PassThrough $(arg MANAGER)">
+        args="load pcl/PassThrough $(arg MANAGER)"
+        clear_params="true">
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~output" to="$(arg OUTPUT_CLOUD)" />
+    <param name="filter_limit_max" value="$(arg LIMIT_MAX)" />
     <rosparam>
-      input_frame: base
-      filter_field_name: x
+      filter_field_name: z
       filter_limit_min: 0
-      filter_limit_max: 1.2
       keep_organized: true
     </rosparam>
   </node>
