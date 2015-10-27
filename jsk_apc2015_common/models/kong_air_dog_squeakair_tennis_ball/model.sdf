@@ -1,0 +1,58 @@
+
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="kong_air_dog_squeakair_tennis_ball">
+    <link name="kong_air_dog_squeakair_tennis_ball_link">
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>3</mass>
+        <inertia>
+          <ixx>1e-03</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <izz>1e-03</izz>
+          <iyz>0</iyz>
+          <iyy>1e-03</iyy>
+        </inertia>
+      </inertial>
+
+      <visual name="kong_air_dog_squeakair_tennis_ball_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <material>
+          <script>
+            <uri>model://kong_air_dog_squeakair_tennis_ball/materials/scripts</uri>
+            <uri>model://kong_air_dog_squeakair_tennis_ball/materials/textures</uri>
+            <name>kong_air_dog_squeakair_tennis_ball</name>
+          </script>
+        </material>
+        <geometry>
+          <mesh>
+            <uri>model://kong_air_dog_squeakair_tennis_ball/meshes/kong_air_dog_squeakair_tennis_ball.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+
+
+      <collision name="kong_air_dog_squeakair_tennis_ball_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://kong_air_dog_squeakair_tennis_ball/meshes/kong_air_dog_squeakair_tennis_ball.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <fdir1>0.0 0.0 0.0</fdir1>
+              <slip1>1.0</slip1>
+              <slip2>1.0</slip2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+    </link>
+  </model>
+</sdf>
