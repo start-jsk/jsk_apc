@@ -112,25 +112,32 @@
         (setq bin (elt '(:j :k :l :g :h :i) i))
         (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
       ))
-  (:visualize-bins-pos
+  (:bbox->cube
+    (bbox)
+    (let* ((dims (ros::tf-point->pos (send bbox :dimensions)))
+           (bx (make-cube (elt dims 0) (elt dims 1) (elt dims 2))))
+      (send bx :newcoords
+            (send self :tf-pose->coords
+                  (send bbox :header :frame_id)
+                  (send bbox :pose)))
+      bx))
+  (:visualize-bins
     ()
-    (dolist (box (send _bin-boxes :list-values))
-      (send
-        (send self :tf-pose->coords
-              (send box :header :frame_id)
-              (send box :pose))
-        :draw-on :flush t :width 5 :color #f(0 1 0))
+    (let (bins)
+      (dolist (b (send _bin-boxes :list-values))
+        (pushback (send self :bbox->cube b) bins)
+        )
+      (objects (append (list *baxter*) bins))
       ))
-  (:visualize-objects-pos
+  (:visualize-objects
     ()
-    (dolist (boxes (send _objects-in-bin-boxes :list-values))
-      (dolist (box boxes)
-        (send
-          (send self :tf-pose->coords
-                (send box :header :frame_id)
-                (send box :pose))
-          :draw-on :flush t :width 5 :color #f(1 0 0))
-        )))
+    (let (objs)
+      (dolist (boxes (send _objects-in-bin-boxes :list-values))
+        (dolist (b boxes)
+          (pushback (send self :bbox->cube b) objs)
+          ))
+      (objects (append (list *baxter*) objs))
+      ))
   (:recognize-objects-in-bin
     (bin)
     (let ((now (ros::time-now)))
@@ -354,10 +361,8 @@
   (:get-next-work-order
     (arm current-order)
     (let ((orders (send self :get-work-orders arm)))
-      (ros::ros-warn "~a" orders)
+      (when (null current-order) (return-from :get-next-work-order (elt orders 0)))
       (dotimes (i (- (length orders) 1))
-        (when (null current-order)
-          (return-from :get-next-work-order (elt orders 0)))
         (when (string= (send (elt orders i) :bin) (send current-order :bin))
           (return-from :get-next-work-order (elt orders (+ i 1)))))))
   (:get-bin-contents
