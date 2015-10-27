@@ -4,6 +4,7 @@
 
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
     <arg name="base_name" value="kinect2_torso"/>
+    <arg name="max_depth" value="1.05" />
     <arg name="use_machine" value="$(arg use_machine)"/>
     <arg name="depth_method" value="cpu" />
     <arg name="reg_method" value="cpu" />
