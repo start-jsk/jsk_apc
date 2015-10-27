@@ -2,16 +2,16 @@
 
 
   <include file="$(find jsk_2015_05_baxter_apc)/launch/recognition_in_hand.launch">
-    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_filtered" />
+    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points" />
   </include>
 
 
   <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin_atof.launch">
-    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points_filtered" />
+    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points" />
   </include>
 
   <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin_gtol.launch">
-    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points_filtered" />
+    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
   </include>
 
 
