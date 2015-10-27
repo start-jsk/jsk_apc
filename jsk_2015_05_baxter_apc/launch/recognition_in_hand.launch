@@ -30,12 +30,43 @@
         args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~indices" to="in_hand_clipper/left_hand/point_indices" />
+    <remap from="~output" to="~points" />
+    <rosparam>
+      keep_organized: true
+    </rosparam>
   </node>
   <node name="extract_indices_right_hand"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~indices" to="in_hand_clipper/right_hand/point_indices" />
+    <remap from="~output" to="~points" />
+    <rosparam>
+      keep_organized: true
+    </rosparam>
+  </node>
+
+
+  <!-- self filter -->
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/self_filter.launch">
+    <arg name="INPUT_CLOUD" value="extract_indices_left_hand/points" />
+    <arg name="OUTPUT_CLOUD" value="extract_indices_left_hand/points_filtered" />
+  </include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/self_filter.launch">
+    <arg name="INPUT_CLOUD" value="extract_indices_right_hand/points" />
+    <arg name="OUTPUT_CLOUD" value="extract_indices_right_hand/points_filtered" />
+  </include>
+
+
+  <node name="pc_to_pi_left_hand"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/OrganizedPointCloudToPointIndices $(arg MANAGER)">
+    <remap from="~input" to="extract_indices_left_hand/points_filtered" />
+  </node>
+  <node name="pc_to_pi_right_hand"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/OrganizedPointCloudToPointIndices $(arg MANAGER)">
+    <remap from="~input" to="extract_indices_right_hand/points_filtered" />
   </node>
 
 
@@ -44,7 +75,7 @@
   <node name="pi_to_mask_left_hand"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
-    <remap from="~input" to="in_hand_clipper/left_hand/point_indices" />
+    <remap from="~input" to="pc_to_pi_left_hand/output" />
     <remap from="~input/image" to="/kinect2_head/hd/image_color" />
     <rosparam>
       approximate_sync: true
@@ -53,7 +84,7 @@
   <node name="pi_to_mask_right_hand"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
-    <remap from="~input" to="in_hand_clipper/right_hand/point_indices" />
+    <remap from="~input" to="pc_to_pi_right_hand/output" />
     <remap from="~input/image" to="/kinect2_head/hd/image_color" />
     <rosparam>
       approximate_sync: true

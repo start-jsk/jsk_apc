@@ -3,7 +3,7 @@
   <arg name="INPUT_CLOUD" />
   <arg name="OUTPUT_CLOUD" />
 
-  <node name="self_filter"
+  <node name="$(anon self_filter)"
         pkg="pr2_navigation_self_filter" type="self_filter"
         clear_params="true" respawn="true">
     <remap from="robot_description" to="/robot_description" />
