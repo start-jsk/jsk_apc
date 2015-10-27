@@ -4,16 +4,15 @@
   <arg name="INPUT_CLOUD" />
   <arg name="OUTPUT_CLOUD" />
 
-  <node name="passthrough_x"
+  <node name="passthrough_z"
         pkg="nodelet" type="nodelet"
         args="load pcl/PassThrough $(arg MANAGER)">
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~output" to="$(arg OUTPUT_CLOUD)" />
     <rosparam>
-      input_frame: base
-      filter_field_name: x
-      filter_limit_min: 0
+      filter_field_name: z
       filter_limit_max: 1.2
+      filter_limit_min: 0
       keep_organized: true
     </rosparam>
   </node>
