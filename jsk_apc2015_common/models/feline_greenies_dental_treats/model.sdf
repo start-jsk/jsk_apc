@@ -1,0 +1,58 @@
+
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="feline_greenies_dental_treats">
+    <link name="feline_greenies_dental_treats_link">
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>3</mass>
+        <inertia>
+          <ixx>1e-03</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <izz>1e-03</izz>
+          <iyz>0</iyz>
+          <iyy>1e-03</iyy>
+        </inertia>
+      </inertial>
+
+      <visual name="feline_greenies_dental_treats_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <material>
+          <script>
+            <uri>model://feline_greenies_dental_treats/materials/scripts</uri>
+            <uri>model://feline_greenies_dental_treats/materials/textures</uri>
+            <name>feline_greenies_dental_treats</name>
+          </script>
+        </material>
+        <geometry>
+          <mesh>
+            <uri>model://feline_greenies_dental_treats/meshes/feline_greenies_dental_treats.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+
+
+      <collision name="feline_greenies_dental_treats_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://feline_greenies_dental_treats/meshes/feline_greenies_dental_treats.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <fdir1>0.0 0.0 0.0</fdir1>
+              <slip1>1.0</slip1>
+              <slip2>1.0</slip2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+    </link>
+  </model>
+</sdf>
