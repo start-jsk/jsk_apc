@@ -5,14 +5,14 @@ project(jsk_2015_05_baxter_apc)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-    std_msgs
+    dynamic_reconfigure
     geometry_msgs
     message_generation
+    roseus
     rosserial_arduino
     rosserial_client
-    dynamic_reconfigure
     rostest
-    roseus
+    std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -57,28 +57,28 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  WorkOrder.msg
-  WorkOrderArray.msg
   BinContents.msg
   BinContentsArray.msg
+  BoolStamped.msg
+  ObjectRecognition.msg
+  ProbabilisticLabels.msg
   QrStamp.msg
   QrStampes.msg
-  ObjectRecognition.msg
-  BoolStamped.msg
   SetObjectPosition.msg
   SetObjectPositionArray.msg
-  ProbabilisticLabels.msg
+  WorkOrder.msg
+  WorkOrderArray.msg
   )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  MoveArm.srv
-  QrStampsrv.srv
-  ReleaseItem.srv
   Cue.srv
+  MoveArm.srv
   ObjectMatch.srv
   ObjectVerification.srv
+  QrStampsrv.srv
+  ReleaseItem.srv
   StringEmpty.srv
 )
 
@@ -90,8 +90,8 @@ add_service_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  std_msgs  # Or other packages containing msgs
   geometry_msgs
+  std_msgs
 )
 
 ## Add dynamic reconfigure api
@@ -113,25 +113,25 @@ generate_dynamic_reconfigure_options(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES jsk_2015_05_baxter_apc
-  CATKIN_DEPENDS message_runtime rosserial_arduino rosserial_client
+  CATKIN_DEPENDS geometry_msgs message_runtime rosserial_arduino rosserial_client std_msgs
 #  DEPENDS system_lib
 )
 
 if(rosserial_generate_ros_lib) # hydro does not have this macro
-rosserial_generate_ros_lib(
-  PACKAGE rosserial_arduino
-  SCRIPT make_libraries.py
-)
+  rosserial_generate_ros_lib(
+    PACKAGE rosserial_arduino
+    SCRIPT make_libraries.py
+  )
 
-rosserial_configure_client(
-  DIRECTORY firmware
-  TOOLCHAIN_FILE ${ROSSERIAL_ARDUINO_TOOLCHAIN}
-)
+  rosserial_configure_client(
+    DIRECTORY firmware
+    TOOLCHAIN_FILE ${ROSSERIAL_ARDUINO_TOOLCHAIN}
+  )
 
-rosserial_add_client_target(firmware switching_gripper_left ALL)
-rosserial_add_client_target(firmware switching_gripper_left-upload)
-rosserial_add_client_target(firmware switching_gripper_right ALL)
-rosserial_add_client_target(firmware switching_gripper_right-upload)
+  rosserial_add_client_target(firmware switching_gripper_left ALL)
+  rosserial_add_client_target(firmware switching_gripper_left-upload)
+  rosserial_add_client_target(firmware switching_gripper_right ALL)
+  rosserial_add_client_target(firmware switching_gripper_right-upload)
 endif()
 
 ###########
