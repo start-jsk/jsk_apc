@@ -40,19 +40,28 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; next order
           (setq order (send *ri* :get-next-work-order arm order))
-          (ros::ros-warn "~a" order)
-          ;; get target param
-          (setq target-n-tried 0)
-          (setq target-bin (str2symbol (send order :bin)))
-          (setq target-obj (send order :object))
-          (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
-          ;; logging
-          (ros::ros-info "[main] state: ~a" state)
-          (ros::ros-info "[main] arm: ~a" arm)
-          (ros::ros-info "[main] target-bin: ~a" target-bin)
-          (ros::ros-info "[main] target-obj: ~a" target-obj)
-          (setq state :pick_object)
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (if (null order)
+            (progn
+              ;; all work orders are done so go to 'wait' status
+              (setq state :wait_for_user_input)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+              )
+            (progn
+              (ros::ros-warn "next-work-order: ~a" order)
+              ;; get target param
+              (setq target-n-tried 0)
+              (setq target-bin (str2symbol (send order :bin)))
+              (setq target-obj (send order :object))
+              (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
+              ;; logging
+              (ros::ros-info "[main] state: ~a" state)
+              (ros::ros-info "[main] arm: ~a" arm)
+              (ros::ros-info "[main] target-bin: ~a" target-bin)
+              (ros::ros-info "[main] target-obj: ~a" target-obj)
+              (setq state :pick_object)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+              )
+            )
           )
         (:wait_for_opposite_arm
           (ros::ros-info "[main] ~a, ~a" arm state)
