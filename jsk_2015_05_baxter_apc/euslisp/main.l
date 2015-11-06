@@ -31,6 +31,7 @@
         (:initialize
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; recognize bin boxes position and dimension
+          (ros::ros-info "[main] recognizing bin boxes")
           (send *ri* :recognize-bin-boxes)
           (setq order nil)
           (setq state :set_target)
@@ -106,7 +107,7 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :move-arm-body->bin arm target-bin)
           (send *ri* :wait-interpolation)
-          (send *ri* :ik->bin-entrance arm target-bin :offset #f(300 0 80))
+          (send *ri* :ik->bin-entrance arm target-bin :offset #f(300 0 50))
           (send *ri* :send-av)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp)
