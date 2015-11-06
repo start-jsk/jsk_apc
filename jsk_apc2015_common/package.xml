@@ -2,7 +2,7 @@
 <package>
   <name>jsk_2015_apc_common</name>
   <version>0.0.0</version>
-  <description>The jsk_2015_apc_common package</description>
+  <description>Common stacks for Amazon Picking Challenge 2015</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
