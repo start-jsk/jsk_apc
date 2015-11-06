@@ -213,7 +213,7 @@
             (< (send obj-box :dimensions :x) (send obj-box :dimensions :z))
             (> (send obj-box :dimensions :z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
             )
-        (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :pos) 1)) 1 -1)) ;; compare y
+        (setq sign (if (< (elt (send obj :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
         (setq sign 0))
       (ros::ros-info "[:try-to-pick-object] sign: ~a" sign)
       (pushback
