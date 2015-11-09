@@ -11,7 +11,7 @@ import numpy as np
 from bin_contents import get_bin_contents
 from work_order import get_work_order
 
-import jsk_2015_apc_common
+import jsk_apc2015_common
 from jsk_2015_05_baxter_apc.msg import ObjectRecognition
 
 
@@ -70,7 +70,7 @@ class ObjectVerification(object):
 
         target_bin = rospy.get_param('target_bin', None)
 
-        object_list = jsk_2015_apc_common.data.object_list()
+        object_list = jsk_apc2015_common.data.object_list()
         all_proba = [
             (o,
              (weight[o]['bof'] * bof_objects_proba[o]) +
