@@ -12,11 +12,11 @@ import numpy as np
 from common import load_siftdata
 from bag_of_features import BagOfFeatures
 
-import jsk_2015_apc_common
+import jsk_apc2015_common
 
 
 def get_sift_descriptors(n_imgs=None, data_dir=None):
-    objects = jsk_2015_apc_common.data.object_list()
+    objects = jsk_apc2015_common.data.object_list()
     obj_descs = []
     for obj in objects:
         descs = load_siftdata(obj_name=obj,

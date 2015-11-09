@@ -3,7 +3,7 @@
   <arg name="INPUT_CLOUD" />
 
 
-  <include file="$(find jsk_2015_apc_common)/launch/kiva_pod_filter.launch">
+  <include file="$(find jsk_apc2015_common)/launch/kiva_pod_filter.launch">
     <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
     <arg name="OUTPUT_CLOUD" value="$(arg INPUT_CLOUD)_pod_filtered" />
   </include>

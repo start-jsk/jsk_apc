@@ -16,7 +16,7 @@ from sklearn.svm import SVC
 
 from common import get_data_dir
 
-import jsk_2015_apc_common
+import jsk_apc2015_common
 
 
 def get_imlist(path, extension='jpg'):
@@ -26,7 +26,7 @@ def get_imlist(path, extension='jpg'):
 class ColorHistogramFeatures(object):
     def __init__(self):
         self.file_name = 'rgb'
-        self.object_names = jsk_2015_apc_common.data.object_list()
+        self.object_names = jsk_apc2015_common.data.object_list()
         self.cfeatures = []
         self.labels = []
     def save_data(self):

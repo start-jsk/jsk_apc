@@ -8,7 +8,7 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-  <arg name="shelf_model_path" default="$(find jsk_2015_apc_common)"/>
+  <arg name="shelf_model_path" default="$(find jsk_apc2015_common)"/>
 
   <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

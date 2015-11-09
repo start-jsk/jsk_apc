@@ -15,7 +15,7 @@ pkg_path = rp.get_path('jsk_2015_05_baxter_apc')
 sys.path.append(os.path.join(pkg_path, 'scripts'))
 sys.path.append(os.path.join(pkg_path, 'test'))
 
-import jsk_2015_apc_common
+import jsk_apc2015_common
 
 
 class TestRobotInput(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestRobotInput(unittest.TestCase):
         if json_file is None:
             json_file = os.path.join(pkg_path, 'data/apc-a.json')
         bin_contents = list(get_bin_contents(json_file))
-        object_list = jsk_2015_apc_common.data.object_list()
+        object_list = jsk_apc2015_common.data.object_list()
         for bin_, objects in bin_contents:
             self.assertIn(bin_, 'abcdefghijkl')
             for object_ in objects:
@@ -42,7 +42,7 @@ class TestRobotInput(unittest.TestCase):
         # for original work order
         work_order = list(get_work_order(json_file))
         self.assertEqual(len(work_order), len('abcdefghijkl'))
-        object_list = jsk_2015_apc_common.data.object_list()
+        object_list = jsk_apc2015_common.data.object_list()
         for bin_, object_ in work_order:
             self.assertIn(bin_, 'abcdefghijkl')
             self.assertIn(object_, object_list)
@@ -77,7 +77,7 @@ class TestRobotInput(unittest.TestCase):
         yaml_file = os.path.join(pkg_path, 'data/classifier_weight.yml')
         with open(yaml_file) as f:
             weight = yaml.load(f)
-        object_list = jsk_2015_apc_common.data.object_list()
+        object_list = jsk_apc2015_common.data.object_list()
         for object_, weights in weight.items():
             self.assertIn(object_, object_list)
             for clf, weight in weights.items():

@@ -9,7 +9,7 @@ import rospy
 from sensor_msgs.msg import Image
 from jsk_recognition_msgs.msg import ColorHistogram
 from jsk_2015_05_baxter_apc.msg import ObjectRecognition
-import jsk_2015_apc_common
+import jsk_apc2015_common
 from common import ObjectMatcher
 from color_histogram_features import ColorHistogramFeatures
 import cv_bridge
@@ -35,7 +35,7 @@ class ColorObjectMatcher(ObjectMatcher):
     def predict_now(self):
         query_image = self.query_image
 
-        object_list = jsk_2015_apc_common.data.object_list()
+        object_list = jsk_apc2015_common.data.object_list()
         probs = self.match(object_list)
         matched_idx = np.argmax(probs)
         # prepare message
@@ -60,7 +60,7 @@ class ColorObjectMatcher(ObjectMatcher):
         self._pub_debug.publish(
             ColorHistogram(header=query_image.header, histogram=hist))
 
-        object_list = jsk_2015_apc_common.data.object_list()
+        object_list = jsk_apc2015_common.data.object_list()
         obj_indices = [object_list.index(o) for o in obj_names]
         obj_probs = self.estimator.predict(input_image)[0][obj_indices]
         return obj_probs / obj_probs.sum()

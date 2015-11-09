@@ -6,15 +6,15 @@
   <!-- interactive_marker to adjust object pose -->
   <node name="interactive_adjust_kiva_pod"
         pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" file="$(find jsk_2015_apc_common)/config/kiva_pod_interactive_marker.yaml" />
+    <rosparam command="load" file="$(find jsk_apc2015_common)/config/kiva_pod_interactive_marker.yaml" />
   </node>
 
   <include file="$(find jsk_demo_common)/launch/model_filter.launch">
     <arg name="model_name" value="kiva_pod" />
-    <arg name="model" value="$(find jsk_2015_apc_common)/models/kiva_pod/urdf/pod_lowres_convex.xacro" />
+    <arg name="model" value="$(find jsk_apc2015_common)/models/kiva_pod/urdf/pod_lowres_convex.xacro" />
     <arg name="input_cloud" value="$(arg INPUT_CLOUD)" />
     <arg name="output_cloud" value="$(arg OUTPUT_CLOUD)" />
-    <arg name="model_filter_config" value="$(find jsk_2015_apc_common)/config/kiva_pod_filter.yaml" />
+    <arg name="model_filter_config" value="$(find jsk_apc2015_common)/config/kiva_pod_filter.yaml" />
   </include>
 
 </launch>

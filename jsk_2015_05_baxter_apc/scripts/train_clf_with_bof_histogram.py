@@ -13,7 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
 
-import jsk_2015_apc_common
+import jsk_apc2015_common
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     with gzip.open(args.bof_histogram, 'rb') as f:
         obj_hists = pickle.load(f)
 
-    target_names = jsk_2015_apc_common.data.object_list()
+    target_names = jsk_apc2015_common.data.object_list()
 
     # create train and test data
     X ,y = [], []

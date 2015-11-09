@@ -1,6 +1,6 @@
-===================
-jsk_2015_apc_common
-===================
+==================
+jsk_apc2015_common
+==================
 
 
 Train classifier with dataset

@@ -8,7 +8,7 @@ import rospy
 from sift_matcher import imgsift_client, load_siftdata
 from common import save_siftdata, get_train_imgs
 
-import jsk_2015_apc_common
+import jsk_apc2015_common
 
 
 def extract_sift(obj_name):
@@ -39,7 +39,7 @@ def extract_sift(obj_name):
 
 def main():
     rospy.init_node('extract_sift')
-    obj_names = jsk_2015_apc_common.data.object_list()
+    obj_names = jsk_apc2015_common.data.object_list()
     for obj_name in obj_names:
         if load_siftdata(obj_name, dry_run=True):
             continue  # already extracted
