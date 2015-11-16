@@ -24,7 +24,7 @@
 
   <!-- Load the URDF into the ROS Parameter Server -->
   <param name="robot_description"
-    command="cat '$(find baxter_description)/urdf/baxter.urdf'" />
+         command="$(find xacro)/xacro.py $(find jsk_2015_05_baxter_apc)/urdf/baxter.xacro" />
 
   <!-- Load the software version into the ROS Parameter Server -->
   <param name="rethink/software_version" value="1.1.0" />
@@ -34,7 +34,7 @@
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args="-file $(find baxter_description)/urdf/baxter.urdf -urdf -z 0.93 -model baxter
+        args="-param robot_description -urdf -z 0.93 -model baxter
     -J baxter::right_s0 -0.272659
     -J baxter::right_s1 1.04701
     -J baxter::right_e0 -0.00123203
