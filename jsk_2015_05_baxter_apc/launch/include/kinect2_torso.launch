@@ -12,6 +12,6 @@
 
   <node name="doura_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
-        args="0.16 0.09 0.50 -0.04 -1.53 3.14 base kinect2_torso_rgb_optical_frame 100"/>
+        args="0.17 0.11 0.50 -0.05 -1.53 3.14 base kinect2_torso_rgb_optical_frame 100" />
 
 </launch>
