@@ -110,8 +110,11 @@
           (send *ri* :ik->bin-entrance arm target-bin :offset #f(300 0 50))
           (send *ri* :send-av)
           (send *ri* :wait-interpolation)
-          (send *ri* :stop-grasp)
+          (send *ri* :stop-grasp) ;; release object
           (send *ri* :spin-off-by-wrist arm)
+          (send *ri* :wait-interpolation)
+          (send *ri* :ik->bin-entrance arm target-bin) ;; to bin entrance
+          (send *ri* :send-av 5000)
           (send *ri* :wait-interpolation)
           (send *baxter* :avoid-shelf-pose arm target-bin)
           (send *ri* :send-av)
