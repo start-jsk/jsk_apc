@@ -158,14 +158,15 @@
               :after-stamp (ros::time-now)))
       (if msg
         (progn
-          (send msg :matched)
-          (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched)))
+          (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched))
+          (send msg :matched))
         nil)
       ))
   (:verify-object
     (arm object-name)
     (let (matched)
       (if (setq matched (send self :recognize-object-in-hand arm))
+        (ros::ros-info "~a == ~a" object-name matched)
         (string= object-name matched)
         nil)))
   (:try-to-pick-in-bin
@@ -197,7 +198,6 @@
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (avs obj-boxes obj-box)
-      (pushback (send self :ik->bin-entrance arm bin) avs)
       ;; validate
       (unless
         (setq obj-boxes (gethash bin _objects-in-bin-boxes))
@@ -216,6 +216,14 @@
         (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
         (setq sign 0))
       (ros::ros-info "[:try-to-pick-object] sign: ~a" sign)
+      (send self :angle-vector
+            (send self :ik->bin-entrance arm bin :offset (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
+            3000)
+      (send self :wait-interpolation)
+      (pushback
+        (send *baxter* arm :inverse-kinematics
+            (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :translate offset :local))
+        avs)
       (pushback
         (send *baxter* arm :inverse-kinematics
             (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
@@ -230,8 +238,9 @@
                   (make-coords :pos (send obj-coords :pos) :rpy (list 0 0 (* sign pi/2))))
             3000)
       (send self :wait-interpolation)
-      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local) 3000)
-      (send self :wait-interpolation)
+      (unless (send self :graspingp arm)
+        (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local) 3000)
+        (send self :wait-interpolation))
       ;; lift object
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)
       (send self :wait-interpolation)
