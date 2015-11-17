@@ -1,0 +1,26 @@
+{
+  "bin_contents":
+  {
+    "bin_F":
+    [
+      "safety_works_safety_glasses",
+      "laugh_out_loud_joke_book"
+    ],
+    "bin_G":
+    [
+      "oreo_mega_stuf"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_F",
+      "item": "safety_works_safety_glasses"
+    },
+    {
+      "bin": "bin_G",
+      "item": "oreo_mega_stuf"
+    }
+  ]
+}
