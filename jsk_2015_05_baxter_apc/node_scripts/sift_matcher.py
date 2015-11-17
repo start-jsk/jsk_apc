@@ -3,7 +3,7 @@
 #
 """
 This script is to match objects with sift features which is extracted by
-jsk_2015_05_baxter_apc/scripts/extract_sift_from_objdata.py.
+jsk_2015_05_baxter_apc/node_scripts/extract_sift_from_objdata.py.
 
 Usage
 -----
