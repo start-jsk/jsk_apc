@@ -3,7 +3,11 @@
 
 import os
 import yaml
-from .util import _load_yaml
+
+
+def _load_yaml(filename):
+    with open(filename, 'r') as f:
+        return yaml.load(f)
 
 
 def object_list():
