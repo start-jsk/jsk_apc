@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
     roseus
     rosserial_arduino
     rosserial_client
-    rostest
     std_msgs
 )
 
