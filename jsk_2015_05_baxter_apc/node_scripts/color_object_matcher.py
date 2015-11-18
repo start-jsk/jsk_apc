@@ -20,50 +20,40 @@ import numpy as np
 class ColorObjectMatcher(ObjectMatcher):
     def __init__(self):
         super(ColorObjectMatcher, self).__init__('/color_object_matcher')
-        rospy.Subscriber('~input', Image, self._cb_image)
         self._pub_recog = rospy.Publisher('~output', ObjectRecognition,
                                           queue_size=1)
         self._pub_debug = rospy.Publisher(
             '~debug', ColorHistogram, queue_size=1)
-
-        self.query_image = Image()
+        self.query_image = None
         self.estimator = ColorHistogramFeatures()
         self.estimator.load_data()
+        rospy.Subscriber('~input', Image, self._cb_image)
     def _cb_image(self, msg):
         """ Callback function fo Subscribers to listen sensor_msgs/Image """
         self.query_image = msg
     def predict_now(self):
-        query_image = self.query_image
-
-        object_list = jsk_apc2015_common.data.object_list()
-        probs = self.match(object_list)
-        matched_idx = np.argmax(probs)
-        # prepare message
-        res = ObjectRecognition()
-        res.header.stamp = query_image.header.stamp
-        res.matched = object_list[matched_idx]
-        res.probability = probs[matched_idx]
-        res.candidates = object_list
-        res.probabilities = probs
-        return res
-
-    def match(self, obj_names):
-        stamp = rospy.Time.now()
-        while (self.query_image.header.stamp < stamp) or (self.query_image.height == 0):
-            rospy.sleep(0.3)
+        if self.query_image is None:
+            return
         query_image = self.query_image
         # convert image
         bridge = cv_bridge.CvBridge()
         input_image = bridge.imgmsg_to_cv2(query_image, 'rgb8')
-
+        # compute histogram
         hist = self.estimator.color_hist(input_image)
         self._pub_debug.publish(
             ColorHistogram(header=query_image.header, histogram=hist))
-
-        object_list = jsk_apc2015_common.data.object_list()
-        obj_indices = [object_list.index(o) for o in obj_names]
-        obj_probs = self.estimator.predict(input_image)[0][obj_indices]
-        return obj_probs / obj_probs.sum()
+        # predict
+        proba = self.estimator.predict(input_image)[0]
+        objects = jsk_apc2015_common.data.object_list()
+        matched_idx = np.argmax(proba)
+        # prepare message
+        res = ObjectRecognition()
+        res.header.stamp = query_image.header.stamp
+        res.matched = objects[matched_idx]
+        res.probability = proba[matched_idx]
+        res.candidates = objects
+        res.probabilities = proba
+        return res
     def spin_once(self):
         res = self.predict_now()
         if res is None:
