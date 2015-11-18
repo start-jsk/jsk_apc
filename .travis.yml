@@ -15,10 +15,6 @@ env:
 matrix:
   allow_failures:
     - env: ROS_DISTRO=jade
-before_script:
-  # prepare rosbag for test
-  - sudo pip install gdown
-  - gdown 'https://drive.google.com/uc?id=0B9P1L--7Wd2vTkdoUXAzdnVobWc' -O jsk_2015_05_baxter_apc/test/2015-10-07-10-20-12_bin-box-array.bag
 script: source .travis/travis.sh
 after_script:
   - cd $TRAVIS_BUILD_DIR
