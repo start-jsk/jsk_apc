@@ -5,4 +5,8 @@
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
-    version: master
+    version: 67e9aa90254983cecb9321a250b9be8bdd0d6ed2
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: 75c9afdee2d41c83a9174068bf78e5bb8bf26f9c
