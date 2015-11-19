@@ -1,26 +1,24 @@
-sudo: required
-dist: trusty
+sudo: false
+
 language: generic
+
 env:
   global:
     - BUILDER=catkin
     - NOT_TEST_INSTALL=true
     - USE_DEB=false
-    - USE_TRAVIS=true
     - ROS_PARALLEL_JOBS="-j8"
     - ROSWS=wstool
   matrix:
     - ROS_DISTRO=indigo
     - ROS_DISTRO=jade
+
 matrix:
   allow_failures:
     - env: ROS_DISTRO=jade
+
 script: source .travis/travis.sh
-after_script:
-  - cd $TRAVIS_BUILD_DIR
-  # linter for catkin
-  - sudo pip install catkin_lint
-  - catkin_lint . --strict
+
 notifications:
   email:
     on_success: always
