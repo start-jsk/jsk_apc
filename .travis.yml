@@ -5,6 +5,7 @@ language: generic
 env:
   global:
     - BUILDER=catkin
+    - NO_SUDO=true
     - NOT_TEST_INSTALL=true
     - USE_DEB=false
     - ROS_PARALLEL_JOBS="-j8"
