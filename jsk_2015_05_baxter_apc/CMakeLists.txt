@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
     roseus
     rosserial_arduino
     rosserial_client
-    rostest
     std_msgs
 )
 
@@ -204,6 +203,12 @@ endif()
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
-## Add folders to be run by python nosetests
-# archive until to get rosbag correctly
-# add_rostest(test/test_robot_motion.test)
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  # install test data by a script
+  add_custom_target(install_test_data COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_test_data.sh)
+  if(TARGET tests)
+    add_dependencies(tests install_test_data)
+  endif()
+  add_rostest(test/test_recognition_in_hand.test DEPENDENCIES install_test_data)
+endif()

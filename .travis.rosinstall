@@ -5,4 +5,12 @@
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
-    version: master
+    version: 67e9aa90254983cecb9321a250b9be8bdd0d6ed2
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: 3a7d5cd1a061ffc619b65edce30fa0009276c85c
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: 29af3b3aa52412447a4fcfedfacd134dc1a6bd92
