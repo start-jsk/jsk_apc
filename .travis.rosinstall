@@ -9,7 +9,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    version: 75c9afdee2d41c83a9174068bf78e5bb8bf26f9c
+    version: 3a7d5cd1a061ffc619b65edce30fa0009276c85c
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
