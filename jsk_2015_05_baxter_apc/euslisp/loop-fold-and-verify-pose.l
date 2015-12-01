@@ -9,18 +9,18 @@
 
 (defun setup ()
   (jsk_2015_05_baxter_apc::baxter-init :ctype :default-controller)
-  (send *ri* :angle-vector (send *baxter* :fold-pose-back) 5000)
+  (send *ri* :angle-vector (send *baxter* :fold-pose-back) 3000)
   (send *ri* :wait-interpolation)
   )
 
 (defun main ()
   (do-until-key
     (send *ri* :angle-vector
-          (send *baxter* :fold-to-keep-object arm) 4000)
+          (send *baxter* :fold-to-keep-object arm))
     (send *ri* :wait-interpolation)
     ;; fold pose back
     (send *ri* :angle-vector
-      (send *baxter* :fold-pose-back arm) 4000)
+      (send *baxter* :fold-pose-back arm))
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp arm)
     (unix::sleep 2)
@@ -34,3 +34,6 @@
     )
   (send *ri* :stop-grasp)
   )
+
+(setup)
+(main)
