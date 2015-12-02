@@ -13,4 +13,4 @@
 - git:
     local-name: PR2/robot_self_filter
     uri: https://github.com/PR2/robot_self_filter.git
-    version: master
+    version: indigo-devel
