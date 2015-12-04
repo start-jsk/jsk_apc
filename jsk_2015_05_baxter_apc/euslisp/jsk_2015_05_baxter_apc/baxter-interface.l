@@ -91,14 +91,14 @@
     (send *baxter* :fold-pose-back arm)
     (send *ri* :send-av))
   (:recognize-bin-boxes
-    ()
+    (&key (stamp (ros::time-now)))
     (let (msg bin bin-box-pos-z)
       ;; for bin A-F
       (setq
         msg
         (one-shot-subscribe "bin_atof_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :after-stamp (ros::time)))
+                            :after-stamp stamp))
       (dotimes (i 6)
         (setq bin (elt '(:a :b :c :d :e :f) i))
         (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
@@ -107,7 +107,7 @@
         msg
         (one-shot-subscribe "bin_gtol_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :after-stamp (ros::time)))
+                            :after-stamp stamp))
       (dotimes (i 6)
         (setq bin (elt '(:j :k :l :g :h :i) i))
         (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
@@ -139,23 +139,22 @@
       (objects (append (list *baxter*) objs))
       ))
   (:recognize-objects-in-bin
-    (bin)
-    (let ((now (ros::time-now)))
-      (setq
-        msg
-        (one-shot-subscribe
-          (format nil "bin_~a_cpi_decomposer/boxes" (symbol2str bin))
-          jsk_recognition_msgs::BoundingBoxArray
-          :after-stamp (ros::time-now)))
-      (sethash bin _objects-in-bin-boxes (send msg :boxes))))
+    (bin &key (stamp (ros::time-now)))
+    (setq
+      msg
+      (one-shot-subscribe
+        (format nil "bin_~a_cpi_decomposer/boxes" (symbol2str bin))
+        jsk_recognition_msgs::BoundingBoxArray
+        :after-stamp stamp))
+    (sethash bin _objects-in-bin-boxes (send msg :boxes)))
   (:recognize-object-in-hand
-    (arm)
+    (arm &key (stamp (ros::time-now)))
     (let* (msg)
       (setq msg
             (one-shot-subscribe
               (format nil "~a_hand/object_verification/output" (arm-to-str arm))
               jsk_2015_05_baxter_apc::ObjectRecognition
-              :after-stamp (ros::time-now)))
+              :after-stamp stamp))
       (if msg
         (progn
           (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched))
@@ -163,9 +162,9 @@
         nil)
       ))
   (:verify-object
-    (arm object-name)
+    (arm object-name &key (stamp (ros::time-now)))
     (let (matched)
-      (if (setq matched (send self :recognize-object-in-hand arm))
+      (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp))
         (ros::ros-info "~a == ~a" object-name matched)
         (string= object-name matched)
         nil)))
