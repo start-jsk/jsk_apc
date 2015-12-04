@@ -25,7 +25,7 @@
     (sethash :fold-pose-lower (send self :get-val 'hard-coded-pose-table) #f(0.0 -7.27295 52.6465 -59.9414 91.582 123.574 13.3374 159.675 7.27295 52.6465 59.9414 91.582 -123.574 13.3374 -159.675))
     (sethash :fold-pose-back (send self :get-val 'hard-coded-pose-table) #f(0.0 97.4707 -2.39502 -94.5483 134.67 91.4062 8.70117 0.0 -97.4707 -2.39502 94.5483 134.67 -91.4062 8.70117 0.0))
     (sethash :fold-to-keep-object (send self :get-val 'hard-coded-pose-table) #f(0.0 77.1899 4.37256 -86.1548 123.904 11.8213 59.8096 74.5532 -77.1899 4.37256 86.1548 123.904 -11.8213 59.8096 -74.5532))
-    (sethash :place-object-pose (send self :get-val 'hard-coded-pose-table) #f(0.0 5.05371 1.58203 -39.5068 89.3188 -1.29639 8.10791 100.085 -5.05371 1.58203 39.5068 89.3188 1.29639 8.10791 -100.085))
+    (sethash :place-object-pose (send self :get-val 'hard-coded-pose-table) #f(0 5.07568 -13.6011 -44.7803 101.184 -0.725098 6.63574 88.6597 -5.07568 -13.6011 44.7803 101.184 0.725098 6.63574 -88.6597))
     (sethash :avoid-shelf-pose-a (send self :get-val 'hard-coded-pose-table)
              #f(0
                 3.51562 -1.56006 -174.946 123.86 113.533 90.6372 -38.4961
