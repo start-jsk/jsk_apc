@@ -77,18 +77,12 @@
         args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
     <remap from="~input" to="pc_to_pi_left_hand/output" />
     <remap from="~input/image" to="/kinect2_head/hd/image_color" />
-    <rosparam>
-      approximate_sync: true
-    </rosparam>
   </node>
   <node name="pi_to_mask_right_hand"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
     <remap from="~input" to="pc_to_pi_right_hand/output" />
     <remap from="~input/image" to="/kinect2_head/hd/image_color" />
-    <rosparam>
-      approximate_sync: true
-    </rosparam>
   </node>
   <!-- process mask image -->
   <node name="closing_left_hand"
@@ -96,7 +90,6 @@
         args="load jsk_perception/Closing $(arg MANAGER)">
     <remap from="~input" to="pi_to_mask_left_hand/output" />
     <rosparam>
-      approximate_sync: true
       size: 8
       iterations: 4
     </rosparam>
@@ -106,7 +99,6 @@
         args="load jsk_perception/Closing $(arg MANAGER)">
     <remap from="~input" to="pi_to_mask_right_hand/output" />
     <rosparam>
-      approximate_sync: true
       size: 8
       iterations: 4
     </rosparam>
@@ -117,18 +109,12 @@
         args="load jsk_perception/ApplyMaskImage $(arg MANAGER)">
     <remap from="~input" to="/kinect2_head/hd/image_color" />
     <remap from="~input/mask" to="closing_left_hand/output" />
-    <rosparam>
-      approximate_sync: true
-    </rosparam>
   </node>
   <node name="apply_mask_right_hand"
         pkg="nodelet" type="nodelet"
         args="load jsk_perception/ApplyMaskImage $(arg MANAGER)">
     <remap from="~input" to="/kinect2_head/hd/image_color" />
     <remap from="~input/mask" to="closing_right_hand/output" />
-    <rosparam>
-      approximate_sync: true
-    </rosparam>
   </node>
 
   <!-- object recognition -->

@@ -11,6 +11,6 @@
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
     version: 3a7d5cd1a061ffc619b65edce30fa0009276c85c
 - git:
-    local-name: jsk-ros-pkg/jsk_recognition
-    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
-    version: 29af3b3aa52412447a4fcfedfacd134dc1a6bd92
+    local-name: PR2/robot_self_filter
+    uri: https://github.com/PR2/robot_self_filter.git
+    version: indigo-devel
