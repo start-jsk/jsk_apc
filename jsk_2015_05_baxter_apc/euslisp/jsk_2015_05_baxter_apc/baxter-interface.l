@@ -165,9 +165,10 @@
     (arm object-name &key (stamp (ros::time-now)))
     (let (matched)
       (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp))
-        (ros::ros-info "~a == ~a" object-name matched)
-        (string= object-name matched)
-        nil)))
+        (progn (ros::ros-info "~a == ~a" object-name matched)
+               (string= object-name matched))
+        nil)
+      ))
   (:try-to-pick-in-bin
     (arm bin)
     (let* ((bin-box (gethash bin _bin-boxes))
@@ -208,9 +209,13 @@
         (return-from :try-to-pick-object nil))
       ;; ik to obj a bit distant
       (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
+      (if (find bin '(:a :b :c :d :e :f))
+        (setq world-x :z world-y :x world-z :y)
+        (setq world-x :z world-y :y world-z :x)
+        )
       (if (and
-            (< (send obj-box :dimensions :y) (send obj-box :dimensions :x))
-            (> (send obj-box :dimensions :x) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
+            (< (send obj-box :dimensions world-y) (send obj-box :dimensions world-z))
+            (> (send obj-box :dimensions world-z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
             )
         (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
         (setq sign 0))
@@ -219,10 +224,10 @@
             (send self :ik->bin-entrance arm bin :offset (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
             3000)
       (send self :wait-interpolation)
-      (pushback
-        (send *baxter* arm :inverse-kinematics
-            (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :translate offset :local))
-        avs)
+      ; (pushback
+      ;   (send *baxter* arm :inverse-kinematics
+      ;       (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :translate offset :local))
+      ;   avs)
       (pushback
         (send *baxter* arm :inverse-kinematics
             (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
@@ -246,8 +251,9 @@
     ))
   (:pick-object
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1))
-    (send *baxter* arm :move-end-pos #f(50 0 0) :world)
-    (send *ri* :send-av)
+    (send *ri* :angle-vector-sequence
+      (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)))
+      :fast nil 0 :scale 5.0)
     (send *ri* :wait-interpolation)
     (let (bin-box)
       ;; move arm bin-entrance -> pos above object to z direction
@@ -268,7 +274,14 @@
       (send self :angle-vector (send self :ik->bin-entrance arm bin) 3000)
       (send self :wait-interpolation)
       ;; move arm in-bin -> bin-entrance
-      (send self :angle-vector (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)) 3000)
+      (send self :angle-vector-sequence
+        (list
+          (send *baxter* arm :move-end-pos #f(0 0 50))
+          (send self :ik->bin-entrance arm bin :offset #f(0 0 50))
+          (send self :ik->bin-entrance arm bin :offset #f(-100 0 50))
+          (send self :ik->bin-entrance arm bin :offset #f(-300 0 50))
+          )
+        :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; move arm bin-entrance -> body
       (send *baxter* :avoid-shelf-pose arm bin)
