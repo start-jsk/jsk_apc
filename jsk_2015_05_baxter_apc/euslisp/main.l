@@ -32,7 +32,7 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; recognize bin boxes position and dimension
           (ros::ros-info "[main] recognizing bin boxes")
-          (send *ri* :recognize-bin-boxes)
+          (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
           (setq order nil)
           (setq state :set_target)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
@@ -80,7 +80,7 @@
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
             (progn
               ;; run motion
-              (send *ri* :recognize-objects-in-bin target-bin)
+              (send *ri* :recognize-objects-in-bin target-bin :stamp (ros::time-now))
               (send *ri* :move-arm-body->bin arm target-bin)
               (send *ri* :wait-interpolation)
               (send *ri* :pick-object arm target-bin :n-trial 2 :n-trial-same-pos 2)
