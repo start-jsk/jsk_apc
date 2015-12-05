@@ -209,8 +209,8 @@
       ;; ik to obj a bit distant
       (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
       (if (and
-            (< (send obj-box :dimensions :x) (send obj-box :dimensions :z))
-            (> (send obj-box :dimensions :z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
+            (< (send obj-box :dimensions :y) (send obj-box :dimensions :x))
+            (> (send obj-box :dimensions :x) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
             )
         (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
         (setq sign 0))
