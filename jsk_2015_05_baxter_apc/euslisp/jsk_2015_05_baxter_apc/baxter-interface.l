@@ -34,7 +34,7 @@
     (setq _tfl (instance ros::transform-listener :init))
     (setq _bin-boxes (make-hash-table))
     (setq _objects-in-bin-boxes (make-hash-table))
-    (unless (ros::get-param "~gazebo" nil)
+    (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
       )
@@ -42,7 +42,7 @@
   (:start-grasp
     (&optional (arm :arms))
     (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
-      (if (ros::get-param "~gazebo" nil)
+      (if (ros::get-param "/apc_on_gazebo" nil)
         (ros::service-call (format nil "/robot/~a_vacuum_gripper/on" l/r) (instance std_srvs::EmptyRequest :init))
         (ros::publish (format nil "/vacuum_gripper/limb/~a" l/r) (instance std_msgs::Bool :init :data t))
         )
@@ -50,7 +50,7 @@
   (:stop-grasp
     (&optional (arm :arms))
     (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
-      (if (ros::get-param "~gazebo" nil)
+      (if (ros::get-param "/apc_on_gazebo" nil)
         (ros::service-call (format nil "/robot/~a_vacuum_gripper/off" l/r) (instance std_srvs::EmptyRequest :init))
         (ros::publish (format nil "/vacuum_gripper/limb/~a" l/r) (instance std_msgs::Bool :init :data nil))
         )

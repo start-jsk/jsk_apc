@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <launch>
 
+  <param name="/apc_on_gazebo" type="bool" value="true" />
+
   <!-- these are the arguments you can pass this launch file, for example paused:=true -->
   <arg name="kiva" default="false"/>
   <arg name="paused" default="false"/>
