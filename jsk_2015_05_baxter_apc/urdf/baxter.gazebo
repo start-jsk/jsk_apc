@@ -2,6 +2,23 @@
 <robot>
 
   <!-- gazebo vacuum_gripper plugin >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+  <link name="left_end_effector">
+    <gravity>0</gravity>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.000000 0.000000 0.000000"/>
+      <mass value="0.0001"/>
+      <inertia ixx="1e-08" ixy="0" ixz="0" iyy="1e-08" iyz="0" izz="1e-08"/>
+    </inertial>
+  </link>
   <link name="right_end_effector">
     <gravity>0</gravity>
     <visual>
@@ -24,17 +41,30 @@
   http://answers.gazebosim.org/question/1321/a-correct-way-to-implement-fixed-joint/
   Because the position of end effector is used by gazebo_ros_vacuum_plugin
   -->
+  <joint name="left_end_joint" type="revolute">
+    <parent link="left_wrist" />
+    <child link="left_end_effector" />
+    <origin rpy="0 0 0" xyz="0.03 0 .45" />
+    <limit effort="30" velocity="1.0" lower="0" upper="0" />
+  </joint>
   <joint name="right_end_joint" type="revolute">
     <parent link="right_wrist" />
     <child link="right_end_effector" />
-    <origin rpy="0 0 0" xyz="0.07 0 .45" />
+    <origin rpy="0 0 0" xyz="0.03 0 .45" />
     <limit effort="30" velocity="1.0" lower="0" upper="0" />
   </joint>
   <gazebo>
     <plugin name="gazebo_ros_vacuum_gripper" filename="libgazebo_ros_vacuum_gripper.so">
-      <robotNamespace>/robot/right_hand</robotNamespace>
+      <robotNamespace>/robot/left_vacuum_gripper</robotNamespace>
+      <bodyName>left_end_effector</bodyName>
+      <topicName>grasping</topicName>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <plugin name="gazebo_ros_vacuum_gripper" filename="libgazebo_ros_vacuum_gripper.so">
+      <robotNamespace>/robot/right_vacuum_gripper</robotNamespace>
       <bodyName>right_end_effector</bodyName>
-      <serviceName>toggle</serviceName>
+      <topicName>grasping</topicName>
     </plugin>
   </gazebo>
   <!-- gazebo vacuum_gripper plugin <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
