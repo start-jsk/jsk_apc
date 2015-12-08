@@ -24,13 +24,17 @@
 
   <!-- Load the URDF into the ROS Parameter Server -->
   <param name="robot_description"
-         command="$(find xacro)/xacro.py $(find jsk_2015_05_baxter_apc)/urdf/baxter.xacro" />
+         command="$(find xacro)/xacro.py $(find jsk_2015_05_baxter_apc)/urdf/baxter_sim.xacro" />
 
   <!-- Load the software version into the ROS Parameter Server -->
   <param name="rethink/software_version" value="1.1.0" />
 
   <!-- Publish a static transform between the world and the base of the robot -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 0 world base" />
+
+  <node name="right_vacuum_gripper_tf_publisher"
+        pkg="tf2_ros" type="static_transform_publisher"
+        args="0.07 0 0.45 0 0 0 right_wrist right_end_coords" />
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"

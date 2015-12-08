@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<robot>
+
+  <!-- gazebo vacuum_gripper plugin >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+  <link name="right_end_effector">
+    <gravity>0</gravity>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.000000 0.000000 0.000000"/>
+      <mass value="0.0001"/>
+      <inertia ixx="1e-08" ixy="0" ixz="0" iyy="1e-08" iyz="0" izz="1e-08"/>
+    </inertial>
+  </link>
+  <!--
+  This joint should be 'revolute' not 'fixed' type to avoid hidden joint after being converted to sdf.
+  http://answers.gazebosim.org/question/1321/a-correct-way-to-implement-fixed-joint/
+  Because the position of end effector is used by gazebo_ros_vacuum_plugin
+  -->
+  <joint name="right_end_joint" type="revolute">
+    <parent link="right_wrist" />
+    <child link="right_end_effector" />
+    <origin rpy="0 0 0" xyz="0.07 0 .45" />
+    <limit effort="30" velocity="1.0" lower="0" upper="0" />
+  </joint>
+  <gazebo>
+    <plugin name="gazebo_ros_vacuum_gripper" filename="libgazebo_ros_vacuum_gripper.so">
+      <robotNamespace>/robot/right_hand</robotNamespace>
+      <bodyName>right_end_effector</bodyName>
+      <serviceName>toggle</serviceName>
+    </plugin>
+  </gazebo>
+  <!-- gazebo vacuum_gripper plugin <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+
+  <!-- gazebo kinect plugin for head >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+  <joint name="kinect2_head_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.069 0.0 0.263"/>
+    <parent link="head"/>
+    <child link="kinect2_head_link"/>
+  </joint>
+  <link name="kinect2_head_link">
+    <visual>
+      <origin rpy="0 0 1.57" xyz="0.05 0 -0.04"/>
+      <geometry>
+        <mesh filename="package://turtlebot_description/meshes/sensors/kinect.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 1.57" xyz="0.05 0 -0.04"/>
+      <geometry>
+        <box size="0.07271 0.27794 0.073"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.564" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
+                iyy="0.000498940" iyz="0.0"
+                izz="0.003879257" />
+    </inertial>
+  </link>
+  <joint name="kinect2_head_depth_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.049 0.0"/>
+    <parent link="kinect2_head_link"/>
+    <child link="kinect2_head_depth_frame"/>
+  </joint>
+  <link name="kinect2_head_depth_frame"/>
+  <joint name="kinect2_head_depth_optical_joint" type="fixed">
+    <origin rpy="-1.57079632679 0.0 -1.57079632679" xyz="0 0 0"/>
+    <parent link="kinect2_head_depth_frame"/>
+    <child link="kinect2_head_depth_optical_frame"/>
+  </joint>
+  <link name="kinect2_head_depth_optical_frame"/>
+  <joint name="kinect2_head_rgb_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.022 0.0"/>
+    <parent link="kinect2_head_link"/>
+    <child link="kinect2_head_rgb_frame"/>
+  </joint>
+  <link name="kinect2_head_rgb_frame"/>
+  <joint name="kinect2_head_rgb_optical_joint" type="fixed">
+    <origin rpy="-1.57079632679 0.0 -1.57079632679" xyz="0 0 0"/>
+    <parent link="kinect2_head_rgb_frame"/>
+    <child link="kinect2_head_rgb_optical_frame"/>
+  </joint>
+  <link name="kinect2_head_rgb_optical_frame"/>
+  <gazebo reference="kinect2_head_depth_frame">
+    <sensor name="kinect2_head" type="depth">
+      <update_rate>20</update_rate>
+      <camera>
+        <horizontal_fov>1.09606677025</horizontal_fov>
+        <image>
+          <format>R8G8B8</format>
+          <height>1080</height>
+          <width>1920</width>
+        </image>
+        <clip>
+          <near>0.5</near>
+          <far>9</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros_openni_kinect.so" name="kinect2_head_camera_controller">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>20</updateRate>
+        <imageTopicName>kinect2_head/hd/image_color</imageTopicName>
+        <cameraInfoTopicName>kinect2_head/hd/camera_info</cameraInfoTopicName>
+        <depthImageTopicName>kinect2_head/hd/image_depth_rect</depthImageTopicName>
+        <depthImageCameraInfoTopicName>kinect2_head/hd/camera_info</depthImageCameraInfoTopicName>
+        <pointCloudTopicName>kinect2_head/hd/points</pointCloudTopicName>
+        <frameName>kinect2_head_depth_optical_frame</frameName>
+        <distortion_k1>0.0</distortion_k1>
+        <distortion_k2>0.0</distortion_k2>
+        <distortion_k3>0.0</distortion_k3>
+        <distortion_t1>0.0</distortion_t1>
+        <distortion_t2>0.0</distortion_t2>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <!-- gazebo kinect plugin for head <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+
+
+</robot>
