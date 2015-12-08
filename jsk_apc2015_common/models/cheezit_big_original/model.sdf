@@ -5,7 +5,7 @@
     <link name="cheezit_big_original_link">
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>3</mass>
+        <mass>0.3</mass>
         <inertia>
           <ixx>1e-03</ixx>
           <ixy>0</ixy>

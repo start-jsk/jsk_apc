@@ -5,7 +5,7 @@
     <link name="dr_browns_bottle_brush_link">
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>3</mass>
+        <mass>0.3</mass>
         <inertia>
           <ixx>1e-03</ixx>
           <ixy>0</ixy>
