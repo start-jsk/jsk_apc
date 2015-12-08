@@ -11,6 +11,23 @@
   <xacro:property name="left_wrist_offset_x" value="-0.01" />
 
   <!-- custom vacuum gripper >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+  <link name="right_end_effector">
+    <gravity>0</gravity>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.000000 0.000000 0.000000"/>
+      <mass value="0.0001"/>
+      <inertia ixx="1e-08" ixy="0" ixz="0" iyy="1e-08" iyz="0" izz="1e-08"/>
+    </inertial>
+  </link>
   <link name="right_custom_vacuum_link">
     <visual>
       <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
@@ -75,6 +92,18 @@
     </collision>
   </link>
 
+  <!--
+  This joint should be 'revolute' not 'fixed' type to avoid hidden joint after being converted to sdf.
+  http://answers.gazebosim.org/question/1321/a-correct-way-to-implement-fixed-joint/
+  Because the position of end effector is used by gazebo_ros_vacuum_plugin
+  -->
+  <joint name="right_end_joint" type="revolute">
+    <parent link="right_wrist" />
+    <child link="right_end_effector" />
+    <origin rpy="0 0 0" xyz="0.07 0 .45" />
+    <limit effort="30" velocity="1.0" lower="0" upper="0" />
+  </joint>
+
   <joint name="right_custom_joint" type="fixed">
     <parent link="right_wrist"/>
     <child link="right_custom_vacuum_link"/>
@@ -85,6 +114,13 @@
     <child link="right_custom_vacuum_link_base"/>
     <origin rpy="0 0 1.57" xyz="${right_wrist_offset_x} -0 0.13" />
   </joint>
+  <gazebo>
+    <plugin name="gazebo_ros_vacuum_gripper" filename="libgazebo_ros_vacuum_gripper.so">
+      <robotNamespace>/robot/right_hand</robotNamespace>
+      <bodyName>right_end_effector</bodyName>
+      <serviceName>toggle</serviceName>
+    </plugin>
+  </gazebo>
   <joint name="left_custom_joint" type="fixed">
     <parent link="left_wrist"/>
     <child link="left_custom_vacuum_link"/>
