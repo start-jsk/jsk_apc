@@ -15,6 +15,9 @@
   t)
 
 (defun apc-mainloop (arm)
+  ;; recognize bin boxes position and dimension
+  (ros::ros-info "[main] recognizing bin boxes")
+  (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
   (let (state order target-n-tried target-bin target-obj)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
@@ -30,9 +33,6 @@
           )
         (:initialize
           (ros::ros-info "[main] ~a, ~a" arm state)
-          ;; recognize bin boxes position and dimension
-          (ros::ros-info "[main] recognizing bin boxes")
-          (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
           (setq order nil)
           (setq state :set_target)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
@@ -80,6 +80,7 @@
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
             (progn
               ;; run motion
+              (ros::ros-info "[main] Recognizing objects in bin" target-bin)
               (send *ri* :recognize-objects-in-bin target-bin :stamp (ros::time-now))
               (send *ri* :move-arm-body->bin arm target-bin)
               (send *ri* :wait-interpolation)
@@ -131,7 +132,7 @@
           (send *ri* :move-arm-body->order-bin arm)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm)
-          (send *ri* :spin-off-by-wrist arm)
+          (send *ri* :spin-off-by-wrist arm :times 15)
           (send *ri* :wait-interpolation)
           (send *baxter* :fold-pose-back arm)
           (send *ri* :send-av)
