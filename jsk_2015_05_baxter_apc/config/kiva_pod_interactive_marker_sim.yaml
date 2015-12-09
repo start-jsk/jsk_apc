@@ -1,0 +1,15 @@
+frame_id: /base
+initial_orientation: [0, 0,  0,  1]
+initial_x: 1.44
+initial_y: 0
+initial_z: 0.393
+object_a: 0.2
+object_b: 0.2
+object_g: 0.0
+object_r: 0.0
+object_type: cube
+object_x: 0.865
+object_y: 0.865
+object_z: 1.0
+publish_tf: true
+tf_frame: kiva_pod_base
