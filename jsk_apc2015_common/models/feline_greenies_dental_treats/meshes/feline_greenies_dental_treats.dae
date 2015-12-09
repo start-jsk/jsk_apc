@@ -11,7 +11,7 @@
     </asset>
     <library_images>
         <image id="texture0" name="texture0">
-            <init_from>completed_tsdf_texture_mapped_mesh.png</init_from>
+            <init_from>optimized_tsdf_texture_mapped_mesh.png</init_from>
         </image>
     </library_images>
     <library_materials>

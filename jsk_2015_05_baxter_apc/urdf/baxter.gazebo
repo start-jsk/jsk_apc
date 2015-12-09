@@ -97,7 +97,7 @@
     </inertial>
   </link>
   <joint name="kinect2_head_depth_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.0 0.049 0.0"/>
+    <origin rpy="0 0 0" xyz="0.03 -0.08 -0.05"/>
     <parent link="kinect2_head_link"/>
     <child link="kinect2_head_depth_frame"/>
   </joint>
@@ -124,9 +124,9 @@
     <sensor name="kinect2_head" type="depth">
       <update_rate>20</update_rate>
       <camera>
-        <horizontal_fov>1.09606677025</horizontal_fov>
+        <horizontal_fov>1.50</horizontal_fov>
         <image>
-          <format>R8G8B8</format>
+          <format>B8G8R8</format>
           <height>1080</height>
           <width>1920</width>
         </image>
