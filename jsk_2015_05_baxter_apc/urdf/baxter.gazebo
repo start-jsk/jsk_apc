@@ -138,11 +138,12 @@
       <plugin filename="libgazebo_ros_openni_kinect.so" name="kinect2_head_camera_controller">
         <alwaysOn>true</alwaysOn>
         <updateRate>20</updateRate>
-        <imageTopicName>kinect2_head/hd/image_color</imageTopicName>
-        <cameraInfoTopicName>kinect2_head/hd/camera_info</cameraInfoTopicName>
-        <depthImageTopicName>kinect2_head/hd/image_depth_rect</depthImageTopicName>
-        <depthImageCameraInfoTopicName>kinect2_head/hd/camera_info</depthImageCameraInfoTopicName>
-        <pointCloudTopicName>kinect2_head/hd/points</pointCloudTopicName>
+        <cameraName>kinect2_head</cameraName>
+        <imageTopicName>hd/image_color</imageTopicName>
+        <cameraInfoTopicName>hd/camera_info</cameraInfoTopicName>
+        <depthImageTopicName>hd/image_depth_rect</depthImageTopicName>
+        <depthImageCameraInfoTopicName>hd/camera_info</depthImageCameraInfoTopicName>
+        <pointCloudTopicName>hd/points</pointCloudTopicName>
         <frameName>kinect2_head_depth_optical_frame</frameName>
         <distortion_k1>0.0</distortion_k1>
         <distortion_k2>0.0</distortion_k2>
