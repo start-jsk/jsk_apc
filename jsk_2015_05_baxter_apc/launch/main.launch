@@ -53,4 +53,11 @@
     respawn="true" output="screen">
     <env name="DISPLAY" value="" />
   </node>
+
+  <!-- visualization -->
+  <node name="visualize_on_rviz"
+        pkg="jsk_2015_05_baxter_apc" type="risualize_on_rviz.py">
+    <param name="json" value="$(arg json)" />
+  </node>
+
 </launch>
