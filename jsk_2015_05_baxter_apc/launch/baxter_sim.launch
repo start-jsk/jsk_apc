@@ -32,7 +32,7 @@
   <param name="rethink/software_version" value="1.1.0" />
 
   <!-- Publish a static transform between the world and the base of the robot -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 0 world base" />
+  <node pkg="tf" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 world base 100" />
 
   <!-- tf for end effector which is required by gazebo plugin for vacuum_gripper -->
   <node name="left_vacuum_gripper_tf_publisher"
