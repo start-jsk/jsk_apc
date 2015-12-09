@@ -9,8 +9,8 @@
       <geometry>
         <box size="0.01 0.01 0.01"/>
       </geometry>
-      <material name="black">
-        <color rgba="0 0 0 1"/>
+      <material name="transparent">
+        <color rgba="0 0 0 0"/>
       </material>
     </visual>
     <inertial>
@@ -26,8 +26,8 @@
       <geometry>
         <box size="0.01 0.01 0.01"/>
       </geometry>
-      <material name="black">
-        <color rgba="0 0 0 1"/>
+      <material name="transparent">
+        <color rgba="0 0 0 0"/>
       </material>
     </visual>
     <inertial>
@@ -44,13 +44,13 @@
   <joint name="left_end_joint" type="revolute">
     <parent link="left_wrist" />
     <child link="left_end_effector" />
-    <origin rpy="0 0 0" xyz="0.03 0 .45" />
+    <origin rpy="0 0 0" xyz="0.08 0 .44" />
     <limit effort="30" velocity="1.0" lower="0" upper="0" />
   </joint>
   <joint name="right_end_joint" type="revolute">
     <parent link="right_wrist" />
     <child link="right_end_effector" />
-    <origin rpy="0 0 0" xyz="0.03 0 .45" />
+    <origin rpy="0 0 0" xyz="0.08 0 .44" />
     <limit effort="30" velocity="1.0" lower="0" upper="0" />
   </joint>
   <gazebo>
