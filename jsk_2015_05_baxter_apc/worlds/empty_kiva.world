@@ -16,6 +16,11 @@
     </include>
 
     <include>
+      <uri>model://paper_mate_12_count_mirado_black_warrior</uri>
+      <name>paper_mate_12_count_mirado_black_warrior</name>
+      <pose>1.23 -0.2 1.3 0 0 0</pose>
+    </include>
+    <include>
       <uri>model://safety_works_safety_glasses</uri>
       <name>safety_works_safety_glasses</name>
       <pose>1.08 -0.28 1.3 0 0 0</pose>
