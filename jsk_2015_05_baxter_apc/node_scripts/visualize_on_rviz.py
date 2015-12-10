@@ -25,11 +25,15 @@ def get_work_order(json_file):
         target_object = order['item']
         yield (bin_, target_object)
 
-recognition_msg = None
-def cb_recognition(msg):
+recognition_msg = {'left': None, 'right': None}
+def cb_recognition_l(msg):
     global recognition_msg
-    recognition_msg = msg
-sub_recognition = rospy.Subscriber('/right_hand/object_verification/output', ObjectRecognition, cb_recognition)
+    recognition_msg['left'] = msg
+def cb_recognition_r(msg):
+    global recognition_msg
+    recognition_msg['right'] = msg
+sub_recognition_l = rospy.Subscriber('/left_hand/object_verification/output', ObjectRecognition, cb_recognition_l)
+sub_recognition_r = rospy.Subscriber('/right_hand/object_verification/output', ObjectRecognition, cb_recognition_r)
 
 
 rospy.init_node('visualize_on_rviz')
@@ -39,37 +43,38 @@ json_file = rospy.get_param('~json')
 bin_contents = dict(list(get_bin_contents(json_file)))
 work_order = dict(list(get_work_order(json_file)))
 
-pub_r_state = rospy.Publisher('~right_state', OverlayText, queue_size=1)
-pub_r_target = rospy.Publisher('~right_target', OverlayText, queue_size=1)
-pub_r_contents = rospy.Publisher('~right_contents', OverlayText, queue_size=1)
-pub_r_order = rospy.Publisher('~right_order', OverlayText, queue_size=1)
-pub_r_result = rospy.Publisher('~right_result', OverlayText, queue_size=1)
+pub_l = rospy.Publisher('~left', OverlayText, queue_size=1)
+pub_r = rospy.Publisher('~right', OverlayText, queue_size=1)
 
 rate = rospy.Rate(10)
 while not rospy.is_shutdown():
-    # robot state
-    r_msg = OverlayText()
-    r_msg.text = 'right_arm: state: ' + rospy.get_param('right_hand/state', '-')
-    pub_r_state.publish(r_msg)
-    target_bin = rospy.get_param('right_hand/target_bin', '-')
-    r_msg.text = 'right_arm: target_bin: ' + target_bin
-    pub_r_target.publish(r_msg)
-    if not target_bin:
-        rate.sleep()
-        continue
-    # bin contents
-    contents = bin_contents[target_bin]
-    r_msg.text = 'right_arm: objects in bin: {}: {}'.format(target_bin, ', '.join(contents))
-    pub_r_contents.publish(r_msg)
-    # work order
-    order = work_order[target_bin]
-    r_msg.text = 'right_arm target object: {}'.format(order)
-    pub_r_order.publish(r_msg)
-    # recognition result
-    if recognition_msg is None:
-        rate.sleep()
-        continue
-    result = recognition_msg.candidates[np.argmax(recognition_msg.probabilities)]
-    r_msg.text = 'right_arm: recognized as: ' + result
-    pub_r_result.publish(r_msg)
+    msg = {}
+    for arm in ['left', 'right']:
+        msg[arm] = OverlayText()
+        # robot state
+        state_text = rospy.get_param(arm+'_hand/state', '')
+        target_bin = rospy.get_param(arm+'_hand/target_bin', '')
+        target_text = target_bin
+        # contents and order
+        contents_text = ''
+        order_text = ''
+        if target_bin:
+            contents = bin_contents[target_bin]
+            contents_text = "objects in bin '{}': {}".format(target_bin.upper(), ', '.join(contents))
+            order = work_order[target_bin]
+            order_text = order
+        # recognition result
+        result_text = ''
+        if recognition_msg[arm] is not None:
+            result = recognition_msg[arm].candidates[np.argmax(recognition_msg[arm].probabilities)]
+            result_text = result
+        msg[arm].text = '''\
+{}_arm:
+  - state: {}
+  - target bin: {}
+  - objects in bin: {}
+  - target object: {}
+  - recognized as: {}'''.format(arm, state_text, target_text, order_text, result_text, result_text)
+    pub_l.publish(msg['left'])
+    pub_r.publish(msg['right'])
     rate.sleep()
