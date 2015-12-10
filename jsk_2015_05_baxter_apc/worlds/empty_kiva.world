@@ -18,7 +18,7 @@
     <include>
       <uri>model://apc_order_bin</uri>
       <name>apc_order_bin</name>
-      <pose>0.75 0 0.47 0 0 0</pose>
+      <pose>0.78 0 0.40 0 0 0</pose>
     </include>
     <include>
       <uri>model://apc_order_bin_stage</uri>
@@ -74,8 +74,8 @@
     </include>
     <!-- bin D -->
     <include>
-      <uri>model://elmers_washable_no_run_school_glue</uri>
-      <name>elmers_washable_no_run_school_glue</name>
+      <uri>model://munchkin_white_hot_duck_bath_toy</uri>
+      <name>munchkin_white_hot_duck_bath_toy</name>
       <pose>1.08 0.3 1.3 0 0 0</pose>
     </include>
     <!-- bin E -->
