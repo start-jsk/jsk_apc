@@ -14,13 +14,13 @@
 
   <link name="order_bin_base">
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 .015"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry><box size="${z_part_size}"/></geometry>
       <material name="red" />
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${z_size/2}"/>
-      <geometry><box size="${x_part_size}"/></geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${z_part_size}"/></geometry>
       <material name="red" />
     </collision>
     <inertial>

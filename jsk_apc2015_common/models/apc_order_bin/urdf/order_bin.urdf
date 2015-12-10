@@ -9,16 +9,16 @@
   </material>
   <link name="order_bin_base">
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 .015"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
         <box size="0.35 0.53      .03"/>
       </geometry>
       <material name="red"/>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0.1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <box size="      .03 0.53 0.2"/>
+        <box size="0.35 0.53      .03"/>
       </geometry>
       <material name="red"/>
     </collision>
