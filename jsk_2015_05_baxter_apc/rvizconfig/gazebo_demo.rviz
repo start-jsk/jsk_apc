@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /RobotModel1/Links1
         - /TF1/Frames1
-        - /BoundingBoxArray1
       Splitter Ratio: 0.5
     Tree Height: 1107
   - Class: rviz/Selection
@@ -49,22 +48,22 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Alpha: 1
+    - Alpha: 0.8
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
+        Max Value: 1.42171
+        Min Value: -0.929999
         Value: true
       Axis: Z
-      Channel Name: intensity
+      Channel Name: rgb
       Class: rviz/PointCloud2
-      Color: 85; 0; 255
-      Color Transformer: FlatColor
+      Color: 85; 85; 85
+      Color Transformer: Intensity
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 4096
+      Max Intensity: 1.42903e-38
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: PointCloud2
@@ -76,7 +75,7 @@ Visualization Manager:
       Style: Flat Squares
       Topic: /kinect2_head/hd/points
       Use Fixed Frame: true
-      Use rainbow: true
+      Use rainbow: false
       Value: true
     - Alpha: 1
       Class: rviz/RobotModel
@@ -415,7 +414,7 @@ Visualization Manager:
       Channel Name: intensity
       Class: rviz/PointCloud2
       Color: 0; 170; 0
-      Color Transformer: FlatColor
+      Color Transformer: RGB8
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
@@ -425,7 +424,7 @@ Visualization Manager:
       Min Intensity: 0
       Name: PointCloud2
       Position Transformer: XYZ
-      Queue Size: 10
+      Queue Size: 30
       Selectable: true
       Size (Pixels): 3
       Size (m): 0.02
@@ -451,68 +450,18 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        kiva_pod_base:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_y_part0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_y_part1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_y_part2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_y_part3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_z_part0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_z_part1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_z_part2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_z_part3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kiva_pod_z_part4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: kiva_pod_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Class: jsk_rviz_plugin/CameraInfo
       Enabled: false
@@ -558,15 +507,15 @@ Visualization Manager:
       Update Topic: /interactive_adjust_kiva_pod/update
       Value: false
     - Class: jsk_rviz_plugin/BoundingBoxArray
-      Enabled: false
+      Enabled: true
       Name: BoundingBoxArray
-      Topic: /bin_a_cpi_decomposer/boxes
-      Value: false
-      alpha: 0.8
+      Topic: /in_hand_clipper/output/box_array
+      Value: true
+      alpha: 0.5
       color: 25; 255; 0
-      coloring: Auto
-      line width: 0.005
-      only edge: false
+      coloring: Flat color
+      line width: 0.01
+      only edge: true
       show coords: true
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
@@ -577,17 +526,17 @@ Visualization Manager:
       height: -1
       left: 0
       top: 0
-      width: 300
+      width: 605
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
       Name: OverlayImage
       Topic: /apply_mask_right_hand/output
       Value: true
       alpha: 1
-      height: 200
-      left: 300
+      height: 340
+      left: 600
       top: 0
-      width: 200
+      width: 340
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -778,8 +727,8 @@ Visualization Manager:
       left: 0
       line width: 2
       text size: 15
-      top: 200
-      width: 800
+      top: 350
+      width: 940
     - Background Alpha: 0.8
       Background Color: 0; 0; 0
       Class: jsk_rviz_plugin/OverlayText
@@ -796,8 +745,8 @@ Visualization Manager:
       left: 0
       line width: 2
       text size: 15
-      top: 230
-      width: 800
+      top: 380
+      width: 940
     - Background Alpha: 0.8
       Background Color: 0; 0; 0
       Class: jsk_rviz_plugin/OverlayText
@@ -814,8 +763,8 @@ Visualization Manager:
       left: 0
       line width: 2
       text size: 15
-      top: 260
-      width: 800
+      top: 410
+      width: 940
     - Background Alpha: 0.8
       Background Color: 0; 0; 0
       Class: jsk_rviz_plugin/OverlayText
@@ -832,8 +781,8 @@ Visualization Manager:
       left: 0
       line width: 2
       text size: 15
-      top: 320
-      width: 800
+      top: 470
+      width: 940
     - Background Alpha: 0.8
       Background Color: 0; 0; 0
       Class: jsk_rviz_plugin/OverlayText
@@ -850,8 +799,8 @@ Visualization Manager:
       left: 0
       line width: 2
       text size: 15
-      top: 350
-      width: 800
+      top: 500
+      width: 940
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -876,22 +825,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.55483
+      Distance: 1.77121
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.249392
-        Y: -0.524445
-        Z: 1.03207
+        X: -0.322195
+        Y: -0.694991
+        Z: 1.35022
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.3248
+      Pitch: 0.1298
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.66175
+      Yaw: 3.70175
     Saved: ~
 Window Geometry:
   Displays:
