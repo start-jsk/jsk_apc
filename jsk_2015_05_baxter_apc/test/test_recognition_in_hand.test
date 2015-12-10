@@ -38,7 +38,7 @@
   <!-- check recognition by BOF -->
   <test test-name="stdout_2"
         pkg="jsk_tools" type="test_stdout.py"
-        time-limit="60">
+        time-limit="60" retry="3">
     <param name="~command" value="rostopic echo /right_hand/bof_object_matcher/output -n1" />
     <param name="~stdout_line0" type="str" value="header: " />  <!-- check if message is comming -->
     <param name="~stdout_line6" type="str" value="matched: kyjen_squeakin_eggs_plush_puppies" />
