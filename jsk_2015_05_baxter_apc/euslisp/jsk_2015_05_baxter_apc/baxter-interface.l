@@ -234,6 +234,7 @@
         (setq sign 0))
       (ros::ros-info "[:try-to-pick-object] sign: ~a" sign)
       (if (ros::get-param "/apc_on_gazebo" nil)
+        ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
         (setq offset #f(-30 0 0))
         (setq offset (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
         )
