@@ -5,15 +5,7 @@
     <link name="safety_works_safety_glasses_link">
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>0.3</mass>
-        <inertia>
-          <ixx>1e-03</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
-          <izz>1e-03</izz>
-          <iyz>0</iyz>
-          <iyy>1e-03</iyy>
-        </inertia>
+        <mass>0.08</mass>
       </inertial>
 
       <visual name="safety_works_safety_glasses_visual">
