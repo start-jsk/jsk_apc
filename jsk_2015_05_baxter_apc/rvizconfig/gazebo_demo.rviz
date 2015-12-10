@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /RobotModel1/Links1
         - /TF1/Frames1
+        - /BoundingBoxArray1
       Splitter Ratio: 0.5
     Tree Height: 1107
   - Class: rviz/Selection
@@ -537,15 +538,15 @@ Visualization Manager:
       Update Topic: /interactive_adjust_kiva_pod/update
       Value: false
     - Class: jsk_rviz_plugin/BoundingBoxArray
-      Enabled: false
+      Enabled: true
       Name: BoundingBoxArray
       Topic: /bin_f_cpi_decomposer/boxes
-      Value: false
-      alpha: 0.8
+      Value: true
+      alpha: 0.9
       color: 25; 255; 0
       coloring: Auto
-      line width: 0.005
-      only edge: false
+      line width: 0.01
+      only edge: true
       show coords: true
     - Class: rviz/InteractiveMarkers
       Enable Transparency: true
@@ -875,22 +876,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.59271
+      Distance: 1.55483
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.505161
-        Y: -0.338879
-        Z: 1.46974
+        X: -0.249392
+        Y: -0.524445
+        Z: 1.03207
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.3298
+      Pitch: 0.3248
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.40675
+      Yaw: 3.66175
     Saved: ~
 Window Geometry:
   Displays:
