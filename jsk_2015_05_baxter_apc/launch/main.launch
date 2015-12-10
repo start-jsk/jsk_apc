@@ -56,7 +56,7 @@
 
   <!-- visualization -->
   <node name="visualize_on_rviz"
-        pkg="jsk_2015_05_baxter_apc" type="risualize_on_rviz.py">
+        pkg="jsk_2015_05_baxter_apc" type="visualize_on_rviz.py">
     <param name="json" value="$(arg json)" />
   </node>
 
