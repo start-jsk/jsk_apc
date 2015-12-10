@@ -13,13 +13,122 @@
       <uri>model://kiva_pod</uri>
       <name>kiva_pod</name>
       <pose>1.44 0 0 0 0 1.57</pose>
-      <static>1</static>
     </include>
 
+    <include>
+      <uri>model://apc_order_bin</uri>
+      <name>apc_order_bin</name>
+      <pose>0.78 0 0.40 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apc_order_bin_stage</uri>
+      <name>apc_order_bin_stage</name>
+      <pose>0.75 0 0 0 0 0</pose>
+    </include>
+
+<!--
+- champion_copper_plus_spark_plug
+- cheezit_big_original
+- crayola_64_ct
+- dr_browns_bottle_brush
+- elmers_washable_no_run_school_glue
+- expo_dry_erase_board_eraser
+- feline_greenies_dental_treats
+- first_years_take_and_toss_straw_cup
+- genuine_joe_plastic_stir_sticks
+- highland_6539_self_stick_notes
+- kong_air_dog_squeakair_tennis_ball
+- kong_duck_dog_toy
+- kong_sitting_frog_dog_toy
+- kyjen_squeakin_eggs_plush_puppies
+- laugh_out_loud_joke_book
+- mark_twain_huckleberry_finn
+- mead_index_cards
+- mommys_helper_outlet_plugs
+- munchkin_white_hot_duck_bath_toy
+- oreo_mega_stuf
+- paper_mate_12_count_mirado_black_warrior
+- rolodex_jumbo_pencil_cup
+- safety_works_safety_glasses
+- sharpie_accent_tank_style_highlighters
+- stanley_66_052
+-->
+
+    <!-- bin A -->
+    <include>
+      <uri>model://crayola_64_ct</uri>
+      <name>crayola_64_ct</name>
+      <pose>1.08 0.3 1.6 0 0 0</pose>
+    </include>
+    <!-- bin B -->
+    <include>
+      <uri>model://expo_dry_erase_board_eraser</uri>
+      <name>expo_dry_erase_board_eraser</name>
+      <pose>1.08 0 1.6 0 0 0</pose>
+    </include>
+    <!-- bin C -->
+    <include>
+      <uri>model://stanley_66_052</uri>
+      <name>stanley_66_052</name>
+      <pose>1.08 -0.3 1.6 0 0 0</pose>
+    </include>
+    <!-- bin D -->
+    <include>
+      <uri>model://munchkin_white_hot_duck_bath_toy</uri>
+      <name>munchkin_white_hot_duck_bath_toy</name>
+      <pose>1.08 0.3 1.3 0 0 0</pose>
+    </include>
+    <!-- bin E -->
+    <include>
+      <uri>model://oreo_mega_stuf</uri>
+      <name>oreo_mega_stuf</name>
+      <pose>1.08 0 1.3 0 0 0</pose>
+    </include>
+    <!-- bin F -->
+    <include>
+      <uri>model://paper_mate_12_count_mirado_black_warrior</uri>
+      <name>paper_mate_12_count_mirado_black_warrior</name>
+      <pose>1.23 -0.2 1.3 0 0 0</pose>
+    </include>
     <include>
       <uri>model://safety_works_safety_glasses</uri>
       <name>safety_works_safety_glasses</name>
       <pose>1.08 -0.28 1.3 0 0 0</pose>
+    </include>
+    <!-- bin G -->
+    <include>
+      <uri>model://mead_index_cards</uri>
+      <name>mead_index_cards</name>
+      <pose>1.08 0.28 1.1 0 0 0</pose>
+    </include>
+    <!-- bin H -->
+    <include>
+      <uri>model://genuine_joe_plastic_stir_sticks</uri>
+      <name>genuine_joe_plastic_stir_sticks</name>
+      <pose>1.08 0 1.1 0 0 0</pose>
+    </include>
+    <!-- bin I -->
+    <include>
+      <uri>model://highland_6539_self_stick_notes</uri>
+      <name>highland_6539_self_stick_notes</name>
+      <pose>1.08 -0.28 1.1 0 0 0</pose>
+    </include>
+    <!-- bin J -->
+    <include>
+      <uri>model://kong_air_dog_squeakair_tennis_ball</uri>
+      <name>kong_air_dog_squeakair_tennis_ball</name>
+      <pose>1.08 0.28 0.85 0 0 0</pose>
+    </include>
+    <!-- bin K -->
+    <include>
+      <uri>model://kong_sitting_frog_dog_toy</uri>
+      <name>kong_sitting_frog_dog_toy</name>
+      <pose>1.08 0 0.85 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://sharpie_accent_tank_style_highlighters</uri>
+      <name>sharpie_accent_tank_style_highlighters</name>
+      <pose>1.08 -0.28 0.85 0 0 0</pose>
     </include>
 
     <physics type="ode">

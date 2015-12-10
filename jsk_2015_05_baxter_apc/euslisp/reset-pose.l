@@ -3,7 +3,7 @@
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
 
-(ros::roseus "fold_pose_back")
+(ros::roseus "reset_pose")
 
 (setq l/r (car (last lisp::*eustop-argument*)))
 (setq arm
@@ -14,6 +14,6 @@
         ))
 
 (jsk_2015_05_baxter_apc::baxter-init)
-(send *ri* :fold-pose-back arm)
+(send *ri* :angle-vector (send *baxter* :reset-pose arm) 3000)
 (send *ri* :wait-interpolation)
 (exit)

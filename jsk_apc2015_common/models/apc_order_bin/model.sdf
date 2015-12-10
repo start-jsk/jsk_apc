@@ -1,0 +1,223 @@
+<sdf version='1.4'>
+  <model name='order_bin'>
+    <link name='order_bin_base'>
+      <pose>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0.08 0 -0 0</pose>
+        <mass>0.4</mass>
+        <inertia>
+          <ixx>0.012376</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00604</iyy>
+          <iyz>0</iyz>
+          <izz>0.016636</izz>
+        </inertia>
+      </inertial>
+      <collision name='order_bin_base_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.35 0.53 0.03</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='order_bin_base_collision_order_bin_x_part0'>
+        <pose>-0.175 0 0.1 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.03 0.53 0.2</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='order_bin_base_collision_order_bin_x_part1'>
+        <pose>0.175 0 0.1 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.03 0.53 0.2</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='order_bin_base_collision_order_bin_y_part0'>
+        <pose>0 -0.265 0.1 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.35 0.03 0.2</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='order_bin_base_collision_order_bin_y_part1'>
+        <pose>0 0.265 0.1 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.35 0.03 0.2</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='order_bin_base_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.35 0.53 0.03</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Red</name>
+            <uri>__default__</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='order_bin_base_visual_order_bin_x_part0'>
+        <pose>-0.175 0 0.1 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.03 0.53 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Red</name>
+            <uri>__default__</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='order_bin_base_visual_order_bin_x_part1'>
+        <pose>0.175 0 0.1 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.03 0.53 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Red</name>
+            <uri>__default__</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='order_bin_base_visual_order_bin_y_part0'>
+        <pose>0 -0.265 0.1 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.35 0.03 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Red</name>
+            <uri>__default__</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='order_bin_base_visual_order_bin_y_part1'>
+        <pose>0 0.265 0.1 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.35 0.03 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Red</name>
+            <uri>__default__</uri>
+          </script>
+        </material>
+      </visual>
+      <velocity_decay>
+        <linear>0</linear>
+        <angular>0</angular>
+      </velocity_decay>
+      <velocity_decay>
+        <linear>0</linear>
+        <angular>0</angular>
+      </velocity_decay>
+      <velocity_decay>
+        <linear>0</linear>
+        <angular>0</angular>
+      </velocity_decay>
+      <velocity_decay>
+        <linear>0</linear>
+        <angular>0</angular>
+      </velocity_decay>
+      <gravity>1</gravity>
+      <velocity_decay>
+        <linear>0</linear>
+        <angular>0</angular>
+      </velocity_decay>
+      <self_collide>0</self_collide>
+    </link>
+  </model>
+</sdf>

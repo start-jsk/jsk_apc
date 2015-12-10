@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="order_bin">
+
+  <xacro:property name="x_size" value=".35" />
+  <xacro:property name="y_size" value=".53" />
+  <xacro:property name="z_size" value=".20" />
+  <xacro:property name="x_part_size" value="      .03 ${y_size} ${z_size}" />
+  <xacro:property name="y_part_size" value="${x_size}       .03 ${z_size}" />
+  <xacro:property name="z_part_size" value="${x_size} ${y_size}      .03" />
+
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+
+  <link name="order_bin_base">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${z_part_size}"/></geometry>
+      <material name="red" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${z_part_size}"/></geometry>
+      <material name="red" />
+    </collision>
+    <inertial>
+      <mass value="0.08" />
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <gazebo reference="order_bin_base">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <joint name="base_to_x_part0" type="fixed">
+    <origin rpy="0 0 0" xyz="${-x_size/2} 0 ${z_size/2}"/>
+    <parent link="order_bin_base"/>
+    <child link="order_bin_x_part0"/>
+  </joint>
+  <link name="order_bin_x_part0">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${x_part_size}"/></geometry>
+      <material name="red" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${x_part_size}"/></geometry>
+      <material name="red" />
+    </collision>
+    <inertial>
+      <mass value="0.08" />
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <gazebo reference="order_bin_x_part0">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <joint name="base_to_x_part1" type="fixed">
+    <origin rpy="0 0 0" xyz="${x_size/2} 0 ${z_size/2}"/>
+    <parent link="order_bin_base"/>
+    <child link="order_bin_x_part1"/>
+  </joint>
+  <link name="order_bin_x_part1">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${x_part_size}"/></geometry>
+      <material name="red" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${x_part_size}"/></geometry>
+      <material name="red" />
+    </collision>
+    <inertial>
+      <mass value="0.08" />
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <gazebo reference="order_bin_x_part1">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <joint name="base_to_y_part0" type="fixed">
+    <origin rpy="0 0 0" xyz="0 ${-y_size/2} ${z_size/2}"/>
+    <parent link="order_bin_base"/>
+    <child link="order_bin_y_part0"/>
+  </joint>
+  <link name="order_bin_y_part0">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${y_part_size}"/></geometry>
+      <material name="red" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${y_part_size}"/></geometry>
+      <material name="red" />
+    </collision>
+    <inertial>
+      <mass value="0.08" />
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <gazebo reference="order_bin_y_part0">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <joint name="base_to_y_part1" type="fixed">
+    <origin rpy="0 0 0" xyz="0 ${y_size/2} ${z_size/2}"/>
+    <parent link="order_bin_base"/>
+    <child link="order_bin_y_part1"/>
+  </joint>
+  <link name="order_bin_y_part1">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${y_part_size}"/></geometry>
+      <material name="red" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${y_part_size}"/></geometry>
+      <material name="red" />
+    </collision>
+    <inertial>
+      <mass value="0.08" />
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <gazebo reference="order_bin_y_part1">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+</robot>

@@ -58,7 +58,7 @@
   (:graspingp
     (arm)
     (let (topic)
-      (if (ros::get-param "~garebo" nil)
+      (if (ros::get-param "/apc_on_gazebo" nil)
         (setq topic (format nil "/robot/~a_vacuum_gripper/grasping" (arm-to-str arm)))
         (setq topic (format nil "gripper_grabbed/limb/~a/state" (arm-to-str arm)))
         )
@@ -103,19 +103,27 @@
         msg
         (one-shot-subscribe "bin_atof_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
+                            :timeout 5000
                             :after-stamp stamp))
-      (dotimes (i 6)
-        (setq bin (elt '(:a :b :c :d :e :f) i))
-        (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+      (if msg
+        (dotimes (i 6)
+          (setq bin (elt '(:a :b :c :d :e :f) i))
+          (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+        (ros::ros-fatal "Cannot find bin A - F")
+        )
       ;; for bin G-L
       (setq
         msg
         (one-shot-subscribe "bin_gtol_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
+                            :timeout 5000
                             :after-stamp stamp))
-      (dotimes (i 6)
-        (setq bin (elt '(:j :k :l :g :h :i) i))
-        (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+      (if msg
+        (dotimes (i 6)
+          (setq bin (elt '(:j :k :l :g :h :i) i))
+          (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+        (ros::ros-fatal "Cannot find bin G - K")
+        )
       ))
   (:bbox->cube
     (bbox)
@@ -225,9 +233,12 @@
         (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
         (setq sign 0))
       (ros::ros-info "[:try-to-pick-object] sign: ~a" sign)
-      (send self :angle-vector
-            (send self :ik->bin-entrance arm bin :offset (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
-            3000)
+      (if (ros::get-param "/apc_on_gazebo" nil)
+        ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
+        (setq offset #f(-30 0 0))
+        (setq offset (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
+        )
+      (send self :angle-vector (send self :ik->bin-entrance arm bin :offset offset) 3000)
       (send self :wait-interpolation)
       ; (pushback
       ;   (send *baxter* arm :inverse-kinematics
@@ -240,17 +251,22 @@
       (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper
+      (ros::ros-info "[:try-to-pick-object] start vacuum gripper")
       (send self :start-grasp arm)
       ;; grasp object
+      (ros::ros-info "[:try-to-pick-object] approach to the object")
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (send obj-coords :pos) :rpy (list 0 0 (* sign pi/2))))
             3000)
       (send self :wait-interpolation)
+      (ros::ros-info "[:try-to-pick-object] graspingp: ~a" (send self :graspingp :rarm))
       (unless (send self :graspingp arm)
+        (ros::ros-info "[:try-to-pick-object] again approach to the object")
         (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local) 3000)
         (send self :wait-interpolation))
       ;; lift object
+      (ros::ros-info "[:try-to-pick-object] lift the object")
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)
       (send self :wait-interpolation)
     ))
@@ -374,7 +390,7 @@
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis nil) avs)
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis t) avs)
-      (send self :angle-vector-sequence avs)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 10.0)
       ))
   (:get-work-orders
     (arm)
@@ -387,6 +403,9 @@
   (:get-next-work-order
     (arm current-order)
     (let ((orders (send self :get-work-orders arm)))
+      (when (eq (length orders) 0)
+        (ros::ros-error "[:get-next-work-order] There is no order")
+        (return-from :get-next-work-order nil))
       (when (null current-order) (return-from :get-next-work-order (elt orders 0)))
       (dotimes (i (- (length orders) 1))
         (when (string= (send (elt orders i) :bin) (send current-order :bin))
