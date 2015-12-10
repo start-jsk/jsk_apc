@@ -5,15 +5,7 @@
     <link name="one_with_nature_soap_dead_sea_mud_link">
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>0.3</mass>
-        <inertia>
-          <ixx>1e-03</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
-          <izz>1e-03</izz>
-          <iyz>0</iyz>
-          <iyy>1e-03</iyy>
-        </inertia>
+        <mass>0.08</mass>
       </inertial>
 
       <visual name="one_with_nature_soap_dead_sea_mud_visual">
@@ -45,9 +37,6 @@
             <ode>
               <mu>0.8</mu>
               <mu2>0.8</mu2>
-              <fdir1>0.0 0.0 0.0</fdir1>
-              <slip1>1.0</slip1>
-              <slip2>1.0</slip2>
             </ode>
           </friction>
         </surface>
