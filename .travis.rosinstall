@@ -2,7 +2,3 @@
     local-name: jsk-ros-pkg/jsk_robot
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
     version: 1.0.0
-- git:
-    local-name: jsk-ros-pkg/jsk_recognition
-    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
-    version: 0.3.8
