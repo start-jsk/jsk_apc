@@ -128,14 +128,14 @@
   <!-- object recognition -->
   <group ns="left_hand">
     <include file="$(find jsk_2015_05_baxter_apc)/launch/include/object_recognition.launch">
-      <arg name="INPUT_IMAGE" value="apply_mask_left_hand/output" />
-      <arg name="INPUT_LABEL" value="mask_to_label_left_hand/output" />
+      <arg name="INPUT_IMAGE" value="/apply_mask_left_hand/output" />
+      <arg name="INPUT_LABEL" value="/mask_to_label_left_hand/output" />
     </include>
   </group>
   <group ns="right_hand">
     <include file="$(find jsk_2015_05_baxter_apc)/launch/include/object_recognition.launch">
-      <arg name="INPUT_IMAGE" value="apply_mask_right_hand/output" />
-      <arg name="INPUT_LABEL" value="mask_to_label_right_hand/output" />
+      <arg name="INPUT_IMAGE" value="/apply_mask_right_hand/output" />
+      <arg name="INPUT_LABEL" value="/mask_to_label_right_hand/output" />
     </include>
   </group>
 

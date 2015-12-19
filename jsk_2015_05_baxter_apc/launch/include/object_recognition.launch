@@ -17,7 +17,7 @@
     <remap from="~input/label" to="$(arg INPUT_LABEL)" />
   </node>
 
-  <node name="bof_object_recognition"
+  <node name="bof_object_matcher"
         pkg="jsk_perception" type="sklearn_classifier.py">
     <param name="~clf_path" value="$(find jsk_2015_05_baxter_apc)/trained_data/lgr.pkl.gz" />
     <remap from="~input" to="bof_histogram_extractor/output" />
