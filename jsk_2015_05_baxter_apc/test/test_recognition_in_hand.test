@@ -17,7 +17,7 @@
   <!-- check localization by cloud -->
   <test test-name="stdout_0"
         pkg="jsk_tools" type="test_stdout.py"
-        time-limit="60">
+        time-limit="360">
     <param name="~command" value="rostopic echo /extract_indices_right_hand/points_filtered --noarr -n1" />
     <param name="~stdout_line6" type="str" value="height: 1080" />
     <param name="~stdout_line7" type="str" value="width: 1920" />
@@ -30,7 +30,7 @@
   </node>
   <test test-name="stdout_1"
         pkg="jsk_tools" type="test_stdout.py"
-        time-limit="60">
+        time-limit="360">
     <param name="~command" value="rostopic echo /transform_1/output -n1" />
     <param name="~stdout_line6" type="str" value="data: True" />
   </test>
@@ -38,7 +38,7 @@
   <!-- check recognition by BOF -->
   <test test-name="stdout_2"
         pkg="jsk_tools" type="test_stdout.py"
-        time-limit="60" retry="3">
+        time-limit="360" retry="3">
     <param name="~command" value="rostopic echo /right_hand/bof_object_matcher/output -n1" />
     <param name="~stdout_line0" type="str" value="header: " />  <!-- check if message is comming -->
     <param name="~stdout_line6" type="str" value="matched: kyjen_squeakin_eggs_plush_puppies" />
@@ -47,7 +47,7 @@
   <!-- check recognition by CH -->
   <test test-name="stdout_3"
         pkg="jsk_tools" type="test_stdout.py"
-        time-limit="60">
+        time-limit="360">
     <param name="~command" value="rostopic echo /right_hand/color_object_matcher/output -n1" />
     <param name="~stdout_line0" type="str" value="header: " />  <!-- check if message is comming -->
   </test>
