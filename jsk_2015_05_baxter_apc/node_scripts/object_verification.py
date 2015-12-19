@@ -13,6 +13,7 @@ from work_order import get_work_order
 
 import jsk_apc2015_common
 from jsk_2015_05_baxter_apc.msg import ObjectRecognition
+from jsk_recognition_msgs.msg import ClassificationResult
 
 
 class ObjectVerification(object):
@@ -31,7 +32,7 @@ class ObjectVerification(object):
         self._init_bin_contents(json_file)
         self._init_work_order(json_file)
         self.bof_sub = rospy.Subscriber('~input/bof',
-                                        ObjectRecognition,
+                                        ClassificationResult,
                                         self._cb_bof)
         self.cfeature_sub = rospy.Subscriber('~input/color_hist',
                                              ObjectRecognition,
@@ -54,7 +55,9 @@ class ObjectVerification(object):
         self.work_order = dict(work_order)
 
     def _cb_bof(self, msg):
-        objects_proba = dict(zip(msg.candidates, msg.probabilities))
+        n_targets = len(msg.target_names)
+        objects_proba = dict(zip(msg.target_names,
+                                 msg.probabilities[:n_targets]))
         self.bof_data = (msg.header.stamp, objects_proba)
 
     def _cb_cfeature(self, msg):

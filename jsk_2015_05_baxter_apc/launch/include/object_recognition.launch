@@ -2,6 +2,7 @@
 
 
   <arg name="INPUT_IMAGE" />
+  <arg name="INPUT_LABEL" />
 
 
   <node name="imagesift"
@@ -9,13 +10,17 @@
     <remap from="image" to="$(arg INPUT_IMAGE)" />
   </node>
 
-  <node name="feature0d_to_image"
-        pkg="posedetection_msgs" type="feature0d_to_image" />
-
-  <node name="bof_object_matcher"
-        pkg="jsk_2015_05_baxter_apc" type="bof_object_matcher.py"
-        respawn="true">
+  <node name="bof_histogram_extractor"
+        pkg="jsk_perception" type="bof_histogram_extractor.py">
+    <param name="bof_data" value="$(find jsk_2015_05_baxter_apc)/trained_data/bof.pkl.gz" />
     <remap from="~input" to="Feature0D" />
+    <remap from="~input/label" to="$(arg INPUT_LABEL)" />
+  </node>
+
+  <node name="bof_object_recognition"
+        pkg="jsk_perception" type="sklearn_classifier.py">
+    <param name="~clf_path" value="$(find jsk_2015_05_baxter_apc)/trained_data/lgr.pkl.gz" />
+    <remap from="~input" to="bof_histogram_extractor/output" />
   </node>
 
   <node name="color_object_matcher"
