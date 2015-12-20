@@ -6,13 +6,13 @@ this script will extract color_histogram from masked_data($(jsk_2015_05_baxter_a
 and save it.
 """
 
-import mahotas as mh
 import numpy as np
 import os
 import gzip
 import cPickle as pickle
 
 from sklearn.svm import SVC
+from skimage.io import imread
 
 from common import get_data_dir
 
@@ -52,7 +52,7 @@ class ColorHistogramFeatures(object):
             for image_path in images_path:
                 yield image_path, object_name
     def features_for(self, im):
-        im = mh.imread(im)
+        im = imread(im)
         return self.color_hist(im)
     def color_hist(self, im):
         ''' Compute color histogram of input image '''
