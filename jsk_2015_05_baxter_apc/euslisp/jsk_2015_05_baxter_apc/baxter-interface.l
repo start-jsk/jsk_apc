@@ -390,7 +390,7 @@
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis nil) avs)
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis t) avs)
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 10.0)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
       ))
   (:get-work-orders
     (arm)
