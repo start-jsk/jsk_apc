@@ -1,0 +1,51 @@
+<launch>
+
+  <arg name="INPUT_INFO" value="/kinect2_head/hd/camera_info" />
+  <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points" />
+  <arg name="INPUT_IMAGE" value="/kinect2_head/hd/image_color_rect" />
+  <arg name="INPUT_DEPTH" value="/kinect2_head/hd/image_depth_rect" />
+  <arg name="BIN_INDICES" />
+
+  <arg name="MANAGER" value="spam_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+  <node name="pi_to_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
+    <remap from="~input" to="$(arg BIN_INDICES)" />
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)" />
+  </node>
+  <!--
+  <node name="mask_to_rect"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/MaskImageToRect $(arg MANAGER)">
+    <remap from="~input" to="pi_to_mask/output" />
+  </node>
+  <node name="rect_to_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/RectToMaskImage $(arg MANAGER)">
+    <remap from="~input" to="mask_to_rect/output" />
+    <remap from="~input/camera_info" to="$(arg INPUT_INFO)" />
+  </node>
+  -->
+  <node name="inbin_image"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ApplyMaskImage $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="pi_to_mask/output" />
+    <rosparam>
+      approximate_sync: true
+    </rosparam>
+  </node>
+  <node name="inbin_depth"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ApplyMaskImage $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_DEPTH)" />
+    <remap from="~input/mask" to="pi_to_mask/output" />
+    <rosparam>
+      approximate_sync: true
+    </rosparam>
+  </node>
+
+</launch>
