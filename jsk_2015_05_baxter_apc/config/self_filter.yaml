@@ -21,9 +21,9 @@ self_see_links:
   - name: right_wrist
     padding: .04
   - name: right_custom_vacuum_link
-    padding: .04
+    padding: .08
   - name: right_custom_vacuum_link_base
-    padding: .04
+    padding: .08
 
   - name: left_gripper_base
     padding: .04
@@ -44,6 +44,6 @@ self_see_links:
   - name: left_wrist
     padding: .04
   - name: left_custom_vacuum_link
-    padding: .04
+    padding: .08
   - name: left_custom_vacuum_link_base
-    padding: .04
+    padding: .08
