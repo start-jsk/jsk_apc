@@ -44,6 +44,8 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- list dependencies in alphabetical order -->
+  <build_depend>ruby</build_depend> <!-- for erb -->
+
   <run_depend>gazebo_ros</run_depend>
   <run_depend>baxter_sim_io</run_depend>
   <run_depend>baxter_sim_controllers</run_depend>
