@@ -1,0 +1,86 @@
+(ros::load-ros-manifest "baxtereus")
+(load "package://baxtereus/baxter-interface.l")
+(load "package://euslisp/jskeus/eus/models/arrow-object.l")
+
+(defun init ()
+  ;; baxter model
+  (when (not (boundp '*baxter*))
+    (baxter-init)
+    (send *baxter* :locate #f(0 0 950) :world))
+  ;; pod-lowres model
+  (when (not (boundp '*pod*))
+    (load "package://jsk_2016_01_baxter_apc/euslisp/pod-lowres.l")
+    (pod-init))
+
+  (when (not (boundp '*tote*))
+    (setq *tote* (body- (make-cube 400 500 300)
+                        (make-cube 350 450 275 :pos #f(0 0 25))))
+    (send *tote* :translate #f(500 0 -300))
+    (send *tote* :set-color :red))
+
+  ;;(setq *target* (instance-cube 100 100 100))
+  (when (not (boundp '*target*))
+    (setq *target* (arrow))
+    (send *tote* :translate #f(0 0 0)))
+  )
+(init)
+(objects (list *baxter* *pod* *tote* *target*))
+
+(defun rarm-movepos
+  (robot endcoords axis)
+  (send robot :rarm :inverse-kinematics endcoords :rotation-axis axis :debug-view t))
+
+(defun larm-movepos
+  (robot endcoords axis)
+  (send robot :larm :inverse-kinematics endcoords :rotation-axis axis :debug-view t))
+
+(defun init-target ();;Set terget object randomly
+  (setq *target* (make-cube 100 100 100))
+  (send *target* :set-color :blue)
+  (let ((x (+ 375 (random 250))) (y (- 175 (random 350))))
+	(send *target* :translate (float-vector x y -350)))
+  (objects (list *baxter* *shelf* *tote* *target*)))
+
+(defun tote2shelf (x)
+  (when (= x 0);;Use right arm
+  (send *target* :rotate (/ pi 2.0) :y)
+  (rarm-movepos *baxter* (send *target* :coords) :x)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
+  (send *baxter* :rarm :end-coords :assoc *target*)
+  (send *baxter* :reset-pose)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
+  (rarm-movepos *baxter* (make-coords :pos (float-vector 1000 (random 200) (random 800))) :x)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
+  (send *baxter* :rarm :end-coords :dissoc *target*)
+  (send *baxter* :reset-pose)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation))
+
+  (when (= x 1);;Use left arm
+  (send *target* :rotate (/ pi 2.0) :y)
+  (larm-movepos *baxter* (send *target* :coords) :x)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
+  (send *baxter* :rarm :end-coords :assoc *target*)
+  (send *baxter* :reset-pose)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
+  (larm-movepos *baxter* (make-coords :pos (float-vector 1000 (random 200) (random 800))) :x)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation)
+  (send *baxter* :rarm :end-coords :dissoc *target*)
+  (send *baxter* :reset-pose)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
+  (send *ri* :wait-interpolation))
+  )
+
+(defun test ()
+  (do ((i 2 (+ i 1))) ((> i 5))
+	(init-target)
+	(tote2shelf 0)
+	(init-target)
+	(tote2shelf 1)))
+(ros::ros-info "(test) : start demo")
