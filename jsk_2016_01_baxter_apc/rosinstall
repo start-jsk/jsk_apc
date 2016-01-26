@@ -1,0 +1,12 @@
+- git:
+    local-name: start-jsk/jsk_apc
+    uri: https://github.com/start-jsk/jsk_apc.git
+    version: master
+- git:
+    local-name: iai_kinect2
+    uri: https://github.com/wkentaro/iai_kinect2.git
+    version: jsk_apc
+- git:
+    local-name: libfreenect2
+    uri: https://github.com/k-okada/libfreenect2.git
+    version: jsk_apc
