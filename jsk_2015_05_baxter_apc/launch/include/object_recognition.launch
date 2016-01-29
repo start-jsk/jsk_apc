@@ -11,14 +11,16 @@
   </node>
 
   <node name="bof_histogram_extractor"
-        pkg="jsk_perception" type="bof_histogram_extractor.py">
+        pkg="jsk_perception" type="bof_histogram_extractor.py"
+        respawn="true">
     <param name="bof_data" value="$(find jsk_2015_05_baxter_apc)/trained_data/bof.pkl.gz" />
     <remap from="~input" to="Feature0D" />
     <remap from="~input/label" to="$(arg INPUT_LABEL)" />
   </node>
 
   <node name="bof_object_matcher"
-        pkg="jsk_perception" type="sklearn_classifier.py">
+        pkg="jsk_perception" type="sklearn_classifier.py"
+        respawn="true">
     <param name="~clf_path" value="$(find jsk_2015_05_baxter_apc)/trained_data/lgr.pkl.gz" />
     <remap from="~input" to="bof_histogram_extractor/output" />
   </node>
