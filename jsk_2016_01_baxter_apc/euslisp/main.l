@@ -9,7 +9,7 @@
     (send *baxter* :locate #f(0 0 950) :world))
   ;; pod-lowres model
   (when (not (boundp '*pod*))
-    (load "package://jsk_2016_01_baxter_apc/euslisp/pod-lowres.l")
+    (load "package://jsk_2016_01_baxter_apc/euslisp/include/pod-lowres.l")
     (pod-init))
 
   (when (not (boundp '*tote*))
@@ -39,7 +39,7 @@
   (send *target* :set-color :blue)
   (let ((x (+ 375 (random 250))) (y (- 175 (random 350))))
 	(send *target* :translate (float-vector x y -350)))
-  (objects (list *baxter* *shelf* *tote* *target*)))
+  (objects (list *baxter* *pod* *tote* *target*)))
 
 (defun tote2shelf (x)
   (when (= x 0);;Use right arm
