@@ -39,7 +39,7 @@ def extract_sift(obj_name):
 
 def main():
     rospy.init_node('extract_sift')
-    obj_names = jsk_apc2015_common.data.object_list()
+    obj_names = jsk_apc2015_common.get_object_list()
     for obj_name in obj_names:
         if load_siftdata(obj_name, dry_run=True):
             continue  # already extracted

@@ -57,7 +57,7 @@ class BofObjectMatcher(ObjectMatcher):
         descs = np.array(self.query_features.descriptors)
         X = self.bof.transform([descs])
         normalize(X, copy=False)
-        object_list = jsk_apc2015_common.data.object_list()
+        object_list = jsk_apc2015_common.get_object_list()
         obj_indices = [object_list.index(o) for o in obj_names]
         obj_probs = self.clf.predict_proba(X)[0][obj_indices]
         return obj_probs / obj_probs.sum()
@@ -72,7 +72,7 @@ class BofObjectMatcher(ObjectMatcher):
         self._pub_debug.publish(Histogram(header=query_features.header,
                                           histogram=X[0]))
 
-        object_list = jsk_apc2015_common.data.object_list()
+        object_list = jsk_apc2015_common.get_object_list()
         proba = self.clf.predict_proba(X)[0]
         matched_idx = np.argmax(proba)
         # prepare message
