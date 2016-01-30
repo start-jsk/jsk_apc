@@ -71,7 +71,7 @@ class SiftObjectMatcher(SiftMatcher, ObjectMatcher):
     def __init__(self):
         SiftMatcher.__init__(self)
         ObjectMatcher.__init__(self, '/semi/sift_matcher')
-        self.object_list = jsk_apc2015_common.data.object_list()
+        self.object_list = jsk_apc2015_common.get_object_list()
         self.siftdata_cache = {}
 
     def match(self, obj_names):
