@@ -406,7 +406,7 @@
     (arm &key (times 10))
     (let (avs)
       (pushback (send *baxter* :angle-vector) avs)
-      (dotimes (i 10)
+      (dotimes (i times)
         (pushback (send *baxter* :rotate-wrist arm 10) avs)
         (pushback (send *baxter* :rotate-wrist arm -20) avs)
         (pushback (send *baxter* :rotate-wrist arm 20) avs)
