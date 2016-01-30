@@ -16,6 +16,7 @@
    _tfl
    _bin-boxes
    _objects-in-bin-boxes
+   _bin-coords-list
    )
   )
 
@@ -151,12 +152,27 @@
           ))
       (objects (append (list *baxter*) objs))
       ))
+  (:recognize-grasp-coords-list
+    (bin &key (stamp (ros::time-now)))
+    (let (msg coords-list)
+      (setq msg
+        (one-shot-subscribe
+          (format nil "bin_~a_solidity_rag_merge_cpi_decomposer/centroid_pose_array" (symbol2str bin))
+          geometry_msgs::PoseArray
+          :after-stamp stamp))
+      (dolist (pose-msg (send msg :poses))
+        (pushback (send self :tf-pose->coords (send msg :header :frame_id) pose-msg) coords-list)
+        )
+      (setq _bin-coords-list coords-list)
+      )
+    )
   (:recognize-objects-in-bin
     (bin &key (stamp (ros::time-now)))
     (setq
       msg
       (one-shot-subscribe
         (format nil "bin_~a_cpi_decomposer/boxes" (symbol2str bin))
+        ; (format nil "bin_~a_solidity_rag_merge_cpi_decomposer/boxes" (symbol2str bin))
         jsk_recognition_msgs::BoundingBoxArray
         :after-stamp stamp))
     (sethash bin _objects-in-bin-boxes (send msg :boxes)))
@@ -206,6 +222,24 @@
       ;; lift object
       (send *baxter* arm :move-end-pos #f(0 0 100) :world :rotation-axis :z :revert-if-fail nil)
       (send self :send-av)
+      (send self :wait-interpolation)
+      ))
+  (:try-to-pick-object-solidity
+    (arm bin &key (offset #f(0 0 0)))
+    (let (pos-list centroid)
+      (unless _bin-coords-list
+        (ros::ros-error "no solidity coords-list is found")
+        (return-from :try-to-pick-object-solidity))
+      (dolist (c _bin-coords-list)
+        (pushback (send c :worldpos) pos-list))
+      (setq centroid
+            (make-coords :pos (vec-list-max pos-list :axis 2)
+                         :rpy (float-vector 0 0 0)))  ;; z axis max
+      (setq offset-coords
+            (send (send centroid :copy-worldcoords) :translate offset :world))
+      (send self :angle-vector (send *baxter* arm :inverse-kinematics offset-coords) 3000)
+      (send self :wait-interpolation)
+      (send self :angle-vector (send *baxter* arm :inverse-kinematics centroid) 3000)
       (send self :wait-interpolation)
       ))
   (:try-to-pick-object
