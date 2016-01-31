@@ -16,7 +16,7 @@ import jsk_apc2015_common
 
 
 def get_sift_descriptors(n_imgs=None, data_dir=None):
-    objects = jsk_apc2015_common.data.object_list()
+    objects = jsk_apc2015_common.get_object_list()
     obj_descs = []
     for obj in objects:
         descs = load_siftdata(obj_name=obj,
