@@ -4,8 +4,8 @@
 
 (setq *oreo* (make-cube 100 150 150 :pos #f(1200 0 1435)))
 (send *oreo* :set-color :blue)
-(setq tote_height 700)
-(setq tote_pos (vector 500 0))
+(setq tote_height 400)
+(setq tote_pos (vector 780 0))
 (setq hand_len 440)
 (setq *rhand* (make-cube hand_len 30 30))
 (setq *lhand* (make-cube hand_len 30 30))
@@ -57,12 +57,12 @@
   (send *target* :set-color :blue)
   (let ((x (+ (- (elt tote_pos 0) 125) (random 250))) (y (+ (- (elt tote_pos 1) 175) (random 350))))
 	(send *target* :translate (float-vector x y (+ tote_height 50))))
-  (objects (list *baxter* *pod* *tote* *target*)))
+  (objects (list *baxter* *pod* *tote* *target* *rhand* *lhand*)))
 
 (defun tote2shelf (arm)
   (when (= arm 0);;Use right arm
   (send *target* :rotate (/ pi 2.0) :y)
-  (rarm-movepos *baxter* (send *target* :coords) :x)
+  (rarm-movepos *baxter* (send *target* :coords) nil)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
   (send *ri* :wait-interpolation)
   (send *baxter* :rarm :end-coords :assoc *target*)
@@ -79,10 +79,10 @@
 
   (when (= arm 1);;Use left arm
   (send *target* :rotate (/ pi 2.0) :y)
-  (larm-movepos *baxter* (send *target* :coords) :x)
+  (larm-movepos *baxter* (send *target* :coords) nil)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
   (send *ri* :wait-interpolation)
-  (send *baxter* :rarm :end-coords :assoc *target*)
+  (send *baxter* :larm :end-coords :assoc *target*)
   (send *baxter* :reset-pose)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
   (send *ri* :wait-interpolation)
