@@ -56,33 +56,33 @@
 
 <%
  @items = [
- {'bin' => 'A', 'item' => 'crayola_64_ct' }, 
- {'bin' => 'B', 'item' => 'expo_dry_erase_board_eraser' },
- {'bin' => 'C', 'item' => 'stanley_66_052' },
- {'bin' => 'D', 'item' => 'munchkin_white_hot_duck_bath_toy' },
- {'bin' => 'E', 'item' => 'oreo_mega_stuf' },
- {'bin' => 'F1', 'item' => 'paper_mate_12_count_mirado_black_warrior' },
- {'bin' => 'F2', 'item' => 'safety_works_safety_glasses' },
- {'bin' => 'G', 'item' => 'mead_index_cards' },
- {'bin' => 'H', 'item' => 'genuine_joe_plastic_stir_sticks' },
- {'bin' => 'I', 'item' => 'highland_6539_self_stick_notes' },
- {'bin' => 'J', 'item' => 'kong_air_dog_squeakair_tennis_ball' },
- {'bin' => 'K', 'item' => 'kong_sitting_frog_dog_toy' },
- {'bin' => 'L', 'item' => 'sharpie_accent_tank_style_highlighters' }]
+ {'loc' => 'A', 'item' => 'crayola_64_ct' }, 
+ {'loc' => 'B', 'item' => 'expo_dry_erase_board_eraser' },
+ {'loc' => 'C', 'item' => 'stanley_66_052' },
+ {'loc' => 'D', 'item' => 'munchkin_white_hot_duck_bath_toy' },
+ {'loc' => 'E', 'item' => 'oreo_mega_stuf' },
+ {'loc' => 'F1', 'item' => 'paper_mate_12_count_mirado_black_warrior' },
+ {'loc' => 'F2', 'item' => 'safety_works_safety_glasses' },
+ {'loc' => 'G', 'item' => 'mead_index_cards' },
+ {'loc' => 'H', 'item' => 'genuine_joe_plastic_stir_sticks' },
+ {'loc' => 'I', 'item' => 'highland_6539_self_stick_notes' },
+ {'loc' => 'J', 'item' => 'kong_air_dog_squeakair_tennis_ball' },
+ {'loc' => 'K', 'item' => 'kong_sitting_frog_dog_toy' },
+ {'loc' => 'L', 'item' => 'sharpie_accent_tank_style_highlighters' }]
  @locations = {
-  'A' => '1.08  0.3 1.6 0 0 0',
-  'B' => '1.08  0.0 1.6 0 0 0',
-  'C' => '1.08 -0.3 1.6 0 0 0',
-  'D' => '1.08  0.3 1.3 0 0 0',
-  'E' => '1.08  0.0 1.3 0 0 0',
-  'F1'=> '1.23 -0.2 1.3 0 0 0',
-  'F2'=> '1.08 -0.28 1.3 0 0 0',
-  'G' => '1.08  0.28 1.1 0 0 0',
-  'H' => '1.08  0.0  1.1 0 0 0',
-  'I' => '1.08 -0.28 1.1 0 0 0',
-  'J' => '1.08  0.28 0.85 0 0 0',
-  'K' => '1.08  0.0  0.85 0 0 0',
-  'L' => '1.08 -0.28 0.85 0 0 0'
+  'A' => '0.79  0.1  0.5 0 0 0',
+  'B' => '0.79  -0.1  0.5 0 0 0',
+  'C' => '0.77  -0.1  0.5 0 0 0',
+  'D' => '0.77  0.1  0.5 0 0 0',
+  'E' => '0.79  0.1 0.6 0 0 0',
+  'F1'=> '0.79  -0.1  0.6 0 0 0',
+  'F2'=> '0.77  -0.1  0.6 0 0 0',
+  'G' => '0.77  0.1  0.6 0 0 0',
+  'H' => '0.79  0.1  0.7 0 0 0',
+  'I' => '0.79  -0.1  0.7 0 0 0',
+  'J' => '0.77  -0.1  0.7 0 0 0',
+  'K' => '0.77  0.1  0.7 0 0 0',
+  'L' => '0.78  0.0  0.8 0 0 0'
  }
 %>
 <%for item in @items%>
@@ -90,7 +90,7 @@
     <include>
       <uri>model://<%=item['item']%></uri>
       <name><%=item['item']%></name>
-      <pose><%=@locations[item['bin']]%></pose>
+      <pose><%=@locations[item['loc']]%></pose>
     </include>
 <%end%>
 
