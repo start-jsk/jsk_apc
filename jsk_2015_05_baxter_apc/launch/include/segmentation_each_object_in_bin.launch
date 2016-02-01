@@ -14,6 +14,7 @@
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~indices" to="$(arg INPUT_INDICES)" />
     <rosparam>
+      max_queue_size: 200
       keep_organized: true
     </rosparam>
   </node>
@@ -33,6 +34,9 @@
         args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg MANAGER)">
     <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
     <remap from="~target" to="bin_$(arg BIN_NAME)_euclid_clustering/output" />
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
   </node>
 
 
