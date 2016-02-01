@@ -1,0 +1,8 @@
+<launch>
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/baxter_pick.launch" >
+    <arg name="gui" value="false" />
+  </include>
+
+  <test test-name="check_enabled" pkg="jsk_2016_01_baxter_apc" type="check_enabled.py" name="check_enabled" time-limit="60" />
+
+</launch>

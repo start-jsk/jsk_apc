@@ -52,6 +52,8 @@
   <run_depend>baxter_gazebo</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
 
+  <test_depend>rostest</test_depend>
+
   <export>
     <gazebo_ros gazebo_model_path="${prefix}/models" />
   </export>
