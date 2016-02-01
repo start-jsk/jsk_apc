@@ -7,18 +7,14 @@
 (setq tote_height 400)
 (setq tote_pos (vector 780 0))
 (setq hand_len 440)
-(setq *rhand* (make-cube hand_len 30 30))
-(setq *lhand* (make-cube hand_len 30 30))
 
 (defun init ()
   ;; baxter model
   (when (not (boundp '*baxter*))
     (baxter-init)
-    (send *baxter* :locate #f(0 0 950) :world)
-    (send *rhand* :transform (send *baxter* :rarm :end-coords :worldcoords) :world)
-    (send *baxter* :rarm :end-coords :assoc *rhand*)
-    (send *lhand* :transform (send *baxter* :larm :end-coords :worldcoords) :world)
-    (send *baxter* :larm :end-coords :assoc *lhand*))
+    (send (send *baxter* :rarm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
+    (send (send *baxter* :larm :end-coords) :newcoords (make-coords :pos #f(50 0 310) :rpy (float-vector 0 -pi/2 0)))
+    (send *baxter* :locate #f(0 0 950) :world))
   ;; pod-lowres model
   (when (not (boundp '*pod*))
     (load "package://jsk_2016_01_baxter_apc/euslisp/include/pod-lowres.l")
@@ -36,28 +32,22 @@
     (send *tote* :translate #f(0 0 0)))
   )
 (init)
-(objects (list *baxter* *pod* *tote* *target* *rhand* *lhand* *oreo*))
+(objects (list *baxter* *pod* *tote* *target* *oreo*))
 
 (defun rarm-movepos
   (robot endcoords axis)
-  (let (tempcoords)
-    (setq tempcoords (send endcoords :copy-coords))
-    (send tempcoords :translate (float-vector (- 0 (/ hand_len 2)) 0 0))
-    (send robot :rarm :inverse-kinematics tempcoords :rotation-axis axis :debug-view t)))
+  (send robot :rarm :inverse-kinematics endcoords :rotation-axis axis :debug-view t))
 
 (defun larm-movepos
   (robot endcoords axis)
-  (let (tempcoords)
-    (setq tempcoords (send endcoords :copy-coords))
-    (send tempcoords :translate (float-vector (- 0 (/ hand_len 2)) 0 0))
-    (send robot :larm :inverse-kinematics tempcoords :rotation-axis axis :debug-view t)))
+  (send robot :larm :inverse-kinematics endcoords :rotation-axis axis :debug-view t))
 
 (defun init-target ();;Set terget object randomly
   (setq *target* (make-cube 100 100 100))
   (send *target* :set-color :blue)
   (let ((x (+ (- (elt tote_pos 0) 125) (random 250))) (y (+ (- (elt tote_pos 1) 175) (random 350))))
 	(send *target* :translate (float-vector x y (+ tote_height 50))))
-  (objects (list *baxter* *pod* *tote* *target* *rhand* *lhand*)))
+  (objects (list *baxter* *pod* *tote* *target*)))
 
 (defun tote2shelf (arm)
   (when (= arm 0);;Use right arm
