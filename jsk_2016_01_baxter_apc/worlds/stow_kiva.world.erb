@@ -1,0 +1,104 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <include>
+      <uri>model://kiva_pod</uri>
+      <name>kiva_pod</name>
+      <pose>1.44 0 0 0 0 1.57</pose>
+    </include>
+
+    <include>
+      <uri>model://apc_order_bin</uri>
+      <name>apc_order_bin</name>
+      <pose>0.78 0 0.40 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://apc_order_bin_stage</uri>
+      <name>apc_order_bin_stage</name>
+      <pose>0.75 0 0 0 0 0</pose>
+    </include>
+
+<!--
+- champion_copper_plus_spark_plug
+- cheezit_big_original
+- crayola_64_ct
+- dr_browns_bottle_brush
+- elmers_washable_no_run_school_glue
+- expo_dry_erase_board_eraser
+- feline_greenies_dental_treats
+- first_years_take_and_toss_straw_cup
+- genuine_joe_plastic_stir_sticks
+- highland_6539_self_stick_notes
+- kong_air_dog_squeakair_tennis_ball
+- kong_duck_dog_toy
+- kong_sitting_frog_dog_toy
+- kyjen_squeakin_eggs_plush_puppies
+- laugh_out_loud_joke_book
+- mark_twain_huckleberry_finn
+- mead_index_cards
+- mommys_helper_outlet_plugs
+- munchkin_white_hot_duck_bath_toy
+- oreo_mega_stuf
+- paper_mate_12_count_mirado_black_warrior
+- rolodex_jumbo_pencil_cup
+- safety_works_safety_glasses
+- sharpie_accent_tank_style_highlighters
+- stanley_66_052
+-->
+
+<%
+ @items = [
+ {'bin' => 'S1', 'item' => 'crayola_64_ct' },
+ {'bin' => 'S2', 'item' => 'expo_dry_erase_board_eraser' },
+ {'bin' => 'S3', 'item' => 'stanley_66_052' },
+ {'bin' => 'S4', 'item' => 'munchkin_white_hot_duck_bath_toy' },
+ {'bin' => 'S5', 'item' => 'oreo_mega_stuf' },
+ {'bin' => 'S6', 'item' => 'paper_mate_12_count_mirado_black_warrior' },
+ {'bin' => 'S7', 'item' => 'safety_works_safety_glasses' },
+ {'bin' => 'S8', 'item' => 'mead_index_cards' },
+ {'bin' => 'S9', 'item' => 'genuine_joe_plastic_stir_sticks' },
+ {'bin' => 'S10', 'item' => 'highland_6539_self_stick_notes' },
+ {'bin' => 'S11', 'item' => 'kong_air_dog_squeakair_tennis_ball' },
+ {'bin' => 'S12', 'item' => 'kong_sitting_frog_dog_toy' },
+ {'bin' => 'S13', 'item' => 'sharpie_accent_tank_style_highlighters' }]
+ @locations = {
+  'S1' => '0.70 -0.17 0.6 0 0 0',
+  'S2' => '0.70  0.0  0.6 0 0 0',
+  'S3' => '0.70  0.17 0.6 0 0 0',
+  'S4' => '0.80 -0.17 0.6 0 0 0',
+  'S5' => '0.80  0.0  0.6 0 0 0',
+  'S6' => '0.80  0.17 0.6 0 0 0',
+  'S7' => '0.70 -0.17 0.7 0 0 0',
+  'S8' => '0.70  0.0  0.7 0 0 0',
+  'S9' => '0.70  0.15 0.8 0 0 0',
+  'S10' => '0.80 -0.17 0.7 0 0 0',
+  'S11' => '0.80  0.0  0.7 0 0 0',
+  'S12' => '0.80  0.15 0.7 0 0 0',
+  'S13' => '0.70  0.0  0.8 0 0 0',
+ }
+%>
+<%for item in @items%>
+    <!-- bin <%=item['bin']%> -->
+    <include>
+      <uri>model://<%=item['item']%></uri>
+      <name><%=item['item']%></name>
+      <pose><%=@locations[item['bin']]%></pose>
+    </include>
+<%end%>
+
+    <physics type="ode">
+      <real_time_update_rate>1000.0</real_time_update_rate>
+      <gravity>
+        0.0 0.0 -9.81
+      </gravity>
+    </physics>
+  </world>
+</sdf>
