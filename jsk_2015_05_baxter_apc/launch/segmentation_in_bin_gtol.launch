@@ -1,5 +1,6 @@
 <launch>
 
+  <arg name="INPUT_DEPTH" />
   <arg name="INPUT_CLOUD" />
 
   <arg name="MANAGER" value="segmentation_in_bin_gtol_manager" />
@@ -26,36 +27,42 @@
   <!-- object segmentation -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="g" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
     <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_g/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="h" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
     <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_h/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="i" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
     <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_i/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="j" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
     <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_j/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="k" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
     <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_k/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
     <arg name="BIN_NAME" value="l" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
     <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
     <arg name="INPUT_INDICES" value="/bin_gtol_clipper/bin_l/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />

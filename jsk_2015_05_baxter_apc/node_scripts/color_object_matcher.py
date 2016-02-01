@@ -44,7 +44,7 @@ class ColorObjectMatcher(ObjectMatcher):
             ColorHistogram(header=query_image.header, histogram=hist))
         # predict
         proba = self.estimator.predict(input_image)[0]
-        objects = jsk_apc2015_common.data.object_list()
+        objects = jsk_apc2015_common.get_object_list()
         matched_idx = np.argmax(proba)
         # prepare message
         res = ObjectRecognition()

@@ -1,0 +1,120 @@
+{
+  "bin_contents":
+  {
+    "bin_A":
+    [
+      "kong_sitting_frog_dog_toy"
+    ],
+    "bin_B":
+    [
+      "feline_greenies_dental_treats",
+      "paper_mate_12_count_mirado_black_warrior",
+      "cheezit_big_original"
+    ],
+    "bin_C":
+    [
+      "kong_duck_dog_toy"
+    ],
+    "bin_D":
+    [
+      "feline_greenies_dental_treats",
+      "rolodex_jumbo_pencil_cup"
+    ],
+    "bin_E":
+    [
+      "elmers_washable_no_run_school_glue",
+      "paper_mate_12_count_mirado_black_warrior",
+      "crayola_64_ct"
+    ],
+    "bin_F":
+    [
+      "safety_works_safety_glasses",
+      "laugh_out_loud_joke_book"
+    ],
+    "bin_G":
+    [
+      "oreo_mega_stuf"
+    ],
+    "bin_H":
+    [
+      "expo_dry_erase_board_eraser",
+      "mommys_helper_outlet_plugs"
+    ],
+    "bin_I":
+    [
+      "highland_6539_self_stick_notes",
+      "mead_index_cards",
+      "kong_air_dog_squeakair_tennis_ball"
+    ],
+    "bin_J":
+    [
+      "munchkin_white_hot_duck_bath_toy",
+      "stanley_66_052"
+    ],
+    "bin_K":
+    [
+      "genuine_joe_plastic_stir_sticks",
+      "kong_air_dog_squeakair_tennis_ball",
+      "sharpie_accent_tank_style_highlighters",
+      "champion_copper_plus_spark_plug"
+    ],
+    "bin_L":
+    [
+      "mark_twain_huckleberry_finn",
+      "expo_dry_erase_board_eraser",
+      "kyjen_squeakin_eggs_plush_puppies"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_A",
+      "item": "kong_sitting_frog_dog_toy"
+    },
+    {
+      "bin": "bin_B",
+      "item": "paper_mate_12_count_mirado_black_warrior"
+    },
+    {
+      "bin": "bin_C",
+      "item": "kong_duck_dog_toy"
+    },
+    {
+      "bin": "bin_D",
+      "item": "feline_greenies_dental_treats"
+    },
+    {
+      "bin": "bin_E",
+      "item": "crayola_64_ct"
+    },
+    {
+      "bin": "bin_F",
+      "item": "safety_works_safety_glasses"
+    },
+    {
+      "bin": "bin_G",
+      "item": "oreo_mega_stuf"
+    },
+    {
+      "bin": "bin_H",
+      "item": "mommys_helper_outlet_plugs"
+    },
+    {
+      "bin": "bin_I",
+      "item": "kong_air_dog_squeakair_tennis_ball"
+    },
+    {
+      "bin": "bin_J",
+      "item": "munchkin_white_hot_duck_bath_toy"
+    },
+    {
+      "bin": "bin_K",
+      "item": "genuine_joe_plastic_stir_sticks"
+    },
+    {
+      "bin": "bin_L",
+      "item": "mark_twain_huckleberry_finn"
+    }
+  ]
+}
