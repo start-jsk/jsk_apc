@@ -2,11 +2,23 @@
 (load "package://baxtereus/baxter-interface.l")
 (load "package://euslisp/jskeus/eus/models/arrow-object.l")
 
+(setq *oreo* (make-cube 100 150 150 :pos #f(1200 0 1435)))
+(send *oreo* :set-color :blue)
+(setq tote_height 700)
+(setq tote_pos (vector 500 0))
+(setq hand_len 440)
+(setq *rhand* (make-cube hand_len 30 30))
+(setq *lhand* (make-cube hand_len 30 30))
+
 (defun init ()
   ;; baxter model
   (when (not (boundp '*baxter*))
     (baxter-init)
-    (send *baxter* :locate #f(0 0 950) :world))
+    (send *baxter* :locate #f(0 0 950) :world)
+    (send *rhand* :transform (send *baxter* :rarm :end-coords :worldcoords) :world)
+    (send *baxter* :rarm :end-coords :assoc *rhand*)
+    (send *lhand* :transform (send *baxter* :larm :end-coords :worldcoords) :world)
+    (send *baxter* :larm :end-coords :assoc *lhand*))
   ;; pod-lowres model
   (when (not (boundp '*pod*))
     (load "package://jsk_2016_01_baxter_apc/euslisp/include/pod-lowres.l")
@@ -15,7 +27,7 @@
   (when (not (boundp '*tote*))
     (setq *tote* (body- (make-cube 400 500 300)
                         (make-cube 350 450 275 :pos #f(0 0 25))))
-    (send *tote* :translate #f(500 0 -300))
+    (send *tote* :translate (float-vector (elt tote_pos 0) (elt tote_pos 1) (+ tote_height 150)))
     (send *tote* :set-color :red))
 
   ;;(setq *target* (instance-cube 100 100 100))
@@ -24,25 +36,31 @@
     (send *tote* :translate #f(0 0 0)))
   )
 (init)
-(objects (list *baxter* *pod* *tote* *target*))
+(objects (list *baxter* *pod* *tote* *target* *rhand* *lhand* *oreo*))
 
 (defun rarm-movepos
   (robot endcoords axis)
-  (send robot :rarm :inverse-kinematics endcoords :rotation-axis axis :debug-view t))
+  (let (tempcoords)
+    (setq tempcoords (send endcoords :copy-coords))
+    (send tempcoords :translate (float-vector (- 0 (/ hand_len 2)) 0 0))
+    (send robot :rarm :inverse-kinematics tempcoords :rotation-axis axis :debug-view t)))
 
 (defun larm-movepos
   (robot endcoords axis)
-  (send robot :larm :inverse-kinematics endcoords :rotation-axis axis :debug-view t))
+  (let (tempcoords)
+    (setq tempcoords (send endcoords :copy-coords))
+    (send tempcoords :translate (float-vector (- 0 (/ hand_len 2)) 0 0))
+    (send robot :larm :inverse-kinematics tempcoords :rotation-axis axis :debug-view t)))
 
 (defun init-target ();;Set terget object randomly
   (setq *target* (make-cube 100 100 100))
   (send *target* :set-color :blue)
-  (let ((x (+ 375 (random 250))) (y (- 175 (random 350))))
-	(send *target* :translate (float-vector x y -350)))
+  (let ((x (+ (- (elt tote_pos 0) 125) (random 250))) (y (+ (- (elt tote_pos 1) 175) (random 350))))
+	(send *target* :translate (float-vector x y (+ tote_height 50))))
   (objects (list *baxter* *pod* *tote* *target*)))
 
-(defun tote2shelf (x)
-  (when (= x 0);;Use right arm
+(defun tote2shelf (arm)
+  (when (= arm 0);;Use right arm
   (send *target* :rotate (/ pi 2.0) :y)
   (rarm-movepos *baxter* (send *target* :coords) :x)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
@@ -51,7 +69,7 @@
   (send *baxter* :reset-pose)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
   (send *ri* :wait-interpolation)
-  (rarm-movepos *baxter* (make-coords :pos (float-vector 1000 (random 200) (random 800))) :x)
+  (rarm-movepos *baxter* (make-coords :pos (float-vector 1000 (random 200) (+ 1000 (random 600)))) :x)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
   (send *ri* :wait-interpolation)
   (send *baxter* :rarm :end-coords :dissoc *target*)
@@ -59,7 +77,7 @@
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
   (send *ri* :wait-interpolation))
 
-  (when (= x 1);;Use left arm
+  (when (= arm 1);;Use left arm
   (send *target* :rotate (/ pi 2.0) :y)
   (larm-movepos *baxter* (send *target* :coords) :x)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
@@ -68,7 +86,7 @@
   (send *baxter* :reset-pose)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
   (send *ri* :wait-interpolation)
-  (larm-movepos *baxter* (make-coords :pos (float-vector 1000 (random 200) (random 800))) :x)
+  (larm-movepos *baxter* (make-coords :pos (float-vector 1000 (random 200) (+ 1000 (random 600)))) :x)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1000)
   (send *ri* :wait-interpolation)
   (send *baxter* :rarm :end-coords :dissoc *target*)
