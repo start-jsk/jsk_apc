@@ -426,6 +426,16 @@
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis t) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
       ))
+  (:place-object
+    (arm)
+    (send self :move-arm-body->order-bin arm)
+    (send self :wait-interpolation)
+    (send self :stop-grasp arm)
+    (send self :spin-off-by-wrist arm :times 20)
+    (send self :wait-interpolation)
+    (send self :angle-vector (send *baxter* :fold-pose-back arm) 3000)
+    (send self :wait-interpolation)
+    )
   (:get-work-orders
     (arm)
     (setq
