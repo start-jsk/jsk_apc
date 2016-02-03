@@ -16,6 +16,10 @@
     <param name="bof_data" value="$(find jsk_2015_05_baxter_apc)/trained_data/bof.pkl.gz" />
     <remap from="~input" to="Feature0D" />
     <remap from="~input/label" to="$(arg INPUT_LABEL)" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 1000
+    </rosparam>
   </node>
 
   <node name="bof_object_matcher"
@@ -29,6 +33,22 @@
         pkg="jsk_2015_05_baxter_apc" type="color_object_matcher.py"
         respawn="true">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/label" to="$(arg INPUT_LABEL)" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 1000
+    </rosparam>
+  </node>
+
+  <node name="boost_object_recognition"
+        pkg="jsk_2015_05_baxter_apc" type="boost_object_recognition.py">
+    <remap from="~input/bof" to="bof_object_matcher/output" />
+    <remap from="~input/ch" to="color_object_matcher/output" />
+    <param name="~weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 1000
+    </rosparam>
   </node>
 
 
