@@ -1,8 +1,9 @@
 <launch>
     <arg name="label" default="/bin_e_cpi_decomposer/label" /> 
     <arg name="ns" default ="/kinect2_head/hd" /> 
-    <arg name ="image_color" default="$(arg ns)/image_color_rect" /> 
-    <include file="$(find jsk_data)/launch/kinect2_bridge_play.launch">
+    <arg name ="image_color" default="$(arg ns)/image_color_rect" />
+    <arg name="sim" default="false" /> 
+    <include file="$(find jsk_data)/launch/kinect2_bridge_play.launch" if="$(arg sim)">
         <arg name="ns" value="$(arg ns)" /> 
     </include>
     <include file="$(find jsk_2015_05_baxter_apc)/launch/include/object_recognition.launch" >
