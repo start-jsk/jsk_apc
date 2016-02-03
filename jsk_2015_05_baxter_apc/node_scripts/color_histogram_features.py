@@ -78,10 +78,10 @@ class ColorHistogramFeatures(object):
     def init_estimate(self):
         self.estimator = SVC(kernel='linear', probability=True)
         self.estimator.fit(self.cfeatures, self.labels)
-    def predict(self, image, obj_names=None):
+    def predict(self, imgs, obj_names=None):
         if obj_names is None:
             obj_names = self.object_names
-        im_feature = np.array([self.color_hist(image)])
+        im_feature = np.array([self.color_hist(img) for img in imgs])
         return self.estimator.predict_proba(im_feature)
     def run(self):
         self.compute_texture()
