@@ -26,7 +26,7 @@ def get_imlist(path, extension='jpg'):
 class ColorHistogramFeatures(object):
     def __init__(self):
         self.file_name = 'rgb'
-        self.object_names = jsk_apc2015_common.data.object_list()
+        self.object_names = jsk_apc2015_common.get_object_list()
         self.cfeatures = []
         self.labels = []
     def save_data(self):

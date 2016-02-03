@@ -25,7 +25,7 @@ def main():
     with gzip.open(args.bof_histogram, 'rb') as f:
         obj_hists = pickle.load(f)
 
-    target_names = jsk_apc2015_common.data.object_list()
+    target_names = jsk_apc2015_common.get_object_list()
 
     # create train and test data
     X ,y = [], []

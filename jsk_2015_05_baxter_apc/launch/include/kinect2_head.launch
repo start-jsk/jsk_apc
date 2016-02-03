@@ -1,6 +1,8 @@
 <launch>
 
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
+    <arg name="depth_method" value="cpu" />
+    <arg name="reg_method" value="cpu" />
     <arg name="use_machine" value="false" />
     <arg name="base_name" value="kinect2_head" />
     <arg name="max_depth" value="1.2" />
@@ -8,7 +10,7 @@
 
   <node name="kinect2_head_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
-        args="-0.11 0.948 -0.00 0 -1.64 1.58 kinect2_head_rgb_optical_frame base 100" />
+        args="-0.10 0.958 -0.01 0 -1.64 1.58 kinect2_head_rgb_optical_frame base 100" />
 
 </launch>
 

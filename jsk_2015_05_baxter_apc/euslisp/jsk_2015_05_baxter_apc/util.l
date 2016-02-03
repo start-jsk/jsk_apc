@@ -20,6 +20,19 @@
     ret))
 
 
+(defun vec-list-max (vec-list &key axis)
+  (let (vec max-vec)
+    (dotimes (i (length vec-list))
+      (setq vec (elt vec-list i))
+      (cond
+        ((= i 0) (setq max-vec vec))
+        ((< (elt max-vec axis) (elt vec axis)) (setq max-vec vec))
+        (t nil)
+        )
+      )
+    max-vec))
+
+
 (defun str2symbol (str)
   (intern (string-upcase str) "KEYWORD"))
 

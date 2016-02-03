@@ -73,7 +73,7 @@ class ObjectVerification(object):
 
         target_bin = rospy.get_param('target_bin', None)
 
-        object_list = jsk_apc2015_common.data.object_list()
+        object_list = jsk_apc2015_common.get_object_list()
         all_proba = [
             (o,
              (weight[o]['bof'] * bof_objects_proba[o]) +

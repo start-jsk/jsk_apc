@@ -1,6 +1,7 @@
 <launch>
 
 
+  <arg name="INPUT_DEPTH" />
   <arg name="INPUT_CLOUD" />
   <arg name="INPUT_INDICES" />
   <arg name="BIN_NAME" />
@@ -13,6 +14,7 @@
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~indices" to="$(arg INPUT_INDICES)" />
     <rosparam>
+      max_queue_size: 200
       keep_organized: true
     </rosparam>
   </node>
@@ -32,8 +34,37 @@
         args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg MANAGER)">
     <remap from="~input" to="bin_$(arg BIN_NAME)_extract_pi/output" />
     <remap from="~target" to="bin_$(arg BIN_NAME)_euclid_clustering/output" />
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </node>
+
+
+  <!-- grasp planning -->
+  <node name="bin_$(arg BIN_NAME)_solidity_rag_merge"
+        pkg="jsk_perception" type="solidity_rag_merge.py">
+    <remap from="~input" to="$(arg INPUT_DEPTH)" />
+    <remap from="~input/mask" to="bin_$(arg BIN_NAME)_cpi_decomposer/mask" />
+    <rosparam>
+      debug: true
+    </rosparam>
+  </node>
+  <node name="bin_$(arg BIN_NAME)_label_to_cpi"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/LabelToClusterPointIndices $(arg MANAGER)">
+    <remap from="~input" to="bin_$(arg BIN_NAME)_solidity_rag_merge/output" />
+  </node>
+  <node name="bin_$(arg BIN_NAME)_solidity_rag_merge_cpi_decomposer"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~target" to="bin_$(arg BIN_NAME)_label_to_cpi/output" />
+    <rosparam>
+      min_size: 100
+      queue_size: 500
+      approximate_sync: true
+    </rosparam>
   </node>
 
 
 </launch>
-

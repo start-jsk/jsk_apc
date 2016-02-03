@@ -3,9 +3,9 @@
 
 from nose.tools import assert_equal
 
-import jsk_apc2015_common.data
+import jsk_apc2015_common
 
 
-def test_object_list():
-    objects = jsk_apc2015_common.data.object_list()
+def test_get_object_list():
+    objects = jsk_apc2015_common.get_object_list()
     assert_equal(25, len(objects))
