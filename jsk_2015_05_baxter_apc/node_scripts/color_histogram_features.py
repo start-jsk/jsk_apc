@@ -31,7 +31,9 @@ class ColorHistogramFeatures(object):
         self.labels = []
     def save_data(self):
         print('saving data')
-        with gzip.open(self.file_name + '.pkl.gz', 'wb') as f:
+        data_dir = get_data_dir()
+        feature_path = os.path.join(data_dir, 'histogram_data/rgb.pkl.gz')
+        with gzip.open(feature_path, 'wb') as f:
             pickle.dump(self.cfeatures, f)
             pickle.dump(self.labels, f)
         print("saved data")
@@ -45,10 +47,10 @@ class ColorHistogramFeatures(object):
             self.labels = pickle.load(f)
         print("load end.")
         self.init_estimate()
-    def images(self, dir_name='masked_data'):
+    def images(self, dir_name='raw_img'):
         for object_name in self.object_names:
             print("processing ... {}".format(object_name))
-            images_path = get_imlist(os.path.join(os.path.dirname(__file__), '../data', dir_name, object_name))
+            images_path = get_imlist(os.path.join(get_data_dir(),dir_name))
             for image_path in images_path:
                 yield image_path, object_name
     def features_for(self, im):
