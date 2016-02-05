@@ -1,4 +1,13 @@
+#!/usr/bin/env roseus
+;; vim: set ft=lisp:
+;; -*- mode: lisp;-*-
+
 (load "main.l")
+
+(defun test-init (&optional (ctype :default-controller))
+  (jsk_2015_05_baxter_apc::baxter-init :ctype ctype)
+  (objects (list *baxter*))
+  t)
 
 (setq *oreointote* (make-coords :pos #f(785 -35 -320)))
 (send *oreointote* :rotate (/ pi 4.0) :z)
