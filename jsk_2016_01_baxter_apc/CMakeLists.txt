@@ -138,7 +138,14 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/worlds/pick_kiva.world
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/worlds/)
 add_custom_target(compile_pick_kiva_world ALL
   DEPENDS ${PROJECT_SOURCE_DIR}/worlds/pick_kiva.world)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/worlds/stow_kiva.world
+    DEPENDS ${PROJECT_SOURCE_DIR}/worlds/stow_kiva.world.erb
+    COMMAND erb ${PROJECT_SOURCE_DIR}/worlds/stow_kiva.world.erb > ${PROJECT_SOURCE_DIR}/worlds/stow_kiva.world
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/worlds/)
+add_custom_target(compile_stow_kiva_world ALL
+    DEPENDS ${PROJECT_SOURCE_DIR}/worlds/stow_kiva.world)
 
+#
 #############
 ## Install ##
 #############
