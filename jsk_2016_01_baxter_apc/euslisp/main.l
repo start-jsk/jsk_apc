@@ -9,8 +9,6 @@
 (setq table (make-cube 300 300 20))
 (setq posA (make-coords :pos #f(800 0 1200)))
 (setq posB (make-coords :pos #f(600 300 1000) :rpy (float-vector -pi/2 0 0)))
-;#<cascaded-coords #X823fdc8 :rarm-end-coords  785.066 -35.471 -292.914 / 0.883 0.686 0.353>
-
 
 (defun init ()
   ;; baxter model
@@ -101,4 +99,5 @@
 
 (ros::ros-info "(test) : start demo")
 (init)
+(movetable posB)
 (objects (list *baxter* *pod* *tote* *target* *oreo* table))
