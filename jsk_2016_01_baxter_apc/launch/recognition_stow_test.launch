@@ -1,6 +1,6 @@
 <launch>
     <arg name="label" default="/stow_cpi_decomposer/label" /> 
-    <arg name="ns" default ="/kinect2_head/hd" /> 
+    <arg name="ns" default ="/kinect2_external/hd" /> 
     <arg name ="image_color" default="$(arg ns)/image_color_rect" />
     <arg name="sim" default="false" /> 
     <include file="$(find jsk_data)/launch/kinect2_bridge_play.launch" if="$(arg sim)">

@@ -8,7 +8,7 @@
 (ros::advertise "image_marker" image_view2::ImageMarker2 1)
 
 (setq *label-names* nil)
-(setq *color-list* (list "red" "blue"))
+(setq *color-list* (list "red" "blue" "yellow" "pink"))
 
 (defun viz-recog-cb (msg)
   (setq *label-names* (send msg :label_names))
@@ -21,7 +21,7 @@
       text)
   )
 
-(ros::subscribe "/boost_object_recognition/output" jsk_recognition_msgs::ClassificationResult #'viz-recog-cb)
+(ros::subscribe "/color_object_matcher/output" jsk_recognition_msgs::ClassificationResult #'viz-recog-cb)
 
 (ros::rate 10)
 (setq i 0)
