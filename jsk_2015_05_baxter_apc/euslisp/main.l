@@ -66,7 +66,9 @@
           )
         (:wait_for_opposite_arm
           (ros::ros-info "[main] ~a, ~a" arm state)
-          (send *ri* :wait-for-opposite-arm arm)
+          (while
+            (send *ri* :need-to-wait-opposite-arm arm)
+            (unix::sleep 1))
           (setq state :pick_object)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           )
