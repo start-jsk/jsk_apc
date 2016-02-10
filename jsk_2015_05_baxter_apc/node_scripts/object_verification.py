@@ -35,7 +35,7 @@ class ObjectVerification(object):
                                         ClassificationResult,
                                         self._cb_bof)
         self.cfeature_sub = rospy.Subscriber('~input/color_hist',
-                                             ObjectRecognition,
+                                             ClassificationResult,
                                              self._cb_cfeature)
         self.pub = rospy.Publisher('~output', ObjectRecognition, queue_size=1)
         self.pub_debug = rospy.Publisher('~debug', ObjectRecognition,
@@ -61,7 +61,9 @@ class ObjectVerification(object):
         self.bof_data = (msg.header.stamp, objects_proba)
 
     def _cb_cfeature(self, msg):
-        objects_proba = dict(zip(msg.candidates, msg.probabilities))
+        n_targets = len(msg.target_names)
+        objects_proba = dict(zip(msg.target_names,
+                                 msg.probabilities[:n_targets]))
         self.cfeature = (msg.header.stamp, objects_proba)
 
     def spin_once(self):
