@@ -16,6 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(gazebo REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -110,8 +112,8 @@ generate_dynamic_reconfigure_options(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES jsk_2015_05_baxter_apc
+  INCLUDE_DIRS include
+  LIBRARIES gazebo_ros_vacuum_gripper
   CATKIN_DEPENDS geometry_msgs message_runtime rosserial_arduino rosserial_client std_msgs
 #  DEPENDS system_lib
 )
@@ -139,12 +141,12 @@ endif()
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+include_directories(include
+  ${GAZEBO_INCLUDE_DIRS}
+)
 
-## Declare a cpp library
-# add_library(jsk_2015_05_baxter_apc
-#   src/${PROJECT_NAME}/jsk_2015_05_baxter_apc.cpp
-# )
+add_library(gazebo_ros_vacuum_gripper src/gazebo_ros_vacuum_gripper.cpp)
+target_link_libraries(gazebo_ros_vacuum_gripper ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 ## Declare a cpp executable
 # add_executable(jsk_2015_05_baxter_apc_node src/jsk_2015_05_baxter_apc_node.cpp)
@@ -187,11 +189,11 @@ endif()
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+install(TARGETS
+  gazebo_ros_vacuum_gripper
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
 
 #############
 ## Testing ##
