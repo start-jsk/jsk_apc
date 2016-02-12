@@ -1,0 +1,24 @@
+<launch>
+    <arg name="label" default="/stow_cpi_decomposer/label" /> 
+    <arg name="ns" default ="/kinect2_external/hd" /> 
+    <arg name ="image_color" default="$(arg ns)/image_color_rect" />
+    <arg name="sim" default="false" /> 
+    <include file="$(find jsk_data)/launch/kinect2_bridge_play.launch" if="$(arg sim)">
+        <arg name="ns" value="$(arg ns)" /> 
+    </include>
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/include/object_recognition.launch" >
+        <arg name="INPUT_IMAGE" value="$(arg image_color)" /> 
+        <arg name="INPUT_LABEL" value="$(arg label)" />
+    </include>
+    <node name="label_image_decomposer" pkg="jsk_perception" type="label_image_decomposer.py" respawn="true">
+        <remap from="~input" to="$(arg image_color)"/> 
+        <remap from="~input/label" to="$(arg label)" />
+        <rosparam>
+            approximate_sync : true
+            queue_size: 1000
+        </rosparam> 
+    </node>
+    <node name="image_view2" pkg="image_view2" type="image_view2" respawn="true">
+        <remap from="image" to="/label_image_decomposer/output/label_viz"/>
+    </node> 
+</launch>

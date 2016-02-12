@@ -1,0 +1,58 @@
+<launch>
+
+  <arg name="BASE_NAME" value="kinect2_external" />
+  <arg name="INPUT_CLOUD" value="/$(arg BASE_NAME)/hd/points"/>
+
+  <arg name="MANAGER" value="recognition_in_stow_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+  <!-- stow clipper -->
+  <node name="stow_clipper"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
+    <remap from="~input/points" to="$(arg INPUT_CLOUD)" />
+    <rosparam>
+      debug: true
+      use_multiple_attention: false
+      initial_pos: [0.7, 0.0, -0.25]
+      initial_rot: [0.0, 0.0, 0.0]
+      dimension_x: 0.3
+      dimension_y: 0.40
+      dimension_z: 0.1
+      frame_id: base  
+    </rosparam>
+  </node>
+
+  <node name="stow_extract_pi"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="/stow_clipper/output/point_indices" />
+    <rosparam>
+      max_queue_size: 200
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node name="stow_euclid_clustering"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/EuclideanClustering $(arg MANAGER)">
+    <remap from="~input" to="stow_extract_pi/output" />
+    <rosparam>
+      min_size: 500
+      max_size: 100000
+    </rosparam>
+  </node>
+
+  <node name="stow_cpi_decomposer"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg MANAGER)">
+    <remap from="~input" to="stow_extract_pi/output" />
+    <remap from="~target" to="stow_euclid_clustering/output" />
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </node>
+
+</launch>
