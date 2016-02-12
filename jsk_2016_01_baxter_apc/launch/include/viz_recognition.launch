@@ -1,0 +1,36 @@
+<launch>
+    <arg name="INPUT_INFO" />
+    <arg name="INPUT_BOXES" />
+    <arg name="INPUT_IMAGE" />
+    <arg name="INPUT_CLASS" />
+
+    <arg name="MANAGER" value="viz_recognition_manager" />
+    <node name="$(arg MANAGER)" 
+        pkg="nodelet" type="nodelet" 
+        args="manager" />
+
+    <node name="bbox_to_rect" 
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/BoundingBoxToRect $(arg MANAGER)" 
+        output="screen">
+        <remap from="~input" to="$(arg INPUT_BOXES)" />
+        <remap from="~input/info" to="$(arg INPUT_INFO)" />
+        <rosparam>
+            approximate_sync: true
+            queue_size: 200
+        </rosparam>
+    </node>
+
+    <node name="rect_label_to_image"
+        pkg="jsk_2016_01_baxter_apc" type="rect_label_to_image.py"
+        output="screen">
+        <remap from="~input" to="bbox_to_rect/output" /> 
+        <remap from="~input/image" to="$(arg INPUT_IMAGE)" />
+        <remap from="~input/class" to="$(arg INPUT_CLASS)" />
+        <rosparam>
+            approximate_sync: true
+            queue_size: 400
+        </rosparam> 
+    </node> 
+
+</launch>
