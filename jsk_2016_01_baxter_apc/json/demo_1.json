@@ -1,0 +1,17 @@
+{
+  "bin_contents":
+  {
+    "bin_E":
+    [
+	"oreo_mega_stuf"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_E",
+      "item": "oreo_mega_stuf"
+    }
+  ]
+}

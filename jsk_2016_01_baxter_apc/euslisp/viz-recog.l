@@ -21,7 +21,11 @@
       text)
   )
 
+<<<<<<< HEAD
 (ros::subscribe "/color_object_matcher/output" jsk_recognition_msgs::ClassificationResult #'viz-recog-cb)
+=======
+(ros::subscribe "/boost_object_recognition/output" jsk_recognition_msgs::ClassificationResult #'viz-recog-cb)
+>>>>>>> origin/ban-masa_ws
 
 (ros::rate 10)
 (setq i 0)
