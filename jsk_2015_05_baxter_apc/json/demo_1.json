@@ -54,7 +54,6 @@
     "bin_K":
     [
       "genuine_joe_plastic_stir_sticks",
-      "kong_air_dog_squeakair_tennis_ball",
       "sharpie_accent_tank_style_highlighters",
       "champion_copper_plus_spark_plug"
     ],
@@ -73,7 +72,7 @@
     },
     {
       "bin": "bin_B",
-      "item": "paper_mate_12_count_mirado_black_warrior"
+      "item": "cheezit_big_original"
     },
     {
       "bin": "bin_C",
@@ -113,7 +112,7 @@
     },
     {
       "bin": "bin_L",
-      "item": "mark_twain_huckleberry_finn"
+      "item": "kyjen_squeakin_eggs_plush_puppies"
     }
   ]
 }
