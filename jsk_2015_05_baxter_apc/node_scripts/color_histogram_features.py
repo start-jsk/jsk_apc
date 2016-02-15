@@ -69,7 +69,7 @@ class ColorHistogramFeatures(object):
         mask_s=s[:,:] < 25
         total_mask=mask_v | mask_s
         masked_h=ma.masked_array(h,total_mask)
-        hist_h = np.bincount(masked_h.compressed(), minlength=48)
+        hist_h = np.bincount(masked_h.compressed(), minlength=64)
         hist = hist_h
         hist = hist.astype(float)
         hist_sum = sum(hist)
