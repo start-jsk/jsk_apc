@@ -10,7 +10,8 @@ import numpy as np
 import os
 import gzip
 import cPickle as pickle
-
+import cv2
+import numpy.ma as ma
 from sklearn.svm import SVC
 from skimage.io import imread
 
@@ -52,20 +53,29 @@ class ColorHistogramFeatures(object):
             for image_path in images_path:
                 yield image_path, object_name
     def features_for(self, im):
-        im = imread(im)
+        im = cv2.imread(im)##previous : im = imread(im). This might cause generating wrong histogram, because skiimage's rgb color space seems different from opencv's rgb color space.
         return self.color_hist(im)
     def color_hist(self, im):
-        ''' Compute color histogram of input image '''
-        # Downsample pixel values:
-        im = im // 64
-
-        # Separate RGB channels:
-        r,g,b = im.transpose((2,0,1))
-
-        pixels = 1 * r + 4 * g + 16 * b
-        hist = np.bincount(pixels.ravel(), minlength=64)
+        im=cv2.cvtColor(im,cv2.COLOR_BGR2HSV)
+        '''
+        0<h<180 , 0<s<255, 0<v<255
+        v < 20*2.55=51 : pure black
+        else s < 10*25.5=25 :white - gray
+        '''
+        #Separate HSV channels:
+        h,s,v = im.transpose((2,0,1))
+        h = h // 4
+        mask_v=v[:,:] < 51
+        mask_s=s[:,:] < 25
+        total_mask=mask_v | mask_s
+        masked_h=ma.masked_array(h,total_mask)
+        hist_h = np.bincount(masked_h.compressed(), minlength=48)
+        hist = hist_h
         hist = hist.astype(float)
-        return np.log1p(hist)
+        hist_sum = sum(hist)
+        hist = hist / hist_sum
+        return np.sqrt(hist)
+
     def compute_texture(self):
         print("Computing whole-image color features ... ")
         for im, ell in self.images():
