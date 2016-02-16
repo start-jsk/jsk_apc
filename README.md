@@ -34,6 +34,13 @@ $ source devel/setup.bash
 ```
 $ rossetmaster baxter.jsk.imi.i.u-tokyo.ac.jp
 $ rossetip
+
+$ # we recommend below setup (see http://jsk-docs.readthedocs.org/en/latest/jsk_common/doc/jsk_tools/cltools/setup_env_for_ros.html)
+$ echo """
+rossetip
+rosdefault
+""" >> ~/.bashrc
+$ rossetdefault baxter  # set ROS_MASTER_URI as http://baxter:11311
 ```
 
 
