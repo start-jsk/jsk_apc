@@ -59,27 +59,7 @@ Host baxter
 Usage
 -----
 
-### Run Demo with Real Robot
-
-```sh
-$ roslaunch jsk_2015_05_baxter_apc baxter.launch
-$ roslaunch jsk_2015_05_baxter_apc setup.launch
-$ roslaunch jsk_2015_05_baxter_apc main.launch json:=`rospack find jsk_2015_05_baxter_apc`/data/apc-a.json
-$ roslaunch jsk_2015_05_baxter_apc record.launch  # rosbag record
-```
-
-
-### Run Demo on Gazebo Simulator
-
-```sh
-$ roslaunch jsk_2015_05_baxter_apc baxter_sim.launch
-$ roslaunch jsk_2015_05_baxter_apc setup.launch
-$ roslaunch jsk_2015_05_baxter_apc main.launch json:=`rospack find jsk_apc2015_common`/json/f2.json
-```
-
-<a href="https://www.youtube.com/watch?v=uV6XctamwEA">
-  <img src="images/apc_gazebo_demo_on_youtube.png" alt="Amazon Picking Challenge 2015 Gazebo Simulation" width="50%" />
-</a>
+See [jsk_2015_05_baxter_apc](jsk_2015_05_baxter_apc#jsk_2015_05_baxter_apc).
 
 
 If you have problem...
@@ -89,12 +69,4 @@ If you have problem...
 
 ```
 $ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
-```
-
-
-Testing
--------
-
-```sh
-$ catkin run_tests jsk_2015_05_baxter_apc --no-deps
 ```
