@@ -37,6 +37,10 @@ https://github.com/start-jsk/jsk_apc/blob/master/jsk_2015_05_baxter_apc/json/dem
 <img src="images/real_world.jpg" width="32%" />
 <img src="images/real_world_rviz.jpg" width="32%" />
 
+<a href="https://www.youtube.com/watch?v=G-A-sEThWAQ">
+  <img src="images/apc2015_real_demo.png" alt="Amazon Picking Challenge 2015 Real World Demonstration" width="40%" />
+</a>
+
 
 ### Demonstration on Simulation
 
@@ -54,7 +58,7 @@ rviz -d $(rospack find jsk_2015_05_baxter_apc)/rvizconfig/gazebo_demo.rviz  # vi
 ```
 
 <a href="https://www.youtube.com/watch?v=uV6XctamwEA">
-  <img src="images/apc2015_gazebo_demo.png" alt="Amazon Picking Challenge 2015 Gazebo Simulation" width="50%" />
+  <img src="images/apc2015_gazebo_demo.png" alt="Amazon Picking Challenge 2015 Gazebo Simulation" width="40%" />
 </a>
 
 
