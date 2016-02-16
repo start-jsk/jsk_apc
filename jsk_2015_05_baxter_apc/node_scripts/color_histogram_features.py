@@ -5,7 +5,7 @@
 this script will extract color_histogram from masked_data($(jsk_2015_05_baxter_apc)/data/masked_data)
 and save it.
 """
-
+from __future__ import division
 import numpy as np
 import os
 import gzip
@@ -26,13 +26,14 @@ def get_imlist(path, extension='jpg'):
 
 class ColorHistogramFeatures(object):
     def __init__(self):
-        self.file_name = 'rgb'
+        self.file_name = 'hsv'
         self.object_names = jsk_apc2015_common.get_object_list()
         self.cfeatures = []
         self.labels = []
     def save_data(self):
         print('saving data')
-        with gzip.open(self.file_name + '.pkl.gz', 'wb') as f:
+        data_dir = get_data_dir()
+        with gzip.open(os.path.join(data_dir,'histogram_data/',self.file_name) + '.pkl.gz', 'wb') as f:
             pickle.dump(self.cfeatures, f)
             pickle.dump(self.labels, f)
         print("saved data")
@@ -40,7 +41,7 @@ class ColorHistogramFeatures(object):
         '''  from pkl file load feature and label data '''
         print("loading data ... ")
         data_dir = get_data_dir()
-        feature_path = os.path.join(data_dir, 'histogram_data/rgb.pkl.gz')
+        feature_path = os.path.join(data_dir, 'histogram_data/hsv.pkl.gz')
         with gzip.open(feature_path) as f:
             self.cfeatures = pickle.load(f)
             self.labels = pickle.load(f)
