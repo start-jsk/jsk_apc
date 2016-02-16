@@ -39,15 +39,26 @@ $ rossetip
 
 ### Optional
 
-* Setup Kinect2: [Instructions at code-iai/iai\_kinect2](https://github.com/code-iai/iai_kinect2#install)
-* Setup rosserial + vacuum gripper: Write below in `/etc/udev/rules.d/90-rosserial.rules`:
+**Setup Kinect2**
+
+Please follow [Instructions at code-iai/iai\_kinect2](https://github.com/code-iai/iai_kinect2#install),
+however, maybe you have error with the master branch, so in that case use below versions:
+
+  * [code-iai/iai_kinect2@ed57f55ea4c8c34592fd91eb9e3809c5863d2a95](https://github.com/code-iai/iai_kinect2/tree/ed57f55ea4c8c34592fd91eb9e3809c5863d2a95)
+  * [OpenKinect/libfreenect2@7691a032ab86965f89577e2b334f156596c25251](https://github.com/OpenKinect/libfreenect2/tree/7691a032ab86965f89577e2b334f156596c25251)
+
+**Setup rosserial + vacuum gripper**
+
+Write below in `/etc/udev/rules.d/90-rosserial.rules`:
 
 ```
 # ATTR{product}=="rosserial"
 SUBSYSTEM=="tty", MODE="0666"
 ```
 
-* Setup SSH: Write below in `~/.ssh/config`:
+**Setup SSH**
+
+Write below in `~/.ssh/config`:
 
 ```
 Host baxter
