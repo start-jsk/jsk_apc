@@ -73,8 +73,8 @@ class ColorHistogramFeatures(object):
         hist_h = np.bincount(masked_h.compressed(), minlength=64)
         hist = hist_h
         hist = hist.astype(float)
-        hist_sum = sum(hist)
-        hist = hist / hist_sum
+        #hist_sum = sum(hist)
+        #hist = hist / hist_sum
         return np.sqrt(hist)
 
     def compute_texture(self):
