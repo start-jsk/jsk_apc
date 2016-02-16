@@ -4,6 +4,13 @@ jsk\_apc
 [![](https://travis-ci.org/start-jsk/jsk_apc.svg)](https://travis-ci.org/start-jsk/jsk_apc)
 [![Gitter](https://badges.gitter.im/start-jsk/jsk_apc.svg)](https://gitter.im/start-jsk/jsk_apc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+
+Usage
+-----
+
+See [jsk_2015_05_baxter_apc](jsk_2015_05_baxter_apc#jsk_2015_05_baxter_apc).
+
+
 Install
 -------
 
@@ -72,12 +79,6 @@ Host baxter
   HostName baxter.jsk.imi.i.u-tokyo.ac.jp
   User ruser  # password: rethink
 ```
-
-
-Usage
------
-
-See [jsk_2015_05_baxter_apc](jsk_2015_05_baxter_apc#jsk_2015_05_baxter_apc).
 
 
 If you have problem...
