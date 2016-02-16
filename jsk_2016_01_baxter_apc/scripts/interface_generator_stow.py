@@ -39,7 +39,10 @@
 
 # This is demo program of stow task json file generator
 # extra_item_(number) on CONST_ITEM_NAMES must be changed when exact item list is announced by Amazon
-
+'''
+Usage : python interface_generator_stow.py
+This generates apc_stow.json at ../json directory
+'''
 
 import copy
 import json
