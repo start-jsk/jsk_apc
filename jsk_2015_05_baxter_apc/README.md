@@ -48,7 +48,7 @@ Real world demonstration for APC2015 can be done on any computers with ROS indig
 
 ```bash
 
-roslaunch jsk_2015_05_baxter_apc baxter_sim.launch
+roslaunch jsk_2015_05_baxter_apc baxter_sim.launch kiva:=true
 roslaunch jsk_2015_05_baxter_apc setup.launch
 roslaunch jsk_2015_05_baxter_apc main.launch json:=$(rospack find jsk_apc2015_common)/json/f2.json
 
