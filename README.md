@@ -4,6 +4,13 @@ jsk\_apc
 [![](https://travis-ci.org/start-jsk/jsk_apc.svg)](https://travis-ci.org/start-jsk/jsk_apc)
 [![Gitter](https://badges.gitter.im/start-jsk/jsk_apc.svg)](https://gitter.im/start-jsk/jsk_apc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+
+Usage
+-----
+
+See [jsk_2015_05_baxter_apc](jsk_2015_05_baxter_apc#jsk_2015_05_baxter_apc).
+
+
 Install
 -------
 
@@ -34,52 +41,44 @@ $ source devel/setup.bash
 ```
 $ rossetmaster baxter.jsk.imi.i.u-tokyo.ac.jp
 $ rossetip
+
+$ # we recommend below setup (see http://jsk-docs.readthedocs.org/en/latest/jsk_common/doc/jsk_tools/cltools/setup_env_for_ros.html)
+$ echo """
+rossetip
+rosdefault
+""" >> ~/.bashrc
+$ rossetdefault baxter  # set ROS_MASTER_URI as http://baxter:11311
 ```
 
 
 ### Optional
 
-* Setup Kinect2: [Instructions at code-iai/iai\_kinect2](https://github.com/code-iai/iai_kinect2#install)
-* Setup rosserial + vacuum gripper: Write below in `/etc/udev/rules.d/90-rosserial.rules`:
+**Setup Kinect2**
+
+Please follow [Instructions at code-iai/iai\_kinect2](https://github.com/code-iai/iai_kinect2#install),
+however, maybe you have error with the master branch, so in that case use below versions:
+
+  * [code-iai/iai_kinect2@ed57f55ea4c8c34592fd91eb9e3809c5863d2a95](https://github.com/code-iai/iai_kinect2/tree/ed57f55ea4c8c34592fd91eb9e3809c5863d2a95)
+  * [OpenKinect/libfreenect2@7691a032ab86965f89577e2b334f156596c25251](https://github.com/OpenKinect/libfreenect2/tree/7691a032ab86965f89577e2b334f156596c25251)
+
+**Setup rosserial + vacuum gripper**
+
+Write below in `/etc/udev/rules.d/90-rosserial.rules`:
 
 ```
 # ATTR{product}=="rosserial"
 SUBSYSTEM=="tty", MODE="0666"
 ```
 
-* Setup SSH: Write below in `~/.ssh/config`:
+**Setup SSH**
+
+Write below in `~/.ssh/config`:
 
 ```
 Host baxter
   HostName baxter.jsk.imi.i.u-tokyo.ac.jp
   User ruser  # password: rethink
 ```
-
-
-Usage
------
-
-### Run Demo with Real Robot
-
-```sh
-$ roslaunch jsk_2015_05_baxter_apc baxter.launch
-$ roslaunch jsk_2015_05_baxter_apc setup.launch
-$ roslaunch jsk_2015_05_baxter_apc main.launch json:=`rospack find jsk_2015_05_baxter_apc`/data/apc-a.json
-$ roslaunch jsk_2015_05_baxter_apc record.launch  # rosbag record
-```
-
-
-### Run Demo on Gazebo Simulator
-
-```sh
-$ roslaunch jsk_2015_05_baxter_apc baxter_sim.launch
-$ roslaunch jsk_2015_05_baxter_apc setup.launch
-$ roslaunch jsk_2015_05_baxter_apc main.launch json:=`rospack find jsk_apc2015_common`/json/f2.json
-```
-
-<a href="https://www.youtube.com/watch?v=uV6XctamwEA">
-  <img src="images/apc_gazebo_demo_on_youtube.png" alt="Amazon Picking Challenge 2015 Gazebo Simulation" width="50%" />
-</a>
 
 
 If you have problem...
@@ -89,12 +88,4 @@ If you have problem...
 
 ```
 $ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
-```
-
-
-Testing
--------
-
-```sh
-$ catkin run_tests jsk_2015_05_baxter_apc --no-deps
 ```
