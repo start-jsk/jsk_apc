@@ -56,10 +56,8 @@ $ rossetdefault baxter  # set ROS_MASTER_URI as http://baxter:11311
 **Setup Kinect2**
 
 Please follow [Instructions at code-iai/iai\_kinect2](https://github.com/code-iai/iai_kinect2#install),
-however, maybe you have error with the master branch, so in that case use below versions:
-
-  * [code-iai/iai_kinect2@ed57f55ea4c8c34592fd91eb9e3809c5863d2a95](https://github.com/code-iai/iai_kinect2/tree/ed57f55ea4c8c34592fd91eb9e3809c5863d2a95)
-  * [OpenKinect/libfreenect2@7691a032ab86965f89577e2b334f156596c25251](https://github.com/OpenKinect/libfreenect2/tree/7691a032ab86965f89577e2b334f156596c25251)
+however, maybe you have error with the master branch. In that case, please use
+[this rosinstall](https://github.com/start-jsk/jsk_apc/blob/master/kinect2.rosinstall).
 
 **Setup rosserial + vacuum gripper**
 
