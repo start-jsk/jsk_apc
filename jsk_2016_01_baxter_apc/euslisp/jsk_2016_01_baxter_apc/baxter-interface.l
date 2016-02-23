@@ -1,15 +1,15 @@
 ;; -*- mode: lisp;-*-
 
 (require "package://baxtereus/baxter-interface.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 
-(ros::load-ros-manifest "jsk_2016_01_baxter_apc")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
-(unless (find-package "JSK_2016_01_BAXTER_APC")
-  (make-package "JSK_2016_01_BAXTER_APC"))
+(unless (find-package "JSK_2015_05_BAXTER_APC")
+  (make-package "JSK_2015_05_BAXTER_APC"))
 
-(defclass jsk_2016_01_baxter_apc::baxter-interface
+(defclass jsk_2015_05_baxter_apc::baxter-interface
   :super baxter-interface
   :slots
   (
@@ -19,7 +19,7 @@
    )
   )
 
-(defmethod jsk_2016_01_baxter_apc::baxter-interface
+(defmethod jsk_2015_05_baxter_apc::baxter-interface
   (:init
     (&rest args)
     (send-super* :init args)
@@ -166,7 +166,7 @@
       (setq msg
             (one-shot-subscribe
               (format nil "~a_hand/object_verification/output" (arm-to-str arm))
-              jsk_2016_01_baxter_apc::ObjectRecognition
+              jsk_2015_05_baxter_apc::ObjectRecognition
               :after-stamp stamp))
       (if msg
         (progn
@@ -398,7 +398,7 @@
       msg
       (one-shot-subscribe
         (format nil "work_order/~a_hand" (send self :arm-symbol2str arm))
-        jsk_2016_01_baxter_apc::WorkOrderArray))
+        jsk_2015_05_baxter_apc::WorkOrderArray))
     (send msg :array))
   (:get-next-work-order
     (arm current-order)
@@ -413,7 +413,7 @@
   (:get-bin-contents
     (bin)
     (let (msg)
-      (setq msg (one-shot-subscribe "bin_contents" jsk_2016_01_baxter_apc::BinContentsArray))
+      (setq msg (one-shot-subscribe "bin_contents" jsk_2015_05_baxter_apc::BinContentsArray))
       (dolist (c (send msg :array))
         (when (string= (symbol2str bin) (send c :bin))
           (return-from :get-bin-contents (send c :objects))))))
@@ -439,11 +439,11 @@
       ))
   )
 
-(defun jsk_2016_01_baxter_apc::baxter-init (&key (ctype :default-controller))
+(defun jsk_2015_05_baxter_apc::baxter-init (&key (ctype :default-controller))
   (unless (boundp '*ri*)
-    (setq *ri* (instance jsk_2016_01_baxter_apc::baxter-interface :init :type ctype)))
+    (setq *ri* (instance jsk_2015_05_baxter_apc::baxter-interface :init :type ctype)))
   (unless (boundp '*baxter*)
-    (setq *baxter* (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
+    (setq *baxter* (instance jsk_2015_05_baxter_apc::baxter-robot :init)))
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
   (send *ri* :calib-grasp :arms)
   )
