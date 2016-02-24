@@ -48,20 +48,20 @@
                 1.91162 11.0303 139.834 148.096 33.4644 -83.2324 -121.75))
     (sethash :avoid-shelf-pose-f (send self :get-val 'hard-coded-pose-table)
              #f(0
-                79.8926 -14.2822 -125.793 148.271 -46.3623 -4.24072 100.063
-                -79.8926 -14.2822 125.793 148.271 46.3623 -4.24072 -100.063))
+                57.876 -12.6123 -116.741 126.541 -31.8164 -7.80029 95.3833
+                -57.876 -12.6123 116.741 126.541 31.8164 -7.80029 -95.3833))
     (sethash :avoid-shelf-pose-g (send self :get-val 'hard-coded-pose-table)
              #f(0
                 93.5156 10.5908 -83.3203 136.318 11.1621 44.6045 95.4272
                 -93.5156 10.5908 83.3203 136.318 -11.1621 44.6045 -95.4272))
     (sethash :avoid-shelf-pose-h (send self :get-val 'hard-coded-pose-table)
              #f(0
-                13.7988 32.8711 -78.772 147.48 2.87842 -45.0 122.937
-                -13.7988 32.8711 78.772 147.48 -2.87842 -45.0 -122.937))
+                18.7866 39.1772 -100.854 141.899 -19.1162 -46.3403 133.967
+               -18.7866 39.1772 100.854 141.899 19.1162 -46.3403 -133.967))
     (sethash :avoid-shelf-pose-i (send self :get-val 'hard-coded-pose-table)
              #f(0
-                93.5156 10.5908 -83.3203 136.318 11.1621 44.6045 95.4272
-                -93.5156 10.5908 83.3203 136.318 -11.1621 44.6045 -95.4272))
+                63.1714 13.4473 -93.4277 121.575 19.292 25.2246 87.1216
+                -63.1714 13.4473 93.4277 121.575 -19.292 25.2246 -87.1216))
     (sethash :avoid-shelf-pose-j (send self :get-val 'hard-coded-pose-table)
              #f(0
                 89.4946 6.02051 -56.0083 139.351 34.1895 22.6538 98.2397
@@ -75,6 +75,56 @@
              #f(0
                 89.4946 6.02051 -56.0083 139.351 34.1895 22.6538 98.2397
                 -89.4946 6.02051 56.0083 139.351 -34.1895 22.6538 -98.2397))
+
+    ;; view-hand-pose
+    (sethash :view-hand-pose-a (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                1.05469 -3.33984 -174.814 42.9565 73.125 97.6245 -38.6719
+                5.18555 -11.7554 163.608 80.2441 -93.0542 78.3545 60.1831))
+    (sethash :view-hand-pose-b (send self :get-val 'hard-coded-pose-table)
+            #f(0
+                -5.18555 -11.7554 -163.608 80.2441 93.0542 78.3545 -60.1831
+                5.18555 -11.7554 163.608 80.2441 -93.0542 78.3545 60.1831))
+    (sethash :view-hand-pose-c (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                -5.18555 -11.7554 -163.608 80.2441 93.0542 78.3545 -60.1831
+                -1.05469 -3.33984 174.814 42.9565 -73.125 97.6245 38.6719))
+    (sethash :view-hand-pose-d (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                44.8462 -2.8125 -113.313 85.7593 10.1733 51.0205 -4.61426
+                -17.5122 23.4668 143.701 125.728 84.0674 -62.7319 -109.358))
+    (sethash :view-hand-pose-e (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                17.5122 23.4668 -143.701 125.728 -84.0674 -62.7319 109.358
+                -17.5122 23.4668 143.701 125.728 84.0674 -62.7319 -109.358))
+    (sethash :view-hand-pose-f (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                17.5122 23.4668 -143.701 125.728 -84.0674 -62.7319 109.358
+                -44.8462 -2.8125 113.313 85.7593 -10.1733 51.0205 4.61426))
+    (sethash :view-hand-pose-g (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                41.3525 15.4248 -101.536 80.8154 20.083 65.2368 5.69092
+                -30.4761 9.95361 93.999 100.503 -10.2832 33.3325 2.10937))
+    (sethash :view-hand-pose-h (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                30.4761 9.95361 -93.999 100.503 10.2832 33.3325 -2.10937
+                -30.4761 9.95361 93.999 100.503 -10.2832 33.3325 2.10937))
+    (sethash :view-hand-pose-i (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                30.4761 9.95361 -93.999 100.503 10.2832 33.3325 -2.10937
+                -41.3525 15.4248 101.536 80.8154 -20.083 65.2368 -5.69092))
+    (sethash :view-hand-pose-j (send self :get-val 'hard-coded-pose-table)
+             #f(0
+                65.2368 19.5557 -78.2886 121.069 44.4946 18.3911 74.0698
+               -46.3843 29.0918 71.4551 121.794 -48.4058 13.8647 -79.0356))
+    (sethash :view-hand-pose-k (send self :get-val 'hard-coded-pose-table)
+            #f(0
+               46.3843 29.0918 -71.4551 121.794 48.4058 13.8647 79.0356
+               -46.3843 29.0918 71.4551 121.794 -48.4058 13.8647 -79.0356))
+    (sethash :view-hand-pose-l (send self :get-val 'hard-coded-pose-table)
+            #f(0
+               46.3843 29.0918 -71.4551 121.794 48.4058 13.8647 79.0356
+              -65.2368 19.5557 78.2886 121.069 -44.4946 18.3911 -74.0698))
     )
   (:fold-pose-upper (&optional (arm :arms)) (send self :hard-coded-pose :fold-pose-upper arm))
   (:fold-pose-middle (&optional (arm :arms)) (send self :hard-coded-pose :fold-pose-middle arm))
@@ -104,4 +154,19 @@
       (:j (send self :hard-coded-pose :avoid-shelf-pose-j arm))
       (:k (send self :hard-coded-pose :avoid-shelf-pose-k arm))
       (:l (send self :hard-coded-pose :avoid-shelf-pose-l arm))))
+  (:view-hand-pose
+    (arm bin)
+    (case bin
+      (:a (send self :hard-coded-pose :view-hand-pose-a arm))
+      (:b (send self :hard-coded-pose :view-hand-pose-b arm))
+      (:c (send self :hard-coded-pose :view-hand-pose-c arm))
+      (:d (send self :hard-coded-pose :view-hand-pose-d arm))
+      (:e (send self :hard-coded-pose :view-hand-pose-e arm))
+      (:f (send self :hard-coded-pose :view-hand-pose-f arm))
+      (:g (send self :hard-coded-pose :view-hand-pose-g arm))
+      (:h (send self :hard-coded-pose :view-hand-pose-h arm))
+      (:i (send self :hard-coded-pose :view-hand-pose-i arm))
+      (:j (send self :hard-coded-pose :view-hand-pose-j arm))
+      (:k (send self :hard-coded-pose :view-hand-pose-k arm))
+      (:l (send self :hard-coded-pose :view-hand-pose-l arm))))
   )

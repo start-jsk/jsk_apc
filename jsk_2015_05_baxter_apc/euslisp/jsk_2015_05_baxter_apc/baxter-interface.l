@@ -319,7 +319,7 @@
             ;; try to pick and the goal becomes far to x gradually
             (send self :try-to-pick-object arm bin :object-index object-index :offset (float-vector (+ 0 (* i 20)) 0 (m->mm (/ (send bin-box :dimensions :z) 2))))
             (ros::ros-warn "No objects found, try to pick without vision result")
-            (send self :try-to-pick-in-bin arm bin))
+            (return-from :pick-object nil))
           (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
           (send self :stop-grasp arm)
           )
