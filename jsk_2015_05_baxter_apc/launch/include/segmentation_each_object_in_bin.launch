@@ -14,7 +14,7 @@
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~indices" to="$(arg INPUT_INDICES)" />
     <rosparam>
-      max_queue_size: 200
+      max_queue_size: 500
       keep_organized: true
     </rosparam>
   </node>
