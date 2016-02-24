@@ -9,5 +9,12 @@
     <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
   </include>
 
+  <group ns="kinect2_torso">
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/recognition_in_hand.launch">
+      <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color" />
+      <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
+    </include>
+  </group>
+
 
 </launch>
