@@ -4,6 +4,7 @@ import json
 
 import rospy
 from jsk_2015_05_baxter_apc.msg import BinContents, BinContentsArray
+from jsk_recognition_msgs.msg import Int32Stamped
 
 
 def get_bin_contents(json_file):
@@ -20,15 +21,25 @@ def main():
         rospy.logerr('must set json file path to ~json')
         return
     bin_contents = get_bin_contents(json_file=json_file)
+    bin_contents = list(bin_contents)
 
+    pubs_n_obj = []
     msg = BinContentsArray()
     for bin_, objects in bin_contents:
         msg.array.append(BinContents(bin=bin_, objects=objects))
+        pub = rospy.Publisher('~bin_{}_n_object'.format(bin_),
+                              Int32Stamped, queue_size=1)
+        pubs_n_obj.append(pub)
 
-    pub = rospy.Publisher('/bin_contents', BinContentsArray, queue_size=1)
+    pub_contents = rospy.Publisher('/bin_contents', BinContentsArray, queue_size=1)
     rate = rospy.Rate(rospy.get_param('rate', 1))
     while not rospy.is_shutdown():
-        pub.publish(msg)
+        pub_contents.publish(msg)
+        for pub, (_, objects) in zip(pubs_n_obj, bin_contents):
+            msg_n_obj = Int32Stamped()
+            msg_n_obj.header.stamp = rospy.Time.now()
+            msg_n_obj.data = len(objects)
+            pub.publish(msg_n_obj)
         rate.sleep()
 
 
