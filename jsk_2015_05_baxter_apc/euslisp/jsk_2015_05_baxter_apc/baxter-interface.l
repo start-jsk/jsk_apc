@@ -364,6 +364,7 @@
         (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
         (send self :stop-grasp arm)
         )
+      (unless (send self :graspingp arm) (send self :stop-grasp arm))
       (send self :angle-vector (send self :ik->bin-entrance arm bin) 3000)
       (send self :wait-interpolation)
       ;; move arm in-bin -> bin-entrance
