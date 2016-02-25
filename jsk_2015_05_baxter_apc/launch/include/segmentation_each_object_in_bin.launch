@@ -19,6 +19,14 @@
     </rosparam>
   </node>
 
+  <node name="bin_$(arg BIN_NAME)_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_$(arg BIN_NAME)_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.2
+      node: bin_$(arg BIN_NAME)_euclid_clustering
+    </rosparam>
+  </node>
   <node name="bin_$(arg BIN_NAME)_euclid_clustering"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/EuclideanClustering $(arg MANAGER)">
