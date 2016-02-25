@@ -9,6 +9,7 @@ from jsk_recognition_msgs.msg import Int32Stamped
 
 
 expected_n_cluster = None
+reconfig_n_times = 0
 lock = threading.Lock()
 
 
@@ -19,8 +20,10 @@ def cb_kcluster(msg):
 
 
 def cb(msg):
-    global expected_n_cluster
+    global expected_n_cluster, reconfig_n_limit, reconfig_n_times
     with lock:
+        if reconfig_n_times > reconfig_n_limit:
+            return
         if expected_n_cluster is None:
             return
         cfg = client.get_configuration(timeout=None)
@@ -34,17 +37,22 @@ def cb(msg):
             cfg['tolerance'] += delta
         else:
             cfg['tolerance'] -= delta
+        if cfg['tolerance'] < 0.001:
+            print('Invalid tolerance, resetting')
+            cfg['tolerance'] = 0.02
         print('''\
 Expected n_cluster: {0}
 Actual   n_cluster: {1}
 tolerance: {2} -> {3}
 '''.format(expected_n_cluster, msg.data, tol_orig, cfg['tolerance']))
         client.update_configuration(cfg)
+        reconfig_n_times += 1
 
 
 if __name__ == '__main__':
     rospy.init_node('k_dynamic_euclid_clutering')
     reconfig_eps = rospy.get_param('~reconfig_eps', 0.2)
+    reconfig_n_limit = rospy.get_param('~reconfig_n_limit', 10)
     node_name = rospy.get_param('~node')
     client = dynamic_reconfigure.client.Client(node_name)
     sub_kcluster = rospy.Subscriber('~k_cluster', Int32Stamped, cb_kcluster)
