@@ -98,6 +98,23 @@
     (&optional (arm :arms))
     (send *baxter* :fold-pose-back arm)
     (send *ri* :send-av))
+  (:detect-target-object-in-bin
+    (target-object bin)
+    (let (obj-sizes box-sizes obj-idx box-idx box-size box-sizes-back
+                    (candidates (send self :get-bin-contents bin))
+                    (boxes (gethash bin _objects-in-bin-boxes)))
+      (dolist (obj candidates) (pushback (get-object-size obj) obj-sizes))
+      (dolist (box boxes) (pushback (send (send self :bbox->cube box) :volume) box-sizes))
+      (setq box-sizes-bak (copy-seq box-sizes))
+      (while (and obj-sizes box-sizes)
+             (setq obj-idx (argmax obj-sizes))
+             (setq obj-sizes (remove (elt obj-sizes obj-idx) obj-sizes))
+             (setq box-idx (argmax box-sizes))
+             (setq box-size (elt box-sizes box-idx))
+             (setq box-sizes (remove box-size box-sizes))
+             (when (string= (elt candidates obj-idx) target-object) (return))
+             )
+      (position box-size box-sizes-bak)))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
     (let (msg bin bin-box-pos-z)
@@ -119,7 +136,7 @@
         msg
         (one-shot-subscribe "bin_gtol_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :timeout 5000
+                            :timeout 10000
                             :after-stamp stamp))
       (if msg
         (dotimes (i 6)

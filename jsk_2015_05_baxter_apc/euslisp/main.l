@@ -86,7 +86,11 @@
               (send *ri* :recognize-objects-in-bin target-bin :stamp (ros::time-now))
               (send *ri* :move-arm-body->bin arm target-bin)
               (send *ri* :wait-interpolation)
-              (send *ri* :pick-object arm target-bin :n-trial 2 :n-trial-same-pos 2)
+              (ros::ros-info "detected_object_index: ~A" (send *ri* :detect-target-object-in-bin target-obj target-bin))
+              (send *ri* :pick-object arm target-bin
+                    :n-trial 2
+                    :n-trial-same-pos 1
+                    :object-index (send *ri* :detect-target-object-in-bin target-obj target-bin))
               (incf target-n-tried)
               (if (send *ri* :graspingp arm)
                 (if (= (length (send *ri* :get-bin-contents target-bin)) 1)
