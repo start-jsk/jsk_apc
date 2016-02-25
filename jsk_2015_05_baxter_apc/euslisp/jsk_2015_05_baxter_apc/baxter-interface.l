@@ -16,6 +16,7 @@
    _tfl
    _bin-boxes
    _objects-in-bin-boxes
+   _objects-in-bin-coms
    _bin-coords-list
    )
   )
@@ -35,6 +36,7 @@
     (setq _tfl (instance ros::transform-listener :init))
     (setq _bin-boxes (make-hash-table))
     (setq _objects-in-bin-boxes (make-hash-table))
+    (setq _objects-in-bin-coms (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
@@ -167,15 +169,28 @@
       )
     )
   (:recognize-objects-in-bin
-    (bin &key (stamp (ros::time-now)))
-    (setq
-      msg
-      (one-shot-subscribe
-        (format nil "bin_~a_cpi_decomposer/boxes" (symbol2str bin))
-        ; (format nil "bin_~a_solidity_rag_merge_cpi_decomposer/boxes" (symbol2str bin))
-        jsk_recognition_msgs::BoundingBoxArray
-        :after-stamp stamp))
-    (sethash bin _objects-in-bin-boxes (send msg :boxes)))
+    (bin &key (stamp (ros::time-now)) (timeout 10))
+    (let ((box-topic (format nil "bin_~a_cpi_decomposer/boxes" (symbol2str bin)))
+          box-msg
+          (com-topic (format nil "bin_~a_cpi_decomposer/centroid_pose_array" (symbol2str bin)))
+          com-msg)
+      (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq box-msg msg)))))
+      (ros::subscribe com-topic geometry_msgs::PoseArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq com-msg msg)))))
+      (while (not (and box-msg com-msg))
+             (unix::usleep (* 50 1000))
+             (ros::spin-once))
+      (ros::unsubscribe box-topic)
+      (ros::unsubscribe com-topic)
+      (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
+      (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)))
     (let* (msg)
@@ -244,7 +259,7 @@
       ))
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
-    (let (avs obj-boxes obj-box)
+    (let (avs obj-boxes obj-box obj-coms obj-com)
       ;; validate
       (unless
         (setq obj-boxes (gethash bin _objects-in-bin-boxes))
@@ -254,8 +269,14 @@
         (setq obj-box (elt obj-boxes object-index))
         (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
         (return-from :try-to-pick-object nil))
+      (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
+      (setq obj-com (elt (send obj-coms-msg :poses) object-index))
       ;; ik to obj a bit distant
-      (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
+      ;; with Center of Mass
+      (setq obj-coords (send self :tf-pose->coords
+                             (send obj-coms-msg :header :frame_id) obj-com))
+      ;; with Center of Bounding Box
+      ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
       (if (find bin '(:a :b :c :d :e :f))
         (setq world-x :z world-y :x world-z :y)
         (setq world-x :z world-y :y world-z :x)
