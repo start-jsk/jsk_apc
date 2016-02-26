@@ -130,8 +130,11 @@
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-sequence
                 (list
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 0))
+                  (send *baxter* :avoid-shelf-pose arm target-bin)
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-200 0 0))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-200 0 50))
                   (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 50))
                   (send *ri* :ik->bin-entrance arm target-bin :offset #f(150 0 50))
                   )
                 :fast nil 0 :scale 5.0)
@@ -139,13 +142,19 @@
           (send *ri* :stop-grasp) ;; release object
           (send *ri* :spin-off-by-wrist arm)
           (send *ri* :wait-interpolation)
-          (send *ri* :ik->bin-entrance arm target-bin) ;; to bin entrance
-          (send *ri* :send-av 5000)
+          (send *ri* :angle-vector-sequence
+                (list
+                  (send *ri* :ik->bin-entrance arm target-bin)
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 0))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-200 0 0))
+                  (send *baxter* :avoid-shelf-pose arm target-bin)
+                  )
+                :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
-          (send *baxter* :avoid-shelf-pose arm target-bin)
-          (send *ri* :send-av)
+          (send *ri* :angle-vector (send *baxter* :avoid-shelf-pose arm target-bin))
           (send *ri* :wait-interpolation)
           (send *ri* :fold-pose-back arm)
+          (send *ri* :wait-interpolation)
           ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
           (if nil ;; TODO: currently always abort because return motion mess the bin contents
                   ;; (> (length (send *ri* :get-bin-contents target-bin)) target-n-tried)
