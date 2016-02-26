@@ -61,4 +61,6 @@ if __name__ == '__main__':
     sub_kcluster = rospy.Subscriber('~k_cluster', Int32Stamped, cb_kcluster)
     sub_ncluster = rospy.Subscriber(
         '{node}/cluster_num'.format(node=node_name), Int32Stamped, cb)
+    cfg = {'tolerance': 0.02}
+    client.update_configuration(cfg)
     rospy.spin()
