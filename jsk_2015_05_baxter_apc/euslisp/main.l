@@ -126,7 +126,7 @@
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:return_object
           (ros::ros-info "[main] ~a, ~a" arm state)
-          (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose))
+          (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-sequence
                 (list
