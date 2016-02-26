@@ -97,6 +97,7 @@
                   (setq state :place_object)
                   (setq state :verify_object))
                 (progn
+                  (send *ri* :stop-grasp arm)
                   (send *baxter* :avoid-shelf-pose arm target-bin)
                   (send *ri* :send-av)
                   (send *ri* :wait-interpolation)
