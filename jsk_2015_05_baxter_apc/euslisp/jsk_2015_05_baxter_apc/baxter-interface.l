@@ -386,7 +386,12 @@
           )
         )
       (unless (send self :graspingp arm) (send self :stop-grasp arm))
-      (send self :angle-vector (send self :ik->bin-entrance arm bin) 3000)
+      (send self :angle-vector-sequence
+            (list
+              (send *baxter* arm :move-end-pos #f(0 0 50) :world)
+              (send self :ik->bin-entrance arm bin)
+              )
+             :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; move arm in-bin -> bin-entrance
       (send self :angle-vector-sequence
