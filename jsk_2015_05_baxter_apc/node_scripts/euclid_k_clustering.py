@@ -35,6 +35,7 @@ def cb(msg):
         if msg.data == expected_n_cluster:
             print('Expected/Actual n_cluster: {0}, Tolerance: {1}'
                 .format(msg.data, tol_orig))
+            reconfig_n_times = reconfig_n_limit + 1
             return
         elif msg.data > expected_n_cluster:
             cfg['tolerance'] += delta
