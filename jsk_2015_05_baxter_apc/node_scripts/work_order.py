@@ -37,6 +37,7 @@ def get_work_order_msg(json_file):
         'cheezit_big_original',
         'rolodex_jumbo_pencil_cup',
         'champion_copper_plus_spark_plug',
+        'oreo_mega_stuf',
     ]
     for bin_, target_object in work_order:
         if target_object in abondon_objects:
