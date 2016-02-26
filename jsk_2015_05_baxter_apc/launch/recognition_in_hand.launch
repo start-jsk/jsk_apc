@@ -2,11 +2,7 @@
 
   <arg name="INPUT_CLOUD" />
   <arg name="INPUT_IMAGE" />
-
-
-  <arg name="MANAGER" value="recognition_in_hand_manager" />
-  <node name="$(arg MANAGER)"
-        pkg="nodelet" type="nodelet" args="manager" />
+  <arg name="MANAGER" />
 
 
   <node name="in_hand_clipper"

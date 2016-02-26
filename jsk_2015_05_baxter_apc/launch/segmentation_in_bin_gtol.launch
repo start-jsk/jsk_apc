@@ -2,10 +2,7 @@
 
   <arg name="INPUT_DEPTH" />
   <arg name="INPUT_CLOUD" />
-
-  <arg name="MANAGER" value="segmentation_in_bin_gtol_manager" />
-  <node name="$(arg MANAGER)"
-        pkg="nodelet" type="nodelet" args="manager" />
+  <arg name="MANAGER" />
 
 
   <!-- bin clipper -->
