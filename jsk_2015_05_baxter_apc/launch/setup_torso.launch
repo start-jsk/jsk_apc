@@ -1,8 +1,7 @@
 <launch>
 
 
-  <!-- <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_torso.launch" /> -->
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_head.launch" />
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_torso.launch" />
 
 
   <arg name="MANAGER" value="doura_manager" />
