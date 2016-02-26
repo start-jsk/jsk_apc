@@ -131,11 +131,10 @@
           (send *ri* :angle-vector-sequence
                 (list
                   (send *baxter* :avoid-shelf-pose arm target-bin)
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-200 0 0))
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-200 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-300 0 50))
                   (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 50))
                   (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 50))
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(150 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(100 0 50))
                   )
                 :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
@@ -144,10 +143,9 @@
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-sequence
                 (list
-                  (send *ri* :ik->bin-entrance arm target-bin)
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 0))
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-200 0 0))
-                  (send *baxter* :avoid-shelf-pose arm target-bin)
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-300 0 50))
                   )
                 :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
