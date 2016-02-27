@@ -97,6 +97,7 @@
                   (setq state :place_object)
                   (setq state :verify_object))
                 (progn
+                  (ros::ros-info "[main] mode: pick_object, graspingp: ~A" (send *ri* :graspingp arm))
                   (send *ri* :stop-grasp arm)
                   (send *baxter* :avoid-shelf-pose arm target-bin)
                   (send *ri* :send-av)
@@ -107,7 +108,7 @@
                   (send *ri* :fold-pose-back arm)
                   (send *ri* :wait-interpolation)
                   ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
-                  (if (> (length (send *ri* :get-bin-contents target-bin)) target-n-tried)
+                  (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
                     (setq state :pick_object)
                     (setq state :set_target)
                     )
@@ -154,8 +155,7 @@
           (send *ri* :fold-pose-back arm)
           (send *ri* :wait-interpolation)
           ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
-          (if nil ;; TODO: currently always abort because return motion mess the bin contents
-                  ;; (> (length (send *ri* :get-bin-contents target-bin)) target-n-tried)
+          (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
             (setq state :pick_object)
             (setq state :set_target) (ros::ros-warn "[main] Abort ~a and go to next target" target-bin))
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))

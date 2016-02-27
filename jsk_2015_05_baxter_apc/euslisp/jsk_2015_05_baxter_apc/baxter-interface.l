@@ -123,7 +123,7 @@
         msg
         (one-shot-subscribe "bin_atof_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :timeout 5000
+                            :timeout 10000
                             :after-stamp stamp))
       (if msg
         (dotimes (i 6)
@@ -385,7 +385,7 @@
           (send self :stop-grasp arm)
           )
         )
-      (unless (send self :graspingp arm) (send self :stop-grasp arm))
+      (unless graspingp (send self :stop-grasp arm))
       (send self :angle-vector-sequence
             (list
               (send *baxter* arm :move-end-pos #f(0 0 50) :world)
@@ -407,7 +407,7 @@
       (send *baxter* :avoid-shelf-pose arm bin)
       (send self :send-av)
       (send self :wait-interpolation)
-      ))
+      graspingp))
   (:send-av
     (&optional (tm 3000))
     (send self :angle-vector (send *baxter* :angle-vector) tm))
