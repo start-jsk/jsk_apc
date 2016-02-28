@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "mead_index_cards",
+      "expo_dry_erase_board_eraser"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "mead_index_cards"
+    }
+  ]
+}

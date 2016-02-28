@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "safety_works_safety_glasses",
+      "laugh_out_loud_joke_book"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "laugh_out_loud_joke_book"
+    }
+  ]
+}
