@@ -209,13 +209,14 @@
       (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
       (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-object-in-hand
-    (arm &key (stamp (ros::time-now)))
+    (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
       (setq msg
             (one-shot-subscribe
               (format nil "~a_hand/object_verification/output" (arm-to-str arm))
               jsk_2015_05_baxter_apc::ObjectRecognition
-              :after-stamp stamp))
+              :after-stamp stamp
+              :timeout timeout))
       (if msg
         (progn
           (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched))
@@ -225,10 +226,10 @@
   (:verify-object
     (arm object-name &key (stamp (ros::time-now)))
     (let (matched)
-      (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp))
+      (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp :timeout 10000))
         (progn (ros::ros-info "~a == ~a" object-name matched)
                (string= object-name matched))
-        nil)
+        :timeout)
       ))
   (:try-to-pick-in-bin
     (arm bin)
