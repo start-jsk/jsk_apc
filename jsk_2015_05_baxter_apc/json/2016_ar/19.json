@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "feline_greenies_dental_treats"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "kong_air_dog_squeakair_tennis_ball", 
+      "feline_greenies_dental_treats"
+    ]
+  }
+}
