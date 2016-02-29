@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import os.path as osp
 import numpy as np
 
 import json
@@ -46,4 +47,8 @@ json_data = {
     ],
 }
 
-json.dump(json_data, open('{0}.json'.format(json_id), 'wb'), indent=2)
+json_file = '{0}.json'.format(json_id)
+if osp.exists(json_file):
+    print('json file already exists: {0}'.format(json_file))
+else:
+    json.dump(json_data, open(json_file, 'wb'), indent=2)
