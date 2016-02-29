@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "kong_duck_dog_toy"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "kong_duck_dog_toy", 
+      "rolodex_jumbo_pencil_cup"
+    ]
+  }
+}

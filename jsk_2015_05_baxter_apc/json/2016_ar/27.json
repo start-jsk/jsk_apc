@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "stanley_66_052"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "stanley_66_052", 
+      "highland_6539_self_stick_notes"
+    ]
+  }
+}
