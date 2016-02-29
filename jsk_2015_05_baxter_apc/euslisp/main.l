@@ -99,14 +99,36 @@
             ))
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
-          (send *baxter* :view-hand-pose arm target-bin)
-          (setq avs-picked->view-pose (send *ri* :send-av 5000))
-          (send *ri* :wait-interpolation)
-          (setq verify-ret (send *ri* :verify-object arm target-obj))
-          (ros::ros-info "[main] graspingp: ~a" graspingp)
-          (if (and graspingp (eq verify-ret :timeout))
+          (if graspingp
             (progn
-              (send *ri* :stop-grasp arm)
+              (send *baxter* :view-hand-pose arm target-bin)
+              (setq avs-picked->view-pose (send *ri* :send-av 5000))
+              (send *ri* :wait-interpolation)
+              (setq verify-ret (send *ri* :verify-object arm target-obj))
+              (ros::ros-info "[main] graspingp: ~a" graspingp)
+              (if (eq verify-ret :timeout)
+                (progn
+                  (send *ri* :stop-grasp arm)
+                  (send *ri* :angle-vector-sequence
+                        (list
+                          (send *baxter* :fold-to-keep-object arm)
+                          (send *baxter* :fold-pose-back arm)
+                          )
+                        :fast nil 0 :scale 5.0)
+                  ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
+                  (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
+                    (setq state :pick_object)
+                    (setq state :set_target)
+                    )
+                  )
+                (if verify-ret
+                  (setq state :place_object)
+                  (setq state :return_object)
+                  )
+                )
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+              )
+            (progn
               (send *ri* :angle-vector-sequence
                     (list
                       (send *baxter* :fold-to-keep-object arm)
@@ -119,12 +141,8 @@
                 (setq state :set_target)
                 )
               )
-            (if verify-ret
-              (setq state :place_object)
-              (setq state :return_object)
-              )
             )
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+          )
         (:return_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
