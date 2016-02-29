@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import random
+import numpy as np
 
 import json
 
@@ -29,9 +29,9 @@ target_obj = None
 while (target_obj is None) or (target_obj in abandon_objects):
     candidates = []
     for i in xrange(N):
-        i_obj = random.randint(0, len(objects) - 1)
+        i_obj = np.random.randint(0, len(objects))
         candidates.append(objects[i_obj])
-    i_target = random.randint(0, len(candidates) - 1)
+    i_target = np.random.randint(0, len(candidates))
     target_obj = candidates[i_target]
 
 json_data = {
