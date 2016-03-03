@@ -1,0 +1,128 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "kong_air_dog_squeakair_tennis_ball",
+            "safety_works_safety_glasses",
+            "elmers_washable_no_run_school_glue",
+            "munchkin_white_hot_duck_bath_toy",
+            "crayola_64_ct",
+            "expo_dry_erase_board_eraser",
+            "elmers_washable_no_run_school_glue",
+            "first_years_take_and_toss_straw_cup"
+
+        ],
+        "bin_B": [
+            "safety_works_safety_glasses",
+            "elmers_washable_no_run_school_glue",
+            "laugh_out_loud_joke_book",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_C": [
+            "cheezit_big_original",
+            "dr_browns_bottle_brush",
+            "oreo_mega_stuf",
+            "champion_copper_plus_spark_plug",
+            "mead_index_cards"
+        ],
+        "bin_D": [
+            "genuine_joe_plastic_stir_sticks",
+            "first_years_take_and_toss_straw_cup",
+            "mead_index_cards",
+            "champion_copper_plus_spark_plug",
+            "kong_duck_dog_toy",
+            "rolodex_jumbo_pencil_cup"
+        ],
+        "bin_E": [
+            "highland_6539_self_stick_notes",
+            "cheezit_big_original",
+            "kong_air_dog_squeakair_tennis_ball",
+            "sharpie_accent_tank_style_highlighters",
+            "highland_6539_self_stick_notes"
+        ],
+        "bin_F": [
+            "munchkin_white_hot_duck_bath_toy",
+            "oreo_mega_stuf"
+        ],
+        "bin_G": [
+            "kyjen_squeakin_eggs_plush_puppies",
+            "sharpie_accent_tank_style_highlighters",
+            "mead_index_cards",
+            "mead_index_cards"
+        ],
+        "bin_H": [
+            "oreo_mega_stuf",
+            "stanley_66_052",
+            "paper_mate_12_count_mirado_black_warrior"
+        ],
+        "bin_I": [
+            "mommys_helper_outlet_plugs",
+            "crayola_64_ct",
+            "laugh_out_loud_joke_book",
+            "crayola_64_ct",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_J": [
+            "crayola_64_ct",
+            "kyjen_squeakin_eggs_plush_puppies",
+            "safety_works_safety_glasses"
+        ],
+        "bin_K": [
+            "stanley_66_052",
+            "stanley_66_052"
+        ],
+        "bin_L": [
+            "genuine_joe_plastic_stir_sticks",
+            "expo_dry_erase_board_eraser"
+        ]
+    },
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "kong_air_dog_squeakair_tennis_ball"
+        },
+        {
+            "bin": "bin_B",
+            "item": "safety_works_safety_glasses"
+        },
+        {
+            "bin": "bin_C",
+            "item": "cheezit_big_original"
+        },
+        {
+            "bin": "bin_D",
+            "item": "genuine_joe_plastic_stir_sticks"
+        },
+        {
+            "bin": "bin_E",
+            "item": "highland_6539_self_stick_notes"
+        },
+        {
+            "bin": "bin_F",
+            "item": "munchkin_white_hot_duck_bath_toy"
+        },
+        {
+            "bin": "bin_G",
+            "item": "kyjen_squeakin_eggs_plush_puppies"
+        },
+        {
+            "bin": "bin_H",
+            "item": "oreo_mega_stuf"
+        },
+        {
+            "bin": "bin_I",
+            "item": "mommys_helper_outlet_plugs"
+        },
+        {
+            "bin": "bin_J",
+            "item": "crayola_64_ct"
+        },
+        {
+            "bin": "bin_K",
+            "item": "stanley_66_052"
+        },
+        {
+            "bin": "bin_L",
+            "item": "genuine_joe_plastic_stir_sticks"
+        }
+    ]
+}
