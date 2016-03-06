@@ -7,7 +7,7 @@ from jsk_recognition_msgs.msg import ClassificationResult
 import rospy
 import json
 
-class ConsiderJson():
+class JsonBoost():
 
     def __init__(self):
 
@@ -18,15 +18,6 @@ class ConsiderJson():
         with open(json_data, 'rb') as f:
             bins = json.load(f)['bin_contents']
         self.bin_contents = bins[bin_n]
-        ####
-        self.bin_contents = ['champion_copper_plus_spark_plug',
-                             'cheezit_big_original',
-                             'rolodex_jumbo_pencil_cup',
-                             'paper_mate_12_count_mirado_black_warrior',
-                             'mead_index_cards',
-                             'stanley_66_052']
-
-        ####
         self.target_names = jsk_apc2015_common.get_object_list()
         self.pub = rospy.Publisher('~output', ClassificationResult,queue_size=10)
         self.sub = rospy.Subscriber('~input', ClassificationResult,self._predict)
@@ -63,12 +54,12 @@ class ConsiderJson():
         res.label_names = msg_label_names
         res.label_proba = label_proba
         res.probabilities = msg_proba.reshape(-1)
-        res.classifier = '<Json Knows Everything>'
+        res.classifier = '<jsk_106_01_baxter_apc.JsonBoost>'
         res.target_names = self.target_names
         self.pub.publish(res)
 
 
 if __name__ == "__main__":
-    rospy.init_node('consider_json')
-    ConsiderJson()
+    rospy.init_node('JsonBoost')
+    JsonBoost()
     rospy.spin()
