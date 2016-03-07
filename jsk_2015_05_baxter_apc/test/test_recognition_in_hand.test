@@ -9,9 +9,15 @@
         args="$(find jsk_2015_05_baxter_apc)/test_data/2015-11-04-19-37-29_baxter-kiva-object-in-hand-cloud/vision.compressed.bag --clock --loop">
   </node>
 
+  <arg name="MANAGER" value="a_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
+
   <!-- test this launch file -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/recognition_in_hand.launch">
     <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points" />
+    <arg name="INPUT_IMAGE" value="/kinect2_head/hd/image_color" />
+    <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
 
   <!-- check localization by cloud -->

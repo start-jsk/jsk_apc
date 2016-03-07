@@ -142,6 +142,7 @@ endif()
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(include
+  ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
 )
 
@@ -205,12 +206,13 @@ install(TARGETS
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
-if(CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  # install test data by a script
-  add_custom_target(install_test_data COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_test_data.py)
-  if(TARGET tests)
-    add_dependencies(tests install_test_data)
-  endif()
-  add_rostest(test/test_recognition_in_hand.test DEPENDENCIES install_test_data)
-endif()
+# TODO(wkentaro): add test for recognition & motion
+# if(CATKIN_ENABLE_TESTING)
+#   find_package(rostest REQUIRED)
+#   # install test data by a script
+#   add_custom_target(install_test_data COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_test_data.py)
+#   if(TARGET tests)
+#     add_dependencies(tests install_test_data)
+#   endif()
+#   add_rostest(test/test_recognition_in_hand.test DEPENDENCIES install_test_data)
+# endif()
