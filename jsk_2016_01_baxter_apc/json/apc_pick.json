@@ -2,18 +2,15 @@
     "bin_contents": {
         "bin_A": [
             "kong_air_dog_squeakair_tennis_ball",
-            "safety_works_safety_glasses",
             "elmers_washable_no_run_school_glue",
             "munchkin_white_hot_duck_bath_toy",
             "crayola_64_ct",
+            "kyjen_squeakin_eggs_plush_puppies",
             "expo_dry_erase_board_eraser",
-            "elmers_washable_no_run_school_glue",
             "first_years_take_and_toss_straw_cup"
-
         ],
         "bin_B": [
             "safety_works_safety_glasses",
-            "elmers_washable_no_run_school_glue",
             "laugh_out_loud_joke_book",
             "kyjen_squeakin_eggs_plush_puppies"
         ],
@@ -28,7 +25,6 @@
             "genuine_joe_plastic_stir_sticks",
             "first_years_take_and_toss_straw_cup",
             "mead_index_cards",
-            "champion_copper_plus_spark_plug",
             "kong_duck_dog_toy",
             "rolodex_jumbo_pencil_cup"
         ],
@@ -36,18 +32,15 @@
             "highland_6539_self_stick_notes",
             "cheezit_big_original",
             "kong_air_dog_squeakair_tennis_ball",
-            "sharpie_accent_tank_style_highlighters",
-            "highland_6539_self_stick_notes"
+            "sharpie_accent_tank_style_highlighters"
         ],
         "bin_F": [
             "munchkin_white_hot_duck_bath_toy",
             "oreo_mega_stuf"
         ],
         "bin_G": [
-            "kyjen_squeakin_eggs_plush_puppies",
-            "sharpie_accent_tank_style_highlighters",
-            "mead_index_cards",
-            "mead_index_cards"
+            "mark_twain_huckleberry_finn",
+            "kyjen_squeakin_eggs_plush_puppies"
         ],
         "bin_H": [
             "oreo_mega_stuf",
@@ -56,19 +49,14 @@
         ],
         "bin_I": [
             "mommys_helper_outlet_plugs",
-            "crayola_64_ct",
-            "laugh_out_loud_joke_book",
-            "crayola_64_ct",
             "kyjen_squeakin_eggs_plush_puppies"
         ],
         "bin_J": [
-            "crayola_64_ct",
-            "kyjen_squeakin_eggs_plush_puppies",
-            "safety_works_safety_glasses"
+	    "kong_sitting_frog_dog_toy",
+            "kyjen_squeakin_eggs_plush_puppies"
         ],
         "bin_K": [
-            "stanley_66_052",
-            "stanley_66_052"
+	    "feline_greenies_dental_treats"
         ],
         "bin_L": [
             "genuine_joe_plastic_stir_sticks",
@@ -114,11 +102,11 @@
         },
         {
             "bin": "bin_J",
-            "item": "crayola_64_ct"
+            "item": "kyjen_squeakin_eggs_plush_puppies"
         },
         {
             "bin": "bin_K",
-            "item": "stanley_66_052"
+            "item": "feline_greenies_dental_treats"
         },
         {
             "bin": "bin_L",
