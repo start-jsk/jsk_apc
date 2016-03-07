@@ -18,7 +18,6 @@
             "cheezit_big_original",
             "dr_browns_bottle_brush",
             "oreo_mega_stuf",
-            "champion_copper_plus_spark_plug",
             "mead_index_cards"
         ],
         "bin_D": [
@@ -35,24 +34,34 @@
             "sharpie_accent_tank_style_highlighters"
         ],
         "bin_F": [
-            "munchkin_white_hot_duck_bath_toy",
             "oreo_mega_stuf"
         ],
         "bin_G": [
             "mark_twain_huckleberry_finn",
+            "champion_copper_plus_spark_plug",
             "kyjen_squeakin_eggs_plush_puppies"
         ],
         "bin_H": [
             "oreo_mega_stuf",
             "stanley_66_052",
-            "paper_mate_12_count_mirado_black_warrior"
+            "paper_mate_12_count_mirado_black_warrior",
+	    "feline_greenies_dental_treats",
+            "munchkin_white_hot_duck_bath_toy",
+            "munchkin_white_hot_duck_bath_toy"
         ],
         "bin_I": [
             "mommys_helper_outlet_plugs",
-            "kyjen_squeakin_eggs_plush_puppies"
-        ],
-        "bin_J": [
+            "mommys_helper_outlet_plugs",
+            "kyjen_squeakin_eggs_plush_puppies",
+            "first_years_take_and_toss_straw_cup",
+	    "first_years_take_and_toss_straw_cup",
+	    "munchkin_white_hot_duck_bath_toy",
 	    "kong_sitting_frog_dog_toy",
+            "genuine_joe_plastic_stir_sticks",
+	    "paper_mate_12_count_mirado_black_warrior"
+       ],
+        "bin_J": [
+            "munchkin_white_hot_duck_bath_toy",
             "kyjen_squeakin_eggs_plush_puppies"
         ],
         "bin_K": [
@@ -86,7 +95,7 @@
         },
         {
             "bin": "bin_F",
-            "item": "munchkin_white_hot_duck_bath_toy"
+            "item": "oreo_mega_stuf"
         },
         {
             "bin": "bin_G",
