@@ -1,4 +1,5 @@
 import json
+import math
 import os.path as osp
 import yaml
 
@@ -31,6 +32,14 @@ def load_json(json_file):
         bin = order['bin'][len('bin_'):].lower()
         work_order[bin] = order['item']
     return bin_contents, work_order
+
+
+def _get_tile_shape(img_num):
+    x_num = 1
+    y_num = int(round((math.sqrt(img_num))))
+    while x_num * y_num < img_num:
+        x_num += 1
+    return x_num, y_num
 
 
 def visualize_json(json_file):
@@ -67,30 +76,29 @@ def visualize_json(json_file):
     # draw objects
     for bin, contents in bin_contents.items():
         bin_pt1, bin_pt2 = BIN_REGION[bin]
-        bin_h, bin_w = bin_pt2[1] - bin_pt1[1], bin_pt2[0] - bin_pt1[0]
-        for i, obj in enumerate(contents):
-            if i == 0:
-                pt1 = bin_pt1
-            elif i == 1:
-                pt1 = (bin_pt1[0] + bin_w // 2, bin_pt1[1])
-            elif i == 2:
-                pt1 = (bin_pt1[0], bin_pt1[1] + bin_h // 2)
-            elif i == 3:
-                pt1 = (bin_pt1[0] + bin_w // 2, bin_pt1[1] + bin_h // 2)
-            max_obj_h, max_obj_w = bin_h // 2, bin_w // 2
-            obj_img = object_imgs[obj]
-            scale_h = 1. * max_obj_h / obj_img.shape[0]
-            scale_w = 1. * max_obj_w / obj_img.shape[1]
-            scale = min([scale_h, scale_w])
-            obj_img = rescale(obj_img, scale)
-            obj_h, obj_w = obj_img.shape[:2]
-            pt2 = (pt1[0] + obj_w, pt1[1] + obj_h)
-            kiva_pod_img[pt1[1]:pt2[1], pt1[0]:pt2[0]] = obj_img
-            # highlight work order
-            if work_order[bin] == obj:
-                pt1 = (pt1[0] + 10, pt1[1] + 10)
-                pt2 = (pt2[0] - 10, pt2[1] - 10)
-                cv2.rectangle(kiva_pod_img, pt1, pt2, (0, 255, 0), 3)
+        bin_region = kiva_pod_img[bin_pt1[1]:bin_pt2[1], bin_pt1[0]:bin_pt2[0]]
+        x_num, y_num = _get_tile_shape(len(contents))
+        bin_h, bin_w = bin_region.shape[:2]
+        max_obj_h, max_obj_w = bin_h // y_num, bin_w // x_num
+        for i_y in xrange(y_num):
+            y_min = int(1. * bin_h / y_num * i_y)
+            for i_x in xrange(x_num):
+                x_min = int(1. * bin_w / x_num * i_x)
+                if contents:
+                    obj = contents.pop()
+                    obj_img = object_imgs[obj]
+                    scale_h = 1. * max_obj_h / obj_img.shape[0]
+                    scale_w = 1. * max_obj_w / obj_img.shape[1]
+                    scale = min([scale_h, scale_w])
+                    obj_img = rescale(obj_img, scale)
+                    obj_h, obj_w = obj_img.shape[:2]
+                    x_max, y_max = x_min + obj_w, y_min + obj_h
+                    bin_region[y_min:y_max, x_min:x_max] = obj_img
+                    # highlight work order
+                    if work_order[bin] == obj:
+                        pt1 = (x_min + 10, y_min + 10)
+                        pt2 = (x_max - 10, y_max - 10)
+                        cv2.rectangle(bin_region, pt1, pt2, (0, 255, 0), 3)
     # draw bin regions
     for bin, region in BIN_REGION.items():
         bin_pt1, bin_pt2 = region
