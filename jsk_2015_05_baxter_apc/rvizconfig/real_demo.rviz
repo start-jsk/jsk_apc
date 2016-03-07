@@ -63,7 +63,7 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: -2.08871e+38
+      Max Intensity: -2.24879e+38
       Min Color: 0; 0; 0
       Min Intensity: -999999
       Name: Kinect2Head
@@ -472,26 +472,26 @@ Visualization Manager:
       Update Topic: /interactive_adjust_kiva_pod/update
       Value: false
     - Class: jsk_rviz_plugin/BoundingBoxArray
-      Enabled: true
+      Enabled: false
       Name: InHandBoxes
       Topic: /in_hand_clipper/output/box_array
-      Value: true
+      Value: false
       alpha: 0.5
       color: 25; 255; 0
       coloring: Flat color
-      line width: 0.01
+      line width: 0.005
       only edge: true
-      show coords: true
+      show coords: false
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
       Name: OverlayImage
       Topic: /visualize_json/output
       Value: true
       alpha: 1
-      height: -1
+      height: 500
       left: 0
       top: 0
-      width: 605
+      width: -1
     - Background Alpha: 0.8
       Background Color: 0; 0; 0
       Class: jsk_rviz_plugin/OverlayText
@@ -905,6 +905,84 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: InRightHand
+      Topic: /apply_mask_right_hand/output
+      Value: true
+      alpha: 0.8
+      height: 230
+      left: 230
+      top: 500
+      width: 230
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: InLeftHand
+      Topic: /apply_mask_left_hand/output
+      Value: true
+      alpha: 0.8
+      height: 230
+      left: 0
+      top: 500
+      width: 230
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: InLeftHand
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.01
+      Style: Flat Squares
+      Topic: /extract_indices_left_hand/points_filtered
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: InRightHand
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.01
+      Style: Flat Squares
+      Topic: /extract_indices_right_hand/points_filtered
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -929,22 +1007,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.31582
+      Distance: 0.365501
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.56933
-        Y: -0.438047
-        Z: 0.993843
+        X: -0.405559
+        Y: -0.471977
+        Z: 1.02114
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.4898
+      Pitch: 0.4848
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.89675
+      Yaw: 3.71675
     Saved: ~
 Window Geometry:
   Displays:

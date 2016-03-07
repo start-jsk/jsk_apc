@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "laugh_out_loud_joke_book"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "munchkin_white_hot_duck_bath_toy", 
+      "laugh_out_loud_joke_book"
+    ]
+  }
+}

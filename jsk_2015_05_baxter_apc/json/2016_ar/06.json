@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "mommys_helper_outlet_plugs",
+      "expo_dry_erase_board_eraser"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "expo_dry_erase_board_eraser"
+    }
+  ]
+}

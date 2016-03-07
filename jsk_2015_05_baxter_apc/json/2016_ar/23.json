@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "crayola_64_ct"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "crayola_64_ct", 
+      "kyjen_squeakin_eggs_plush_puppies"
+    ]
+  }
+}

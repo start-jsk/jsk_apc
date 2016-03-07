@@ -87,67 +87,93 @@
               (send *ri* :move-arm-body->bin arm target-bin)
               (send *ri* :wait-interpolation)
               (ros::ros-info "detected_object_index: ~A" (send *ri* :detect-target-object-in-bin target-obj target-bin))
-              (send *ri* :pick-object arm target-bin
-                    :n-trial 2
-                    :n-trial-same-pos 1
-                    :object-index (send *ri* :detect-target-object-in-bin target-obj target-bin))
-              (incf target-n-tried)
-              (if (send *ri* :graspingp arm)
-                (if (= (length (send *ri* :get-bin-contents target-bin)) 1)
-                  (setq state :place_object)
-                  (setq state :verify_object))
-                (progn
-                  (send *baxter* :avoid-shelf-pose arm target-bin)
-                  (send *ri* :send-av)
-                  (send *ri* :wait-interpolation)
-                  (send *baxter* :fold-to-keep-object arm)
-                  (send *ri* :send-av)
-                  (send *ri* :wait-interpolation)
-                  (send *ri* :fold-pose-back arm)
-                  (send *ri* :wait-interpolation)
-                  ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
-                  (if (> (length (send *ri* :get-bin-contents target-bin)) target-n-tried)
-                    (setq state :pick_object)
-                    (setq state :set_target)
+              (setq graspingp
+                    (send *ri* :pick-object arm target-bin
+                          :n-trial 2
+                          :n-trial-same-pos 1
+                          :object-index (send *ri* :detect-target-object-in-bin target-obj target-bin))
                     )
-                  )
-                )
+              (incf target-n-tried)
+              (setq state :verify_object)
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
             ))
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
-          (send *baxter* :view-hand-pose arm target-bin)
-          (setq avs-picked->view-pose (send *ri* :send-av 5000))
-          (send *ri* :wait-interpolation)
-          (if (send *ri* :verify-object arm target-obj)
-            (setq state :place_object)
-            (setq state :return_object))
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+          (if graspingp
+            (progn
+              (send *baxter* :view-hand-pose arm target-bin)
+              (setq avs-picked->view-pose (send *ri* :send-av 5000))
+              (send *ri* :wait-interpolation)
+              (setq verify-ret (send *ri* :verify-object arm target-obj))
+              (ros::ros-info "[main] graspingp: ~a" graspingp)
+              (if (eq verify-ret :timeout)
+                (progn
+                  (send *ri* :stop-grasp arm)
+                  (send *ri* :angle-vector-sequence
+                        (list
+                          (send *baxter* :fold-to-keep-object arm)
+                          (send *baxter* :fold-pose-back arm)
+                          )
+                        :fast nil 0 :scale 5.0)
+                  ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
+                  (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
+                    (setq state :pick_object)
+                    (setq state :set_target)
+                    )
+                  )
+                (if verify-ret
+                  (setq state :place_object)
+                  (setq state :return_object)
+                  )
+                )
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+              )
+            (progn
+              (send *ri* :angle-vector-sequence
+                    (list
+                      (send *baxter* :fold-to-keep-object arm)
+                      (send *baxter* :fold-pose-back arm)
+                      )
+                    :fast nil 0 :scale 5.0)
+              ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
+              (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
+                (setq state :pick_object)
+                (setq state :set_target)
+                )
+              )
+            )
+          )
         (:return_object
           (ros::ros-info "[main] ~a, ~a" arm state)
-          (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose))
+          (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-sequence
                 (list
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 0))
+                  (send *baxter* :avoid-shelf-pose arm target-bin)
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-300 0 50))
                   (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 50))
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(150 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(100 0 50))
                   )
                 :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp) ;; release object
-          (send *ri* :spin-off-by-wrist arm)
+          (send *ri* :spin-off-by-wrist arm :times 20)
           (send *ri* :wait-interpolation)
-          (send *ri* :ik->bin-entrance arm target-bin) ;; to bin entrance
-          (send *ri* :send-av 5000)
+          (send *ri* :angle-vector-sequence
+                (list
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 50))
+                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-300 0 50))
+                  )
+                :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
-          (send *baxter* :avoid-shelf-pose arm target-bin)
-          (send *ri* :send-av)
+          (send *ri* :angle-vector (send *baxter* :avoid-shelf-pose arm target-bin))
           (send *ri* :wait-interpolation)
           (send *ri* :fold-pose-back arm)
+          (send *ri* :wait-interpolation)
           ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
-          (if nil ;; TODO: currently always abort because return motion mess the bin contents
-                  ;; (> (length (send *ri* :get-bin-contents target-bin)) target-n-tried)
+          (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
             (setq state :pick_object)
             (setq state :set_target) (ros::ros-warn "[main] Abort ~a and go to next target" target-bin))
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))

@@ -35,15 +35,6 @@
   </include>
 
 
-  <!-- kinect2 on head -->
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_head.launch" />
-  <!--
-  kinect2 on torso. Actually, we can't use <machine> tag because of error.
-  FIXME: https://github.com/code-iai/iai_kinect2/issues/166
-  -->
-  <!-- <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_torso.launch" /> -->
-
-
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kiva_pod_state.launch" />
   <node name="interactive_adjust_kiva_pod"
         pkg="jsk_interactive_marker" type="marker_6dof">

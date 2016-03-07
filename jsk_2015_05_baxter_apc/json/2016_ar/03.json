@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "mark_twain_huckleberry_finn",
+      "feline_greenies_dental_treats"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "mark_twain_huckleberry_finn"
+    }
+  ]
+}

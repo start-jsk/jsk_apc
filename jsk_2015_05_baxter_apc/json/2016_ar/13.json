@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "kong_air_dog_squeakair_tennis_ball"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "kong_air_dog_squeakair_tennis_ball", 
+      "dr_browns_bottle_brush"
+    ]
+  }
+}

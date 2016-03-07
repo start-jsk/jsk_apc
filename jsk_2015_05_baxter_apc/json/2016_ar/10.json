@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_G":
+    [
+      "oreo_mega_stuf",
+      "laugh_out_loud_joke_book"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_G",
+      "item": "oreo_mega_stuf"
+    }
+  ]
+}

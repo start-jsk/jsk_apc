@@ -21,8 +21,11 @@ def cb_kcluster(msg):
 
 def cb(msg):
     global expected_n_cluster, reconfig_n_limit, reconfig_n_times
+    global sub_kcluster, sub_ncluster
     with lock:
         if reconfig_n_times > reconfig_n_limit:
+            sub_kcluster.unregister()
+            sub_ncluster.unregister()
             return
         if expected_n_cluster is None:
             return
@@ -32,6 +35,7 @@ def cb(msg):
         if msg.data == expected_n_cluster:
             print('Expected/Actual n_cluster: {0}, Tolerance: {1}'
                 .format(msg.data, tol_orig))
+            reconfig_n_times = reconfig_n_limit + 1
             return
         elif msg.data > expected_n_cluster:
             cfg['tolerance'] += delta
@@ -50,7 +54,7 @@ tolerance: {2} -> {3}
 
 
 if __name__ == '__main__':
-    rospy.init_node('k_dynamic_euclid_clutering')
+    rospy.init_node('euclid_k_clutering')
     reconfig_eps = rospy.get_param('~reconfig_eps', 0.2)
     reconfig_n_limit = rospy.get_param('~reconfig_n_limit', 10)
     node_name = rospy.get_param('~node')
@@ -58,4 +62,6 @@ if __name__ == '__main__':
     sub_kcluster = rospy.Subscriber('~k_cluster', Int32Stamped, cb_kcluster)
     sub_ncluster = rospy.Subscriber(
         '{node}/cluster_num'.format(node=node_name), Int32Stamped, cb)
+    cfg = {'tolerance': 0.02}
+    client.update_configuration(cfg)
     rospy.spin()

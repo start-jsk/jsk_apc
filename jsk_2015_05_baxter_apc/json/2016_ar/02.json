@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "kong_sitting_frog_dog_toy",
+      "kong_duck_dog_toy"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "kong_duck_dog_toy"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "kong_air_dog_squeakair_tennis_ball"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "paper_mate_12_count_mirado_black_warrior", 
+      "kong_air_dog_squeakair_tennis_ball"
+    ]
+  }
+}

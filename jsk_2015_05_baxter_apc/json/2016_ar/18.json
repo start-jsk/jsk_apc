@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "kong_sitting_frog_dog_toy"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "munchkin_white_hot_duck_bath_toy", 
+      "kong_sitting_frog_dog_toy"
+    ]
+  }
+}

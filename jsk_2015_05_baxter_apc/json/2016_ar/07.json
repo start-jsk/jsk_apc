@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "mommys_helper_outlet_plugs",
+      "highland_6539_self_stick_notes"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "highland_6539_self_stick_notes"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "munchkin_white_hot_duck_bath_toy"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "oreo_mega_stuf", 
+      "munchkin_white_hot_duck_bath_toy"
+    ]
+  }
+}

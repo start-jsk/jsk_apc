@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "sharpie_accent_tank_style_highlighters",
+      "dr_browns_bottle_brush"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "sharpie_accent_tank_style_highlighters"
+    }
+  ]
+}

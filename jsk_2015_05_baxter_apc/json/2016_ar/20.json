@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "sharpie_accent_tank_style_highlighters"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "mark_twain_huckleberry_finn", 
+      "sharpie_accent_tank_style_highlighters"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "highland_6539_self_stick_notes"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "expo_dry_erase_board_eraser", 
+      "highland_6539_self_stick_notes"
+    ]
+  }
+}
