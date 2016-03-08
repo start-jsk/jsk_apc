@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_apc2015_common</name>
-  <version>0.0.0</version>
+  <version>0.1.1</version>
   <description>Common stacks for Amazon Picking Challenge 2015</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
