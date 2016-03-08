@@ -2,8 +2,8 @@
 Changelog for package jsk_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2016-03-08)
+------------------
 * fix maintainer/author in package.xml
 * Contributors: Kei Okada
 

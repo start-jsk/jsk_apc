@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_2015_05_baxter_apc</name>
-  <version>0.2.0</version>
+  <version>0.2.1</version>
   <description>ROS package for Amazon Picking Challenge in May 2015</description>
   <maintainer email="wkentaro@gmail.com">Kentaro Wada</maintainer>
   <author email="wkentaro@gmail.com">Kentaro Wada</author>
