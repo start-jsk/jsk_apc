@@ -113,3 +113,16 @@
     (sethash (str2symbol "genuine_joe_plastic_stir_sticks") table 0.727586)
     (sethash (str2symbol "cheezit_big_original") table 1.000000)
   (gethash (str2symbol object-name) table)))
+
+
+;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;; For Python Users
+;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+(defun zip (a b) (mapcar #'cons a b))
+
+(defun dict (zipped)
+  (let ((table (make-hash-table :test #'equal)))
+    (dolist (el zipped)
+      (sethash (car el) table (cdr el))
+      )
+    table))
