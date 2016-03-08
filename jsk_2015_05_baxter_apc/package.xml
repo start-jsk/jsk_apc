@@ -3,9 +3,9 @@
   <name>jsk_2015_05_baxter_apc</name>
   <version>0.2.1</version>
   <description>ROS package for Amazon Picking Challenge in May 2015</description>
-  <maintainer email="wkentaro@gmail.com">Kentaro Wada</maintainer>
-  <author email="wkentaro@gmail.com">Kentaro Wada</author>
-  <author email="iory@gmail.com">Iori Yanokura</author>
+  <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+  <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
+  <author email="ab.ioryz@gmail.com">Iori Yanokura</author>
   <author email="inagaki@jsk.imi.i.u-tokyo.ac.jp">Yuto Inagaki</author>
   <author email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</author>
   <license>BSD</license>
