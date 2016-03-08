@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2016-03-08)
+------------------
 * Try APC2016 with program for APC2015
   * Json file for picking: Layout1
   * Add Shared files for jsk_2016_01_baxter_apc

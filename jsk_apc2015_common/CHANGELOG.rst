@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2016-03-08)
+------------------
 * Fix for APC2016
   * Dynamic visualization for given number of bin_contents
     Modified:
