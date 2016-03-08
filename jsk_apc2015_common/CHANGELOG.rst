@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix gmail for iory and wkentaro
+* Contributors: Kei Okada
+
 0.2.1 (2016-03-08)
 ------------------
 * fix maintainer/author in package.xml
