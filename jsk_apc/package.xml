@@ -6,7 +6,8 @@
    <p>Metapackage for Amazon Picking Challenge</p>
   </description>
 
-  <maintainer email="baxter@jsk.imi.i.u-tokyo.ac.jp">baxter</maintainer>
+  <maintainer email="wkentaro@gmail.com">Kentaro Wada</maintainer>
+  <author email="wkentaro@gmail.com">Kentaro Wada</author>
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
