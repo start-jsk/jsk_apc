@@ -7,7 +7,7 @@ from jsk_recognition_msgs.msg import ClassificationResult
 import rospy
 import json
 
-class JsonBoost():
+class ConsiderJson():
 
     def __init__(self):
 
@@ -54,12 +54,12 @@ class JsonBoost():
         res.label_names = msg_label_names
         res.label_proba = label_proba
         res.probabilities = msg_proba.reshape(-1)
-        res.classifier = '<jsk_106_01_baxter_apc.JsonBoost>'
+        res.classifier = '<jsk_2016_01_baxter_apc.ConsiderJson>'
         res.target_names = self.target_names
         self.pub.publish(res)
 
 
 if __name__ == "__main__":
-    rospy.init_node('JsonBoost')
-    JsonBoost()
+    rospy.init_node('ConsiderJson')
+    ConsiderJson()
     rospy.spin()
