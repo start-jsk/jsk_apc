@@ -2,6 +2,11 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix maintainer/author in package.xml
+* Contributors: Kei Okada
+
 0.2.0 (2016-03-08)
 ------------------
 * Update APC 2015 for Advanced Robtoics Paper

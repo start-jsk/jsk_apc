@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix maintainer/author in package.xml
+* Contributors: Kei Okada
+
 0.2.0 (2016-03-08)
 ------------------
 * Fix for APC2016
