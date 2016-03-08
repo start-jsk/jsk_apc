@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.2 (2016-03-08)
+------------------
 * fix gmail for iory and wkentaro
 * Contributors: Kei Okada
 
