@@ -47,6 +47,7 @@ https://github.com/start-jsk/jsk_apc/blob/master/jsk_2015_05_baxter_apc/json/dem
 Real world demonstration for APC2015 can be done on any computers with ROS indigo.
 
 ```bash
+roscd jsk_2015_05_baxter_apc && git checkout 0.1.2
 
 roslaunch jsk_2015_05_baxter_apc baxter_sim.launch kiva:=true
 roslaunch jsk_2015_05_baxter_apc setup.launch
