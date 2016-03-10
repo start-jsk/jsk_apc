@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "kyjen_squeakin_eggs_plush_puppies",
+      "laugh_out_loud_joke_book"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "laugh_out_loud_joke_book"
+    }
+  ]
+}

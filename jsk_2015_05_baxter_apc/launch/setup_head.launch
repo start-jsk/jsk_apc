@@ -1,0 +1,19 @@
+<launch>
+
+
+  <arg name="MANAGER" value="sheeta_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin_atof.launch">
+    <arg name="INPUT_DEPTH" value="/kinect2_head/hd/image_depth_rect" />
+    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points" />
+    <arg name="MANAGER" value="$(arg MANAGER)" />
+  </include>
+
+
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_head.launch" />
+
+
+</launch>

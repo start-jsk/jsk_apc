@@ -1,11 +1,8 @@
 <launch>
 
   <arg name="INPUT_CLOUD" />
-
-
-  <arg name="MANAGER" value="recognition_in_hand_manager" />
-  <node name="$(arg MANAGER)"
-        pkg="nodelet" type="nodelet" args="manager" />
+  <arg name="INPUT_IMAGE" />
+  <arg name="MANAGER" />
 
 
   <node name="in_hand_clipper"
@@ -76,18 +73,18 @@
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
     <remap from="~input" to="pc_to_pi_left_hand/output" />
-    <remap from="~input/image" to="/kinect2_head/hd/image_color" />
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)" />
     <rosparam>
-      queue_size: 300
+      queue_size: 1000
     </rosparam>
   </node>
   <node name="pi_to_mask_right_hand"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
     <remap from="~input" to="pc_to_pi_right_hand/output" />
-    <remap from="~input/image" to="/kinect2_head/hd/image_color" />
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)" />
     <rosparam>
-      queue_size: 300
+      queue_size: 1000
     </rosparam>
   </node>
   <!-- process mask image -->
@@ -113,10 +110,10 @@
   <node name="apply_mask_left_hand"
         pkg="nodelet" type="nodelet"
         args="load jsk_perception/ApplyMaskImage $(arg MANAGER)">
-    <remap from="~input" to="/kinect2_head/hd/image_color" />
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <remap from="~input/mask" to="closing_left_hand/output" />
     <rosparam>
-      queue_size: 300
+      queue_size: 1000
     </rosparam>
   </node>
   <node name="mask_to_label_left_hand"
@@ -126,10 +123,10 @@
   <node name="apply_mask_right_hand"
         pkg="nodelet" type="nodelet"
         args="load jsk_perception/ApplyMaskImage $(arg MANAGER)">
-    <remap from="~input" to="/kinect2_head/hd/image_color" />
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <remap from="~input/mask" to="closing_right_hand/output" />
     <rosparam>
-      queue_size: 300
+      queue_size: 1000
     </rosparam>
   </node>
   <node name="mask_to_label_right_hand"

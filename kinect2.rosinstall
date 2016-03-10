@@ -1,0 +1,8 @@
+- git:
+    local-name: code-iai/iai_kinect2
+    uri: https://github.com/code-iai/iai_kinect2.git
+    version: ed57f55ea4c8c34592fd91eb9e3809c5863d2a95
+- git:
+    local-name: OpenKinect/libfreenect2
+    uri: https://github.com/OpenKinect/libfreenect2.git
+    version: 7691a032ab86965f89577e2b334f156596c25251

@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_I":
+    [
+      "munchkin_white_hot_duck_bath_toy",
+      "mead_index_cards"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_I",
+      "item": "munchkin_white_hot_duck_bath_toy"
+    }
+  ]
+}

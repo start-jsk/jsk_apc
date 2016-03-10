@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "highland_6539_self_stick_notes"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "rolodex_jumbo_pencil_cup", 
+      "highland_6539_self_stick_notes"
+    ]
+  }
+}

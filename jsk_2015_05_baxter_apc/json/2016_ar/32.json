@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "safety_works_safety_glasses"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "oreo_mega_stuf", 
+      "safety_works_safety_glasses"
+    ]
+  }
+}

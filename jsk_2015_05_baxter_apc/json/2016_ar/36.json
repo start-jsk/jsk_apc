@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "paper_mate_12_count_mirado_black_warrior"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "paper_mate_12_count_mirado_black_warrior", 
+      "genuine_joe_plastic_stir_sticks"
+    ]
+  }
+}

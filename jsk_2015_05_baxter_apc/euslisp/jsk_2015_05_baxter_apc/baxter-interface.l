@@ -16,6 +16,7 @@
    _tfl
    _bin-boxes
    _objects-in-bin-boxes
+   _objects-in-bin-coms
    _bin-coords-list
    )
   )
@@ -35,6 +36,7 @@
     (setq _tfl (instance ros::transform-listener :init))
     (setq _bin-boxes (make-hash-table))
     (setq _objects-in-bin-boxes (make-hash-table))
+    (setq _objects-in-bin-coms (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
@@ -96,6 +98,23 @@
     (&optional (arm :arms))
     (send *baxter* :fold-pose-back arm)
     (send *ri* :send-av))
+  (:detect-target-object-in-bin
+    (target-object bin)
+    (let (obj-sizes box-sizes obj-idx box-idx box-size box-sizes-back
+                    (candidates (send self :get-bin-contents bin))
+                    (boxes (gethash bin _objects-in-bin-boxes)))
+      (dolist (obj candidates) (pushback (get-object-size obj) obj-sizes))
+      (dolist (box boxes) (pushback (send (send self :bbox->cube box) :volume) box-sizes))
+      (setq box-sizes-bak (copy-seq box-sizes))
+      (while (and obj-sizes box-sizes)
+             (setq obj-idx (argmax obj-sizes))
+             (setq obj-sizes (remove (elt obj-sizes obj-idx) obj-sizes))
+             (setq box-idx (argmax box-sizes))
+             (setq box-size (elt box-sizes box-idx))
+             (setq box-sizes (remove box-size box-sizes))
+             (when (string= (elt candidates obj-idx) target-object) (return))
+             )
+      (position box-size box-sizes-bak)))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
     (let (msg bin bin-box-pos-z)
@@ -104,7 +123,7 @@
         msg
         (one-shot-subscribe "bin_atof_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :timeout 5000
+                            :timeout 10000
                             :after-stamp stamp))
       (if msg
         (dotimes (i 6)
@@ -117,7 +136,7 @@
         msg
         (one-shot-subscribe "bin_gtol_clipper/output/box_array"
                             jsk_recognition_msgs::BoundingBoxArray
-                            :timeout 5000
+                            :timeout 10000
                             :after-stamp stamp))
       (if msg
         (dotimes (i 6)
@@ -167,23 +186,37 @@
       )
     )
   (:recognize-objects-in-bin
-    (bin &key (stamp (ros::time-now)))
-    (setq
-      msg
-      (one-shot-subscribe
-        (format nil "bin_~a_cpi_decomposer/boxes" (symbol2str bin))
-        ; (format nil "bin_~a_solidity_rag_merge_cpi_decomposer/boxes" (symbol2str bin))
-        jsk_recognition_msgs::BoundingBoxArray
-        :after-stamp stamp))
-    (sethash bin _objects-in-bin-boxes (send msg :boxes)))
+    (bin &key (stamp (ros::time-now)) (timeout 10))
+    (let ((box-topic (format nil "bin_~a_cpi_decomposer/boxes" (symbol2str bin)))
+          box-msg
+          (com-topic (format nil "bin_~a_cpi_decomposer/centroid_pose_array" (symbol2str bin)))
+          com-msg)
+      (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq box-msg msg)))))
+      (ros::subscribe com-topic geometry_msgs::PoseArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq com-msg msg)))))
+      (while (not (and box-msg com-msg))
+             (unix::usleep (* 50 1000))
+             (ros::spin-once))
+      (ros::unsubscribe box-topic)
+      (ros::unsubscribe com-topic)
+      (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
+      (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-object-in-hand
-    (arm &key (stamp (ros::time-now)))
+    (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
       (setq msg
             (one-shot-subscribe
               (format nil "~a_hand/object_verification/output" (arm-to-str arm))
               jsk_2015_05_baxter_apc::ObjectRecognition
-              :after-stamp stamp))
+              :after-stamp stamp
+              :timeout timeout))
       (if msg
         (progn
           (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched))
@@ -193,10 +226,10 @@
   (:verify-object
     (arm object-name &key (stamp (ros::time-now)))
     (let (matched)
-      (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp))
+      (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp :timeout 10000))
         (progn (ros::ros-info "~a == ~a" object-name matched)
                (string= object-name matched))
-        nil)
+        :timeout)
       ))
   (:try-to-pick-in-bin
     (arm bin)
@@ -244,7 +277,7 @@
       ))
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
-    (let (avs obj-boxes obj-box)
+    (let (avs obj-boxes obj-box obj-coms obj-com graspingp)
       ;; validate
       (unless
         (setq obj-boxes (gethash bin _objects-in-bin-boxes))
@@ -254,8 +287,14 @@
         (setq obj-box (elt obj-boxes object-index))
         (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
         (return-from :try-to-pick-object nil))
+      (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
+      (setq obj-com (elt (send obj-coms-msg :poses) object-index))
       ;; ik to obj a bit distant
-      (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
+      ;; with Center of Mass
+      (setq obj-coords (send self :tf-pose->coords
+                             (send obj-coms-msg :header :frame_id) obj-com))
+      ;; with Center of Bounding Box
+      ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
       (if (find bin '(:a :b :c :d :e :f))
         (setq world-x :z world-y :x world-z :y)
         (setq world-x :z world-y :y world-z :x)
@@ -269,10 +308,10 @@
       (ros::ros-info "[:try-to-pick-object] sign: ~a" sign)
       (if (ros::get-param "/apc_on_gazebo" nil)
         ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
-        (setq offset #f(-30 0 0))
-        (setq offset (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
+        (setq offset-from-entrance #f(-30 0 0))
+        (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
         )
-      (send self :angle-vector (send self :ik->bin-entrance arm bin :offset offset) 3000)
+      (send self :angle-vector (send self :ik->bin-entrance arm bin :offset offset-from-entrance) 3000)
       (send self :wait-interpolation)
       ; (pushback
       ;   (send *baxter* arm :inverse-kinematics
@@ -291,11 +330,21 @@
       (ros::ros-info "[:try-to-pick-object] approach to the object")
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
+                  (make-coords
+                    :pos (v+ (send obj-coords :pos) offset)
+                    :rpy (list 0 0 (* sign pi/2))
+                    )
+                  )
+            3000)
+      (send self :wait-interpolation)
+      (send self :angle-vector
+            (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (send obj-coords :pos) :rpy (list 0 0 (* sign pi/2))))
             3000)
       (send self :wait-interpolation)
-      (ros::ros-info "[:try-to-pick-object] graspingp: ~a" (send self :graspingp :rarm))
-      (unless (send self :graspingp arm)
+      (setq graspingp (send self :graspingp arm))
+      (ros::ros-info "[:try-to-pick-object] graspingp: ~a" graspingp)
+      (unless graspingp
         (ros::ros-info "[:try-to-pick-object] again approach to the object")
         (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local) 3000)
         (send self :wait-interpolation))
@@ -303,30 +352,47 @@
       (ros::ros-info "[:try-to-pick-object] lift the object")
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)
       (send self :wait-interpolation)
-    ))
+    graspingp))
   (:pick-object
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1))
     (send *ri* :angle-vector-sequence
       (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)))
       :fast nil 0 :scale 5.0)
     (send *ri* :wait-interpolation)
-    (let (bin-box)
+    (let (bin-box graspingp)
+      ;; abort when no objects found
+      (when (eq (length (gethash bin _objects-in-bin-boxes)) 0) (return-from :pick-object nil))
       ;; move arm bin-entrance -> pos above object to z direction
       (setq bin-box (gethash bin _bin-boxes))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
-          (unless
-            ;; try to pick and the goal becomes far to x gradually
-            (send self :try-to-pick-object arm bin :object-index object-index :offset (float-vector (+ 0 (* i 20)) 0 (m->mm (/ (send bin-box :dimensions :z) 2))))
-            (ros::ros-warn "No objects found, try to pick without vision result")
-            (send self :try-to-pick-in-bin arm bin))
-          (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
+          (unless graspingp
+            (setq graspingp
+                  (send self :try-to-pick-object arm bin :object-index object-index
+                        :offset (float-vector (* i 50) 0 0))
+                  )
+            )
+          (unless (and (< (send self :real-sim-end-coords-diff arm) 60) graspingp)
+            (ros::ros-info "diff: ~A" (< (send self :real-sim-end-coords-diff arm) 60))
+            (ros::ros-info "graspingp: ~A" graspingp)
+            (ros::ros-info "Grasped wall so stop-grasp")
+            (send self :stop-grasp arm)
+            )
+          )
+        (unless (and (< (send self :real-sim-end-coords-diff arm) 60) graspingp)
+          (ros::ros-info "diff: ~A" (< (send self :real-sim-end-coords-diff arm) 60))
+          (ros::ros-info "graspingp: ~A" graspingp)
+          (ros::ros-info "Grasped wall so stop-grasp")
           (send self :stop-grasp arm)
           )
-        (when (and (< (send self :real-sim-end-coords-diff arm) 60) (send self :graspingp arm)) (return)) ;; not wall and grasped
-        (send self :stop-grasp arm)
         )
-      (send self :angle-vector (send self :ik->bin-entrance arm bin) 3000)
+      (unless graspingp (send self :stop-grasp arm))
+      (send self :angle-vector-sequence
+            (list
+              (send *baxter* arm :move-end-pos #f(0 0 50) :world)
+              (send self :ik->bin-entrance arm bin)
+              )
+             :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; move arm in-bin -> bin-entrance
       (send self :angle-vector-sequence
@@ -342,7 +408,7 @@
       (send *baxter* :avoid-shelf-pose arm bin)
       (send self :send-av)
       (send self :wait-interpolation)
-      ))
+      graspingp))
   (:send-av
     (&optional (tm 3000))
     (send self :angle-vector (send *baxter* :angle-vector) tm))

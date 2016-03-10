@@ -1,0 +1,117 @@
+{
+  "bin_contents":
+  {
+    "bin_A":
+    [
+      "feline_greenies_dental_treats",
+      "mommys_helper_outlet_plugs"
+    ],
+    "bin_B":
+    [
+      "cheezit_big_original"
+    ],
+    "bin_C":
+    [
+      "genuine_joe_plastic_stir_sticks",
+      "paper_mate_12_count_mirado_black_warrior"
+    ],
+    "bin_D":
+    [
+      "oreo_mega_stuf",
+      "highland_6539_self_stick_notes"
+    ],
+    "bin_E":
+    [
+      "kong_duck_dog_toy"
+    ],
+    "bin_F":
+    [
+      "sharpie_accent_tank_style_highlighters",
+      "dr_browns_bottle_brush"
+    ],
+    "bin_G":
+    [
+      "rolodex_jumbo_pencil_cup",
+      "laugh_out_loud_joke_book",
+      "safety_works_safety_glasses"
+    ],
+    "bin_H":
+    [
+      "kyjen_squeakin_eggs_plush_puppies",
+      "champion_copper_plus_spark_plug",
+      "munchkin_white_hot_duck_bath_toy"
+    ],
+    "bin_I":
+    [
+      "stanley_66_052",
+      "mead_index_cards"
+    ],
+    "bin_J":
+    [
+      "elmers_washable_no_run_school_glue"
+    ],
+    "bin_K":
+    [
+      "crayola_64_ct",
+      "kong_sitting_frog_dog_toy",
+      "mark_twain_huckleberry_finn",
+      "expo_dry_erase_board_eraser"
+    ],
+    "bin_L":
+    [
+      "kong_air_dog_squeakair_tennis_ball"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_A",
+      "item": "feline_greenies_dental_treats"
+    },
+    {
+      "bin": "bin_B",
+      "item": "genuine_joe_plastic_stir_sticks"
+    },
+    {
+      "bin": "bin_C",
+      "item": "paper_mate_12_count_mirado_black_warrior"
+    },
+    {
+      "bin": "bin_D",
+      "item": "oreo_mega_stuf"
+    },
+    {
+      "bin": "bin_E",
+      "item": "kong_duck_dog_toy"
+    },
+    {
+      "bin": "bin_F",
+      "item": "sharpie_accent_tank_style_highlighters"
+    },
+    {
+      "bin": "bin_G",
+      "item": "laugh_out_loud_joke_book"
+    },
+    {
+      "bin": "bin_H",
+      "item": "kyjen_squeakin_eggs_plush_puppies"
+    },
+    {
+      "bin": "bin_I",
+      "item": "stanley_66_052"
+    },
+    {
+      "bin": "bin_J",
+      "item": "elmers_washable_no_run_school_glue"
+    },
+    {
+      "bin": "bin_K",
+      "item": "expo_dry_erase_board_eraser"
+    },
+    {
+      "bin": "bin_L",
+      "item": "kong_air_dog_squeakair_tennis_ball"
+    }
+  ]
+}

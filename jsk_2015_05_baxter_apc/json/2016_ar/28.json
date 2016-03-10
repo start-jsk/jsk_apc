@@ -1,0 +1,14 @@
+{
+  "work_order": [
+    {
+      "bin": "bin_H", 
+      "item": "sharpie_accent_tank_style_highlighters"
+    }
+  ], 
+  "bin_contents": {
+    "bin_H": [
+      "sharpie_accent_tank_style_highlighters", 
+      "champion_copper_plus_spark_plug"
+    ]
+  }
+}
