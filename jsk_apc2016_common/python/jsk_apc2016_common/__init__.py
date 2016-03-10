@@ -19,26 +19,15 @@ PKG_PATH = rp.get_path(PKG)
 OLD_PKG = 'jsk_apc2015_common'##Delete this path and change all OLD_PKG_PATH to PKG_PATH after new objects for apc2016 arrive from Amazon
 OLD_PKG_PATH = rp.get_path(OLD_PKG)
 
+
 def get_object_data():
     fname = osp.join(rp.get_path(PKG), 'data/object_data.yaml')
     data = yaml.load(open(fname))
     return data
 
-def load_stow_json(json_file):
-    json_data = json.load(open(json_file))
-    bin_contents = {}
-    for bin, item in json_data['bin_contents'].items():
-        bin = bin[len('bin_'):].lower()
-        bin_contents[bin] = item
-    work_order = []
-    for contents in json_data['work_order']:
-        work_order.append(contents)
-    return bin_contents, work_order
 
-def visualize_stow_json(json_file):
+def visualize_stow_contents(work_order):
     from jsk_apc2015_common.util import rescale
-    bin_contents, work_order = load_stow_json(json_file)
-    kiva_pod_img = jsk_apc2015_common.visualize_json(json_file,bin_contents)
     tote_img = cv2.imread(osp.join(PKG_PATH, 'models/tote/image.jpg'))
     object_list = jsk_apc2015_common.get_object_list()
     object_imgs = {}
@@ -49,8 +38,7 @@ def visualize_stow_json(json_file):
         if h > w:
             img = np.rollaxis(img, 1)
         object_imgs[obj] = img
-
-  # draw objects in tote
+    # draw object images on tote image
     tote_region = [[190,230],[1080,790]]
     region_h = tote_region[1][1] - tote_region[0][1]
     region_w = tote_region[1][0] - tote_region[0][0]
@@ -70,6 +58,27 @@ def visualize_stow_json(json_file):
         if x_max >= region_w :
             x_min = tote_x_min
             y_min += max_obj_h
+    return tote_img
+
+
+def _load_stow_json(json_file):
+    json_data = json.load(open(json_file))
+    bin_contents = {}
+    for bin, item in json_data['bin_contents'].items():
+        bin = bin[len('bin_'):].lower()
+        bin_contents[bin] = item
+    work_order = []
+    for contents in json_data['work_order']:
+        work_order.append(contents)
+    return bin_contents, work_order
+
+
+def visualize_stow_json(json_file):
+    bin_contents, work_order = _load_stow_json(json_file)
+    # draw bin contents
+    kiva_pod_img = jsk_apc2015_common.visualize_bin_contents(bin_contents)
+    # draw tote contents
+    tote_img = visualize_stow_contents(work_order)
 
     # merge two images
     kiva_w,kiva_h = kiva_pod_img.shape[1],kiva_pod_img.shape[0]
