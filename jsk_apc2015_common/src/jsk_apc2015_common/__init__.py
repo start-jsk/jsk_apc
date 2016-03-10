@@ -42,11 +42,14 @@ def _get_tile_shape(img_num):
     return x_num, y_num
 
 
-def visualize_json(json_file):
+def visualize_json(json_file,stow_contents=None):
     """Visualize bin_contents and work_order with a json file"""
     from jsk_apc2015_common.util import rescale
     # load data from json
-    bin_contents, work_order = load_json(json_file)
+    if stow_contents == None:
+        bin_contents, work_order = load_json(json_file)
+    else :
+        bin_contents= stow_contents
     # initialize variables
     kiva_pod_img = cv2.imread(osp.join(PKG_PATH, 'models/kiva_pod/image.jpg'))
     BIN_REGION = {
@@ -95,10 +98,11 @@ def visualize_json(json_file):
                     x_max, y_max = x_min + obj_w, y_min + obj_h
                     bin_region[y_min:y_max, x_min:x_max] = obj_img
                     # highlight work order
-                    if work_order[bin] == obj:
-                        pt1 = (x_min + 10, y_min + 10)
-                        pt2 = (x_max - 10, y_max - 10)
-                        cv2.rectangle(bin_region, pt1, pt2, (0, 255, 0), 3)
+                    if stow_contents == None:
+                        if work_order[bin] == obj:
+                            pt1 = (x_min + 10, y_min + 10)
+                            pt2 = (x_max - 10, y_max - 10)
+                            cv2.rectangle(bin_region, pt1, pt2, (0, 255, 0), 3)
     # draw bin regions
     for bin, region in BIN_REGION.items():
         bin_pt1, bin_pt2 = region
