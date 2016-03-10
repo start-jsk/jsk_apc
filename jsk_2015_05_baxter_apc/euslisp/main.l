@@ -99,13 +99,13 @@
             ))
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
+          (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
           (if graspingp
             (progn
               (send *baxter* :view-hand-pose arm target-bin)
               (setq avs-picked->view-pose (send *ri* :send-av 5000))
               (send *ri* :wait-interpolation)
               (setq verify-ret (send *ri* :verify-object arm target-obj))
-              (ros::ros-info "[main] graspingp: ~a" graspingp)
               (if (eq verify-ret :timeout)
                 (progn
                   (send *ri* :stop-grasp arm)
