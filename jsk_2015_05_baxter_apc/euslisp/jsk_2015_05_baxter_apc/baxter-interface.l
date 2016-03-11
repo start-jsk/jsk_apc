@@ -305,7 +305,7 @@
             )
         (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
         (setq sign 0))
-      (ros::ros-info "[:try-to-pick-object] sign: ~a" sign)
+      (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a" arm sign)
       (if (ros::get-param "/apc_on_gazebo" nil)
         ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
         (setq offset-from-entrance #f(-30 0 0))
@@ -324,10 +324,10 @@
       (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper
-      (ros::ros-info "[:try-to-pick-object] start vacuum gripper")
+      (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
       (send self :start-grasp arm)
       ;; grasp object
-      (ros::ros-info "[:try-to-pick-object] approach to the object")
+      (ros::ros-info "[:try-to-pick-object] arm:~a approach to the object" arm)
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
                   (make-coords
@@ -343,13 +343,13 @@
             3000)
       (send self :wait-interpolation)
       (setq graspingp (send self :graspingp arm))
-      (ros::ros-info "[:try-to-pick-object] graspingp: ~a" graspingp)
+      (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
-        (ros::ros-info "[:try-to-pick-object] again approach to the object")
+        (ros::ros-info "[:try-to-pick-object] arm:~a again approach to the object" arm)
         (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local) 3000)
         (send self :wait-interpolation))
       ;; lift object
-      (ros::ros-info "[:try-to-pick-object] lift the object")
+      (ros::ros-info "[:try-to-pick-object] arm:~a lift the object" arm)
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)
       (send self :wait-interpolation)
     graspingp))
@@ -373,16 +373,16 @@
                   )
             )
           (unless (and (< (send self :real-sim-end-coords-diff arm) 60) graspingp)
-            (ros::ros-info "diff: ~A" (< (send self :real-sim-end-coords-diff arm) 60))
-            (ros::ros-info "graspingp: ~A" graspingp)
-            (ros::ros-info "Grasped wall so stop-grasp")
+            (ros::ros-info "arm:~a diff: ~A" arm (< (send self :real-sim-end-coords-diff arm) 60))
+            (ros::ros-info "arm:~a graspingp: ~A" arm graspingp)
+            (ros::ros-info "arm:~a Grasped wall so stop-grasp" arm)
             (send self :stop-grasp arm)
             )
           )
         (unless (and (< (send self :real-sim-end-coords-diff arm) 60) graspingp)
-          (ros::ros-info "diff: ~A" (< (send self :real-sim-end-coords-diff arm) 60))
-          (ros::ros-info "graspingp: ~A" graspingp)
-          (ros::ros-info "Grasped wall so stop-grasp")
+          (ros::ros-info "arm:~a diff: ~A" arm (< (send self :real-sim-end-coords-diff arm) 60))
+          (ros::ros-info "arm:~a graspingp: ~A" arm graspingp)
+          (ros::ros-info "arm:~a Grasped wall so stop-grasp" arm)
           (send self :stop-grasp arm)
           )
         )
