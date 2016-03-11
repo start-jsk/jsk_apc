@@ -7,7 +7,6 @@
 (load "package://jsk_2015_05_baxter_apc/euslisp/test/data/bin-cubes.l")
 (load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
 (load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
-;; (load "package://jsk_2016_01_baxter_apc/euslisp/test/data/ik-range.l")
 
 (defun check-init ()
   (setq *baxter* (instance jsk_2015_05_baxter_apc::baxter-robot :init))
@@ -21,6 +20,9 @@
   (setq *rarm-able* nil)
   (setq *disable* nil))
 
+(defun dump-range ()
+  (dump-loadable-structure "ik-range.l" *baxter* *able* *larm-able* *rarm-able* *disable*))
+
 (defun get-cube (key)
   (gethash key *bin-cubes*))
 
@@ -28,19 +30,19 @@
   (remove nil (mapcar #'cdr (send table :list))))
 
 (defun visualize ()
-  (objects (append (list *baxter*) *able* *disable*)))
+  (objects (pushback *baxter* (append *able* *disable*))))
 
 (defun visualize-able ()
-  (objects (append (list *baxter*) *able*)))
+  (objects (pushback *baxter* *able*)))
 
 (defun visualize-larm-able ()
-  (objects (append (list *baxter*) *larm-able*)))
+  (objects (pushback *baxter* *larm-able*)))
 
 (defun visualize-rarm-able ()
-  (objects (append (list *baxter*) *rarm-able*)))
+  (objects (pushback *baxter* *rarm-able*)))
 
 (defun visualize-disable ()
-  (objects (append (list *baxter*) *disable*)))
+  (objects (pushback *baxter* *disable*)))
 
 (defun check-baxter-ik-all-bin (&optional (step-dist 100))
   (range-init)
@@ -54,11 +56,11 @@
     (setq y (elt (send (send cube :worldcoords) :pos) 1))
     (setq z (elt (send (send cube :worldcoords) :pos) 2))
 
-    (do ((tmp-x (+ (- x (/ dx 2)) (/ step-dist 2)) (setq tmp-x (+ tmp-x step-dist))))
+    (do ((tmp-x (+ (- x (/ dx 2)) (/ step-dist 2)) (+ tmp-x step-dist)))
       ((> tmp-x (+ x (/ dx 2))) t)
-      (do ((tmp-y (+ (- y (/ dy 2)) (/ step-dist 2)) (setq tmp-y (+ tmp-y step-dist))))
+      (do ((tmp-y (+ (- y (/ dy 2)) (/ step-dist 2)) (+ tmp-y step-dist)))
         ((> tmp-y (+ y (/ dy 2))) t)
-        (do ((tmp-z (+ (- z (/ dz 2)) (/ step-dist 2)) (setq tmp-z (+ tmp-z step-dist))))
+        (do ((tmp-z (+ (- z (/ dz 2)) (/ step-dist 2)) (+ tmp-z step-dist)))
         ((> tmp-z (+ z (/ dz 2))) t)
         (setq pos (float-vector tmp-x tmp-y tmp-z))
         (format t "X: ~A~%Y: ~A~%Z: ~A~%" tmp-x tmp-y tmp-z)
@@ -84,18 +86,18 @@
               ((and larm-bool (not rarm-bool))
                 (setq larm-step-cube (make-cube step-dist step-dist step-dist :pos pos))
                 (send larm-step-cube :set-color :blue)
-                (setq *larm-able* (append *larm-able* (list larm-step-cube))))
+                (pushback larm-step-cube *larm-able*))
               ((and (not larm-bool) rarm-bool)
                 (setq rarm-step-cube (make-cube step-dist step-dist step-dist :pos pos))
                 (send rarm-step-cube :set-color :yellow)
-                (setq *rarm-able* (append *rarm-able* (list rarm-step-cube))))
+                (pushback rarm-step-cube *rarm-able*))
               (t nil))
               (setq step-cube (make-cube step-dist step-dist step-dist :pos pos))
               (send step-cube :set-color :green)
-              (setq *able* (append *able* (list step-cube))))
+              (pushback step-cube *able*))
           (progn
             (setq dis-step-cube (make-cube step-dist step-dist step-dist :pos pos))
             (send dis-step-cube :set-color :red)
-            (setq *disable* (append *disable* (list dis-step-cube)))
+            (pushback dis-step-cube *disable*)
             (format t "failed to solve ik in both arm~%"))))))
   t))
