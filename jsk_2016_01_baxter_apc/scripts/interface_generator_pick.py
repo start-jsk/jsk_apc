@@ -51,16 +51,6 @@ import jsk_apc2016_common
 #-------------------------------------------------------------------------------
 
 
-def select_item():
-    while True:
-        item_index = random.randint(0,len(items_bins) - 1)
-        if (items_stock[item_index] > 0):
-            item_name = items_bins[item_index]
-            items_stock[item_index] -= 1
-            break
-    return item_name
-
-
 # define our bin and item names to use
 
 CONST_BIN_NAMES = ['bin_A',
@@ -80,6 +70,7 @@ NBINS = len(CONST_BIN_NAMES)
 N1_2_BINS = 3 + random.randint(0,1)
 N3_4_BINS = 5 + random.randint(0,1)
 N5__BINS = NBINS - (N1_2_BINS + N3_4_BINS) #assumed to be more than 5 items
+N_TOTAL_ITEMS = 47  ###CHANGE THIS TO 50 AFTER FULL ITEMS BE DELIEVERED FROM AMAZON
 
 ITEMS_DATA = jsk_apc2016_common.get_object_data()
 CONST_ITEM_NAMES = []
@@ -88,108 +79,124 @@ for item_data in ITEMS_DATA :
     CONST_ITEM_NAMES.append(item_data['name'])
     CONST_N_ITEMS.append(item_data['stock'])
 
-N_TOTAL_ITEMS = 47###CHANGE THIS TO 50 AFTER FULL ITEMS BE DELIEVERED FROM AMAZON
-count_items = N_TOTAL_ITEMS
-parser = argparse.ArgumentParser()
-parser.add_argument("version")
-args = parser.parse_args()
-version = args.version
+class InterfaceGeneratorPick():
+    def __init__ (self):
+        self.count_items = N_TOTAL_ITEMS
+        self.bin_contents = {bin_name:[] for bin_name in CONST_BIN_NAMES}
+        self.bin_list = [1] * NBINS
+        self.bin_check = [False] * NBINS
+        self.items_bins = copy.deepcopy(CONST_ITEM_NAMES) # create a destroyable copy of the items
+        self.items_stock = copy.deepcopy(CONST_N_ITEMS)
+        self.abins = copy.deepcopy(CONST_BIN_NAMES) # create a destroyable copy of the bins
 
-# generate the bin contents data structure
-#-------------------------------------------------------------------------------
-bin_contents = {bin_name:[] for bin_name in CONST_BIN_NAMES}
-bin_list = [1] * NBINS
-bin_check = [False] * NBINS
-items_bins = copy.deepcopy(CONST_ITEM_NAMES) # create a destroyable copy of the items
-items_stock = copy.deepcopy(CONST_N_ITEMS)
-abins = copy.deepcopy(CONST_BIN_NAMES) # create a destroyable copy of the bins
-
-# number of items stored at each bin
-
-for i in range(N5__BINS):
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if bin_check[index] == False:
-            break
-    n_item = random.randint(5,10)
-    bin_list[index] = n_item
-    count_items -= n_item
-    bin_check[index] = True
-
-for i in range(N3_4_BINS):
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if bin_check[index] == False:
-            break
-    n_item = random.randint(3,4)
-    bin_list[index] = n_item
-    count_items -= n_item
-    bin_check[index] = True
-
-while count_items > 6:
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if bin_check[index] == True:
-            break
-    bin_list[index] += 1
-    count_items -= 1
-
-while count_items < N1_2_BINS:
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if (bin_check[index] == True) and (bin_list[index] > 1):
-            break
-    bin_list[index] -= 1
-    count_items += 1
-
-n_1 = - count_items + 2 * N1_2_BINS
-n_2 =  count_items - N1_2_BINS
-
-for i in range(n_2):    
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if bin_check[index] == False:
-            break
-    n_item = 2
-    bin_list[index] = n_item
-    
-if not sum(bin_list) == N_TOTAL_ITEMS:
-    print "warning : number of items unmatched. Recommended to try again"
-    print "number of total items should be: {}".format(N_TOTAL_ITEMS)
-    print "sum of items in bin: {}".format(sum(bin_list))
+    def run(self):
+        self.num_items_bin()
+        self.select_item_bin()
+        self.gen_workorder()
 
 
+    # number of items stored at each bin
+    def num_items_bin(self):
+        for i in range(N5__BINS):
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if self.bin_check[index] == False:
+                    break
+            n_item = random.randint(5,10)
+            self.bin_list[index] = n_item
+            self.count_items -= n_item
+            self.bin_check[index] = True
 
-# generate all item bins
-# make two bin with multiple copy of items
+        for i in range(N3_4_BINS):
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if self.bin_check[index] == False:
+                    break
+            n_item = random.randint(3,4)
+            self.bin_list[index] = n_item
+            self.count_items -= n_item
+            self.bin_check[index] = True
 
-for i in range(0,NBINS):
-    bin_name = random.choice(abins)
-    abins.remove(bin_name)
+        while self.count_items > 6:
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if self.bin_check[index] == True:
+                    break
+            self.bin_list[index] += 1
+            self.count_items -= 1
 
-    for j in range(0,bin_list[i]):
-        item_name = select_item()
-        bin_contents[bin_name].append(item_name)
+        while self.count_items < N1_2_BINS:
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if (self.bin_check[index] == True) and (self.bin_list[index] > 1):
+                    break
+            self.bin_list[index] -= 1
+            self.count_items += 1
 
-no_items = [x for x in items_stock if x < 0]
-if len(no_items) > 0:
-    print "warning: not enough items expected for this json. Please try again"
+        n_1 = - self.count_items + 2 * N1_2_BINS
+        n_2 =  self.count_items - N1_2_BINS
 
-# generate the work order data structure
-#-------------------------------------------------------------------------------
-work_order = [{'bin':bin_name,'item':item_name} for bin_name in CONST_BIN_NAMES
-              for item_name in (bin_contents[bin_name][0:1])]
+        for i in range(n_2):
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if self.bin_check[index] == False:
+                    break
+            n_item = 2
+            self.bin_list[index] = n_item
 
+        if not sum(self.bin_list) == N_TOTAL_ITEMS:
+            print "warning : number of items unmatched. Recommended to try again"
+            print "number of total items should be: {}".format(N_TOTAL_ITEMS)
+            print "sum of items in bin: {}".format(sum(self.bin_list))
 
-# write the dictionary to the appropriately names json file
-#-------------------------------------------------------------------------------
-data = {'bin_contents': bin_contents, 'work_order': work_order}
-this_dir = os.path.dirname(os.path.abspath(__file__))
-output_dir = os.path.join(this_dir,'../json')
-if not os.path.exists(output_dir):
-    os.mkdir(output_dir)
-os.chdir(output_dir)
-with open('pick_layout_'+version+'.json', 'w') as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
-print('pick_layout_'+version+'.json generated at ../json')
-os.chdir(this_dir)
+    # generate all item bins
+    def select_item_bin(self):
+        abins_ = copy.deepcopy(self.abins)
+        bin_contents_ = copy.deepcopy(self.bin_contents)
+        for i in range(0,NBINS):
+            bin_name = random.choice(abins_)
+            abins_.remove(bin_name)
+            item_list = []
+            items_stock_ = copy.deepcopy(self.items_stock)
+            for j in range(0,self.bin_list[i]):
+                while True:
+                    item_index = random.randint(0,len(self.items_bins) - 1)
+                    if (items_stock_[item_index] > 0):
+                        item_name = self.items_bins[item_index]
+                        items_stock_[item_index] -= 1
+                        break
+                item_list.append(item_name)
+            bin_contents_[bin_name] = item_list
+        self.abins = abins_
+        self.items_stock = items_stock_
+        self.bin_contents = bin_contents_
+        no_items = [x for x in self.items_stock if x < 0]
+        if len(no_items) > 0:
+            print "warning: not enough items expected for this json. Please try again"
+
+    # generate the work order data structure
+    def gen_workorder(self):
+        self.work_order = [{'bin':bin_name,'item':item_name} for bin_name in CONST_BIN_NAMES
+                    for item_name in (self.bin_contents[bin_name][0:1])]
+
+    # write the dictionary to the appropriately names json file
+    def write_json(self,version):
+        data = {'bin_contents': self.bin_contents, 'work_order': self.work_order}
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(this_dir,'../json')
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+        os.chdir(output_dir)
+        with open('pick_layout_'+version+'.json', 'w') as outfile:
+            json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
+        print('pick_layout_'+version+'.json generated at ../json')
+        os.chdir(this_dir)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("version")
+    args = parser.parse_args()
+    version = args.version
+    interface_pick = InterfaceGeneratorPick()
+    interface_pick.run()
+    interface_pick.write_json(version)
