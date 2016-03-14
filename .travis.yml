@@ -12,11 +12,6 @@ env:
     - ROSWS=wstool
   matrix:
     - ROS_DISTRO=indigo
-    - ROS_DISTRO=jade
-
-matrix:
-  allow_failures:
-    - env: ROS_DISTRO=jade
 
 script: source .travis/travis.sh
 
