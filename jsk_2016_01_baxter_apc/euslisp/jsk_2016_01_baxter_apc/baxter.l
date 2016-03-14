@@ -2,8 +2,8 @@
 
 (require "package://baxtereus/baxter-util.l")
 
-(unless (find-package "JSK_2015_05_BAXTER_APC")
-  (make-package "JSK_2015_05_BAXTER_APC"))
+(unless (find-package "JSK_2016_01_BAXTER_APC")
+  (make-package "JSK_2016_01_BAXTER_APC"))
 
 (defclass jsk_2016_01_baxter_apc::baxter-robot
   :super baxter-robot
@@ -13,7 +13,7 @@
     (&rest args)
     (send-super* :init args)
     (send (send self :rarm :end-coords)
-          :newcoords (make-coords :pos #f(50 0 310)
+          :newcoords (make-coords :pos #f(0 0 280)
                                   :rpy (float-vector 0 -pi/2 0)))
     (send (send self :larm :end-coords)
           :newcoords (make-coords :pos #f(50 0 310)

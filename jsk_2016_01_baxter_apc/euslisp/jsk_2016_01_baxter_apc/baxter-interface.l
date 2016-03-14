@@ -27,7 +27,7 @@
     (send-super* :init args)
     ;; change robot model in robot-interface class
     (send (send robot :rarm :end-coords)
-          :newcoords (make-coords :pos #f(50 0 310)
+          :newcoords (make-coords :pos #f(0 0 280)
                                   :rpy (float-vector 0 -pi/2 0)))
     (send (send robot :larm :end-coords)
           :newcoords (make-coords :pos #f(50 0 310)
