@@ -72,6 +72,8 @@ def visualize_bin_contents(bin_contents, work_order=None):
         object_imgs[obj] = img
     # draw objects
     for bin, contents in bin_contents.items():
+        if not contents:
+            continue  # skip empty bin
         bin_pt1, bin_pt2 = BIN_REGION[bin]
         bin_region = kiva_pod_img[bin_pt1[1]:bin_pt2[1], bin_pt1[0]:bin_pt2[0]]
         x_num, y_num = _get_tile_shape(len(contents))
