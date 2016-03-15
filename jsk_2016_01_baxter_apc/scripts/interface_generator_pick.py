@@ -46,7 +46,6 @@ import copy
 import json
 import random
 import os
-import argparse
 import jsk_apc2016_common
 #-------------------------------------------------------------------------------
 
@@ -180,23 +179,26 @@ class InterfaceGeneratorPick():
                     for item_name in (self.bin_contents[bin_name][0:1])]
 
     # write the dictionary to the appropriately names json file
-    def write_json(self,version):
+    def write_json(self):
         data = {'bin_contents': self.bin_contents, 'work_order': self.work_order}
         this_dir = os.path.dirname(os.path.abspath(__file__))
         output_dir = os.path.join(this_dir,'../json')
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
         os.chdir(output_dir)
-        with open('pick_layout_'+version+'.json', 'w') as outfile:
-            json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
-        print('pick_layout_'+version+'.json generated at ../json')
-        os.chdir(this_dir)
+        i=1
+        while True:
+            filename  = 'pick_layout_'+str(i)+'.json' 
+            if os.path.isfile(filename):
+                i +=1
+            else:
+                with open(filename, 'w') as outfile:
+                    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
+                print(filename+ ' generated at ../json')
+                os.chdir(this_dir)
+                break
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("version")
-    args = parser.parse_args()
-    version = args.version
     interface_pick = InterfaceGeneratorPick()
     interface_pick.run()
-    interface_pick.write_json(version)
+    interface_pick.write_json()
