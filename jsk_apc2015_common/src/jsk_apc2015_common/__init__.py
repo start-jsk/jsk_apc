@@ -35,7 +35,7 @@ def load_json(json_file):
 
 
 def _get_tile_shape(img_num):
-    x_num = 1
+    x_num = 0
     y_num = int(round((math.sqrt(img_num))))
     while x_num * y_num < img_num:
         x_num += 1
