@@ -13,11 +13,14 @@ Real world demonstration for APC2015 can be done on ``baxter@sheeta.jsk.imi.i.u-
 
 ```bash
 
+baxter@sheeta $ roscd jsk_apc && git checkout 0.2.2
+
 baxter@sheeta $ roslaunch jsk_2015_05_baxter_apc baxter.launch
 baxter@sheeta $ roslaunch jsk_2015_05_baxter_apc setup_torso.launch
 
 baxter@sheeta $ ssh doura
 baxter@doura $ tmux
+baxter@doura $ roscd jsk_apc && git checkout 0.2.2
 # on a tmux session
 baxter@doura $ sudo -s  # necessary for launch kinect2 with ssh login
 baxter@doura $ roslaunch jsk_2015_05_baxter_apc setup_head.launch
