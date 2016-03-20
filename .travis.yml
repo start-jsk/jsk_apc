@@ -10,6 +10,7 @@ env:
     - USE_DEB=true
     - ROS_PARALLEL_JOBS="-j8"
     - ROSWS=wstool
+    - ROSDEP_ADDITIONAL_OPTIONS="-q -n --ignore-src"
   matrix:
     - ROS_DISTRO=indigo
 
