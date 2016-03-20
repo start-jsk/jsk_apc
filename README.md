@@ -5,6 +5,10 @@ jsk\_apc
 [![Gitter](https://badges.gitter.im/start-jsk/jsk_apc.svg)](https://gitter.im/start-jsk/jsk_apc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
+*jsk_apc* is a stack of ROS packages for [Amazon Picking Challenge](http://amazonpickingchallenge.org) mainly developed by JSK lab.
+The documentation is available at [here](jsk-apc.readthedocs.org).
+
+
 Usage
 -----
 
