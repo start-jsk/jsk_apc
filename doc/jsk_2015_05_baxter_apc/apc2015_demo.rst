@@ -21,14 +21,14 @@ Real world demonstration for APC2015 can be done on ``baxter@sheeta.jsk.imi.i.u-
   baxter@doura $ roslaunch jsk_2015_05_baxter_apc setup_head.launch
   # detach from the tmux session and logout from doura here
 
-  baxter@sheeta $ roslaunch jsk_2015_05_baxter_apc main.launch json:=$(rospack find jsk_2015_05_baxter_apc)/json/demo_1.json
+  baxter@sheeta $ roslaunch jsk_2015_05_baxter_apc main.launch json:=$(rospack find jsk_2015_05_baxter_apc)/json/layout_12.json
 
   # optional visualization
   $ rviz -d $(rospack find jsk_2015_05_baxter_apc)/rvizconfig/segmentation.rviz  # check object segmentation in each bin
   $ rviz -d $(rospack find jsk_2015_05_baxter_apc)/rvizconfig/real_demo.rviz  # visualization for demo
 
 
-https://github.com/start-jsk/jsk_apc/blob/master/jsk_2015_05_baxter_apc/json/demo_1.json
+https://github.com/start-jsk/jsk_apc/blob/master/jsk_2015_05_baxter_apc/json/layout_12.json
 
 .. image:: _images/setup_demo_1.jpg
    :width: 16%

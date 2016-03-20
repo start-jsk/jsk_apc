@@ -39,4 +39,4 @@ Example
 
 .. code-block:: bash
 
-  rosrun jsk_2015_05_baxter_apc bin_contents.py _json:=$(rospack find jsk_2015_05_baxter_apc)/json/apc2015_layout1.json
+  rosrun jsk_2015_05_baxter_apc bin_contents.py _json:=$(rospack find jsk_2015_05_baxter_apc)/json/apc2015_layout_1.json
