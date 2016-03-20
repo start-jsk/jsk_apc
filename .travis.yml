@@ -13,7 +13,14 @@ env:
   matrix:
     - ROS_DISTRO=indigo
 
-script: source .travis/travis.sh
+script:
+  # build & test ROS packages
+  - source .travis/travis.sh
+  # build doc
+  - cd doc
+  - unset PYTHONPATH  # cleanup for virtualenv
+  - source setup.sh
+  - make html
 
 notifications:
   email:
