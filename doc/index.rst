@@ -16,3 +16,4 @@ This repository contains following ros packages:
    :maxdepth: 2
 
    jsk_2015_05_baxter_apc/index
+   jsk_apc2015_common/index
