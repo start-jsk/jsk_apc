@@ -9,7 +9,7 @@ jsk\_apc
 Usage
 -----
 
-See [jsk_2015_05_baxter_apc](jsk_2015_05_baxter_apc#jsk_2015_05_baxter_apc).
+See [jsk_2015_05_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2015_05_baxter_apc/index.html).
 
 
 Install
