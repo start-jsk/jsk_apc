@@ -11,11 +11,14 @@ Rules
 -----
 
 1. It abandon bins whose target object is listed below:
-  - genuine_joe_plastic_stir_sticks
-  - cheezit_big_original
-  - rolodex_jumbo_pencil_cup
-  - champion_copper_plus_spark_plug
-  - oreo_mega_stuf
+  - genuine_joe_plastic_stir_sticks (big & heavy)
+  - cheezit_big_original (big & heavy)
+  - rolodex_jumbo_pencil_cup (many holes)
+  - champion_copper_plus_spark_plug (small)
+  - oreo_mega_stuf (heavy)
+
+.. image:: _images/abandon_objects.png
+
 2. Left bins are assigned to left arm, vice vasa.
 3. Center bins are assigned to one arm (left or right).
 
