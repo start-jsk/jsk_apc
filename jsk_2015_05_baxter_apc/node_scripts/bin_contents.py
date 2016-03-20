@@ -31,7 +31,7 @@ def main():
                               Int32Stamped, queue_size=1)
         pubs_n_obj.append(pub)
 
-    pub_contents = rospy.Publisher('/bin_contents', BinContentsArray, queue_size=1)
+    pub_contents = rospy.Publisher('~', BinContentsArray, queue_size=1)
     rate = rospy.Rate(rospy.get_param('rate', 1))
     while not rospy.is_shutdown():
         pub_contents.publish(msg)

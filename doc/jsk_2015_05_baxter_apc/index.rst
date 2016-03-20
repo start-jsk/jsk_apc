@@ -6,9 +6,11 @@ jsk_2015_05_baxter_apc
 
 .. toctree::
    :maxdepth: 1
+   :glob:
 
    apc2015_demo
    apc2015_demo_sim
+   nodes/index
 
 
 Shared Files
