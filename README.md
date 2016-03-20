@@ -6,6 +6,10 @@ jsk\_apc
 [![Documentation Status](https://readthedocs.org/projects/jsk-apc/badge/?version=latest)](http://jsk-apc.readthedocs.org/en/latest/?badge=latest)
 
 
+*jsk_apc* is a stack of ROS packages for [Amazon Picking Challenge](http://amazonpickingchallenge.org) mainly developed by JSK lab.
+The documentation is available at [here](jsk-apc.readthedocs.org).
+
+
 Usage
 -----
 
