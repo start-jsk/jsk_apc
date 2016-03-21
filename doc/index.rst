@@ -17,3 +17,4 @@ This repository contains following ros packages:
 
    jsk_2015_05_baxter_apc/index
    jsk_apc2015_common/index
+   jsk_apc2016_common/index
