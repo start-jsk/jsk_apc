@@ -31,3 +31,4 @@ Example
 .. code-block:: bash
 
   rosrun jsk_apc2015_common visualize_json.py $(rospack find jsk_2015_05_baxter_apc)/json/layout_1.json
+  rosrun image_view image_view image:=/visualize_json/output
