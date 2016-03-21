@@ -9,4 +9,4 @@ jsk_apc2015_common
    :glob:
 
    berkeley_dataset
-   nodes/*
+   nodes/index
