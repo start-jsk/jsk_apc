@@ -11,6 +11,7 @@ jsk_2015_05_baxter_apc
    apc2015_demo
    apc2015_demo_sim
    nodes/index
+   euslisp/index
 
 
 Shared Files
