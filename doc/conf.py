@@ -8,10 +8,15 @@ import xml.etree.ElementTree
 
 from recommonmark.parser import CommonMarkParser
 
+sys.path.insert(0, '../jsk_apc2015_common/src')
 
-extensions = [
-    'sphinx.ext.mathjax',
-]
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.autosummary',
+              'sphinx.ext.doctest',
+              'sphinx.ext.intersphinx',
+              'sphinx.ext.mathjax',
+              'sphinx.ext.napoleon',
+              'sphinx.ext.viewcode']
 
 templates_path = ['_templates']
 
@@ -319,3 +324,8 @@ epub_exclude_files = ['search.html']
 
 # If false, no index is generated.
 #epub_use_index = True
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/2/', None),
+    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+}
