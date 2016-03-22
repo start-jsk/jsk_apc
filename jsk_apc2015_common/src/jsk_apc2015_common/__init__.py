@@ -10,8 +10,6 @@ import rospkg
 
 
 PKG = 'jsk_apc2015_common'
-rp = rospkg.RosPack()
-PKG_PATH = rp.get_path(PKG)
 
 
 def get_object_list():
@@ -23,7 +21,8 @@ def get_object_list():
     Returns:
         objects (list): List of object name.
     """
-    yaml_file = osp.join(PKG_PATH, 'data/object_list.yml')
+    pkg_path = rospkg.RosPack().get_path(PKG)
+    yaml_file = osp.join(pkg_path, 'data/object_list.yml')
     with open(yaml_file) as f:
         objects = yaml.load(f)
     return objects
@@ -68,7 +67,8 @@ def visualize_bin_contents(bin_contents, work_order=None):
     """
     from jsk_apc2015_common.util import rescale
     # initialize variables
-    kiva_pod_img = cv2.imread(osp.join(PKG_PATH, 'models/kiva_pod/image.jpg'))
+    pkg_path = rospkg.RosPack().get_path(PKG)
+    kiva_pod_img = cv2.imread(osp.join(pkg_path, 'models/kiva_pod/image.jpg'))
     BIN_REGION = {
         'a': ((0, 50), (640, 610)),
         'b': ((640, 50), (1410, 610)),
@@ -87,7 +87,7 @@ def visualize_bin_contents(bin_contents, work_order=None):
     object_list = get_object_list()
     object_imgs = {}
     for obj in object_list:
-        img_path = osp.join(PKG_PATH, 'models/{obj}/image.jpg'.format(obj=obj))
+        img_path = osp.join(pkg_path, 'models/{obj}/image.jpg'.format(obj=obj))
         img = cv2.imread(img_path)
         h, w = img.shape[:2]
         if h > w:
