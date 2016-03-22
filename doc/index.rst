@@ -13,6 +13,12 @@ This repository contains following ros packages:
 
 
 .. toctree::
+   :maxdepth: 1
+
+   tips_faq
+
+
+.. toctree::
    :maxdepth: 2
 
    jsk_2015_05_baxter_apc/index
