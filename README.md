@@ -82,13 +82,3 @@ Host baxter
   HostName baxter.jsk.imi.i.u-tokyo.ac.jp
   User ruser  # password: rethink
 ```
-
-
-If you have problem...
-----------------------
-
-* Run below to synchronize the time with robot. Time synchronization is crucial.:
-
-```
-$ sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
-```
