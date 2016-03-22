@@ -6,6 +6,6 @@ jsk_apc2016_common
 
 .. toctree::
    :maxdepth: 1
-   :glob:
 
    nodes/index
+   python
