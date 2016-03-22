@@ -13,26 +13,40 @@ import numpy as np
 import jsk_apc2015_common
 import rospkg
 
-rp = rospkg.RosPack()
+
 PKG = 'jsk_apc2016_common'
-PKG_PATH = rp.get_path(PKG)
-OLD_PKG = 'jsk_apc2015_common'##Delete this path and change all OLD_PKG_PATH to PKG_PATH after new objects for apc2016 arrive from Amazon
-OLD_PKG_PATH = rp.get_path(OLD_PKG)
 
 
 def get_object_data():
+    """Returns object data.
+
+    Returns:
+        data (dict): objects data wrote in object_data.yaml file.
+    """
+    rp = rospkg.RosPack()
     fname = osp.join(rp.get_path(PKG), 'data/object_data.yaml')
     data = yaml.load(open(fname))
     return data
 
 
 def visualize_stow_contents(work_order):
+    """Visualize stow contents with passed work order.
+
+    Args:
+        work_order (list): objects in the stow.
+
+    Returns:
+        tote_img (~numpy.ndarray): image of objects over the tote.
+    """
     from jsk_apc2015_common.util import rescale
-    tote_img = cv2.imread(osp.join(PKG_PATH, 'models/tote/image.jpg'))
+    rp = rospkg.RosPack()
+    pkg_path = rp.get_path(PKG)
+    tote_img = cv2.imread(osp.join(pkg_path, 'models/tote/image.jpg'))
     object_list = jsk_apc2015_common.get_object_list()
     object_imgs = {}
+    pkg_path = rp.get_path('jsk_apc2015_common')
     for obj in object_list:
-        img_path = osp.join(OLD_PKG_PATH, 'models/{obj}/image.jpg'.format(obj=obj))
+        img_path = osp.join(pkg_path, 'models/{obj}/image.jpg'.format(obj=obj))
         img = cv2.imread(img_path)
         h, w = img.shape[:2]
         if h > w:
@@ -74,6 +88,14 @@ def _load_stow_json(json_file):
 
 
 def visualize_stow_json(json_file):
+    """Visualize json file for Stow Task in APC2016.
+
+    Args:
+        json_file (str): Path to the json file.
+
+    Returns:
+        dest (~numpy.ndarray): Image of objects in bins and tote.
+    """
     bin_contents, work_order = _load_stow_json(json_file)
     # draw bin contents
     kiva_pod_img = jsk_apc2015_common.visualize_bin_contents(bin_contents)

@@ -8,7 +8,9 @@ import xml.etree.ElementTree
 
 from recommonmark.parser import CommonMarkParser
 
+# Add python libraries to sys.path for autodoc
 sys.path.insert(0, '../jsk_apc2015_common/src')
+sys.path.insert(0, '../jsk_apc2016_common/python')
 
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
