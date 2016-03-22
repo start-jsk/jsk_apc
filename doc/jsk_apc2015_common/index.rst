@@ -10,3 +10,4 @@ jsk_apc2015_common
 
    berkeley_dataset
    nodes/index
+   python

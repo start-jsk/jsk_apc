@@ -15,6 +15,14 @@ PKG_PATH = rp.get_path(PKG)
 
 
 def get_object_list():
+    """Returns the object name list for APC2015.
+
+    Args:
+        None.
+
+    Returns:
+        objects (list): List of object name.
+    """
     yaml_file = osp.join(PKG_PATH, 'data/object_list.yml')
     with open(yaml_file) as f:
         objects = yaml.load(f)
@@ -22,6 +30,11 @@ def get_object_list():
 
 
 def load_json(json_file):
+    """Load the json file which is interface for APC2015.
+
+    Args:
+        json_file (str): Path to the json file.
+    """
     json_data = json.load(open(json_file))
     bin_contents = {}
     for bin, contents in json_data['bin_contents'].items():
@@ -43,6 +56,16 @@ def _get_tile_shape(img_num):
 
 
 def visualize_bin_contents(bin_contents, work_order=None):
+    """Returns visualized image of bin contents.
+
+    Args:
+        bin_contents (dict): contents of each bin.
+        work_order (dict): target objects for each bin (default: ``None``).
+
+    Returns:
+        kiva_pod_img (~numpy.ndarray):
+            visualized image of listed objects over the Kiva Pod image.
+    """
     from jsk_apc2015_common.util import rescale
     # initialize variables
     kiva_pod_img = cv2.imread(osp.join(PKG_PATH, 'models/kiva_pod/image.jpg'))
@@ -110,7 +133,15 @@ def visualize_bin_contents(bin_contents, work_order=None):
 
 
 def visualize_json(json_file):
-    """Visualize bin_contents and work_order with a json file"""
+    """Visualize bin_contents and work_order with a json file
+
+    Args:
+        json_file (``str``): Path to the json file.
+
+    Returns:
+        kiva_pod_img (~numpy.ndarray):
+            visualized image of listed objects over the Kiva Pod image.
+    """
     # load data from json
     bin_contents, work_order = load_json(json_file)
     return visualize_bin_contents(bin_contents, work_order)
