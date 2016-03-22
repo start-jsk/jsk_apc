@@ -178,4 +178,6 @@ catkin_package(
 # endif()
 
 ## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_nosetests(python/jsk_apc2016_common/tests)
+endif()
