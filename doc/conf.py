@@ -8,6 +8,8 @@ import xml.etree.ElementTree
 
 from recommonmark.parser import CommonMarkParser
 
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
 # Add python libraries to sys.path for autodoc
 sys.path.insert(0, '_dummy_non_ros_env')  # to avoid ImportError
 sys.path.insert(0, '../jsk_apc2015_common/src')
@@ -75,7 +77,8 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+if not on_rtd:
+    html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -107,6 +110,15 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 html_style = 'css/modified_theme.css'
+
+if on_rtd:
+    html_context = {
+        'css_files': [
+            'https://media.readthedocs.org/css/sphinx_rtd_theme.css',
+            'https://media.readthedocs.org/css/readthedocs-doc-embed.css',
+            '_static/css/modified_theme.css',
+        ],
+    }
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
