@@ -6,7 +6,7 @@ env:
   global:
     - BUILDER=catkin
     - NO_SUDO=true
-    - NOT_TEST_INSTALL=true
+    - NOT_TEST_INSTALL=false
     - USE_DEB=true
     - ROS_PARALLEL_JOBS="-j8"
     - ROSWS=wstool
