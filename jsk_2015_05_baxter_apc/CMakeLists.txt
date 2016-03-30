@@ -189,6 +189,12 @@ target_link_libraries(gazebo_ros_vacuum_gripper ${GAZEBO_LIBRARIES} ${catkin_LIB
 #   PATTERN ".svn" EXCLUDE
 # )
 
+install(DIRECTORY
+  config euslisp launch meshes node_scripts urdf
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS
+)
+
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(TARGETS
   gazebo_ros_vacuum_gripper

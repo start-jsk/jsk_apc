@@ -160,6 +160,12 @@ catkin_package(
 #   PATTERN ".svn" EXCLUDE
 # )
 
+install(DIRECTORY
+  models
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS
+)
+
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES
 #   # myfile1
