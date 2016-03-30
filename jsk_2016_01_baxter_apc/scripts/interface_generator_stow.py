@@ -47,18 +47,7 @@ import copy
 import json
 import random
 import os
-import argparse
 import jsk_apc2016_common
-#-------------------------------------------------------------------------------
-
-def select_item():
-    while True:
-        item_index = random.randint(0,len(items_bins) - 1)
-        if (items_stock[item_index] > 0):
-            item_name = items_bins[item_index]
-            items_stock[item_index] -= 1
-            break
-    return item_name
 
 # define our bin and item names to use
 CONST_BIN_NAMES = ['bin_A',
@@ -79,6 +68,8 @@ NBINS = len(CONST_BIN_NAMES)
 N1_2_BINS = 3 + random.randint(0,1)
 N3_4_BINS = 5 + random.randint(0,1)
 N5__BINS = NBINS - (N1_2_BINS + N3_4_BINS) #assumed to be more than 5 items
+NTOTE_TOTAL = 12 # total number of items
+N_TOTAL_ITEMS = 35 ###CHANGE THIS TO 40 AFTER FULL ITEMS BE DELIEVERED FROM AMAZON
 
 ITEMS_DATA = jsk_apc2016_common.get_object_data()
 CONST_ITEM_NAMES = []
@@ -87,105 +78,140 @@ for item_data in ITEMS_DATA :
     CONST_ITEM_NAMES.append(item_data['name'])
     CONST_N_ITEMS.append(item_data['stock'])
 
-NTOTE_TOTAL = 12 # total number of items
-N_TOTAL_ITEMS = 35 ###CHANGE THIS TO 40 AFTER FULL ITEMS BE DELIEVERED FROM AMAZON
+class InterfaceGeneratorStow():
 
-count_items = N_TOTAL_ITEMS
-parser = argparse.ArgumentParser()
-parser.add_argument("version")
-args = parser.parse_args()
-version = args.version
+    def __init__(self):
+    # generate the bin contents data structure
+    #-------------------------------------------------------------------------------
+        self.count_items = N_TOTAL_ITEMS
+        self.bin_contents = {bin_name:[] for bin_name in CONST_BIN_NAMES}
+        self.tote_contents = []
+        self.bin_list = [1] * len(CONST_BIN_NAMES)
+        self.bin_check = [False] * len(CONST_BIN_NAMES)
+        self.items_bins = copy.deepcopy(CONST_ITEM_NAMES) # create a destroyable copy of the items
+        self.items_stock = copy.deepcopy(CONST_N_ITEMS)
+        self.abins = copy.deepcopy(CONST_BIN_NAMES) # create a destroyable copy of the bins
 
-# generate the bin contents data structure
-#-------------------------------------------------------------------------------
-bin_contents = {bin_name:[] for bin_name in CONST_BIN_NAMES}
-tote_contents = []
-bin_list = [1] * len(CONST_BIN_NAMES)
-bin_check = [False] * len(CONST_BIN_NAMES)
-items_bins = copy.deepcopy(CONST_ITEM_NAMES) # create a destroyable copy of the items
-items_stock = copy.deepcopy(CONST_N_ITEMS)
-abins = copy.deepcopy(CONST_BIN_NAMES) # create a destroyable copy of the bins
+    def run(self):
+        self.select_tote()
+        self.num_items_bin()
+        self.select_item_bin()
 
-# generate tote items. Some items are chosen multiple times
-for i in range(0,NTOTE_TOTAL):
-    item_name = select_item()
-    tote_contents.append(item_name)
+    def select_tote(self):
+        # generate tote items. Some items are chosen multiple times
+        for i in range(0,NTOTE_TOTAL):
+            item_name = self.select_tote_item()
+            self.tote_contents.append(item_name)
 
-for i in range(N5__BINS):
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if bin_check[index] == False:
-            break
-    n_item = random.randint(5,10)
-    bin_list[index] = n_item
-    count_items -= n_item
-    bin_check[index] = True
+    def num_items_bin(self):
+        for i in range(N5__BINS):
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if self.bin_check[index] == False:
+                    break
+            n_item = random.randint(5,10)
+            self.bin_list[index] = n_item
+            self.count_items -= n_item
+            self.bin_check[index] = True
 
-for i in range(N3_4_BINS):
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if bin_check[index] == False:
-            break
-    n_item = random.randint(3,4)
-    bin_list[index] = n_item
-    count_items -= n_item
-    bin_check[index] = True
+        for i in range(N3_4_BINS):
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if self.bin_check[index] == False:
+                    break
+            n_item = random.randint(3,4)
+            self.bin_list[index] = n_item
+            self.count_items -= n_item
+            self.bin_check[index] = True
 
-while count_items > 6:
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if bin_check[index] == True:
-            break
-    bin_list[index] += 1
-    count_items -= 1
+        while self.count_items > 6:
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if self.bin_check[index] == True:
+                    break
+            self.bin_list[index] += 1
+            self.count_items -= 1
 
-while count_items < N1_2_BINS:
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if (bin_check[index] == True) and (bin_list[index] > 1):
-            break
-    bin_list[index] -= 1
-    count_items += 1
+        while self.count_items < N1_2_BINS:
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if (self.bin_check[index] == True) and (self.bin_list[index] > 1):
+                    break
+            self.bin_list[index] -= 1
+            self.count_items += 1
 
-n_1 = - count_items + 2 * N1_2_BINS
-n_2 =  count_items - N1_2_BINS
+        n_1 = - self.count_items + 2 * N1_2_BINS
+        n_2 =  self.count_items - N1_2_BINS
 
-for i in range(n_2):    
-    while True:
-        index = random.randint(0, NBINS - 1)
-        if bin_check[index] == False:
-            break
-    n_item = 2
-    bin_list[index] = n_item
+        for i in range(n_2):
+            while True:
+                index = random.randint(0, NBINS - 1)
+                if self.bin_check[index] == False:
+                    break
+            n_item = 2
+            self.bin_list[index] = n_item
 
-if not sum(bin_list) == N_TOTAL_ITEMS:
-    print "warning : number of items unmatched. Recommended to try again"
-    print "number of total items should be: {}".format(N_TOTAL_ITEMS)
-    print "sum of items in bin: {}".format(sum(bin_list))
+        if not sum(self.bin_list) == N_TOTAL_ITEMS:
+            print "warning : number of items unmatched. Recommended to try again"
+            print "number of total items should be: {}".format(N_TOTAL_ITEMS)
+            print "sum of items in bin: {}".format(sum(self.bin_list))
 
-# generate all item bins
-# make two bin with multiple copy of items
+    # generate all item bins
+    def select_item_bin(self):
+        abins_ = copy.deepcopy(self.abins)
+        bin_contents_ = copy.deepcopy(self.bin_contents)
+        for i in range(0,NBINS):
+            bin_name = random.choice(abins_)
+            abins_.remove(bin_name)
+            item_list = []
+            items_stock_ = copy.deepcopy(self.items_stock)
+            for j in range(0,self.bin_list[i]):
+                while True:
+                    item_index = random.randint(0,len(self.items_bins) - 1)
+                    if (items_stock_[item_index] > 0):
+                        item_name = self.items_bins[item_index]
+                        items_stock_[item_index] -= 1
+                        break
+                item_list.append(item_name)
+            bin_contents_[bin_name] = item_list
+        self.abins = abins_
+        self.items_stock = items_stock_
+        self.bin_contents = bin_contents_
 
-for i in range(0,NBINS):
-    bin_name = random.choice(abins)
-    abins.remove(bin_name)
-    for j in range(0,bin_list[i]):
-        item_name = select_item()
-        bin_contents[bin_name].append(item_name)
+        no_items = [x for x in self.items_stock if x < 0]
+        if len(no_items) > 0:
+            print "warning: not enough items expected for this json. Please try again"
 
-no_items = [x for x in items_stock if x < 0]
-if len(no_items) > 0:
-    print "warning: not enough items expected for this json. Please try again"
+    def select_tote_item(self):
+        while True:
+            item_index = random.randint(0,len(self.items_bins) - 1)
+            if (self.items_stock[item_index] > 0):
+                item_name = self.items_bins[item_index]
+                self.items_stock[item_index] -= 1
+                break
+        return item_name
 
-# write the dictionary to the appropriately names json file
-#-------------------------------------------------------------------------------
-data = {'bin_contents': bin_contents, 'work_order': tote_contents}
-this_dir = os.path.dirname(os.path.abspath(__file__))
-output_dir = os.path.join(this_dir,'../json')
-if not os.path.exists(output_dir):
-    os.mkdir(output_dir)
-os.chdir(output_dir)
-with open('stow_layout_'+version+'.json', 'w') as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
-print('stow_layout_'+version+'.json generated at ../json')
-os.chdir(this_dir)
+    # write the dictionary to the appropriately names json file
+    def write_json(self):
+        data = {'bin_contents': self.bin_contents, 'work_order': self.tote_contents}
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(this_dir,'../json')
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+        os.chdir(output_dir)
+        i=1
+        while True:
+            filename  = 'stow_layout_'+str(i)+'.json' 
+            if os.path.isfile(filename):
+                i +=1
+            else:
+                with open(filename, 'w') as outfile:
+                    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
+                print(filename+ ' generated at ../json')
+                os.chdir(this_dir)
+                break
+
+if __name__ == "__main__":
+    interface_stow = InterfaceGeneratorStow()
+    interface_stow.run()
+    interface_stow.write_json()

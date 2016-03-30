@@ -1,0 +1,18 @@
+{
+  "bin_contents":
+  {
+    "bin_F":
+    [
+      "safety_works_safety_glasses",
+      "paper_mate_12_count_mirado_black_warrior"
+    ]
+  },
+
+  "work_order":
+  [
+    {
+      "bin": "bin_F",
+      "item": "safety_works_safety_glasses"
+    }
+  ]
+}

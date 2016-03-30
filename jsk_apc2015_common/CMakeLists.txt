@@ -177,7 +177,10 @@ catkin_package(
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
-## Add folders to be run by python nosetests
 if(CATKIN_ENABLE_TESTING)
+  find_package(roslint REQUIRED)
+  file(GLOB_RECURSE PYTHON_FILES src/*.py)
+  roslint_python(${PYTHON_FILES})
+  roslint_add_test()
   catkin_add_nosetests(src/jsk_apc2015_common/tests)
 endif()

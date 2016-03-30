@@ -20,7 +20,9 @@ def cb_kcluster(msg):
 
 
 def cb(msg):
-    global expected_n_cluster, reconfig_n_limit, reconfig_n_times
+    global expected_n_cluster
+    global reconfig_n_limit, reconfig_n_times
+    global default_tolerance
     global sub_kcluster, sub_ncluster
     with lock:
         if reconfig_n_times > reconfig_n_limit:
@@ -43,7 +45,7 @@ def cb(msg):
             cfg['tolerance'] -= delta
         if cfg['tolerance'] < 0.001:
             print('Invalid tolerance, resetting')
-            cfg['tolerance'] = 0.02
+            cfg['tolerance'] = default_tolerance
         print('''\
 Expected n_cluster: {0}
 Actual   n_cluster: {1}
@@ -58,10 +60,11 @@ if __name__ == '__main__':
     reconfig_eps = rospy.get_param('~reconfig_eps', 0.2)
     reconfig_n_limit = rospy.get_param('~reconfig_n_limit', 10)
     node_name = rospy.get_param('~node')
+    default_tolerance = rospy.get_param('~default_tolerance')
     client = dynamic_reconfigure.client.Client(node_name)
     sub_kcluster = rospy.Subscriber('~k_cluster', Int32Stamped, cb_kcluster)
     sub_ncluster = rospy.Subscriber(
         '{node}/cluster_num'.format(node=node_name), Int32Stamped, cb)
-    cfg = {'tolerance': 0.02}
+    cfg = {'tolerance': default_tolerance}
     client.update_configuration(cfg)
     rospy.spin()
