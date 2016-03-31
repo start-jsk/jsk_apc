@@ -49,8 +49,21 @@ def get_work_order_msg(json_file):
         'champion_copper_plus_spark_plug',
         'oreo_mega_stuf',
     ]
+    abandon_bin_objects = [
+        'rolodex_jumbo_pencil_cup',
+        'oreo_mega_stuf'
+    ]
     for bin_, target_object in work_order:
         if target_object in abandon_objects:
+    bin_contents = dict(get_bin_contents(json_file=json_file))
+    for bin_, target_object in work_order:
+        if target_object in abandon_target_objects:
+            continue
+        bin_contents_bool = False
+        for bin_object in bin_contents[bin_]:
+            if bin_object in abandon_bin_objects:
+                bin_contents_bool = True
+        if bin_contents_bool:
             continue
         if bin_ in 'abdegj':
             msg['left'].array.append(WorkOrder(bin=bin_, object=target_object))
