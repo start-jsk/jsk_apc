@@ -4,11 +4,11 @@
 
 (ros::roseus "robot_main")
 
-(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 
 (defun apc-init (&optional (ctype :default-controller))
-  (jsk_2015_05_baxter_apc::baxter-init :ctype ctype)
+  (jsk_2016_01_baxter_apc::baxter-init :ctype ctype)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
   (objects (list *baxter*))
@@ -89,10 +89,13 @@
               (ros::ros-info "detected_object_index: ~A" (send *ri* :detect-target-object-in-bin target-obj target-bin))
               (setq graspingp
                     (send *ri* :pick-object arm target-bin
-                          :n-trial 2
+                          :n-trial 1
                           :n-trial-same-pos 1
-                          :object-index (send *ri* :detect-target-object-in-bin target-obj target-bin))
+                          :object-index (send *ri* :detect-target-object-in-bin target-obj target-bin)
+                          :do-stop-grasp nil
+                          )
                     )
+              (setq graspingp t)  ;; don't trust pressure sensor
               (incf target-n-tried)
               (setq state :verify_object)
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
@@ -108,6 +111,8 @@
               (setq verify-ret (send *ri* :verify-object arm target-obj))
               (if (eq verify-ret :timeout)
                 (progn
+                  ;; there is no object
+                  (ros::ros-info "[main] arm: ~a, detect no object in hand with vision" arm)
                   (send *ri* :stop-grasp arm)
                   (send *ri* :angle-vector-sequence
                         (list
