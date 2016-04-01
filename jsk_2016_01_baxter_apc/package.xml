@@ -19,6 +19,7 @@
   <run_depend>baxter_sim_io</run_depend>
   <run_depend>baxter_sim_controllers</run_depend>
   <run_depend>baxter_gazebo</run_depend>
+  <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
 
   <export>
