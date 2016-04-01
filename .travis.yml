@@ -23,6 +23,8 @@ script:
   - source setup.sh
   - make html
 
+cache: ccache
+
 notifications:
   email:
     on_success: always
