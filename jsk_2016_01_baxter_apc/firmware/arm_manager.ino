@@ -43,7 +43,12 @@ Servo myservo;
 
 void servoCb(const std_msgs::Int16& angle_msg)
 {
-    myservo.write(angle_msg.data);
+    int angle;
+    angle = angle_msg.data;
+    if (angle < 0) angle = 0;
+    if (angle > 180) angle = 180;
+
+    myservo.write(angle);
 }
 
 ros::Subscriber<std_msgs::Int16> servo_sub("vacuum_gripper/limb/right/servo", &servoCb);
@@ -89,7 +94,7 @@ void loop() {
 
 void init_servo()
 {
-    myservo.attach(9);
+    myservo.attach(5);
 }
 
 void initBME()
