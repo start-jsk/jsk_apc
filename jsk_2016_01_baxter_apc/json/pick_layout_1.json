@@ -24,7 +24,7 @@
             "genuine_joe_plastic_stir_sticks",
             "first_years_take_and_toss_straw_cup",
             "mead_index_cards",
-            "kong_duck_dog_toy",
+            "oreo_mega_stuf",
             "rolodex_jumbo_pencil_cup"
         ],
         "bin_E": [
@@ -34,7 +34,7 @@
             "sharpie_accent_tank_style_highlighters"
         ],
         "bin_F": [
-            "oreo_mega_stuf"
+            "kong_duck_dog_toy"
         ],
         "bin_G": [
             "mark_twain_huckleberry_finn",
@@ -45,7 +45,7 @@
             "oreo_mega_stuf",
             "stanley_66_052",
             "paper_mate_12_count_mirado_black_warrior",
-	    "feline_greenies_dental_treats",
+            "feline_greenies_dental_treats",
             "munchkin_white_hot_duck_bath_toy",
             "munchkin_white_hot_duck_bath_toy"
         ],
@@ -54,18 +54,18 @@
             "mommys_helper_outlet_plugs",
             "kyjen_squeakin_eggs_plush_puppies",
             "first_years_take_and_toss_straw_cup",
-	    "first_years_take_and_toss_straw_cup",
-	    "munchkin_white_hot_duck_bath_toy",
-	    "kong_sitting_frog_dog_toy",
+            "first_years_take_and_toss_straw_cup",
+            "munchkin_white_hot_duck_bath_toy",
+            "kong_sitting_frog_dog_toy",
             "genuine_joe_plastic_stir_sticks",
-	    "paper_mate_12_count_mirado_black_warrior"
+            "paper_mate_12_count_mirado_black_warrior"
        ],
         "bin_J": [
             "munchkin_white_hot_duck_bath_toy",
             "kyjen_squeakin_eggs_plush_puppies"
         ],
         "bin_K": [
-	    "feline_greenies_dental_treats"
+            "feline_greenies_dental_treats"
         ],
         "bin_L": [
             "genuine_joe_plastic_stir_sticks",
@@ -95,7 +95,7 @@
         },
         {
             "bin": "bin_F",
-            "item": "oreo_mega_stuf"
+            "item": "kong_duck_dog_toy"
         },
         {
             "bin": "bin_G",
@@ -111,7 +111,7 @@
         },
         {
             "bin": "bin_J",
-            "item": "kyjen_squeakin_eggs_plush_puppies"
+            "item": "munchkin_white_hot_duck_bath_toy"
         },
         {
             "bin": "bin_K",
