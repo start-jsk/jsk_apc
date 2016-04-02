@@ -1,7 +1,7 @@
 jsk\_apc
 =======
 
-<img src="_images/icon_white.png" align="right" width="192px" />
+<img src="images/icon_white.png" align="right" width="192px" />
 
 [![](https://travis-ci.org/start-jsk/jsk_apc.svg)](https://travis-ci.org/start-jsk/jsk_apc)
 [![Gitter](https://badges.gitter.im/start-jsk/jsk_apc.svg)](https://gitter.im/start-jsk/jsk_apc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
