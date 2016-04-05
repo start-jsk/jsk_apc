@@ -1,15 +1,12 @@
-sudo: required
+sudo: false
 
 language: generic
-
-dist: trusty
 
 env:
   global:
     - BUILDER=catkin
     - NO_SUDO=true
     - NOT_TEST_INSTALL=false
-    - USE_TRAVIS=true
     - USE_DEB=true
     - ROS_PARALLEL_JOBS="-j8"
     - ROSWS=wstool
@@ -25,8 +22,6 @@ script:
   - unset PYTHONPATH  # cleanup for virtualenv
   - source setup.sh
   - make html
-
-cache: ccache
 
 notifications:
   email:
