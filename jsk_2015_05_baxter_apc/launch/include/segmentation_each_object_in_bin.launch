@@ -43,6 +43,7 @@
 
 
   <!-- grasp planning -->
+  <!--
   <node name="bin_$(arg BIN_NAME)_solidity_rag_merge"
         pkg="jsk_perception" type="solidity_rag_merge.py">
     <remap from="~input" to="$(arg INPUT_DEPTH)" />
@@ -67,6 +68,7 @@
       approximate_sync: true
     </rosparam>
   </node>
+  -->
 
 
 </launch>
