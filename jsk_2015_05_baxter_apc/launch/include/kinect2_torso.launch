@@ -10,8 +10,8 @@
     <arg name="reg_method" value="cpu" />
   </include>
 
-  <node name="doura_static_tf_publisher"
+  <node name="kinect2_torso_tf_publisher"
         pkg="tf" type="static_transform_publisher"
-        args="0.2 0.08 0.45 -0.03 -1.57 3.14 base kinect2_torso_rgb_optical_frame 100" />
+        args="0.19 0.09 0.465 -0.01 -1.57 3.14 base kinect2_torso_rgb_optical_frame 100" />
 
 </launch>
