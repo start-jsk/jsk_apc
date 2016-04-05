@@ -38,6 +38,7 @@
   <run_depend>jsk_rqt_plugins</run_depend>
   <run_depend>sound_play</run_depend>
   <run_depend>std_msgs</run_depend>
+  <run_depend>turtlebot_description</run_depend>
 
   <test_depend>jsk_tools</test_depend>
   <test_depend>rostest</test_depend>
