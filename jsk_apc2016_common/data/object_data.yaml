@@ -1,5 +1,8 @@
 - name: champion_copper_plus_spark_plug
   stock: 1
+  graspability:
+    paralell: 0
+    vacuum: 1
 - name: cheezit_big_original
   stock: 2
 - name: crayola_64_ct
