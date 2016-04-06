@@ -37,4 +37,4 @@
 - git:
     local-name: start-jsk/jsk_apc
     uri: https://github.com/start-jsk/jsk_apc.git
-    version: 0.1.2
+    version: 0.1.3
