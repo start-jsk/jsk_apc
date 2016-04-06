@@ -10,6 +10,7 @@
 
 
   <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin_gtol.launch">
+    <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color" />
     <arg name="INPUT_DEPTH" value="/kinect2_torso/hd/image_depth_rect" />
     <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
     <arg name="MANAGER" value="$(arg MANAGER)" />

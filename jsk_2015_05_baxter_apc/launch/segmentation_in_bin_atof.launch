@@ -1,5 +1,6 @@
 <launch>
 
+  <arg name="INPUT_IMAGE" />
   <arg name="INPUT_DEPTH" />
   <arg name="INPUT_CLOUD" />
   <arg name="MANAGER" />
@@ -65,6 +66,25 @@
     <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_f/point_indices" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
   </include>
+
+
+  <node name="bin_atof_add_cpi"
+        pkg="jsk_recognition_utils" type="add_cluster_indices.py">
+    <rosparam>
+      topics:
+        - bin_a_euclid_clustering/output
+        - bin_b_euclid_clustering/output
+        - bin_c_euclid_clustering/output
+        - bin_d_euclid_clustering/output
+        - bin_e_euclid_clustering/output
+        - bin_f_euclid_clustering/output
+    </rosparam>
+  </node>
+  <node name="bin_atof_img_cpi_decomposer"
+        pkg="jsk_perception" type="image_cluster_indices_decomposer.py">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/cluster_indices" to="bin_atof_add_cpi/output" />
+  </node>
 
 
 </launch>
