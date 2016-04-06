@@ -108,6 +108,7 @@
               (setq verify-ret (send *ri* :verify-object arm target-obj))
               (if (eq verify-ret :timeout)
                 (progn
+                  (ros::ros-info "[main] ~a verify-timeout" arm)
                   (send *ri* :stop-grasp arm)
                   (send *ri* :angle-vector-sequence
                         (list
