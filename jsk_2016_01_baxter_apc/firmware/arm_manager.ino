@@ -3,6 +3,7 @@
 #include <std_msgs/String.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Float32.h>
 #include <std_msgs/Int16.h>
 #include <Servo.h>
 
@@ -25,57 +26,62 @@ int16_t dig_P9;
 ros::NodeHandle nh; //write with IDE
 // ros::NodeHandle_<ArduinoHardware, 1, 2, 512, 512> nh;
 
-std_msgs::Float64 float_msg;
+std_msgs::Float64 pressure_msg;
 std_msgs::Bool bool_msg;
-std_msgs::Bool servo_state_msg;
-std_msgs::Int16 servo_angle_msg;
+std_msgs::Bool servo_torque_msg;
+std_msgs::Float32 servo_angle_msg;
 
-ros::Publisher pressure_pub("vacuum_gripper/limb/right/pressure", &float_msg);
-ros::Publisher state_pub("gripper_grabbed/limb/right/state", &bool_msg);
-ros::Publisher servo_state_pub("vacuum_gripper/limb/right/servo_state_info", &servo_state_msg);
-ros::Publisher servo_angle_pub("vacuum_gripper/limb/right/servo_angle_info", &servo_angle_msg);
+ros::Publisher pressure_pub("gripper_front/limb/right/pressure/state", &pressure_msg);
+ros::Publisher state_pub("gripper_front/limb/right/pressure/grabbed/state", &bool_msg);
+ros::Publisher servo_torque_pub("gripper_front/limb/right/servo/torque/state", &servo_torque_msg);
+ros::Publisher servo_angle_pub("gripper_front/limb/right/servo/angle/state", &servo_angle_msg);
 
 unsigned long  publisher_timer = 0;
 
 Servo myservo;
 
-void servoCb(const std_msgs::Int16& angle_msg)
+void set_angle(void)
 {
-    if (servo_state_msg.data == false) return;
-    if (angle_msg.data < 0) servo_angle_msg.data = 0;
-    else if (angle_msg.data > 180) servo_angle_msg.data = 180;
-    else servo_angle_msg.data = angle_msg.data;
-    myservo.write(servo_angle_msg.data);
+    myservo.write((int)(-servo_angle_msg.data + 90.0));
 }
 
-void servo_toggleCb(const std_msgs::Bool& servo_toggle_msg)
+void servo_angleCb(const std_msgs::Float32& angle_msg)
+{
+    if (servo_torque_msg.data == false) return;
+    if (angle_msg.data < -90.0) servo_angle_msg.data = -90.0;
+    else if (angle_msg.data > 90.0) servo_angle_msg.data = 90.0;
+    else servo_angle_msg.data = angle_msg.data;
+    set_angle();
+}
+
+void servo_torqueCb(const std_msgs::Bool& servo_toggle_msg)
 {
     if (servo_toggle_msg.data) {
-        servo_state_msg.data = true;
+        servo_torque_msg.data = true;
         if (!myservo.attached()) myservo.attach(5);
-        myservo.write(servo_angle_msg.data);
+        set_angle();
     } else {
-        servo_state_msg.data = false;
+        servo_torque_msg.data = false;
         if (myservo.attached()) myservo.detach();
     }
 }
 
-ros::Subscriber<std_msgs::Int16> servo_angle_sub("vacuum_gripper/limb/right/servo_angle", &servoCb);
-ros::Subscriber<std_msgs::Bool> servo_state_sub("vacuum_gripper/limb/right/servo_state", &servo_toggleCb);
+ros::Subscriber<std_msgs::Float32> servo_angle_sub("gripper_front/limb/right/servo/angle", &servo_angleCb);
+ros::Subscriber<std_msgs::Bool> servo_torque_sub("gripper_front/limb/right/servo/torque", &servo_torqueCb);
 
 void setup() {
-    servo_state_msg.data = false;
-    servo_angle_msg.data = 90;
+    servo_torque_msg.data = false;
+    servo_angle_msg.data = 0;
     init_servo();
     pinMode(SS, OUTPUT);
     digitalWrite(SS, HIGH);
     nh.getHardware()->setBaud(115200);
     nh.initNode();
     nh.subscribe(servo_angle_sub);
-    nh.subscribe(servo_state_sub);
+    nh.subscribe(servo_torque_sub);
     nh.advertise(pressure_pub);
     nh.advertise(state_pub);
-    nh.advertise(servo_state_pub);
+    nh.advertise(servo_torque_pub);
     nh.advertise(servo_angle_pub);
 
     SPI.begin();
@@ -97,11 +103,11 @@ void loop() {
         press_act = (float)press_cal / 100.0;
 
         bool_msg.data = (press_act < 900);
-        float_msg.data = press_act;
+        pressure_msg.data = press_act;
 
         state_pub.publish(&bool_msg);
-        pressure_pub.publish(&float_msg);
-        servo_state_pub.publish(&servo_state_msg);
+        pressure_pub.publish(&pressure_msg);
+        servo_torque_pub.publish(&servo_torque_msg);
         servo_angle_pub.publish(&servo_angle_msg);
 
         publisher_timer = millis() + 100;
@@ -111,8 +117,8 @@ void loop() {
 
 void init_servo()
 {
-    myservo.attach(5);
-    myservo.write(servo_angle_msg.data);
+    //myservo.attach(5);
+    set_angle();
 }
 
 void initBME()
