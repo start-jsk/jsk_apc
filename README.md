@@ -84,3 +84,15 @@ Host baxter
   HostName baxter.jsk.imi.i.u-tokyo.ac.jp
   User ruser  # password: rethink
 ```
+
+**Setup Creative Camera**
+
+1. Install DepthSenseSDK. You need to login to download it. [Middleware -> Download](http://www.softkinetic.com/)
+
+2. Install ROS package
+
+```
+git clone  https://github.com/ipa320/softkinetic
+cd softkinetic/softkinetic
+catkin bt -iv
+```
