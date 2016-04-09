@@ -190,7 +190,7 @@ target_link_libraries(gazebo_ros_vacuum_gripper ${GAZEBO_LIBRARIES} ${catkin_LIB
 # )
 
 install(DIRECTORY
-  config euslisp launch meshes node_scripts urdf
+  config euslisp launch meshes node_scripts robots
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS
 )
