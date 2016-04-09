@@ -10,3 +10,7 @@
     local-name: libfreenect2
     uri: https://github.com/k-okada/libfreenect2.git
     version: jsk_apc
+- git:
+    local-name: softkinetic
+    uri: https://github.com/ipa320/softkinetic.git
+    version: indigo_dev
