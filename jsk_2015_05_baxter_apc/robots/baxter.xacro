@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter">
-  <xacro:include filename="$(find baxter_description)/urdf/baxter.urdf" />
 
+  <xacro:include filename="$(find baxter_description)/urdf/baxter_base/baxter_base.urdf.xacro" />
+  <xacro:include filename="$(find baxter_description)/urdf/pedestal/pedestal.xacro" />
+
+  <!-- custom vacuum gripper >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
   <xacro:property name="width" value=".02" />
   <xacro:property name="width_base" value=".1" />
   <xacro:property name="width_side2_base" value=".035" />
@@ -9,8 +12,6 @@
   <xacro:property name="bodylen_base" value=".12" />
   <xacro:property name="right_wrist_offset_x" value="-0.01" />
   <xacro:property name="left_wrist_offset_x" value="-0.01" />
-
-  <!-- custom vacuum gripper >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
   <link name="right_custom_vacuum_link">
     <visual>
       <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
