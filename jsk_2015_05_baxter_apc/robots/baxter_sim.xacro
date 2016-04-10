@@ -5,6 +5,6 @@
     <parent link="world"/>
     <child link="base"/>
   </joint>
-  <xacro:include filename="$(find jsk_2015_05_baxter_apc)/urdf/baxter.xacro" />
-  <xacro:include filename="$(find jsk_2015_05_baxter_apc)/urdf/baxter.gazebo" />
+  <xacro:include filename="$(find jsk_2015_05_baxter_apc)/robots/baxter.xacro" />
+  <xacro:include filename="$(find jsk_2015_05_baxter_apc)/robots/baxter.gazebo" />
 </robot>

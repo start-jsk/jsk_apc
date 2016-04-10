@@ -149,6 +149,31 @@ include_directories(include
 add_library(gazebo_ros_vacuum_gripper src/gazebo_ros_vacuum_gripper.cpp)
 target_link_libraries(gazebo_ros_vacuum_gripper ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
+## -------------------
+## baxter.l generation
+## -------------------
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.l
+  COMMAND rosrun euscollada collada2eus baxter.dae baxter.yaml baxter.l
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS robots/baxter.dae robots/baxter.yaml)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.dae
+  COMMAND rosrun collada_urdf urdf_to_collada baxter.urdf baxter.dae
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS robots/baxter.urdf)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.urdf
+  COMMAND rosrun xacro xacro baxter.xacro > baxter.urdf
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS robots/baxter.xacro)
+# get collada-dom version
+find_package(PkgConfig)
+pkg_check_modules(COLLADA collada-dom>=2.4.4 )
+if ( ${COLLADA_FOUND} )
+  add_custom_target(generate_baxter_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.l)
+else()
+  pkg_check_modules(COLLADA collada-dom)
+  message(WARNING "urdf_to_collada requries collada-dom >= 2.4.4, installed version is ${COLLADA_VERSION}")
+endif()
+
 ## Declare a cpp executable
 # add_executable(jsk_2015_05_baxter_apc_node src/jsk_2015_05_baxter_apc_node.cpp)
 
@@ -190,7 +215,7 @@ target_link_libraries(gazebo_ros_vacuum_gripper ${GAZEBO_LIBRARIES} ${catkin_LIB
 # )
 
 install(DIRECTORY
-  config euslisp launch meshes node_scripts urdf
+  config euslisp launch meshes node_scripts robots
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS
 )
