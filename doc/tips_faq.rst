@@ -22,17 +22,15 @@ This command may fail with below errors.
 .. code-block:: bash
 
   pkg_resources.DistributionNotFound: cython>=0.21
-
-.. code-block:: bash
-
+  ...
   ERROR: the following rosdeps failed to install
   pip: command [sudo -H pip install -U scikit-image] failed
   pip: Failed to detect successful installation of [scikit-image]
 
-In this case, run below command.
+In this case, maybe your setuptools is too old. Please run below command.
 
 .. code-block:: bash
 
-  sudo pip install cython
+  sudo pip install -U setuptools
 
 https://github.com/start-jsk/jsk_apc/issues/1244 for details.
