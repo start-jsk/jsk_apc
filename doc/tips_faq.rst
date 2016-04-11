@@ -11,8 +11,9 @@ Time synchronization is crucial.
 
   sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
 
+
 Rosdep failure due to cython version.
------------------------
+-------------------------------------
 .. code-block:: bash
 
   rosdep install -y -r --from-paths . --ignore-src
@@ -34,3 +35,14 @@ In this case, maybe your setuptools is too old. Please run below command.
   sudo pip install -U setuptools
 
 https://github.com/start-jsk/jsk_apc/issues/1244 for details.
+
+
+How to release a new version of jsk_apc?
+----------------------------------------
+.. code-block:: bash
+
+  roscd jsk_apc
+  catkin_generate_change_log
+  # edit CHANGELOG.rst to create a pretty changelog
+  catkin_prepare_release
+  bloom-release --rosdistro indigo --track indigo jsk_apc  # you may need to fix package.xml for pip packages
