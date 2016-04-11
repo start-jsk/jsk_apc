@@ -1,0 +1,31 @@
+2016-04-11
+==========
+
+**THIS IS SAMPLE**
+
+
+What you did?
+-------------
+
+- DID_0
+- DID_1
+
+
+What is issue?
+--------------
+
+- ISSUE_0
+  - ISSUE_01 (https://github.com/start-jsk/jsk_apc/ISSUE_URL)
+  - ISSUE_02 (https://github.com/start-jsk/jsk_apc/ISSUE_URL)
+
+
+What you think/feel?
+--------------------
+
+- Recognition is BAD!! OMG!
+
+
+Log data
+--------
+
+- https://drive.google.com/drive/folders/LOG_URL
