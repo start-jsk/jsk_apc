@@ -4,6 +4,13 @@
 -->
 <launch>
   <node name="right_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="0" output="screen" >
+    <rosparam>
+      <!-- to get organized point cloud -->
+      use_frustum_culling_filter: false
+      use_passthrough_filter: false
+      use_radius_outlier_filter: false
+      use_voxel_grid_filter: false
+    </rosparam>
     <param name="camera_link" type="string" value="/softkinetic_camera_link" />
     <param name="rgb_optical_frame" type="string" value="/softkinetic_camera_rgb_optical_frame" />
     <param name="depth_optical_frame" type="string" value="/softkinetic_camera_depth_optical_frame" />
