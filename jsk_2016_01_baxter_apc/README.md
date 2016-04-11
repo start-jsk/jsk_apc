@@ -54,12 +54,3 @@ Usage
 ```sh
 $ roslaunch jsk_2016_01_baxter_apc baxter_pick.launch
 ```
-
-
-Shared Files
-------------
-
-READ/WRITE: https://drive.google.com/drive/u/1/folders/0B9P1L--7Wd2vLXo1TGVYLVh3aE0
-
-Google Drive folder is shared.
-There are shared files like log files and datasets.

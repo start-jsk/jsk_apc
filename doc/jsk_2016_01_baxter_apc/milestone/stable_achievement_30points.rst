@@ -1,0 +1,45 @@
+Stable Achievement of 30 points
+===============================
+
+
+Goal
+----
+
+Achieve 30 points stably.
+
+
+Configuration
+-------------
+
+- Gripper: vacuum2015
+- Item: apc2015
+- Hand Camera: use creative (**feature**)
+
+
+System
+------
+
+Recognition
++++++++++++
+
+1. Location of shelf: old
+2. Object recognition in bin: new (**feature**)
+3. Grasp planning in bin: old
+4. Detection of grasps with vacuum sensor: old
+5. In-hand object recognition: old
+6. In-hand detection of grasps: old
+
+Motion
+++++++
+
+1. Pick: old
+2. Return: (**feature**)
+  - into the back of the shelf.
+  - when failed to solve ik, replay executed trajectory reversely.
+
+::
+
+  A -> B -> C -> G -> (D) -> E -> F -> H -
+       ^                           |     |
+       |<---------------------------     |
+       -----------------------------------
