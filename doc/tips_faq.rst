@@ -11,8 +11,9 @@ Time synchronization is crucial.
 
   sudo ntpdate baxter.jsk.imi.i.u-tokyo.ac.jp
 
+
 Rosdep failure due to cython version.
------------------------
+-------------------------------------
 .. code-block:: bash
 
   rosdep install -y -r --from-paths . --ignore-src
