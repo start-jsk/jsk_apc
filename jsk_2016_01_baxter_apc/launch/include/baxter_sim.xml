@@ -70,7 +70,9 @@
     <rosparam command="load" file="$(find jsk_2015_05_baxter_apc)/config/kiva_pod_interactive_marker_sim.yaml" />
   </node>
 
-  <!-- setup baxter gazebo -->
-  <node pkg="jsk_2015_05_baxter_apc" type="setup_baxter_gazebo.py" name="setup_baxter_gazebo" output="screen" />
+  <!-- initialize baxter gazebo -->
+  <node name="initialize_baxter"
+        pkg="jsk_2015_05_baxter_apc" type="initialize_baxter.py"
+        output="screen" />
 
 </launch>
