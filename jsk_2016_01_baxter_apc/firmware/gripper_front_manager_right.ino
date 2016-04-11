@@ -7,6 +7,8 @@
 #include <std_msgs/Int16.h>
 #include <Servo.h>
 
+const float pi = 3.14159;
+
 unsigned long int temp_raw, pres_raw;
 signed long int t_fine;
 
@@ -40,16 +42,21 @@ unsigned long  publisher_timer = 0;
 
 Servo myservo;
 
+inline float rad_to_deg(float rad)
+{
+    return rad * 180.0 / pi;
+}
+
 void set_angle(void)
 {
-    myservo.write((int)(-servo_angle_msg.data + 90.0));
+    myservo.write((int)(-rad_to_deg(servo_angle_msg.data) + 90.0));
 }
 
 void servo_angleCb(const std_msgs::Float32& angle_msg)
 {
     if (servo_torque_msg.data == false) return;
-    if (angle_msg.data < -90.0) servo_angle_msg.data = -90.0;
-    else if (angle_msg.data > 90.0) servo_angle_msg.data = 90.0;
+    if (angle_msg.data < -pi/2.0) servo_angle_msg.data = -pi/2.0;
+    else if (angle_msg.data > pi/2.0) servo_angle_msg.data = pi/2.0;
     else servo_angle_msg.data = angle_msg.data;
     set_angle();
 }
