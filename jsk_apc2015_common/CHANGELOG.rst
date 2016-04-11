@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.3 (2016-04-11)
+------------------
 * Bugfix
   + Install models dir
   + Use python lib not in ros environement

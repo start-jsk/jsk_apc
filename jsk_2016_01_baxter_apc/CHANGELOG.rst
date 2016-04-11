@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.3 (2016-04-11)
+------------------
 * Bugfix
   + Add jsk_2015_05_baxter_apc as build_depend to fix `#1253 <https://github.com/start-jsk/jsk_apc/issues/1253>`_
   + Fix catkin config of 'jsk_2016_01_baxter_apc'

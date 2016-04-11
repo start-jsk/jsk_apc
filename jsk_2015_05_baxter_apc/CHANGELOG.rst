@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.3 (2016-04-11)
+------------------
 * Upgrade baxter SDK to 1.2.0
   * Use 1.2.0 in baxter_sim.launch
 * Generate xacro robot model to generate euslisp model
