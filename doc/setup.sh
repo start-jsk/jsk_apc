@@ -5,6 +5,7 @@ type virtualenv &>/dev/null || {
   return 1
 }
 
+unset PYTHONPATH
 virtualenv venv
 . venv/bin/activate
 pip install -r requirements.txt
