@@ -2,6 +2,60 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Upgrade baxter SDK to 1.2.0
+  * Use 1.2.0 in baxter_sim.launch
+* Generate xacro robot model to generate euslisp model
+  * Visualize reachable space of baxter model
+  * Set predefined poses in yaml file
+  * Generate eus robot model from xacro
+  * Move urdf/ -> robots
+  * Move urdf/ -> robots/
+  * Depends when generating eus robot model from xacro
+* Visualization
+  * Visualize segmentation in bin
+  * Set xdisplay image in 'launch/baxter.launch'
+* Motion
+  * Do not trust pressure sensor
+  * add arm info in ros-info
+  * Rename loadable-structure as .ldump -> .l
+  * Add test_data for MoveArmToBin
+  * Add utility functions for handling hashtable
+* Refine installation
+  + Fix missing depends
+  + Refine rosinstall
+  + Add turtlebot_description
+  + Depends on roseus
+  + Add missing depends
+* Recognition
+  + Adjust kinect2_torso
+  + Adjust kiva_pod position
+  + Update kiva_pod initial pos
+* Documentation
+  * Doc for euclid_k_clustering.py
+  * Doc for initialize_baxter.py
+  * Doc for work_order.py
+  * Add doc for bin_contents.py
+  * Add doc softlink for jsk_2015_05_baxter_apc
+  * Use sphinx to make documentation
+  * Checkout to a tag for demo
+  * Specify version to run gazebo simulation
+  * Add simulation.rosinstall
+  * Set kiva:=true for 'baxter_sim.launch'
+  * Add simulation.rosinstall
+* Cleanup
+  * Remove solidity rag merging
+  * Rename json files (layout_XX.json, apc2015_layout_XX.json)
+  * Remove visualize_bin_contents replaced with visualize_json
+  * Remove BoF codes in this repo which is moved to jsk_perception
+  * Remove README in jsk_2015_05_baxter_apc/node_scripts
+* Misc
+  * Install include file
+  * Install files (launch,euslisp,node_scripts)
+
+* Contributors: Kentaro Wada, Masahiro Bando
+
 0.2.2 (2016-03-08)
 ------------------
 * fix gmail for iory and wkentaro

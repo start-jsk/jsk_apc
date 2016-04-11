@@ -2,6 +2,11 @@
 Changelog for package jsk_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add packages to metapackage's run_depend
+* Contributors: Kentaro Wada
+
 0.2.2 (2016-03-08)
 ------------------
 * fix gmail for iory and wkentaro

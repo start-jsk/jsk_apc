@@ -2,6 +2,25 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Bugfix
+  + Install models dir
+  + Use python lib not in ros environement
+  + Skip bin without contents to visualize
+  + No tile shape when no img_num
+* Test
+  + Add roslint test for python library
+  + Test visualize json
+* Documentation
+  + Doc for python library
+  + Move README of jsk_apc2015_common to sphinx
+* Cleanup
+  + Refactor visualize_json to visualize_bin_contents
+* Visualization
+  + visualize stow json
+* Contributors: Heecheol Kim, Kentaro Wada
+
 0.2.2 (2016-03-08)
 ------------------
 * fix gmail for iory and wkentaro
