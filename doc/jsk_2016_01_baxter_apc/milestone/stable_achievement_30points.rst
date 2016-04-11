@@ -1,6 +1,9 @@
 Stable Achievement of 30 points
 ===============================
 
+Opened: 2016-04-11
+Deadline: 2016-04-30
+
 
 Goal
 ----
