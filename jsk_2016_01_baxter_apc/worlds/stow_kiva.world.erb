@@ -53,44 +53,113 @@
 - sharpie_accent_tank_style_highlighters
 - stanley_66_052
 -->
-
 <%
- @items = [
- {'loc' => 'A', 'item' => 'crayola_64_ct' }, 
- {'loc' => 'B', 'item' => 'expo_dry_erase_board_eraser' },
- {'loc' => 'C', 'item' => 'stanley_66_052' },
- {'loc' => 'D', 'item' => 'munchkin_white_hot_duck_bath_toy' },
- {'loc' => 'E', 'item' => 'oreo_mega_stuf' },
- {'loc' => 'F1', 'item' => 'paper_mate_12_count_mirado_black_warrior' },
- {'loc' => 'F2', 'item' => 'safety_works_safety_glasses' },
- {'loc' => 'G', 'item' => 'mead_index_cards' },
- {'loc' => 'H', 'item' => 'genuine_joe_plastic_stir_sticks' },
- {'loc' => 'I', 'item' => 'highland_6539_self_stick_notes' },
- {'loc' => 'J', 'item' => 'kong_air_dog_squeakair_tennis_ball' },
- {'loc' => 'K', 'item' => 'kong_sitting_frog_dog_toy' },
- {'loc' => 'L', 'item' => 'sharpie_accent_tank_style_highlighters' }]
+ require 'json'
+open('../json/stow_layout_1.json') do |io|
+ @bin_contents = JSON.load(io)
+ end
+ @bin = ['bin_A','bin_B','bin_C','bin_D','bin_E','bin_F','bin_G','bin_H','bin_I','bin_J','bin_K','bin_L']
  @locations = {
-  'A' => '0.79  0.1  0.5 0 0 0',
-  'B' => '0.79  -0.1  0.5 0 0 0',
-  'C' => '0.77  -0.1  0.5 0 0 0',
-  'D' => '0.77  0.1  0.5 0 0 0',
-  'E' => '0.79  0.1 0.6 0 0 0',
-  'F1'=> '0.79  -0.1  0.6 0 0 0',
-  'F2'=> '0.77  -0.1  0.6 0 0 0',
-  'G' => '0.77  0.1  0.6 0 0 0',
-  'H' => '0.79  0.1  0.7 0 0 0',
-  'I' => '0.79  -0.1  0.7 0 0 0',
-  'J' => '0.77  -0.1  0.7 0 0 0',
-  'K' => '0.77  0.1  0.7 0 0 0',
-  'L' => '0.78  0.0  0.8 0 0 0'
+  'bin_A' => [1.22,  0.3, 1.65, 0.0, 0.0, 0.0],
+  'bin_B' => [1.22,  0.0, 1.65, 0.0, 0.0, 0.0],
+  'bin_C' => [1.22, -0.3, 1.65, 0.0, 0.0, 0.0],
+  'bin_D' => [1.22,  0.3, 1.46, 0.0, 0.0, 0.0],
+  'bin_E' => [1.22,  0.0, 1.46, 0.0, 0.0, 0.0],
+  'bin_F' => [1.22, -0.3, 1.46, 0.0, 0.0, 0.0],
+  'bin_G' => [1.22,  0.3, 1.17, 0.0, 0.0, 0.0],
+  'bin_H' => [1.22,  0.0, 1.17, 0.0, 0.0, 0.0],
+  'bin_I' => [1.22, -0.3, 1.17, 0.0, 0.0, 0.0],
+  'bin_J' => [1.22,  0.3, 0.90, 0.0, 0.0, 0.0],
+  'bin_K' => [1.22,  0.0, 0.90, 0.0, 0.0, 0.0],
+  'bin_L' => [1.22, -0.3, 0.90, 0.0, 0.0, 0.0]
+ }
+ @corrections = [
+    [-0.12,  0.04,  0.04, 0.0, 0.0, 0.0],
+    [ 0.12, -0.04,  0.04, 0.0, 0.0, 0.0],
+    [-0.12, -0.04, -0.04, 0.0, 0.0, 0.0],
+    [ 0.12,  0.04, -0.04, 0.0, 0.0, 0.0],
+    [  0.2, -0.04,   0.0, 0.0, 0.0, 0.0],
+    [  0.2, -0.04,   0.0, 0.0, 0.0, 0.0],
+    [-0.12,  0.04, -0.04, 0.0, 0.0, 0.0],
+    [-0.12, -0.04,  0.04, 0.0, 0.0, 0.0],
+    [ 0.12,  0.04,  0.04, 0.0, 0.0, 0.0],
+    [ 0.12, -0.04, -0.04, 0.0, 0.0, 0.0]
+ ]
+ @rotate = [0.0,0.0,0.0,0.0,1.5,0.0]
+ @item_rotate = [
+  "cheezit_big_original",
+  "mark_twain_huckleberry_finn",
+  "laugh_out_loud_joke_book",
+  "oreo_mega_stuf",
+  "dr_browns_bottle_brush",
+  "highland_6539_self_stick_notes",
+  "feline_greenies_dental_treats",
+  "crayola_64_ct",
+  "mommys_helper_outlet_plugs",
+  "rolodex_jumbo_pencil_cup",
+  "munchkin_white_hot_duck_bath_toy",
+  "first_years_take_and_toss_straw_cup",
+  "elmers_washable_no_run_school_glue"
+ ]
+%>
+<%# @locations = {
+  'bin_A' => '1.25  0.3 1.6 0 0 0',
+  'bin_B' => '1.25  0.0 1.6 0 0 0',
+  'bin_C' => '1.25 -0.3 1.6 0 0 0',
+  'bin_D' => '1.25  0.3 1.35 0 0 0',
+  'bin_E' => '1.25  0.0 1.35 0 0 0',
+  'bin_F' => '1.25 -0.3 1.35 0 0 0',
+  'bin_G' => '1.25  0.3 1.1 0 0 0',
+  'bin_H' => '1.25  0.0 1.1 0 0 0',
+  'bin_I' => '1.25 -0.3 1.1 0 0 0',
+  'bin_J' => '1.25  0.3 0.85 0 0 0',
+  'bin_K' => '1.25  0.0 0.85 0 0 0',
+  'bin_L' => '1.25 -0.3 0.85 0 0 0'
  }
 %>
-<%for item in @items%>
-    <!-- bin <%=item['bin']%> -->
+<%for bin in @bin%>
+    <!-- <%=bin%> -->
+    <% i = 0
+    for item in @bin_contents["bin_contents"][bin] %>
+        <!-- <%=item%> -->
+        <%
+        if @item_rotate.include?(item) then
+          location = [@locations[bin],@corrections[i],@rotate].transpose.map{|a| a.inject(:+)}.join(" ")
+        else
+          location = [@locations[bin],@corrections[i]].transpose.map{|a| a.inject(:+)}.join(" ")
+        end
+        i = i + 1
+        %>
+        <include>
+            <uri>model://<%=item%></uri>
+            <name><%=item%></name>
+            <pose><%=location%></pose>
+        </include>
+   <%end%>
+<%end%>
+<%
+ @locations = [
+  '0.79  0.1  0.5 0 0 0',
+  '0.79  -0.1  0.5 0 0 0',
+  '0.77  -0.1  0.5 0 0 0',
+  '0.77  0.1  0.5 0 0 0',
+  '0.79  0.1 0.6 0 0 0',
+  '0.78  -0.1  0.6 0 0 0',
+  '0.77  0.1  0.6 0 0 0',
+  '0.79  0.1  0.7 0 0 0',
+  '0.79  -0.1  0.7 0 0 0',
+  '0.77  -0.1  0.7 0 0 0',
+  '0.77  0.1  0.7 0 0 0',
+  '0.78  0.0  0.8 0 0 0'
+]
+%>
+
+<%@bin_contents["work_order"].zip(@locations).each do |item,loc|%>
+    <!-- <%=item%>-->
     <include>
-      <uri>model://<%=item['item']%></uri>
-      <name><%=item['item']%></name>
-      <pose><%=@locations[item['loc']]%></pose>
+      <uri>model://<%=item%></uri>
+      <name><%=item%></name>
+      <pose><%=loc%></pose>
     </include>
 <%end%>
 
