@@ -3,7 +3,7 @@
      copied from softkinetic_camera_demo.launch
 -->
 <launch>
-  <node name="right_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="0" output="screen" >
+  <node name="left_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="0" output="screen" >
     <rosparam>
       <!-- to get organized point cloud -->
       use_frustum_culling_filter: false
@@ -11,9 +11,9 @@
       use_radius_outlier_filter: false
       use_voxel_grid_filter: false
     </rosparam>
-    <param name="camera_link" type="string" value="/softkinetic_camera_link" />
-    <param name="rgb_optical_frame" type="string" value="/softkinetic_camera_rgb_optical_frame" />
-    <param name="depth_optical_frame" type="string" value="/softkinetic_camera_depth_optical_frame" />
+    <param name="camera_link" type="string" value="/left_softkinetic_camera_link" />
+    <param name="rgb_optical_frame" type="string" value="/left_softkinetic_camera_rgb_optical_frame" />
+    <param name="depth_optical_frame" type="string" value="/left_softkinetic_camera_depth_optical_frame" />
     <param name="rgb_calibration_file" type="string" value="$(find softkinetic_camera)/resources/senz3d.yaml" />
     <param name="confidence_threshold" type="int" value="200" />
     <param name="use_radius_outlier_filter" type="bool" value="false" />
