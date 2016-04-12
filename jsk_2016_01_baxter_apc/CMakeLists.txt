@@ -101,6 +101,7 @@ catkin_package(
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
+catkin_add_env_hooks(99.dotfile SHELLS bash zsh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
 
 ###########
 ## Build ##
