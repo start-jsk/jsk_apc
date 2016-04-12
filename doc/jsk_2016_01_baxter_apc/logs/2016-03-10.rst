@@ -1,0 +1,42 @@
+2016-03-10
+==========
+
+What you did?
+-------------
+
+- Try to achieve 30 points in apc2016 rules (but items are from apc2015)
+
+
+What is issue?
+--------------
+
+- pickの際に実際はgraspできているが、それを認識できない(graspingpがnil)ので棚から腕を引き出す。しかしその動作が早いため吸引が切れる前に物体も一緒に引きずられて落ちる
+
+  - pingp nilがのときには吸引力がをきることなく腕をひきぬく(https://github.com/start-jsk/jsk_apc/issues/1134)
+
+- return objectの途中で掃除機が切れる
+
+  - オブジェクトを返す途中にvacuumがoffになることがある。(https://github.com/start-jsk/jsk_apc/issues/1131)
+
+- returnしたobjectをまたとってしまう
+
+  - returnしたobjectを奥に入れる(https://github.com/start-jsk/jsk_apc/issues/1129)
+
+- work orderがあまりよくない (i.e. right hand tried to pick target from bin with 9 items)
+
+  - Skip 'level 3' work order (https://github.com/start-jsk/jsk_apc/issues/1208)
+
+- 袋が大きい物体を棚に戻す際に棚の下にひっかかって落としてしまう
+
+
+
+What you think/feel?
+--------------------
+
+- collision checkをして右手左手で同時作業できるbinをもっとみつけたい
+
+
+Log data
+--------
+
+- https://drive.google.com/drive/u/1/folders/0B-9DG8FkNGtJUkpfQXhsMzBqM28
