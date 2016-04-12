@@ -225,6 +225,9 @@ add_custom_target(compile_stow_kiva_world ALL
 # endif()
 
 ## Add folders to be run by python nosetests
+
 if(CATKIN_ENABLE_TESTING)
   add_rostest(test/work_order.test)
+  find_package(rostest REQUIRED)
+  catkin_add_nosetests(${CMAKE_CURRENT_SOURCE_DIR}/test/test_dist2bbox.test)
 endif()
