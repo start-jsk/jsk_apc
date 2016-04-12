@@ -111,6 +111,8 @@ html_static_path = ['_static']
 
 html_style = 'css/modified_theme.css'
 
+html_favicon = '_static/favicon.ico'
+
 if on_rtd:
     html_context = {
         'css_files': [
