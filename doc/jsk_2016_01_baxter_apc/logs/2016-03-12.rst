@@ -1,0 +1,24 @@
+2016-03-12
+==========
+
+What you did?
+-------------
+
+- Try to achieve 30 points in apc2016 rules (but items are from apc2015)
+
+
+What is issue?
+--------------
+
+- 安全メガネの認識：データを追加するだけでは性能が上がらなかった。
+
+
+What you think/feel?
+--------------------
+
+- HOGなどの他の特徴量抽出を使ってみれば？
+
+Log data
+--------
+
+- None 

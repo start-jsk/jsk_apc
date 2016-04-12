@@ -1,0 +1,46 @@
+2016-03-07
+==========
+
+What you did?
+-------------
+
+- Try to achieve 30 points in apc2016 rules (but items are from apc2015)
+
+
+What is issue?
+--------------
+
+- 掃除機の気圧センサが0/1
+
+  - 新グリッパーの改善点について (https://github.com/start-jsk/jsk_apc/issues/1223)
+
+- IKが解けない範囲がある
+
+  - IK解けるかチェック (https://github.com/start-jsk/jsk_apc/issues/1105)
+
+- segmentation がうまくいかない
+
+- 奥が見えない
+
+  - Installing CREATIVE interactive gesture camera (https://github.com/start-jsk/jsk_apc/issues/1137)
+
+- 安全メガネの認識失敗
+
+  - 安全眼鏡の認識失敗 (https://github.com/start-jsk/jsk_apc/issues/1106)
+
+- オレオをとってしまい棚の外で落としてしまう
+
+  - 取れない物体が入ってる棚をスキップ (https://github.com/start-jsk/jsk_apc/issues/1104)
+
+What you think/feel?
+--------------------
+
+- 圧力センサーを変更したい
+- IKをうまく解けるようにしたい
+- セグメンテーションの改善
+- 手先に認識デバイスをつける
+
+Log data
+--------
+
+- https://drive.google.com/drive/u/1/folders/0B9P1L--7Wd2vY0FWLTdrcHBWVGc
