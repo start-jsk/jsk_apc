@@ -4,7 +4,12 @@ project(jsk_2016_01_baxter_apc)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roseus)
+find_package(catkin REQUIRED COMPONENTS
+    roseus
+    control_msgs
+    roscpp
+    std_msgs
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -194,3 +199,6 @@ add_custom_target(compile_stow_kiva_world ALL
 # if(CATKIN_ENABLE_TESTING)
 #   catkin_add_nosetests(src/jsk_apc2016_common/tests)
 # endif()
+
+add_executable(gripper_trajectory_server src/gripper_trajectory_server.cpp)
+target_link_libraries(gripper_trajectory_server ${catkin_LIBRARIES})
