@@ -4,11 +4,11 @@
 
   <!-- Creative Camera -->
   <xacro:include filename="$(find softkinetic_camera)/urdf/senz3d.urdf.xacro"/>
-  <xacro:sensor_senz3d name="softkinetic_camera" parent="right_wrist">
+  <xacro:sensor_senz3d name="left_softkinetic_camera" parent="left_wrist">
     <origin rpy="0 -${M_PI/2} ${M_PI}" xyz="-0.048 0.0 0.10"/>
   </xacro:sensor_senz3d>
 
   <!-- Vaccum Gripper-->
-  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/right_vaccum_gripper.xacro"/>
+  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/left_vaccum_gripper.xacro"/>
 
 </robot>
