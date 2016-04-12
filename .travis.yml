@@ -11,6 +11,7 @@ env:
     - ROS_PARALLEL_JOBS="-j8"
     - ROSWS=wstool
     - ROSDEP_ADDITIONAL_OPTIONS="-q -n --ignore-src"
+    - BEFORE_SCRIPT='sudo pip install -U git+https://github.com/catkin/catkin_tools.git@bfed3ab4216c11f167d572d54e8560c4756479fd'
   matrix:
     - ROS_DISTRO=indigo
 
