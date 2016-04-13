@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 <!--
-     copied from softkinetic_camera_demo.launch
+     require https://github.com/knorth55/softkinetic/tree/jsk_apc.git
 -->
 <launch>
-
-  <node name="right_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="0" output="screen" >
+  <node name="right_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" output="screen" >
     <rosparam>
       camera_link: right_softkinetic_camera_link
       rgb_optical_frame: right_softkinetic_camera_rgb_optical_frame
@@ -21,11 +20,14 @@
       use_passthrough_filter: false
       use_radius_outlier_filter: false
       use_voxel_grid_filter: false
+      <!-- identify device by serial number -->
+      use_serial: true
+      serial: K8VF0780323000153A
     </rosparam>
     <!-- load calibration file -->
     <param name="rgb_calibration_file" type="string" value="$(find softkinetic_camera)/resources/senz3d.yaml" />
   </node>
-  <node name="left_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="1" output="screen" >
+  <node name="left_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" output="screen" >
     <rosparam>
       camera_link: left_softkinetic_camera_link
       rgb_optical_frame: left_softkinetic_camera_rgb_optical_frame
@@ -42,6 +44,9 @@
       use_passthrough_filter: false
       use_radius_outlier_filter: false
       use_voxel_grid_filter: false
+      <!-- identify device by serial number -->
+      use_serial: true
+      serial: 137DS32528260700379
     </rosparam>
     <!-- load calibration file -->
     <param name="rgb_calibration_file" type="string" value="$(find softkinetic_camera)/resources/senz3d.yaml" />
