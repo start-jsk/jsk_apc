@@ -94,13 +94,12 @@ Host baxter
   User ruser  # password: rethink
 ```
 
-**Setup Creative Camera**
+**Setup Softkinetic Camera**
 
-1. Install DepthSenseSDK. You need to login to download it. [Middleware -> Download](http://www.softkinetic.com/)
+See [here](http://jsk-recognition.readthedocs.org/en/latest/install_softkinetic_camera.html) for almost all install process,
+but for installing ROS package please do like below:
 
-2. Install ROS package
-
-```
+```bash
 git clone https://github.com/knorth55/softkinetic.git -b jsk_apc
 cd softkinetic/softkinetic_camera
 catkin bt -iv
