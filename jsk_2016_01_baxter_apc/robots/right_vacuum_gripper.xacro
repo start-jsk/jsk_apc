@@ -56,19 +56,19 @@
     </collision>
   </link>
 
-  <joint name="right_gripper_base" type="fixed">
+  <joint name="right_gripper_base_fixed" type="fixed">
     <origin rpy="0 0 0" xyz="${right_hand_offset_x} 0 ${right_hand_offset_z}" />
     <parent link="right_hand"/>
     <child link="right_gripper_base"/>
   </joint>
-  <joint name="right_gripper_joint" type="revolute">
+  <joint name="right_gripper_vacuum_pad_joint" type="revolute">
     <origin rpy="0 0 0" xyz="${right_gripper_joint_offset_x} ${right_gripper_joint_offset_y} ${right_gripper_joint_offset_z}" />
     <parent link="right_gripper_base"/>
     <child link="right_gripper_vacuum_pad_base"/>
     <axis xyz="0 1 0"/>
     <limit lower="-1.57" upper="1.57" effort="0" velocity="0"/>
   </joint>
-  <joint name="right_gripper_base" type="fixed">
+  <joint name="right_gripper_vacuum_pad_fixed" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="right_gripper_vacuum_pad_base"/>
     <child link="right_gripper_vacuum_pad"/>
