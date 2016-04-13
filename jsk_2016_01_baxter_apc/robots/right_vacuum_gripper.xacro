@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="right_vaccum_gripper">
+  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/common_constants.xacro"/>
+  <xacro:property name="right_hand_offset_x" value="-0.01" />
+  <xacro:property name="right_hand_offset_z" value="0" />
+  <xacro:property name="right_gripper_joint_offset_x" value="0.005" />
+  <xacro:property name="right_gripper_joint_offset_y" value="-0.0085" />
+  <xacro:property name="right_gripper_joint_offset_z" value="0.264" />
+
+  <link name="right_gripper_base">
+    <visual>
+      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="right_gripper_vacuum_pad_base">
+    <visual>
+      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_vacuum_pad_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_vacuum_pad_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="right_gripper_vacuum_pad">
+    <visual>
+      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_vacuum_pad.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_vacuum_pad.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="right_gripper_base" type="fixed">
+    <origin rpy="0 0 0" xyz="${right_hand_offset_x} 0 ${right_hand_offset_z}" />
+    <parent link="right_hand"/>
+    <child link="right_gripper_base"/>
+  </joint>
+  <joint name="right_gripper_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${right_gripper_joint_offset_x} ${right_gripper_joint_offset_y} ${right_gripper_joint_offset_z}" />
+    <parent link="right_gripper_base"/>
+    <child link="right_gripper_vacuum_pad_base"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="0" velocity="0"/>
+  </joint>
+  <joint name="right_gripper_base" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="right_gripper_vacuum_pad_base"/>
+    <child link="right_gripper_vacuum_pad"/>
+  </joint>
+
+</robot>
