@@ -13,6 +13,36 @@
     (&rest args)
     (send-super* :init args)
     )
+  (:inverse-kinematics
+    (target-coords &rest args)
+    (let ((av)
+          (prev-av (send self :angle-vector))
+          (poses (list
+                   :angle-vector
+                   :reset-pose
+                   :reset-manip-pose
+                   :fold-pose-upper
+                   :fold-pose-middle
+                   :fold-pose-lower
+                   :fold-pose-back
+                   ))
+          (moving-joints (send-all (cadr (memq :link-list args)) :joint))
+          (moving-av (mapcar #'(lambda (j) (send j :joint-angle)) (send self :joint-list)))
+          )
+      (dolist (pose poses)
+        (when (not av)
+          (send self pose)
+          (mapcar #'(lambda (j a)
+                      (if (not (memq j moving-joints))
+                        (send j :joint-angle a)))
+                  (send self :joint-list) moving-av)
+          (setq av (send-super* :inverse-kinematics target-coords args))
+          )
+        )
+      (when (and (null av) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
+          (send self :angle-vector prev-av))
+      )
+    (send self :angle-vector))
   (:rotate-wrist
     (arm angle)
     (let (wrist-index av-tmp)
@@ -52,5 +82,26 @@
       (:j (send self :view-hand-pose-j arm))
       (:k (send self :view-hand-pose-k arm))
       (:l (send self :view-hand-pose-l arm)))
+    )
+  (:visualize-path-planning
+    (limb path &key (other-objects))
+    (let ((robots (list (copy-object self))))
+      (dolist (goal path)
+        (let* ((robot (copy-object (car (reverse robots))))
+               (av)
+               )
+          (setq av
+                (send robot limb :inverse-kinematics goal
+                      :rotation-axis t
+                      :debug-view nil
+                      :warnp nil
+                      :dump-command nil))
+          (when av
+            (send-all (send robot :bodies) :set-color nil 0.2)
+            (pushback robot robots)
+            )
+          )
+        )
+      (objects (append robots path other-objects)))
     )
   )
