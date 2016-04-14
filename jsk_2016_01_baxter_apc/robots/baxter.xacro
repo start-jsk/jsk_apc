@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter_creative">
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter">
   <xacro:include filename="$(find baxter_description)/urdf/baxter_base/baxter_base.urdf.xacro" />
   <xacro:include filename="$(find baxter_description)/urdf/pedestal/pedestal.xacro" />
 
