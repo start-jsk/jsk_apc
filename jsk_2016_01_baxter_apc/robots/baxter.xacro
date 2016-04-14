@@ -7,6 +7,6 @@
   <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/left_arm_camera.xacro"/>
 
   <!-- Vaccum Gripper-->
-  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/left_vaccum_gripper.xacro"/>
+  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/left_vacuum_gripper.xacro"/>
 
 </robot>
