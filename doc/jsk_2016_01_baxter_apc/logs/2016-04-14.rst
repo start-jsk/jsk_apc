@@ -1,0 +1,23 @@
+2016-04-14
+==========
+
+Install DepthSense Camera on both arm
+
+What you did?
+-------------
+
+- front view
+.. image:: _images/depthsense_both_arm.png
+
+- point clouds with kiva pod
+.. image:: _images/depthsense_kiva.png
+
+What is issue?
+--------------
+
+- Point clouds are noisy
+
+Log data
+--------
+
+- https://drive.google.com/file/d/0BycOVNfHx5bqMTVyS0tvVmFpdjA/view
