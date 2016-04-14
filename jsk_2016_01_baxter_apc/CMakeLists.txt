@@ -195,3 +195,6 @@ add_custom_target(compile_stow_kiva_world ALL
 # if(CATKIN_ENABLE_TESTING)
 #   catkin_add_nosetests(src/jsk_apc2016_common/tests)
 # endif()
+
+add_executable(gripper_joint_states_publisher src/gripper_joint_states_publisher.cpp)
+target_link_libraries(gripper_joint_states_publisher ${catkin_LIBRARIES})
