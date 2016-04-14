@@ -22,6 +22,7 @@ env:
 #    - ROS_PARALLEL_JOBS="-j2"  # travis
     - ROSWS=wstool
     - ROSDEP_ADDITIONAL_OPTIONS="-q -n --ignore-src"
+    - BEFORE_RUNTESTS='$CI_SOURCE_PATH/.travis.before_runtests --workspace ~/ros/ws_$REPOSITORY_NAME --packages $TARGET_PKGS'
   matrix:
     - ROS_DISTRO=indigo
 
