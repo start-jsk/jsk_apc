@@ -1,14 +1,25 @@
-sudo: false
+# sudo: false  # jenkins
+sudo: required  # travis
+
+dist: trusty  # travis
 
 language: generic
 
+cache:  # travis
+  directories:  # travis
+    - $HOME/.ccache  # travis
+    - $HOME/.cache/pip  # travis
+    - $HOME/.ros/test_data  # travis
+
 env:
   global:
+    - USE_TRAVIS=true  # travis
     - BUILDER=catkin
     - NO_SUDO=true
     - NOT_TEST_INSTALL=true
     - USE_DEB=true
-    - ROS_PARALLEL_JOBS="-j8"
+    # - ROS_PARALLEL_JOBS="-j8"
+    - ROS_PARALLEL_JOBS="-j2"  # travis
     - ROSWS=wstool
     - ROSDEP_ADDITIONAL_OPTIONS="-q -n --ignore-src"
   matrix:
