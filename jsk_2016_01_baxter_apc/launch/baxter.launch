@@ -26,7 +26,7 @@
     <arg name="launch_voice_echo" value="true"/>
     <arg name="launch_moveit" value="false"/>
     <arg name="launch_teleop" value="false"/>
-    <arg name="launch_tweet" value="true"/>
+    <arg name="launch_tweet" value="false"/>
     <arg name="launch_mongodb" value="false"/>
     <arg name="launch_wrench" value="false"/>
     <arg name="launch_time_signal" value="false"/>
