@@ -20,8 +20,7 @@ rarm:
   - right_w0         : rarm-elbow-r
   - right_w1         : rarm-wrist-p
   - right_w2         : rarm-wrist-r
-rgripper:
-  - right_gripper_vacuum_pad_joint   : rgripper-p
+  - right_gripper_vacuum_pad_joint   : rarm-gripper-p
 
 angle-vector:
   reset-pose : [0, 20, -25, -40, 60, -20, 80, 0, -20, -25, 40, 60, 20, 80, 0, 0, 0]
