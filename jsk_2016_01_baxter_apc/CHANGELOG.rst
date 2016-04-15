@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.4 (2016-04-15)
+------------------
 * Rename launch file
 * Fix typo left_vacuum_gripper.xacro
 * Add softkinetic xacro

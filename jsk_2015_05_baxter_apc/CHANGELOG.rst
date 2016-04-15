@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.4 (2016-04-15)
+------------------
 * Add visualization tool to visualize ik to bin
 * Update rosinstall
 * Contributors: Kentaro Wada
