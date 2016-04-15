@@ -2,6 +2,28 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Rename launch file
+* Fix typo left_vacuum_gripper.xacro
+* Add softkinetic xacro
+* Clean up setup_creative.launch
+* Fix name right/left
+* Rename camera to left_camera
+* Rename setup_baxter_gazebo -> initialize_baxter
+* Initialize docs for 'jsk_2016_01_baxter_apc'
+* Get organized point cloud from softkinetic camera
+* Chang file name
+* Add urdf model of Baxter with creative on right hand
+* Change baudrate to 115200
+* Change jsk_2015_05_baxter_apc/urdf/ -> jsk_2015_05_baxter_apc/robots/
+* Add baxter.launch and new arduino node
+* Chang topic name
+* Add servo state controller in arduino firmware
+* Enable to control servo with ros
+* Add arduino nano firmware
+* Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, Masahiro Bando, Shun Hasegawa
+
 0.2.3 (2016-04-11)
 ------------------
 * Bugfix

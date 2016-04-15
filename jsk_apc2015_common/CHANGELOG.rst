@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add roslint as test_depend
+* Contributors: Kentaro Wada
+
 0.2.3 (2016-04-11)
 ------------------
 * Bugfix
