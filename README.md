@@ -12,6 +12,15 @@ jsk\_apc
 The documentation is available at [here](http://jsk-apc.readthedocs.org).
 
 
+Build Status
+------------
+
+| Package | Indigo (Saucy) | Indigo (Trusty) |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| jsk_apc (32-bit) | [![Build Status](http://build.ros.org/job/Ibin_uS32__jsk_apc__ubuntu_saucy_i386__binary/badge/icon)](http://build.ros.org/job/Ibin_uS32__jsk_apc__ubuntu_saucy_i386__binary/) | [![Build Status](http://build.ros.org/job/Ibin_uT32__jsk_apc__ubuntu_trusty_i386__binary/badge/icon)](http://build.ros.org/job/Ibin_uT32__jsk_apc__ubuntu_trusty_i386__binary/) |
+| jsk_apc (64-bit) | [![Build Status](http://build.ros.org/job/Ibin_uS64__jsk_apc__ubuntu_saucy_amd64__binary/badge/icon)](http://build.ros.org/job/Ibin_uS64__jsk_apc__ubuntu_saucy_amd64__binary/) | [![Build Status](http://build.ros.org/job/Ibin_uT64__jsk_apc__ubuntu_trusty_amd64__binary/badge/icon)](http://build.ros.org/job/Ibin_uT64__jsk_apc__ubuntu_trusty_amd64__binary/) |
+
+
 Usage
 -----
 
