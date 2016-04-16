@@ -92,7 +92,7 @@ Host baxter
 2. Install ROS package
 
 ```
-git clone  https://github.com/ipa320/softkinetic
-cd softkinetic/softkinetic
+git clone https://github.com/knorth55/softkinetic.git -b jsk_apc
+cd softkinetic/softkinetic_camera
 catkin bt -iv
 ```
