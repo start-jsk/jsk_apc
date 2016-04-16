@@ -22,7 +22,7 @@
       use_voxel_grid_filter: false
       <!-- identify device by serial number -->
       use_serial: true
-      serial: K8VF0780323000153A
+      serial: 137DS32528260700377
     </rosparam>
     <!-- load calibration file -->
     <param name="rgb_calibration_file" type="string" value="$(find softkinetic_camera)/resources/senz3d.yaml" />
