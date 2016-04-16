@@ -3,7 +3,29 @@
      copied from softkinetic_camera_demo.launch
 -->
 <launch>
-  <node name="left_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="0" output="screen" >
+
+  <node name="right_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="0" output="screen" >
+    <rosparam>
+      camera_link: right_softkinetic_camera_link
+      rgb_optical_frame: right_softkinetic_camera_rgb_optical_frame
+      depth_optical_frame: right_softkinetic_camera_depth_optical_frame
+      confidence_threshold: 200
+      depth_mode: close                 # close or long
+      depth_frame_format: QVGA          # ignored
+      depth_frame_rate: 25              # 25, 30, 50, 60
+      color_compression: MJPEG          # YUY2, MJPEG
+      color_frame_format: WXGA          # QQVGA, QVGA, VGA, WXGA, NHD
+      color_frame_rate: 25              # 25, 30
+      <!-- to get organized point cloud -->
+      use_frustum_culling_filter: false
+      use_passthrough_filter: false
+      use_radius_outlier_filter: false
+      use_voxel_grid_filter: false
+    </rosparam>
+    <!-- load calibration file -->
+    <param name="rgb_calibration_file" type="string" value="$(find softkinetic_camera)/resources/senz3d.yaml" />
+  </node>
+  <node name="left_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="1" output="screen" >
     <rosparam>
       camera_link: left_softkinetic_camera_link
       rgb_optical_frame: left_softkinetic_camera_rgb_optical_frame
