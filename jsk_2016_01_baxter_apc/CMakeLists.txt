@@ -4,7 +4,12 @@ project(jsk_2016_01_baxter_apc)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roseus)
+find_package(catkin REQUIRED COMPONENTS
+    roseus
+    control_msgs
+    roscpp
+    std_msgs
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -124,12 +129,15 @@ include_directories(include
 
 ## Declare a C++ executable
 add_executable(gripper_joint_states_publisher src/gripper_joint_states_publisher.cpp)
+add_executable(gripper_trajectory_server src/gripper_trajectory_server.cpp)
 
 ## Add cmake target dependencies of the executable
 add_dependencies(gripper_joint_states_publisher ${catkin_EXPORTED_TARGETS})
+add_dependencies(gripper_trajectory_server ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(gripper_joint_states_publisher ${catkin_LIBRARIES})
+target_link_libraries(gripper_trajectory_server ${catkin_LIBRARIES})
 
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/worlds/pick_kiva.world
   DEPENDS ${PROJECT_SOURCE_DIR}/worlds/pick_kiva.world.erb
