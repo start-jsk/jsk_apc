@@ -98,7 +98,7 @@ find_package(catkin REQUIRED COMPONENTS roseus)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES jsk_apc2016_common
-#  CATKIN_DEPENDS other_catkin_pkg
+  CATKIN_DEPENDS control_msgs roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -108,7 +108,9 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+include_directories(include
+  ${catkin_INCLUDE_DIRS}
+)
 
 ## Declare a C++ library
 # add_library(jsk_apc2016_common
@@ -121,16 +123,13 @@ catkin_package(
 # add_dependencies(jsk_apc2016_common ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(jsk_apc2016_common_node src/jsk_apc2016_common_node.cpp)
+add_executable(gripper_joint_states_publisher src/gripper_joint_states_publisher.cpp)
 
 ## Add cmake target dependencies of the executable
-## same as for the library above
-# add_dependencies(jsk_apc2016_common_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(gripper_joint_states_publisher ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(jsk_apc2016_common_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(gripper_joint_states_publisher ${catkin_LIBRARIES})
 
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/worlds/pick_kiva.world
   DEPENDS ${PROJECT_SOURCE_DIR}/worlds/pick_kiva.world.erb
