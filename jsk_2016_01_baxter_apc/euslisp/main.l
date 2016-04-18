@@ -9,6 +9,7 @@
 
 (defun apc-init (&optional (ctype :default-controller))
   (jsk_2016_01_baxter_apc::baxter-init :ctype ctype)
+  (send *ri* :gripper-servo-on)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
   (objects (list *baxter*))
