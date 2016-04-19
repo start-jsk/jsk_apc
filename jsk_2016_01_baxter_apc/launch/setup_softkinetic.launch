@@ -26,6 +26,7 @@
     </rosparam>
     <!-- load calibration file -->
     <param name="rgb_calibration_file" type="string" value="$(find jsk_2016_01_baxter_apc)/data/softkinetic/137DS32528260700377/calib_color.yaml" />
+    <param name="depth_calibration_file" type="string" value="$(find jsk_2016_01_baxter_apc)/data/softkinetic/137DS32528260700377/calib_depth.yaml" />
   </node>
   <node name="left_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" output="screen" >
     <rosparam>
@@ -50,6 +51,7 @@
     </rosparam>
     <!-- load calibration file -->
     <param name="rgb_calibration_file" type="string" value="$(find jsk_2016_01_baxter_apc)/data/softkinetic/137DS32528260700380/calib_color.yaml" />
+    <param name="depth_calibration_file" type="string" value="$(find jsk_2016_01_baxter_apc)/data/softkinetic/137DS32528260700380/calib_depth.yaml" />
   </node>
 </launch>
 
