@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="left_arm_camera">
-  <xacro:include filename="$(find softkinetic_camera)/urdf/senz3d.urdf.xacro"/>
+  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/softkinetic_camera/senz3d.urdf.xacro"/>
   <xacro:sensor_senz3d name="left_softkinetic_camera" parent="left_wrist">
     <origin rpy="0 -${M_PI/2} ${M_PI}" xyz="-0.048 0.0 0.10"/>
   </xacro:sensor_senz3d>

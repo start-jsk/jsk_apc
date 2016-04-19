@@ -23,7 +23,6 @@
   <build_depend>roseus</build_depend>
   <build_depend>ruby</build_depend> <!-- for erb -->
   <build_depend>roscpp</build_depend>
-  <build_depend>softkinetic_camera</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>xacro</build_depend>
 
@@ -35,7 +34,6 @@
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
   <run_depend>roscpp</run_depend>
-  <run_depend>softkinetic_camera</run_depend>
   <run_depend>std_msgs</run_depend>
 
   <test_depend>rostest</test_depend>
