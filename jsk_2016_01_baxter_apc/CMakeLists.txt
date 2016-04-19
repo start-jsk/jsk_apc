@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
     control_msgs
     roscpp
     std_msgs
+    rostest
 )
 
 ## System dependencies are found with CMake's conventions
@@ -199,6 +200,6 @@ add_custom_target(compile_stow_kiva_world ALL
 # endif()
 
 ## Add folders to be run by python nosetests
-# if(CATKIN_ENABLE_TESTING)
-#   catkin_add_nosetests(src/jsk_apc2016_common/tests)
-# endif()
+if(CATKIN_ENABLE_TESTING)
+  add_rostest(test/work_order.test)
+endif()
