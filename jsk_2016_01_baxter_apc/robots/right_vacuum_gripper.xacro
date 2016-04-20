@@ -69,7 +69,7 @@
     <parent link="right_gripper_base"/>
     <child link="right_gripper_vacuum_pad_base"/>
     <axis xyz="0 1 0"/>
-    <limit lower="-1.58" upper="1.58" effort="0" velocity="0"/>
+    <limit lower="-1.58" upper="1.58" effort="0" velocity="4.5"/>
   </joint>
   <joint name="right_gripper_vacuum_pad_fixed" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>

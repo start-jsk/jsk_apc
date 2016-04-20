@@ -34,6 +34,8 @@
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
       )
+    (ros::advertise "/gripper_front/limb/left/servo/torque" std_msgs::Bool)
+    (ros::advertise "/gripper_front/limb/right/servo/torque" std_msgs::Bool)
     )
   (:start-grasp
     (&optional (arm :arms))
@@ -50,6 +52,16 @@
         (ros::service-call (format nil "/robot/~a_vacuum_gripper/off" l/r) (instance std_srvs::EmptyRequest :init))
         (ros::publish (format nil "/vacuum_gripper/limb/~a" l/r) (instance std_msgs::Bool :init :data nil))
         )
+      ))
+  (:gripper-servo-on
+    (&optional (arm :arms))
+    (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
+      (ros::publish (format nil "/gripper_front/limb/~a/servo/torque" l/r) (instance std_msgs::Bool :init :data t))
+      ))
+  (:gripper-servo-off
+    (&optional (arm :arms))
+    (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
+      (ros::publish (format nil "/gripper_front/limb/~a/servo/torque" l/r) (instance std_msgs::Bool :init :data nil))
       ))
   (:graspingp
     (arm)

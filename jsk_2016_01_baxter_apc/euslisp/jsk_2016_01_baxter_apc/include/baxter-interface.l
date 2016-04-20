@@ -19,9 +19,9 @@
   (:init (&rest args)
    (prog1 (send-super* :init :robot baxter-robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface" args)
      (send self :add-controller :larm-controller)
-     (send self :add-controller :rarm-controller)
-     (send self :add-controller :head-controller)
+     (send self :add-controller :rarm-without-gripper-controller)
      (send self :add-controller :rgripper-controller)
+     (send self :add-controller :head-controller)
      (ros::advertise "/robot/end_effector/right_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/end_effector/left_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/xdisplay" sensor_msgs::Image 1)
@@ -69,19 +69,16 @@
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "left_s0" "left_s1" "left_e0" "left_e1" "left_w0" "left_w1" "left_w2")))))
   (:rarm-controller ()
+   (append
+    (send self :rarm-without-gripper-controller)
+    (send self :rgripper-controller)))
+  (:rarm-without-gripper-controller ()
    (list
     (list
      (cons :controller-action "/robot/limb/right/follow_joint_trajectory")
      (cons :controller-state "/robot/limb/right/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "right_s0" "right_s1" "right_e0" "right_e1" "right_w0" "right_w1" "right_w2")))))
-  (:head-controller ()
-   (list
-    (list
-     (cons :controller-action "/robot/head/head_action")
-     (cons :controller-state "/robot/head/head_state")
-     (cons :action-type control_msgs::SingleJointPositionAction)
-     (cons :joint-names (list "head_pan")))))
   (:rgripper-controller ()
    (list
     (list
@@ -89,6 +86,13 @@
      (cons :controller-state "/gripper_front/limb/right/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "right_gripper_vacuum_pad_joint")))))
+  (:head-controller ()
+   (list
+    (list
+     (cons :controller-action "/robot/head/head_action")
+     (cons :controller-state "/robot/head/head_state")
+     (cons :action-type control_msgs::SingleJointPositionAction)
+     (cons :joint-names (list "head_pan")))))
   (:close-head-camera ()
     (send self :close-camera "head_camera")
     )
