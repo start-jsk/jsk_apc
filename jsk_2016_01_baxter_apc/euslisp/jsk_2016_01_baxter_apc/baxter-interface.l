@@ -1,6 +1,6 @@
 ;; -*- mode: lisp;-*-
 
-(require "package://baxtereus/baxter-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/include/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter.l")
 
@@ -25,13 +25,6 @@
   (:init
     (&rest args)
     (send-super* :init args)
-    ;; change robot model in robot-interface class
-    (send (send robot :rarm :end-coords)
-          :newcoords (make-coords :pos #f(50 0 310)
-                                  :rpy (float-vector 0 -pi/2 0)))
-    (send (send robot :larm :end-coords)
-          :newcoords (make-coords :pos #f(50 0 310)
-                                  :rpy (float-vector 0 -pi/2 0)))
     ;; initialize slots
     (setq _tfl (instance ros::transform-listener :init))
     (setq _bin-boxes (make-hash-table))

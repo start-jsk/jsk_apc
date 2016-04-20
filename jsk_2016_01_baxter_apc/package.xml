@@ -16,20 +16,24 @@
   <!-- FIXME: https://github.com/start-jsk/jsk_apc/issues/1253 -->
   <build_depend>jsk_2015_05_baxter_apc</build_depend>
 
+  <build_depend>baxter_description</build_depend>
+  <build_depend>collada_urdf</build_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>euscollada</build_depend>
   <build_depend>roseus</build_depend>
   <build_depend>ruby</build_depend> <!-- for erb -->
   <build_depend>roscpp</build_depend>
-  <build_depend>control_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
+  <build_depend>xacro</build_depend>
 
   <run_depend>baxter_gazebo</run_depend>
   <run_depend>baxter_sim_controllers</run_depend>
   <run_depend>baxter_sim_io</run_depend>
+  <run_depend>control_msgs</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
   <run_depend>roscpp</run_depend>
-  <run_depend>control_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
 
   <test_depend>rostest</test_depend>
