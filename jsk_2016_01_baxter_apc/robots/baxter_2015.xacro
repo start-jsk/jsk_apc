@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter">
+  <xacro:include filename="$(find jsk_2015_05_baxter_apc)/robots/baxter.xacro" />
+
+  <!-- Arm Camera -->
+  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/right_arm_camera.xacro"/>
+  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/left_arm_camera.xacro"/>
+
+</robot>
