@@ -7,10 +7,6 @@
   (when (not (boundp '*baxter*))
     (baxter-init)
     (send *baxter* :locate #f(0 0 950) :world))
-  ;; pod-lowres model
-  (when (not (boundp '*pod*))
-    (load "package://jsk_2016_01_baxter_apc/euslisp/pod-lowres.l")
-    (pod-init))
 
   (when (not (boundp '*tote*))
     (setq *tote* (body- (make-cube 400 500 300)
@@ -24,7 +20,7 @@
     (send *tote* :translate #f(0 0 0)))
   )
 (init)
-(objects (list *baxter* *pod* *tote* *target*))
+(objects (list *baxter* *tote* *target*))
 
 (defun rarm-movepos
   (robot endcoords axis)
