@@ -5,25 +5,26 @@
 
 typedef actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> Server;
 
-ros::Publisher servo_angle;
+ros::Publisher right_gripper_servo_angle;
 
-void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server* as_)
+void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server* as_, std::string side)
 {
     bool success = true;
+    std::string node_name(ros::this_node::getName());
 
-    ROS_INFO("gripper_front/limb/right/servo/angle: Executing requested joint trajectory");
+    ROS_INFO("%s: Executing requested joint trajectory for %s gripper", node_name.c_str(), side.c_str());
 
     for (int i = 0; i < goal->trajectory.points.size(); i++) {
 
         if (as_->isPreemptRequested()) {
-            ROS_INFO("gripper_front/limb/right/follow_joint_trajectory: Preempted");
+            ROS_INFO("%s: Preempted for %s gripper", node_name.c_str(), side.c_str());
             as_->setPreempted();
             success = false;
             break;
         }
 
         if (!ros::ok()) {
-            ROS_INFO("gripper_front/limb/right/follow_joint_trajectory: Aborted");
+            ROS_INFO("%s: Aborted for %s gripper", node_name.c_str(), side.c_str());
             as_->setAborted();
             return;
         }
@@ -31,7 +32,8 @@ void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server
         float rad = goal->trajectory.points[i].positions[0];
         std_msgs::Float32 angle_msg;
         angle_msg.data = rad;
-        servo_angle.publish(angle_msg);
+        if (side == "right")
+          right_gripper_servo_angle.publish(angle_msg);
 
         control_msgs::FollowJointTrajectoryFeedback feedback_;
         
@@ -53,7 +55,7 @@ void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server
 
     control_msgs::FollowJointTrajectoryResult result_;
     if (success) {
-        ROS_INFO("gripper_front/limb/right/servo/angle: Succeeded");
+        ROS_INFO("%s: Succeeded for %s gripper", node_name.c_str(), side.c_str());
         result_.error_code = result_.SUCCESSFUL;
         as_->setSucceeded(result_);
     }
@@ -61,10 +63,10 @@ void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "gripper_controll_servoer");
+    ros::init(argc, argv, "gripper_joint_trajectory_action_server");
     ros::NodeHandle n;
-    servo_angle = n.advertise<std_msgs::Float32>("gripper_front/limb/right/servo/angle", 10);
-    Server server(n, "gripper_front/limb/right/follow_joint_trajectory", boost::bind(&execute, _1, &server), false);
+    right_gripper_servo_angle = n.advertise<std_msgs::Float32>("gripper_front/limb/right/servo/angle", 10);
+    Server server(n, "gripper_front/limb/right/follow_joint_trajectory", boost::bind(&execute, _1, &server, "right"), false);
     server.start();
     ros::spin();
     return 0;
