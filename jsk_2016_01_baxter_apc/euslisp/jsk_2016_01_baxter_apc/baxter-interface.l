@@ -317,7 +317,10 @@
       (if (ros::get-param "/apc_on_gazebo" nil)
         ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
         (setq offset-from-entrance #f(-30 0 0))
-        (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
+        (if (eq arm :rarm)
+          (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 50)))
+          (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
+          )
         )
       (send self :angle-vector (send self :ik->bin-entrance arm bin :offset offset-from-entrance) 3000)
       (send self :wait-interpolation)
@@ -363,9 +366,14 @@
     graspingp))
   (:pick-object
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
-    (send *ri* :angle-vector-sequence
-      (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)))
-      :fast nil 0 :scale 5.0)
+    (if (eq arm :rarm)
+      (send *ri* :angle-vector-sequence
+            (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 -30)))
+            :fast nil 0 :scale 5.0)
+      (send *ri* :angle-vector-sequence
+            (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)))
+            :fast nil 0 :scale 5.0)
+      )
     (send *ri* :wait-interpolation)
     (let (bin-box graspingp avs)
       ;; abort when no objects found
@@ -396,15 +404,26 @@
       (when do-stop-grasp (unless graspingp (send self :stop-grasp arm)))
       (send self :angle-vector-sequence (reverse avs) :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
+      (ros::ros-info "[:pick-object] arm:~a in-bin -> bin-entrance" arm)
       ;; move arm in-bin -> bin-entrance
-      (send self :angle-vector-sequence
-        (list
-          (send *baxter* arm :move-end-pos #f(0 0 50))
-          (send self :ik->bin-entrance arm bin :offset #f(0 0 50))
-          (send self :ik->bin-entrance arm bin :offset #f(-100 0 50))
-          (send self :ik->bin-entrance arm bin :offset #f(-300 0 50))
-          )
-        :fast nil 0 :scale 5.0)
+      (if (eq arm :rarm)
+        (send self :angle-vector-sequence
+              (list
+                (send *baxter* arm :move-end-pos #f(0 0 -30))
+                (send self :ik->bin-entrance arm bin :offset #f(0 0 -30))
+                (send self :ik->bin-entrance arm bin :offset #f(-100 0 -30))
+                (send self :ik->bin-entrance arm bin :offset #f(-300 0 -30))
+                )
+              :fast nil 0 :scale 5.0)
+        (send self :angle-vector-sequence
+              (list
+                (send *baxter* arm :move-end-pos #f(0 0 50))
+                (send self :ik->bin-entrance arm bin :offset #f(0 0 50))
+                (send self :ik->bin-entrance arm bin :offset #f(-100 0 50))
+                (send self :ik->bin-entrance arm bin :offset #f(-300 0 50))
+                )
+              :fast nil 0 :scale 5.0)
+        )
       (send self :wait-interpolation)
       ;; move arm bin-entrance -> body
       (send *baxter* :avoid-shelf-pose arm bin)
@@ -460,7 +479,10 @@
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
-      (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 0)) avs)
+      (if (eq arm :rarm)
+        (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)) avs)
+        (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 0)) avs)
+        )
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
   (:move-arm-body->bin-overlook-pose
