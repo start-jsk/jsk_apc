@@ -59,8 +59,7 @@
    (append
     (send self :larm-controller)
     (send self :rarm-controller)
-    (send self :head-controller)
-    (send self :rgripper-controller)))
+    (send self :head-controller)))
   (:larm-controller ()
    (list
     (list
