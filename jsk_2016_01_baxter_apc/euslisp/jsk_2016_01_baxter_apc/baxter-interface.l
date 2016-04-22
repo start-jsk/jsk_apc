@@ -307,18 +307,42 @@
         (setq world-x :z world-y :x world-z :y)
         (setq world-x :z world-y :y world-z :x)
         )
-      (if (and
-            (< (send obj-box :dimensions world-y) (send obj-box :dimensions world-z))
-            (> (send obj-box :dimensions world-z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
+      (if (eq arm :rarm)
+        (if (> (send obj-box :dimensions world-z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 3))
+          (progn
+            (cond ((< (elt (send obj-coords :pos) 1) ;; compare y
+                      (- (elt (send (send *baxter* arm :end-coords) :worldpos) 1) (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :y) 4))))
+                   (setq sign -1)
+                   (setq sign_y 0))
+                  ((> (elt (send obj-coords :pos) 1)
+                      (+ (elt (send (send *baxter* arm :end-coords) :worldpos) 1) (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :y) 4))))
+                   (setq sign 1)
+                   (setq sign_y 0))
+                  (t
+                    (setq sign 0)
+                    (setq sign_y -1))
+                  )
             )
-        (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
-        (setq sign 0))
-      (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a" arm sign)
+          (progn
+            (setq sign 0)
+            (setq sign_y 0)
+            )
+          )
+        (if (and
+              (< (send obj-box :dimensions world-y) (send obj-box :dimensions world-z))
+              (> (send obj-box :dimensions world-z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
+              )
+          (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
+          (setq sign 0))
+        )
+      (if (eq arm :rarm)
+        (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
+        (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a" arm sign))
       (if (ros::get-param "/apc_on_gazebo" nil)
         ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
         (setq offset-from-entrance #f(-30 0 0))
         (if (eq arm :rarm)
-          (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 50)))
+          (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 80)))
           (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
           )
         )
@@ -328,10 +352,39 @@
       ;   (send *baxter* arm :inverse-kinematics
       ;       (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :translate offset :local))
       ;   avs)
-      (pushback
-        (send *baxter* arm :inverse-kinematics
-            (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
-        avs)
+      (if (eq arm :rarm)
+        (let (end-coords bin-box bin-coords bin-dim-x)
+          (setq end-coords (make-cascoords))
+          (send end-coords :move-to (send *baxter* arm :end-coords :worldcoords) :world)
+          (setq bin-box (gethash bin _bin-boxes))
+          (unless bin-box
+            (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
+            (return-from :try-to-pick-object))
+          (setq bin-coords (make-cascoords))
+          (send bin-coords :move-to (send self :tf-pose->coords
+                                       (send (send bin-box :header) :frame_id)
+                                       (send bin-box :pose)) :world)
+          (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
+          (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
+          (cond ((< sign_y 0)
+                 (send end-coords :move-to (send bin-coords :worldcoords) :world)
+                 (send end-coords :rotate (* sign_y pi/2) :y :local))
+                (t 
+                  (send bin-coords :assoc end-coords)
+                  (send bin-coords :rotate (* sign pi/2) :x :local)
+                  (send bin-coords :dissoc end-coords))
+                )
+          (pushback
+            (send *baxter* arm :inverse-kinematics
+                  end-coords
+                  )
+            avs)
+          )
+        (pushback
+          (send *baxter* arm :inverse-kinematics
+                (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
+          avs)
+        )
       (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper
@@ -339,19 +392,35 @@
       (send self :start-grasp arm)
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object] arm:~a approach to the object" arm)
-      (send self :angle-vector
-            (send *baxter* arm :inverse-kinematics
-                  (make-coords
-                    :pos (v+ (send obj-coords :pos) offset)
-                    :rpy (list 0 0 (* sign pi/2))
+      (if (eq arm :rarm)
+        (send self :angle-vector
+              (send *baxter* arm :inverse-kinematics
+                    (make-coords
+                      :pos (v+ (send obj-coords :pos) offset)
+                      :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
+                      )
                     )
-                  )
-            3000)
+              3000)
+        (send self :angle-vector
+              (send *baxter* arm :inverse-kinematics
+                    (make-coords
+                      :pos (v+ (send obj-coords :pos) offset)
+                      :rpy (list 0 0 (* sign pi/2))
+                      )
+                    )
+              3000)
+        )
       (send self :wait-interpolation)
-      (send self :angle-vector
-            (send *baxter* arm :inverse-kinematics
-                  (make-coords :pos (send obj-coords :pos) :rpy (list 0 0 (* sign pi/2))))
-            3000)
+      (if (eq arm :rarm)
+        (send self :angle-vector
+              (send *baxter* arm :inverse-kinematics
+                    (make-coords :pos (send obj-coords :pos) :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
+              3000)
+        (send self :angle-vector
+              (send *baxter* arm :inverse-kinematics
+                    (make-coords :pos (send obj-coords :pos) :rpy (list 0 0 (* sign pi/2))))
+              3000)
+        )
       (send self :wait-interpolation)
       (setq graspingp (send self :graspingp arm))
       (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
