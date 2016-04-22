@@ -1,0 +1,40 @@
+2016-04-21
+==========
+
+前日、 `start-jsk/jsk_apc#1302 <https://github.com/start-jsk/jsk_apc/pull/1302>`_ を達成し、 `start-jsk/jsk_apc#1308 <https://github.com/start-jsk/jsk_apc/pull/1308>`_ でmain.launchから新グリッパーのサーボを動かせるようになった。そのバグを潰すとともに、新グリッパー内の圧力センサによる把持判定をmain.lから参照できるようにした。また、新グリッパーで去年のプログラムを走らせると、グリッパー上部がbinの上部に当たる問題が発生したので、それを修正中である。
+
+What you did?
+-------------
+
+- Bug fix
+
+  - `start-jsk/jsk_apc#1317 <https://github.com/start-jsk/jsk_apc/issues/1317>`_
+  | `start-jsk/jsk_apc#1318 <https://github.com/start-jsk/jsk_apc/pull/1318>`_ で修正
+  - `start-jsk/jsk_apc#1316 <https://github.com/start-jsk/jsk_apc/pull/1316>`_
+  | gripper joint trajectory actionのInfo messageが読みにくく、プログラムそのものの拡張性も良くなかったので修正
+
+- New functions
+
+  - `start-jsk/jsk_apc#1319 <https://github.com/start-jsk/jsk_apc/pull/1319>`_
+  | 掃除機に内蔵されている圧力センサーの代わりに、新グリッパーに内蔵されている圧力センサーを用いて把持したかどうかを判定する
+
+- Work in progress
+
+  - `start-jsk/jsk_apc#1321 <https://github.com/start-jsk/jsk_apc/pull/1321>`_
+  | 新グリッパーで去年のプログラムを走らせると、グリッパー上部がbinの上部に当たる問題が発生した(`movie1 <https://drive.google.com/file/d/0B2trSrh55DvLMHlEZWJUcVFYOXM/view>`_)。それを修正中。
+
+    - `movie2 <https://drive.google.com/file/d/0B2trSrh55DvLQ0ZNT2NKR0hiMVU/view>`_, `movie3 <https://drive.google.com/file/d/0B2trSrh55DvLZExCWmJSTTQyMVk/view>`_ でグリッパーはbinに当たらなくなったが、ものを取り出そうとした時にIKが解けないという問題が発生した。
+    - `movie4 <https://drive.google.com/file/d/0B2trSrh55DvLaXlyVmE0Z3ZTbDg/view>`_ でIKが解けるようになった。
+    - 現在の状態で、平たい物品はbinにぶつからずに取れるようになっている。
+
+What is issue?
+--------------
+
+- `start-jsk/jsk_apc#1320 <https://github.com/start-jsk/jsk_apc/issues/1320>`_
+| 認識が失敗する。新グリッパー側に関しては、AttentionClipperから失敗することが、launchファイルを読んで判明した。
+- 平たい物品はとれるが、背の高い物品は、物品に向けてIKを解いた時に新グリッパーが棚にぶつかる可能性が大。グリッパーのサーボを曲げないで物品を取るプログラムを書く必要がある。
+
+Log data
+--------
+
+- https://drive.google.com/drive/folders/0B2trSrh55DvLRWxHS2pFVm9Fdjg 
