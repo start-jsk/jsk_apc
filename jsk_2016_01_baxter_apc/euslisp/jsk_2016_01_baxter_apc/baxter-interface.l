@@ -467,6 +467,14 @@
       (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 0)) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
+  (:move-arm-body->bin-overlook-pose
+    (arm bin)
+    (let (avs)
+      (pushback (send *baxter* :fold-to-keep-object arm) avs)
+      (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
+      (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 -150)) avs)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
+      ))
   (:move-arm-body->order-bin
     (arm)
     (let (avs)
