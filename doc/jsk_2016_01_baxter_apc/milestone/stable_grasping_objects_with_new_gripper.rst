@@ -1,0 +1,45 @@
+Stable Grasping Objects with New Gripper
+================================================
+
+- Opened: 2016-04-23
+- Deadline: 2016-04-30
+
+
+Goal
+----
+
+Grasp the most of objects with new gripper stably.
+
+
+Configuration
+-------------
+
+- Gripper: vacuum2016 (**feature**) (vs vacuum2015)
+- Item: apc2015
+- Hand Camera: None
+
+
+System
+------
+
+Recognition
++++++++++++
+
+1. Location of shelf: old
+2. Object recognition in bin: old
+3. Grasp plannning in bin: old
+4. Detection of grasping with vacuum sensor: new (**feature**)
+5. In-hand object recognition: None
+6. In-hand detection of grasping: None
+
+Motion
+++++++
+
+1. Pick objects in the certain bin
+
+
+Comparing
+---------
+
+- Compare new and old gripper in point of picking the same object in the same setting
+- Target of this comparing is proving new gripper's superiority to old gripper
