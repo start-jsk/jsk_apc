@@ -1,0 +1,34 @@
+2016-04-22-gripper
+==========
+
+昨日に引き続き、 `start-jsk/jsk_apc#1321 <https://github.com/start-jsk/jsk_apc/pull/1321>`_ で作業中。ある程度背の高い物品はグリッパーのサーボを伸ばした状態でとり、背の低い物品や棚の側面に立て掛けてあるような物品は、グリッパーのサーボを曲げて、適切な角度に手首を回転させてとるという判断ができるようになった。
+
+What you did?
+-------------
+
+- Work in progress
+
+  - `start-jsk/jsk_apc#1321 <https://github.com/start-jsk/jsk_apc/pull/1321>`_
+  | 背の高い物品に対し、その位置によって動きを分けられるようになった。 
+
+    - プログラムを書いた当初は、 `movie1 <https://drive.google.com/file/d/0B2trSrh55DvLUzY0bm5XTHVYOEk/view>`_, `movie2 <https://drive.google.com/file/d/0B2trSrh55DvLYzNxYjFoTV9qclk/view>`_ のように、IKが失敗するバグを埋め込んでしまった。
+    - `movie3 <https://drive.google.com/file/d/0B2trSrh55DvLcjJmdlphaUphV2M/view>`_ でbinの中央付近にある背の高い物品に対し、グリッパーのサーボを伸ばしてアプローチすることができるようになったが、今度は背の低い物品を取ろうとするとIKが失敗するバグを埋め込んでしまった。
+    - `movie4 <https://drive.google.com/file/d/0B2trSrh55DvLTjdxRXlIYUNBNzg/view>`_ で背の低い物品でもIKが失敗しないようになった。
+    - `movie5 <https://drive.google.com/file/d/0B2trSrh55DvLc2NBb1B3MXBmVXM/view>`_ でbinの側面に近い物品に対し、手首関節を回転させてアプローチすることができるようになったが、反対側のbinの側面とグリッパーが干渉してしまった。
+    - `movie6 <https://drive.google.com/file/d/0B2trSrh55DvLbXpROHVqb0ZyM00/view>`_ でmovie5での干渉を解決できた。 
+    - `movie7 <https://drive.google.com/file/d/0B2trSrh55DvLOG5VeFJhLWRnMUk/view>`_ で厚みのある物品の把持に挑戦した。つかめはしたが、引き出すところでグリッパーの関節を曲げた際に吸引が剥がれてしまった。
+
+What is issue?
+--------------
+
+- `start-jsk/jsk_apc#1327 <https://github.com/start-jsk/jsk_apc/issues/1327>`_
+| 非常停止スイッチを押すとBaxterの関節は能動的に動かせなくなり、電磁ブレーキだけがかかった状態になるが、グリッパーのサーボモータのトルクは入ったままである。非常停止後にbinにグリッパーが引っかかった場合、グリッパーのサーボモータに大きな負荷がかかるケースがあり、危険である。これを何とかする必要があり、最優先で作業しなくてはならない。
+- movie7で示された通り、グリッパーの関節をまっすぐにしてアプローチした後は、グリッパーの関節を曲げるのはbinから物品が引き出されてからにするべきである。これと似たような問題として、movie6で示されたように、binの側面に近い物品をとった後、グリッパーがbin内にある状態で手首関節が回転し、物品がbinにあたって吸引が剥がれる危険性が高まるというものもある。物品がbin内から引き出されるまでは、アプローチした際の姿勢を極力維持するべきではないか。
+- 現在はグリッパーのサーボモータのトルクは常に入ったままであるが、物品を把持した状態でトルクを切ると、重力や物品とbinの干渉に応じて、グリッパーの関節角度がなじむことがわかっている。これをうまく利用したい。
+- movie4で顕著だが、物品の位置にうまくグリッパーを持って行けていない。これは、物品の点群が十分にとれていないせいではないかと考えられる。手首にRealSense Cameraがつき、これを有効に活用できるようになれば、改善できるのではないかと考えられる。
+- movie4で、グリッパー部分の電源ジャックが抜けてしまい、挿し直すというトラブルがあった。また、グリッパーが掃除機のホースに引っかかり、非常停止せざるを得なくなった。ジャックが抜ける問題については対策済みであるが、コードやホースの取り回しについて考える必要がある。
+
+Log data
+--------
+
+- https://drive.google.com/drive/folders/0B2trSrh55DvLQm9LNmZTdHhsYTA 
