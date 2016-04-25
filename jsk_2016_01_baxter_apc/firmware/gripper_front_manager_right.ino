@@ -56,10 +56,10 @@ void set_angle(void)
 void servo_angleCb(const std_msgs::Float32& angle_msg)
 {
     if (!state) return;
-    if (servo_torque_msg.data == false) return;
     if (angle_msg.data < -pi/2.0) servo_angle_msg.data = -pi/2.0;
     else if (angle_msg.data > pi/2.0) servo_angle_msg.data = pi/2.0;
     else servo_angle_msg.data = angle_msg.data;
+    if (servo_torque_msg.data == false) return;
     set_angle();
 }
 
