@@ -14,6 +14,8 @@
 
   <!-- vacuum gripper -->
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/vacuum_gripper.launch" />
+  <node name="enable_gripper"
+        pkg="jsk_2016_01_baxter_apc" type="enable_gripper" output="screen" />
   <node name="gripper_joint_state_publisher"
         pkg="jsk_2016_01_baxter_apc" type="gripper_joint_states_publisher" />
   <node name="gripper_trajectory_server"
