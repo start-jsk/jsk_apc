@@ -37,6 +37,5 @@
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
 
-  <test_depend>rostest</test_depend>
   <test_depend>jsk_tools</test_depend>
 </package>

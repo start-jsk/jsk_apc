@@ -8,6 +8,7 @@ import cPickle as pickle
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 class Utils:
     HUE_WHITE = 180
     HUE_GRAY = 181
@@ -63,8 +64,13 @@ class Utils:
     def load_mask(filename):
         result = cv2.imread(filename, 0)
         if result is not None:
-            print result
             return result.astype('bool')
+
+    @staticmethod
+    def load_mask_pkl(filename):
+        with open(filename, 'r') as f:
+            result = pickle.load(f)
+        return result
 
     @staticmethod
     def load_image(filename):
@@ -127,8 +133,9 @@ class Display:
         if title is None:
             title = str(self.figure_num)
             self.figure_num += 1
-        fig = plt.figure(title)
+        fig = plt.figure()
         fig.clear()
+        plt.title(title)
 
     def set_limits(self):
         if self.bin_mask is not None:
@@ -172,18 +179,21 @@ class Display:
 
         self.plot_image(Utils.hwgb2hsv(color_image), title=title)
 
-
-    def plot_segment(self, image, segment, title=None):
-
-        self.figure(title)
-
+    def get_segment(self, image, segment):
         image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
 
         alpha = 0.3
         image[np.logical_not(segment)] = alpha * image[np.logical_not(segment)] + (1 - alpha) * np.array([[150, 150, 150]])
         image[np.logical_not(self.bin_mask)] = np.zeros(image[np.logical_not(self.bin_mask)].shape) + 255
 
-        plt.imshow(image.astype('uint8'), interpolation='nearest')
+        return image.astype('uint8')
+
+    def plot_segment(self, image, segment, title=None):
+
+        self.figure(title)
+
+        segmented_img = self.get_segment(image, segment)
+        plt.imshow(segmented_img, interpolation='nearest')
 
         self.set_limits()
 

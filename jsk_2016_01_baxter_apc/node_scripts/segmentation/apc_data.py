@@ -1,4 +1,4 @@
-__author__ = 'rico'
+__author__ = 'rico, Yusuke Niitani'
 
 from copy import deepcopy
 import cv2
@@ -11,35 +11,54 @@ import numpy as np
 import utils
 from utils import Utils
 
-class APCSample:
 
-    def __init__(self, image_filename=None, apc_sample=None, labeled=True, infer_shelf_mask=False):
-
+class APCSample(object):
+    #TODO: rewrite this in classmethod
+    #  http://stackoverflow.com/questions/682504/what-is-a-clean-pythonic-way-to-have-multiple-constructors-in-python 
+    def __init__(self, image_filename=None, apc_sample=None, labeled=True, infer_shelf_mask=False, pickle_mask=False, image_input=None, bin_mask_input=None, data_input=None):
+        self.image = None
+        self.bin_mask = None
+        data = None
         # copy properties of a passed APCImage and remove labels if needed
         if apc_sample is not None:
             self.__dict__ = deepcopy(apc_sample.__dict__)
             if not labeled:
                 # remove object masks (= labels)
                 self.object_masks = dict()
-
+        
+        ### specific to loading data from files
         if image_filename is not None:
-
-            print(image_filename)
-
             # load image, bin_mask, and supplementary data
             bin_mask_filename = image_filename[:-4] + '.pbm'
+            bin_pickle_filename = image_filename[:-4] + '_bin' + '.pkl'
             data_filename = image_filename[:-4] + '.pkl'
 
             self.filenames = {'image': image_filename, 'bin_mask': bin_mask_filename, 'data': data_filename}
 
             self.image = Utils.load_image(image_filename)
-            self.bin_mask = Utils.load_mask(bin_mask_filename)
+            if pickle_mask:
+                self.bin_mask = Utils.load_mask_pkl(bin_pickle_filename)
+            else:
+                self.bin_mask = Utils.load_mask(bin_mask_filename)
             data = Utils.load_supplementary_data(data_filename)
 
             if self.image is None: print('-> image file not found'); return
             if self.bin_mask is None: print('-> mask file not found'); return
             if data is None: print('-> data file not found'); return
+            print data
 
+
+        if ((image_input is not None)
+                and (bin_mask_input is not None) 
+                and (data_input is not None)):
+            # make sure that the image is HSV
+            self.image = image_input
+            self.bin_mask = bin_mask_input
+            data = data_input
+
+        if ((self.image is not None)
+                and (self.bin_mask is not None)
+                and (data is not None)):
             # compute all features images
             self.feature_images = Utils.compute_feature_images(self.image, data)
 
@@ -65,6 +84,7 @@ class APCSample:
                         elif len(self.object_masks.keys()) == 1:
                             self.object_masks['shelf'] = np.logical_and(self.bin_mask, np.logical_not(self.object_masks.values()[0]))
 
+            # TODO: START FROM HERE
             # 'zoom' into the bounding box around the bin_mask
             contours, _hierarchy = cv2.findContours(self.bin_mask.astype('uint8'), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             x, y, w, h = cv2.boundingRect(contours[0])
@@ -73,6 +93,7 @@ class APCSample:
 
             self.image = self.image[y:y + h, x:x + w, :]
             self.bin_mask = self.bin_mask[y:y + h, x:x + w]
+            # TODO: END HERE replace with staticmethod
 
             for feature_name in self.feature_images.keys():
                 self.feature_images[feature_name] = self.feature_images[feature_name][y:y + h, x:x + w]
@@ -80,8 +101,19 @@ class APCSample:
             for object_name in self.object_masks.keys():
                 self.object_masks[object_name] = self.object_masks[object_name][y:y + h, x:x + w]
 
+    @staticmethod
+    def zoom_image(image, bin_mask): 
+        # 'zoom' into the bounding box around the bin_mask
+        contours, _hierarchy = cv2.findContours(bin_mask.astype('uint8'), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        x, y, w, h = cv2.boundingRect(contours[0])
 
-class APCDataSet:
+        bounding_box = {'x':x, 'y':y, 'w':w, 'h':h}
+
+        image_zoomed = image[y:y + h, x:x + w, :]
+        bin_mask_zoomed = bin_mask[y:y + h, x:x + w]
+        return image_zoomed, bin_mask_zoomed
+
+class APCDataSet(object):
 
     object_names = ["champion_copper_plus_spark_plug", "kyjen_squeakin_eggs_plush_puppies", "cheezit_big_original",
                       "laugh_out_loud_joke_book", "crayola_64_ct", "mark_twain_huckleberry_finn", "mead_index_cards",
@@ -129,10 +161,11 @@ class APCDataSet:
     def load_from_cache(self):
 
         cache_filename = self.cache_filename()
-
+        
         if os.path.isfile(cache_filename):
             with open(cache_filename, 'rb') as f:
-                self.__dict__.update(pickle.load(f))
+                loaded = pickle.load(f)
+            self.__dict__.update(loaded)
         else:
             print("Cache file not found:\n{}".format(cache_filename))
 
@@ -222,3 +255,37 @@ class APCDataSet:
             plt.draw()
             raw_input('Press Enter for next sample...')
             plt.close('all')
+
+
+class APCSamplePredicted(object):
+    """
+    param: predicted: segmented image of an object (currently supports only one image)
+    """
+    def __init__(self, apc_sample=None, segments=None, posterior_img_smooth=None):
+        self.apc_sample = apc_sample
+        self.segments = segments
+        self.posterior_img_smooth = posterior_img_smooth
+        
+    @staticmethod
+    def init_global_display():
+        utils.global_display()
+
+    def plot_segment(self):
+        for key in self.segments.keys():
+            utils.display.plot_segment(self.apc_sample.image, self.segments[key], title=key)
+
+    def plot_posterior(self):
+        for key in self.posterior_img_smooth.keys():
+            utils.display.plot_heat_image(self.posterior_img_smooth[key], title=key)
+#    def plot_posterior(self):
+#        for object in self.apc_sample.objects:
+            
+# make save decorator 
+#    def save_segment(self, path):
+#        segmented_img = utils.display.get_segment(self.apc_sample.image, self.segments)
+#        plt.imsave(path, segmented_img)
+
+#    def plot_dist(self):
+#        utils.display.plot_image(self.apc_sample.feature_images['dist2shelf'])
+        
+

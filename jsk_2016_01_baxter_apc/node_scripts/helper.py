@@ -1,11 +1,31 @@
 #!/usr/bin/env python
 import numpy as np
 import tf 
-from geometry_msgs.msg import Transform, TransformStamped, Vector3, Quaternion
+from geometry_msgs.msg import Transform, TransformStamped, Quaternion, Vector3, Point, PointStamped
+import geometry_msgs.msg
 from sensor_msgs import point_cloud2
 import matplotlib.pyplot as plt
 import time
 
+def quaternion(rot):
+    return Quaternion(x=rot[0], y=rot[1], z=rot[2], w=rot[3])
+
+def vector3(vec):
+    return Vector3(x=vec[0], y=vec[1], z=vec[2])
+
+def point(vec):
+    return Point(x=vec[0], y=vec[1], z=vec[2])
+
+def list_from_point(point):
+    return [point.x, point.y, point.z]
+
+def corner_point(initial_pos, dimensions, depth, header, signs):
+    return PointStamped(
+            header=header,
+            point=Point(
+                    x=initial_pos[0]+signs[0]*depth*dimensions[0]/2,
+                    y=initial_pos[1]+signs[1]*dimensions[1]/2,
+                    z=initial_pos[2]+signs[2]*dimensions[2]/2))
 
 def mat_from_pos(vec):
     vec_arr = np.array((vec.x, vec.y, vec.z))
@@ -54,15 +74,6 @@ def inv_tfmat(mat):
     ret[3,3] = 1
     return ret
 
-
-def visualize_cloud(cloud):
-    gen = point_cloud2.read_points(cloud, skip_nans=False, field_names=("x", "y", "z"))
-    points = [point for point in gen]
-
-    arr = np.array(points).reshape((cloud.height, cloud.width, 3))
-    plt.imsave('base_img.png', arr)
-
-
 def timing(wrapped):
     def inner(*args, **kwargs):
         start = time.time()
@@ -71,4 +82,3 @@ def timing(wrapped):
         print '{0} elapsed time {1}'.format(wrapped.__name__, end - start)
         return ret
     return inner
-

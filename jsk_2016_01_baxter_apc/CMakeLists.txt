@@ -229,5 +229,5 @@ add_custom_target(compile_stow_kiva_world ALL
 if(CATKIN_ENABLE_TESTING)
   add_rostest(test/work_order.test)
   find_package(rostest REQUIRED)
-  catkin_add_nosetests(${CMAKE_CURRENT_SOURCE_DIR}/test/test_dist2bbox.test)
+  catkin_add_nosetests(${CMAKE_CURRENT_SOURCE_DIR}/test/test_spatial.test)
 endif()
