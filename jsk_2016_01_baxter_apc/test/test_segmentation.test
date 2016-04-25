@@ -1,0 +1,10 @@
+<launch>
+
+  <param name="/use_sim_time" value="true" type="bool"/> 
+  <node name="rosbag_play"
+    pkg="rosbag" type="play"
+    args="$(find jsk_2016_01_baxter_apc)/test_data/data_segmentation_img.bag --loop --clock">
+  </node>
+  
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/segmentation.launch" />
+</launch>

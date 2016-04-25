@@ -1,0 +1,25 @@
+<launch>
+
+  <arg name="INPUT_POINTS" value="/kinect2_torso/hd/points"/>
+  <arg name="INPUT_INFO" value="/kinect2_torso/hd/camera_info"/>
+  <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color"/>
+
+  <!-- note: initial_rot_list has been changed from 2015 to be compatiable 
+              with Quaterniona-->
+
+  <node name="segmentation"
+        pkg="jsk_2016_01_baxter_apc" 
+        type="pipeline.py" 
+        output="screen">
+    <remap from="~input" to="$(arg INPUT_POINTS)"/>
+    <remap from="~input/info" to="$(arg INPUT_INFO)"/>
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
+    <param name="trained_pkl_path" value="$(find jsk_2016_01_baxter_apc)/data/trained_segmenter.pkl" />
+    <rosparam file="$(find jsk_2016_01_baxter_apc)/config/bin_shelf.yaml" command="load"/>
+    <rosparam>
+      camera_directions: [x, x, x, x, x, x]
+      target_object: oreo_mega_stuf
+      objects: [oreo_mega_stuf, cheezit_big_original]
+    </rosparam>
+  </node>
+</launch>
