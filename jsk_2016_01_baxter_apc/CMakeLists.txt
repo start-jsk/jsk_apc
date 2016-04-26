@@ -227,4 +227,10 @@ add_custom_target(compile_stow_kiva_world ALL
 ## Add folders to be run by python nosetests
 if(CATKIN_ENABLE_TESTING)
   add_rostest(test/work_order.test)
+  # roslaunch checks
+  find_package(roslaunch REQUIRED)
+  file(GLOB_RECURSE _roslaunch_files launch/*.launch)
+  foreach(_roslaunch_file ${_roslaunch_files})
+    roslaunch_add_file_check(${_roslaunch_file})
+  endforeach()
 endif()
