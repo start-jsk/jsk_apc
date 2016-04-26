@@ -430,6 +430,9 @@
         (send self :wait-interpolation))
       ;; lift object
       (ros::ros-info "[:try-to-pick-object] arm:~a lift the object" arm)
+      (if (eq arm :rarm)
+        (if (< sign_y 0)
+          (send self :gripper-servo-off arm)))
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)
       (send self :wait-interpolation)
     graspingp))
@@ -498,6 +501,8 @@
       (send *baxter* :avoid-shelf-pose arm bin)
       (send self :send-av)
       (send self :wait-interpolation)
+      (if (eq arm :rarm)
+        (send self :gripper-servo-on arm))
       graspingp))
   (:send-av
     (&optional (tm 3000))
