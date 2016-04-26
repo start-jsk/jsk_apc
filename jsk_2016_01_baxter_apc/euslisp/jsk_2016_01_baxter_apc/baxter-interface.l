@@ -342,7 +342,7 @@
         ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
         (setq offset-from-entrance #f(-30 0 0))
         (if (eq arm :rarm)
-          (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 80)))
+          (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 100)))
           (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
           )
         )
@@ -374,6 +374,9 @@
                   (send bin-coords :rotate (* sign pi/2) :x :local)
                   (send bin-coords :dissoc end-coords))
                 )
+          (if (< sign 0)
+            (send *baxter* :rotate-wrist arm 270)
+            )
           (pushback
             (send *baxter* arm :inverse-kinematics
                   end-coords
