@@ -1,0 +1,152 @@
+<launch>
+
+  <arg name="INPUT_CLOUD" />
+  <arg name="INPUT_IMAGE" />
+  <arg name="MANAGER" />
+
+
+  <node name="in_hand_clipper"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/AttentionClipper $(arg MANAGER)"
+        clear_params="true">
+    <remap from="~input/points" to="$(arg INPUT_CLOUD)" />
+    <rosparam>
+      use_multiple_attention: true
+      initial_pos_list: [[0.0, -0.1, 0.3], [0.0, 0.0, 0.15]]
+      initial_rot_list: [[0, 0, 0], [0, 0, 0]]
+      dimensions: [[0.3, 0.2, 0.3], [0.3, 0.3, 0.2]]
+      frame_id_list: [left_custom_vacuum_link_base, right_gripper_vacuum_pad]
+      prefixes: [left_hand, right_hand]
+    </rosparam>
+  </node>
+
+
+  <!-- debug info -->
+  <node name="extract_indices_left_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="in_hand_clipper/left_hand/point_indices" />
+    <remap from="~output" to="~points" />
+    <rosparam>
+      keep_organized: true
+    </rosparam>
+  </node>
+  <node name="extract_indices_right_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="in_hand_clipper/right_hand/point_indices" />
+    <remap from="~output" to="~points" />
+    <rosparam>
+      keep_organized: true
+    </rosparam>
+  </node>
+
+
+  <!-- self filter -->
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/self_filter.launch">
+    <arg name="INPUT_CLOUD" value="extract_indices_left_hand/points" />
+    <arg name="OUTPUT_CLOUD" value="extract_indices_left_hand/points_filtered" />
+  </include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/self_filter.launch">
+    <arg name="INPUT_CLOUD" value="extract_indices_right_hand/points" />
+    <arg name="OUTPUT_CLOUD" value="extract_indices_right_hand/points_filtered" />
+  </include>
+
+
+  <node name="pc_to_pi_left_hand"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/OrganizedPointCloudToPointIndices $(arg MANAGER)">
+    <remap from="~input" to="extract_indices_left_hand/points_filtered" />
+  </node>
+  <node name="pc_to_pi_right_hand"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/OrganizedPointCloudToPointIndices $(arg MANAGER)">
+    <remap from="~input" to="extract_indices_right_hand/points_filtered" />
+  </node>
+
+
+  <!-- object segmented image -->
+  <!-- convert point indices to mask image -->
+  <node name="pi_to_mask_left_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
+    <remap from="~input" to="pc_to_pi_left_hand/output" />
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)" />
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </node>
+  <node name="pi_to_mask_right_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/PointIndicesToMaskImage $(arg MANAGER)">
+    <remap from="~input" to="pc_to_pi_right_hand/output" />
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)" />
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </node>
+  <!-- process mask image -->
+  <node name="closing_left_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/Closing $(arg MANAGER)">
+    <remap from="~input" to="pi_to_mask_left_hand/output" />
+    <rosparam>
+      size: 8
+      iterations: 4
+    </rosparam>
+  </node>
+  <node name="closing_right_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/Closing $(arg MANAGER)">
+    <remap from="~input" to="pi_to_mask_right_hand/output" />
+    <rosparam>
+      size: 8
+      iterations: 4
+    </rosparam>
+  </node>
+  <!-- apply mask image -->
+  <node name="apply_mask_left_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ApplyMaskImage $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="closing_left_hand/output" />
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </node>
+  <node name="mask_to_label_left_hand"
+        pkg="jsk_perception" type="mask_image_to_label.py">
+    <remap from="~input" to="apply_mask_left_hand/output/mask" />
+  </node>
+  <node name="apply_mask_right_hand"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ApplyMaskImage $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="closing_right_hand/output" />
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </node>
+  <node name="mask_to_label_right_hand"
+        pkg="jsk_perception" type="mask_image_to_label.py">
+    <remap from="~input" to="apply_mask_right_hand/output/mask" />
+  </node>
+
+  <!-- object recognition -->
+  <group ns="left_hand">
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/include/object_recognition.launch">
+      <arg name="INPUT_IMAGE" value="/apply_mask_left_hand/output" />
+      <arg name="INPUT_LABEL" value="/mask_to_label_left_hand/output" />
+    </include>
+  </group>
+  <group ns="right_hand">
+    <include file="$(find jsk_2015_05_baxter_apc)/launch/include/object_recognition.launch">
+      <arg name="INPUT_IMAGE" value="/apply_mask_right_hand/output" />
+      <arg name="INPUT_LABEL" value="/mask_to_label_right_hand/output" />
+    </include>
+  </group>
+
+
+</launch>
