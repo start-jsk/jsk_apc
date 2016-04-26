@@ -367,7 +367,7 @@
       (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)))
       :fast nil 0 :scale 5.0)
     (send *ri* :wait-interpolation)
-    (let (bin-box graspingp)
+    (let (bin-box graspingp avs)
       ;; abort when no objects found
       (when (eq (length (gethash bin _objects-in-bin-boxes)) 0) (return-from :pick-object nil))
       ;; move arm bin-entrance -> pos above object to z direction
@@ -379,6 +379,7 @@
                   (send self :try-to-pick-object arm bin :object-index object-index
                         :offset (float-vector (* i 50) 0 0))
                   )
+            (pushback (send *baxter* :angle-vector) avs)
             )
           (when (and graspingp (> (send self :real-sim-end-coords-diff arm) 60))
             (ros::ros-info "arm:~a Grasped wall so stop-grasp, diff: ~a" arm (send self :real-sim-end-coords-diff arm))
@@ -393,12 +394,7 @@
           )
         )
       (when do-stop-grasp (unless graspingp (send self :stop-grasp arm)))
-      (send self :angle-vector-sequence
-            (list
-              (send *baxter* arm :move-end-pos #f(0 0 50) :world)
-              (send self :ik->bin-entrance arm bin)
-              )
-             :fast nil 0 :scale 5.0)
+      (send self :angle-vector-sequence (reverse avs) :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; move arm in-bin -> bin-entrance
       (send self :angle-vector-sequence
