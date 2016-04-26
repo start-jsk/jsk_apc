@@ -21,6 +21,16 @@
       (setf (elt av-tmp wrist-index) (+ (elt av-tmp wrist-index) angle))
       (send *baxter* :angle-vector av-tmp))
     )
+  (:rotate-gripper
+    (arm angle)
+    (if (eq arm :rarm)
+      (let (gripper-index av-tmp)
+        (setq gripper-index 15)
+        (setq av-tmp (send *baxter* :angle-vector))
+        (setf (elt av-tmp gripper-index) (+ (elt av-tmp gripper-index) angle))
+        (send *baxter* :angle-vector av-tmp))
+      )
+    )
   (:avoid-shelf-pose
     (arm bin)
     (case bin
