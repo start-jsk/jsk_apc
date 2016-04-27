@@ -1,0 +1,35 @@
+2016-04-25-26-gripper
+==========
+
+`start-jsk/jsk_apc#1321 <https://github.com/start-jsk/jsk_apc/pull/1321>`_ は4/22の状態で完成したと判断し、mergeしてもらった。しかし、特定条件下でIKがとけないことが発覚したので、 `start-jsk/jsk_apc#1345 <https://github.com/start-jsk/jsk_apc/pull/1345>`_ で修正中。また、Arduinoのfirmwareを改修すると共に新規ノードを追加して、ロボットが壊れにくくなるよう安全対策を施した。
+
+What you did?
+-------------
+
+- New functions
+
+  - `start-jsk/jsk_apc#1331 <https://github.com/start-jsk/jsk_apc/pull/1331>`_, `start-jsk/jsk_apc#1335 <https://github.com/start-jsk/jsk_apc/pull/1335>`_
+  | `start-jsk/jsk_apc#1297 <https://github.com/start-jsk/jsk_apc/issues/1297>`_, `start-jsk/jsk_apc#1327 <https://github.com/start-jsk/jsk_apc/issues/1327>`_ を解決するもの。現在の所、15分間放置するとグリッパーのサーボのトルクが抜ける。
+  - `start-jsk/jsk_apc#1340 <https://github.com/start-jsk/jsk_apc/pull/1340>`_
+  | グリッパーのサーボを曲げずに物品にアプローチした際、引き出すときにサーボのトルクを抜くことで、物品をうまく引き出せるようにした。 `movie2 <https://drive.google.com/file/d/0B2trSrh55DvLSDZfLVhkVndfYjQ/view>`_ で成功している。
+
+- Bug fix(Work in progress)
+
+  - `start-jsk/jsk_apc#1345 <https://github.com/start-jsk/jsk_apc/pull/1345>`_
+  | `start-jsk/jsk_apc#1321 <https://github.com/start-jsk/jsk_apc/pull/1321>`_ の状態で発生した `start-jsk/jsk_apc#1341 <https://github.com/start-jsk/jsk_apc/issues/1341>`_ を修正するもの。
+
+    - `movie1 <https://drive.google.com/file/d/0B2trSrh55DvLVTNSWklIS2N4eDQ/view>`_ のように、IKが失敗してしまっていた。
+    - `start-jsk/jsk_apc#1342 <https://github.com/start-jsk/jsk_apc/pull/1342>`_ で作業し、 `movie4 <https://drive.google.com/file/d/0B2trSrh55DvLY0tRMl9iZnBQRHM/view>`_ のように、手首を回すことでIKを解けるようになった。
+    - しかし、手首を回すよりもグリッパーのサーボを回したほうが小さな動作で動けるのではないかということに気づき、前のPRを閉じてこのPRを作った。まだ実機で試していないので、4/27に試す。
+
+What is issue?
+--------------
+
+- `start-jsk/jsk_apc#1341 <https://github.com/start-jsk/jsk_apc/issues/1341>`_
+| 修正中。
+- `movie3 <https://drive.google.com/file/d/0B2trSrh55DvLY0RXQ05sU3ZWeXM/view>`_ で、真ん中付近においてある薄めの物品に対し、グリッパーを伸ばしてアプローチする動きが見られた。現在の判定基準では致し方ないが、なんとか修正したい。
+
+Log data
+--------
+
+- https://drive.google.com/drive/folders/0B2trSrh55DvLTXA3eHVwZnZfQzA 
