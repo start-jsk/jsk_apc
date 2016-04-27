@@ -182,7 +182,9 @@ if(CATKIN_ENABLE_TESTING)
   # lint python code
   file(GLOB_RECURSE _py_files *.py)
   file(GLOB_RECURSE _exclude_files python/jsk_apc2016_common/rbo_segmentation/*.py)
-  list(REMOVE_ITEM _py_files ${_exclude_files})
+  if(_exclude_files)  # condition for not initialized rbo_segmentation submodule
+    list(REMOVE_ITEM _py_files ${_exclude_files})
+  endif()
   roslint_python(${_py_files})
   roslint_add_test()
   # unit tests
