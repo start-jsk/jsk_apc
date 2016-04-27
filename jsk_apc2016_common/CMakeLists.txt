@@ -179,7 +179,12 @@ catkin_package(
 
 if(CATKIN_ENABLE_TESTING)
   find_package(roslint REQUIRED)
-  roslint_python()
+  # lint python code
+  file(GLOB_RECURSE _py_files *.py)
+  file(GLOB_RECURSE _exclude_files python/jsk_apc2016_common/rbo_segmentation/*.py)
+  list(REMOVE_ITEM _py_files ${_exclude_files})
+  roslint_python(${_py_files})
   roslint_add_test()
+  # unit tests
   catkin_add_nosetests(python/jsk_apc2016_common/tests)
 endif()
