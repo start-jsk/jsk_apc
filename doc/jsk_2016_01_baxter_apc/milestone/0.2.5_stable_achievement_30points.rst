@@ -1,5 +1,5 @@
-Stable Achievement of 30 points
-===============================
+0.2.5: Stable Achievement of 30 points
+======================================
 
 - Opened: 2016-04-11
 - Deadline: 2016-04-30
