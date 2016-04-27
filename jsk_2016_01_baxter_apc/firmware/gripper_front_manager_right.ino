@@ -116,8 +116,12 @@ void setup() {
 void loop() {
     float temp_act = 0.0, press_act = 0.0;
     unsigned long int press_cal, temp_cal;
-
-    if (millis() > publisher_timer) {
+    
+    if (!nh.connected()) {
+        servo_torque_msg.data = false;
+        servo_angle_msg.data = 0;
+        myservo.detach();
+    } else if (millis() > publisher_timer) {
         readData();
         temp_cal = calibration_T(temp_raw);
         press_cal = calibration_P(pres_raw);
