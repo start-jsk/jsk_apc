@@ -3,6 +3,7 @@ jsk\_apc
 
 <img src="images/icon_white.png" align="right" width="192px" />
 
+[![Release](https://img.shields.io/badge/ros--shadow--fixed-0.2.4-blue.svg)](http://repositories.ros.org/status_page/ros_indigo_default.html?q=jsk_apc)
 [![](https://travis-ci.org/start-jsk/jsk_apc.svg)](https://travis-ci.org/start-jsk/jsk_apc)
 [![Gitter](https://badges.gitter.im/start-jsk/jsk_apc.svg)](https://gitter.im/start-jsk/jsk_apc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Slack](https://img.shields.io/badge/slack-%23jsk__apc-e100e1.svg)](https://jsk-robotics.slack.com/messages/jsk_apc/)
