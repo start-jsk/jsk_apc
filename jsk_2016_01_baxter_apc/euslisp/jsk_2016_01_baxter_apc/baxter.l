@@ -32,14 +32,10 @@
       (send self :angle-vector av-tmp))
     )
   (:rotate-gripper
-    (arm angle)
+    (arm angle &key (relative t))
     (if (eq arm :rarm)
-      (let (gripper-index av-tmp)
-        (setq gripper-index 15)
-        (setq av-tmp (send self :angle-vector))
-        (setf (elt av-tmp gripper-index) (+ (elt av-tmp gripper-index) angle))
-        (send self :angle-vector av-tmp))
-      )
+      (send self arm :gripper-p :joint-angle angle :relative relative))
+    (send self :angle-vector)
     )
   (:avoid-shelf-pose
     (arm bin)
