@@ -13,6 +13,16 @@
     (&rest args)
     (send-super* :init args)
     )
+  (:inverse-kinematics
+    (target-coords
+      &rest args
+      &key (additional-weight-list
+             (mapcar #'(lambda (jn) (list (send self jn :child-link) 0))
+                     '(:right_gripper_vacuum_pad_joint)))
+      &allow-other-keys)
+    (send-super* :inverse-kinematics target-coords
+                 :additional-weight-list additional-weight-list args)
+    )
   (:rotate-wrist
     (arm angle)
     (let (wrist-index av-tmp)
