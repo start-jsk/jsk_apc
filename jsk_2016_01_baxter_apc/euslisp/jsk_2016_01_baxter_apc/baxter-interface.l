@@ -1,8 +1,8 @@
 ;; -*- mode: lisp;-*-
 
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/include/baxter-interface.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter.l")
+(require :baxter "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter.l")
+(require :baxter-interface "package://baxtereus/baxter-interface.l")
+(require :util "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 
 (ros::load-ros-manifest "jsk_2016_01_baxter_apc")
 
@@ -24,7 +24,9 @@
 (defmethod jsk_2016_01_baxter_apc::baxter-interface
   (:init
     (&rest args)
+    ;; initialize controllers
     (send-super* :init args)
+    (send self :add-controller :rgripper-controller)
     ;; initialize slots
     (setq _tfl (instance ros::transform-listener :init))
     (setq _bin-boxes (make-hash-table))
@@ -37,6 +39,20 @@
     (ros::advertise "/gripper_front/limb/left/servo/torque" std_msgs::Bool)
     (ros::advertise "/gripper_front/limb/right/servo/torque" std_msgs::Bool)
     )
+
+  ;; Overwrite super class's :rarm-controller
+  (:rarm-controller ()
+   (append
+    (send-super :rarm-controller)
+    (send self :rgripper-controller)))
+  (:rgripper-controller ()
+   (list
+    (list
+     (cons :controller-action "/gripper_front/limb/right/follow_joint_trajectory")
+     (cons :controller-state "/gripper_front/limb/right/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "right_gripper_vacuum_pad_joint")))))
+
   (:start-grasp
     (&optional (arm :arms))
     (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
