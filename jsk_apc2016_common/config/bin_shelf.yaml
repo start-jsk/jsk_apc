@@ -1,0 +1,14 @@
+initial_pos_list_bottom: [[-0.27, 0.25, -0.41], [-0.24, -0.01, -0.41], [-0.24, -0.32, -0.41], [-0.27, 0.25, -0.12], [-0.24, -0.01, -0.12], [-0.24, -0.32, -0.12]]
+initial_rot_list_bottom: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+dimensions_list_bottom: [[0.38, 0.23, 0.20],[0.38, 0.27, 0.20],[0.38, 0.23, 0.20], [0.38, 0.23, 0.18],[0.38, 0.27, 0.18],[0.38, 0.23, 0.18]]
+frame_id_list_bottom: [kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base]
+prefixes_bottom: [j, k, l, g, h, i]
+camera_directions_bottom: [x, x, x, x, x, x]
+
+
+initial_pos_list_top: [[-0.22, 0.30, 0.33], [-0.22, 0, 0.33], [-0.22, -0.30, 0.33], [-0.22, 0.30, 0.08], [-0.22, 0, 0.08], [-0.22, -0.30, 0.08]]
+initial_rot_list_top: [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
+dimensions_list_top: [[0.37, 0.23, 0.20],[0.37, 0.27, 0.20],[0.37, 0.23, 0.20], [0.37, 0.23, 0.18],[0.37, 0.27, 0.18],[0.37, 0.23, 0.18]]
+frame_id_list_top: [kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base]
+prefixes_top: [a, b, c, d, e, f]
+camera_directions_top: [x, x, x, x, x, x]
