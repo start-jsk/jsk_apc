@@ -25,7 +25,7 @@
   (:init
     (&rest args)
     ;; initialize controllers
-    (send-super* :init args)
+    (send-super* :init :robot jsk_2016_01_baxter_apc::baxter-robot args)
     (send self :add-controller :rgripper-controller)
     ;; initialize slots
     (setq _tfl (instance ros::transform-listener :init))
