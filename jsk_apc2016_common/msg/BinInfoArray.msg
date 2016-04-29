@@ -1,0 +1,1 @@
+BinInfo[] array
