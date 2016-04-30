@@ -1,4 +1,4 @@
-- git:
-    local-name: jsk-ros-pkg/jsk_robot
-    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-    version: 1.0.0
+- tar:
+    local-name: jsk_common/jsk_tools
+    uri: https://github.com/tork-a/jsk_common-release/archive/release/indigo/jsk_tools/2.0.13-0.tar.gz
+    version: jsk_common-release-release-indigo-jsk_tools-2.0.13-0
