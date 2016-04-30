@@ -1,5 +1,6 @@
 ;; vim: set ft=lisp:
 
+(require "package://baxtereus/baxter-util.l")
 (require "package://jsk_2016_01_baxter_apc/robots/baxter.l")
 
 (unless (find-package "JSK_2016_01_BAXTER_APC")
