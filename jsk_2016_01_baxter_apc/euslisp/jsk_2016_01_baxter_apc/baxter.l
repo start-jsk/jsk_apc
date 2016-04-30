@@ -13,6 +13,16 @@
     (&rest args)
     (send-super* :init args)
     )
+  (:inverse-kinematics
+    (target-coords
+      &rest args
+      &key (additional-weight-list
+             (mapcar #'(lambda (jn) (list (send self jn :child-link) 0))
+                     '(:right_gripper_vacuum_pad_joint)))
+      &allow-other-keys)
+    (send-super* :inverse-kinematics target-coords
+                 :additional-weight-list additional-weight-list args)
+    )
   (:rotate-wrist
     (arm angle)
     (let (wrist-index av-tmp)
@@ -22,14 +32,10 @@
       (send self :angle-vector av-tmp))
     )
   (:rotate-gripper
-    (arm angle)
+    (arm angle &key (relative t))
     (if (eq arm :rarm)
-      (let (gripper-index av-tmp)
-        (setq gripper-index 15)
-        (setq av-tmp (send self :angle-vector))
-        (setf (elt av-tmp gripper-index) (+ (elt av-tmp gripper-index) angle))
-        (send self :angle-vector av-tmp))
-      )
+      (send self arm :gripper-p :joint-angle angle :relative relative))
+    (send self :angle-vector)
     )
   (:avoid-shelf-pose
     (arm bin)

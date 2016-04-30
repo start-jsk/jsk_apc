@@ -368,15 +368,13 @@
           (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
           (cond ((< sign_y 0)
                  (send end-coords :move-to (send bin-coords :worldcoords) :world)
-                 (send end-coords :rotate (* sign_y pi/2) :y :local))
+                 (send end-coords :rotate (* sign_y pi/2) :y :local)
+                 (send *baxter* :rotate-gripper :rarm 0 :relative nil))
                 (t 
                   (send bin-coords :assoc end-coords)
                   (send bin-coords :rotate (* sign pi/2) :x :local)
                   (send bin-coords :dissoc end-coords))
                 )
-          (if (< sign 0)
-            (send *baxter* :rotate-wrist arm 270)
-            )
           (pushback
             (send *baxter* arm :inverse-kinematics
                   end-coords
