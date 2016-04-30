@@ -9,7 +9,6 @@ find_package(catkin REQUIRED COMPONENTS
     control_msgs
     roscpp
     std_msgs
-    rostest
     baxter_core_msgs
 )
 
@@ -230,5 +229,11 @@ add_custom_target(compile_stow_kiva_world ALL
 
 ## Add folders to be run by python nosetests
 if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
   add_rostest(test/work_order.test)
+  add_custom_target(download_test_data COMMAND ${PROJECT_SOURCE_DIR}/scripts/download_test_data.sh)
+  if(TARGET tests)
+    add_dependencies(tests download_test_data)
+  endif()
+  add_rostest(test/test_move_arm_to_bin.test)
 endif()
