@@ -17,7 +17,7 @@ env:
     - BUILDER=catkin
     - NO_SUDO=true  # jenkins
     - NOT_TEST_INSTALL=true
-    - USE_DEB=true
+    - USE_DEB=false
     - ROS_PARALLEL_JOBS="-j8"  # jenkins
 #    - ROS_PARALLEL_JOBS="-j2"  # travis
     - ROSWS=wstool
