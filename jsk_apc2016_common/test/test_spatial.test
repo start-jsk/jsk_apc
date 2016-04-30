@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="test_static_pub_ab" args="0 0 1 0 0 0 1 base cloud_base"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="test_static_pub_abbox" args="1 0 0 0 0 0 1 base bbox_center"/> 
+  <node pkg="tf2_ros" type="static_transform_publisher" name="test_static_pub_orientabbox" args="1 0 0 0.7071067811 0 0 0.7071067811 base bbox_center_orient"/>
+<!-- 0.7071067811 = 1/sqrt(2) -->
+  <param name="WORKING_DIRECTORY" value="$(find jsk_2016_01_baxter_apc)/test"/>
+  <test test-name="test_mynode" pkg="jsk_apc2016_common" type="test_spatial.py"/> 
+</launch>
