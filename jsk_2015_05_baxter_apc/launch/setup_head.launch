@@ -11,6 +11,7 @@
     <arg name="INPUT_DEPTH" value="/kinect2_head/hd/image_depth_rect" />
     <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
+    <arg name="UPPER_SHELF" value="$(find jsk_apc2015_common)/config/bin_upper_shelf.yaml"/>
   </include>
 
 

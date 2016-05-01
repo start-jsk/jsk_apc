@@ -14,6 +14,7 @@
     <arg name="INPUT_DEPTH" value="/kinect2_torso/hd/image_depth_rect" />
     <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
     <arg name="MANAGER" value="$(arg MANAGER)" />
+    <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
   </include>
 
   <include file="$(find jsk_2016_01_baxter_apc)/launch/recognition_in_hand.launch">
