@@ -5,13 +5,14 @@
   <arg name="INPUT_CLOUD" />
   <arg name="MANAGER" />
 
+  <arg name="LOWER_SHELF"/>
 
   <!-- bin clipper -->
   <node name="bin_gtol_clipper"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
     <remap from="~input/points" to="$(arg INPUT_CLOUD)" />
-    <rosparam file="$(find jsk_apc2016_common)/config/bin_shelf_top.yaml" command="load"/>
+    <rosparam file="$(arg LOWER_SHELF)" command="load"/>
     <rosparam>
       use_multiple_attention: true
     </rosparam>

@@ -38,8 +38,8 @@ class BinInfoArrayPublisher(object):
         self.json_file = rospy.get_param('~json', None)
 
         # get bbox from rosparam
-        self.from_shelf_param('top')
-        self.from_shelf_param('bottom')
+        self.from_shelf_param('upper')
+        self.from_shelf_param('lower')
 
         # get contents of bin from json
         self.get_bin_contents()
@@ -54,20 +54,20 @@ class BinInfoArrayPublisher(object):
             pub_bin_info_arr.publish(self.bin_info_arr)
             rate.sleep()
 
-    def from_shelf_param(self, top_bottom):
-        top_bottom = top_bottom + '_shelf'
+    def from_shelf_param(self, upper_lower):
+        upper_lower = upper_lower + '_shelf'
         initial_pos_list = rospy.get_param(
-                '~' + top_bottom + '/initial_pos_list')
+                '~' + upper_lower + '/initial_pos_list')
         initial_quat_list = rospy.get_param(
-                '~' + top_bottom + '/initial_quat_list')
+                '~' + upper_lower + '/initial_quat_list')
         dimensions = rospy.get_param(
-                '~' + top_bottom + '/dimensions')
+                '~' + upper_lower + '/dimensions')
         frame_id_list = rospy.get_param(
-                '~' + top_bottom + '/frame_id_list')
+                '~' + upper_lower + '/frame_id_list')
         prefixes = rospy.get_param(
-                '~' + top_bottom + '/prefixes')
+                '~' + upper_lower + '/prefixes')
         camera_directions = rospy.get_param(
-                '~' + top_bottom + '/camera_directions')
+                '~' + upper_lower + '/camera_directions')
 
         for i, bin_ in enumerate(prefixes):
             bin_ = bin_.split('_')[1].lower()  # bin_A -> a
