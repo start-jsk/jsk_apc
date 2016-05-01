@@ -1,0 +1,32 @@
+2016-04-27-gripper
+==========
+
+4/26に、 `start-jsk/jsk_apc#1345 <https://github.com/start-jsk/jsk_apc/pull/1345>`_ でグリッパーのサーボを回した方が良いのではないかという仮説を立てたが、失敗したので手首を回すように戻した。また、jsk_2015_05_baxter_apcのeuslisp/examples/picking-with-clustering.lをjsk_2016_01_baxter_apcに移植し、一つのBinの中でクラスタリングを行い、物品を把持してOrder Binに入れるという一連の動作のみを試せるようになった。
+
+What you did?
+-------------
+
+- Bug fix
+
+  - `start-jsk/jsk_apc#1349 <https://github.com/start-jsk/jsk_apc/pull/1349>`_
+  | `start-jsk/jsk_apc#1321 <https://github.com/start-jsk/jsk_apc/pull/1321>`_ の状態で発生した `start-jsk/jsk_apc#1341 <https://github.com/start-jsk/jsk_apc/issues/1341>`_ を修正するもの。4/26に思いついたグリッパーのサーボの回転は、試してみた所、 `movie1 <https://drive.google.com/file/d/0B2trSrh55DvLOUo4RzlmQVBoWTg/view>`_ のようになり、IKで出てくる姿勢に影響を与えなかったので、断念した。結局、手首を回す仕様に戻っている。
+
+- New functions
+
+  - `start-jsk/jsk_apc#1353 <https://github.com/start-jsk/jsk_apc/pull/1353>`_
+  | jsk_2015_05_baxter_apcのeuslisp/examples/picking-with-clustering.lをjsk_2016_01_baxter_apcに移植するもの。一つのBinの中でクラスタリングを行い、物品を把持してOrder Binに入れるという一連の動作のみを試せるようになった。 `movie2 <https://drive.google.com/file/d/0B2trSrh55DvLbF9vb0dBQm9EbXM/view>`_ のような動作になる。
+
+What is issue?
+--------------
+
+- `start-jsk/jsk_apc#1382 <https://github.com/start-jsk/jsk_apc/issues/1382>`_
+| `movie3 <https://drive.google.com/file/d/0B2trSrh55DvLekttQ3dxU3VrMms/view>`_ で、立ててある物品にグリッパーを伸ばしてアプローチする際に倒してしまっていた。これは、グリッパーを曲げた状態でBinの入り口まで持っていった後に、グリッパーをのばそうとするからであり、この動作に修正が必要である。
+- `start-jsk/jsk_apc#1383 <https://github.com/start-jsk/jsk_apc/issues/1383>`_
+| `movie4 <https://drive.google.com/file/d/0B2trSrh55DvLMGNYcTVkOXZROE0/view>`_, `movie5 <https://drive.google.com/file/d/0B2trSrh55DvLd25Td0UzYjRuSFE/view>`_ で、Bin iに対してアプローチした際に、グリッパーがBinに引っかかった。これは、動きの各オフセットをBin c向けにしか調整できていなかったからであり、Binのサイズに応じてオフセットを変えることが必要になる。
+- `movie6 <https://drive.google.com/file/d/0B2trSrh55DvLcEZJeDRtal9XRjQ/view>`_, `movie8 <https://drive.google.com/file/d/0B2trSrh55DvLenVBUjk2VHFPRm8/view>`_ で、Bin eやlにアプローチした際に、グリッパーが45度程度曲がった姿勢がIKを解いた時に出てきてしまった。この姿勢では、Binの奥の方の物品にアプローチすることができない。それに、movie8では掃除機のホースを巻き込んでしまっていた。グリッパーの関節をIKに使用するのはよくないのではないか。
+- `movie7 <https://drive.google.com/file/d/0B2trSrh55DvLanpjWkdJN21ucDA/view>`_ を見ると、グリッパーを引き出した際に吸引パッドが潰れていることがわかる。吸引パッドの先端部分が内側に引き込まれているわけだが、これは表面が平らな物品に対してゆっくりとアプローチした際に起こりやすい。吸引パッドを他のものに交換したほうがいいのかもしれない。
+
+Log data
+--------
+
+- https://drive.google.com/drive/u/1/folders/0B2trSrh55DvLREoxZnozT0xvbWM

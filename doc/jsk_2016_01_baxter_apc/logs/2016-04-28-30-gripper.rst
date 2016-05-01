@@ -1,0 +1,35 @@
+2016-04-28-30-gripper
+==========
+
+4/27で生じた問題点のうち、グリッパーが45度程度に曲がった姿勢がIKで出てくるという問題を解消するため、IKを解く時のグリッパー関節の重みを0にし、IKでは動かないようにした。その上で右手が届く全Binに対してテストを行った所、Bin eへのアプローチの際にBaxter本体とアームが引っかかる問題が発生したので、修正した。
+
+What you did?
+-------------
+
+- Bug fix
+
+  - `start-jsk/jsk_apc#1362 <https://github.com/start-jsk/jsk_apc/pull/1362>`_
+  | IKを解く際のグリッパー関節の重みを0にし、IKでは動かないようにする。グリッパー関節を曲げる必要がある場合は、 ``(send *baxter* :rotate-gripper :rarm 90 :relative nil)`` のようにスクリプトから直接回転させる。この際、IKを解く際の中継点であるfold-pose-upperに変更を加えることで、 `movie9 <https://drive.google.com/file/d/0B2trSrh55DvLWjJ2ODlPY3RySUE/view>`_ のように、手首を回転させなくてもBin cでのIKが解けるようになったので、手首を回転させる行は削除した。
+  - `start-jsk/jsk_apc#1363 <https://github.com/start-jsk/jsk_apc/pull/1363>`_
+  | #1362の状態で実験してみた所、Bin e以外のBinに対しては、Binの前に手を持っていくまでは無理のない動作を行うことができた。掃除機のホースを巻き込むこともなくなった。
+  | しかし、Bin eに対しては、 `movie10 <https://drive.google.com/file/d/0B2trSrh55DvLbEsycGNCOUY2Ym8/view>`_ のように、アームがBaxter本体と引っかかってしまった。これは右アーム固有の問題なのか疑問に思ったので、左アームでも実験してみた所、 `movie11 <https://drive.google.com/file/d/0B2trSrh55DvLTjNyTmpfdGgyRGs/view>`_ のように似たような動きでBaxter本体と接触した。
+  | これは、fold-pose-backからBinに至るまでの経由点であるavoid-shelf-pose-eが悪いのではないかと判断し、変更を行った所、 `movie18 <https://drive.google.com/file/d/0B2trSrh55DvLZGNYeEFlNDBzVjA/view>`_ のようにグリッパーをBinに持って行くまでは安定して動けるようになったが、グリッパーを引き出す所でBaxter本体とグリッパーがひっかかってしまった。
+  | そこで、グリッパーを引き出す距離を短くした所、 `movie19 <https://drive.google.com/file/d/0B2trSrh55DvLcE8zZTFtMXE5Vkk/view>`_ のように安定した動きができるようになった。
+
+- New functions
+
+  - `start-jsk/jsk_apc#1378 <https://github.com/start-jsk/jsk_apc/pull/1378>`_
+  | GoogleDrive上に保存してあるrosbagファイルをダウンロードし、各Bin、各アームに対して ``:ik->bin-entrance`` が解けるかどうかをテストする。このテストを行うことで、IKが解けないという状態に陥っていないことをtravis上で確認できる。
+  | 現在は、rosbagファイルの長さが1分であり、再生を始めてから1分以内に ``:recognize-bin-boxes`` が行われなければ、エラーが出てきてしまう。これを何とかするべきかもしれない。
+
+What is issue?
+--------------
+
+- `movie14 <https://drive.google.com/file/d/0B2trSrh55DvLS2g5SWZzY0hOeTA/view>`_ で、Bin bに対するアプローチを試しているが、Binの入口に辿り着くまでに大きめの動きをしている。これは、 `start-jsk/jsk_apc#1362 <https://github.com/start-jsk/jsk_apc/pull/1362>`_ でfold-pose-upperを修正したために、 ``(send *baxter* :ik->bin-entrance :rarm :b)`` で出てくる姿勢も変わってしまったためではないかと考えられるが、左手との比較をし忘れており、まだ正確なことがわからない。これを比較する必要がある。
+- `start-jsk/jsk_apc#1383 <https://github.com/start-jsk/jsk_apc/issues/1383>`_
+| 今回のmovieを見ると、Binに対してグリッパーの位置が低すぎ、Binに引っかかるケースが多い。これは、動きの各オフセットがBin c向けにしか調整されていないという、4/27のログで触れた問題と同じである。これを修正する。
+
+Log data
+--------
+
+- https://drive.google.com/drive/u/1/folders/0B2trSrh55DvLNUtlZlE0UUVDQXM
