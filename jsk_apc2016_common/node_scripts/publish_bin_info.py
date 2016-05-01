@@ -55,20 +55,22 @@ class BinInfoArrayPublisher(object):
             rate.sleep()
 
     def from_shelf_param(self, top_bottom):
+        top_bottom = top_bottom + '_shelf'
         initial_pos_list = rospy.get_param(
-                '~initial_pos_list_' + top_bottom)
-        initial_rot_list = rospy.get_param(
-                '~initial_rot_list_' + top_bottom)
-        dimensions_list = rospy.get_param(
-                '~dimensions_list_' + top_bottom)
+                '~' + top_bottom + '/initial_pos_list')
+        initial_quat_list = rospy.get_param(
+                '~' + top_bottom + '/initial_quat_list')
+        dimensions = rospy.get_param(
+                '~' + top_bottom + '/dimensions')
         frame_id_list = rospy.get_param(
-                '~frame_id_list_'+top_bottom)
+                '~' + top_bottom + '/frame_id_list')
         prefixes = rospy.get_param(
-                '~prefixes_' + top_bottom)
+                '~' + top_bottom + '/prefixes')
         camera_directions = rospy.get_param(
-                '~camera_directions_'+top_bottom)
+                '~' + top_bottom + '/camera_directions')
 
         for i, bin_ in enumerate(prefixes):
+            bin_ = bin_.split('_')[1].lower()  # bin_A -> a
             header = Header(
                     stamp=rospy.Time.now(),
                     frame_id=frame_id_list[i])
@@ -76,8 +78,8 @@ class BinInfoArrayPublisher(object):
                     header=header,
                     pose=Pose(
                             position=helper.point(initial_pos_list[i]),
-                            orientation=helper.quaternion(initial_rot_list[i])),
-                    dimensions=helper.vector3(dimensions_list[i]))
+                            orientation=helper.quaternion(initial_quat_list[i])),
+                    dimensions=helper.vector3(dimensions[i]))
             self.cam_direction_dict[bin_] = camera_directions[i]
 
     def get_bin_contents(self):

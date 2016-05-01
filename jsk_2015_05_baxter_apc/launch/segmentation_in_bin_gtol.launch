@@ -11,13 +11,9 @@
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
     <remap from="~input/points" to="$(arg INPUT_CLOUD)" />
+    <rosparam file="$(find jsk_apc2016_common)/config/bin_shelf_top.yaml" command="load"/>
     <rosparam>
       use_multiple_attention: true
-      initial_pos_list: [[-0.27, 0.29, -0.41], [-0.24, -0.01, -0.41], [-0.24, -0.32, -0.41], [-0.27, 0.29, -0.15], [-0.24, -0.01, -0.15], [-0.24, -0.32, -0.15]]
-      initial_rot_list: [[0, 0, 0], [0, 0, 0], [0, 0, 0.0], [0, 0, 0], [0, 0, 0], [0, 0, 0.00]]
-      dimensions: [[0.38, 0.23, 0.20],[0.38, 0.27, 0.20],[0.38, 0.23, 0.20], [0.38, 0.23, 0.18],[0.38, 0.27, 0.18],[0.38, 0.23, 0.18]]
-      frame_id_list: [kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base, kiva_pod_base]
-      prefixes: [bin_j, bin_k, bin_l, bin_g, bin_h, bin_i]
     </rosparam>
   </node>
 
