@@ -1,0 +1,9 @@
+<launch>
+
+  <env name="DISPLAY" value="" />
+
+  <test test-name="test_ik_in_bin"
+        name="test_ik_in_bin"
+        pkg="jsk_2016_01_baxter_apc" type="test-ik-in-bin.l" time-limit="10000"/>
+
+</launch>
