@@ -485,7 +485,7 @@
                 (send *baxter* arm :move-end-pos #f(0 0 -30))
                 (send self :ik->bin-entrance arm bin :offset #f(0 0 -30))
                 (send self :ik->bin-entrance arm bin :offset #f(-100 0 -30))
-                (send self :ik->bin-entrance arm bin :offset #f(-300 0 -30))
+                (send self :ik->bin-entrance arm bin :offset #f(-200 0 -30))
                 )
               :fast nil 0 :scale 5.0)
         (send self :angle-vector-sequence
