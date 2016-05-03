@@ -5,6 +5,7 @@ from jsk_apc2016_common.segmentation_in_bin.rbo_preprocessing \
 from jsk_apc2016_common.segmentation_in_bin.rbo_segmentation_in_bin\
         import RBOSegmentationInBin
 from jsk_apc2016_common.msg import BinInfoArray
+from jsk_topic_tools import ConnectionBasedTransport
 import rospy
 import tf2_ros
 import message_filters
@@ -13,13 +14,12 @@ from sensor_msgs.msg import PointCloud2
 from cv_bridge import CvBridge, CvBridgeError
 
 
-class RBOSegmentationInBinNode(RBOSegmentationInBin):
+class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
     def __init__(self):
-        super(self.__class__, self).__init__(
+        RBOSegmentationInBin.__init__(self,
                 trained_pkl_path=rospy.get_param('~trained_pkl_path'),
                 target_bin_name=rospy.get_param('~target_bin_name'))
-
-    def subscribe(self):
+        ConnectionBasedTransport.__init__(self)
         bin_info_array_msg = rospy.wait_for_message(
                 "~input/bin_info_array", BinInfoArray, timeout=50)
         self.from_bin_info_array(bin_info_array_msg)
@@ -29,9 +29,9 @@ class RBOSegmentationInBinNode(RBOSegmentationInBin):
         self.tf_br = tf2_ros.TransformBroadcaster()
 
         self.bridge = CvBridge()
+        self.img_pub = self.advertise('~target_mask', Image, queue_size=100)
 
-        self.img_pub = rospy.Publisher('~target_mask', Image, queue_size=100)
-
+    def subscribe(self):
         self.pc_sub = message_filters.Subscriber('~input', PointCloud2)
         self.cam_info_sub = message_filters.Subscriber(
                 '~input/info', CameraInfo)
@@ -43,7 +43,9 @@ class RBOSegmentationInBinNode(RBOSegmentationInBin):
         self.sync.registerCallback(self._callback)
 
     def unsubscribe(self):
-        pass
+        self.pc_sub.unregister()
+        self.img_sub.unregister()
+        self.cam_info_sub.unregister()
 
     def _callback(self, cloud, img_msg, camera_info):
         print "started"
@@ -61,8 +63,8 @@ class RBOSegmentationInBinNode(RBOSegmentationInBin):
         camera2bb_base = self.buffer.lookup_transform(
                 target_frame=camera_info.header.frame_id,
                 source_frame=self.target_bin.bbox.header.frame_id,
-                time=rospy.Time.now(),
-                timeout=rospy.Duration(1.0))
+                time=rospy.Time(0),
+                timeout=rospy.Duration(10.0))
         # get mask_image
         self.mask_img = get_mask_img(
                 camera2bb_base, self.target_bin, self.camera_model)
@@ -71,8 +73,8 @@ class RBOSegmentationInBinNode(RBOSegmentationInBin):
         bb_base2camera = self.buffer.lookup_transform(
                 target_frame=self.target_bin.bbox.header.frame_id,
                 source_frame=cloud.header.frame_id,
-                time=rospy.Time.now(),
-                timeout=rospy.Duration(1.0))
+                time=rospy.Time(0),
+                timeout=rospy.Duration(10.0))
         self.dist_img, self.height_img = get_spatial_img(
                 bb_base2camera, cloud, self.target_bin)
 
@@ -91,5 +93,4 @@ class RBOSegmentationInBinNode(RBOSegmentationInBin):
 if __name__ == '__main__':
     rospy.init_node('segmentation_in_bin')
     seg = RBOSegmentationInBinNode()
-    seg.subscribe()
     rospy.spin()
