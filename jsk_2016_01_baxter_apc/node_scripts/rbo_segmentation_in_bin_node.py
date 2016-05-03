@@ -63,8 +63,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         camera2bb_base = self.buffer.lookup_transform(
                 target_frame=camera_info.header.frame_id,
                 source_frame=self.target_bin.bbox.header.frame_id,
-                time=rospy.Time.now(),
-                timeout=rospy.Duration(1.0))
+                time=rospy.Time(0),
+                timeout=rospy.Duration(10.0))
         # get mask_image
         self.mask_img = get_mask_img(
                 camera2bb_base, self.target_bin, self.camera_model)
@@ -73,8 +73,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         bb_base2camera = self.buffer.lookup_transform(
                 target_frame=self.target_bin.bbox.header.frame_id,
                 source_frame=cloud.header.frame_id,
-                time=rospy.Time.now(),
-                timeout=rospy.Duration(1.0))
+                time=rospy.Time(0),
+                timeout=rospy.Duration(10.0))
         self.dist_img, self.height_img = get_spatial_img(
                 bb_base2camera, cloud, self.target_bin)
 
