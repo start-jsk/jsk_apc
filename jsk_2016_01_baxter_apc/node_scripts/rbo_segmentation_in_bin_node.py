@@ -82,8 +82,9 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         # generate a binary image
         self.segmentation()
         try:
-            self.img_pub.publish(self.bridge.cv2_to_imgmsg(
-                    self.predicted_segment, encoding="passthrough"))
+            mask_msg = self.bridge.cv2_to_imgmsg(self.predicted_segment, encoding="passthrough")
+            mask_msg.header = img_msg.header
+            self.img_pub.publish(mask_msg)
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
 
