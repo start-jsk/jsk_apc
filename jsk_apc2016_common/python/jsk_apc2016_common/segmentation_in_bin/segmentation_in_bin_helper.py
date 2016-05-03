@@ -2,6 +2,7 @@
 
 import numpy as np
 import tf
+import rospy
 from geometry_msgs.msg import (
         Transform, TransformStamped,
         Quaternion, Vector3,
@@ -85,7 +86,7 @@ def timing(wrapped):
         start = time.time()
         ret = wrapped(*args, **kwargs)
         end = time.time()
-        print '{0} elapsed time {1}'.format(wrapped.__name__, end - start)
+        rospy.loginfo('{0} elapsed time {1}'.format(wrapped.__name__, end - start))
         return ret
     return inner
 

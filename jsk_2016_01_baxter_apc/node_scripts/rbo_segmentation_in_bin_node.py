@@ -48,7 +48,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         self.cam_info_sub.unregister()
 
     def _callback(self, cloud, img_msg, camera_info):
-        print "started"
+        rospy.loginfo('started')
         self.target_bin_name = rospy.get_param('~target_bin_name')
 
         # mask image
@@ -56,7 +56,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         try:
             img_color = self.bridge.imgmsg_to_cv2(img_msg, "bgr8")
         except CvBridgeError as e:
-            print(e)
+            rospy.logerr('{}'.format(e))
         self.img_color = img_color
 
         # get transform
@@ -85,9 +85,9 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
             self.img_pub.publish(self.bridge.cv2_to_imgmsg(
                     self.predicted_segment, encoding="passthrough"))
         except CvBridgeError as e:
-            print e
+            rospy.logerr('{}'.format(e))
 
-        print "ended"
+        rospy.loginfo('ended')
 
 
 if __name__ == '__main__':
