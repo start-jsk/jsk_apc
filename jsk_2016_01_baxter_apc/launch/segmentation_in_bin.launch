@@ -24,6 +24,16 @@
 
   <param name="/right_hand/target_bin" value="$(arg TARGET_BIN)"/>
 
+  <node name="rbo_transform_publisher"
+        pkg="jsk_2016_01_baxter_apc" 
+        type="rbo_transform_publisher.py" 
+        output="screen">
+    <remap from="~input" to="$(arg INPUT_POINTS)"/>
+    <remap from="~input/info" to="$(arg INPUT_INFO)"/>
+    <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
+    <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
+  </node>
+
   <node name="segmentation_in_bin"
         pkg="jsk_2016_01_baxter_apc" 
         type="rbo_segmentation_in_bin_node.py" 
@@ -32,6 +42,8 @@
     <remap from="~input/info" to="$(arg INPUT_INFO)"/>
     <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
+    <remap from="~input/camera2bb_base" to="/rbo_transform_publisher/camera2bb_base" />
+    <remap from="~input/bb_base2camera" to="/rbo_transform_publisher/bb_base2camera" />
     <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
     <param name="trained_pkl_path" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
   </node>
