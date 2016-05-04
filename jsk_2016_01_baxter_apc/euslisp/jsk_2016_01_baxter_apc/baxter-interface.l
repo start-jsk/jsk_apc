@@ -434,9 +434,12 @@
       ;; lift object
       (ros::ros-info "[:try-to-pick-object] arm:~a lift the object" arm)
       (if (eq arm :rarm)
-        (if (< sign_y 0)
-          (send self :gripper-servo-off arm)))
-      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)
+        (cond ((< sign_y 0)
+               (send self :gripper-servo-off arm)
+               (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 20) :world) 3000))
+              (t
+                (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)))
+        (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000))
       (send self :wait-interpolation)
     graspingp))
   (:pick-object
