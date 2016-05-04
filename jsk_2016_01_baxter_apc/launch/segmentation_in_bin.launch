@@ -1,0 +1,38 @@
+<launch>
+  <!-- shelf-->
+  <arg name="json" default="$(find jsk_2015_05_baxter_apc)/json/layout_12.json"/>
+  <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
+  <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
+
+  <!-- camera-->
+  <arg name="INPUT_POINTS" value="/right_softkinetic_camera/depth/points"/>
+  <arg name="INPUT_INFO" value="/right_softkinetic_camera/rgb/camera_info"/>
+  <arg name="INPUT_IMAGE" value="/right_softkinetic_camera/rgb/image_color"/>
+
+  <!-- target bin-->
+  <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
+  <arg name="INPUT_TARGET" value="/right_hand/target_bin"/>
+  <arg name="TARGET_BIN" value="l"/>
+
+
+  <node pkg="jsk_apc2016_common" type="publish_bin_info.py"
+    name="set_bin_param" output="screen">
+    <param name="json" value="$(arg json)"/>
+    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
+    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
+  </node>
+
+  <param name="/right_hand/target_bin" value="$(arg TARGET_BIN)"/>
+
+  <node name="segmentation_in_bin"
+        pkg="jsk_2016_01_baxter_apc" 
+        type="rbo_segmentation_in_bin_node.py" 
+        output="screen">
+    <remap from="~input" to="$(arg INPUT_POINTS)"/>
+    <remap from="~input/info" to="$(arg INPUT_INFO)"/>
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
+    <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
+    <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
+    <param name="trained_pkl_path" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
+  </node>
+</launch>
