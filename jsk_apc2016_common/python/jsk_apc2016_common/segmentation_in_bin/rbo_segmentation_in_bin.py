@@ -94,8 +94,10 @@ class RBOSegmentationInBin(object):
                 pickle_mask=False)
 
     def segmentation(self):
-        self.predicted_segment = self.trained_segmenter.predict(
+        zoomed_predicted_segment = self.trained_segmenter.predict(
                 apc_sample=self.apc_sample,
                 desired_object=self.target_object)
+        self.predicted_segment = self.apc_sample.unzoom_segment(
+                zoomed_predicted_segment)
 
         self.predicted_segment = self.predicted_segment.astype('uint8')
