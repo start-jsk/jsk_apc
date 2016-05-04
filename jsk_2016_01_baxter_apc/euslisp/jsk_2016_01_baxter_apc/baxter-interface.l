@@ -342,11 +342,19 @@
         ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
         (setq offset-from-entrance #f(-30 0 0))
         (if (eq arm :rarm)
-          (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 100)))
+          (if (< sign_y 0)
+            (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
+            (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 100)))
+            )
           (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
           )
         )
-      (send self :angle-vector (send self :ik->bin-entrance arm bin :offset offset-from-entrance) 3000)
+      (if (eq arm :rarm)
+        (send self :angle-vector
+              (send self :ik->bin-entrance arm bin :offset offset-from-entrance :gripper-angle (* (+ sign_y 1) 90))
+              3000)
+        (send self :angle-vector (send self :ik->bin-entrance arm bin :offset offset-from-entrance) 3000)
+        )
       (send self :wait-interpolation)
       ; (pushback
       ;   (send *baxter* arm :inverse-kinematics
@@ -366,15 +374,9 @@
                                        (send bin-box :pose)) :world)
           (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
           (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
-          (cond ((< sign_y 0)
-                 (send end-coords :move-to (send bin-coords :worldcoords) :world)
-                 (send end-coords :rotate (* sign_y pi/2) :y :local)
-                 (send *baxter* :rotate-gripper :rarm 0 :relative nil))
-                (t 
-                  (send bin-coords :assoc end-coords)
-                  (send bin-coords :rotate (* sign pi/2) :x :local)
-                  (send bin-coords :dissoc end-coords))
-                )
+          (send bin-coords :assoc end-coords)
+          (send bin-coords :rotate (* sign pi/2) :x :local)
+          (send bin-coords :dissoc end-coords)
           (pushback
             (send *baxter* arm :inverse-kinematics
                   end-coords
@@ -441,7 +443,7 @@
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
     (if (eq arm :rarm)
       (send *ri* :angle-vector-sequence
-            (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 -30)))
+            (list (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)))
             :fast nil 0 :scale 5.0)
       (send *ri* :angle-vector-sequence
             (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)))
@@ -527,7 +529,7 @@
         ))
     )
   (:ik->bin-entrance
-    (arm bin &key (offset #f(0 0 0)))
+    (arm bin &key (offset #f(0 0 0)) (gripper-angle 90))
     (let (bin-box bin-coords bin-dim-x)
       (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
@@ -544,11 +546,20 @@
         ((:d :e :f :g :h :i) (send *baxter* :fold-pose-lower arm))
         )
       (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t)
+      ;; apply rotation
+      (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
+      (send bin-coords :rotate (deg2rad (- gripper-angle 90)) :y :world)
       ;; apply offset
       (send bin-coords :translate offset :world)
-      (send *baxter* arm :inverse-kinematics bin-coords
-            :rotation-axis :z
-            :revert-if-fail nil)))
+      (if (< gripper-angle 45)
+        (send *baxter* arm :inverse-kinematics bin-coords
+              :rotation-axis :t  ;; if this is :z, wrist sometimes rotates overly
+              :revert-if-fail nil)
+        (send *baxter* arm :inverse-kinematics bin-coords
+              :rotation-axis :z
+              :revert-if-fail nil)
+        )
+      ))
   (:move-arm-body->bin
     (arm bin)
     (let (avs)
