@@ -542,7 +542,7 @@
         ))
     )
   (:ik->bin-entrance
-    (arm bin &key (offset #f(0 0 0)))
+    (arm bin &key (offset #f(0 0 0)) (revert-if-fail nil))
     (let (bin-box bin-coords bin-dim-x)
       (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
@@ -563,7 +563,7 @@
       (send bin-coords :translate offset :world)
       (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis :z
-            :revert-if-fail nil)))
+            :revert-if-fail revert-if-fail)))
   (:move-arm-body->bin
     (arm bin)
     (let (avs)
