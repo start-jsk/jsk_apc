@@ -1,0 +1,3 @@
+sensor_msgs/Image image_color
+sensor_msgs/CameraInfo cam_info
+sensor_msgs/PointCloud2 points

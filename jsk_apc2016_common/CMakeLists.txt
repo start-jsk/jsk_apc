@@ -5,10 +5,13 @@ project(jsk_apc2016_common)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+    roscpp
     geometry_msgs
     message_generation
     std_msgs
     jsk_recognition_msgs
+    sensor_msgs
+    message_filters
 )
 
 ## System dependencies are found with CMake's conventions
@@ -50,6 +53,7 @@ add_message_files(
   FILES
   BinInfo.msg
   BinInfoArray.msg
+  SegmentationInBinSync.msg
   )
 
 ## Generate services in the 'srv' folder
@@ -72,6 +76,7 @@ add_message_files(
    std_msgs  # Or other packages containing msgs
    jsk_recognition_msgs
    geometry_msgs
+   sensor_msgs
 )
 
 ################################################
@@ -105,10 +110,13 @@ add_message_files(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   CATKIN_DEPENDS 
+  roscpp
   message_runtime
   std_msgs 
   geometry_msgs 
   jsk_recognition_msgs
+  message_filters
+  sensor_msgs
 )
 
 ###########
@@ -117,7 +125,9 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+include_directories(include
+  ${catkin_INCLUDE_DIRS} 
+  )
 
 ## Declare a C++ library
 # add_library(jsk_apc2016_common
@@ -129,17 +139,21 @@ catkin_package(
 ## either from message generation or dynamic reconfigure
 # add_dependencies(jsk_apc2016_common ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+
 ## Declare a C++ executable
 # add_executable(jsk_apc2016_common_node src/jsk_apc2016_common_node.cpp)
+add_executable(rbo_topic_synchronizer src/rbo_topic_synchronizer.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(jsk_apc2016_common_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(rbo_topic_synchronizer ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(jsk_apc2016_common_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(rbo_topic_synchronizer ${catkin_LIBRARIES})
 
 #############
 ## Install ##
