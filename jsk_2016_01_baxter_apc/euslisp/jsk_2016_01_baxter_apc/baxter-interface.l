@@ -553,7 +553,7 @@
       (send bin-coords :translate offset :world)
       (if (and (eq arm :rarm) (or (< gripper-angle 45) (eq bin :h)))
         (send *baxter* arm :inverse-kinematics bin-coords
-              :rotation-axis :t
+              :rotation-axis t
               ;; if this is :z when gripper is straight, wrist sometimes rotates overly
               ;; if this is :z when Bin is h, body and arm collides on pulling out arm
               :revert-if-fail nil)
