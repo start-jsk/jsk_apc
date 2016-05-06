@@ -286,7 +286,7 @@
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (avs obj-boxes obj-box obj-coms obj-com graspingp (pad-link-l 115)
-              (gripper-tube-t 40) gripper-req-h gripper-req-w bin-y-l bin-z-l)
+              (gripper-tube-t 40) gripper-req-h gripper-req-w bin-box bin-y-l bin-z-l)
       ;; validate
       (unless
         (setq obj-boxes (gethash bin _objects-in-bin-boxes))
@@ -306,8 +306,12 @@
       ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
       (setq gripper-req-h (+ pad-link-l (/ gripper-tube-t 2) -40))  ;; set requisite height for gripper to enter bin
       (setq gripper-req-w (+ pad-link-l (/ gripper-tube-t 2) 10))  ;; set requisite width for gripper to enter bin
-      (setq bin-y-l (m->mm (send (gethash bin _bin-boxes) :dimensions :y))
-            bin-z-l (m->mm (send (gethash bin _bin-boxes) :dimensions :z)))
+      (unless
+        (setq bin-box (gethash bin _bin-boxes))
+        (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
+        (return-from :try-to-pick-object nil))
+      (setq bin-y-l (m->mm (send bin-box :dimensions :y))
+            bin-z-l (m->mm (send bin-box :dimensions :z)))
       (if (find bin '(:a :b :c :d :e :f))
         (setq world-x :z world-y :x world-z :y)
         (setq world-x :z world-y :y world-z :x)
@@ -354,7 +358,7 @@
         (if (eq arm :rarm)
           (if (< sign_y 0)
             (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
-            (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 100)))
+            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-h)))
             )
           (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
           )
@@ -371,27 +375,21 @@
       ;       (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :translate offset :local))
       ;   avs)
       (if (eq arm :rarm)
-        (let (end-coords bin-box bin-coords bin-dim-x)
-          (setq end-coords (make-cascoords))
-          (send end-coords :move-to (send *baxter* arm :end-coords :worldcoords) :world)
-          (setq bin-box (gethash bin _bin-boxes))
-          (unless bin-box
-            (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
-            (return-from :try-to-pick-object))
-          (setq bin-coords (make-cascoords))
-          (send bin-coords :move-to (send self :tf-pose->coords
-                                       (send (send bin-box :header) :frame_id)
-                                       (send bin-box :pose)) :world)
-          (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-          (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
-          (send bin-coords :assoc end-coords)
-          (send bin-coords :rotate (* sign pi/2) :x :local)
-          (send bin-coords :dissoc end-coords)
-          (pushback
-            (send *baxter* arm :inverse-kinematics
-                  end-coords
-                  )
-            avs)
+        (if (and (not (= sign 0)) (>= sign_y 0))
+          (let (end-coords bin-dim-x)
+            (setq end-coords (send self :tf-pose->coords
+                                   (send (send bin-box :header) :frame_id)
+                                   (send bin-box :pose)))
+            (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
+            (send end-coords :translate (float-vector (- (+ (/ bin-dim-x 2) 30)) (* sign (- gripper-req-w (/ bin-y-l 2))) 0) :world)
+            (send end-coords :rotate (* sign pi/2) :x :local)
+            ;; decide target coords depending on size of gripper and bin
+            (pushback
+              (send *baxter* arm :inverse-kinematics
+                    end-coords
+                    )
+              avs)
+            )
           )
         (pushback
           (send *baxter* arm :inverse-kinematics
