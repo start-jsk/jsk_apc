@@ -79,7 +79,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         # generate a binary image
         self.segmentation()
         try:
-            mask_msg = self.bridge.cv2_to_imgmsg(self.predicted_segment, encoding="passthrough")
+            mask_msg = self.bridge.cv2_to_imgmsg(
+                    self.predicted_segment, encoding="mono8")
             mask_msg.header = img_msg.header
             # This is a patch.
             # Later in the process of SIB, you need to synchronize
