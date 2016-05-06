@@ -81,6 +81,12 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         try:
             mask_msg = self.bridge.cv2_to_imgmsg(self.predicted_segment, encoding="passthrough")
             mask_msg.header = img_msg.header
+            # This is a patch.
+            # Later in the process of SIB, you need to synchronize
+            # the current pointclouds and topics produced using this
+            # topic. The synchronization fails if the timestamp is not
+            # updated to the current time.
+            mask_msg.header.stamp = rospy.Time.now()
             self.img_pub.publish(mask_msg)
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
