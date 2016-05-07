@@ -100,4 +100,5 @@ class RBOSegmentationInBin(object):
         self.predicted_segment = self.apc_sample.unzoom_segment(
                 zoomed_predicted_segment)
 
-        self.predicted_segment = self.predicted_segment.astype('uint8')
+        # Masked region needs to contain value 255.
+        self.predicted_segment = 255 * self.predicted_segment.astype('uint8')

@@ -5,16 +5,18 @@
   <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
 
   <!-- camera-->
-  <arg name="INPUT_POINTS" value="/right_softkinetic_camera/depth/points"/>
-  <arg name="INPUT_INFO" value="/right_softkinetic_camera/rgb/camera_info"/>
-  <arg name="INPUT_IMAGE" value="/right_softkinetic_camera/rgb/image_color"/>
+  <arg name="INPUT_POINTS" value="/kinect2_torso/hd/points"/>
+  <arg name="INPUT_INFO" value="/kinect2_torso/hd/camera_info"/>
+  <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color"/>
 
   <!-- target bin-->
   <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
   <arg name="INPUT_TARGET" value="/right_hand/target_bin"/>
   <arg name="TARGET_BIN" value="l"/>
 
+  <param name="/right_hand/target_bin" value="$(arg TARGET_BIN)"/>
 
+  <!-- publish BinInfo.msg from json -->
   <node pkg="jsk_apc2016_common" type="publish_bin_info.py"
     name="set_bin_param" output="screen">
     <param name="json" value="$(arg json)"/>
@@ -22,17 +24,50 @@
     <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
   </node>
 
-  <param name="/right_hand/target_bin" value="$(arg TARGET_BIN)"/>
+  <!-- bound three topics to one -->
+  <node name="sib_topic_synchronizer"
+    pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
+    output="screen">
+    <remap from="~input" to="$(arg INPUT_POINTS)"/>
+    <remap from="~input/info" to="$(arg INPUT_INFO)"/>
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
+  </node>
 
   <node name="segmentation_in_bin"
         pkg="jsk_2016_01_baxter_apc" 
         type="rbo_segmentation_in_bin_node.py" 
         output="screen">
-    <remap from="~input" to="$(arg INPUT_POINTS)"/>
-    <remap from="~input/info" to="$(arg INPUT_INFO)"/>
-    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
+        <remap from="~input" to="/sib_topic_synchronizer/output"/>
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
     <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
     <param name="trained_pkl_path" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
+  </node>
+
+   
+  <arg name="MANAGER" value="segmentation_in_bin_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+  <node name="sib_mask_image_to_pi"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/MaskImageToPointIndices $(arg MANAGER)">
+    <remap from="~input" to="/segmentation_in_bin/target_mask"/>
+  </node>
+
+  <node name="sib_extract_pi"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_POINTS)" />
+    <remap from="~indices" to="/sib_mask_image_to_pi/output" />
+    <rosparam>
+      max_queue_size: 100
+      approximate_sync: true
+    </rosparam>
+  </node>
+
+  <node name="sib_centroid_publisher"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/CentroidPublisher $(arg MANAGER)">
+        <remap from="~input" to="/sib_extract_pi/output"/>
   </node>
 </launch>
