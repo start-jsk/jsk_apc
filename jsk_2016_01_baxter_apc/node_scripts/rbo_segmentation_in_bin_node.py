@@ -27,7 +27,6 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
 
         self.buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.buffer)
-        self.tf_br = tf2_ros.TransformBroadcaster()
 
         self.bridge = CvBridge()
         self.img_pub = self.advertise('~target_mask', Image, queue_size=100)
