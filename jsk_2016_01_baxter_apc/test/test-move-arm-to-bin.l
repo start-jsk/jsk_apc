@@ -17,7 +17,7 @@
       )
     (dolist (arm arm-list)
       (dolist (offset (list #f(-150 0 0) #f(-50 0 0) #f(0 0 0) #f(0 0 -80)))
-        (assert (send *ri* :ik->bin-entrance arm bin :offset offset))
+        (assert (send *ri* :ik->bin-entrance arm bin :offset offset :revert-if-fail t))
         )
       )
     )
