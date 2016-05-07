@@ -11,10 +11,10 @@
       confidence_threshold: 200
       depth_mode: close                 # close or long
       depth_frame_format: QVGA          # QVGA
-      depth_frame_rate: 25              # 25, 30, 50, 60
+      depth_frame_rate: 30              # 25, 30, 50, 60
       color_compression: MJPEG          # YUY2, MJPEG
-      color_frame_format: WXGA_H        # QQVGA, QVGA, VGA, WXGA_H, NHD
-      color_frame_rate: 25              # 25, 30
+      color_frame_format: VGA           # QQVGA, QVGA, VGA, WXGA_H, NHD
+      color_frame_rate: 30              # 25, 30
       <!-- to get organized point cloud -->
       use_frustum_culling_filter: false
       use_passthrough_filter: false
@@ -36,10 +36,10 @@
       confidence_threshold: 200
       depth_mode: close                 # close or long
       depth_frame_format: QVGA          # QVGA
-      depth_frame_rate: 25              # 25, 30, 50, 60
+      depth_frame_rate: 30              # 25, 30, 50, 60
       color_compression: MJPEG          # YUY2, MJPEG
-      color_frame_format: WXGA_H        # QQVGA, QVGA, VGA, WXGA_H, NHD
-      color_frame_rate: 25              # 25, 30
+      color_frame_format: VGA           # QQVGA, QVGA, VGA, WXGA_H, NHD
+      color_frame_rate: 30              # 25, 30
       <!-- to get organized point cloud -->
       use_frustum_culling_filter: false
       use_passthrough_filter: false
