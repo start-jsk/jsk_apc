@@ -54,15 +54,21 @@
               (setq target-n-tried 0)
               (setq target-bin (str2symbol (send order :bin)))
               (setq target-obj (send order :object))
-              (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
-              ;; logging
-              (ros::ros-info "[main] state: ~a" state)
-              (ros::ros-info "[main] arm: ~a" arm)
-              (ros::ros-info "[main] target-bin: ~a" target-bin)
-              (ros::ros-info "[main] target-obj: ~a" target-obj)
-              (setq state :pick_object)
-              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
-              )
+              (if (send *ri* :check-bin-exist target-bin)
+                (progn
+                  (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
+                  ;; logging
+                  (ros::ros-info "[main] state: ~a" state)
+                  (ros::ros-info "[main] arm: ~a" arm)
+                  (ros::ros-info "[main] target-bin: ~a" target-bin)
+                  (ros::ros-info "[main] target-obj: ~a" target-obj)
+                  (setq state :pick_object)
+                  (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+                (progn
+                  (ros::ros-info "[main] could not find bin box: ~a" target-bin)
+                  (setq state :set_target)
+                  (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+                )
             )
           )
         (:wait_for_opposite_arm
