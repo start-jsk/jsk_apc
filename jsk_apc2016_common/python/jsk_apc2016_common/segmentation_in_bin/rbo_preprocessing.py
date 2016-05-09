@@ -36,6 +36,7 @@ def get_spatial_img(bb_base2camera, cloud, target_bin):
     # scale to mm from m
     dist_img = (dist_img * 1000).astype(np.uint8)
     height_img = (height_img * 2)  # adopting RBO's metric
+    height_img[height_img == 0] = -1
     return dist_img, height_img
 
 
