@@ -38,6 +38,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         self.sub .unregister()
 
     def _callback(self, sync):
+        if rospy.get_param('~target_bin_name') not in 'abcdefghijkl':
+            return
         img_msg = sync.image_color
         camera_info = sync.cam_info
         cloud = sync.points
