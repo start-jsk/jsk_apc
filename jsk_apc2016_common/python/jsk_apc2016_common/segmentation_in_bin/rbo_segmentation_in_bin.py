@@ -22,56 +22,14 @@ class RBOSegmentationInBin(object):
         self.dist_img = None
         self._target_bin = None
         self.camera_model = cameramodels.PinholeCameraModel()
-        if 'trained_pkl_path' in kwargs:
-            self.load_trained(kwargs['trained_pkl_path'])
-        if 'target_bin_name' in kwargs:
-            self.target_bin_name = kwargs['target_bin_name']
 
     def from_bin_info_array(self, bin_info_arr):
         for bin_info in bin_info_arr.array:
             self.shelf[bin_info.name] = BinData(bin_info=bin_info)
-        if self.target_bin_name is not None:
-            self.target_bin = self.shelf[self.target_bin_name]
-            self.target_object = self.target_bin.target
 
     def load_trained(self, path):
         with open(path, 'rb') as f:
             self.trained_segmenter = pickle.load(f)
-
-    @property
-    def target_bin_name(self):
-        return self._target_bin_name
-
-    @target_bin_name.setter
-    def target_bin_name(self, target_bin_name):
-        if target_bin_name is not None:
-            self._target_bin_name = target_bin_name
-        if target_bin_name in self.shelf:
-            self.target_object = self.shelf[target_bin_name].target
-            assert self.target_object is not None
-            self.target_bin = self.shelf[target_bin_name]
-
-    @property
-    def camera_info(self):
-        return self._camera_info
-
-    @camera_info.setter
-    def camera_info(self, camera_info):
-        self._camera_info = camera_info
-        if camera_info is not None:
-            self.camera_model.fromCameraInfo(camera_info)
-
-    @property
-    def img_color(self):
-        return self._img_color
-
-    @img_color.setter
-    def img_color(self, img_color):
-        # following RBO's convention that img is loaded as HSV
-        if img_color is not None:
-            self._img_color = cv2.cvtColor(img_color, cv2.COLOR_BGR2HSV)
-        else:
-            self._img_color = None
 
     def set_apc_sample(self):
         assert self.target_object is not None
