@@ -155,15 +155,15 @@ target_link_libraries(gazebo_ros_vacuum_gripper ${GAZEBO_LIBRARIES} ${catkin_LIB
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.l
   COMMAND rosrun euscollada collada2eus baxter.dae baxter.yaml baxter.l
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
-  DEPENDS robots/baxter.dae robots/baxter.yaml)
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.dae ${PROJECT_SOURCE_DIR}/robots/baxter.yaml)
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.dae
   COMMAND rosrun collada_urdf urdf_to_collada baxter.urdf baxter.dae
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
-  DEPENDS robots/baxter.urdf)
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.urdf)
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.urdf
   COMMAND rosrun xacro xacro baxter.xacro > baxter.urdf
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
-  DEPENDS robots/baxter.xacro)
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.xacro)
 # get collada-dom version
 find_package(PkgConfig)
 pkg_check_modules(COLLADA collada-dom>=2.4.4 )
