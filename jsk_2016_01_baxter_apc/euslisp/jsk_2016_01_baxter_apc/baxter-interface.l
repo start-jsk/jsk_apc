@@ -305,7 +305,7 @@
       ;; with Center of Bounding Box
       ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
       (setq gripper-req-h (+ pad-link-l (/ gripper-tube-t 2) -40))  ;; set requisite height for gripper to enter bin
-      (setq gripper-req-w (+ pad-link-l (/ gripper-tube-t 2) 10))  ;; set requisite width for gripper to enter bin
+      (setq gripper-req-w (+ pad-link-l (/ gripper-tube-t 2)))  ;; set requisite width for gripper to enter bin
       (unless
         (setq bin-box (gethash bin _bin-boxes))
         (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
@@ -381,7 +381,7 @@
                                    (send (send bin-box :header) :frame_id)
                                    (send bin-box :pose)))
             (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-            (send end-coords :translate (float-vector (- (+ (/ bin-dim-x 2) 30)) (* sign (- gripper-req-w (/ bin-y-l 2))) 0) :world)
+            (send end-coords :translate (float-vector (- (+ (/ bin-dim-x 2) 30)) (* sign (- gripper-req-w (/ bin-y-l 2) -40)) 0) :world)
             (send end-coords :rotate (* sign pi/2) :x :local)
             ;; decide target coords depending on size of gripper and bin
             (pushback
