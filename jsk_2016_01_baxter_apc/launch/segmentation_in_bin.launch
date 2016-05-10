@@ -1,7 +1,4 @@
 <launch>
-  <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color" />
-  <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
-  <arg name="INPUT_INFO" value="/kinect2_torso/hd/camera_info"/>
   <arg name="TRAINED_PATH" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
   <arg name="json" />
   <arg name="MANAGER" value="segmentation_in_bin_manager" />
@@ -20,17 +17,10 @@
     <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
   </node>
 
-  <!-- bound three topics to one -->
-  <node name="sib_topic_synchronizer"
-    pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
-    output="screen">
-    <remap from="~input" to="$(arg INPUT_CLOUD)"/>
-    <remap from="~input/info" to="$(arg INPUT_INFO)"/>
-    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
-  </node>
-
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_for_each_hand.launch">
-    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="INPUT_IMAGE" value="left_softkinetic_camera/rgb/image_color" />
+    <arg name="INPUT_CLOUD" value="left_softkinetic_camera/depth/points" />
+    <arg name="INPUT_INFO" value="left_softkinetic_camera/rgb/camera_info"/>
     <arg name="MANAGER" value="$(arg MANAGER)" />
     <arg name="JSON" value="$(arg json)" />
     <arg name="HAND" value="left" />
@@ -38,14 +28,15 @@
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
   </include>
 
-<!--
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_for_each_hand.launch">
-    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="INPUT_IMAGE" value="right_softkinetic_camera/rgb/image_color" />
+    <arg name="INPUT_CLOUD" value="right_softkinetic_camera/depth/points" />
+    <arg name="INPUT_INFO" value="right_softkinetic_camera/rgb/camera_info"/>
     <arg name="MANAGER" value="$(arg MANAGER)" />
     <arg name="JSON" value="$(arg json)" />
     <arg name="HAND" value="right" />
     <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
   </include>
--->
+
 </launch>
