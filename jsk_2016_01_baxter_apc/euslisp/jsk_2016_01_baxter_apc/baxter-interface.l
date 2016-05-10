@@ -642,6 +642,9 @@
       (dotimes (i (- (length orders) 1))
         (when (string= (send (elt orders i) :bin) (send current-order :bin))
           (return-from :get-next-work-order (elt orders (+ i 1)))))))
+  (:check-bin-exist
+    (bin)
+    (if (gethash bin _bin-boxes) t nil))
   (:get-bin-contents
     (bin)
     (let (msg)
