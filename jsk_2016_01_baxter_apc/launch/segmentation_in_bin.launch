@@ -5,7 +5,7 @@
   <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
 
   <!-- camera-->
-  <arg name="INPUT_POINTS" value="/kinect2_torso/hd/points"/>
+  <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points"/>
   <arg name="INPUT_INFO" value="/kinect2_torso/hd/camera_info"/>
   <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color"/>
 
@@ -28,7 +28,7 @@
   <node name="sib_topic_synchronizer"
     pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
     output="screen">
-    <remap from="~input" to="$(arg INPUT_POINTS)"/>
+    <remap from="~input" to="$(arg INPUT_CLOUD)"/>
     <remap from="~input/info" to="$(arg INPUT_INFO)"/>
     <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
   </node>
@@ -57,7 +57,7 @@
   <node name="sib_extract_pi"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
-    <remap from="~input" to="$(arg INPUT_POINTS)" />
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~indices" to="/sib_mask_image_to_pi/output" />
     <rosparam>
       max_queue_size: 100
