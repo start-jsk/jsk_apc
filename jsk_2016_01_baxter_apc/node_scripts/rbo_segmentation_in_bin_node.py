@@ -6,21 +6,21 @@ from jsk_apc2016_common.segmentation_in_bin.rbo_segmentation_in_bin\
         import RBOSegmentationInBin
 from jsk_apc2016_common.msg import BinInfoArray, SegmentationInBinSync
 from jsk_topic_tools import ConnectionBasedTransport
+from sensor_msgs.msg import Image
 import rospy
 import tf2_ros
-import message_filters
-from sensor_msgs.msg import Image, CameraInfo
-from sensor_msgs.msg import PointCloud2
 from cv_bridge import CvBridge, CvBridgeError
+import cv2
 
 
 class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
     def __init__(self):
-        RBOSegmentationInBin.__init__(
-                self,
-                trained_pkl_path=rospy.get_param('~trained_pkl_path'),
-                target_bin_name=rospy.get_param('~target_bin_name'))
+        RBOSegmentationInBin.__init__(self)
+
         ConnectionBasedTransport.__init__(self)
+
+        self.load_trained(rospy.get_param('~trained_pkl_path'))
+
         bin_info_array_msg = rospy.wait_for_message(
                 "~input/bin_info_array", BinInfoArray, timeout=50)
         self.from_bin_info_array(bin_info_array_msg)
@@ -38,24 +38,30 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport, RBOSegmentationInBin):
         self.sub .unregister()
 
     def _callback(self, sync):
+        rospy.loginfo('started')
+
+        if rospy.get_param('~target_bin_name') not in 'abcdefghijkl':
+            return
         img_msg = sync.image_color
-        camera_info = sync.cam_info
         cloud = sync.points
 
-        rospy.loginfo('started')
         self.target_bin_name = rospy.get_param('~target_bin_name')
+        self.target_object = self.shelf[self.target_bin_name].target
+        self.target_bin = self.shelf[self.target_bin_name]
 
         # mask image
-        self.camera_info = camera_info
+        self.camera_info = sync.cam_info
+        self.camera_model.fromCameraInfo(self.camera_info)
         try:
             img_color = self.bridge.imgmsg_to_cv2(img_msg, "bgr8")
+            img_color = cv2.cvtColor(img_color, cv2.COLOR_BGR2HSV)
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
         self.img_color = img_color
 
         # get transform
         camera2bb_base = self.buffer.lookup_transform(
-                target_frame=camera_info.header.frame_id,
+                target_frame=self.camera_info.header.frame_id,
                 source_frame=self.target_bin.bbox.header.frame_id,
                 time=rospy.Time(0),
                 timeout=rospy.Duration(10.0))
