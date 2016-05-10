@@ -1,0 +1,30 @@
+2016-05-09
+==========
+
+**Segmentation in bin with kinect2_torso**
+
+
+What you did?
+-------------
+
+- Run main.launch with kinect2_torso 
+- Run segmentation_in_bin.launch with kinect2_torso
+- Run segmentation and try to pick object from bin l
+- Succeeded to pick object
+
+
+What is issue?
+--------------
+
+- segmentation program takes almost 1 minute with kinect2
+
+What you think/feel?
+--------------------
+
+- I want to do this with softkinetic camera 
+
+
+Log data
+--------
+
+- https://drive.google.com/file/d/0BycOVNfHx5bqUlVURGJjMEUyVkE/view?usp=sharing
