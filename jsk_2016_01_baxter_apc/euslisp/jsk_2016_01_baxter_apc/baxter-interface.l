@@ -17,6 +17,7 @@
    _bin-boxes
    _objects-in-bin-boxes
    _objects-in-bin-coms
+   _objects-in-bin-sibs
    _bin-coords-list
    )
   )
@@ -32,6 +33,7 @@
     (setq _bin-boxes (make-hash-table))
     (setq _objects-in-bin-boxes (make-hash-table))
     (setq _objects-in-bin-coms (make-hash-table))
+    (setq _objects-in-bin-sibs (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
@@ -232,6 +234,21 @@
       (ros::unsubscribe com-topic)
       (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
       (sethash bin _objects-in-bin-coms com-msg)))
+  (:recognize-objects-segmentation-in-bin
+    (bin &key (stamp (ros::time-now)))
+    (let ((sib-topic (format nil "left_sib_centroid_publisher/output/pose"))
+          sib-msg)
+      (ros::subscribe sib-topic geometry_msgs::PoseStamped
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq sib-msg msg)))))
+      (while (not sib-msg)
+             (unix::usleep (* 50 1000))
+             (ros::spin-once))
+      (ros::unsubscribe sib-topic)
+      (ros::ros-info "[:recognize-objects-segmentation-in-bin] get sib centroid pose")
+      (sethash bin _objects-in-bin-sibs sib-msg)))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
@@ -311,12 +328,18 @@
         (setq obj-box (elt obj-boxes object-index))
         (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
         (return-from :try-to-pick-object nil))
-      (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
-      (setq obj-com (elt (send obj-coms-msg :poses) object-index))
+      (if (gethash bin _objects-in-bin-sibs)
+        (setq obj-sibs-msg (gethash bin _objects-in-bin-sibs))
+        (progn
+          (ros::ros-warn "[SIB] No object is found: ~a, ~a" arm bin)
+          (return-from :try-to-pick-object nil)))
+      ; (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
+      ; (setq obj-com (elt (send obj-coms-msg :poses) object-index))
+      (setq obj-com (send obj-sibs-msg :pose))
       ;; ik to obj a bit distant
       ;; with Center of Mass
       (setq obj-coords (send self :tf-pose->coords
-                             (send obj-coms-msg :header :frame_id) obj-com))
+                             (send obj-sibs-msg :header :frame_id) obj-com))
       ;; with Center of Bounding Box
       ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
       (if (find bin '(:a :b :c :d :e :f))
