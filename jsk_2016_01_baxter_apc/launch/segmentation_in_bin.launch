@@ -1,20 +1,16 @@
 <launch>
+  <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color" />
+  <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
+  <arg name="INPUT_INFO" value="/kinect2_torso/hd/camera_info"/>
+  <arg name="TRAINED_PATH" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
+  <arg name="json" />
+  <arg name="MANAGER" value="segmentation_in_bin_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
+
   <!-- shelf-->
-  <arg name="json" default="$(find jsk_2015_05_baxter_apc)/json/layout_12.json"/>
   <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
   <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
-
-  <!-- camera-->
-  <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points"/>
-  <arg name="INPUT_INFO" value="/kinect2_torso/hd/camera_info"/>
-  <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color"/>
-
-  <!-- target bin-->
-  <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
-  <arg name="INPUT_TARGET" value="/right_hand/target_bin"/>
-  <arg name="TARGET_BIN" value="l"/>
-
-  <param name="/right_hand/target_bin" value="$(arg TARGET_BIN)"/>
 
   <!-- publish BinInfo.msg from json -->
   <node pkg="jsk_apc2016_common" type="publish_bin_info.py"
@@ -33,41 +29,23 @@
     <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
   </node>
 
-  <node name="segmentation_in_bin"
-        pkg="jsk_2016_01_baxter_apc" 
-        type="rbo_segmentation_in_bin_node.py" 
-        output="screen">
-        <remap from="~input" to="/sib_topic_synchronizer/output"/>
-    <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
-    <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
-    <param name="trained_pkl_path" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
-  </node>
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_for_each_hand.launch">
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="MANAGER" value="$(arg MANAGER)" />
+    <arg name="JSON" value="$(arg json)" />
+    <arg name="HAND" value="left" />
+    <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
+    <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
+  </include>
 
-   
-  <arg name="MANAGER" value="segmentation_in_bin_manager" />
-  <node name="$(arg MANAGER)"
-        pkg="nodelet" type="nodelet" args="manager" />
-
-  <node name="sib_mask_image_to_pi"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/MaskImageToPointIndices $(arg MANAGER)">
-    <remap from="~input" to="/segmentation_in_bin/target_mask"/>
-  </node>
-
-  <node name="sib_extract_pi"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
-    <remap from="~input" to="$(arg INPUT_CLOUD)" />
-    <remap from="~indices" to="/sib_mask_image_to_pi/output" />
-    <rosparam>
-      max_queue_size: 100
-      approximate_sync: true
-    </rosparam>
-  </node>
-
-  <node name="sib_centroid_publisher"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/CentroidPublisher $(arg MANAGER)">
-        <remap from="~input" to="/sib_extract_pi/output"/>
-  </node>
+<!--
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_for_each_hand.launch">
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="MANAGER" value="$(arg MANAGER)" />
+    <arg name="JSON" value="$(arg json)" />
+    <arg name="HAND" value="right" />
+    <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
+    <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
+  </include>
+-->
 </launch>
