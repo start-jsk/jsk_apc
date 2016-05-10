@@ -381,7 +381,7 @@
                                    (send (send bin-box :header) :frame_id)
                                    (send bin-box :pose)))
             (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-            (send end-coords :translate (float-vector (- (+ (/ bin-dim-x 2) 30)) (* sign (- gripper-req-w (/ bin-y-l 2) -40)) 0) :world)
+            (send end-coords :translate (float-vector (- (/ bin-dim-x 2)) (* sign (- gripper-req-w (/ bin-y-l 2) -40)) 0) :world)
             (send end-coords :rotate (* sign pi/2) :x :local)
             ;; decide target coords depending on size of gripper and bin
             (pushback
@@ -389,15 +389,28 @@
                     end-coords
                     )
               avs)
+            (pushback
+              (send *baxter* arm :move-end-pos #f(0 0 50) :local)
+              ;; press back of gripper against bin wall
+              avs)
+            (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+            (send self :wait-interpolation)
+            ;; stop pressing and detach gripper from wall
+            (send self :state)
+            (send *baxter* :angle-vector (send self :potentio-vector))
+            (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -20) :local) 2000)
+            (send self :wait-interpolation)
             )
           )
-        (pushback
-          (send *baxter* arm :inverse-kinematics
-                (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
-          avs)
+        (progn
+          (pushback
+            (send *baxter* arm :inverse-kinematics
+                  (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
+            avs)
+          (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+          (send self :wait-interpolation)
+          )
         )
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
-      (send self :wait-interpolation)
       ;; start the vacuum gripper
       (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
       (send self :start-grasp arm)
