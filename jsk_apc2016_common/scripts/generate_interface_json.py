@@ -4,44 +4,44 @@ import json
 import random
 
 '''
-    This script generates two Task Input Files [1] designed to be used for 
-    testing against the pick and stow tasks defined in the Amazon Picking 
+    This script generates two Task Input Files [1] designed to be used for
+    testing against the pick and stow tasks defined in the Amazon Picking
     Challenge 2016 rules.
-    
-    Note: The script distributes items randomly, which is not be a perfect 
-    representation of an actual pick/stow task. During the actual competition, 
-    the item distribution will be chosen to present an array of difficulties 
-    amongst the bins. Considerations will be made (i.e. for object size, 
+
+    Note: The script distributes items randomly, which is not be a perfect
+    representation of an actual pick/stow task. During the actual competition,
+    the item distribution will be chosen to present an array of difficulties
+    amongst the bins. Considerations will be made (i.e. for object size,
     duplicates, point value) that are not reflected in this generator.
-    
-    
+
+
     The 'apc_pick_task.json' file will contain the following json objects:
-        - 'bin_contents' will contain the mapping of each bin to its contents, 
+        - 'bin_contents' will contain the mapping of each bin to its contents,
           as they exist prior to a task attempt.
-        - 'tote_contents' will be an empty list, to properly reflect that the 
+        - 'tote_contents' will be an empty list, to properly reflect that the
           tote is empty at the beginning of the task.
-        - 'work_order' will contain a mapping of each bin to the item that is 
+        - 'work_order' will contain a mapping of each bin to the item that is
           expected to be picked from that bin.
-          
-        After a pick task attempt, it is expected that the same file format 
-        will be returned to the judges. The 'bin_contents' object should 
-        appropriately reflect the new status of the bins' contents. The 
-        'tote_contents' list should contain the objects that were correctly 
-        placed in the tote. The 'work_order' object is ignored.
-    
-    The 'apc_stow_task.json' file will contain the following json objects:
-        - 'bin_contents' will contain the mapping of each bin to its contents, 
-          as they exist prior to a task attempt.
-        - 'tote_contents' will contain 12 items that are expected to be stowed 
-          into the bins.
-          
-        After a stow task attempt, it is expected that the same file format 
+
+        After a pick task attempt, it is expected that the same file format
         will be returned to the judges. The 'bin_contents' object should
-        appropriately reflect the new status of the bins' contents. The 
-        'tote_contents' list should also appropriately reflect the new status 
-        of the bins' contents. Items that were not removed from the tote during 
+        appropriately reflect the new status of the bins' contents. The
+        'tote_contents' list should contain the objects that were correctly
+        placed in the tote. The 'work_order' object is ignored.
+
+    The 'apc_stow_task.json' file will contain the following json objects:
+        - 'bin_contents' will contain the mapping of each bin to its contents,
+          as they exist prior to a task attempt.
+        - 'tote_contents' will contain 12 items that are expected to be stowed
+          into the bins.
+
+        After a stow task attempt, it is expected that the same file format
+        will be returned to the judges. The 'bin_contents' object should
+        appropriately reflect the new status of the bins' contents. The
+        'tote_contents' list should also appropriately reflect the new status
+        of the bins' contents. Items that were not removed from the tote during
         the attempt should be remain in this list.
-    
+
     [1] http://amazonpickingchallenge.org/APC_2016_Official_Rules.pdf,
         section 'Task Attempt Rules', paragraph 2.
 '''
@@ -119,24 +119,24 @@ bin_contents = {}
 
 # This function uses the bin_size_count map to randomly arrange items into bins.
 def generateBinContents():
-	bin_contents = {bin_name:[] for bin_name in CONST_BIN_NAMES}
+    bin_contents = {bin_name:[] for bin_name in CONST_BIN_NAMES}
 
-	# Create destroyable copies of items and bins
-	items = copy.deepcopy(CONST_ITEM_NAMES)
-	abins = copy.deepcopy(CONST_BIN_NAMES)
+    # Create destroyable copies of items and bins
+    items = copy.deepcopy(CONST_ITEM_NAMES)
+    abins = copy.deepcopy(CONST_BIN_NAMES)
 
-	# Generate all bins into bin_contents variable
-	for bin_size in bin_size_count:
-		bin_count = bin_size_count[bin_size]
-		for ii in range(0, bin_count):
-			bin_name = random.choice(abins)
-			abins.remove(bin_name)
-			for jj in range(0, bin_size):
-				item_name = random.choice(items)
-				items.remove(item_name)
-				bin_contents[bin_name].append(item_name)
+    # Generate all bins into bin_contents variable
+    for bin_size in bin_size_count:
+        bin_count = bin_size_count[bin_size]
+        for ii in range(0, bin_count):
+            bin_name = random.choice(abins)
+            abins.remove(bin_name)
+            for jj in range(0, bin_size):
+                item_name = random.choice(items)
+                items.remove(item_name)
+                bin_contents[bin_name].append(item_name)
 
-	return bin_contents
+    return bin_contents
 
 # Do the work for the picking task
 #-------------------------------------------------------------------------------
@@ -179,10 +179,9 @@ bin_contents = generateBinContents()
 # Stowing task begins with 12 items in tote
 tote_contents = []
 for bin_name in CONST_BIN_NAMES:
-	tote_contents.append(bin_contents[bin_name].pop())
+    tote_contents.append(bin_contents[bin_name].pop())
 
 # Write data to appropriately-named json file
 data = {'bin_contents': bin_contents, 'tote_contents': tote_contents}
 with open('apc_stow_task.json', 'w') as outfile:
     json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
-
