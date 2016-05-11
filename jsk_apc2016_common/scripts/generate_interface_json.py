@@ -1,7 +1,12 @@
 #!/usr/bin/env python
+import os
+import os.path as osp
 import copy
 import json
 import random
+import re
+
+import rospkg
 
 '''
     This script generates two Task Input Files [1] designed to be used for
@@ -45,6 +50,26 @@ import random
     [1] http://amazonpickingchallenge.org/APC_2016_Official_Rules.pdf,
         section 'Task Attempt Rules', paragraph 2.
 '''
+
+# Crawl jsk_apc2016_common/json/* dir and find next json id
+PKG = 'jsk_apc2016_common'
+rp = rospkg.RosPack()
+pkg_path = rp.get_path(PKG)
+save_dir = os.path.join(pkg_path, 'json')
+ids = []
+for f in os.listdir(save_dir):
+    m = re.match('^(pick|stow)_layout_([0-9]*).json$', f)
+    if m:
+        id = int(m.groups()[1])
+        assert osp.exists(osp.join(save_dir, 'pick_layout_%d.json' % id))
+        assert osp.exists(osp.join(save_dir, 'stow_layout_%d.json' % id))
+        ids.append(id)
+if ids:
+    next_json_id = max(ids) + 1
+else:
+    next_json_id = 1
+pick_json_file = osp.join(save_dir, 'pick_layout_%d.json' % next_json_id)
+stow_json_file = osp.join(save_dir, 'stow_layout_%d.json' % next_json_id)
 
 #-------------------------------------------------------------------------------
 
@@ -160,8 +185,9 @@ tote_contents = []
 
 # Write data to appropriately-named json file
 data = {'bin_contents': bin_contents, 'work_order': work_order, 'tote_contents': tote_contents}
-with open('apc_pick_task.json', 'w') as outfile:
+with open(pick_json_file, 'w') as outfile:
     json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
+print("Generated '%s'" % pick_json_file)
 
 
 # Do the work for the stowing task
@@ -183,5 +209,6 @@ for bin_name in CONST_BIN_NAMES:
 
 # Write data to appropriately-named json file
 data = {'bin_contents': bin_contents, 'tote_contents': tote_contents}
-with open('apc_stow_task.json', 'w') as outfile:
+with open(stow_json_file, 'w') as outfile:
     json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
+print("Generated '%s'" % stow_json_file)
