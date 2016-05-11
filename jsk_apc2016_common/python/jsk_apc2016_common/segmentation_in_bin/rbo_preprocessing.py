@@ -116,26 +116,17 @@ def get_mask_img(transform, target_bin, camera_model):
 
 
 def project_points(points, camera_model):
-    """
+    """Project points considering camera's world coords (frame_id).
     :param points: list of geometry_msgs.msg.PointStamped
     :type list of stamped points :
-    :param projected_points: list of camera_coordinates
+    :param camera_model: camera model with its frame_id for world coords.
+
+    :return projected_points: list of camera_coordinates
     :type  projected_points: (u, v)
 
     The frames of the points and the camera_model are same.
     """
-    # generate mask iamge
-    for point in points:
-        if point.header.frame_id != camera_model.tf_frame:
-            raise ValueError('undefined')
-    if len(points) != 4:
-        raise ValueError('undefined')
-
-    projected_points = []
-    for point in points:
-        projected_points.append(
-                camera_model.project3dToPixel(
-                        helper.list_from_point(point.point)
-                    )
-            )
+    projected_points = [
+        camera_model.project3dToPixel(helper.list_from_point(pt.point))
+        for pt in points]
     return projected_points
