@@ -410,9 +410,13 @@
           (send self :wait-interpolation)
           )
         )
-      ;; start the vacuum gripper
-      (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
-      (send self :start-grasp arm)
+      (if (eq arm :larm)
+        (progn
+          ;; start the vacuum gripper
+          (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
+          (send self :start-grasp arm)
+          )
+        )
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object] arm:~a approach to the object" arm)
       (if (eq arm :rarm)
@@ -435,10 +439,16 @@
         )
       (send self :wait-interpolation)
       (if (eq arm :rarm)
-        (send self :angle-vector
-              (send *baxter* arm :inverse-kinematics
-                    (make-coords :pos (send obj-coords :pos) :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
-              3000)
+        (progn
+          ;; start the vacuum gripper after approaching to the object
+          (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
+          (send self :start-grasp arm)
+          (unix::sleep 1)
+          (send self :angle-vector
+                (send *baxter* arm :inverse-kinematics
+                      (make-coords :pos (send obj-coords :pos) :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
+                3000)
+          )
         (send self :angle-vector
               (send *baxter* arm :inverse-kinematics
                     (make-coords :pos (send obj-coords :pos) :rpy (list 0 0 (* sign pi/2))))
