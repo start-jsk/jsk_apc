@@ -71,7 +71,7 @@ else:
 pick_json_file = osp.join(save_dir, 'pick_layout_%d.json' % next_json_id)
 stow_json_file = osp.join(save_dir, 'stow_layout_%d.json' % next_json_id)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # define our bin and item names to use
 CONST_BIN_NAMES = ['bin_A',
@@ -142,9 +142,10 @@ bin_size_count = {}
 # key is bin name (from CONST_BIN_NAMES), value is a list of items (from CONST_ITEM_NAMES)
 bin_contents = {}
 
+
 # This function uses the bin_size_count map to randomly arrange items into bins.
 def generateBinContents():
-    bin_contents = {bin_name:[] for bin_name in CONST_BIN_NAMES}
+    bin_contents = {bin_name: [] for bin_name in CONST_BIN_NAMES}
 
     # Create destroyable copies of items and bins
     items = copy.deepcopy(CONST_ITEM_NAMES)
@@ -164,7 +165,7 @@ def generateBinContents():
     return bin_contents
 
 # Do the work for the picking task
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Generate bin contents for the pick pod
 bin_size_count[1] = 1
 bin_size_count[2] = 3
@@ -177,7 +178,7 @@ bin_size_count[9] = 1
 bin_contents = generateBinContents()
 
 # Generate the work order data structure
-work_order = [{'bin':bin_name,'item':item_name} for bin_name in CONST_BIN_NAMES
+work_order = [{'bin': bin_name, 'item': item_name} for bin_name in CONST_BIN_NAMES
               for item_name in (bin_contents[bin_name][0:1])]
 
 # Picking task begins with an empty tote
@@ -186,12 +187,12 @@ tote_contents = []
 # Write data to appropriately-named json file
 data = {'bin_contents': bin_contents, 'work_order': work_order, 'tote_contents': tote_contents}
 with open(pick_json_file, 'w') as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
+    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',', ': '))
 print("Generated '%s'" % pick_json_file)
 
 
 # Do the work for the stowing task
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Generate bin contents for the stow pod
 bin_size_count = {}
 bin_size_count[2] = 3
@@ -210,5 +211,5 @@ for bin_name in CONST_BIN_NAMES:
 # Write data to appropriately-named json file
 data = {'bin_contents': bin_contents, 'tote_contents': tote_contents}
 with open(stow_json_file, 'w') as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',',': '))
+    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',', ': '))
 print("Generated '%s'" % stow_json_file)
