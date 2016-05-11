@@ -286,7 +286,7 @@
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
     (let (avs obj-boxes obj-box obj-coms obj-com graspingp (pad-link-l 115)
-              (gripper-tube-t 40) gripper-req-h gripper-req-w bin-box bin-y-l bin-z-l)
+              (gripper-tube-t 40) gripper-req-l bin-box bin-y-l bin-z-l)
       ;; validate
       (unless
         (setq obj-boxes (gethash bin _objects-in-bin-boxes))
@@ -304,8 +304,7 @@
                              (send obj-coms-msg :header :frame_id) obj-com))
       ;; with Center of Bounding Box
       ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
-      (setq gripper-req-h (+ pad-link-l (/ gripper-tube-t 2) -40))  ;; set requisite height for gripper to enter bin
-      (setq gripper-req-w (+ pad-link-l (/ gripper-tube-t 2)))  ;; set requisite width for gripper to enter bin
+      (setq gripper-req-l (+ pad-link-l (/ gripper-tube-t 2)))  ;; set requisite length for gripper to enter bin
       (unless
         (setq bin-box (gethash bin _bin-boxes))
         (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
@@ -318,18 +317,18 @@
         )
       (if (eq arm :rarm)
         ;; if object is higher than highest end-coords when gripper is 90 degrees
-        (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-h))
+        (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l))
           (let ((obj-pos-y (elt (send (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)) :pos) 1))
                 (obj-y-l (m->mm (send obj-box :dimensions world-y)))
                 (bin-center-y (elt (send (send *baxter* arm :end-coords) :worldpos) 1))
                 ;; :ik->bin-entrance brought y-coordinates of end-coords to the same value as center of bin
                 )
             (cond ((< (+ obj-pos-y (/ obj-y-l 2))
-                      (- (+ bin-center-y (/ bin-y-l 2)) gripper-req-w)) ;; if space gripper can enter exists on right
+                      (- (+ bin-center-y (/ bin-y-l 2)) gripper-req-l)) ;; if space gripper can enter exists on right
                    (setq sign -1)
                    (setq sign_y 0))
                   ((> (- obj-pos-y (/ obj-y-l 2))
-                      (+ (- bin-center-y (/ bin-y-l 2)) gripper-req-w)) ;; if space gripper can enter exists on left
+                      (+ (- bin-center-y (/ bin-y-l 2)) gripper-req-l)) ;; if space gripper can enter exists on left
                    (setq sign 1)
                    (setq sign_y 0))
                   (t
@@ -358,7 +357,7 @@
         (if (eq arm :rarm)
           (if (< sign_y 0)
             (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
-            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-h)))
+            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l -50)))
             )
           (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
           )
@@ -381,7 +380,7 @@
                                    (send (send bin-box :header) :frame_id)
                                    (send bin-box :pose)))
             (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-            (send end-coords :translate (float-vector (- (/ bin-dim-x 2)) (* sign (- gripper-req-w (/ bin-y-l 2) -40)) 0) :world)
+            (send end-coords :translate (float-vector (- (/ bin-dim-x 2)) (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0) :world)
             (send end-coords :rotate (* sign pi/2) :x :local)
             ;; decide target coords depending on size of gripper and bin
             (pushback
