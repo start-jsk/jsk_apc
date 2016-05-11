@@ -229,6 +229,9 @@ add_custom_target(compile_stow_kiva_world ALL
 
 ## Add folders to be run by python nosetests
 if(CATKIN_ENABLE_TESTING)
+  find_package(roslint REQUIRED)
+  roslint_python(node_scripts)
+  roslint_add_test()
   find_package(rostest REQUIRED)
   add_rostest(test/work_order.test)
   add_custom_target(download_test_data COMMAND ${PROJECT_SOURCE_DIR}/scripts/download_test_data.sh)
