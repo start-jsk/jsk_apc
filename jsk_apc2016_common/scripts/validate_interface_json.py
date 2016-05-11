@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import copy
 import json
 import sys
@@ -35,17 +36,6 @@ class bcolors:
 
 #-------------------------------------------------------------------------------
 
-if len(sys.argv) < 2:
-    print ('Usage: interface_test_2016.py ' +
-           bcolors.UNDERLINE + 'PICK-FILENAME' + bcolors.ENDC + 
-           ' [' + bcolors.UNDERLINE + 'STOW-FILENAME' + bcolors.ENDC + ']')
-    exit()
-
-# open the pick json file
-print ''
-print ("Checking pick file '%s'") % sys.argv[1]
-json_pick_data = open(sys.argv[1])
-pick_data = json.load(json_pick_data)
 
 #-------------------------------------------------------------------------------
 
@@ -113,283 +103,308 @@ CONST_NPICKABLE_ITEMS = CONST_NBINS
 
 # do some validitiy testing on the pick input file
 #-------------------------------------------------------------------------------
-
-print ''
-print 'Checking that the bin contents meet our contest definition ...'
-bin_counts = [0,0,0,0,0,0,0,0,0,0]
-total_items = 0
-items = copy.deepcopy(CONST_ITEM_NAMES)
-found_bins = []
-if 'bin_contents' in pick_data:
-    for bin_name in pick_data['bin_contents']:
-        n_items = len(pick_data['bin_contents'][bin_name])
-        if n_items < len(bin_counts):
-            bin_counts[n_items] = bin_counts[n_items] + 1
-        else:
-            print (bcolors.FAIL + "  ERROR: Too many items in '%s'" +
-                   bcolors.ENDC) % bin_name
-
-        if bin_name in CONST_BIN_NAMES:
-            found_bins.append(bin_name)
-        else:
-            print (bcolors.FAIL + "  ERROR: Unknown bin name '%s'" +
-                   bcolors.ENDC) % bin_name
-
-        for item in pick_data['bin_contents'][bin_name]:
-            if item in CONST_ITEM_NAMES:
-                if item in items:
-                    total_items = total_items + 1
-                    items.remove(item)
-                else:
-                    print (bcolors.FAIL + "  ERROR: Item '%s' used too many times" +
-                           bcolors.ENDC) % item
-            else:
-                print (bcolors.FAIL + "  ERROR: Unknown item name '%s'" +
-                       bcolors.ENDC) % item
-else:
-    print (bcolors.FAIL + "  ERROR: Expected field 'bin_contents' not found." +
-           bcolors.ENDC)
-
-if len(found_bins) < CONST_NBINS:
-    print (bcolors.FAIL + "  ERROR: Found %d/%d bins" +
-           bcolors.ENDC) % (len(found_bins), CONST_NBINS)
-
-success = True
-if bin_counts[0] > 0:
-    print (bcolors.FAIL + '  ERROR: Found %d empty bins' +
-           bcolors.ENDC) % bin_counts[0]
-    success = False   
-if bin_counts[1] <> 1:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 1-item bins' +
-           bcolors.ENDC) % (bin_counts[1], 1)
-    success = False
-if bin_counts[2] <> 3:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 2-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 3)
-    success = False
-if bin_counts[3] <> 2:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 3-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 2)
-    success = False
-if bin_counts[4] <> 3:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 4-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 3)
-    success = False
-if bin_counts[5] <> 1:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 5-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 1)
-    success = False
-if bin_counts[6] <> 0:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 6-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 0)
-    success = False
-if bin_counts[7] <> 1:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 7-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 1)
-    success = False
-if bin_counts[8] <> 0:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 8-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 1)
-    success = False
-if bin_counts[9] <> 1:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 9-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 1)
-    success = False
-if total_items <> len(CONST_ITEM_NAMES):
-    print (bcolors.FAIL + '  ERROR: Found %d/%d valid items'
-           + bcolors.ENDC) % (total_items, len(CONST_ITEM_NAMES))
-    success = False
-
-if success:
-    print (bcolors.OKGREEN +
-           '  SUCCESS! Found 1x1, 3x2, 2x3, 3x4, 1x5, 1x8, 1x9 bins for a total of %d items' +
-           bcolors.ENDC) % total_items
-
-#-------------------------------------------------------------------------------
-
-print ''
-print 'Checking if the work order is valid ...'
-n_found_items = 0
-found_bins2 = []
-if 'work_order' in pick_data:
-    for line_item in pick_data['work_order']:
-        item = line_item['item']
-        kbin = line_item['bin']
-
-        if kbin in found_bins:
-            if item in pick_data['bin_contents'][kbin]:
-                n_found_items = n_found_items + 1
-                #print 'Found item: %s inside of: %s' % (item, kbin)
-            else:
-                print (bcolors.FAIL + "  ERROR: Item '%s' does not exist in '%s'" +
-                       bcolors.ENDC) % (item, kbin)
-                #break
-        else:
-            print (bcolors.FAIL + "  ERROR: bin '%s' does not exist in 'bin_contents'" +
-                   bcolors.ENDC) % kbin
-
-        if kbin in found_bins2:
-            print (bcolors.FAIL + "  ERROR: Redundant bin '%s' found in work order." +
-                   bcolors.ENDC) % kbin
-        elif kbin in CONST_BIN_NAMES:
-            found_bins2.append(kbin)
-else:
-    print (bcolors.FAIL + "  ERROR: Expected field 'work_order' not found." +
-           bcolors.ENDC)
-        
-success = True
-if n_found_items <> CONST_NPICKABLE_ITEMS:
-    print (bcolors.FAIL + '  ERROR: Only found %d/%d items.' +
-           bcolors.ENDC) % (n_found_items, CONST_NPICKABLE_ITEMS)
-    success = False
-if len(found_bins2) <> CONST_NBINS:
-    print (bcolors.FAIL + '  ERROR: Only found pick items from %d/%d bins.' +
-           bcolors.ENDC) % (len(found_bins2), CONST_NBINS)
-    success = False
-if success:
-    print (bcolors.OKGREEN + '  SUCCESS! Found %d items (1 per bin)' +
-           bcolors.ENDC) % CONST_NPICKABLE_ITEMS
-
-#-------------------------------------------------------------------------------
-
-# close the pick json file
-json_pick_data.close()
-
-if len(sys.argv) < 3:
+def validate_pick_json(json_file):
+    # open the pick json file
     print ''
-    print 'No stow file specified.'
-    exit()
+    print ("Checking pick file '%s'") % json_file
+    json_pick_data = open(json_file)
+    pick_data = json.load(json_pick_data)
 
+    print ''
+    print 'Checking that the bin contents meet our contest definition ...'
+    bin_counts = [0,0,0,0,0,0,0,0,0,0]
+    total_items = 0
+    items = copy.deepcopy(CONST_ITEM_NAMES)
+    found_bins = []
+    if 'bin_contents' in pick_data:
+        for bin_name in pick_data['bin_contents']:
+            n_items = len(pick_data['bin_contents'][bin_name])
+            if n_items < len(bin_counts):
+                bin_counts[n_items] = bin_counts[n_items] + 1
+            else:
+                print (bcolors.FAIL + "  ERROR: Too many items in '%s'" +
+                    bcolors.ENDC) % bin_name
+
+            if bin_name in CONST_BIN_NAMES:
+                found_bins.append(bin_name)
+            else:
+                print (bcolors.FAIL + "  ERROR: Unknown bin name '%s'" +
+                    bcolors.ENDC) % bin_name
+
+            for item in pick_data['bin_contents'][bin_name]:
+                if item in CONST_ITEM_NAMES:
+                    if item in items:
+                        total_items = total_items + 1
+                        items.remove(item)
+                    else:
+                        print (bcolors.FAIL + "  ERROR: Item '%s' used too many times" +
+                            bcolors.ENDC) % item
+                else:
+                    print (bcolors.FAIL + "  ERROR: Unknown item name '%s'" +
+                        bcolors.ENDC) % item
+    else:
+        print (bcolors.FAIL + "  ERROR: Expected field 'bin_contents' not found." +
+            bcolors.ENDC)
+
+    if len(found_bins) < CONST_NBINS:
+        print (bcolors.FAIL + "  ERROR: Found %d/%d bins" +
+            bcolors.ENDC) % (len(found_bins), CONST_NBINS)
+
+    success = True
+    if bin_counts[0] > 0:
+        print (bcolors.FAIL + '  ERROR: Found %d empty bins' +
+            bcolors.ENDC) % bin_counts[0]
+        success = False   
+    if bin_counts[1] <> 1:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 1-item bins' +
+            bcolors.ENDC) % (bin_counts[1], 1)
+        success = False
+    if bin_counts[2] <> 3:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 2-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 3)
+        success = False
+    if bin_counts[3] <> 2:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 3-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 2)
+        success = False
+    if bin_counts[4] <> 3:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 4-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 3)
+        success = False
+    if bin_counts[5] <> 1:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 5-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 1)
+        success = False
+    if bin_counts[6] <> 0:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 6-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 0)
+        success = False
+    if bin_counts[7] <> 1:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 7-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 1)
+        success = False
+    if bin_counts[8] <> 0:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 8-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 1)
+        success = False
+    if bin_counts[9] <> 1:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 9-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 1)
+        success = False
+    if total_items <> len(CONST_ITEM_NAMES):
+        print (bcolors.FAIL + '  ERROR: Found %d/%d valid items'
+            + bcolors.ENDC) % (total_items, len(CONST_ITEM_NAMES))
+        success = False
+
+    if success:
+        print (bcolors.OKGREEN +
+            '  SUCCESS! Found 1x1, 3x2, 2x3, 3x4, 1x5, 1x8, 1x9 bins for a total of %d items' +
+            bcolors.ENDC) % total_items
 
 #-------------------------------------------------------------------------------
 
-# open the stow json file
-print ''
-print ("Checking stow file '%s'") % sys.argv[2]
-json_stow_data = open(sys.argv[2])
-stow_data = json.load(json_stow_data)
+    print ''
+    print 'Checking if the work order is valid ...'
+    n_found_items = 0
+    found_bins2 = []
+    if 'work_order' in pick_data:
+        for line_item in pick_data['work_order']:
+            item = line_item['item']
+            kbin = line_item['bin']
 
-print ''
-print 'Checking that the bin contents meet our contest definition ...'
-bin_counts = [0,0,0,0,0,0,0,0]
-total_items = 0
-items = copy.deepcopy(CONST_ITEM_NAMES)
-found_bins = []
-if 'bin_contents' in stow_data:
-    for bin_name in stow_data['bin_contents']:
-        n_items = len(stow_data['bin_contents'][bin_name])
-        if n_items < len(bin_counts):
-            bin_counts[n_items] = bin_counts[n_items] + 1
-        else:
-            print (bcolors.FAIL + "  ERROR: Too many items in '%s'" +
-                   bcolors.ENDC) % bin_name
+            if kbin in found_bins:
+                if item in pick_data['bin_contents'][kbin]:
+                    n_found_items = n_found_items + 1
+                    #print 'Found item: %s inside of: %s' % (item, kbin)
+                else:
+                    print (bcolors.FAIL + "  ERROR: Item '%s' does not exist in '%s'" +
+                        bcolors.ENDC) % (item, kbin)
+                    #break
+            else:
+                print (bcolors.FAIL + "  ERROR: bin '%s' does not exist in 'bin_contents'" +
+                    bcolors.ENDC) % kbin
 
-        if bin_name in CONST_BIN_NAMES:
-            found_bins.append(bin_name) # note: redundant key values overwritten by parser
-        else:
-            print (bcolors.FAIL + "  ERROR: Unknown bin name '%s'" +
-                   bcolors.ENDC) % bin_name
+            if kbin in found_bins2:
+                print (bcolors.FAIL + "  ERROR: Redundant bin '%s' found in work order." +
+                    bcolors.ENDC) % kbin
+            elif kbin in CONST_BIN_NAMES:
+                found_bins2.append(kbin)
+    else:
+        print (bcolors.FAIL + "  ERROR: Expected field 'work_order' not found." +
+            bcolors.ENDC)
 
-        for item in stow_data['bin_contents'][bin_name]:
+    success = True
+    if n_found_items <> CONST_NPICKABLE_ITEMS:
+        print (bcolors.FAIL + '  ERROR: Only found %d/%d items.' +
+            bcolors.ENDC) % (n_found_items, CONST_NPICKABLE_ITEMS)
+        success = False
+    if len(found_bins2) <> CONST_NBINS:
+        print (bcolors.FAIL + '  ERROR: Only found pick items from %d/%d bins.' +
+            bcolors.ENDC) % (len(found_bins2), CONST_NBINS)
+        success = False
+    if success:
+        print (bcolors.OKGREEN + '  SUCCESS! Found %d items (1 per bin)' +
+            bcolors.ENDC) % CONST_NPICKABLE_ITEMS
+
+    #--------------------------------------------------------------------------
+
+    # close the pick json file
+    json_pick_data.close()
+
+#-------------------------------------------------------------------------------
+
+def validate_stow_json(json_file):
+    # open the stow json file
+    print ''
+    print ("Checking stow file '%s'") % json_file
+    json_stow_data = open(json_file)
+    stow_data = json.load(json_stow_data)
+
+    print ''
+    print 'Checking that the bin contents meet our contest definition ...'
+    bin_counts = [0,0,0,0,0,0,0,0]
+    total_items = 0
+    items = copy.deepcopy(CONST_ITEM_NAMES)
+    found_bins = []
+    if 'bin_contents' in stow_data:
+        for bin_name in stow_data['bin_contents']:
+            n_items = len(stow_data['bin_contents'][bin_name])
+            if n_items < len(bin_counts):
+                bin_counts[n_items] = bin_counts[n_items] + 1
+            else:
+                print (bcolors.FAIL + "  ERROR: Too many items in '%s'" +
+                    bcolors.ENDC) % bin_name
+
+            if bin_name in CONST_BIN_NAMES:
+                found_bins.append(bin_name) # note: redundant key values overwritten by parser
+            else:
+                print (bcolors.FAIL + "  ERROR: Unknown bin name '%s'" +
+                    bcolors.ENDC) % bin_name
+
+            for item in stow_data['bin_contents'][bin_name]:
+                if item in CONST_ITEM_NAMES:
+                    if item in items:
+                        total_items = total_items + 1
+                        items.remove(item)
+                    else:
+                        print (bcolors.FAIL + "  ERROR: Item '%s' used too many times" +
+                            bcolors.ENDC) % item
+                else:
+                    print (bcolors.FAIL + "  ERROR: Unknown item name '%s'" +
+                        bcolors.ENDC) % item
+    else:
+        print (bcolors.FAIL + "  ERROR: Expected field 'bin_contents' not found." +
+            bcolors.ENDC)
+
+    if len(found_bins) < CONST_NBINS:
+        print (bcolors.FAIL + "  ERROR: Found %d/%d bins" +
+            bcolors.ENDC) % (len(found_bins), CONST_NBINS)
+
+    success = True
+    if bin_counts[0] > 0:
+        print (bcolors.FAIL + '  ERROR: Found %d empty bins' +
+            bcolors.ENDC) % bin_counts[0]
+        success = False
+    if bin_counts[1] <> 3:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 1-item bins' +
+            bcolors.ENDC) % (bin_counts[1], 3)
+        success = False
+    if bin_counts[2] <> 4:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 2-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 4)
+        success = False
+    if bin_counts[3] <> 2:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 3-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 2)
+        success = False
+    if bin_counts[4] <> 0:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 4-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 0)
+        success = False
+    if bin_counts[5] <> 2:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 5-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 2)
+        success = False
+    if bin_counts[6] <> 0:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 6-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 0)
+        success = False
+    if bin_counts[7] <> 1:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d 7-item bins'
+            + bcolors.ENDC) % (bin_counts[2], 1)
+        success = False
+    if total_items <> len(CONST_ITEM_NAMES)-12:
+        print (bcolors.FAIL + '  ERROR: Found %d/%d valid items'
+            + bcolors.ENDC) % (total_items, len(CONST_ITEM_NAMES)-12)
+        success = False
+
+    if success:
+        print (bcolors.OKGREEN +
+            '  SUCCESS! Found 3x1, 4x2, 2x3, 2x5, 1x7 bins for a total of %d items' +
+            bcolors.ENDC) % total_items
+
+    #--------------------------------------------------------------------------
+
+    print ''
+    print 'Checking if the tote contents are valid ...'
+    tote_item_count = 0
+    if 'tote_contents' in stow_data:
+        for item in stow_data['tote_contents']:
             if item in CONST_ITEM_NAMES:
                 if item in items:
+                    tote_item_count = tote_item_count + 1
                     total_items = total_items + 1
                     items.remove(item)
                 else:
                     print (bcolors.FAIL + "  ERROR: Item '%s' used too many times" +
-                           bcolors.ENDC) % item
+                        bcolors.ENDC) % item
             else:
                 print (bcolors.FAIL + "  ERROR: Unknown item name '%s'" +
-                       bcolors.ENDC) % item
-else:
-    print (bcolors.FAIL + "  ERROR: Expected field 'bin_contents' not found." +
-           bcolors.ENDC)
+                    bcolors.ENDC) % item
+    else:
+        print (bcolors.FAIL + "  ERROR: Expected field 'tote_contents' not found." +
+            bcolors.ENDC)
 
-if len(found_bins) < CONST_NBINS:
-    print (bcolors.FAIL + "  ERROR: Found %d/%d bins" +
-           bcolors.ENDC) % (len(found_bins), CONST_NBINS)
+    success = True
+    if tote_item_count <> 12:
+        print (bcolors.FAIL + "  ERROR: %d/%d items found in tote" +
+            bcolors.ENDC) % (tote_item_count, 12)
+        success = False
 
-success = True
-if bin_counts[0] > 0:
-    print (bcolors.FAIL + '  ERROR: Found %d empty bins' +
-           bcolors.ENDC) % bin_counts[0]
-    success = False   
-if bin_counts[1] <> 3:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 1-item bins' +
-           bcolors.ENDC) % (bin_counts[1], 3)
-    success = False
-if bin_counts[2] <> 4:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 2-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 4)
-    success = False
-if bin_counts[3] <> 2:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 3-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 2)
-    success = False
-if bin_counts[4] <> 0:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 4-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 0)
-    success = False
-if bin_counts[5] <> 2:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 5-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 2)
-    success = False
-if bin_counts[6] <> 0:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 6-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 0)
-    success = False
-if bin_counts[7] <> 1:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d 7-item bins'
-           + bcolors.ENDC) % (bin_counts[2], 1)
-    success = False
-if total_items <> len(CONST_ITEM_NAMES)-12:
-    print (bcolors.FAIL + '  ERROR: Found %d/%d valid items'
-           + bcolors.ENDC) % (total_items, len(CONST_ITEM_NAMES)-12)
-    success = False
+    if total_items <> len(CONST_ITEM_NAMES):
+        print (bcolors.FAIL + "  ERROR: Accounted for %d/%d total items" +
+            bcolors.ENDC) % (total_items, len(CONST_ITEM_NAMES))
+        success = False
 
-if success:
-    print (bcolors.OKGREEN +
-           '  SUCCESS! Found 3x1, 4x2, 2x3, 2x5, 1x7 bins for a total of %d items' +
-           bcolors.ENDC) % total_items
+    if success:
+        print (bcolors.OKGREEN +
+            '  SUCCESS! Found 12 items in tote that complete item list.' +
+            bcolors.ENDC)
 
-#-------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
 
-print ''
-print 'Checking if the tote contents are valid ...'
-tote_item_count = 0
-if 'tote_contents' in stow_data:
-    for item in stow_data['tote_contents']:
-        if item in CONST_ITEM_NAMES:
-            if item in items:
-                tote_item_count = tote_item_count + 1
-                total_items = total_items + 1
-                items.remove(item)
-            else:
-                print (bcolors.FAIL + "  ERROR: Item '%s' used too many times" +
-                       bcolors.ENDC) % item
-        else:
-            print (bcolors.FAIL + "  ERROR: Unknown item name '%s'" +
-                   bcolors.ENDC) % item
-else:
-    print (bcolors.FAIL + "  ERROR: Expected field 'tote_contents' not found." +
-           bcolors.ENDC)
+    json_stow_data.close()
 
-success = True
-if tote_item_count <> 12:
-    print (bcolors.FAIL + "  ERROR: %d/%d items found in tote" +
-           bcolors.ENDC) % (tote_item_count, 12)
-    success = False
-           
-if total_items <> len(CONST_ITEM_NAMES):
-    print (bcolors.FAIL + "  ERROR: Accounted for %d/%d total items" +
-           bcolors.ENDC) % (total_items, len(CONST_ITEM_NAMES))
-    success = False
-    
-if success:
-    print (bcolors.OKGREEN +
-           '  SUCCESS! Found 12 items in tote that complete item list.' +
-           bcolors.ENDC)
-           
-#-------------------------------------------------------------------------------
 
-json_stow_data.close()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--pick-json')
+    parser.add_argument('-s', '--stow-json')
+    args = parser.parse_args()
+
+    pick_json = args.pick_json
+    stow_json = args.stow_json
+
+    if pick_json is None and stow_json is None:
+        sys.stderr.write('WARNING: Please specify either pick or stow json file.\n\n')
+        parser.print_help()
+        sys.exit(1)
+
+    if pick_json is not None:
+        validate_pick_json(pick_json)
+    if stow_json is not None:
+        validate_stow_json(stow_json)
+
+
+if __name__ == '__main__':
+    main()
