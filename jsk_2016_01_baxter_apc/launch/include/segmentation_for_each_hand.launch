@@ -1,5 +1,7 @@
 <launch>
   <arg name="INPUT_CLOUD"/>
+  <arg name="INPUT_IMAGE"/>
+  <arg name="INPUT_INFO"/>
   <arg name="MANAGER"/>
   <arg name="JSON"/>
   <arg name="HAND" />
@@ -9,11 +11,21 @@
   <arg name="INPUT_TARGET" value="$(arg HAND)_hand/target_bin"/>
   <param name="$(arg HAND)_hand/target_bin" value=""/>
 
+  <!-- bound three topics to one -->
+  <node name="$(arg HAND)_sib_topic_synchronizer"
+    pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
+    output="screen">
+    <remap from="~input" to="$(arg INPUT_CLOUD)"/>
+    <remap from="~input/info" to="$(arg INPUT_INFO)"/>
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
+  </node>
+
+
   <node name="$(arg HAND)_segmentation_in_bin"
         pkg="jsk_2016_01_baxter_apc"
         type="rbo_segmentation_in_bin_node.py"
         output="screen">
-        <remap from="~input" to="/sib_topic_synchronizer/output"/>
+        <remap from="~input" to="$(arg HAND)_sib_topic_synchronizer/output"/>
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
     <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
     <param name="trained_pkl_path" value="$(arg TRAINED_PATH)" />
