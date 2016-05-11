@@ -13,7 +13,7 @@ rp.get_path('jsk_2015_05_baxter_apc')
 
 sys.path.insert(0, osp.join(rp.get_path('jsk_2015_05_baxter_apc'),
                             'node_scripts'))
-from bin_contents import get_bin_contents
+from bin_contents import get_bin_contents  # NOQA
 
 
 def get_work_order(json_file):
@@ -32,7 +32,7 @@ def get_sorted_work_order(json_file):
     bin_n_contents = dict(zip(bins, map(len, objects)))
     sorted_work_order = []
     work_order = dict(get_work_order(json_file=json_file))
-    for bin_, n_contents in sorted(bin_n_contents.items(), key=lambda x:x[1]):
+    for bin_, n_contents in sorted(bin_n_contents.items(), key=lambda x: x[1]):
         if n_contents > 5:  # Level3
             continue
         sorted_work_order.append((bin_, work_order[bin_]))
