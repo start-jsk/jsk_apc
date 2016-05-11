@@ -54,13 +54,12 @@ def get_spatial(cloud, bbox, trans, direction):
     # represent a point in bounding box's frame
     # http://answers.ros.org/question/9103/how-to-transform-pointcloud2-with-tf/
     cloud_transformed = helper.do_transform_cloud(cloud, trans)
-    gen = point_cloud2.read_points(
+    points = point_cloud2.read_points(
             cloud_transformed,
             skip_nans=False,
             field_names=("x", "y", "z"))
-    points = [point for point in gen]
 
-    def spatial(point, bbox):
+    def get_spatial_feature(point, bbox):
         def d2wall(coord, width):
             if coord >= 0 and coord < width/2:
                 return abs(width/2 - coord)
@@ -74,16 +73,16 @@ def get_spatial(cloud, bbox, trans, direction):
                 return width/2 - coord
             else:
                 return 0
+
         d2wall_x_back = d2front(point[0], float(bbox.dimensions.x))
         d2wall_y = d2wall(point[1], float(bbox.dimensions.y))
         d2wall_z = d2wall(point[2], float(bbox.dimensions.z))
         d2wall_z_bottom = d2front(-point[2], float(bbox.dimensions.z))
         return (min(d2wall_x_back, d2wall_y, d2wall_z), d2wall_z_bottom)
 
-    spatial_list = [spatial(point, bbox) for point in points]
-    dist_list = [p_info[0] for p_info in spatial_list]
-    height_list = [p_info[1] for p_info in spatial_list]
-    return dist_list, height_list
+    spatial_features = [get_spatial_feature(point, bbox) for point in points]
+    distance_features, height_features = zip(*spatial_features)
+    return distance_features, height_features
 
 
 def get_mask_img(transform, target_bin, camera_model):
