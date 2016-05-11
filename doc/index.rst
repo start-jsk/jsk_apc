@@ -15,6 +15,7 @@ This repository contains following ros packages:
 .. toctree::
    :maxdepth: 1
 
+   apc2016_rules
    tips_faq
 
 
