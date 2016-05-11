@@ -12,7 +12,13 @@ find_package(catkin REQUIRED COMPONENTS
     jsk_recognition_msgs
     sensor_msgs
     message_filters
+    tf2
+    tf2_ros
+    tf2_eigen
+    pcl_ros
+    cmake_modules
 )
+find_package(Eigen REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -109,6 +115,7 @@ add_message_files(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  INCLUDE_DIRS include
   CATKIN_DEPENDS 
   roscpp
   message_runtime
@@ -117,6 +124,8 @@ catkin_package(
   jsk_recognition_msgs
   message_filters
   sensor_msgs
+  DEPENDS
+  Eigen
 )
 
 ###########
@@ -127,6 +136,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(include
   ${catkin_INCLUDE_DIRS} 
+  ${Eigen_INCLUDE_DIRECTORIES}
   )
 
 ## Declare a C++ library
@@ -143,17 +153,20 @@ include_directories(include
 ## Declare a C++ executable
 # add_executable(jsk_apc2016_common_node src/jsk_apc2016_common_node.cpp)
 add_executable(sib_topic_synchronizer src/sib_topic_synchronizer.cpp)
+add_executable(cloud_to_spatial_features src/cloud_to_spatial_features.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(jsk_apc2016_common_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(sib_topic_synchronizer ${catkin_EXPORTED_TARGETS})
+add_dependencies(cloud_to_spatial_features ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(jsk_apc2016_common_node
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(sib_topic_synchronizer ${catkin_LIBRARIES})
+target_link_libraries(cloud_to_spatial_features ${catkin_LIBRARIES} ${Eigen_LIBRARIES})
 
 #############
 ## Install ##
