@@ -9,9 +9,10 @@ from jsk_topic_tools import ConnectionBasedTransport, jsk_loginfo
 from jsk_recognition_msgs.msg import RectArray, ClassificationResult
 from geometry_msgs.msg import Point
 
+
 class RectLabelToImage(ConnectionBasedTransport):
     def __init__(self):
-        super(RectLabelToImage,self).__init__()
+        super(RectLabelToImage, self).__init__()
         self.pub = self.advertise("~output", Image, queue_size=10)
 
     def subscribe(self):
@@ -44,15 +45,16 @@ class RectLabelToImage(ConnectionBasedTransport):
         img = bridge.imgmsg_to_cv2(img_msg, desired_encoding='bgr8')
         out = img.copy()
         for rect, label_name, label_proba in zip(rect_msg.rects, class_msg.label_names, class_msg.label_proba):
-            cv2.rectangle(out, (rect.x, rect.y), (rect.x+rect.width, rect.y+rect.height), (0,0,255))
+            cv2.rectangle(out, (rect.x, rect.y), (rect.x+rect.width, rect.y+rect.height), (0, 0, 255))
             text = '{:s} {:.3f}'.format(label_name, label_proba)
-            cv2.putText(out,text,(int(rect.x),int(rect.y)-2),
-                        cv2.FONT_HERSHEY_SIMPLEX,1,255,2)
-        out_msg = bridge.cv2_to_imgmsg(out,encoding='bgr8')
+            cv2.putText(out, text, (int(rect.x), int(rect.y)-2),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, 255, 2)
+        out_msg = bridge.cv2_to_imgmsg(out, encoding='bgr8')
         out_msg.header = img_msg.header
         self.pub.publish(out_msg)
 
-if __name__ =='__main__':
+
+if __name__ == '__main__':
     rospy.init_node('rect_label_to_image')
     rect_label_to_image = RectLabelToImage()
     rospy.spin()
