@@ -285,7 +285,8 @@
       ))
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)))
-    (let (avs obj-boxes obj-box obj-coms obj-com graspingp)
+    (let (avs obj-boxes obj-box obj-coms obj-com graspingp (pad-link-l 115)
+              (gripper-tube-t 40) gripper-req-l bin-box bin-y-l bin-z-l)
       ;; validate
       (unless
         (setq obj-boxes (gethash bin _objects-in-bin-boxes))
@@ -303,19 +304,31 @@
                              (send obj-coms-msg :header :frame_id) obj-com))
       ;; with Center of Bounding Box
       ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
+      (setq gripper-req-l (+ pad-link-l (/ gripper-tube-t 2)))  ;; set requisite length for gripper to enter bin
+      (unless
+        (setq bin-box (gethash bin _bin-boxes))
+        (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
+        (return-from :try-to-pick-object nil))
+      (setq bin-y-l (m->mm (send bin-box :dimensions :y))
+            bin-z-l (m->mm (send bin-box :dimensions :z)))
       (if (find bin '(:a :b :c :d :e :f))
         (setq world-x :z world-y :x world-z :y)
         (setq world-x :z world-y :y world-z :x)
         )
       (if (eq arm :rarm)
-        (if (> (send obj-box :dimensions world-z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 3))
-          (progn
-            (cond ((< (elt (send obj-coords :pos) 1) ;; compare y
-                      (- (elt (send (send *baxter* arm :end-coords) :worldpos) 1) (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :y) 4))))
+        ;; if object is higher than highest end-coords when gripper is 90 degrees
+        (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l))
+          (let ((obj-pos-y (elt (send (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)) :pos) 1))
+                (obj-y-l (m->mm (send obj-box :dimensions world-y)))
+                (bin-center-y (elt (send (send *baxter* arm :end-coords) :worldpos) 1))
+                ;; :ik->bin-entrance brought y-coordinates of end-coords to the same value as center of bin
+                )
+            (cond ((< (+ obj-pos-y (/ obj-y-l 2))
+                      (- (+ bin-center-y (/ bin-y-l 2)) gripper-req-l)) ;; if space gripper can enter exists on right
                    (setq sign -1)
                    (setq sign_y 0))
-                  ((> (elt (send obj-coords :pos) 1)
-                      (+ (elt (send (send *baxter* arm :end-coords) :worldpos) 1) (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :y) 4))))
+                  ((> (- obj-pos-y (/ obj-y-l 2))
+                      (+ (- bin-center-y (/ bin-y-l 2)) gripper-req-l)) ;; if space gripper can enter exists on left
                    (setq sign 1)
                    (setq sign_y 0))
                   (t
@@ -344,7 +357,7 @@
         (if (eq arm :rarm)
           (if (< sign_y 0)
             (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
-            (setq offset-from-entrance (float-vector -30 0 (- (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4)) 100)))
+            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l -50)))
             )
           (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
           )
@@ -361,35 +374,42 @@
       ;       (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :translate offset :local))
       ;   avs)
       (if (eq arm :rarm)
-        (let (end-coords bin-box bin-coords bin-dim-x)
-          (setq end-coords (make-cascoords))
-          (send end-coords :move-to (send *baxter* arm :end-coords :worldcoords) :world)
-          (setq bin-box (gethash bin _bin-boxes))
-          (unless bin-box
-            (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
-            (return-from :try-to-pick-object))
-          (setq bin-coords (make-cascoords))
-          (send bin-coords :move-to (send self :tf-pose->coords
-                                       (send (send bin-box :header) :frame_id)
-                                       (send bin-box :pose)) :world)
-          (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-          (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
-          (send bin-coords :assoc end-coords)
-          (send bin-coords :rotate (* sign pi/2) :x :local)
-          (send bin-coords :dissoc end-coords)
+        (if (and (not (= sign 0)) (>= sign_y 0))
+          (let (end-coords bin-dim-x)
+            (setq end-coords (send self :tf-pose->coords
+                                   (send (send bin-box :header) :frame_id)
+                                   (send bin-box :pose)))
+            (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
+            (send end-coords :translate (float-vector (- (/ bin-dim-x 2)) (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0) :world)
+            (send end-coords :rotate (* sign pi/2) :x :local)
+            ;; decide target coords depending on size of gripper and bin
+            (pushback
+              (send *baxter* arm :inverse-kinematics
+                    end-coords
+                    )
+              avs)
+            (pushback
+              (send *baxter* arm :move-end-pos #f(0 0 50) :local)
+              ;; press back of gripper against bin wall
+              avs)
+            (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+            (send self :wait-interpolation)
+            ;; stop pressing and detach gripper from wall
+            (send self :state)
+            (send *baxter* :angle-vector (send self :potentio-vector))
+            (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -20) :local) 2000)
+            (send self :wait-interpolation)
+            )
+          )
+        (progn
           (pushback
             (send *baxter* arm :inverse-kinematics
-                  end-coords
-                  )
+                  (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
             avs)
+          (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+          (send self :wait-interpolation)
           )
-        (pushback
-          (send *baxter* arm :inverse-kinematics
-                (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
-          avs)
         )
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
-      (send self :wait-interpolation)
       ;; start the vacuum gripper
       (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
       (send self :start-grasp arm)
