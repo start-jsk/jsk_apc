@@ -36,6 +36,7 @@
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
   <run_depend>roscpp</run_depend>
+  <run_depend>rosserial_python</run_depend>
   <run_depend>std_msgs</run_depend>
 
   <test_depend>python-gdown</test_depend>
