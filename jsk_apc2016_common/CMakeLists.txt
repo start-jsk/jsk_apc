@@ -123,6 +123,11 @@ catkin_package(
 ## Build ##
 ###########
 
+# Cythonize pyx files
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(UseCython)
+add_subdirectory(python/${PROJECT_NAME}/segmentation_in_bin)
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(include

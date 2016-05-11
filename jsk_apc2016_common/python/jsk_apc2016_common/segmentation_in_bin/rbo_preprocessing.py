@@ -2,6 +2,7 @@
 
 import jsk_apc2016_common.segmentation_in_bin.\
         segmentation_in_bin_helper as helper
+import jsk_apc2015_common.segmentation_in_bin_util as sib_util
 import numpy as np
 from sensor_msgs import point_cloud2
 from matplotlib.path import Path
@@ -59,28 +60,9 @@ def get_spatial(cloud, bbox, trans, direction):
             skip_nans=False,
             field_names=("x", "y", "z"))
 
-    def get_spatial_feature(point, bbox):
-        def d2wall(coord, width):
-            if coord >= 0 and coord < width/2:
-                return abs(width/2 - coord)
-            elif coord < 0 and abs(coord) < width/2:
-                return abs(coord + width/2)
-            else:
-                return 0
-
-        def d2front(coord, width):
-            if abs(coord) <= width/2:
-                return width/2 - coord
-            else:
-                return 0
-
-        d2wall_x_back = d2front(point[0], float(bbox.dimensions.x))
-        d2wall_y = d2wall(point[1], float(bbox.dimensions.y))
-        d2wall_z = d2wall(point[2], float(bbox.dimensions.z))
-        d2wall_z_bottom = d2front(-point[2], float(bbox.dimensions.z))
-        return (min(d2wall_x_back, d2wall_y, d2wall_z), d2wall_z_bottom)
-
-    spatial_features = [get_spatial_feature(point, bbox) for point in points]
+    spatial_features = [sib_util.get_spatial_feature(
+                            point, helper.list_from_point(bbox.dimentions))
+                        for point in points]
     distance_features, height_features = zip(*spatial_features)
     return distance_features, height_features
 
