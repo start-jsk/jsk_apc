@@ -7,7 +7,6 @@ from geometry_msgs.msg import Pose
 import jsk_apc2016_common.segmentation_in_bin.\
         segmentation_in_bin_helper as helper
 from std_msgs.msg import Header
-import roslaunch
 
 import json
 
@@ -41,9 +40,6 @@ class BinInfoArrayPublisher(object):
         # get bbox from rosparam
         self.from_shelf_param('upper')
         self.from_shelf_param('lower')
-
-        # publish bbox tf
-        self.pub_dict = self.publish_bbox_tf(self.bbox_dict)
 
         # get contents of bin from json
         self.bin_contents_dict = self.get_bin_contents(self.json_file)
@@ -125,35 +121,6 @@ class BinInfoArrayPublisher(object):
                     target=self.targets_dict[bin_],
                     bbox=self.bbox_dict[bin_],
                     camera_direction=self.cam_direction_dict[bin_]))
-
-    def publish_bbox_tf(self, bbox_dict):
-        # publish bounding boxes' center as static tf
-        tf_nodes = {}
-        for bin_, bbox in bbox_dict.iteritems():
-            # something like 1 0 2 0 0 0 1
-            transform_string = (
-                    str(bbox_dict[bin_].pose.position.x) + ' ' +
-                    str(bbox_dict[bin_].pose.position.y) + ' ' +
-                    str(bbox_dict[bin_].pose.position.z) + ' ' +
-                    str(bbox_dict[bin_].pose.orientation.x) + ' ' +
-                    str(bbox_dict[bin_].pose.orientation.y) + ' ' +
-                    str(bbox_dict[bin_].pose.orientation.z) + ' ' +
-                    str(bbox_dict[bin_].pose.orientation.w) + ' ')
-
-            tf_arg_string = (
-                    transform_string +
-                    str(bbox_dict[bin_].header.frame_id) + ' ' +
-                    'bin_' + bin_ + ' ' + '100')  # last number is period
-
-            tf_nodes[bin_] = roslaunch.core.Node(
-                    package="tf",
-                    name="pub_bin_" + bin_,
-                    node_type="static_transform_publisher",
-                    args=tf_arg_string)
-            launch = roslaunch.scriptapi.ROSLaunch()
-            launch.start()
-            launch.launch(tf_nodes[bin_])
-        return tf_nodes
 
 
 if __name__ == '__main__':
