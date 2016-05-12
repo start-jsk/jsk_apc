@@ -317,7 +317,7 @@
         )
       (if (eq arm :rarm)
         ;; if object is higher than highest end-coords when gripper is 90 degrees
-        (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l))
+        (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))
           (let ((obj-pos-y (elt (send (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)) :pos) 1))
                 (obj-y-l (m->mm (send obj-box :dimensions world-y)))
                 (bin-center-y (elt (send (send *baxter* arm :end-coords) :worldpos) 1))
