@@ -471,6 +471,7 @@
                 (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)))
         (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000))
       (send self :wait-interpolation)
+      (unix::sleep 1)  ;; wait for arm to follow
     graspingp))
   (:pick-object
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
@@ -497,13 +498,13 @@
                   )
             (pushback (send *baxter* :angle-vector) avs)
             )
-          (when (and graspingp (> (send self :real-sim-end-coords-diff arm) 60))
+          (when (and graspingp (> (send self :real-sim-end-coords-diff arm) (if (eq arm :rarm) 80 60)))
             (ros::ros-info "arm:~a Grasped wall so stop-grasp, diff: ~a" arm (send self :real-sim-end-coords-diff arm))
             (send self :stop-grasp arm)
             (unix::sleep 3)
             )
           )
-        (when (and graspingp (> (send self :real-sim-end-coords-diff arm) 60))
+        (when (and graspingp (> (send self :real-sim-end-coords-diff arm) (if (eq arm :rarm) 80 60)))
           (ros::ros-info "arm:~a Grasped wall so stop-grasp, diff: ~a" arm (send self :real-sim-end-coords-diff arm))
           (send self :stop-grasp arm)
           (unix::sleep 3)
