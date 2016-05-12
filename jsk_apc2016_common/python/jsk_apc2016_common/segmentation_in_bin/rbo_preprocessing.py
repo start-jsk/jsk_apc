@@ -2,6 +2,7 @@
 
 import jsk_apc2016_common.segmentation_in_bin.\
         segmentation_in_bin_helper as helper
+import jsk_apc2015_common.segmentation_in_bin_util as sib_util
 import numpy as np
 from sensor_msgs import point_cloud2
 from matplotlib.path import Path
@@ -54,36 +55,16 @@ def get_spatial(cloud, bbox, trans, direction):
     # represent a point in bounding box's frame
     # http://answers.ros.org/question/9103/how-to-transform-pointcloud2-with-tf/
     cloud_transformed = helper.do_transform_cloud(cloud, trans)
-    gen = point_cloud2.read_points(
+    points = point_cloud2.read_points(
             cloud_transformed,
             skip_nans=False,
             field_names=("x", "y", "z"))
-    points = [point for point in gen]
 
-    def spatial(point, bbox):
-        def d2wall(coord, width):
-            if coord >= 0 and coord < width/2:
-                return abs(width/2 - coord)
-            elif coord < 0 and abs(coord) < width/2:
-                return abs(coord + width/2)
-            else:
-                return 0
-
-        def d2front(coord, width):
-            if abs(coord) <= width/2:
-                return width/2 - coord
-            else:
-                return 0
-        d2wall_x_back = d2front(point[0], float(bbox.dimensions.x))
-        d2wall_y = d2wall(point[1], float(bbox.dimensions.y))
-        d2wall_z = d2wall(point[2], float(bbox.dimensions.z))
-        d2wall_z_bottom = d2front(-point[2], float(bbox.dimensions.z))
-        return (min(d2wall_x_back, d2wall_y, d2wall_z), d2wall_z_bottom)
-
-    spatial_list = [spatial(point, bbox) for point in points]
-    dist_list = [p_info[0] for p_info in spatial_list]
-    height_list = [p_info[1] for p_info in spatial_list]
-    return dist_list, height_list
+    spatial_features = [sib_util.get_spatial_feature(
+                            point, helper.list_from_point(bbox.dimentions))
+                        for point in points]
+    distance_features, height_features = zip(*spatial_features)
+    return distance_features, height_features
 
 
 def get_mask_img(transform, target_bin, camera_model):
@@ -117,26 +98,17 @@ def get_mask_img(transform, target_bin, camera_model):
 
 
 def project_points(points, camera_model):
-    """
+    """Project points considering camera's world coords (frame_id).
     :param points: list of geometry_msgs.msg.PointStamped
     :type list of stamped points :
-    :param projected_points: list of camera_coordinates
+    :param camera_model: camera model with its frame_id for world coords.
+
+    :return projected_points: list of camera_coordinates
     :type  projected_points: (u, v)
 
     The frames of the points and the camera_model are same.
     """
-    # generate mask iamge
-    for point in points:
-        if point.header.frame_id != camera_model.tf_frame:
-            raise ValueError('undefined')
-    if len(points) != 4:
-        raise ValueError('undefined')
-
-    projected_points = []
-    for point in points:
-        projected_points.append(
-                camera_model.project3dToPixel(
-                        helper.list_from_point(point.point)
-                    )
-            )
+    projected_points = [
+        camera_model.project3dToPixel(helper.list_from_point(pt.point))
+        for pt in points]
     return projected_points
