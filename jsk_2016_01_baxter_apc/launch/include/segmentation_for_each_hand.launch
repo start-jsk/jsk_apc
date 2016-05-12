@@ -11,6 +11,12 @@
   <arg name="INPUT_TARGET" value="$(arg HAND)_hand/target_bin"/>
   <param name="$(arg HAND)_hand/target_bin" value=""/>
 
+  <node pkg="jsk_apc2016_common" type="publish_target_bin_info.py"
+    name="$(arg HAND)_pub_target_bin_info" output="screen">
+    <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
+    <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
+  </node>
+
   <!-- bound three topics to one -->
   <node name="$(arg HAND)_sib_topic_synchronizer"
     pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
