@@ -1,6 +1,6 @@
 <launch>
   <node pkg="jsk_2016_01_baxter_apc" name="work_order" type="work_order.py" >
-    <param name="json" value="$(find jsk_2016_01_baxter_apc)/json/pick_layout_1.json" />
+    <param name="json" value="$(find jsk_apc2016_common)/json/pick_layout_1.json" />
   </node>
 
   <test test-name="work_order_published" pkg="jsk_tools"  type="test_topic_published.py" >
