@@ -15,6 +15,20 @@ _this_dir = osp.dirname(osp.realpath(osp.abspath(__file__)))
 
 def test_get_object_data():
     obj_data = jsk_apc2016_common.get_object_data()
+    obj_names = map(lambda d: d['name'], obj_data)
+    assert_true(isinstance(obj_data, list))
+    assert_equal(39, len(obj_data))
+    assert_equal(sorted(obj_names), obj_names)
+    for d in obj_data:
+        assert_true(isinstance(d, dict))
+        assert_true('name' in d)
+        assert_true('weight' in d)
+        assert_true('graspability' in d)
+        assert_true('stock' in d)
+
+
+def test_get_object_data_2015():
+    obj_data = jsk_apc2016_common.get_object_data_2015()
     assert_true(isinstance(obj_data, list))
     for d in obj_data:
         assert_true(isinstance(d, dict))
