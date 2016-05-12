@@ -42,8 +42,8 @@ class BinInfoArrayPublisher(object):
         self.from_shelf_param('lower')
 
         # get contents of bin from json
-        self.get_bin_contents()
-        self.get_targets()
+        self.bin_contents_dict = self.get_bin_contents(self.json_file)
+        self.targets_dict = self.get_targets(self.json_file)
 
         # create bin_msg
         self.create_bin_info_arr()
@@ -82,33 +82,40 @@ class BinInfoArrayPublisher(object):
                     dimensions=helper.vector3(dimensions[i]))
             self.cam_direction_dict[bin_] = camera_directions[i]
 
-    def get_bin_contents(self):
-        if self.json_file is None:
+    def get_bin_contents(self, json_file):
+        bin_contents_dict = {}
+        if json_file is None:
             rospy.logerr('must set json file path to ~json')
             return
         bin_contents = get_bin_contents_from_json(
-                json_file=self.json_file)
+                json_file=json_file)
         bin_contents = list(bin_contents)
 
         for bin_, objects in bin_contents:
-            self.bin_contents_dict[bin_.encode('ascii')] = objects
+            bin_contents_dict[bin_.encode('ascii')] = objects
+        return bin_contents_dict
 
-    def get_targets(self):
-        if self.json_file is None:
+    def get_targets(self, json_file):
+        targets_dict = {}
+        if json_file is None:
             rospy.logerr('must set json file path to ~json')
             return
         targets = get_target_from_json(
-                json_file=self.json_file)
+                json_file=json_file)
         targets = list(targets)
 
         for bin_, target in targets:
-            self.targets_dict[bin_.encode('ascii')] = target
+            targets_dict[bin_.encode('ascii')] = target
+        return targets_dict
 
     def create_bin_info_arr(self):
-
         self.bin_info_arr = BinInfoArray()
         for bin_ in self.bin_contents_dict.keys():
             self.bin_info_arr.array.append(BinInfo(
+                    header=Header(
+                            stamp=rospy.Time(0),
+                            seq=0,
+                            frame_id='bin_'+bin_),
                     name=bin_,
                     objects=self.bin_contents_dict[bin_],
                     target=self.targets_dict[bin_],
