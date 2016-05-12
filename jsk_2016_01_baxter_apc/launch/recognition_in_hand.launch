@@ -45,11 +45,11 @@
 
 
   <!-- self filter -->
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/self_filter.launch">
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/self_filter.launch">
     <arg name="INPUT_CLOUD" value="extract_indices_left_hand/points" />
     <arg name="OUTPUT_CLOUD" value="extract_indices_left_hand/points_filtered" />
   </include>
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/self_filter.launch">
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/self_filter.launch">
     <arg name="INPUT_CLOUD" value="extract_indices_right_hand/points" />
     <arg name="OUTPUT_CLOUD" value="extract_indices_right_hand/points_filtered" />
   </include>
