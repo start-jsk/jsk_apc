@@ -69,6 +69,7 @@
                   (setq state :set_target)
                   (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
                 )
+              )
             )
           )
         (:wait_for_opposite_arm
