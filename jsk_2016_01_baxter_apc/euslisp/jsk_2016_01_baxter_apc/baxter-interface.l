@@ -621,6 +621,7 @@
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :place-object-pose arm) avs)
       (send self :angle-vector-sequence avs)
+      (send self :gripper-servo-off arm)  ;; power off gripper servo not to overload it
       ))
   (:spin-off-by-wrist
     (arm &key (times 10))
@@ -633,6 +634,8 @@
         (pushback (send *baxter* :rotate-wrist arm -10) avs)
         )
       (send self :angle-vector-sequence avs)
+      (send self :gripper-servo-on arm)
+      ;; power on gripper servo as it was powered off in :move-arm-body->order-bin
       ))
   (:move-arm-body->head-view-point
     (arm)
