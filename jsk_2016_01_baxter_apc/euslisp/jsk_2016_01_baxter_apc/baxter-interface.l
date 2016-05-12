@@ -420,14 +420,36 @@
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object] arm:~a approach to the object" arm)
       (if (eq arm :rarm)
-        (send self :angle-vector
-              (send *baxter* arm :inverse-kinematics
-                    (make-coords
-                      :pos (v+ (send obj-coords :pos) offset)
-                      :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
-                      )
-                    )
-              3000)
+        (let (target-coords)
+          (setq target-coords
+                (make-coords
+                  :pos (v+ (send obj-coords :pos) offset)
+                  :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
+                  ))
+          (if (< sign_y 0)
+            ;; when gripper is straight
+            (send self :angle-vector
+                  (send *baxter* arm :inverse-kinematics target-coords)
+                  3000)
+            ;; when gripper isn't straight
+            (let (end-coords end->above target-above-coords)
+              (setq end-coords (send (send *baxter* arm :end-coords) :copy-worldcoords))
+              (setq end->above (send end-coords :transformation target-coords :local))
+              (setf (elt (send end->above :pos) 2) 0)
+              (setq target-above-coords
+                    (send end-coords :transform end->above :local))
+              ;; move arm in the local x, y direction
+              (send self :angle-vector
+                    (send *baxter* arm :inverse-kinematics target-above-coords)
+                    2500)
+              (send self :wait-interpolation)
+              ;; move arm in the local z direction
+              (send self :angle-vector
+                    (send *baxter* arm :inverse-kinematics target-coords)
+                    1500)
+              )
+            )
+          )
         (send self :angle-vector
               (send *baxter* arm :inverse-kinematics
                     (make-coords
