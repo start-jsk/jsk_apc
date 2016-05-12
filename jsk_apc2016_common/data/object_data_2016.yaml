@@ -1,234 +1,234 @@
-- name: i_am_a_bunny_book
-  weight: 3.2
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: laugh_out_loud_joke_book
-  weight: 2.9
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: scotch_bubble_mailer
-  weight: 1.6
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 2 
-- name: up_glucose_bottle
-  weight: 11.2
-  graspability:
-    - gripper2015: 2 
-    # - gripper2016:
-  stock: 1 
-- name: dasani_water_bottle
-  weight: 16.9
-  graspability:
-    - gripper2015: 3
-    # - gripper2016:
-  stock: 2 
-- name: rawlings_baseball
-  weight: 6
-  graspability:
-    - gripper2015: 4
-    # - gripper2016:
-  stock: 1 
-- name: folgers_classic_roast_coffee
-  weight: 11.3
-  graspability:
-    - gripper2015: 3
-    # - gripper2016:
-  stock: 1 
-- name: elmers_washable_no_run_school_glue
-  weight: 4
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 2 
-- name: hanes_tube_socks
-  weight: 16
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name:  womens_knit_gloves
-  weight: 2
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name:  cherokee_easy_tee_shirt
-  weight: 1
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: peva_shower_curtain_liner
-  weight: 11.8
-  graspability:
-    - gripper2015: 2
-    # - gripper2016:
-  stock: 1 
-- name: cloud_b_plush_bear
-  weight: 3.2
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
 - name: barkely_hide_bones
-  weight: 4
   graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: kyjen_squeakin_eggs_plush_puppies
-  weight: 3.2
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: cool_shot_glue_sticks
-  weight: 2.4
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name:  creativity_chenille_stems
-  weight: 4
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 2 
-- name: soft_white_lightbulb
-  weight: 3
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: safety_first_outlet_plugs
-  weight: 0.3
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: oral_b_toothbrush_green
-  weight: 0.5
-  graspability:
-    - gripper2015: 3
-    # - gripper2016:
-  stock: 1 
-- name: oral_b_toothbrush_red
-  weight: 0.5
-  graspability:
-    - gripper2015: 3
-    # - gripper2016:
+  - gripper2015: 1
+  # - gripper2016:
   stock: 1
-- name: dr_browns_bottle_brush
-  weight: 4.2
-  graspability:
-    - gripper2015: 3
-    # - gripper2016:
-  stock: 1 
-- name: command_hooks
-  weight: 1.6
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: easter_turtle_sippy_cup
-  weight: 12
-  graspability:
-    - gripper2015: 3 
-    # - gripper2016:
-  stock: 1 
-- name: fiskars_scissors_red
-  weight: 1.4
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: scotch_duct_tape
-  weight: 2
-  graspability:
-    - gripper2015: 3
-    # - gripper2016:
-  stock: 2 
-- name: woods_extension_cord
-  weight: 6.4
-  graspability:
-    - gripper2015: 2
-    # - gripper2016:
-  stock: 1 
-- name: platinum_pets_dog_bowl
-  weight: 1.6
-  graspability:
-    - gripper2015: 2
-    # - gripper2016:
-  stock: 1 
-- name: fitness_gear_3lb_dumbbell
-  weight: 48
-  graspability:
-    - gripper2015: 4
-    # - gripper2016:
-  stock: 1 
-- name: rolodex_jumbo_pencil_cup
-  weight: 3.2
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name:  clorox_utility_brush
-  weight: 7
-  graspability:
-    - gripper2015: 3
-    # - gripper2016:
-  stock: 1 
-- name: kleenex_paper_towels
-  weight: 12.8
-  graspability:
-    - gripper2015: 3
-    # - gripper2016:
-  stock: 1 
-- name: expo_dry_erase_board_eraser
-  weight: 0.3
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 2 
-- name: kleenex_tissue_box
-  weight: 10
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: ticonderoga_12_pencils
-  weight: 2.1
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: crayola_24_ct
-  weight: 8
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: jane_eyre_dvd
-  weight: 5.12
-  graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: dove_beauty_bar
   weight: 4
+- name: cherokee_easy_tee_shirt
   graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 1 
-- name: staples_index_cards
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 1
+- name: clorox_utility_brush
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 1
+  weight: 7
+- name: cloud_b_plush_bear
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 3.2
+- name: command_hooks
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 1.6
+- name: cool_shot_glue_sticks
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 2.4
+- name: crayola_24_ct
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 8
+- name: creativity_chenille_stems
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 2
+  weight: 4
+- name: dasani_water_bottle
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 2
+  weight: 16.9
+- name: dove_beauty_bar
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 4
+- name: dr_browns_bottle_brush
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 1
+  weight: 4.2
+- name: easter_turtle_sippy_cup
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 1
+  weight: 12
+- name: elmers_washable_no_run_school_glue
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 2
+  weight: 4
+- name: expo_dry_erase_board_eraser
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 2
+  weight: 0.3
+- name: fiskars_scissors_red
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 1.4
+- name: fitness_gear_3lb_dumbbell
+  graspability:
+  - gripper2015: 4
+  # - gripper2016:
+  stock: 1
+  weight: 48
+- name: folgers_classic_roast_coffee
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 1
+  weight: 11.3
+- name: hanes_tube_socks
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 16
+- name: i_am_a_bunny_book
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 3.2
+- name: jane_eyre_dvd
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 5.12
+- name: kleenex_paper_towels
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 1
+  weight: 12.8
+- name: kleenex_tissue_box
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 10
+- name: kyjen_squeakin_eggs_plush_puppies
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 3.2
+- name: laugh_out_loud_joke_book
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 2.9
+- name: oral_b_toothbrush_green
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 1
+  weight: 0.5
+- name: oral_b_toothbrush_red
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 1
+  weight: 0.5
+- name: peva_shower_curtain_liner
+  graspability:
+  - gripper2015: 2
+  # - gripper2016:
+  stock: 1
+  weight: 11.8
+- name: platinum_pets_dog_bowl
+  graspability:
+  - gripper2015: 2
+  # - gripper2016:
+  stock: 1
+  weight: 1.6
+- name: rawlings_baseball
+  graspability:
+  - gripper2015: 4
+  # - gripper2016:
+  stock: 1
+  weight: 6
+- name: rolodex_jumbo_pencil_cup
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 3.2
+- name: safety_first_outlet_plugs
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 0.3
+- name: scotch_bubble_mailer
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 2
+  weight: 1.6
+- name: scotch_duct_tape
+  graspability:
+  - gripper2015: 3
+  # - gripper2016:
+  stock: 2
+  weight: 2
+- name: soft_white_lightbulb
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
   weight: 3
+- name: staples_index_cards
   graspability:
-    - gripper2015: 1
-    # - gripper2016:
-  stock: 2 
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 2
+  weight: 3
+- name: ticonderoga_12_pencils
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 2.1
+- name: up_glucose_bottle
+  graspability:
+  - gripper2015: 2
+  # - gripper2016:
+  stock: 1
+  weight: 11.2
+- name: womens_knit_gloves
+  graspability:
+  - gripper2015: 1
+  # - gripper2016:
+  stock: 1
+  weight: 2
+- name: woods_extension_cord
+  graspability:
+  - gripper2015: 2
+  # - gripper2016:
+  stock: 1
+  weight: 6.4
