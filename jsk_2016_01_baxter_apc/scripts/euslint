@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+import argparse
+import sys
+
+import yaml
+
+
+def parse(source_code):
+    comment = False
+    result = {
+        'parenthesis_open': 0,
+        'parenthesis_close':0,
+    }
+    for line in source_code.splitlines():
+        if line.startswith('#|'):
+            comment = True
+        elif line.startswith('|#'):
+            comment = False
+        if comment:
+            continue
+        for char in line:
+            if char == ';':
+                break
+            if char == '(':
+                result['parenthesis_open'] += 1
+            if char == ')':
+                result['parenthesis_close'] += 1
+    return result
+
+
+def test_parenthesis(result):
+    if result['parenthesis_open'] != result['parenthesis_close']:
+        return 1
+    return 0
+
+
+def lint(source_code):
+    result = parse(source_code)
+
+    result_display = yaml.safe_dump({'RESULT': result},
+                                    default_flow_style=False)
+    print(result_display, end='')
+
+    retcode = test_parenthesis(result)
+
+    return retcode
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename')
+    args = parser.parse_args()
+
+    filename = args.filename
+    source_code = open(filename).read()
+    sys.exit(lint(source_code))
+
+
+if __name__ == '__main__':
+    main()
