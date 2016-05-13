@@ -30,6 +30,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
 
         self.bridge = CvBridge()
         self.img_pub = self.advertise('~target_mask', Image, queue_size=100)
+        self.posterior_pub = self.advertise('~posterior', Image, queue_size=20)
+        self.masked_input_img_pub = self.advertise('~masked_input', Image, queue_size=20)
 
     def subscribe(self):
         self.subscriber = rospy.Subscriber('~input', SegmentationInBinSync, self._callback)
@@ -40,25 +42,25 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
     def _callback(self, sync_msg):
         rospy.loginfo('started')
 
-        dist_img = sync_msg.dist_msg
-        height_img = sync_msg.height_msg
-        color_img = sync_msg.color_msg
-        mask_img = sync_msg.mask_msg
+        dist_msg = sync_msg.dist_msg
+        height_msg = sync_msg.height_msg
+        color_msg = sync_msg.color_msg
+        mask_msg = sync_msg.mask_msg
 
-        self.height = dist_img.height
-        self.width = dist_img.width
+        self.height = dist_msg.height
+        self.width = dist_msg.width
         try:
             self.mask_img = self.bridge.imgmsg_to_cv2(mask_msg, "passthrough")
             self.mask_img = self.mask_img.astype('bool')
         except CvBridgeError as e:
             print "error"
-        self.dist_img = self.bridge.imgmsg_to_cv2(dist_img, "passthrough")
-        self.height_img = self.bridge.imgmsg_to_cv2(height_img, "passthrough")
+        self.dist_img = self.bridge.imgmsg_to_cv2(dist_msg, "passthrough")
+        self.height_img = self.bridge.imgmsg_to_cv2(height_msg, "passthrough")
         self.height_img = self.height_img.astype(np.float)/255.0
 
         try:
-            img_color = self.bridge.imgmsg_to_cv2(color_img, "bgr8")
-            self.img_color = cv2.cvtColor(img_color, cv2.COLOR_BGR2HSV)
+            color_img = self.bridge.imgmsg_to_cv2(color_msg, "bgr8")
+            self.color_img = cv2.cvtColor(color_img, cv2.COLOR_BGR2HSV)
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
 
@@ -75,7 +77,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         try:
             predict_msg = self.bridge.cv2_to_imgmsg(
                     self.predicted_segment, encoding="mono8")
-            predict_msg.header = color_img.header
+            predict_msg.header = color_msg.header
 
             # This is a patch.
             # Later in the process of SIB, you need to synchronize
@@ -84,6 +86,23 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
             # updated to the current time.
             predict_msg.header.stamp = rospy.Time.now()
             self.img_pub.publish(predict_msg)
+        except CvBridgeError as e:
+            rospy.logerr('{}'.format(e))
+
+        # for visualization
+        masked_input_img = cv2.cvtColor(self.apc_sample.image, cv2.COLOR_HSV2BGR)
+        masked_input_msg = self.bridge.cv2_to_imgmsg(
+                masked_input_img)
+        masked_input_msg.header = color_msg.header
+        self.masked_input_img_pub.publish(masked_input_msg)
+
+        try:
+            posterior_img = self.trained_segmenter.\
+                posterior_images_smooth[self.target_object]
+            posterior_msg = self.bridge.cv2_to_imgmsg(
+                posterior_img.astype(np.float32))
+            posterior_msg.header = color_msg.header
+            self.posterior_pub.publish(posterior_msg)
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
         rospy.loginfo('ended')
@@ -108,7 +127,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         data['height2D_image'] = define_later
 
         self.apc_sample = APCSample(
-                image_input=self.img_color,
+                image_input=self.color_img,
                 bin_mask_input=self.mask_img,
                 data_input=data,
                 labeled=False,
