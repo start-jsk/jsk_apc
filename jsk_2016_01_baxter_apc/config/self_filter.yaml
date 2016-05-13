@@ -16,14 +16,14 @@ self_see_links:
     padding: .04
   - name: right_wrist
     padding: .04
-  - name: right_gripper_base
-    padding: .08
-  - name: right_gripper_vacuum_pad
-    padding: .08
-  - name: right_gripper_vacuum_pad_base
-    padding: .08
-  - name: right_softkinetic_camera_link
-    padding: .04
+#  - name: right_gripper_base
+#    padding: .08
+#  - name: right_gripper_vacuum_pad
+#    padding: .08
+#  - name: right_gripper_vacuum_pad_base
+#    padding: .08
+#  - name: right_softkinetic_camera_link
+#    padding: .04
 
   - name: left_lower_elbow
     padding: .04
