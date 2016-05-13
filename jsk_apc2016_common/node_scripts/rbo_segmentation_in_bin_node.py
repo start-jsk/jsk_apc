@@ -30,6 +30,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
 
         self.bridge = CvBridge()
         self.img_pub = self.advertise('~target_mask', Image, queue_size=100)
+        self.posterior_pub = self.advertise('~posterior', Image, queue_size=20)
+        self.masked_input_img_pub = self.advertise('~masked_input', Image, queue_size=20)
 
     def subscribe(self):
         self.subscriber = rospy.Subscriber('~input', SegmentationInBinSync, self._callback)
@@ -72,11 +74,11 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.set_apc_sample()
         # generate a binary image
         self.segmentation()
+
         try:
             predict_msg = self.bridge.cv2_to_imgmsg(
                     self.predicted_segment, encoding="mono8")
             predict_msg.header = color_img.header
-
             # This is a patch.
             # Later in the process of SIB, you need to synchronize
             # the current pointclouds and topics produced using this
@@ -84,6 +86,22 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
             # updated to the current time.
             predict_msg.header.stamp = rospy.Time.now()
             self.img_pub.publish(predict_msg)
+        except CvBridgeError as e:
+            rospy.logerr('{}'.format(e))
+
+        # for visualization
+        masked_input_img = cv2.cvtColor(self.apc_sample.image, cv2.COLOR_HSV2BGR)
+        masked_input_msg = self.bridge.cv2_to_imgmsg(
+                masked_input_img)
+        self.masked_input_img_pub.publish(masked_input_msg)
+
+        try:
+            posterior_img = self.trained_segmenter.\
+                    posterior_images_smooth[self.target_object]
+            posterior_msg = self.bridge.cv2_to_imgmsg(
+                    posterior_img.astype(np.float32))
+            posterior_msg.header = color_img.header
+            self.posterior_pub.publish(posterior_msg)
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
         rospy.loginfo('ended')
