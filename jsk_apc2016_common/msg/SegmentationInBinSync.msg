@@ -1,3 +1,5 @@
-sensor_msgs/Image image_color
-sensor_msgs/CameraInfo cam_info
-sensor_msgs/PointCloud2 points
+sensor_msgs/Image color_msg
+sensor_msgs/Image dist_msg
+sensor_msgs/Image height_msg
+sensor_msgs/Image mask_msg
+
