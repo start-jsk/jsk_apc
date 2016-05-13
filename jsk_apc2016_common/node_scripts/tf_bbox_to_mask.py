@@ -29,7 +29,7 @@ class TFBboxToMask(ConnectionBasedTransport):
         self.pub = self.advertise('~output', Image, queue_size=1)
 
     def subscribe(self):
-        self.sub = rospy.Subscriber('~input', CameraInfo, self._callback)
+        self.sub = rospy.Subscriber('~input', CameraInfo, self._callback, queue_size=3)
 
     def unsubscribe(self):
         self.sub.unregister()
