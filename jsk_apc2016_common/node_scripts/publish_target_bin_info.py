@@ -29,6 +29,7 @@ def main():
         target_bin_info = bin_info_dict[target_bin_name]
         target_bin_info.header.stamp = rospy.Time.now()
         target_bin_info_pub.publish(target_bin_info)
+        rate.sleep()
 
 
 if __name__ == '__main__':
