@@ -24,6 +24,18 @@ def get_object_data():
         data (dict): objects data wrote in object_data.yaml file.
     """
     rp = rospkg.RosPack()
+    fname = osp.join(rp.get_path(PKG), 'data/object_data_2016.yaml')
+    data = yaml.load(open(fname))
+    return data
+
+
+def get_object_data_2015():
+    """Returns object data.
+
+    Returns:
+        data (dict): objects data wrote in object_data.yaml file.
+    """
+    rp = rospkg.RosPack()
     fname = osp.join(rp.get_path(PKG), 'data/object_data.yaml')
     data = yaml.load(open(fname))
     return data
