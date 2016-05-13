@@ -5,6 +5,8 @@
 
 (init-unit-test)
 
+(setq *error-output* nil) ; to suppress to many debug info
+
 (deftest
   test-move-arm-to-bin
   (jsk_2016_01_baxter_apc::baxter-init)

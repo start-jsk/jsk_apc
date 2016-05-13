@@ -9,6 +9,8 @@
 (setq *pod-bin-ik-limit*
       (list 1200 1000 1100 1300 1200 1300 0 1300 1300 1300 1300 1300))
 
+(setq *error-output* nil) ; to suppress to many debug info
+
 (deftest test-ik-in-bin
   (let (robot)
     (setq robot (instance jsk_2016_01_baxter_apc::baxter-robot :init))
