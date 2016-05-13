@@ -42,6 +42,13 @@ void SIBSpatial::callback(const PointCloud2ConstPtr& cloud_msg_ptr, const BinInf
     // This takes 4 seconds to complete...
     ros::Time start_tf = ros::Time::now();
     geometry_msgs::TransformStamped cloud2bb;
+
+    if (!tfBuffer.canTransform(/*target_frame*/target_bin.header.frame_id, /*source_frame*/cloud_msg_ptr->header.frame_id,ros::Time(0), ros::Duration(0.5)))
+    {
+        ROS_WARN("cloud_spatial_features could not find tf");  
+        return;
+    }
+
     cloud2bb = tfBuffer.lookupTransform(/*target_frame*/target_bin.header.frame_id, /*source_frame*/cloud_msg_ptr->header.frame_id,ros::Time(0));
 
     cloud2bb_aff = tf2::transformToEigen(cloud2bb);
