@@ -9,11 +9,17 @@ The code is open source, and `available on github`_.
 .. _available on github: http://github.com/start-jsk/jsk_apc
 
 
-This repository contains following ros packages:
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   :caption: Milestones
+
+   milestone/*
 
 
 .. toctree::
    :maxdepth: 1
+   :caption: General Contents
 
    apc2016_rules
    tips_faq
@@ -21,6 +27,7 @@ This repository contains following ros packages:
 
 .. toctree::
    :maxdepth: 2
+   :caption: ROS Packages
 
    jsk_2015_05_baxter_apc/index
    jsk_2016_01_baxter_apc/index

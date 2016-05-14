@@ -4,16 +4,6 @@ jsk_2016_01_baxter_apc
 **jsk_2016_01_baxter_apc** is ROS package for Amazon Picking Challenge in June 2016.
 
 
-Milestones
-----------
-
-.. toctree::
-   :maxdepth: 1
-   :glob:
-
-   milestone/*
-
-
 Logs
 ----
 
