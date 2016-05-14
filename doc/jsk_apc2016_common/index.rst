@@ -7,5 +7,6 @@ jsk_apc2016_common
 .. toctree::
    :maxdepth: 1
 
+   rbo_segmenter
    nodes/index
    python
