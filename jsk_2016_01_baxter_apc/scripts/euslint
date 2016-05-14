@@ -12,8 +12,9 @@ def parse(source_code):
     result = {
         'parenthesis_open': 0,
         'parenthesis_close':0,
+        'tab': [],
     }
-    for line in source_code.splitlines():
+    for line_num, line in enumerate(source_code.splitlines()):
         if line.startswith('#|'):
             comment = True
         elif line.startswith('|#'):
@@ -27,11 +28,25 @@ def parse(source_code):
                 result['parenthesis_open'] += 1
             if char == ')':
                 result['parenthesis_close'] += 1
+            if char == '\t':
+                result['tab'].append(line_num)
     return result
 
 
 def test_parenthesis(result):
     if result['parenthesis_open'] != result['parenthesis_close']:
+        print("Number of open/close parenthesises don't much: {0} != {1}"
+              .format(__name__, result['parenthesis_open'],
+                      result['parenthesis_close']),
+              file=sys.stderr)
+        return 1
+    return 0
+
+
+def test_tab(result):
+    if len(result['tab']) != 0:
+        print('There is tab in lines: {0}'.format(result['tab']),
+              file=sys.stderr)
         return 1
     return 0
 
@@ -43,7 +58,10 @@ def lint(source_code):
                                     default_flow_style=False)
     print(result_display, end='')
 
-    retcode = test_parenthesis(result)
+    retcode = sum([
+        test_parenthesis(result),
+        test_tab(result),
+    ])
 
     return retcode
 
