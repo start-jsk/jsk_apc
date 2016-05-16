@@ -1,5 +1,6 @@
 <launch>
   <arg name="TRAINED_PATH" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
+
   <arg name="json" />
   <arg name="MANAGER" value="segmentation_in_bin_manager" />
   <node name="$(arg MANAGER)"
@@ -16,10 +17,10 @@
     <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
     <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
   </node>
-
+ 
   <!-- publish BinInfo.msg from json -->
   <node pkg="jsk_apc2016_common" type="publish_bin_tf.py"
-    name="publish_bin_tf" output="screen">
+    name="pub_bin_tf">
     <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
   </node>
 

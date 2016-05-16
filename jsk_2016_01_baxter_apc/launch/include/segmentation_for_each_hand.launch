@@ -12,26 +12,36 @@
   <param name="$(arg HAND)_hand/target_bin" value=""/>
 
   <node pkg="jsk_apc2016_common" type="publish_target_bin_info.py"
-    name="$(arg HAND)_pub_target_bin_info" output="screen">
+    name="$(arg HAND)_sib_pub_target_bin_info" output="screen">
     <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
   </node>
 
   <!-- bound three topics to one -->
-  <node name="$(arg HAND)_sib_topic_synchronizer"
-    pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
-    output="screen">
+  <node pkg="jsk_apc2016_common" type="cloud_to_spatial_features"
+    name="$(arg HAND)_sib_spatial">
     <remap from="~input" to="$(arg INPUT_CLOUD)"/>
-    <remap from="~input/info" to="$(arg INPUT_INFO)"/>
-    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
+    <remap from="~target_bin" to="/$(arg HAND)_sib_pub_target_bin_info/target_bin_info"/>
   </node>
 
+  <node pkg="jsk_apc2016_common" type="tf_bbox_to_mask.py"
+      name="$(arg HAND)_sib_mask" output="screen">
+    <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
+    <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
+    <remap from="~input" to="$(arg INPUT_INFO)"/>
+  </node>
 
-  <node name="$(arg HAND)_segmentation_in_bin"
-        pkg="jsk_2016_01_baxter_apc"
-        type="rbo_segmentation_in_bin_node.py"
-        output="screen">
-        <remap from="~input" to="$(arg HAND)_sib_topic_synchronizer/output"/>
+  <node pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
+        name="$(arg HAND)_sib_topic_sync" output="screen">
+    <remap from="~input/dist" to="/$(arg HAND)_sib_spatial/dist"/>
+    <remap from="~input/height" to="/$(arg HAND)_sib_spatial/height"/>
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
+    <remap from="~input/mask" to="/$(arg HAND)_sib_mask/output"/>
+  </node>
+
+  <node pkg="jsk_apc2016_common" type="rbo_segmentation_in_bin_node.py"
+        name="$(arg HAND)_sib_rbo" output="screen">
+    <remap from="~input" to="$(arg HAND)_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
     <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
     <param name="trained_pkl_path" value="$(arg TRAINED_PATH)" />
@@ -40,7 +50,7 @@
   <node name="$(arg HAND)_sib_mask_image_to_pi"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/MaskImageToPointIndices $(arg MANAGER)">
-    <remap from="~input" to="$(arg HAND)_segmentation_in_bin/target_mask"/>
+    <remap from="~input" to="$(arg HAND)_sib_rbo/target_mask"/>
   </node>
 
   <node name="$(arg HAND)_sib_extract_pi"
@@ -59,4 +69,11 @@
         args="load jsk_pcl/CentroidPublisher $(arg MANAGER)">
         <remap from="~input" to="$(arg HAND)_sib_extract_pi/output"/>
   </node>
+  
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/sib_visualization.launch">
+      <arg name="POSTERIOR" value="/$(arg HAND)_sib_rbo/posterior"/>
+      <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)"/>
+      <arg name="MASK" value="/$(arg HAND)_sib_rbo/target_mask"/>
+      <arg name="HAND" value="$(arg HAND)"/>
+  </include>
 </launch>

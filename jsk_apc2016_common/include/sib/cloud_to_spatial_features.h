@@ -26,11 +26,11 @@ typedef boost::shared_ptr< jsk_apc2016_common::BinInfo const> BinInfoPtr;
 
 typedef sync_policies::ApproximateTime<PointCloud2, jsk_apc2016_common::BinInfo> MySyncPolicy;
 
-class SIBSpatial
+class CloudToSpatial
 {
     public:
-        SIBSpatial() : listener_(tfBuffer), nh_("~"){};
-        ~SIBSpatial();
+        CloudToSpatial() : listener_(tfBuffer), nh_("~"){};
+        ~CloudToSpatial();
 
         void callback(const PointCloud2ConstPtr& cloud_msg_ptr, const BinInfoPtr& target_bin_ptr);
 

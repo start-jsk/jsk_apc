@@ -1,0 +1,18 @@
+<launch>
+  <arg name="POSTERIOR"/>
+  <arg name="INPUT_IMAGE"/>
+  <arg name="MASK"/>
+  <arg name="HAND"/>
+
+  <node pkg="jsk_perception" type="colorize_float_image"
+      name="$(arg HAND)_colorized_sib_posterior">
+  <remap from="~input" to="$(arg POSTERIOR)"/>
+  </node>
+
+  <node pkg="jsk_perception" type="apply_mask_image"
+      name="$(arg HAND)_sib_apply_target_mask">
+      <remap from="~input" to="$(arg INPUT_IMAGE)"/>
+      <remap from="~input/mask" to="$(arg MASK)"/>
+      <param name="approximate_sync" value="true"/>
+  </node>
+</launch>

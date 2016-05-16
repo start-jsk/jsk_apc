@@ -5,24 +5,24 @@ using namespace message_filters;
 using namespace sensor_msgs;
 
 
-void SIBSpatial::onInit()
+void CloudToSpatial::onInit()
 {
     dist_pub = nh_.advertise<sensor_msgs::Image>("dist", 5);
     height_pub = nh_.advertise<sensor_msgs::Image>("height", 5);
 }
 
-void SIBSpatial::subsribe() {
+void CloudToSpatial::subsribe() {
     message_filters::Subscriber<PointCloud2> point_sub(nh_, "input", 1);
     message_filters::Subscriber<jsk_apc2016_common::BinInfo> target_bin_sub(nh_, "target_bin", 1);
 
     sync = new message_filters::Synchronizer<MySyncPolicy>(MySyncPolicy(100), point_sub, target_bin_sub);
 
-    sync->registerCallback(boost::bind(&SIBSpatial::callback, this, _1, _2));
+    sync->registerCallback(boost::bind(&CloudToSpatial::callback, this, _1, _2));
 
     ros::spin();
 }
 
-void SIBSpatial::callback(const PointCloud2ConstPtr& cloud_msg_ptr, const BinInfoPtr& target_bin_ptr)
+void CloudToSpatial::callback(const PointCloud2ConstPtr& cloud_msg_ptr, const BinInfoPtr& target_bin_ptr)
 {
     float pos_x;
     float pos_y;
@@ -42,6 +42,13 @@ void SIBSpatial::callback(const PointCloud2ConstPtr& cloud_msg_ptr, const BinInf
     // This takes 4 seconds to complete...
     ros::Time start_tf = ros::Time::now();
     geometry_msgs::TransformStamped cloud2bb;
+
+    if (!tfBuffer.canTransform(/*target_frame*/target_bin.header.frame_id, /*source_frame*/cloud_msg_ptr->header.frame_id,ros::Time(0), ros::Duration(0.5)))
+    {
+        ROS_WARN("cloud_spatial_features could not find tf");  
+        return;
+    }
+
     cloud2bb = tfBuffer.lookupTransform(/*target_frame*/target_bin.header.frame_id, /*source_frame*/cloud_msg_ptr->header.frame_id,ros::Time(0));
 
     cloud2bb_aff = tf2::transformToEigen(cloud2bb);
@@ -101,7 +108,7 @@ void SIBSpatial::callback(const PointCloud2ConstPtr& cloud_msg_ptr, const BinInf
 }
 
 inline
-uint8_t SIBSpatial::dist(const float x, const float y, const float z, const jsk_recognition_msgs::BoundingBox & bbox) {
+uint8_t CloudToSpatial::dist(const float x, const float y, const float z, const jsk_recognition_msgs::BoundingBox & bbox) {
     using namespace std;
     float dist_x;
     float dist_y;
@@ -133,7 +140,7 @@ uint8_t SIBSpatial::dist(const float x, const float y, const float z, const jsk_
 }
 
 inline
-uint8_t SIBSpatial::height(const float z, const jsk_recognition_msgs::BoundingBox & bbox) {
+uint8_t CloudToSpatial::height(const float z, const jsk_recognition_msgs::BoundingBox & bbox) {
     using namespace std;
     float dist_z;
 
@@ -150,7 +157,7 @@ uint8_t SIBSpatial::height(const float z, const jsk_recognition_msgs::BoundingBo
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "segmentation_in_bin_sync");
-    SIBSpatial* sib = new SIBSpatial();
+    CloudToSpatial* sib = new CloudToSpatial();
     sib->onInit();
     sib->subsribe();
     return 0;
