@@ -1,0 +1,21 @@
+<launch>
+
+  <arg name="INPUT_CLOUD" />
+  <arg name="OUTPUT_CLOUD" />
+
+  <node name="$(anon self_filter)"
+        pkg="robot_self_filter" type="self_filter"
+        clear_params="true" respawn="true">
+    <remap from="robot_description" to="/robot_description" />
+    <remap from="cloud_in" to="$(arg INPUT_CLOUD)" />
+    <remap from="cloud_out" to="$(arg OUTPUT_CLOUD)" />
+    <rosparam>
+      use_rgb: true
+      keep_organized: true
+      subsample_value: 0.0
+    </rosparam>
+    <rosparam command="load"
+              file="$(find jsk_2016_01_baxter_apc)/config/self_filter.yaml" />
+  </node>
+
+</launch>
