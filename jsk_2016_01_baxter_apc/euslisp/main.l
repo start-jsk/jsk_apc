@@ -154,12 +154,21 @@
           (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
           (setq avs-picked->return-bin
-                (list
-                  (send *baxter* :avoid-shelf-pose arm target-bin)
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-300 0 50))
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 50))
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 50))
-                  (send *ri* :ik->bin-entrance arm target-bin :offset #f(200 0 50))))
+                (if (eq arm :rarm)
+                  (list
+                    (send *baxter* :avoid-shelf-pose arm target-bin)
+                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(-200 0 -20))
+                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 -20))
+                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 -20))
+                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(150 0 -20)))
+                  (list
+                    (send *baxter* :avoid-shelf-pose arm target-bin)
+                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(-300 0 50))
+                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 50))
+                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 50))
+                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(200 0 50)))
+                  )
+                )
           (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp) ;; release object
