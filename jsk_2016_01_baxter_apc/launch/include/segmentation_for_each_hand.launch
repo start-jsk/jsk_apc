@@ -8,12 +8,11 @@
   <arg name="INPUT_BIN_ARRAY" />
   <arg name="TRAINED_PATH" />
 
-  <arg name="INPUT_TARGET" value="$(arg HAND)_hand/target_bin"/>
   <param name="$(arg HAND)_hand/target_bin" value=""/>
 
   <node pkg="jsk_apc2016_common" type="publish_target_bin_info.py"
     name="$(arg HAND)_sib_pub_target_bin_info" output="screen">
-    <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
+    <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
   </node>
 
@@ -27,7 +26,7 @@
   <node pkg="jsk_apc2016_common" type="tf_bbox_to_mask.py"
       name="$(arg HAND)_sib_mask" output="screen">
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
-    <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
+    <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
     <remap from="~input" to="$(arg INPUT_INFO)"/>
   </node>
 
@@ -43,7 +42,7 @@
         name="$(arg HAND)_sib_rbo" output="screen">
     <remap from="~input" to="$(arg HAND)_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
-    <remap from="~target_bin_name" to="$(arg INPUT_TARGET)"/>
+    <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
     <param name="trained_pkl_path" value="$(arg TRAINED_PATH)" />
   </node>
 
