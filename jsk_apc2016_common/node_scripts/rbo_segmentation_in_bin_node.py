@@ -64,10 +64,15 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
 
-        if rospy.get_param('~target_bin_name') not in 'abcdefghijkl':
+        target_bin_name = rospy.get_param('~target_bin_name')
+        if target_bin_name not in 'abcdefghijkl':
+            rospy.logwarn('wrong target_bin_name')
+            return
+        if target_bin_name == '':
+            rospy.logwarn('target_bin_name is empty string')
             return
 
-        self.target_bin_name = rospy.get_param('~target_bin_name')
+        self.target_bin_name = target_bin_name
         self.target_object = self.bin_info_dict[self.target_bin_name].target
         self.target_bin_info = self.bin_info_dict[self.target_bin_name]
 

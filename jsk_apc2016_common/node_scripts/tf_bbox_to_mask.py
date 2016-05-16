@@ -35,10 +35,14 @@ class TFBboxToMask(ConnectionBasedTransport):
         self.sub.unregister()
 
     def _callback(self, camera_info):
-        if rospy.get_param('~target_bin_name') not in 'abcdefghijkl':
+        target_bin_name = rospy.get_param('~target_bin_name')
+        if target_bin_name not in 'abcdefghijkl':
+            rospy.logwarn('wrong target_bin_name')
+            return
+        if target_bin_name == '':
+            rospy.logwarn('target_bin_name is empty string')
             return
 
-        target_bin_name = rospy.get_param('~target_bin_name')
         target_bin = self.shelf[target_bin_name]
         self.camera_model.fromCameraInfo(camera_info)
 
