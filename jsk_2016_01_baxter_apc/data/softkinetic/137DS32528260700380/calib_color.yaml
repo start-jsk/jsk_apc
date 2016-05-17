@@ -1,15 +1,15 @@
-image_width: 1280
-image_height: 720
+image_width: 640
+image_height: 480
 camera_name: senz3d
 camera_matrix:
   rows: 3
   cols: 3
-  data: [1042.996218, 0, 576.703811, 0, 1041.48698, 331.406945, 0, 0, 1]
+  data: [583.900706, 0, 308.483611, 0, 584.157684, 237.833695, 0, 0, 1]
 distortion_model: plumb_bob
 distortion_coefficients:
   rows: 1
   cols: 5
-  data: [0.052092, -0.052366, 0.001655, -0.005913, 0]
+  data: [-0.000801, 0.007960999999999999, 0.002615, 0.000583, 0]
 rectification_matrix:
   rows: 3
   cols: 3
@@ -17,4 +17,4 @@ rectification_matrix:
 projection_matrix:
   rows: 3
   cols: 4
-  data: [1054.493164, 0, 568.887307, 0, 0, 1059.979614, 332.091691, 0, 0, 0, 1, 0]
+  data: [585.086121, 0, 308.40564, 0, 0, 584.23053, 238.588674, 0, 0, 0, 1, 0]
