@@ -1,0 +1,47 @@
+<launch>
+  <param name="/use_sim_time" value="true" type="bool"/> 
+  <node name="rosbag_play"
+    pkg="rosbag" type="play"
+    args="$(find jsk_2016_01_baxter_apc)/test_data/sib_kinect2.bag --loop --clock">
+  </node>
+
+  <node pkg="nodelet" type="nodelet"
+        args="standalone depth_image_proc/point_cloud_xyzrgb"
+        output="screen"
+        name="depth_point_xyzrgb">
+        <remap from="rgb/camera_info" to="/kinect2_torso/hd/camera_info"/>
+        <remap from="rgb/image_rect_color" to="/kinect2_torso/hd/image_color_rect"/>
+        <remap from="depth_registered/image_rect" to="/kinect2_torso/hd/image_depth_rect"/>
+        <remap from="depth_registered/points" to="/kinect2_torso/hd/points"/>
+        <param name="queue_size" type="int" value="50"/>
+  </node>
+
+
+<include file="$(find jsk_2016_01_baxter_apc)/launch/segmentation_in_bin.launch">
+  <arg name="json" value="$(find jsk_2015_05_baxter_apc)/json/layout_12.json"/>
+  <arg name="RIGHT_INPUT_IMAGE" value="kinect2_torso/hd/image_color_rect"/>
+  <arg name="RIGHT_INPUT_CLOUD" value="kinect2_torso/hd/points"/>
+  <arg name="RIGHT_INPUT_INFO" value="kinect2_torso/hd/camera_info"/>
+  <arg name="LEFT_INPUT_IMAGE" value="kinect2_torso/hd/image_color_rect"/>
+  <arg name="LEFT_INPUT_CLOUD" value="kinect2_torso/hd/points"/>
+  <arg name="LEFT_INPUT_INFO" value="kinect2_torso/hd/camera_info"/>
+</include>
+<param name="/left_hand/target_bin" value="i"/>
+<param name="/right_hand/target_bin" value="i"/>
+
+<test test-name="sib_test"
+      name="sib_test"
+      pkg="jsk_tools" type="test_topic_published.py">
+    <rosparam>
+      topic_0: /right_sib_centroid_publisher/output/point
+      timeout_0: 10
+      topic_1: /left_sib_centroid_publisher/output/point
+      timeout_1: 10
+    </rosparam>
+</test>
+
+<node pkg="rostopic" type="rostopic" name="echo_topics_left"
+      args="echo /left_sib_centroid_publisher/output/point"/>
+<node pkg="rostopic" type="rostopic" name="echo_topics_right"
+      args="echo /right_sib_centroid_publisher/output/point"/>
+</launch>
