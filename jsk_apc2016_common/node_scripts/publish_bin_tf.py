@@ -3,7 +3,8 @@
 import rospy
 from jsk_apc2016_common.msg import BinInfoArray
 
-import roslaunch
+import tf2_ros
+from geometry_msgs.msg import TransformStamped
 
 
 class PublishTF(object):
@@ -14,37 +15,27 @@ class PublishTF(object):
         bbox_dict = self.bin_info_array_to_bbox_dict(bin_info_array)
 
         # publish bbox tf
-        self.pub_dict = self.publish_bbox_tf(bbox_dict)
+        self.publish_bbox_tf(bbox_dict)
 
     def publish_bbox_tf(self, bbox_dict):
         # publish bounding boxes' center as static tf
-        tf_nodes = {}
+        broadcaster = tf2_ros.StaticTransformBroadcaster()
         for bin_, bbox in bbox_dict.iteritems():
-            # something like 1 0 2 0 0 0 1
-            transform_string = (
-                    str(bbox_dict[bin_].pose.position.x) + ' ' +
-                    str(bbox_dict[bin_].pose.position.y) + ' ' +
-                    str(bbox_dict[bin_].pose.position.z) + ' ' +
-                    str(bbox_dict[bin_].pose.orientation.x) + ' ' +
-                    str(bbox_dict[bin_].pose.orientation.y) + ' ' +
-                    str(bbox_dict[bin_].pose.orientation.z) + ' ' +
-                    str(bbox_dict[bin_].pose.orientation.w) + ' ')
+            bin_tf = TransformStamped()
 
-            tf_arg_string = (
-                    transform_string +
-                    str(bbox_dict[bin_].header.frame_id) + ' ' +
-                    'bin_' + bin_ + ' ' + '100')  # last number is period
+            bin_tf.header.stamp = rospy.Time.now()
+            bin_tf.header.frame_id = bbox.header.frame_id
+            bin_tf.child_frame_id = 'bin_' + bin_
 
-            tf_nodes[bin_] = roslaunch.core.Node(
-                    package="tf",
-                    name="pub_bin_" + bin_,
-                    node_type="static_transform_publisher",
-                    args=tf_arg_string,
-                    respawn=True)
-            launch = roslaunch.scriptapi.ROSLaunch()
-            launch.start()
-            launch.launch(tf_nodes[bin_])
-        return tf_nodes
+            bin_tf.transform.translation.x = bbox.pose.position.x
+            bin_tf.transform.translation.y = bbox.pose.position.y
+            bin_tf.transform.translation.z = bbox.pose.position.z
+            bin_tf.transform.rotation.x = bbox.pose.orientation.x
+            bin_tf.transform.rotation.y = bbox.pose.orientation.y
+            bin_tf.transform.rotation.z = bbox.pose.orientation.z
+            bin_tf.transform.rotation.w = bbox.pose.orientation.w
+
+            broadcaster.sendTransform(bin_tf)
 
     def bin_info_array_to_bbox_dict(self, bin_info_array):
         bbox_dict = {}
