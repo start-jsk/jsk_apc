@@ -1,6 +1,27 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="right_vaccum_gripper">
   <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/common_constants.xacro"/>
+  <!--Link bodies-->
+  <xacro:property name="rect_tube_l" value="0.285" />
+  <xacro:property name="rect_tube_h" value="0.06" />
+  <xacro:property name="rect_tube_w" value="0.0952" />
+  <xacro:property name="cyl_tube_x" value="0.005" />
+  <xacro:property name="cyl_tube_z" value="0.038" />
+  <xacro:property name="cyl_tube_r" value="0.018" />
+  <xacro:property name="cyl_tube_l" value="0.107" />
+  <xacro:property name="connection_z" value="-0.00725" />
+  <xacro:property name="connection_r" value="0.03" />
+  <xacro:property name="connection_l" value="0.0905" />
+  <xacro:property name="pad_base_z" value="0.025" />
+  <xacro:property name="pad_base_w" value="0.09" />
+  <xacro:property name="pad_base_h" value="0.038" />
+  <xacro:property name="pad_base_d" value="0.06" />
+  <xacro:property name="pad_r" value="0.026" />
+  <xacro:property name="pad_l" value="0.06" />
+  <xacro:property name="pad_x" value="-0.0005" />
+  <xacro:property name="pad_y" value="0.0085" />
+  <xacro:property name="pad_z" value="0.085" />
+  <!--Joints-->
   <xacro:property name="right_hand_offset_x" value="-0.01" />
   <xacro:property name="right_hand_offset_z" value="0" />
   <xacro:property name="right_gripper_joint_offset_x" value="0.005" />
@@ -17,10 +38,29 @@
         <color rgba="1 1 1 1"/>
       </material>
     </visual>
-    <collision>
+    <!--When using this stl file, robot_self_filter doesn't work-->
+    <!--<collision>
       <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
       <geometry>
         <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>-->
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 ${rect_tube_l/2}"/>
+      <geometry>
+        <box size="${rect_tube_h} ${rect_tube_w} ${rect_tube_l}"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="${M_PI/2} 0 0" xyz="${cyl_tube_x} -${cyl_tube_l/2} ${cyl_tube_z}"/>
+      <geometry>
+        <cylinder radius="${cyl_tube_r}" length="${cyl_tube_l}"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="${cyl_tube_x} -${cyl_tube_l} ${connection_z}"/>
+      <geometry>
+        <cylinder radius="${connection_r}" length="${connection_l}"/>
       </geometry>
     </collision>
   </link>
@@ -34,10 +74,17 @@
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <collision>
+    <!--When using this stl file, robot_self_filter doesn't work-->
+    <!--<collision>
       <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
       <geometry>
         <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_vacuum_pad_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>-->
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 ${pad_base_z}"/>
+      <geometry>
+        <box size="${pad_base_h} ${pad_base_w} ${pad_base_d}"/>
       </geometry>
     </collision>
   </link>
@@ -51,10 +98,17 @@
         <color rgba="0 1 0 1"/>
       </material>
     </visual>
-    <collision>
+    <!--When using this stl file, robot_self_filter doesn't work-->
+    <!--<collision>
       <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
       <geometry>
         <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_vacuum_pad.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>-->
+    <collision>
+      <origin rpy="0 0 0" xyz="${pad_x} ${pad_y} ${pad_z}"/>
+      <geometry>
+        <cylinder radius="${pad_r}" length="${pad_l}"/>
       </geometry>
     </collision>
   </link>
