@@ -235,8 +235,8 @@
       (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
       (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-objects-segmentation-in-bin
-    (bin &key (stamp (ros::time-now)))
-    (let ((sib-topic (format nil "left_sib_centroid_publisher/output/pose"))
+    (arm bin &key (stamp (ros::time-now)))
+    (let ((sib-topic (format nil "~a_sib_centroid_publisher/output/pose" (send self :arm-symbol2str arm)))
           sib-msg)
       (ros::subscribe sib-topic geometry_msgs::PoseStamped
                       #'(lambda (msg)
@@ -247,7 +247,7 @@
              (unix::usleep (* 50 1000))
              (ros::spin-once))
       (ros::unsubscribe sib-topic)
-      (ros::ros-info "[:recognize-objects-segmentation-in-bin] get sib centroid pose")
+      (ros::ros-info "[:recognize-objects-segmentation-in-bin] arm: ~a get sib centroid pose" arm)
       (sethash bin _objects-in-bin-sibs sib-msg)))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
