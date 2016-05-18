@@ -49,7 +49,7 @@
   <node name="$(arg HAND)_sib_mask_image_to_pi"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/MaskImageToPointIndices $(arg MANAGER)">
-    <remap from="~input" to="$(arg HAND)_sib_rbo/target_mask"/>
+    <remap from="~input" to="$(arg HAND)_sib_rbo/target_mask_compressed"/>
   </node>
 
   <node name="$(arg HAND)_sib_extract_pi"
