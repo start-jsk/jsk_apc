@@ -155,12 +155,12 @@
           (send *ri* :wait-interpolation)
           (setq avs-picked->return-bin
                 (if (eq arm :rarm)
-                  (list
-                    (send *baxter* :avoid-shelf-pose arm target-bin)
-                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(-200 0 -20))
-                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 -20))
-                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 -20))
-                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(150 0 -20)))
+                  (cons (send *baxter* :avoid-shelf-pose arm target-bin)
+                        (mapcar
+                          #'(lambda (x)
+                              (send *ri* :ik->bin-entrance arm target-bin :offset (float-vector x 0 -20)))
+                          '(-200 -150 -100 -50 0 150))
+                        )
                   (list
                     (send *baxter* :avoid-shelf-pose arm target-bin)
                     (send *ri* :ik->bin-entrance arm target-bin :offset #f(-300 0 50))
