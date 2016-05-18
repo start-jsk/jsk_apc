@@ -18,7 +18,7 @@ PKG = 'jsk_apc2016_common'
 
 
 def get_object_data():
-    """Returns object data.
+    """Returns object data for APC2016.
 
     Returns:
         data (dict): objects data wrote in object_data.yaml file.
@@ -30,7 +30,7 @@ def get_object_data():
 
 
 def get_object_data_2015():
-    """Returns object data.
+    """Returns object data for APC2015.
 
     Returns:
         data (dict): objects data wrote in object_data.yaml file.
