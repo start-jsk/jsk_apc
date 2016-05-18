@@ -642,7 +642,7 @@
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :place-object-pose arm) avs)
-      (send self :angle-vector-sequence avs)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       (send self :gripper-servo-off arm)  ;; power off gripper servo not to overload it
       ))
   (:spin-off-by-wrist
