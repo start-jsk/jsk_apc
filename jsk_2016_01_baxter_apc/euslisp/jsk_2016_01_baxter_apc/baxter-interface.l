@@ -565,7 +565,7 @@
         ))
     )
   (:ik->bin-entrance
-    (arm bin &key (offset #f(0 0 0)) (revert-if-fail nil))
+    (arm bin &key (offset #f(0 0 0)) (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil))
     (let (bin-box bin-coords bin-dim-x)
       (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
@@ -584,8 +584,9 @@
       (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t)
       ;; apply offset
       (send bin-coords :translate offset :world)
+      (send bin-coords :rotate overlook-angle :y :world)
       (send *baxter* arm :inverse-kinematics bin-coords
-            :rotation-axis :z
+            :rotation-axis rotation-axis 
             :revert-if-fail revert-if-fail)))
   (:move-arm-body->bin
     (arm bin)
@@ -603,7 +604,7 @@
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
-      (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 -150)) avs)
+      (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 -150) :rotation-axis t :overlook-angle (/ pi 9)) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
   (:move-arm-body->order-bin
