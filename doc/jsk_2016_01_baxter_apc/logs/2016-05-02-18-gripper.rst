@@ -1,0 +1,76 @@
+2016-05-02-18-gripper
+==========
+
+5/2~5/18の間に作ったPRと、それがどのissueを解決するものかについて、動画で説明する。各PRやissueの詳しい説明は、リンクページを見てほしい。
+
+What you did?
+-------------
+
+- `start-jsk/jsk_apc#1394 <https://github.com/start-jsk/jsk_apc/pull/1394>`_
+
+  * `start-jsk/jsk_apc#1382 <https://github.com/start-jsk/jsk_apc/issues/1382>`_ (`movie <https://drive.google.com/file/d/0B2trSrh55DvLekttQ3dxU3VrMms/view>`_ や `movie <https://drive.google.com/file/d/0B2trSrh55DvLRF96UU1nSDQ2S3M/view>`_)を `movie <https://drive.google.com/file/d/0B2trSrh55DvLenVTVDVTQ0hFZ0k/view>`_ のように解決するもの
+
+- `start-jsk/jsk_apc#1400 <https://github.com/start-jsk/jsk_apc/pull/1400>`_
+
+  * `movie <https://drive.google.com/file/d/0B2trSrh55DvLaW9tT1ZvV2dfVjg/view>`_ のような動作をなくし、 `movie <https://drive.google.com/file/d/0B2trSrh55DvLeTFUbG5HRy02NGc/view>`_ のようにするもの
+
+- `start-jsk/jsk_apc#1404 <https://github.com/start-jsk/jsk_apc/pull/1404>`_
+
+  * `movie <https://drive.google.com/file/d/0B2trSrh55DvLRTN3UXcxVmhDYVU/view>`_ のような動作をなくし、 `movie <https://drive.google.com/file/d/0B2trSrh55DvLd25RLUxFVTNycU0/view>`_ のようにするもの。汎用性に欠ける解決策なので、時間があれば再修正したい。
+
+- `start-jsk/jsk_apc#1425 <https://github.com/start-jsk/jsk_apc/pull/1425>`_
+
+  * `start-jsk/jsk_apc#1383 <https://github.com/start-jsk/jsk_apc/issues/1383>`_ (`movie <https://drive.google.com/file/d/0B2trSrh55DvLMGNYcTVkOXZROE0/view>`_)を `movie <https://drive.google.com/file/d/0B2trSrh55DvLTUUyVVAtZEcyTHc/view>`_ や `movie <https://drive.google.com/file/d/0B2trSrh55DvLNjFGQ3FicE96V0k/view>`_ のように解決するもの
+
+- `start-jsk/jsk_apc#1432 <https://github.com/start-jsk/jsk_apc/pull/1432>`_
+
+  * `start-jsk/jsk_apc#1430 <https://github.com/start-jsk/jsk_apc/issues/1430>`_ (`movie <https://drive.google.com/file/d/0B2trSrh55DvLbGw0YTRvUm5XWFk/view>`_)を `movie <https://drive.google.com/file/d/0B2trSrh55DvLY1ZETmxQWTFRQ2c/view>`_ のように解決するもの
+
+- `start-jsk/jsk_apc#1445 <https://github.com/start-jsk/jsk_apc/pull/1445>`_
+
+  * `start-jsk/jsk_apc#1429 <https://github.com/start-jsk/jsk_apc/issues/1429>`_ を解決するもの
+
+- `start-jsk/jsk_apc#1448 <https://github.com/start-jsk/jsk_apc/pull/1448>`_
+
+  * このPRまでは、重い物品をOrder Binに入れるときにグリッパー関節が伸びようとしてサーボに大きな負荷がかかっており、サーボからパキパキと音がなっていた。この負荷でサーボ内のギアの歯が飛び、サーボも一個壊してしまった。これをサーボのトルクを抜くことで解決するもの
+
+- `start-jsk/jsk_apc#1451 <https://github.com/start-jsk/jsk_apc/pull/1451>`_
+
+  * `start-jsk/jsk_apc#1447 <https://github.com/start-jsk/jsk_apc/issues/1447>`_ (`movie <https://drive.google.com/file/d/0B2trSrh55DvLZFFTZTJxd2ZQQU0/view>`_)を `movie <https://drive.google.com/file/d/0B2trSrh55DvLU0ZyaEdoNms4UXM/view>`_ のように解決するもの
+
+- `start-jsk/jsk_apc#1474 <https://github.com/start-jsk/jsk_apc/pull/1474>`_
+
+  * `start-jsk/jsk_apc#1456 <https://github.com/start-jsk/jsk_apc/issues/1456>`_ を解決するもの
+
+- `start-jsk/jsk_apc#1478 <https://github.com/start-jsk/jsk_apc/pull/1478>`_
+
+  * `start-jsk/jsk_apc#1449 <https://github.com/start-jsk/jsk_apc/issues/1449>`_ を解決するもの
+
+- `start-jsk/jsk_apc#1488 <https://github.com/start-jsk/jsk_apc/pull/1488>`_
+
+  * `start-jsk/jsk_apc#1481 <https://github.com/start-jsk/jsk_apc/issues/1481>`_ を解決するもの
+
+- `start-jsk/jsk_apc#1498 <https://github.com/start-jsk/jsk_apc/pull/1498>`_
+
+  * `start-jsk/jsk_apc#1489 <https://github.com/start-jsk/jsk_apc/issues/1489>`_ (`movie <https://drive.google.com/file/d/0B2trSrh55DvLZlVmWnVXTlZDelk/view>`_)を `movie <https://drive.google.com/file/d/0B2trSrh55DvLX1BIY1hDWlpsQ3c/view>`_ のように解決するもの
+
+- `start-jsk/jsk_apc#1499 <https://github.com/start-jsk/jsk_apc/pull/1499>`_
+
+  * `start-jsk/jsk_apc#1497 <https://github.com/start-jsk/jsk_apc/issues/1497>`_ を解決するもの
+
+- `start-jsk/jsk_apc#1500 <https://github.com/start-jsk/jsk_apc/pull/1500>`_
+
+  * `start-jsk/jsk_apc#1496 <https://github.com/start-jsk/jsk_apc/issues/1496>`_ を解決するもの
+
+What is issue?
+--------------
+
+- 特定条件下でIKが解けなくなる
+
+  * `start-jsk/jsk_apc#1470 <https://github.com/start-jsk/jsk_apc/issues/1470>`_
+  * `start-jsk/jsk_apc#1479 <https://github.com/start-jsk/jsk_apc/issues/1479>`_
+
+Log data
+--------
+
+- https://drive.google.com/drive/u/1/folders/0B2trSrh55DvLenUya1pTTUltWFk
