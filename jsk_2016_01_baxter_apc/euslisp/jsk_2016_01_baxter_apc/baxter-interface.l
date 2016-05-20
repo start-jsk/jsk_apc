@@ -235,8 +235,8 @@
       (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
       (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-objects-segmentation-in-bin
-    (bin &key (stamp (ros::time-now)))
-    (let ((sib-topic (format nil "left_sib_centroid_publisher/output/pose"))
+    (arm bin &key (stamp (ros::time-now)))
+    (let ((sib-topic (format nil "~a_sib_centroid_publisher/output/pose" (send self :arm-symbol2str arm)))
           sib-msg)
       (ros::subscribe sib-topic geometry_msgs::PoseStamped
                       #'(lambda (msg)
@@ -247,8 +247,11 @@
              (unix::usleep (* 50 1000))
              (ros::spin-once))
       (ros::unsubscribe sib-topic)
-      (ros::ros-info "[:recognize-objects-segmentation-in-bin] get sib centroid pose")
-      (sethash bin _objects-in-bin-sibs sib-msg)))
+      (ros::ros-info "[:recognize-objects-segmentation-in-bin] arm: ~a get sib centroid pose" arm)
+      (setq obj-pose (send sib-msg :pose))
+      (setq obj-coords (send self :tf-pose->coords
+                             (send sib-msg :header :frame_id) obj-pose))
+      (sethash bin _objects-in-bin-sibs obj-coords)))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
@@ -329,17 +332,11 @@
         (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
         (return-from :try-to-pick-object nil))
       (if (gethash bin _objects-in-bin-sibs)
-        (setq obj-sibs-msg (gethash bin _objects-in-bin-sibs))
+        (setq obj-coords (gethash bin _objects-in-bin-sibs))
         (progn
           (ros::ros-warn "[SIB] No object is found: ~a, ~a" arm bin)
           (return-from :try-to-pick-object nil)))
-      ; (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
-      ; (setq obj-com (elt (send obj-coms-msg :poses) object-index))
-      (setq obj-com (send obj-sibs-msg :pose))
       ;; ik to obj a bit distant
-      ;; with Center of Mass
-      (setq obj-coords (send self :tf-pose->coords
-                             (send obj-sibs-msg :header :frame_id) obj-com))
       ;; with Center of Bounding Box
       ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
       (if (find bin '(:a :b :c :d :e :f))

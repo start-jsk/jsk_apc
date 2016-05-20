@@ -92,10 +92,11 @@
               ;; run motion
               (ros::ros-info "[main] Recognizing objects in bin" target-bin)
               (send *ri* :recognize-objects-in-bin target-bin :stamp (ros::time-now))
-              (ros::ros-info "[main] Segmentating objects in bin" target-bin)
-              (send *ri* :recognize-objects-segmentation-in-bin target-bin :stamp (ros::time-now))
-              (send *ri* :move-arm-body->bin arm target-bin)
+              (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
               (send *ri* :wait-interpolation)
+              (unix::sleep 2)
+              (ros::ros-info "[main] Segmentating objects in bin" target-bin)
+              (send *ri* :recognize-objects-segmentation-in-bin arm target-bin :stamp (ros::time-now))
               ;; (ros::ros-info "detected_object_index: ~A" (send *ri* :detect-target-object-in-bin target-obj target-bin))
               (setq graspingp
                     (send *ri* :pick-object arm target-bin
