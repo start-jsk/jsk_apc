@@ -481,8 +481,13 @@
       (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
         (ros::ros-info "[:try-to-pick-object] arm:~a again approach to the object" arm)
-        (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local) 3000)
-        (send self :wait-interpolation))
+        (let ((temp-av (send *baxter* :angle-vector)))
+          (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local :rotation-axis :z) 3000)
+          (send self :wait-interpolation)
+          (send self :angle-vector (send *baxter* :angle-vector temp-av) 3000)  ;; revert baxter
+          (send self :wait-interpolation)
+          )
+        )
       ;; lift object
       (ros::ros-info "[:try-to-pick-object] arm:~a lift the object" arm)
       (if (eq arm :rarm)
