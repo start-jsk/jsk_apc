@@ -432,21 +432,24 @@
                   (send *baxter* arm :inverse-kinematics target-coords)
                   3000)
             ;; when gripper isn't straight
-            (let (end-coords end->above target-above-coords)
+            (let (end-coords end->above target-above-coords (elapsed-t 0))
               (setq end-coords (send (send *baxter* arm :end-coords) :copy-worldcoords))
               (setq end->above (send end-coords :transformation target-coords :local))
               (setf (elt (send end->above :pos) 2) 0)
               (setq target-above-coords
                     (send end-coords :transform end->above :local))
-              ;; move arm in the local x, y direction
-              (send self :angle-vector
-                    (send *baxter* arm :inverse-kinematics target-above-coords)
-                    2500)
+              ;; move arm in the local x, y direction only if robot can solve IK
+              (if (send *baxter* arm :inverse-kinematics target-above-coords
+                        :revert-if-fail t)
+                (send self :angle-vector (send *baxter* :angle-vector)
+                      (setq elapsed-t 2500))
+                )
               (send self :wait-interpolation)
-              ;; move arm in the local z direction
+              ;; move arm to the target
+              ;; if above IK succeeded, arm moves in the local z direction
               (send self :angle-vector
                     (send *baxter* arm :inverse-kinematics target-coords)
-                    1500)
+                    (- 4000 elapsed-t))
               )
             )
           )
@@ -482,7 +485,9 @@
       (unless graspingp
         (ros::ros-info "[:try-to-pick-object] arm:~a again approach to the object" arm)
         (let ((temp-av (send *baxter* :angle-vector)))
-          (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -50) :local :rotation-axis :z) 3000)
+          ;; only if robot can solve IK
+          (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local :rotation-axis :z)
+            (send self :angle-vector (send *baxter* :angle-vector) 3000))
           (send self :wait-interpolation)
           (send self :angle-vector (send *baxter* :angle-vector temp-av) 3000)  ;; revert baxter
           (send self :wait-interpolation)
@@ -495,7 +500,11 @@
                (send self :gripper-servo-off arm)
                (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 20) :world) 3000))
               (t
-                (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000)))
+                ;; only if robot can solve IK
+                (if (send *baxter* arm :move-end-pos #f(0 0 80) :local)
+                  (send self :angle-vector (send *baxter* :angle-vector) 3000)
+                  ))
+              )
         (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000))
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
