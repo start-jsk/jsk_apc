@@ -40,8 +40,8 @@ self_see_links:
   - name: left_wrist
     padding: .04
   - name: left_custom_vacuum_link
-    padding: .08
+    padding: .09
   - name: left_custom_vacuum_link_base
     padding: .08
   - name: left_softkinetic_camera_link
-    padding: .04
+    padding: .08
