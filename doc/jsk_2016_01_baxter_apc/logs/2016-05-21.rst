@@ -1,0 +1,27 @@
+2016-05-21
+==========
+
+**Run main program with RBO segmentation**
+
+
+What you did?
+-------------
+
+- Run main.launch with RBO segmentation algorithms 
+
+What is issue?
+--------------
+
+- no issues for milestone 0.3.0
+
+What you think/feel?
+--------------------
+
+- Segmentation and recognition is good, but grasping planning is not good.
+
+- milestone 0.3.0 finished 
+
+Log data
+--------
+
+- https://drive.google.com/file/d/0BycOVNfHx5bqV1dVOTI0eHI3UGc/view?usp=sharing
