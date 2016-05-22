@@ -8,19 +8,58 @@
 
 (defclass jsk_2016_01_baxter_apc::baxter-robot
   :super baxter-robot
-  :slots ())
+  :slots (_view-hand-pos))
 (defmethod jsk_2016_01_baxter_apc::baxter-robot
   (:init
     (&rest args)
     (send-super* :init args)
+    ;; initialize _view-hand-pos
+    (setq _view-hand-pos (make-hash-table))
+    (sethash :rarm _view-hand-pos (make-hash-table))
+    (sethash :larm _view-hand-pos (make-hash-table))
+    ;; for larm
+    (sethash :a (gethash :larm _view-hand-pos) #f(785.344 229.224 762.48))
+    (sethash :b (gethash :larm _view-hand-pos) #f(813.742 10.946 828.431))
+    (sethash :d (gethash :larm _view-hand-pos) #f(807.059 275.852 633.668))
+    (sethash :e (gethash :larm _view-hand-pos) #f(770.657 57.875 550.976))
+    (sethash :g (gethash :larm _view-hand-pos) #f(781.985 244.363 368.102))
+    (sethash :h (gethash :larm _view-hand-pos) #f(819.589 13.426 415.42))
+    (sethash :j (gethash :larm _view-hand-pos) #f(811.875 312.473 156.184))
+    (sethash :k (gethash :larm _view-hand-pos) #f(780.791 15.733 137.103))
+    ;; for rarm
+    (sethash :b (gethash :rarm _view-hand-pos) #f(813.742 -10.946 828.431))
+    (sethash :c (gethash :rarm _view-hand-pos) #f(785.344 -180 762.48))
+    (sethash :e (gethash :rarm _view-hand-pos) #f(770.657 -57.875 550.976))
+    (sethash :f (gethash :rarm _view-hand-pos) #f(807.059 -186 633.668))
+    (sethash :h (gethash :rarm _view-hand-pos) #f(819.589 -13.426 415.42))
+    (sethash :i (gethash :rarm _view-hand-pos) #f(781.985 -184 368.102))
+    (sethash :k (gethash :rarm _view-hand-pos) #f(780.791 -15.733 137.103))
+    (sethash :l (gethash :rarm _view-hand-pos) #f(811.875 -180 156.184))
+    ;; pos of :c, :f, :i, :l is not symmetrical to :a, :d, :g, :j because torso can't see
+    )
+  (:inverse-kinematics
+    (target-coords
+      &rest args
+      &key (additional-weight-list
+             (mapcar #'(lambda (jn) (list (send self jn :child-link) 0))
+                     '(:right_gripper_vacuum_pad_joint)))
+      &allow-other-keys)
+    (send-super* :inverse-kinematics target-coords
+                 :additional-weight-list additional-weight-list args)
     )
   (:rotate-wrist
     (arm angle)
     (let (wrist-index av-tmp)
       (setq wrist-index (if (eq arm :larm) 7 14))
-      (setq av-tmp (send *baxter* :angle-vector))
+      (setq av-tmp (send self :angle-vector))
       (setf (elt av-tmp wrist-index) (+ (elt av-tmp wrist-index) angle))
-      (send *baxter* :angle-vector av-tmp))
+      (send self :angle-vector av-tmp))
+    )
+  (:rotate-gripper
+    (arm angle &key (relative t))
+    (if (eq arm :rarm)
+      (send self arm :gripper-p :joint-angle angle :relative relative))
+    (send self :angle-vector)
     )
   (:avoid-shelf-pose
     (arm bin)
@@ -53,5 +92,13 @@
       (:j (send self :view-hand-pose-j arm))
       (:k (send self :view-hand-pose-k arm))
       (:l (send self :view-hand-pose-l arm)))
+    (let ((pos (gethash bin (gethash arm _view-hand-pos))))
+      (if pos
+        (send self arm :inverse-kinematics
+              (make-coords :pos pos)
+              :rotation-axis nil
+              :revert-if-fail nil)
+        )
+      )
     )
   )
