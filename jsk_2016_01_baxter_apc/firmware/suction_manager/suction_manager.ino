@@ -15,15 +15,14 @@ void messageCb(const std_msgs::Bool& toggle_msg, const int pin_no){
   }
 }
 void messageCb_D4(const std_msgs::Bool& toggle_msg) { return messageCb(toggle_msg, 4);}
-void messageCb_D5(const std_msgs::Bool& toggle_msg) { return messageCb(toggle_msg, 5);}
-void messageCb_D6(const std_msgs::Bool& toggle_msg) { return messageCb(toggle_msg, 6);}
+void messageCb_D6(const std_msgs::Bool& toggle_msg) { return messageCb(toggle_msg, 5);}
+void messageCb_D5(const std_msgs::Bool& toggle_msg) { return messageCb(toggle_msg, 6);}
 void messageCb_D7(const std_msgs::Bool& toggle_msg) { return messageCb(toggle_msg, 7);}
 
 // vacuum
 ros::Subscriber<std_msgs::Bool> sub1("/vacuum_gripper/limb/right", &messageCb_D4); //D4
-ros::Subscriber<std_msgs::Bool> sub2("/vacuum_gripper/limb/left", &messageCb_D5);
-// vent
-ros::Subscriber<std_msgs::Bool> sub3("/vacuum_gripper/limb/right_vent", &messageCb_D6);
+ros::Subscriber<std_msgs::Bool> sub3("/vacuum_gripper/limb/right_vent", &messageCb_D5);
+ros::Subscriber<std_msgs::Bool> sub2("/vacuum_gripper/limb/left", &messageCb_D6);
 ros::Subscriber<std_msgs::Bool> sub4("/vacuum_gripper/limb/left_vent", &messageCb_D7);
 // sensor
 std_msgs::Float64 right_pressure_1, right_pressure_2, left_pressure_1, left_pressure_2;
@@ -57,8 +56,8 @@ void setup()
   nh.advertise(left_pressure_2_pub);
 
   digitalWrite(4, LOW);
-  digitalWrite(5, LOW);
-  digitalWrite(6, HIGH);
+  digitalWrite(5, HIGH);
+  digitalWrite(6, LOW);
   digitalWrite(7, HIGH);
 
 
