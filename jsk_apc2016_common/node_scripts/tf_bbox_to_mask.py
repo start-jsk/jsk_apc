@@ -54,6 +54,10 @@ class TFBboxToMask(ConnectionBasedTransport):
                 timeout=rospy.Duration(10.0))
 
         mask_img = self.get_mask_img(camera2bb_base, target_bin, self.camera_model)
+        if np.all(mask_img == 0):
+            rospy.logwarn('Bin mask image is all zero. ' +
+                          'Position of an arm might be wrong.')
+            return
         mask_msg = self.bridge.cv2_to_imgmsg(mask_img, encoding="passthrough")
         mask_msg.header = camera_info.header
         self.pub.publish(mask_msg)
