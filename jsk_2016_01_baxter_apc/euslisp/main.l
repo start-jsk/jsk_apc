@@ -56,7 +56,7 @@
               (setq target-obj (send order :object))
               (if (send *ri* :check-bin-exist target-bin)
                 (progn
-                  (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
+                  (ros::set-param (format nil "~a_hand/target_bin_name" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
                   ;; logging
                   (ros::ros-info "[main] state: ~a" state)
                   (ros::ros-info "[main] arm: ~a" arm)
