@@ -1,0 +1,13 @@
+<launch>
+  <arg name="hand" />
+  <arg name="layout_name" />
+
+  <node pkg="jsk_apc2016_common" type="save_data.py"
+        name="$(arg hand)_save_data" output="screen">
+    <remap from="~input" to="$(arg hand)_sib_topic_sync/output"/>
+    <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
+    <remap from="~target_bin_name" to="$(arg hand)_hand/target_bin"/>
+    <param name="~layout_name" value="$(arg layout_name)" />
+    <param name="always_subscribe" value="True" />
+  </node>
+</launch>
