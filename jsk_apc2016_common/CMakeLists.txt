@@ -77,12 +77,12 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs  # Or other packages containing msgs
-   jsk_recognition_msgs
-   geometry_msgs
-   sensor_msgs
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+  jsk_recognition_msgs
+  geometry_msgs
+  sensor_msgs
 )
 
 ################################################
@@ -116,11 +116,11 @@ add_message_files(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS 
+  CATKIN_DEPENDS
   roscpp
   message_runtime
-  std_msgs 
-  geometry_msgs 
+  std_msgs
+  geometry_msgs
   jsk_recognition_msgs
   message_filters
   sensor_msgs
@@ -135,7 +135,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(include
-  ${catkin_INCLUDE_DIRS} 
+  ${catkin_INCLUDE_DIRS}
   ${Eigen_INCLUDE_DIRECTORIES}
   )
 
