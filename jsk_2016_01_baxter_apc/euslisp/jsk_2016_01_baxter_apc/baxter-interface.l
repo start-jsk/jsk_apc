@@ -28,6 +28,11 @@
     ;; initialize controllers
     (send-super* :init args)
     (send self :add-controller :rgripper-controller)
+    ;; hack for https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/227
+    (if (not (equal (send (car (gethash :rarm-controller (self . controller-table))) :name)
+                    (cdr (assoc :controller-action (car (send self :rarm-controller))))))
+        (let ((tmp-actions (gethash :rarm-controller controller-table)))
+          (setf (gethash :rarm-controller controller-table) (reverse tmp-actions))))
     ;; initialize slots
     (setq _tfl (instance ros::transform-listener :init))
     (setq _bin-boxes (make-hash-table))
