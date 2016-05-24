@@ -142,7 +142,12 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.dae
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.urdf
   COMMAND rosrun xacro xacro baxter.xacro > baxter.urdf
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
-  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.xacro)
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.xacro
+          ${PROJECT_SOURCE_DIR}/robots/right_arm_camera.xacro
+          ${PROJECT_SOURCE_DIR}/robots/left_arm_camera.xacro
+          ${PROJECT_SOURCE_DIR}/robots/right_vacuum_gripper.xacro
+          ${PROJECT_SOURCE_DIR}/robots/left_vacuum_gripper.xacro
+          ${PROJECT_SOURCE_DIR}/robots/softkinetic_camera/senz3d.urdf.xacro)
 # get collada-dom version
 find_package(PkgConfig)
 pkg_check_modules(COLLADA collada-dom>=2.4.4 )
