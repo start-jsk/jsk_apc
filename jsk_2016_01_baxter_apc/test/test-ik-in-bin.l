@@ -11,6 +11,18 @@
 
 (setq *error-output* nil) ; to suppress to many debug info
 
+(defun ik-with-rotating-gripper
+  (robot arm coord &key gripper-angle)
+  (send robot :reset-pose)
+  (if gripper-angle
+    (send robot :rotate-gripper arm gripper-angle :relative nil))
+  (send robot arm :inverse-kinematics coord
+        :rotation-axis t
+        :debug-view nil
+        :warnp nil
+        :dump-command nil)
+  )
+
 (deftest test-ik-in-bin
   (let (robot)
     (setq robot (instance jsk_2016_01_baxter_apc::baxter-robot :init))
@@ -25,7 +37,6 @@
       (setq dx (x-of-cube cube))
       (setq dy (y-of-cube cube))
       (setq dz (z-of-cube cube))
-      (send robot :reset-pose)
       (do ((tmp-x (+ (- x (/ dx 2)) (/ step-dist 2)) (+ tmp-x step-dist)))
         ((> tmp-x (+ x (/ dx 2))) t)
         (do ((tmp-y (+ (- y (/ dy 2)) (/ step-dist 2)) (+ tmp-y step-dist)))
@@ -35,18 +46,9 @@
             (setq pos (float-vector tmp-x tmp-y tmp-z))
             (assert
               (or
-                (send robot :rarm :inverse-kinematics
-                  (make-cascoords :pos pos)
-                  :rotation-axis t
-                  :debug-view nil
-                  :warnp nil
-                  :dump-command nil)
-                (send robot :larm :inverse-kinematics
-                  (make-cascoords :pos pos)
-                  :rotation-axis t
-                  :debug-view nil
-                  :warnp nil
-                  :dump-command nil)
+                (ik-with-rotating-gripper robot :rarm (make-cascoords :pos pos) :gripper-angle 90)
+                (ik-with-rotating-gripper robot :rarm (make-cascoords :pos pos :rpy (float-vector 0 (deg2rad -90) 0)) :gripper-angle 0)
+                (ik-with-rotating-gripper robot :larm (make-cascoords :pos pos))
                 (> tmp-x limit))
               "fail to solve ik")
             )
