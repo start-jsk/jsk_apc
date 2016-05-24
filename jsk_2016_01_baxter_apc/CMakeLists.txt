@@ -150,8 +150,8 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.urdf
           ${PROJECT_SOURCE_DIR}/robots/softkinetic_camera/senz3d.urdf.xacro)
 # get collada-dom version
 find_package(PkgConfig)
-pkg_check_modules(COLLADA collada-dom>=2.4.4 )
-if ( ${COLLADA_FOUND} )
+pkg_check_modules(COLLADA collada-dom>=2.4.4)
+if(${COLLADA_FOUND})
   add_custom_target(generate_baxter_urdf ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.urdf)
   add_custom_target(generate_baxter_collada ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.dae)
   add_custom_target(generate_baxter_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.l)
