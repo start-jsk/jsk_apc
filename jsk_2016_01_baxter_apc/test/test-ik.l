@@ -52,7 +52,7 @@
                             :debug-view nil ;; set true for debugging
                             ))
     (check-result av1 av2)
-    ;; (assert (and av1 av2)) ;; this is expected to fail without new irteus
+    (assert (and av1 av2)) ;; this is expected to fail without new irteus
     ))
 
 (deftest check-normal-ik-2 () ;; this may fix the problem
