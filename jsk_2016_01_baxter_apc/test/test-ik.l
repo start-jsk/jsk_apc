@@ -36,6 +36,33 @@
     (assert (< (norm (v- av1 av2)) 10))
     ))
 
+;; https://github.com/euslisp/jskeus/pull/380
+;; https://github.com/euslisp/jskeus/commit/9766a65d8346a939c9af89461691ccea334b2b7b#commitcomment-17593228
+(load "irteus/irtrobot.l")
+(defmethod robot-model
+ (:calc-inverse-jacobian
+   (jacobi &rest args
+    &key
+    ((:manipulability-limit ml) 0.1)
+    ((:manipulability-gain mg) 0.001)
+    weight debug-view
+    ret wmat tmat umat umat2 mat-tmp
+    mat-tmp-rc tmp-mrr tmp-mrr2
+    &allow-other-keys)
+   (let (jacobi# m m2 (k 0))
+     ;; m : manipulability
+     (setq m (manipulability (if weight (m* jacobi (diagonal weight)) jacobi) tmp-mrr tmat)) ;; CHANGED
+     (if (< m ml) (setq k (* mg (expt (- 1.0 (/ m  ml)) 2))))
+     (when (and debug-view (not (memq :no-message debug-view)))
+       (warn "k     :~7,3f (manipulability:~7,3f, gain:~7,3f, limit:~7,3f, len:~d)~%" k m mg ml (cadr (array-dimensions jacobi))))
+
+     ;; calc weighted SR-inverse
+     (setq jacobi# (sr-inverse jacobi k weight 
+                               ret wmat tmat umat umat2 mat-tmp
+                               mat-tmp-rc tmp-mrr tmp-mrr2
+                               ))
+     jacobi#))
+)
 ;; check why normal ik failed
 (deftest check-normal-ik-1 () ;; this uses exactry the same parameter with baxter-robot :inverse-kinematics in baxtereus/baxter-util.l
   (let (av1 av2)
