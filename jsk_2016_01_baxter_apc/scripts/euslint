@@ -71,8 +71,10 @@ def main():
     parser.add_argument('filename')
     args = parser.parse_args()
 
+    import roslib.packages
+    pkg_dir = roslib.packages.get_pkg_dir('jsk_2016_01_baxter_apc')
     filename = args.filename
-    source_code = open(filename).read()
+    source_code = open(pkg_dir + '/' + filename).read()
     sys.exit(lint(source_code))
 
 
