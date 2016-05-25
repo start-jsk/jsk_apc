@@ -41,6 +41,37 @@ def get_object_data_2015():
     return data
 
 
+def get_bin_contents(json_file):
+    """Return bin contents data from picking json.
+
+    Returns:
+        data (dict): bin contents data written in picking json file.
+    """
+    with open(json_file, 'r') as f:
+        bin_contents = json.load(f)['bin_contents']
+    dict_contents = {}
+    for bin_, objects in bin_contents.items():
+        bin_ = bin_.split('_')[1].lower()  # bin_A -> a
+        dict_contents[bin_] = objects
+    return dict_contents
+
+
+def get_work_order(json_file):
+    """Return work order data from picking json.
+
+    Returns:
+        data (dict): work order written in picking json file.
+    """
+    with open(json_file, 'r') as f:
+        data = json.load(f)['work_order']
+    dict_order = {}
+    for order in data:
+        bin_ = order['bin'].split('_')[1].lower()  # bin_A -> a
+        target_object = order['item']
+        dict_order[bin_] = target_object
+    return dict_order
+
+
 def visualize_stow_contents(work_order):
     """Visualize stow contents with passed work order.
 

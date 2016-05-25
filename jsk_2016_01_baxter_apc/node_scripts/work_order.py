@@ -3,35 +3,17 @@
 import os.path as osp
 import sys
 import json
-
-import rospkg
 import rospy
 from jsk_2015_05_baxter_apc.msg import WorkOrder, WorkOrderArray
-
-rp = rospkg.RosPack()
-rp.get_path('jsk_2015_05_baxter_apc')
-
-sys.path.insert(0, osp.join(rp.get_path('jsk_2015_05_baxter_apc'),
-                            'node_scripts'))
-from bin_contents import get_bin_contents  # NOQA
-
-
-def get_work_order(json_file):
-    with open(json_file, 'r') as f:
-        data = json.load(f)['work_order']
-    for order in data:
-        bin_ = order['bin'].split('_')[1].lower()  # bin_A -> a
-        target_object = order['item']
-        yield (bin_, target_object)
+from jsk_apc2016_common import get_bin_contents, get_work_order
 
 
 def get_sorted_work_order(json_file):
     """Sort work order to maximize the score"""
     bin_contents = get_bin_contents(json_file=json_file)
-    bins, objects = zip(*bin_contents)
-    bin_n_contents = dict(zip(bins, map(len, objects)))
+    bin_n_contents = dict(map(lambda (bin_, objects): (bin_, len(objects)), bin_contents.iteritems()))
     sorted_work_order = []
-    work_order = dict(get_work_order(json_file=json_file))
+    work_order = get_work_order(json_file=json_file)
     for bin_, n_contents in sorted(bin_n_contents.items(), key=lambda x: x[1]):
         if n_contents > 5:  # Level3
             continue
@@ -53,7 +35,7 @@ def get_work_order_msg(json_file):
         'rolodex_jumbo_pencil_cup',
         'oreo_mega_stuf'
     ]
-    bin_contents = dict(get_bin_contents(json_file=json_file))
+    bin_contents = get_bin_contents(json_file=json_file)
     for bin_, target_object in work_order:
         if target_object in abandon_target_objects:
             continue
