@@ -26,7 +26,7 @@
   <node pkg="jsk_apc2016_common" type="tf_bbox_to_mask.py"
       name="$(arg HAND)_sib_mask" output="screen">
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
-    <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
+    <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin_name"/>
     <remap from="~input" to="$(arg INPUT_INFO)"/>
   </node>
 
