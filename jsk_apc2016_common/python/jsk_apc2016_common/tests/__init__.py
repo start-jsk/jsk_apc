@@ -58,3 +58,10 @@ def test_visualize_stow_json():
     img = jsk_apc2016_common.visualize_stow_json(json_file)
     assert_equal(img.shape, (3985, 2067, 3))
     assert_equal(img.dtype, np.uint8)
+
+
+def test_visualize_pick_json():
+    json_file = osp.join(_this_dir, 'data', 'pick_layout_1.json')
+    img = jsk_apc2016_common.visualize_pick_json(json_file)
+    assert_equal(img.shape, (2435, 2067, 3))
+    assert_equal(img.dtype, np.uint8)

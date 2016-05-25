@@ -9,6 +9,7 @@ from nose.tools import assert_true
 import numpy as np
 
 import jsk_apc2015_common
+import rospkg
 
 
 _this_dir = osp.dirname(osp.realpath(osp.abspath(__file__)))
@@ -48,5 +49,16 @@ def test_visualize_bin_contents():
     assert_equal(img.dtype, np.uint8)
     # work_order is not None
     img = jsk_apc2015_common.visualize_bin_contents(bin_contents, work_order)
+    assert_equal(img.shape, (2435, 2067, 3))
+    assert_equal(img.dtype, np.uint8)
+    # extra_img_paths are passed
+    rp = rospkg.RosPack()
+    pkg_path = rp.get_path('jsk_apc2015_common')
+    extra_img_paths = {
+        'safety_works_safety_glasses':
+        osp.join(pkg_path, 'models/safety_works_safety_glasses/image.jpg')
+    }
+    img = jsk_apc2015_common.visualize_bin_contents(
+        bin_contents, extra_img_paths=extra_img_paths)
     assert_equal(img.shape, (2435, 2067, 3))
     assert_equal(img.dtype, np.uint8)

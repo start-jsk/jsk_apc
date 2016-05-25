@@ -54,20 +54,28 @@ def _get_tile_shape(img_num):
     return x_num, y_num
 
 
-def visualize_bin_contents(bin_contents, work_order=None):
+def visualize_bin_contents(bin_contents, work_order=None,
+                           extra_img_paths=None):
     """Returns visualized image of bin contents.
 
     Args:
         bin_contents (dict): contents of each bin.
         work_order (dict): target objects for each bin (default: ``None``).
+        extra_img_paths (dict): {object_name: img_path}
 
     Returns:
         kiva_pod_img (~numpy.ndarray):
             visualized image of listed objects over the Kiva Pod image.
     """
     from jsk_apc2015_common.util import rescale
-    # initialize variables
     pkg_path = rospkg.RosPack().get_path(PKG)
+    object_img_paths = {
+        obj: osp.join(pkg_path, 'models/{0}/image.jpg'.format(obj))
+        for obj in get_object_list()
+    }
+    if extra_img_paths is not None:
+        object_img_paths.update(extra_img_paths)
+    # initialize variables
     kiva_pod_img = cv2.imread(osp.join(pkg_path, 'models/kiva_pod/image.jpg'))
     BIN_REGION = {
         'a': ((0, 50), (640, 610)),
@@ -84,10 +92,8 @@ def visualize_bin_contents(bin_contents, work_order=None):
         'l': ((1410, 1850), (2060, 2430)),
     }
     # get object images
-    object_list = get_object_list()
     object_imgs = {}
-    for obj in object_list:
-        img_path = osp.join(pkg_path, 'models/{obj}/image.jpg'.format(obj=obj))
+    for obj, img_path in object_img_paths.items():
         img = cv2.imread(img_path)
         h, w = img.shape[:2]
         if h > w:
