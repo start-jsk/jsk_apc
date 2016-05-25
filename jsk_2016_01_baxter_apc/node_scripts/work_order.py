@@ -5,7 +5,8 @@ import sys
 import json
 import rospy
 from jsk_2015_05_baxter_apc.msg import WorkOrder, WorkOrderArray
-from jsk_apc2016_common import get_bin_contents, get_work_order
+from jsk_apc2016_common import get_bin_contents, get_work_order, get_object_data
+
 
 
 def get_sorted_work_order(json_file):
@@ -20,6 +21,9 @@ def get_sorted_work_order(json_file):
 
 
 def get_work_order_msg(json_file):
+    max_weight = rospy.get_param('~max_weight', -1)
+    apc2016 = rospy.get_param('~apc2016', False)
+
     work_order = get_sorted_work_order(json_file=json_file)
     msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
     abandon_target_objects = [
@@ -34,15 +38,20 @@ def get_work_order_msg(json_file):
         'oreo_mega_stuf'
     ]
     bin_contents = get_bin_contents(json_file=json_file)
+    object_data = get_object_data()
     for bin_, target_object in work_order:
-        if target_object in abandon_target_objects:
-            continue
-        bin_contents_bool = False
-        for bin_object in bin_contents[bin_]:
-            if bin_object in abandon_bin_objects:
-                bin_contents_bool = True
-        if bin_contents_bool:
-            continue
+        if apc2016:
+            target_object_data = [data for data in object_data if data['name'] == target_object][0]
+            if target_object_data:
+                if target_object_data['weight'] > max_weight and max_weight != -1:
+                    continue
+            else:
+                continue
+        else:
+            if target_object in abandon_target_objects:
+                continue
+            if [bin_object for bin_object in bin_contents[bin_] if bin_object in abandon_bin_objects]:
+                continue
         if len(bin_contents[bin_]) > 5:  # Level3
             continue
         if bin_ in 'abdegj':
