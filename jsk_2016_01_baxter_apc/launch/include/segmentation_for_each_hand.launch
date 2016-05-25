@@ -3,7 +3,6 @@
   <arg name="INPUT_IMAGE"/>
   <arg name="INPUT_INFO"/>
   <arg name="MANAGER"/>
-  <arg name="JSON"/>
   <arg name="HAND" />
   <arg name="INPUT_BIN_ARRAY" />
   <arg name="TRAINED_PATH" />

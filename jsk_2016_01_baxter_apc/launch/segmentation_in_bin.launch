@@ -47,7 +47,6 @@
     <arg name="INPUT_CLOUD" value="$(arg LEFT_INPUT_CLOUD_FILTERED)"/>
     <arg name="INPUT_INFO" value="$(arg LEFT_INPUT_INFO)"/>
     <arg name="MANAGER" value="$(arg MANAGER)" />
-    <arg name="JSON" value="$(arg json)" />
     <arg name="HAND" value="left" />
     <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
@@ -57,7 +56,6 @@
     <arg name="INPUT_CLOUD" value="$(arg RIGHT_INPUT_CLOUD_FILTERED)"/>
     <arg name="INPUT_INFO" value="$(arg RIGHT_INPUT_INFO)"/>
     <arg name="MANAGER" value="$(arg MANAGER)" />
-    <arg name="JSON" value="$(arg json)" />
     <arg name="HAND" value="right" />
     <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
