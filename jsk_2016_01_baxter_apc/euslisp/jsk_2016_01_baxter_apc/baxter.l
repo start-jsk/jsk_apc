@@ -40,12 +40,13 @@
   (:inverse-kinematics
     (target-coords
       &rest args
-      &key (additional-weight-list
-             (mapcar #'(lambda (jn) (list (send self jn :child-link) 0))
-                     '(:right_gripper_vacuum_pad_joint)))
+      &key link-list
       &allow-other-keys)
-    (send-super* :inverse-kinematics target-coords
-                 :additional-weight-list additional-weight-list args)
+    ;; if the last lik of link-list is a gripper, remove them
+    (when (member (send (car (last link-list)) :name) (list "right_gripper_vacuum_pad_base" "left_gripper_vacuum_pad_base"))
+      (setq link-list (butlast link-list)))
+    (send-super* :inverse-kinematics target-coords :link-list link-list
+                 args)
     )
   (:rotate-wrist
     (arm angle)

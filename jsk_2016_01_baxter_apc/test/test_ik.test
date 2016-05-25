@@ -1,0 +1,9 @@
+<launch>
+
+  <env name="DISPLAY" value="" />
+
+  <test test-name="test_ik"
+        name="test_ik"
+        pkg="jsk_2016_01_baxter_apc" type="test-ik.l"/>
+
+</launch>
