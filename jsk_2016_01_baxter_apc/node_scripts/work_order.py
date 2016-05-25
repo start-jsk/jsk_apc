@@ -84,7 +84,7 @@ def main():
     pub_right = rospy.Publisher('~right_hand',
                                 WorkOrderArray,
                                 queue_size=1)
-    rate = rospy.Rate(rospy.get_param('rate', 1))
+    rate = rospy.Rate(rospy.get_param('~rate', 1))
     while not rospy.is_shutdown():
         pub_left.publish(msg['left'])
         pub_right.publish(msg['right'])
