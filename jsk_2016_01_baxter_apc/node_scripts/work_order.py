@@ -15,8 +15,6 @@ def get_sorted_work_order(json_file):
     sorted_work_order = []
     work_order = get_work_order(json_file=json_file)
     for bin_, n_contents in sorted(bin_n_contents.items(), key=lambda x: x[1]):
-        if n_contents > 5:  # Level3
-            continue
         sorted_work_order.append((bin_, work_order[bin_]))
     return sorted_work_order
 
@@ -44,6 +42,8 @@ def get_work_order_msg(json_file):
             if bin_object in abandon_bin_objects:
                 bin_contents_bool = True
         if bin_contents_bool:
+            continue
+        if len(bin_contents[bin_]) > 5:  # Level3
             continue
         if bin_ in 'abdegj':
             msg['left'].array.append(WorkOrder(bin=bin_, object=target_object))
