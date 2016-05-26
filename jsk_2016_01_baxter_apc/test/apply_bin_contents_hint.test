@@ -1,0 +1,34 @@
+<launch>
+
+  <param name="/target_bin" value="f" />
+
+  <machine name="localhost" address="localhost" />
+
+  <node name="image_publisher"
+        pkg="jsk_perception" type="image_publisher.py">
+    <rosparam subst_value="true">
+      file_name: $(find jsk_2016_01_baxter_apc)/test/data/kong_duck_dog_toy.jpg
+    </rosparam>
+  </node>
+
+  <node name="img_to_label"
+        pkg="jsk_perception" type="image_to_label.py">
+    <remap from="~input" to="image_publisher/output" />
+  </node>
+
+  <node name="color_object_matcher"
+        pkg="jsk_2015_05_baxter_apc" type="color_object_matcher.py"
+        respawn="true">
+    <remap from="~input" to="image_publisher/output" />
+    <remap from="~input/label" to="img_to_label/output" />
+  </node>
+
+  <node name="apply_bin_contents_hint"
+        pkg="jsk_2016_01_baxter_apc" type="apply_bin_contents_hint.py">
+    <remap from="~input" to="color_object_matcher/output" />
+    <rosparam subst_value="true">
+      json: $(find jsk_2016_01_baxter_apc)/test/data/f2.json
+    </rosparam>
+  </node>
+
+</launch>

@@ -12,6 +12,8 @@ import rospy
 
 class ApplyBinContentsHint(ConnectionBasedTransport):
 
+    """Use bin contents info of target bin to improve object recognition"""
+
     def __init__(self):
         super(self.__class__, self).__init__()
         json_file = rospy.get_param('~json')
