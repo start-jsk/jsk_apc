@@ -3,67 +3,33 @@
   <arg name="INPUT_IMAGE" />
   <arg name="INPUT_DEPTH" />
   <arg name="INPUT_CLOUD" />
-  <arg name="MANAGER" />
 
   <arg name="UPPER_SHELF"/>
+  <arg name="NODELET_MANAGER" />
+  <arg name="NODELET_ID_0" />
+  <arg name="NODELET_ID_1" />
+  <arg name="NODELET_ID_2" />
+  <arg name="NODELET_ID_3" />
+  <arg name="NODELET_ID_4" />
+  <arg name="NODELET_ID_5" />
+  <arg name="NODELET_ID_6" />
 
-  <!-- bin clipper -->
-  <node name="bin_atof_clipper"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
-    <remap from="~input/points" to="$(arg INPUT_CLOUD)" />
+  <group ns="$(arg NODELET_MANAGER)">
+    <rosparam subst_value="true">
+      nodelets_$(arg NODELET_ID_0):
+        - name: bin_atof_clipper
+          type: jsk_pcl/AttentionClipper
+          remappings:
+            - from: ~input/points
+              to: $(arg INPUT_CLOUD)
+    </rosparam>
+  </group>
+  <group ns="bin_atof_clipper">
     <rosparam file="$(arg UPPER_SHELF)" command="load"/>
     <rosparam>
-      debug: true
       use_multiple_attention: true
     </rosparam>
-  </node>
-
-
-  <!-- object segmentation -->
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
-    <arg name="BIN_NAME" value="a" />
-    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
-    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
-    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_a/point_indices" />
-    <arg name="MANAGER" value="$(arg MANAGER)" />
-  </include>
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
-    <arg name="BIN_NAME" value="b" />
-    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
-    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
-    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_b/point_indices" />
-    <arg name="MANAGER" value="$(arg MANAGER)" />
-  </include>
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
-    <arg name="BIN_NAME" value="c" />
-    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
-    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
-    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_c/point_indices" />
-    <arg name="MANAGER" value="$(arg MANAGER)" />
-  </include>
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
-    <arg name="BIN_NAME" value="d" />
-    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
-    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
-    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_d/point_indices" />
-    <arg name="MANAGER" value="$(arg MANAGER)" />
-  </include>
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
-    <arg name="BIN_NAME" value="e" />
-    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
-    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
-    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_e/point_indices" />
-    <arg name="MANAGER" value="$(arg MANAGER)" />
-  </include>
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
-    <arg name="BIN_NAME" value="f" />
-    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
-    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
-    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_f/point_indices" />
-    <arg name="MANAGER" value="$(arg MANAGER)" />
-  </include>
-
+  </group>
 
   <node name="bin_atof_add_cpi"
         pkg="jsk_recognition_utils" type="add_cluster_indices.py">
@@ -81,7 +47,61 @@
         pkg="jsk_perception" type="image_cluster_indices_decomposer.py">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <remap from="~input/cluster_indices" to="bin_atof_add_cpi/output" />
+    <rosparam>
+      queue_size: 300
+    </rosparam>
   </node>
+
+
+  <!-- object segmentation -->
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="NODELET_ID" value="$(arg NODELET_ID_1)" />
+    <arg name="BIN_NAME" value="a" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_a/point_indices" />
+  </include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="NODELET_ID" value="$(arg NODELET_ID_2)" />
+    <arg name="BIN_NAME" value="b" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_b/point_indices" />
+  </include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="NODELET_ID" value="$(arg NODELET_ID_3)" />
+    <arg name="BIN_NAME" value="c" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_c/point_indices" />
+  </include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="NODELET_ID" value="$(arg NODELET_ID_4)" />
+    <arg name="BIN_NAME" value="d" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_d/point_indices" />
+  </include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="NODELET_ID" value="$(arg NODELET_ID_5)" />
+    <arg name="BIN_NAME" value="e" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_e/point_indices" />
+  </include>
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/segmentation_each_object_in_bin.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="NODELET_ID" value="$(arg NODELET_ID_6)" />
+    <arg name="BIN_NAME" value="f" />
+    <arg name="INPUT_DEPTH" value="$(arg INPUT_DEPTH)" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="INPUT_INDICES" value="/bin_atof_clipper/bin_f/point_indices" />
+  </include>
 
 
 </launch>
