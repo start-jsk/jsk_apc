@@ -527,7 +527,7 @@
         (ros::ros-info "[:try-to-pick-object] arm:~a again approach to the object" arm)
         (let ((temp-av (send *baxter* :angle-vector)))
           ;; only if robot can solve IK
-          (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local :rotation-axis :z)
+          (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
             (send self :angle-vector (send *baxter* :angle-vector) 3000))
           (send self :wait-interpolation)
           (send self :angle-vector (send *baxter* :angle-vector temp-av) 3000)  ;; revert baxter
