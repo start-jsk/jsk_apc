@@ -25,6 +25,7 @@ def test_get_object_data():
         assert_true('weight' in d)
         assert_true('graspability' in d)
         assert_true('gripper2015' in d['graspability'])
+        assert_true('gripper2016' in d['graspability'])
         assert_true('stock' in d)
 
 
