@@ -9,7 +9,10 @@
 
   <!-- work order data -->
   <node pkg="jsk_2016_01_baxter_apc" type="work_order.py" name="work_order" respawn="true">
-    <param name="json" value="$(arg json)" />
+    <rosparam subst_value="true">
+      json: $(arg json)
+      is_apc2016: false
+    </rosparam>
   </node>
 
   <!-- parameter -->

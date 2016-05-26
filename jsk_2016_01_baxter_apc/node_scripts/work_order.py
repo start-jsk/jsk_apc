@@ -109,7 +109,7 @@ def get_work_order_msg(json_file, gripper, object_data=None):
 def main():
     json_file = rospy.get_param('~json', None)
     gripper = rospy.get_param('~gripper', 'gripper2015')
-    is_apc2016 = rospy.get_param('~is_apc2016', False)
+    is_apc2016 = rospy.get_param('~is_apc2016', True)
     if json_file is None:
         rospy.logerr('must set json file path to ~json')
         return
