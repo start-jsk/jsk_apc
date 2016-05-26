@@ -4,6 +4,7 @@
        json: $(find jsk_apc2016_common)/json/pick_layout_1.json
        rate: 10
        is_apc2016: true
+       gripper: gripper2016
     </rosparam>
   </node>
 

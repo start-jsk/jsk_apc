@@ -9,19 +9,33 @@ import jsk_apc2016_common
 from jsk_topic_tools.log_utils import jsk_logwarn
 
 
-def get_sorted_work_order(json_file):
+def get_sorted_work_order(json_file, gripper, object_data):
     """Sort work order to maximize the score"""
     bin_contents = jsk_apc2016_common.get_bin_contents(json_file=json_file)
     work_order = jsk_apc2016_common.get_work_order(json_file=json_file)
-    bin_n_contents = dict(map(lambda (bin_, objects): (bin_, len(objects)), bin_contents.iteritems()))
-    sorted_work_order = []
-    for bin_, n_contents in sorted(bin_n_contents.items(), key=lambda x: x[1]):
-        sorted_work_order.append((bin_, work_order[bin_]))
+    sorted_bin_list = bin_contents.keys()
+
+    if object_data is not None:
+        if all(gripper in x for x in [d['graspability'].keys() for d in object_data]):
+            def get_graspability(bin_):
+                target_object = work_order[bin_]
+                target_object_data = [data for data in object_data
+                                      if data['name'] == target_object][0]
+                graspability = target_object_data['graspability'][gripper]
+                return graspability
+            sorted_bin_list = sorted(sorted_bin_list, key=get_graspability)
+        else:
+            jsk_logwarn('Not sorted by graspability')
+            jsk_logwarn('Not all object_data have graspability key: {gripper}'
+                        .format(gripper=gripper))
+    sorted_bin_list = sorted(sorted_bin_list,
+                             key=lambda bin_: len(bin_contents[bin_]))
+    sorted_work_order = [(bin_, work_order[bin_]) for bin_ in sorted_bin_list]
     return sorted_work_order
 
 
-def get_work_order_msg(json_file, object_data=None):
-    work_order = get_sorted_work_order(json_file=json_file)
+def get_work_order_msg(json_file, gripper, object_data=None):
+    work_order = get_sorted_work_order(json_file, gripper, object_data)
     bin_contents = jsk_apc2016_common.get_bin_contents(json_file=json_file)
     msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
     abandon_target_objects = [
@@ -61,6 +75,7 @@ def get_work_order_msg(json_file, object_data=None):
 def main():
     json_file = rospy.get_param('~json', None)
     is_apc2016 = rospy.get_param('~is_apc2016', True)
+    gripper = rospy.get_param('~gripper', 'gripper2016')
     if json_file is None:
         rospy.logerr('must set json file path to ~json')
         return
@@ -68,7 +83,7 @@ def main():
     if is_apc2016:
         object_data = jsk_apc2016_common.get_object_data()
 
-    msg = get_work_order_msg(json_file, object_data)
+    msg = get_work_order_msg(json_file, gripper, object_data)
 
     pub_left = rospy.Publisher('~left_hand',
                                WorkOrderArray,

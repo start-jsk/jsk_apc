@@ -12,6 +12,7 @@
     <rosparam>
         json: $(arg json)
         is_apc2016: false
+        gripper: gripper2016
     </rosparam>
   </node>
 
