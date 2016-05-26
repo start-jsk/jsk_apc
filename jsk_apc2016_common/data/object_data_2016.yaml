@@ -174,7 +174,7 @@
   weight: 6
 - name: rolodex_jumbo_pencil_cup
   graspability:
-    gripper2015: 1
+    gripper2015: 4
     gripper2016: 4
   stock: 1
   weight: 3.2
