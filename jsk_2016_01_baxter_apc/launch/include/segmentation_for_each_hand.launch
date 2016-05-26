@@ -1,8 +1,10 @@
 <launch>
+  <arg name="NODELET_MANAGER" />
+  <arg name="NODELET_ID_0" />
+
   <arg name="INPUT_CLOUD"/>
   <arg name="INPUT_IMAGE"/>
   <arg name="INPUT_INFO"/>
-  <arg name="MANAGER"/>
   <arg name="HAND" />
   <arg name="INPUT_BIN_ARRAY" />
   <arg name="TRAINED_PATH" />
@@ -45,29 +47,35 @@
     <param name="trained_pkl_path" value="$(arg TRAINED_PATH)" />
   </node>
 
-  <node name="$(arg HAND)_sib_mask_image_to_pi"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/MaskImageToPointIndices $(arg MANAGER)">
-    <remap from="~input" to="$(arg HAND)_sib_rbo/target_mask_compressed"/>
-  </node>
-
-  <node name="$(arg HAND)_sib_extract_pi"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
-    <remap from="~input" to="$(arg INPUT_CLOUD)" />
-    <remap from="~indices" to="$(arg HAND)_sib_mask_image_to_pi/output" />
+  <group ns="$(arg NODELET_MANAGER)">
+    <rosparam subst_value="true">
+      $(arg NODELET_ID_0):
+        - name: $(arg HAND)_sib_mask_image_to_pi
+          type: jsk_pcl/MaskImageToPointIndices
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_sib_rbo/target_mask_compressed
+        - name: $(arg HAND)_sib_extract_pi
+          type: jsk_pcl/ExtractIndices
+          remappings:
+            - from: ~input
+              to: $(arg INPUT_CLOUD)
+            - from: ~indices
+              to: $(arg HAND)_sib_mask_image_to_pi/output
+        - name: $(arg HAND)_sib_centroid_publisher
+          type: jsk_pcl/CentroidPublisher
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_sib_extract_pi/output
+    </rosparam>
+  </group>
+  <group ns="$(arg HAND)_sib_extract_pi">
     <rosparam>
       max_queue_size: 100
       approximate_sync: true
     </rosparam>
-  </node>
+  </group>
 
-  <node name="$(arg HAND)_sib_centroid_publisher"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/CentroidPublisher $(arg MANAGER)">
-        <remap from="~input" to="$(arg HAND)_sib_extract_pi/output"/>
-  </node>
-  
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/sib_visualization.launch">
       <arg name="POSTERIOR" value="/$(arg HAND)_sib_rbo/posterior"/>
       <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)"/>
