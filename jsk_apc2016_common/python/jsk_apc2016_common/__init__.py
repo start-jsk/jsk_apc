@@ -151,3 +151,28 @@ def visualize_stow_json(json_file):
     tote_img = cv2.resize(tote_img, (kiva_w, tote_h*kiva_w//tote_w))
     dest = np.concatenate((kiva_pod_img, tote_img), axis=0)
     return dest
+
+
+def visualize_pick_json(json_file):
+    """Visualize json file for Pick Task in APC2016
+
+    Args:
+        json_file (``str``): Path to the json file.
+
+    Returns:
+        kiva_pod_img (~numpy.ndarray):
+            visualized image of listed objects over the Kiva Pod image.
+    """
+    # load data from json
+    bin_contents, work_order = jsk_apc2015_common.load_json(json_file)
+    # set extra image paths that is added in APC2016
+    rp = rospkg.RosPack()
+    pkg_path = rp.get_path(PKG)
+    extra_img_paths = {}
+    for entry in get_object_data():
+        obj = entry['name']
+        extra_img_paths[obj] = osp.join(pkg_path, 'models', obj, 'image.jpg')
+    # generate visualized image
+    img = jsk_apc2015_common.visualize_bin_contents(
+        bin_contents, work_order, extra_img_paths)
+    return img
