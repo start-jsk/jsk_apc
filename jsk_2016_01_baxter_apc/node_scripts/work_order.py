@@ -65,7 +65,7 @@ def get_work_order_msg(json_file, gripper, max_weight, object_data=None):
         else:
             if target_object in abandon_target_objects:
                 jsk_logwarn('Skipping target {obj} in {bin_}: it is listed as abandon target'
-                            .format(obj=target_object['name'], bin_=bin_))
+                            .format(obj=target_object, bin_=bin_))
                 continue
             if any(bin_object in abandon_bin_objects for bin_object in bin_contents[bin_]):
                 jsk_logwarn('Skipping {bin_}: this bin contains abandon objects'.format(bin_=bin_))
