@@ -8,6 +8,8 @@ from jsk_2015_05_baxter_apc.msg import WorkOrder, WorkOrderArray
 import jsk_apc2016_common
 from jsk_topic_tools.log_utils import jsk_logwarn
 
+import numpy as np
+
 
 def get_sorted_work_order(json_file, gripper, object_data):
     """Sort work order to maximize the score"""
@@ -34,9 +36,11 @@ def get_sorted_work_order(json_file, gripper, object_data):
     return sorted_work_order
 
 
-def get_work_order_msg(json_file, gripper, object_data=None):
+def get_work_order_msg(json_file, gripper, max_weight, object_data=None):
     work_order = get_sorted_work_order(json_file, gripper, object_data)
     bin_contents = jsk_apc2016_common.get_bin_contents(json_file=json_file)
+    if max_weight == -1:
+        max_weight = np.inf
     msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
     abandon_target_objects = [
         'genuine_joe_plastic_stir_sticks',
@@ -53,6 +57,11 @@ def get_work_order_msg(json_file, gripper, object_data=None):
         if object_data is not None:
             target_object_data = [data for data in object_data
                                   if data['name'] == target_object][0]
+            if target_object_data['weight'] > max_weight:
+                jsk_logwarn('Skipping target {obj} in {bin_}: it exceeds max weight {weight} > {max_weight}'
+                            .format(obj=target_object_data['name'], bin_=bin_,
+                                    weight=target_object_data['weight'], max_weight=max_weight))
+                continue
         else:
             if target_object in abandon_target_objects:
                 jsk_logwarn('Skipping target {obj} in {bin_}: it is listed as abandon target'
@@ -76,6 +85,7 @@ def main():
     json_file = rospy.get_param('~json', None)
     is_apc2016 = rospy.get_param('~is_apc2016', True)
     gripper = rospy.get_param('~gripper', 'gripper2016')
+    max_weight = rospy.get_param('~max_weight', -1)
     if json_file is None:
         rospy.logerr('must set json file path to ~json')
         return
@@ -83,7 +93,7 @@ def main():
     if is_apc2016:
         object_data = jsk_apc2016_common.get_object_data()
 
-    msg = get_work_order_msg(json_file, gripper, object_data)
+    msg = get_work_order_msg(json_file, gripper, max_weight, object_data)
 
     pub_left = rospy.Publisher('~left_hand',
                                WorkOrderArray,

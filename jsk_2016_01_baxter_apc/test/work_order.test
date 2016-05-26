@@ -5,6 +5,7 @@
        rate: 10
        is_apc2016: true
        gripper: gripper2016
+       max_weight: 5.0
     </rosparam>
   </node>
 
