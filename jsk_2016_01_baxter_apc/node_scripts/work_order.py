@@ -8,15 +8,24 @@ from jsk_2015_05_baxter_apc.msg import WorkOrder, WorkOrderArray
 from jsk_apc2016_common import get_bin_contents, get_work_order, get_object_data
 
 
-
-def get_sorted_work_order(json_file):
+def get_sorted_work_order(json_file, apc2016):
     """Sort work order to maximize the score"""
+    gripper = rospy.get_param('~gripper', 'gripper2015')
     bin_contents = get_bin_contents(json_file=json_file)
-    bin_n_contents = dict(map(lambda (bin_, objects): (bin_, len(objects)), bin_contents.iteritems()))
-    sorted_work_order = []
     work_order = get_work_order(json_file=json_file)
-    for bin_, n_contents in sorted(bin_n_contents.items(), key=lambda x: x[1]):
-        sorted_work_order.append((bin_, work_order[bin_]))
+    object_data = get_object_data()
+    sorted_bin_list = bin_contents.keys()
+
+    def get_graspability(bin_):
+        target_object = work_order[bin_]
+        target_object_data = [data for data in object_data if data['name'] == target_object][0]
+        graspability = target_object_data['graspability'][gripper]
+        return graspability
+
+    if apc2016:
+        sorted_bin_list = sorted(sorted_bin_list, key=get_graspability)
+    sorted_bin_list = sorted(sorted_bin_list, key=lambda bin_: len(bin_contents[bin_]))
+    sorted_work_order = [(bin_, work_order[bin_]) for bin_ in sorted_bin_list]
     return sorted_work_order
 
 
@@ -24,7 +33,7 @@ def get_work_order_msg(json_file):
     max_weight = rospy.get_param('~max_weight', -1)
     apc2016 = rospy.get_param('~apc2016', False)
 
-    work_order = get_sorted_work_order(json_file=json_file)
+    work_order = get_sorted_work_order(json_file, apc2016)
     msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
     abandon_target_objects = [
         'genuine_joe_plastic_stir_sticks',
