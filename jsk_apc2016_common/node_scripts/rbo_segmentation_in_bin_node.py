@@ -65,6 +65,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
 
+        self.exist3d_img = (self.dist_img != 0)
+
         target_bin_name = rospy.get_param('~target_bin_name')
         if target_bin_name not in 'abcdefghijkl':
             rospy.logwarn('wrong target_bin_name')
@@ -81,6 +83,9 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         # generate a binary image
         self.segmentation()
         predicted_segment_compressed = cv2.resize(self.predicted_segment, (dist_msg.width, dist_msg.height))
+        if np.all(predicted_segment_compressed[self.exist3d_img] == 0):
+            rospy.logwarn('Output of RBO does not contain any point clouds.')
+            return
         try:
             predict_msg = self.bridge.cv2_to_imgmsg(
                     self.predicted_segment, encoding="mono8")
