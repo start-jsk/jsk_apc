@@ -3,7 +3,7 @@
     <rosparam subst_value="True">
        json: $(find jsk_apc2016_common)/json/pick_layout_1.json
        rate: 10
-       apc2016: true
+       is_apc2016: true
        gripper: gripper2015
        max_weight: -1
     </rosparam>
