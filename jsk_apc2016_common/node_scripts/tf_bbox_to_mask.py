@@ -20,21 +20,26 @@ class TFBboxToMask(ConnectionBasedTransport):
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
         self.bridge = CvBridge()
-
         self.camera_model = cameramodels.PinholeCameraModel()
-        bin_info_arr_msg = rospy.wait_for_message("~input/bin_info_array", BinInfoArray, timeout=50)
         self.shelf = {}
-        for bin_info in bin_info_arr_msg.array:
-            self.shelf[bin_info.name] = BinData(bin_info=bin_info)
         self.pub = self.advertise('~output', Image, queue_size=1)
 
     def subscribe(self):
+        self.bin_info_array_sub = rospy.Subscriber(
+            '~input/bin_info_array', BinInfoArray, self._bin_info_callback)
         self.sub = rospy.Subscriber('~input', CameraInfo, self._callback, queue_size=3)
 
     def unsubscribe(self):
         self.sub.unregister()
 
+    def _bin_info_callback(self, bin_info_array_msg):
+        for bin_info in bin_info_array_msg.array:
+            self.shelf[bin_info.name] = BinData(bin_info=bin_info)
+
     def _callback(self, camera_info):
+        if self.shelf == {}:
+            return
+
         target_bin_name = rospy.get_param('~target_bin_name')
         if target_bin_name not in 'abcdefghijkl':
             rospy.logwarn('wrong target_bin_name')

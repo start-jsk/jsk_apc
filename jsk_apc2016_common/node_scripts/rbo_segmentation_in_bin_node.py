@@ -24,9 +24,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
 
         self.load_trained(rospy.get_param('~trained_pkl_path'))
 
-        bin_info_array_msg = rospy.wait_for_message(
-                "~input/bin_info_array", BinInfoArray, timeout=50)
-        self.bin_info_dict = self.bin_info_array_to_dict(bin_info_array_msg)
+        self.bin_info_dict = {}
 
         self.bridge = CvBridge()
         self.img_pub = self.advertise('~target_mask', Image, queue_size=100)
@@ -35,13 +33,20 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.masked_input_img_pub = self.advertise('~masked_input', Image, queue_size=20)
 
     def subscribe(self):
+        self.bin_info_arr_sub = rospy.Subscriber(
+            '~input/bin_info_array', BinInfoArray, self._bin_info_callback)
         self.subscriber = rospy.Subscriber('~input', SegmentationInBinSync, self._callback)
 
     def unsubscribe(self):
         self.sub.unregister()
 
+    def _bin_info_callback(self, bin_info_array_msg):
+        self.bin_info_dict = self.bin_info_array_to_dict(bin_info_array_msg)
+
     def _callback(self, sync_msg):
         rospy.loginfo('started')
+        if self.bin_info_dict == {}:
+            return
 
         dist_msg = sync_msg.dist_msg
         height_msg = sync_msg.height_msg
