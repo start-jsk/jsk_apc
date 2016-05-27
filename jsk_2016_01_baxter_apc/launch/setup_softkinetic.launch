@@ -10,7 +10,7 @@
   <arg name="NODELET_ID_1" value="nodelets_1" />
 
   <!--right hand softkinetic -->
-  <node name="right_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" output="screen" >
+  <node name="right_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" output="screen" respawn="true">
     <rosparam>
       camera_link: right_softkinetic_camera_link
       rgb_optical_frame: right_softkinetic_camera_rgb_optical_frame
@@ -37,7 +37,7 @@
   </node>
 
   <!-- left hand softkinetic -->
-  <node name="left_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" output="screen" >
+  <node name="left_softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" output="screen" respawn="true">
     <rosparam>
       camera_link: left_softkinetic_camera_link
       rgb_optical_frame: left_softkinetic_camera_rgb_optical_frame
