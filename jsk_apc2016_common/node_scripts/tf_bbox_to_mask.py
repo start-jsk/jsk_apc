@@ -81,11 +81,13 @@ class TFBboxToMask(ConnectionBasedTransport):
         # generate an polygon that covers the region
         path = Path(projected_points)
         x, y = np.meshgrid(
-                np.arange(camera_model.width),
-                np.arange(camera_model.height))
+                np.arange(camera_model.width / self.camera_model.binning_x),
+                np.arange(camera_model.height / self.camera_model.binning_y))
         x, y = x.flatten(), y.flatten()
         points = np.vstack((x, y)).T
-        mask_img = path.contains_points(points).reshape(camera_model.height, camera_model.width)
+        mask_img = path.contains_points(points).reshape(
+                camera_model.height / self.camera_model.binning_x,
+                camera_model.width / self.camera_model.binning_y)
         mask_img = (mask_img * 255).astype(np.uint8)
         return mask_img
 
