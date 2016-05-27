@@ -1,10 +1,11 @@
 <launch>
+  <arg name="NODELET_MANAGER" />
 
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
+    <arg name="base_name" value="$(arg NODELET_MANAGER)" />
     <arg name="depth_method" value="cpu" />
     <arg name="reg_method" value="cpu" />
     <arg name="use_machine" value="true" />
-    <arg name="base_name" value="kinect2_head" />
     <arg name="max_depth" value="1.2" />
   </include>
 
