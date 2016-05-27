@@ -77,6 +77,8 @@
   </group>
 
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/sib_visualization.launch">
+      <arg name="DIST" value="/$(arg HAND)_sib_spatial/dist"/>
+      <arg name="HEIGHT" value="/$(arg HAND)_sib_spatial/height"/>
       <arg name="POSTERIOR" value="/$(arg HAND)_sib_rbo/posterior"/>
       <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)"/>
       <arg name="MASK" value="/$(arg HAND)_sib_rbo/target_mask"/>
