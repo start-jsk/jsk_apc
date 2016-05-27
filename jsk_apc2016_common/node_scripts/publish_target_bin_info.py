@@ -14,7 +14,7 @@ class PublishTargetBinInfo(object):
         self.bin_info_array_sub = rospy.Subscriber('~input/bin_info_array', BinInfoArray, self.callback)
         self.target_bin_info_pub = rospy.Publisher('~target_bin_info', BinInfo, queue_size=5)
 
-        rate = rospy.Rate(rospy.get_param('~rate', 10))
+        rate = rospy.get_param('~rate', 10)
         self.timer = rospy.Timer(rospy.Duration(1. / rate), self._publish)
 
     def _publish(self, event):
