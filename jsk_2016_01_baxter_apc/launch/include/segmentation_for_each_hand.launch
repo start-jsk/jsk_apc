@@ -54,7 +54,7 @@
           type: jsk_pcl/MaskImageToPointIndices
           remappings:
             - from: ~input
-              to: $(arg HAND)_sib_rbo/target_mask_compressed
+              to: $(arg HAND)_sib_rbo/target_mask
         - name: $(arg HAND)_sib_extract_pi
           type: jsk_pcl/ExtractIndices
           remappings:
