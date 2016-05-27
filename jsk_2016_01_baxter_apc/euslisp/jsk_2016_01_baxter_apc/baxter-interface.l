@@ -488,9 +488,11 @@
               (send self :wait-interpolation)
               ;; move arm to the target
               ;; if above IK succeeded, arm moves in the local z direction
-              (send self :angle-vector
-                    (send *baxter* arm :inverse-kinematics target-coords)
-                    (- 4000 elapsed-t))
+              (if (send *baxter* arm :inverse-kinematics target-coords)
+                (send self :angle-vector
+                  (send *baxter* :angle-vector)
+                  (- 4000 elapsed-t))
+                (ros::ros-warn "[:try-to-pick-object] arm:~a cannot approach closer" arm))
               )
             )
           )
