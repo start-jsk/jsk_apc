@@ -1,4 +1,6 @@
 <launch>
+  <arg name="DIST"/>
+  <arg name="HEIGHT"/>
   <arg name="POSTERIOR"/>
   <arg name="INPUT_IMAGE"/>
   <arg name="MASK"/>
@@ -7,6 +9,16 @@
   <node pkg="jsk_perception" type="colorize_float_image"
       name="$(arg HAND)_colorized_sib_posterior">
   <remap from="~input" to="$(arg POSTERIOR)"/>
+  </node>
+
+  <node pkg="jsk_perception" type="colorize_float_image"
+      name="$(arg HAND)_colorized_sib_height">
+  <remap from="~input" to="$(arg HEIGHT)"/>
+  </node>
+
+  <node pkg="jsk_perception" type="colorize_float_image"
+      name="$(arg HAND)_colorized_sib_dist">
+  <remap from="~input" to="$(arg DIST)"/>
   </node>
 
   <node pkg="jsk_perception" type="apply_mask_image"
