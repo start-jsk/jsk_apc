@@ -28,7 +28,6 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
 
         self.bridge = CvBridge()
         self.img_pub = self.advertise('~target_mask', Image, queue_size=100)
-        self.img_compressed_pub = self.advertise('~target_mask_compressed', Image, queue_size=100)
         self.posterior_pub = self.advertise('~posterior', Image, queue_size=20)
         self.masked_input_img_pub = self.advertise('~masked_input', Image, queue_size=20)
 
@@ -87,19 +86,14 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.set_apc_sample()
         # generate a binary image
         self.segmentation()
-        predicted_segment_compressed = cv2.resize(self.predicted_segment, (dist_msg.width, dist_msg.height))
-        if np.all(predicted_segment_compressed[self.exist3d_img] == 0):
+        if np.all(self.predicted_segment[self.exist3d_img] == 0):
             rospy.logwarn('Output of RBO does not contain any point clouds.')
             return
         try:
             predict_msg = self.bridge.cv2_to_imgmsg(
                     self.predicted_segment, encoding="mono8")
-            predict_compressed_msg = self.bridge.cv2_to_imgmsg(
-                    predicted_segment_compressed, encoding="mono8")
             predict_msg.header = color_msg.header
-            predict_compressed_msg.header = color_msg.header
             self.img_pub.publish(predict_msg)
-            self.img_compressed_pub.publish(predict_compressed_msg)
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
 

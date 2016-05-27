@@ -11,6 +11,7 @@
 
   <param name="$(arg HAND)_hand/target_bin" value=""/>
 
+
   <node pkg="jsk_apc2016_common" type="publish_target_bin_info.py"
     name="$(arg HAND)_sib_pub_target_bin_info" output="screen">
     <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
@@ -28,14 +29,14 @@
       name="$(arg HAND)_sib_mask" output="screen">
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
     <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
-    <remap from="~input" to="$(arg INPUT_INFO)"/>
+    <remap from="~input" to="/$(arg HAND)_softkinetic_camera_resized/camera_info"/>
   </node>
 
   <node pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
         name="$(arg HAND)_sib_topic_sync" output="screen">
     <remap from="~input/dist" to="/$(arg HAND)_sib_spatial/dist"/>
     <remap from="~input/height" to="/$(arg HAND)_sib_spatial/height"/>
-    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
+    <remap from="~input/image" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
     <remap from="~input/mask" to="/$(arg HAND)_sib_mask/output"/>
   </node>
 
@@ -50,11 +51,20 @@
   <group ns="$(arg NODELET_MANAGER)">
     <rosparam subst_value="true">
       $(arg NODELET_ID_0):
+        - name: $(arg HAND)_decimator
+          type: image_proc/crop_decimate
+          remappings:
+            - from: camera/image_raw
+              to: $(arg HAND)_softkinetic_camera/rgb/image_color
+            - from: camera/camera_info
+              to: $(arg HAND)_softkinetic_camera/rgb/camera_info
+            - from: camera_out
+              to: $(arg HAND)_softkinetic_camera_resized
         - name: $(arg HAND)_sib_mask_image_to_pi
           type: jsk_pcl/MaskImageToPointIndices
           remappings:
             - from: ~input
-              to: $(arg HAND)_sib_rbo/target_mask_compressed
+              to: $(arg HAND)_sib_rbo/target_mask
         - name: $(arg HAND)_sib_extract_pi
           type: jsk_pcl/ExtractIndices
           remappings:
@@ -69,6 +79,10 @@
               to: $(arg HAND)_sib_extract_pi/output
     </rosparam>
   </group>
+  <group ns="$(arg HAND)_decimator">
+    <param name="decimation_x" value="2" />
+    <param name="decimation_y" value="2" />
+  </group>
   <group ns="$(arg HAND)_sib_extract_pi">
     <rosparam>
       max_queue_size: 100
@@ -80,7 +94,7 @@
       <arg name="DIST" value="/$(arg HAND)_sib_spatial/dist"/>
       <arg name="HEIGHT" value="/$(arg HAND)_sib_spatial/height"/>
       <arg name="POSTERIOR" value="/$(arg HAND)_sib_rbo/posterior"/>
-      <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)"/>
+      <arg name="INPUT_IMAGE" value="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
       <arg name="MASK" value="/$(arg HAND)_sib_rbo/target_mask"/>
       <arg name="HAND" value="$(arg HAND)"/>
   </include>
