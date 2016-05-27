@@ -27,4 +27,10 @@
       <remap from="~input/mask" to="$(arg MASK)"/>
       <param name="approximate_sync" value="true"/>
   </node>
+
+  <node name="$(arg HAND)_sib_label_image_decomposer"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="/$(arg HAND)_sib_rbo/masked_input" />
+    <remap from="~input/label" to="/$(arg HAND)_sib_rbo/class_label" />
+  </node>
 </launch>

@@ -27,9 +27,10 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.bin_info_dict = {}
 
         self.bridge = CvBridge()
-        self.img_pub = self.advertise('~target_mask', Image, queue_size=100)
-        self.posterior_pub = self.advertise('~posterior', Image, queue_size=20)
-        self.masked_input_img_pub = self.advertise('~masked_input', Image, queue_size=20)
+        self.img_pub = self.advertise('~target_mask', Image, queue_size=10)
+        self.posterior_pub = self.advertise('~posterior', Image, queue_size=10)
+        self.masked_input_img_pub = self.advertise('~masked_input', Image, queue_size=10)
+        self.class_label_pub = self.advertise('~class_label', Image, queue_size=10)
 
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
@@ -97,22 +98,35 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         except CvBridgeError as e:
             rospy.logerr('{}'.format(e))
 
+        # ---------------------------------------------------------------------
         # for visualization
+        # ---------------------------------------------------------------------
         masked_input_img = cv2.cvtColor(self.apc_sample.image, cv2.COLOR_HSV2BGR)
+        # reapply mask image to visualize actually used region
+        masked_input_img[self.apc_sample.bin_mask == 0] = 0
         masked_input_msg = self.bridge.cv2_to_imgmsg(
-                masked_input_img)
+                masked_input_img, encoding='bgr8')
         masked_input_msg.header = color_msg.header
         self.masked_input_img_pub.publish(masked_input_msg)
 
-        try:
-            posterior_img = self.trained_segmenter.\
-                posterior_images_smooth[self.target_object]
-            posterior_msg = self.bridge.cv2_to_imgmsg(
-                posterior_img.astype(np.float32))
-            posterior_msg.header = color_msg.header
-            self.posterior_pub.publish(posterior_msg)
-        except CvBridgeError as e:
-            rospy.logerr('{}'.format(e))
+        # image which contains object probabilities
+        posterior_img = self.trained_segmenter.\
+            posterior_images_smooth[self.target_object]
+        posterior_msg = self.bridge.cv2_to_imgmsg(
+            posterior_img.astype(np.float32))
+        posterior_msg.header = color_msg.header
+        self.posterior_pub.publish(posterior_msg)
+
+        # label image with bin contents info
+        candidate_objects = self.target_bin_info.objects
+        posterior_imgs = np.array(
+            [self.trained_segmenter.posterior_images_smooth[o]
+             for o in ['shelf'] + candidate_objects])
+        class_label_img = np.argmax(posterior_imgs, axis=0).astype(np.int32)
+        class_label_msg = self.bridge.cv2_to_imgmsg(class_label_img)
+        class_label_msg.header = color_msg.header
+        self.class_label_pub.publish(class_label_msg)
+
         rospy.loginfo('ended')
 
     def bin_info_array_to_dict(self, bin_info_array):
