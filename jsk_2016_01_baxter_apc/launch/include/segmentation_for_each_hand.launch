@@ -67,12 +67,30 @@
           remappings:
             - from: ~input
               to: $(arg HAND)_sib_extract_pi/output
+        - name: $(arg HAND)_sib_pc_to_cpi
+          type: jsk_pcl_utils/PointCloudToClusterPointIndices
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_sib_extract_pi/output
+        - name: $(arg HAND)_sib_cpi_decomposer
+          type: jsk_pcl/ClusterPointIndicesDecomposer
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_sib_extract_pi/output
+            - from: ~target
+              to: $(arg HAND)_sib_pc_to_cpi/output
     </rosparam>
   </group>
   <group ns="$(arg HAND)_sib_extract_pi">
     <rosparam>
       max_queue_size: 100
       approximate_sync: true
+    </rosparam>
+  </group>
+
+  <group ns="$(arg HAND)_sib_cpi_decomposer">
+    <rosparam>
+      queue_size: 1000
     </rosparam>
   </group>
 
