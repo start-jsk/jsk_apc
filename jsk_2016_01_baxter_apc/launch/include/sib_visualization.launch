@@ -43,4 +43,10 @@
     <remap from="~input" to="/$(arg HAND)_softkinetic_camera_resized/image_raw" />
     <remap from="~input/label" to="/$(arg HAND)_target_mask_to_label/output" />
   </node>
+
+  <node name="$(arg HAND)_sib_combine_dist_and_image"
+    pkg="jsk_apc2016_common" type="combine_images.py">
+    <remap from="~color" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+    <remap from="~mono" to="/$(arg HAND)_sib_spatial/dist"/>
+  </node>
 </launch>
