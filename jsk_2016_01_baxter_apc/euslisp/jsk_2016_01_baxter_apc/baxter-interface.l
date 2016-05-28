@@ -566,7 +566,11 @@
     (send *ri* :wait-interpolation)
     (let (bin-box graspingp avs)
       ;; abort when no objects found
-      (when (eq (length (gethash bin _objects-in-bin-boxes)) 0) (return-from :pick-object nil))
+      (if
+        (or
+          (eq (length (gethash bin _objects-sib-boxes)) 0)
+          (eq (length (gethash bin _objects-sib-coords)) 0))
+        (return-from :pick-object nil) t)
       ;; move arm bin-entrance -> pos above object to z direction
       (setq bin-box (gethash bin _bin-boxes))
       (dotimes (i n-trial)
