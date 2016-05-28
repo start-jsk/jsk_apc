@@ -46,22 +46,18 @@
   <!-- object verification -->
   <group ns="left_hand">
     <node name="object_verification"
-          pkg="jsk_2015_05_baxter_apc" type="object_verification.py"
+          pkg="jsk_2016_01_baxter_apc" type="apply_bin_contents_hint.py"
           respawn="true">
+      <remap from="~input" to="vgg16_object_recognition/output" />
       <param name="json" value="$(arg json)" />
-      <param name="weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
-      <remap from="~input/bof" to="bof_object_matcher/output" />
-      <remap from="~input/color_hist" to="color_object_matcher/output" />
     </node>
   </group>
   <group ns="right_hand">
     <node name="object_verification"
-          pkg="jsk_2015_05_baxter_apc" type="object_verification.py"
+          pkg="jsk_2016_01_baxter_apc" type="apply_bin_contents_hint.py"
           respawn="true">
+      <remap from="~input" to="vgg16_object_recognition/output" />
       <param name="json" value="$(arg json)" />
-      <param name="weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
-      <remap from="~input/bof" to="bof_object_matcher/output" />
-      <remap from="~input/color_hist" to="color_object_matcher/output" />
     </node>
   </group>
 
