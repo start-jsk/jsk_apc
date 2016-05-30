@@ -8,12 +8,12 @@
   <arg name="TRAINED_PATH" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
 
   <arg name="RIGHT_INPUT_IMAGE" default="right_softkinetic_camera/rgb/image_color" />
-  <arg name="RIGHT_INPUT_CLOUD" default="right_softkinetic_camera/depth/points" />
-  <arg name="RIGHT_INPUT_CLOUD_FILTERED" default="right_softkinetic_camera/depth/points_filtered"/>   
+  <arg name="RIGHT_INPUT_CLOUD" default="right_softkinetic_camera/depth_registered/points" />
+  <arg name="RIGHT_INPUT_CLOUD_FILTERED" default="right_softkinetic_camera/depth_registered/points_filtered"/>
   <arg name="RIGHT_INPUT_INFO" default="right_softkinetic_camera/rgb/camera_info"/>
   <arg name="LEFT_INPUT_IMAGE" default="left_softkinetic_camera/rgb/image_color" />
-  <arg name="LEFT_INPUT_CLOUD" default="left_softkinetic_camera/depth/points" />
-  <arg name="LEFT_INPUT_CLOUD_FILTERED" default="left_softkinetic_camera/depth/points_filtered"/>   
+  <arg name="LEFT_INPUT_CLOUD" default="left_softkinetic_camera/depth_registered/points" />
+  <arg name="LEFT_INPUT_CLOUD_FILTERED" default="left_softkinetic_camera/depth_registered/points_filtered"/>
   <arg name="LEFT_INPUT_INFO" default="left_softkinetic_camera/rgb/camera_info"/>
 
   <!-- self filter -->
