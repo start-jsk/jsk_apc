@@ -2,6 +2,17 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* kinect2_head launch use standalone complex nodelet
+* kinect2_torso launch use standalone complex nodelet
+* jsk_tools_add_shell_test supports from 2.0.14
+* fix cmakelist depends path into full path
+* 2015 launch files do not depend on 2016 config
+* make .yaml compatiable with 2015 code
+* Test motion for move arm to bin
+* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
+
 0.2.4 (2016-04-15)
 ------------------
 * Add visualization tool to visualize ik to bin

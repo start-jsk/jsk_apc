@@ -2,6 +2,13 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add vgg16 object_recognition.launch
+* Visualize pick json with APC2016 objects
+* 2015 launch files do not depend on 2016 config
+* Contributors: Kentaro Wada, Yusuke Niitani
+
 0.2.4 (2016-04-15)
 ------------------
 * Add roslint as test_depend
