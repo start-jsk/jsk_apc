@@ -17,7 +17,8 @@
    _bin-boxes
    _objects-in-bin-boxes
    _objects-in-bin-coms
-   _objects-in-bin-sibs
+   _objects-sib-boxes
+   _objects-sib-coords
    _bin-coords-list
    )
   )
@@ -38,7 +39,8 @@
     (setq _bin-boxes (make-hash-table))
     (setq _objects-in-bin-boxes (make-hash-table))
     (setq _objects-in-bin-coms (make-hash-table))
-    (setq _objects-in-bin-sibs (make-hash-table))
+    (setq _objects-sib-boxes (make-hash-table))
+    (setq _objects-sib-coords (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
@@ -241,22 +243,31 @@
       (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-objects-segmentation-in-bin
     (arm bin &key (stamp (ros::time-now)))
-    (let ((sib-topic (format nil "~a_sib_centroid_publisher/output/pose" (send self :arm-symbol2str arm)))
-          sib-msg)
-      (ros::subscribe sib-topic geometry_msgs::PoseStamped
+    (let ((box-topic (format nil "~a_sib_cpi_decomposer/boxes" (send self :arm-symbol2str arm)))
+          box-msg
+          (com-topic (format nil "~a_sib_cpi_decomposer/centroid_pose_array" (send self :arm-symbol2str arm)))
+          com-msg)
+      (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
                           (let ((st (send msg :header :stamp)))
                             (when (> (send st :to-sec) (send stamp :to-sec))
-                              (setq sib-msg msg)))))
-      (while (not sib-msg)
+                              (setq box-msg msg)))))
+      (ros::subscribe com-topic geometry_msgs::PoseArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq com-msg msg)))))
+      (while (not (and box-msg com-msg))
              (unix::usleep (* 50 1000))
              (ros::spin-once))
-      (ros::unsubscribe sib-topic)
-      (ros::ros-info "[:recognize-objects-segmentation-in-bin] arm: ~a get sib centroid pose" arm)
-      (setq obj-pose (send sib-msg :pose))
-      (setq obj-coords (send self :tf-pose->coords
-                             (send sib-msg :header :frame_id) obj-pose))
-      (sethash bin _objects-in-bin-sibs obj-coords)))
+      (ros::unsubscribe box-topic)
+      (ros::unsubscribe com-topic)
+      (ros::ros-info "[:recognize-objects-segmentation-in-bin] arm: ~a get sib com and bbox" arm)
+      (setq obj-box (send box-msg :boxes))
+      (setq obj-coords (mapcar #'(lambda (obj-pose) (send self :tf-pose->coords
+                             (send com-msg :header :frame_id) obj-pose)) (send com-msg :poses)))
+      (sethash bin _objects-sib-boxes obj-box)
+      (sethash bin _objects-sib-coords obj-coords)))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
@@ -330,21 +341,14 @@
               (gripper-tube-t 40) gripper-req-l bin-box bin-y-l bin-z-l)
       ;; validate
       (unless
-        (setq obj-boxes (gethash bin _objects-in-bin-boxes))
-        (ros::ros-warn "No object is found: ~a, ~a" arm bin)
+        (setq obj-box (elt (gethash bin _objects-sib-boxes) object-index))
+        (ros::ros-warn "[SIB] No bbox  is found: ~a, ~a" arm bin)
         (return-from :try-to-pick-object nil))
+      ;; with Center of Mass
       (unless
-        (setq obj-box (elt obj-boxes object-index))
-        (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
+        (setq obj-coords (elt (gethash bin _objects-sib-coords) object-index))
+        (ros::ros-warn "[SIB] No com is found: ~a, ~a" arm bin)
         (return-from :try-to-pick-object nil))
-      (if (gethash bin _objects-in-bin-sibs)
-        (setq obj-coords (gethash bin _objects-in-bin-sibs))
-        (progn
-          (ros::ros-warn "[SIB] No object is found: ~a, ~a" arm bin)
-          (return-from :try-to-pick-object nil)))
-      ;; ik to obj a bit distant
-      ;; with Center of Bounding Box
-      ;; (setq obj-coords (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)))
       (setq gripper-req-l (+ pad-link-l (/ gripper-tube-t 2)))  ;; set requisite length for gripper to enter bin
       (unless
         (setq bin-box (gethash bin _bin-boxes))
@@ -352,10 +356,7 @@
         (return-from :try-to-pick-object nil))
       (setq bin-y-l (m->mm (send bin-box :dimensions :y))
             bin-z-l (m->mm (send bin-box :dimensions :z)))
-      (if (find bin '(:a :b :c :d :e :f))
-        (setq world-x :z world-y :x world-z :y)
-        (setq world-x :z world-y :y world-z :x)
-        )
+      (setq world-x :z world-y :x world-z :y)
       (if (eq arm :rarm)
         ;; if object is higher than highest end-coords when gripper is 90 degrees
         (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))
@@ -565,7 +566,11 @@
     (send *ri* :wait-interpolation)
     (let (bin-box graspingp avs)
       ;; abort when no objects found
-      (when (eq (length (gethash bin _objects-in-bin-boxes)) 0) (return-from :pick-object nil))
+      (if
+        (or
+          (eq (length (gethash bin _objects-sib-boxes)) 0)
+          (eq (length (gethash bin _objects-sib-coords)) 0))
+        (return-from :pick-object nil) t)
       ;; move arm bin-entrance -> pos above object to z direction
       (setq bin-box (gethash bin _bin-boxes))
       (dotimes (i n-trial)

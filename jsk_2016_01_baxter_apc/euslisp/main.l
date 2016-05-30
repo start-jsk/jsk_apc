@@ -91,7 +91,6 @@
             (progn
               ;; run motion
               (ros::ros-info "[main] Recognizing objects in bin" target-bin)
-              (send *ri* :recognize-objects-in-bin target-bin :stamp (ros::time-now))
               (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
               (send *ri* :wait-interpolation)
               (unix::sleep 2)
