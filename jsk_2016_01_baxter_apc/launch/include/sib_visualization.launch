@@ -2,6 +2,7 @@
   <arg name="DIST"/>
   <arg name="HEIGHT"/>
   <arg name="POSTERIOR"/>
+  <arg name="POSTERIOR_UNMASK"/>
   <arg name="INPUT_IMAGE"/>
   <arg name="MASK"/>
   <arg name="HAND"/>
@@ -9,6 +10,11 @@
   <node pkg="jsk_perception" type="colorize_float_image"
       name="$(arg HAND)_colorized_sib_posterior">
   <remap from="~input" to="$(arg POSTERIOR)"/>
+  </node>
+
+  <node pkg="jsk_perception" type="colorize_float_image"
+      name="$(arg HAND)_colorized_sib_posterior_unmask">
+  <remap from="~input" to="$(arg POSTERIOR_UNMASK)"/>
   </node>
 
   <node pkg="jsk_perception" type="colorize_float_image"
@@ -44,10 +50,19 @@
     <remap from="~input/label" to="/$(arg HAND)_target_mask_to_label/output" />
   </node>
 
-  <node name="$(arg HAND)_sib_overlay_image_color_on_mono"
+  <node name="$(arg HAND)_sib_overlay_dist_on_color"
     pkg="jsk_perception" type="overlay_image_color_on_mono">
     <remap from="~input/mono" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
     <remap from="~input/color" to="/$(arg HAND)_colorized_sib_dist/output"/>
+    <rosparam>
+      approximate_sync: true
+    </rosparam>
+  </node>
+
+  <node name="$(arg HAND)_sib_overlay_image_color_posteior_on_color"
+    pkg="jsk_perception" type="overlay_image_color_on_mono">
+    <remap from="~input/mono" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+    <remap from="~input/color" to="/$(arg HAND)_colorized_sib_posterior_unmask/output"/>
     <rosparam>
       approximate_sync: true
     </rosparam>

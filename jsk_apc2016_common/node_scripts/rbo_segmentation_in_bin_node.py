@@ -31,6 +31,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.posterior_pub = self.advertise('~posterior', Image, queue_size=10)
         self.masked_input_img_pub = self.advertise('~masked_input', Image, queue_size=10)
         self.class_label_pub = self.advertise('~class_label', Image, queue_size=10)
+        self.posteior_unmask_pub = self.advertise('~posterior_unmask', Image, queue_size=10)
 
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
@@ -116,6 +117,18 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
             posterior_img.astype(np.float32))
         posterior_msg.header = color_msg.header
         self.posterior_pub.publish(posterior_msg)
+
+        # posterior image with shape equal to the input
+        x = self.apc_sample.bounding_box['x']
+        y = self.apc_sample.bounding_box['y']
+        h = self.apc_sample.bounding_box['h']
+        w = self.apc_sample.bounding_box['w']
+        posterior_unmask_img = np.zeros(self.mask_img.shape)
+        posterior_unmask_img[y:y + h, x:x + w] = posterior_img
+        posterior_unmask_msg = self.bridge.cv2_to_imgmsg(
+            posterior_unmask_img.astype(np.float32))
+        posterior_unmask_msg.header = color_msg.header
+        self.posteior_unmask_pub.publish(posterior_unmask_msg)
 
         # label image with bin contents info
         candidate_objects = self.target_bin_info.objects
