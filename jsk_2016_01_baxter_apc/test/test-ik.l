@@ -26,14 +26,25 @@
       )))
   
 (deftest issue-1474 () ;; https://github.com/start-jsk/jsk_apc/issues/1470#issuecomment-220518802
-  (let (av1 av2)
+  (let (av1 av2 av3)
     (setup)
     (setq av1 (send *baxter* :angle-vector))
-    (send *baxter* :rarm :move-end-pos #f(0 0 -50) :local)
+    ;;(send *baxter* :rarm :move-end-pos #f(0 0 -50) :local)
+    (send-message *baxter* baxter-robot :rarm :move-end-pos #f(0 0 -50) :local)
     (setq av2 (send *baxter* :angle-vector)) ;; #f(0.0 97.4707 -2.39502 -94.5483 134.67 91.4062 8.70117 0.0 -8.22871 40.7953 92.2281 64.6958 -80.3615 -21.3969 -46.1696 90.0)
     (check-result av1 av2)
     (assert (and av1 av2))
-    (assert (< (norm (v- av1 av2)) 10))
+    (assert (< (norm (v- av1 av2)) 90)) ;;
+    ;; add to check if this can be solve normal-ik
+    (send *baxter* :angle-vector av1)
+    (setq av3 (send-message *baxter* robot-model
+                            :inverse-kinematics (send (send *baxter* :rarm :end-coords :copy-worldcoords) :translate #f(0 0 -50))
+                            :move-target (send *baxter* :rarm :end-coords)
+                            :link-list (send *baxter* :link-list (send *baxter* :right_gripper_vacuum_pad_joint :parent-link) (send *baxter* :rarm :root-link))
+                            :debug-view t))
+    (check-result av2 av3)
+    (assert (and av2 av3))
+    (assert (< (norm (v- av2 av3)) 5)) ;;
     ))
 
 ;; https://github.com/euslisp/jskeus/pull/380
