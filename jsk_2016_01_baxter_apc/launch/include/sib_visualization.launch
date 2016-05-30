@@ -5,30 +5,32 @@
   <arg name="POSTERIOR_UNMASK"/>
   <arg name="INPUT_IMAGE"/>
   <arg name="MASK"/>
+  <arg name="MASKED_INPUT"/>
+  <arg name="LABEL_IMAGE"/>
   <arg name="HAND"/>
 
-  <node pkg="jsk_perception" type="colorize_float_image"
-      name="$(arg HAND)_colorized_sib_posterior">
+  <node name="$(arg HAND)_colorized_sib_posterior"
+        pkg="jsk_perception" type="colorize_float_image">
   <remap from="~input" to="$(arg POSTERIOR)"/>
   </node>
 
-  <node pkg="jsk_perception" type="colorize_float_image"
-      name="$(arg HAND)_colorized_sib_posterior_unmask">
+  <node name="$(arg HAND)_colorized_sib_posterior_unmask"
+        pkg="jsk_perception" type="colorize_float_image">
   <remap from="~input" to="$(arg POSTERIOR_UNMASK)"/>
   </node>
 
-  <node pkg="jsk_perception" type="colorize_float_image"
-      name="$(arg HAND)_colorized_sib_height">
+  <node name="$(arg HAND)_colorized_sib_height"
+        pkg="jsk_perception" type="colorize_float_image">
   <remap from="~input" to="$(arg HEIGHT)"/>
   </node>
 
-  <node pkg="jsk_perception" type="colorize_float_image"
-      name="$(arg HAND)_colorized_sib_dist">
+  <node name="$(arg HAND)_colorized_sib_dist"
+        pkg="jsk_perception" type="colorize_float_image">
   <remap from="~input" to="$(arg DIST)"/>
   </node>
 
-  <node pkg="jsk_perception" type="apply_mask_image"
-      name="$(arg HAND)_sib_apply_target_mask">
+  <node name="$(arg HAND)_sib_apply_target_mask"
+        pkg="jsk_perception" type="apply_mask_image">
       <remap from="~input" to="$(arg INPUT_IMAGE)"/>
       <remap from="~input/mask" to="$(arg MASK)"/>
       <param name="approximate_sync" value="true"/>
@@ -36,32 +38,32 @@
 
   <node name="$(arg HAND)_sib_class_label_image_decomposer"
         pkg="jsk_perception" type="label_image_decomposer.py">
-    <remap from="~input" to="/$(arg HAND)_sib_rbo/masked_input" />
-    <remap from="~input/label" to="/$(arg HAND)_sib_rbo/class_label" />
+    <remap from="~input" to="$(arg MASKED_INPUT)" />
+    <remap from="~input/label" to="$(arg LABEL_IMAGE)" />
   </node>
 
   <node name="$(arg HAND)_target_mask_to_label"
         pkg="jsk_perception" type="mask_image_to_label.py">
-    <remap from="~input" to="/$(arg HAND)_sib_rbo/target_mask" />
+    <remap from="~input" to="$(arg MASK)" />
   </node>
   <node name="$(arg HAND)_sib_target_label_image_decomposer"
         pkg="jsk_perception" type="label_image_decomposer.py">
-    <remap from="~input" to="/$(arg HAND)_softkinetic_camera_resized/image_raw" />
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <remap from="~input/label" to="/$(arg HAND)_target_mask_to_label/output" />
   </node>
 
   <node name="$(arg HAND)_sib_overlay_dist_on_color"
-    pkg="jsk_perception" type="overlay_image_color_on_mono">
-    <remap from="~input/mono" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+        pkg="jsk_perception" type="overlay_image_color_on_mono">
+    <remap from="~input/mono" to="$(arg INPUT_IMAGE)"/>
     <remap from="~input/color" to="/$(arg HAND)_colorized_sib_dist/output"/>
     <rosparam>
       approximate_sync: true
     </rosparam>
   </node>
 
-  <node name="$(arg HAND)_sib_overlay_image_color_posteior_on_color"
-    pkg="jsk_perception" type="overlay_image_color_on_mono">
-    <remap from="~input/mono" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+  <node name="$(arg HAND)_sib_overlay_image_color_posterior_on_color"
+        pkg="jsk_perception" type="overlay_image_color_on_mono">
+    <remap from="~input/mono" to="$(arg INPUT_IMAGE)"/>
     <remap from="~input/color" to="/$(arg HAND)_colorized_sib_posterior_unmask/output"/>
     <rosparam>
       approximate_sync: true

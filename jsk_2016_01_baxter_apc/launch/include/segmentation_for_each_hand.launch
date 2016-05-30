@@ -113,6 +113,8 @@
       <arg name="POSTERIOR_UNMASK" value="/$(arg HAND)_sib_rbo/posterior_unmask"/>
       <arg name="INPUT_IMAGE" value="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
       <arg name="MASK" value="/$(arg HAND)_sib_rbo/target_mask"/>
+      <arg name="MASKED_INPUT" value="/$(arg HAND)_sib_rbo/masked_input"/>
+      <arg name="LABEL_IMAGE" value="/$(arg HAND)_sib_rbo/class_label"/>
       <arg name="HAND" value="$(arg HAND)"/>
   </include>
 </launch>
