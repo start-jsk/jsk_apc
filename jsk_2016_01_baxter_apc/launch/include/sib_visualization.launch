@@ -43,4 +43,13 @@
     <remap from="~input" to="/$(arg HAND)_softkinetic_camera_resized/image_raw" />
     <remap from="~input/label" to="/$(arg HAND)_target_mask_to_label/output" />
   </node>
+
+  <node name="$(arg HAND)_sib_overlay_image_color_on_mono"
+    pkg="jsk_perception" type="overlay_image_color_on_mono">
+    <remap from="~input/mono" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+    <remap from="~input/color" to="/$(arg HAND)_colorized_sib_dist/output"/>
+    <rosparam>
+      approximate_sync: true
+    </rosparam>
+  </node>
 </launch>
