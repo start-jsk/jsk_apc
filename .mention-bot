@@ -1,27 +1,26 @@
 {
-  "maxReviewers": 1, // Maximum  number of people to ping in the PR message, default is 3
-  "numFilesToCheck": 10, // Number of files to check against, default is 5
+  "maxReviewers": 1,
+  "numFilesToCheck": 10,
   "message": "@pullRequester, thanks! @reviewers, please review this.",
-             // custom message using @pullRequester and @reviewers
   "alwaysNotifyForPaths": [
     {
-      "name": "ghuser", // The user's Github username
-      "files": ["src/js/**/*.js"] // The array of file globs associated with the user
+      "name": "ghuser",
+      "files": ["src/js/**/*.js"]
     }
-  ], // users will always be mentioned based on file glob
+  ],
   "fallbackNotifyForPaths": [
     {
-      "name": "ghuser", // The user's Github username
-      "files": ["src/js/**/*.js"] // The array of file globs associated with the user
+      "name": "ghuser",
+      "files": ["src/js/**/*.js"]
     }
-  ], // users will be mentioned based on file glob if no other user was found
-  "findPotentialReviewers": true, // mention-bot will try to find potential reviewers based on files history, if disabled, `alwaysNotifyForPaths` is used instead
-  "fileBlacklist": [], // mention-bot will ignore any files that match these file globs
-  "userBlacklist": ["aginika", "garaemon", "wkentaro"], // users in this list will never be mentioned by mention-bot
-  "userBlacklistForPR": [], // PR made by users in this list will be ignored
-  "requiredOrgs": ["start-jsk"], // mention-bot will only mention user who are a member of one of these organizations
-  "actions": ["opened"], // List of PR actions that mention-bot will listen to, default is "opened"
-  "skipAlreadyAssignedPR": true, // mention-bot will ignore already assigned PR's
-  "assignToReviewer": true, // mention-bot assigns the most appropriate reviewer for PR
-  "skipTitle": "WIP" // mention-bot will ignore PR that includes text in the title
+  ],
+  "findPotentialReviewers": true,
+  "fileBlacklist": [],
+  "userBlacklist": ["aginika", "garaemon", "wkentaro"],
+  "userBlacklistForPR": [],
+  "requiredOrgs": ["start-jsk"],
+  "actions": ["opened"],
+  "skipAlreadyAssignedPR": true,
+  "assignToReviewer": true,
+  "skipTitle": "WIP"
 }
