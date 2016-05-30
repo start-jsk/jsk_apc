@@ -11,7 +11,7 @@ def parse(source_code):
     comment = False
     result = {
         'parenthesis_open': 0,
-        'parenthesis_close':0,
+        'parenthesis_close': 0,
         'tab': [],
     }
     for line_num, line in enumerate(source_code.splitlines()):
