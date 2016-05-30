@@ -51,15 +51,13 @@
   <group ns="$(arg NODELET_MANAGER)">
     <rosparam subst_value="true">
       $(arg NODELET_ID_0):
-        - name: $(arg HAND)_decimator
-          type: image_proc/crop_decimate
+        - name: $(arg HAND)_image_resizer
+          type: resized_image_transport/ImageResizer
           remappings:
-            - from: camera/image_raw
+            - from: ~input/image
               to: $(arg HAND)_softkinetic_camera/rgb/image_color
-            - from: camera/camera_info
-              to: $(arg HAND)_softkinetic_camera/rgb/camera_info
-            - from: camera_out
-              to: $(arg HAND)_softkinetic_camera_resized
+            - from: ~output/image
+              to: $(arg HAND)_softkinetic_camera_resized/image_raw
         - name: $(arg HAND)_sib_mask_image_to_pi
           type: jsk_pcl/MaskImageToPointIndices
           remappings:
@@ -91,9 +89,9 @@
               to: $(arg HAND)_sib_pc_to_cpi/output
     </rosparam>
   </group>
-  <group ns="$(arg HAND)_decimator">
-    <param name="decimation_x" value="2" />
-    <param name="decimation_y" value="2" />
+  <group ns="$(arg HAND)_image_resizer">
+    <param name="resize_scale_x" value="0.375"/>
+    <param name="resize_scale_y" value="0.375"/>
   </group>
   <group ns="$(arg HAND)_sib_extract_pi">
     <rosparam>
