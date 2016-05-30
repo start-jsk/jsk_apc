@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.0 (2016-05-31)
+------------------
 * Fix using float object not rospy.Rate in publish_target_bin_info.py
 * Visualize segementation result in bin
 * Merge pull request `#1569 <https://github.com/start-jsk/jsk_apc/issues/1569>`_ from yuyu2172/image-resize

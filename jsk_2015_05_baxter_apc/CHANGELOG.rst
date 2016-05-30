@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.0 (2016-05-31)
+------------------
 * kinect2_head launch use standalone complex nodelet
 * kinect2_torso launch use standalone complex nodelet
 * jsk_tools_add_shell_test supports from 2.0.14

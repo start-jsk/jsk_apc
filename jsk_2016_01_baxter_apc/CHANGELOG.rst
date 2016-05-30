@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.0 (2016-05-31)
+------------------
 * add image jsk image_resizer
 * fix failing remove gripper link from link-list, (member 'string' list) requries (member 'string' list #'equal)
 * use objects-sib-boxes and coords inspite of objects-in-bin-boxes and coms
