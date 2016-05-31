@@ -21,6 +21,14 @@ def main():
         extract=True,
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='test_data/sib_right_softkinetic.bag.tar.gz',
+        url='https://drive.google.com/uc?id=0BzBTxmVQJTrGTmJEaTZ5bERhMzg',
+        md5='f764107a2a2fda2bb4f800c519d97dc2',
+        extract=True,
+    )
+
 
 if __name__ == '__main__':
     main()
