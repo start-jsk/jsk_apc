@@ -242,7 +242,7 @@
       (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
       (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-objects-segmentation-in-bin
-    (arm bin &key (stamp (ros::time-now)))
+    (arm bin &key (stamp (ros::time-now)) (timeout 30))
     (let ((box-topic (format nil "~a_sib_cpi_decomposer/boxes" (send self :arm-symbol2str arm)))
           box-msg
           (com-topic (format nil "~a_sib_cpi_decomposer/centroid_pose_array" (send self :arm-symbol2str arm)))
@@ -257,17 +257,26 @@
                           (let ((st (send msg :header :stamp)))
                             (when (> (send st :to-sec) (send stamp :to-sec))
                               (setq com-msg msg)))))
-      (while (not (and box-msg com-msg))
+      (while (and
+               (not (and box-msg com-msg))
+               (> timeout (- (send (ros::time-now) :to-sec) (send stamp :to-sec))))
              (unix::usleep (* 50 1000))
              (ros::spin-once))
       (ros::unsubscribe box-topic)
       (ros::unsubscribe com-topic)
-      (ros::ros-info "[:recognize-objects-segmentation-in-bin] arm: ~a get sib com and bbox" arm)
-      (setq obj-box (send box-msg :boxes))
-      (setq obj-coords (mapcar #'(lambda (obj-pose) (send self :tf-pose->coords
-                             (send com-msg :header :frame_id) obj-pose)) (send com-msg :poses)))
-      (sethash bin _objects-sib-boxes obj-box)
-      (sethash bin _objects-sib-coords obj-coords)))
+      (cond
+        ((and box-msg com-msg)
+         (ros::ros-info "[:recognize-objects-segmentation-in-bin] arm: ~a get sib com and bbox" arm)
+         (setq obj-box (send box-msg :boxes))
+         (setq obj-coords
+               (mapcar #'(lambda (obj-pose)
+                           (send self :tf-pose->coords
+                                 (send com-msg :header :frame_id) obj-pose))
+                       (send com-msg :poses)))
+         (sethash bin _objects-sib-boxes obj-box)
+         (sethash bin _objects-sib-coords obj-coords))
+        (t
+         (ros::ros-error "[:recognize-objects-segmentation-in-bin] arm: ~a failed to get sib msg" arm)))))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
