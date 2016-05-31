@@ -27,7 +27,7 @@
   (:init
     (&rest args)
     ;; initialize controllers
-    (send-super* :init  :joint-states-queue-size 2 args)
+    (send-super* :init :joint-states-queue-size 2 args)
     (send self :add-controller :rgripper-controller)
     ;; hack for https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/227
     (if (not (equal (send (car (gethash :rarm-controller (self . controller-table))) :name)
@@ -66,27 +66,39 @@
     (&optional (arm :arms))
     (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
       (if (ros::get-param "/apc_on_gazebo" nil)
-        (ros::service-call (format nil "/robot/~a_vacuum_gripper/on" l/r) (instance std_srvs::EmptyRequest :init))
-        (ros::publish (format nil "/vacuum_gripper/limb/~a" l/r) (instance std_msgs::Bool :init :data t))
+        (ros::service-call
+          (format nil "/robot/~a_vacuum_gripper/on" l/r)
+          (instance std_srvs::EmptyRequest :init))
+        (ros::publish
+          (format nil "/vacuum_gripper/limb/~a" l/r)
+          (instance std_msgs::Bool :init :data t))
         )
       ))
   (:stop-grasp
     (&optional (arm :arms))
     (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
       (if (ros::get-param "/apc_on_gazebo" nil)
-        (ros::service-call (format nil "/robot/~a_vacuum_gripper/off" l/r) (instance std_srvs::EmptyRequest :init))
-        (ros::publish (format nil "/vacuum_gripper/limb/~a" l/r) (instance std_msgs::Bool :init :data nil))
+        (ros::service-call
+          (format nil "/robot/~a_vacuum_gripper/off" l/r)
+          (instance std_srvs::EmptyRequest :init))
+        (ros::publish
+          (format nil "/vacuum_gripper/limb/~a" l/r)
+          (instance std_msgs::Bool :init :data nil))
         )
       ))
   (:gripper-servo-on
     (&optional (arm :arms))
     (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
-      (ros::publish (format nil "/gripper_front/limb/~a/servo/torque" l/r) (instance std_msgs::Bool :init :data t))
+      (ros::publish
+        (format nil "/gripper_front/limb/~a/servo/torque" l/r)
+        (instance std_msgs::Bool :init :data t))
       ))
   (:gripper-servo-off
     (&optional (arm :arms))
     (dolist (l/r (if (eq arm :arms) (list "left" "right") (list (send self :arm-symbol2str arm))))
-      (ros::publish (format nil "/gripper_front/limb/~a/servo/torque" l/r) (instance std_msgs::Bool :init :data nil))
+      (ros::publish
+        (format nil "/gripper_front/limb/~a/servo/torque" l/r)
+        (instance std_msgs::Bool :init :data nil))
       ))
   (:graspingp
     (arm)
@@ -103,8 +115,16 @@
   (:need-to-wait-opposite-arm
     (arm)
     (let (opposite-state)
-      (setq opposite-state (str2symbol (ros::get-param (format nil "~a_hand/state" (send self :arm-symbol2str (send self :opposite-arm arm))))))
-      (setq opposite-target (str2symbol (ros::get-param (format nil "~a_hand/target_bin" (send self :arm-symbol2str (send self :opposite-arm arm))))))
+      (setq opposite-state
+            (str2symbol (ros::get-param
+                          (format nil "~a_hand/state"
+                                  (send self :arm-symbol2str
+                                        (send self :opposite-arm arm))))))
+      (setq opposite-target
+            (str2symbol (ros::get-param
+                          (format nil "~a_hand/target_bin"
+                                  (send self :arm-symbol2str
+                                        (send self :opposite-arm arm))))))
       (if (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))
         t
         nil)))
@@ -209,7 +229,9 @@
     (let (msg coords-list)
       (setq msg
         (one-shot-subscribe
-          (format nil "bin_~a_solidity_rag_merge_cpi_decomposer/centroid_pose_array" (symbol2str bin))
+          (format nil
+                  "bin_~a_solidity_rag_merge_cpi_decomposer/centroid_pose_array"
+                  (symbol2str bin))
           geometry_msgs::PoseArray
           :after-stamp stamp))
       (dolist (pose-msg (send msg :poses))
@@ -245,7 +267,9 @@
     (arm bin &key (stamp (ros::time-now)) (timeout 30))
     (let ((box-topic (format nil "~a_sib_cpi_decomposer/boxes" (send self :arm-symbol2str arm)))
           box-msg
-          (com-topic (format nil "~a_sib_cpi_decomposer/centroid_pose_array" (send self :arm-symbol2str arm)))
+          (com-topic (format nil
+                             "~a_sib_cpi_decomposer/centroid_pose_array"
+                             (send self :arm-symbol2str arm)))
           com-msg)
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
@@ -358,10 +382,12 @@
         (setq obj-coords (elt (gethash bin _objects-sib-coords) object-index))
         (ros::ros-warn "[SIB] No com is found: ~a, ~a" arm bin)
         (return-from :try-to-pick-object nil))
-      (setq gripper-req-l (+ pad-link-l (/ gripper-tube-t 2)))  ;; set requisite length for gripper to enter bin
+      ;; set requisite length for gripper to enter bin
+      (setq gripper-req-l (+ pad-link-l (/ gripper-tube-t 2)))
       (unless
         (setq bin-box (gethash bin _bin-boxes))
-        (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
+        (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a." bin)
+        (ros::ros-error "[:try-to-pick-object] Call :recognize-bin-boxes first.")
         (return-from :try-to-pick-object nil))
       (setq bin-y-l (m->mm (send bin-box :dimensions :y))
             bin-z-l (m->mm (send bin-box :dimensions :z)))
@@ -369,17 +395,22 @@
       (if (eq arm :rarm)
         ;; if object is higher than highest end-coords when gripper is 90 degrees
         (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))
-          (let ((obj-pos-y (elt (send (send self :tf-pose->coords (send obj-box :header :frame_id) (send obj-box :pose)) :pos) 1))
+          (let ((obj-pos-y (elt (send (send self :tf-pose->coords
+                                            (send obj-box :header :frame_id)
+                                            (send obj-box :pose)) :pos) 1))
                 (obj-y-l (m->mm (send obj-box :dimensions world-y)))
                 (bin-center-y (elt (send (send *baxter* arm :end-coords) :worldpos) 1))
-                ;; :ik->bin-entrance brought y-coordinates of end-coords to the same value as center of bin
+                ;; :ik->bin-entrance brought y-coordinates of end-coords
+                ;; to the same value as center of bin
                 )
             (cond ((< (+ obj-pos-y (/ obj-y-l 2))
-                      (- (+ bin-center-y (/ bin-y-l 2)) gripper-req-l)) ;; if space gripper can enter exists on right
+                      ;; if space gripper can enter exists on right
+                      (- (+ bin-center-y (/ bin-y-l 2)) gripper-req-l))
                    (setq sign -1)
                    (setq sign_y 0))
                   ((> (- obj-pos-y (/ obj-y-l 2))
-                      (+ (- bin-center-y (/ bin-y-l 2)) gripper-req-l)) ;; if space gripper can enter exists on left
+                      ;; if space gripper can enter exists on left
+                      (+ (- bin-center-y (/ bin-y-l 2)) gripper-req-l))
                    (setq sign 1)
                    (setq sign_y 0))
                   (t
@@ -393,10 +424,15 @@
             )
           )
         (if (and
-              (< (send obj-box :dimensions world-y) (send obj-box :dimensions world-z))
-              (> (send obj-box :dimensions world-z) (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
+              (< (send obj-box :dimensions world-y)
+                 (send obj-box :dimensions world-z))
+              (> (send obj-box :dimensions world-z)
+                 (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
               )
-          (setq sign (if (< (elt (send obj-coords :pos) 1) (elt (send (send *baxter* arm :end-coords) :worldpos) 1)) -1 1)) ;; compare y
+          ;; compare y
+          (setq sign (if (< (elt (send obj-coords :pos) 1)
+                            (elt (send (send *baxter* arm :end-coords)
+                                       :worldpos) 1)) -1 1))
           (setq sign 0))
         )
       (if (eq arm :rarm)
@@ -410,19 +446,25 @@
             (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
             (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l -40)))
             )
-          (setq offset-from-entrance (float-vector -30 0 (m->mm (/ (send (gethash bin _bin-boxes) :dimensions :z) 4))))
+          (setq offset-from-entrance
+                (float-vector -30 0
+                              (m->mm (/ (send (gethash bin _bin-boxes)
+                                              :dimensions :z) 4))))
           )
         )
       (if (eq arm :rarm)
         (send self :angle-vector
-              (send self :ik->bin-entrance arm bin :offset offset-from-entrance :gripper-angle (* (+ sign_y 1) 90))
+              (send self :ik->bin-entrance arm bin
+                    :offset offset-from-entrance :gripper-angle (* (+ sign_y 1) 90))
               3000)
-        (send self :angle-vector (send self :ik->bin-entrance arm bin :offset offset-from-entrance) 3000)
+        (send self :angle-vector
+              (send self :ik->bin-entrance arm bin :offset offset-from-entrance) 3000)
         )
       (send self :wait-interpolation)
       ; (pushback
       ;   (send *baxter* arm :inverse-kinematics
-      ;       (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :translate offset :local))
+      ;       (send (send (send *baxter* arm :end-coords)
+      ;                   :copy-worldcoords) :translate offset :local))
       ;   avs)
       (if (eq arm :rarm)
         (if (and (not (= sign 0)) (>= sign_y 0))
@@ -431,7 +473,11 @@
                                    (send (send bin-box :header) :frame_id)
                                    (send bin-box :pose)))
             (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-            (send end-coords :translate (float-vector (- (/ bin-dim-x 2)) (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0) :world)
+            (send end-coords :translate
+                  (float-vector
+                    (- (/ bin-dim-x 2))
+                    (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0)
+                  :world)
             (send end-coords :rotate (* sign pi/2) :x :local)
             ;; decide target coords depending on size of gripper and bin
             (pushback
@@ -455,7 +501,8 @@
         (progn
           (pushback
             (send *baxter* arm :inverse-kinematics
-                  (send (send (send *baxter* arm :end-coords) :copy-worldcoords) :rotate (* sign pi/2) :x :local))
+                  (send (send (send *baxter* arm :end-coords) :copy-worldcoords)
+                        :rotate (* sign pi/2) :x :local))
             avs)
           (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
           (send self :wait-interpolation)
@@ -524,7 +571,8 @@
           (unix::sleep 1)
           (send self :angle-vector
                 (send *baxter* arm :inverse-kinematics
-                      (make-coords :pos (send obj-coords :pos) :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
+                      (make-coords :pos (send obj-coords :pos)
+                                   :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
                 3000)
           )
         (send self :angle-vector
@@ -591,14 +639,22 @@
                   )
             (pushback (send *baxter* :angle-vector) avs)
             )
-          (when (and graspingp (> (send self :real-sim-end-coords-diff arm) (if (eq arm :rarm) 80 60)))
-            (ros::ros-info "arm:~a Grasped wall so stop-grasp, diff: ~a" arm (send self :real-sim-end-coords-diff arm))
+          (when (and graspingp
+                     (> (send self :real-sim-end-coords-diff arm)
+                        (if (eq arm :rarm) 80 60)))
+            (ros::ros-info
+              "arm:~a Grasped wall so stop-grasp, diff: ~a" arm
+              (send self :real-sim-end-coords-diff arm))
             (send self :stop-grasp arm)
             (unix::sleep 3)
             )
           )
-        (when (and graspingp (> (send self :real-sim-end-coords-diff arm) (if (eq arm :rarm) 80 60)))
-          (ros::ros-info "arm:~a Grasped wall so stop-grasp, diff: ~a" arm (send self :real-sim-end-coords-diff arm))
+        (when (and graspingp
+                   (> (send self :real-sim-end-coords-diff arm)
+                      (if (eq arm :rarm) 80 60)))
+          (ros::ros-info
+            "arm:~a Grasped wall so stop-grasp, diff: ~a" arm
+            (send self :real-sim-end-coords-diff arm))
           (send self :stop-grasp arm)
           (unix::sleep 3)
           )
@@ -646,9 +702,12 @@
         )
       (dolist (arm arms)
         (while
-          (> (norm (v- (send *baxter* arm :angle-vector) (send *ri* :arm-potentio-vector arm))) threshold)
+          (> (norm (v- (send *baxter* arm :angle-vector)
+                       (send *ri* :arm-potentio-vector arm))) threshold)
           (when (> times stop) (ros::ros-warn "abort to send avs: ~A" arm) (return))  ;; abort
-          (ros::ros-info "difference of avs: ~A" (norm (v- (send *baxter* arm :angle-vector) (send *ri* :arm-potentio-vector arm))))
+          (ros::ros-info "difference of avs: ~A"
+                         (norm (v- (send *baxter* arm :angle-vector)
+                                   (send *ri* :arm-potentio-vector arm))))
           (send *ri* :angle-vector (send *baxter* :angle-vector))
           (send *ri* :wait-interpolation)
           (incf times)
@@ -656,11 +715,13 @@
         ))
     )
   (:ik->bin-entrance
-    (arm bin &key (offset #f(0 0 0)) (gripper-angle 90) (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil))
+    (arm bin &key (offset #f(0 0 0)) (gripper-angle 90)
+         (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil))
     (let (bin-box bin-coords bin-dim-x)
       (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
-        (ros::ros-error "[:ik->bin-entrance] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
+        (ros::ros-error "[:ik->bin-entrance] No data about bin-box ~a." bin)
+        (ros::ros-error "[:ik->bin-entrance] Call :recognize-bin-boxes first.")
         (return-from :ik->bin-entrance))
       (setq bin-coords (send self :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
@@ -706,7 +767,10 @@
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
-      (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 -150) :rotation-axis t :overlook-angle (/ pi 9)) avs)
+      (pushback (send self :ik->bin-entrance arm bin
+                      :offset #f(-150 0 -150)
+                      :rotation-axis t
+                      :overlook-angle (/ pi 9)) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
   (:move-arm-body->order-bin
@@ -785,8 +849,10 @@
     (arm)
     (let (real-coords sim-coords diff-coords thresh)
       (send self :update-robot-state)
-      (setq real-coords (send (send robot arm :root-link) :transformation (send robot arm :end-coords)))
-      (setq sim-coords (send (send *baxter* arm :root-link) :transformation (send *baxter* arm :end-coords)))
+      (setq real-coords (send (send robot arm :root-link)
+                              :transformation (send robot arm :end-coords)))
+      (setq sim-coords (send (send *baxter* arm :root-link)
+                             :transformation (send *baxter* arm :end-coords)))
       (setq diff-coords (send real-coords :transformation sim-coords :local))
       (elt (send diff-coords :pos) 2)))
   (:wait-for-user-input-to-start
@@ -797,7 +863,8 @@
       (ros::wait-for-service "rqt_yn_btn")
       (while
         (not can-start)
-        (setq can-start (send (ros::service-call "rqt_yn_btn" (instance jsk_rqt_plugins::YesNoRequest)) :yes))
+        (setq can-start (send (ros::service-call
+                                "rqt_yn_btn" (instance jsk_rqt_plugins::YesNoRequest)) :yes))
         )
       (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~a" arm)
       ))

@@ -29,7 +29,10 @@
 
 
 (defun solidity-main ()
-  (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str *arm*)) (symbol2str *bin*))
+  (ros::set-param
+    (format nil "~a_hand/target_bin"
+            (send *ri* :arm-symbol2str *arm*))
+    (symbol2str *bin*))
 
   (send *ri* :recognize-objects-in-bin *bin* :stamp (ros::time-now))
 

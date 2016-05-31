@@ -17,11 +17,17 @@
 
 (defun list-to-string (label-list color-list text)
     (if label-list
-      (list-to-string (cdr label-list) (cdr color-list) (concatenate string text (car color-list) ":" (car label-list) "  "))
+      (list-to-string
+        (cdr label-list)
+        (cdr color-list)
+        (concatenate string text (car color-list) ":" (car label-list) "  "))
       text)
   )
 
-(ros::subscribe "/color_object_matcher/output" jsk_recognition_msgs::ClassificationResult #'viz-recog-cb)
+(ros::subscribe
+  "/color_object_matcher/output"
+  jsk_recognition_msgs::ClassificationResult
+  #'viz-recog-cb)
 
 (ros::rate 10)
 (setq i 0)

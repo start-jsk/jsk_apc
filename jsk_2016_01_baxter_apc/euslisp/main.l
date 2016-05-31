@@ -30,13 +30,17 @@
           ;; wait user input to start the task
           (send *ri* :wait-for-user-input-to-start arm)
           (setq state :initialize)
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param
+            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+            (symbol2str state))
           )
         (:initialize
           (ros::ros-info "[main] ~a, ~a" arm state)
           (setq order nil)
           (setq state :set_target)
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param
+            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+            (symbol2str state))
           )
         (:set_target
           (ros::ros-info "[main] ~a, ~a" arm state)
@@ -46,7 +50,9 @@
             (progn
               ;; all work orders are done so go to 'wait' status
               (setq state :wait_for_user_input)
-              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+              (ros::set-param
+                (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+                (symbol2str state))
               )
             (progn
               (ros::ros-warn "next-work-order: ~a" order)
@@ -56,18 +62,27 @@
               (setq target-obj (send order :object))
               (if (send *ri* :check-bin-exist target-bin)
                 (progn
-                  (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
+                  (ros::set-param
+                    (format nil "~a_hand/target_bin"
+                            (send *ri* :arm-symbol2str arm))
+                    (symbol2str target-bin))
                   ;; logging
                   (ros::ros-info "[main] state: ~a" state)
                   (ros::ros-info "[main] arm: ~a" arm)
                   (ros::ros-info "[main] target-bin: ~a" target-bin)
                   (ros::ros-info "[main] target-obj: ~a" target-obj)
                   (setq state :pick_object)
-                  (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+                  (ros::set-param
+                    (format nil "~a_hand/state"
+                            (send *ri* :arm-symbol2str arm))
+                    (symbol2str state)))
                 (progn
                   (ros::ros-info "[main] could not find bin box: ~a" target-bin)
                   (setq state :set_target)
-                  (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+                  (ros::set-param
+                    (format nil "~a_hand/state"
+                            (send *ri* :arm-symbol2str arm))
+                    (symbol2str state)))
                 )
               )
             )
@@ -78,7 +93,9 @@
             (send *ri* :need-to-wait-opposite-arm arm)
             (unix::sleep 1))
           (setq state :pick_object)
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param
+            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+            (symbol2str state))
           )
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
@@ -87,7 +104,9 @@
             (progn
               (ros::ros-info "[main] Need to wait for opposite arm: ~a ~a" arm target-bin)
               (setq state :wait_for_opposite_arm)
-              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+              (ros::set-param
+                (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+                (symbol2str state)))
             (progn
               ;; run motion
               (ros::ros-info "[main] Recognizing objects in bin" target-bin)
@@ -95,20 +114,27 @@
               (send *ri* :wait-interpolation)
               (unix::sleep 2)
               (ros::ros-info "[main] Segmentating objects in bin" target-bin)
-              (send *ri* :recognize-objects-segmentation-in-bin arm target-bin :stamp (ros::time-now))
-              ;; (ros::ros-info "detected_object_index: ~A" (send *ri* :detect-target-object-in-bin target-obj target-bin))
+              (send *ri* :recognize-objects-segmentation-in-bin arm target-bin
+                    :stamp (ros::time-now))
+              ;; (ros::ros-info "detected_object_index: ~A"
+              ;;                (send *ri* :detect-target-object-in-bin target-obj
+              ;;                      target-bin))
               (setq graspingp
                     (send *ri* :pick-object arm target-bin
                           :n-trial 1
                           :n-trial-same-pos 1
-                          ;; :object-index (send *ri* :detect-target-object-in-bin target-obj target-bin)
+                          ;; :object-index (send *ri* :detect-target-object-in-bin
+                          ;;                     target-obj target-bin)
                           :do-stop-grasp nil
                           )
                     )
               (setq graspingp t)  ;; don't trust pressure sensor
               (incf target-n-tried)
               (setq state :verify_object)
-              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+              (ros::set-param
+                (format nil "~a_hand/state"
+                        (send *ri* :arm-symbol2str arm))
+                (symbol2str state)))
             ))
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
@@ -130,7 +156,8 @@
                           (send *baxter* :fold-pose-back arm)
                           )
                         :fast nil 0 :scale 5.0)
-                  ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
+                  ;; if have tried N times and N is larger than
+                  ;; number of bin contents, robot should abort the target
                   (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
                     (setq state :pick_object)
                     (setq state :set_target)
@@ -141,7 +168,9 @@
                   (setq state :return_object)
                   )
                 )
-              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+              (ros::set-param
+                (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+                (symbol2str state))
               )
             (progn
               (send *ri* :angle-vector-sequence
@@ -150,7 +179,8 @@
                       (send *baxter* :fold-pose-back arm)
                       )
                     :fast nil 0 :scale 5.0)
-              ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
+              ;; if have tried N times and N is larger than
+              ;; number of bin contents, robot should abort the target
               (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
                 (setq state :pick_object)
                 (setq state :set_target)
@@ -167,7 +197,8 @@
                   (cons (send *baxter* :avoid-shelf-pose arm target-bin)
                         (mapcar
                           #'(lambda (x)
-                              (send *ri* :ik->bin-entrance arm target-bin :offset (float-vector x 0 -20)))
+                              (send *ri* :ik->bin-entrance arm target-bin
+                                    :offset (float-vector x 0 -20)))
                           '(-200 -150 -100 -50 0 150))
                         )
                   (list
@@ -191,11 +222,15 @@
           (send *ri* :wait-interpolation)
           (send *ri* :fold-pose-back arm)
           (send *ri* :wait-interpolation)
-          ;; if have tried N times and N is larger than number of bin contents, robot should abort the target
+          ;; if have tried N times and N is larger than
+          ;; number of bin contents, robot should abort the target
           (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
             (setq state :pick_object)
-            (setq state :set_target) (ros::ros-warn "[main] Abort ~a and go to next target" target-bin))
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+            (setq state :set_target)
+            (ros::ros-warn "[main] Abort ~a and go to next target" target-bin))
+          (ros::set-param
+            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+            (symbol2str state))
           )
         (:place_object
           (ros::ros-info "[main] ~a, ~a" arm state)
@@ -208,7 +243,9 @@
           (send *ri* :send-av)
           (send *ri* :wait-interpolation)
           (setq state :set_target)
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param
+            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+            (symbol2str state))
           )
         ))  ;; while & case
     ))
