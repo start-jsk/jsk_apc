@@ -62,14 +62,12 @@ for f in os.listdir(save_dir):
     if m:
         id = int(m.groups()[1])
         assert osp.exists(osp.join(save_dir, 'pick_layout_%d.json' % id))
-        assert osp.exists(osp.join(save_dir, 'stow_layout_%d.json' % id))
         ids.append(id)
 if ids:
     next_json_id = max(ids) + 1
 else:
     next_json_id = 1
 pick_json_file = osp.join(save_dir, 'pick_layout_%d.json' % next_json_id)
-stow_json_file = osp.join(save_dir, 'stow_layout_%d.json' % next_json_id)
 
 # ------------------------------------------------------------------------------
 
@@ -157,10 +155,17 @@ def generateBinContents():
         for ii in range(0, bin_count):
             bin_name = random.choice(abins)
             abins.remove(bin_name)
-            for jj in range(0, bin_size):
-                item_name = random.choice(items)
-                items.remove(item_name)
-                bin_contents[bin_name].append(item_name)
+            if bin_name == 'bin_L':
+                bin_size_l = 3
+                for jj in range(0, bin_size_l):
+                    item_name = random.choice(items)
+                    items.remove(item_name)
+                    bin_contents[bin_name].append(item_name)
+            else:
+                for jj in range(0, bin_size):
+                    item_name = random.choice(items)
+                    items.remove(item_name)
+                    bin_contents[bin_name].append(item_name)
 
     return bin_contents
 
@@ -189,27 +194,3 @@ data = {'bin_contents': bin_contents, 'work_order': work_order, 'tote_contents':
 with open(pick_json_file, 'w') as outfile:
     json.dump(data, outfile, sort_keys=True, indent=4, separators=(',', ': '))
 print("Generated '%s'" % pick_json_file)
-
-
-# Do the work for the stowing task
-# ------------------------------------------------------------------------------
-# Generate bin contents for the stow pod
-bin_size_count = {}
-bin_size_count[2] = 3
-bin_size_count[3] = 4
-bin_size_count[4] = 2
-bin_size_count[6] = 2
-bin_size_count[8] = 1
-
-bin_contents = generateBinContents()
-
-# Stowing task begins with 12 items in tote
-tote_contents = []
-for bin_name in CONST_BIN_NAMES:
-    tote_contents.append(bin_contents[bin_name].pop())
-
-# Write data to appropriately-named json file
-data = {'bin_contents': bin_contents, 'tote_contents': tote_contents}
-with open(stow_json_file, 'w') as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',', ': '))
-print("Generated '%s'" % stow_json_file)
