@@ -1,0 +1,52 @@
+<launch>
+  <param name="/use_sim_time" value="true" type="bool"/> 
+  <node name="rosbag_play"
+    pkg="rosbag" type="play"
+    args="$(find jsk_2016_01_baxter_apc)/test_data/sib_right_softkinetic.bag --loop --clock --rate=0.2">
+  </node>
+
+  <!-- from main.launch -->
+  <arg name="json" value="$(find jsk_2015_05_baxter_apc)/json/layout_12.json"/>
+  <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
+  <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
+  <!-- Publish jsk_apc2016_common/BinInfo from json -->
+  <node name="set_bin_param"
+        pkg="jsk_apc2016_common" type="publish_bin_info.py"
+        output="screen">
+    <param name="json" value="$(arg json)"/>
+    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
+    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
+  </node>
+  <!-- publish bin tf -->
+  <node pkg="jsk_apc2016_common" type="publish_bin_tf.py"
+    name="pub_bin_tf">
+    <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
+  </node>
+  <!-- from main.launch END -->
+
+  <node name="right_softkinetic_camera_manager"
+        pkg="jsk_topic_tools" type="standalone_complexed_nodelet"
+        respawn="true">
+  </node>
+  <node name="left_softkinetic_camera_manager"
+        pkg="jsk_topic_tools" type="standalone_complexed_nodelet"
+        respawn="true">
+  </node>
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/segmentation_in_bin.launch">
+    <arg name="NODELET_MANAGER_RIGHT" value="right_softkinetic_camera_manager" />
+    <arg name="NODELET_MANAGER_LEFT" value="left_softkinetic_camera_manager" />
+    <arg name="NODELET_ID_0" value="nodelets_0" />
+    <arg name="NODELET_ID_1" value="nodelets_1" />
+    <arg name="RIGHT_INPUT_IMAGE" default="right_softkinetic_camera/rgb/image_color" />
+    <arg name="RIGHT_INPUT_CLOUD" default="right_softkinetic_camera/depth_registered/points" />
+    <arg name="RIGHT_INPUT_CLOUD_FILTERED" default="right_softkinetic_camera/depth_registered/points_filtered"/>
+    <arg name="RIGHT_INPUT_INFO" default="right_softkinetic_camera/rgb/camera_info"/>
+  </include>
+<param name="/left_hand/target_bin" value="j"/>
+<param name="/right_hand/target_bin" value="l"/>
+
+<include file="$(find jsk_2016_01_baxter_apc)/launch/save_data.launch">
+  <arg name="hand" value="right"/>
+  <arg name="layout_name" value="test_layout_12"/>
+</include>
+</launch>

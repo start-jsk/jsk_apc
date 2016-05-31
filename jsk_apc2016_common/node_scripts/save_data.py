@@ -53,22 +53,23 @@ class SaveData(ConnectionBasedTransport):
         self.height_img = self.bridge.imgmsg_to_cv2(
             height_msg, "passthrough").astype(np.float) / 255.0
 
-        color_img = self.bridge.imgmsg_to_cv2(color_msg, "bgr8")
-        self.color_img = cv2.cvtColor(color_img, cv2.COLOR_BGR2HSV)
+        self.color_img = self.bridge.imgmsg_to_cv2(color_msg, "bgr8")
+        # self.color_img = cv2.cvtColor(color_img, cv2.COLOR_BGR2HSV)
 
         self.target_bin_name = rospy.get_param('~target_bin_name')
         self.target_object = self.bin_info_dict[self.target_bin_name].target
         self.target_bin_info = self.bin_info_dict[self.target_bin_name]
 
-        data, save_path = self.get_save_info()
-
+        data, pkl_path, img_path = self.get_save_info()
 
         # save image
+        # self.color_img = cv2.cvtColor(color_img, cv2.COLOR_BGR2HSV)
+        # plt.imsave(img_path, data['color_img'])
+        cv2.imwrite(img_path, self.color_img)
 
-
-        with open(save_path, 'wb') as f:
+        with open(pkl_path, 'wb') as f:
             pickle.dump(data, f)
-        rospy.loginfo('saved to {}'.format(save_path))
+        rospy.loginfo('saved to {}'.format(pkl_path))
 
     def get_save_info(self):
         data = {}
@@ -83,8 +84,10 @@ class SaveData(ConnectionBasedTransport):
         rospack = rospkg.RosPack()
         dir_path = rospack.get_path('jsk_apc2016_common') + '/data/tokyo_run/'
         save_path = (dir_path + self.layout_name + '_' + time + '_bin_' +
-                     self.target_bin_name + '.pkl')
-        return data, save_path
+                     self.target_bin_name)
+        pkl_path = save_path + '.pkl'
+        img_path = save_path + '.jpg'
+        return data, pkl_path, img_path
 
     def bin_info_array_to_dict(self, bin_info_array):
         bin_info_dict = {}
