@@ -2,7 +2,7 @@
 
 import rospy
 from jsk_apc2016_common.msg import BinInfo, BinInfoArray
-from jsk_recognition_msgs.msg import BoundingBox
+from jsk_recognition_msgs.msg import BoundingBox, BoundingBoxArray
 from geometry_msgs.msg import Pose
 import jsk_apc2016_common.segmentation_in_bin.\
         segmentation_in_bin_helper as helper
@@ -37,6 +37,7 @@ class BinInfoArrayPublisher(object):
         self.json_file = None
 
         pub_bin_info_arr = rospy.Publisher('~bin_array', BinInfoArray, queue_size=1)
+        pub_bbox_arr = rospy.Publisher('~bbox_array', BoundingBoxArray, queue_size=1)
         rate = rospy.Rate(rospy.get_param('rate', 1))
         while not rospy.is_shutdown():
             json = rospy.get_param('~json', None)
@@ -47,14 +48,31 @@ class BinInfoArrayPublisher(object):
                 self.from_shelf_param('upper')
                 self.from_shelf_param('lower')
 
+                # create bounding box array
+                self.bbox_array = self.get_bounding_box_array(self.bbox_dict)
+                self.bbox_array.header.stamp
+
                 # get contents of bin from json
                 self.bin_contents_dict = self.get_bin_contents(self.json_file)
                 self.targets_dict = self.get_targets(self.json_file)
 
                 # create bin_msg
                 self.create_bin_info_arr()
+
+            pub_bbox_arr.publish(self.bbox_array)
             pub_bin_info_arr.publish(self.bin_info_arr)
             rate.sleep()
+
+    def get_bounding_box_array(self, bbox_dict):
+        bbox_list = [(key, bbox) for key, bbox in bbox_dict.iteritems()]
+        sorted(bbox_list, key=lambda x: x[0])
+        bbox_list = [bbox for key, bbox in bbox_list]
+
+        bbox_array = BoundingBoxArray(boxes=bbox_list)
+        bbox_array.header.stamp = rospy.Time(0)
+        bbox_array.header.seq = 0
+        bbox_array.header.frame_id = 'kiva_pod_base'
+        return bbox_array
 
     def from_shelf_param(self, upper_lower):
         upper_lower = upper_lower + '_shelf'
