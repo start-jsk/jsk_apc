@@ -770,6 +770,7 @@
       (pushback (send self :ik->bin-entrance arm bin
                       :offset #f(-150 0 -150)
                       :rotation-axis t
+                      :gripper-angle 90
                       :overlook-angle (/ pi 9)) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
