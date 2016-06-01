@@ -35,22 +35,21 @@ class BinInfoArrayPublisher(object):
         self.targets_dict = {}
         self.cam_direction_dict = {}
 
-        self.json_file = rospy.get_param('~json', None)
-
-        # get bbox from rosparam
-        self.from_shelf_param('upper')
-        self.from_shelf_param('lower')
-
-        # get contents of bin from json
-        self.bin_contents_dict = self.get_bin_contents(self.json_file)
-        self.targets_dict = self.get_targets(self.json_file)
-
-        # create bin_msg
-        self.create_bin_info_arr()
-
         pub_bin_info_arr = rospy.Publisher('~bin_array', BinInfoArray, queue_size=1)
         rate = rospy.Rate(rospy.get_param('rate', 1))
         while not rospy.is_shutdown():
+            self.json_file = rospy.get_param('~json', None)
+
+            # get bbox from rosparam
+            self.from_shelf_param('upper')
+            self.from_shelf_param('lower')
+
+            # get contents of bin from json
+            self.bin_contents_dict = self.get_bin_contents(self.json_file)
+            self.targets_dict = self.get_targets(self.json_file)
+
+            # create bin_msg
+            self.create_bin_info_arr()
             pub_bin_info_arr.publish(self.bin_info_arr)
             rate.sleep()
 
