@@ -85,20 +85,53 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.target_object = self.bin_info_dict[self.target_bin_name].target
         self.target_bin_info = self.bin_info_dict[self.target_bin_name]
 
-        self.set_apc_sample()
-        # generate a binary image
-        self.segmentation()
-        if np.any(self.predicted_segment[self.exist3d_img] != 0):
-            predict_msg = self.bridge.cv2_to_imgmsg(
-                    self.predicted_segment, encoding="mono8")
-            predict_msg.header = color_msg.header
-            self.img_pub.publish(predict_msg)
-        else:
-            rospy.logwarn('Output of RBO does not contain any point clouds')
+        try:
+            self.set_apc_sample()
+            # generate a binary image
+            self.segmentation()
+            if np.any(self.predicted_segment[self.exist3d_img] != 0):
+                predict_msg = self.bridge.cv2_to_imgmsg(
+                        self.predicted_segment, encoding="mono8")
+                predict_msg.header = color_msg.header
+                self.img_pub.publish(predict_msg)
+            else:
+                rospy.logwarn('Output of RBO does not contain any point clouds.')
 
-        # ---------------------------------------------------------------------
-        # for visualization
-        # ---------------------------------------------------------------------
+            # -----------------------------------------------------------------
+            # for visualization
+            # -----------------------------------------------------------------
+            # image which contains object probabilities
+            posterior_img = self.trained_segmenter.\
+                posterior_images_smooth[self.target_object]
+            posterior_msg = self.bridge.cv2_to_imgmsg(
+                posterior_img.astype(np.float32))
+            posterior_msg.header = color_msg.header
+            self.posterior_pub.publish(posterior_msg)
+
+            # posterior image with shape equal to the input
+            x = self.apc_sample.bounding_box['x']
+            y = self.apc_sample.bounding_box['y']
+            h = self.apc_sample.bounding_box['h']
+            w = self.apc_sample.bounding_box['w']
+            posterior_unmask_img = np.zeros(self.mask_img.shape)
+            posterior_unmask_img[y:y + h, x:x + w] = posterior_img
+            posterior_unmask_msg = self.bridge.cv2_to_imgmsg(
+                posterior_unmask_img.astype(np.float32))
+            posterior_unmask_msg.header = color_msg.header
+            self.posteior_unmask_pub.publish(posterior_unmask_msg)
+
+            # label image with bin contents info
+            candidate_objects = self.target_bin_info.objects
+            posterior_imgs = np.array(
+                [self.trained_segmenter.posterior_images_smooth[o]
+                for o in ['shelf'] + candidate_objects])
+            class_label_img = np.argmax(posterior_imgs, axis=0).astype(np.int32)
+            class_label_msg = self.bridge.cv2_to_imgmsg(class_label_img)
+            class_label_msg.header = color_msg.header
+            self.class_label_pub.publish(class_label_msg)
+        except KeyError, e:
+            rospy.loginfo(repr(e))
+
         masked_input_img = cv2.cvtColor(self.apc_sample.image, cv2.COLOR_HSV2BGR)
         # reapply mask image to visualize actually used region
         masked_input_img[self.apc_sample.bin_mask == 0] = 0
@@ -107,35 +140,6 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         masked_input_msg.header = color_msg.header
         self.masked_input_img_pub.publish(masked_input_msg)
 
-        # image which contains object probabilities
-        posterior_img = self.trained_segmenter.\
-            posterior_images_smooth[self.target_object]
-        posterior_msg = self.bridge.cv2_to_imgmsg(
-            posterior_img.astype(np.float32))
-        posterior_msg.header = color_msg.header
-        self.posterior_pub.publish(posterior_msg)
-
-        # posterior image with shape equal to the input
-        x = self.apc_sample.bounding_box['x']
-        y = self.apc_sample.bounding_box['y']
-        h = self.apc_sample.bounding_box['h']
-        w = self.apc_sample.bounding_box['w']
-        posterior_unmask_img = np.zeros(self.mask_img.shape)
-        posterior_unmask_img[y:y + h, x:x + w] = posterior_img
-        posterior_unmask_msg = self.bridge.cv2_to_imgmsg(
-            posterior_unmask_img.astype(np.float32))
-        posterior_unmask_msg.header = color_msg.header
-        self.posteior_unmask_pub.publish(posterior_unmask_msg)
-
-        # label image with bin contents info
-        candidate_objects = self.target_bin_info.objects
-        posterior_imgs = np.array(
-            [self.trained_segmenter.posterior_images_smooth[o]
-             for o in ['shelf'] + candidate_objects])
-        class_label_img = np.argmax(posterior_imgs, axis=0).astype(np.int32)
-        class_label_msg = self.bridge.cv2_to_imgmsg(class_label_img)
-        class_label_msg.header = color_msg.header
-        self.class_label_pub.publish(class_label_msg)
 
         rospy.loginfo('ended')
 
