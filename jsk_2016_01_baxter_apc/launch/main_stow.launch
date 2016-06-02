@@ -1,0 +1,38 @@
+<launch>
+  <arg name="launch_main" default="true" />
+  <!--
+  <arg name="json" />
+  -->
+
+  <!-- parameter -->
+  <param name="/left_hand/state" value="" />
+  <param name="/left_hand/target_bin" value="" />
+  <param name="/right_hand/state" value="" />
+  <param name="/right_hand/target_bin" value="" />
+
+  <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="rqt_yn_btn" />
+
+  <!-- robot main -->
+  <node if="$(arg launch_main)" pkg="jsk_2016_01_baxter_apc" type="main-stow.l" name="right_hand"
+    args="&quot;(progn (apc-stow-init :rarm-controller) (apc-stow-mainloop :rarm))&quot;"
+    respawn="true" output="screen">
+    <env name="DISPLAY" value="" />
+  </node>
+  <node if="$(arg launch_main)" pkg="jsk_2016_01_baxter_apc" type="main-stow.l" name="left_hand"
+    args="&quot;(progn (apc-stow-init :larm-controller) (apc-stow-mainloop :larm))&quot;"
+    respawn="true" output="screen">
+    <env name="DISPLAY" value="" />
+  </node> 
+
+  <!-- visualization -->
+  <!--
+  <node name="visualize_json"
+        pkg="jsk_apc2016_common" type="visualize_stow_json.py"
+        args="$(arg json)" />
+  <node name="visualize_on_rviz"
+        pkg="jsk_2015_05_baxter_apc" type="visualize_on_rviz.py">
+    <param name="json" value="$(arg json)" />
+  </node>
+  -->
+
+</launch>
