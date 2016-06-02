@@ -180,7 +180,7 @@
                 )
           (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
-          (send *ri* :stop-grasp) ;; release object
+          (send *ri* :stop-grasp arm) ;; release object
           (send *ri* :spin-off-by-wrist arm :times 20)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-sequence
