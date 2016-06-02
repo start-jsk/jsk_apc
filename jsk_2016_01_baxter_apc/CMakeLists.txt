@@ -233,7 +233,7 @@ add_custom_target(compile_stow_kiva_world ALL
 # endif()
 
 ## Add folders to be run by python nosetests
-if(0) # CATKIN_ENABLE_TESTING)
+if(CATKIN_ENABLE_TESTING)
   find_package(roslint REQUIRED)
   roslint_python(node_scripts)
   roslint_add_test()
