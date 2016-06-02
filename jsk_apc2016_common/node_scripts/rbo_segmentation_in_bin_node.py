@@ -29,14 +29,18 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.bridge = CvBridge()
         self.img_pub = self.advertise('~target_mask', Image, queue_size=10)
         self.posterior_pub = self.advertise('~posterior', Image, queue_size=10)
-        self.masked_input_img_pub = self.advertise('~masked_input', Image, queue_size=10)
-        self.class_label_pub = self.advertise('~class_label', Image, queue_size=10)
-        self.posteior_unmask_pub = self.advertise('~posterior_unmask', Image, queue_size=10)
+        self.masked_input_img_pub = self.advertise(
+            '~masked_input', Image, queue_size=10)
+        self.class_label_pub = self.advertise(
+            '~class_label', Image, queue_size=10)
+        self.posteior_unmask_pub = self.advertise(
+            '~posterior_unmask', Image, queue_size=10)
 
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
             '~input/bin_info_array', BinInfoArray, self._bin_info_callback)
-        self.subscriber = rospy.Subscriber('~input', SegmentationInBinSync, self._callback)
+        self.subscriber = rospy.Subscriber(
+            '~input', SegmentationInBinSync, self._callback)
 
     def unsubscribe(self):
         self.sub.unregister()
@@ -96,13 +100,15 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
                 predict_msg.header = color_msg.header
                 self.img_pub.publish(predict_msg)
             else:
-                rospy.logwarn('Output of RBO does not contain any point clouds.')
+                rospy.logwarn(
+                    'Output of RBO does not contain any point clouds.')
             # publish images which contain object probabilities
             self.publish_predicted_results()
         except KeyError, e:
             rospy.loginfo(repr(e))
 
-        masked_input_img = cv2.cvtColor(self.apc_sample.image, cv2.COLOR_HSV2BGR)
+        masked_input_img = cv2.cvtColor(
+            self.apc_sample.image, cv2.COLOR_HSV2BGR)
         # reapply mask image to visualize actually used region
         masked_input_img[self.apc_sample.bin_mask == 0] = 0
         masked_input_msg = self.bridge.cv2_to_imgmsg(
