@@ -11,6 +11,7 @@ def main():
         path='test_data/2016-04-30-16-33-54_apc2016-bin-boxes.bag',
         url='https://drive.google.com/uc?id=0B9P1L--7Wd2vZ2xLZG55OWNYTDQ',
         md5='79404ca882f3131361d323112443be42',
+        quiet=False,
     )
 
     download_data(
@@ -19,6 +20,7 @@ def main():
         url='https://drive.google.com/uc?id=0BzBTxmVQJTrGRERod3E5S3RxdE0',
         md5='c3aaaf507b48fc7022edd51bbe819e4d',
         extract=True,
+        quiet=False,
     )
 
     download_data(
@@ -27,6 +29,7 @@ def main():
         url='https://drive.google.com/uc?id=0BzBTxmVQJTrGTmJEaTZ5bERhMzg',
         md5='f764107a2a2fda2bb4f800c519d97dc2',
         extract=True,
+        quiet=False,
     )
 
 
