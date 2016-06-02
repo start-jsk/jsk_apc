@@ -56,6 +56,17 @@ def get_bin_contents(json_file):
     return dict_contents
 
 
+def get_tote_contents(json_file):
+    """Return tote contents data from stow json.
+
+    Returns:
+        data (list): tote contents data written in stow json file.
+    """
+    with open(json_file, 'r') as f:
+        tote_contents = json.load(f)['tote_contents']
+    return tote_contents
+
+
 def get_work_order(json_file):
     """Return work order data from picking json.
 
