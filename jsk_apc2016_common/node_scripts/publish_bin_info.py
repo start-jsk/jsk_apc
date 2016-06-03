@@ -52,7 +52,6 @@ class BinInfoArrayPublisher(object):
 
                 # create bounding box array
                 self.bbox_array = self.get_bounding_box_array(self.bbox_dict)
-                self.bbox_array.header.stamp
 
                 # get contents of bin from json
                 self.bin_contents_dict = self.get_bin_contents(self.json_file)
@@ -61,6 +60,10 @@ class BinInfoArrayPublisher(object):
                 # create bin_msg
                 self.create_bin_info_arr()
 
+            self.bbox_array.header.stamp = rospy.Time.now()
+            self.bin_info_arr.header.stamp = rospy.Time.now()
+            self.bbox_array.header.seq += 1
+            self.bin_info_arr.header.seq += 1
             pub_bbox_arr.publish(self.bbox_array)
             pub_bin_info_arr.publish(self.bin_info_arr)
             rate.sleep()
