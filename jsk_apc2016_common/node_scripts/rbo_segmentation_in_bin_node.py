@@ -39,10 +39,11 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
             '~input/bin_info_array', BinInfoArray, self._bin_info_callback)
-        self.subscriber = rospy.Subscriber(
+        self.sub = rospy.Subscriber(
             '~input', SegmentationInBinSync, self._callback)
 
     def unsubscribe(self):
+        self.bin_info_arr_sub.unregister()
         self.sub.unregister()
 
     def _bin_info_callback(self, bin_info_array_msg):
