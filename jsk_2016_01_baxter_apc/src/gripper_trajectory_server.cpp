@@ -1,3 +1,5 @@
+#include <map>
+
 #include <ros/ros.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <actionlib/server/simple_action_server.h>
@@ -5,69 +7,90 @@
 
 typedef actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> Server;
 
-ros::Publisher right_gripper_servo_angle;
+std::map<std::string, ros::Publisher> g_gripper_servo_angle_pub;
 
 void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server* as_, std::string side)
 {
-    bool success = true;
-    std::string node_name(ros::this_node::getName());
+  bool success = true;
+  std::string node_name(ros::this_node::getName());
 
-    ROS_INFO("%s: Executing requested joint trajectory for %s gripper", node_name.c_str(), side.c_str());
+  ROS_INFO("%s: Executing requested joint trajectory for %s gripper", node_name.c_str(), side.c_str());
 
-    for (int i = 0; i < goal->trajectory.points.size(); i++) {
+  // Wait for the specified execution time, if not provided use now
+  ros::Time start_time = goal->trajectory.header.stamp;
+  if (start_time == ros::Time(0, 0))
+    start_time = ros::Time::now();
+  ros::Duration wait = start_time - ros::Time::now();
+  if (wait > ros::Duration(0))
+    wait.sleep();
 
-        if (as_->isPreemptRequested()) {
-            ROS_INFO("%s: Preempted for %s gripper", node_name.c_str(), side.c_str());
-            as_->setPreempted();
-            success = false;
-            break;
-        }
-
-        if (!ros::ok()) {
-            ROS_INFO("%s: Aborted for %s gripper", node_name.c_str(), side.c_str());
-            as_->setAborted();
-            return;
-        }
-
-        float rad = goal->trajectory.points[i].positions[0];
-        std_msgs::Float32 angle_msg;
-        angle_msg.data = rad;
-        if (side == "right")
-          right_gripper_servo_angle.publish(angle_msg);
-
-        control_msgs::FollowJointTrajectoryFeedback feedback_;
-        
-        feedback_.joint_names.push_back(goal->trajectory.joint_names[0]);
-        feedback_.desired.positions.resize(1);
-        feedback_.actual.positions.resize(1);
-        feedback_.error.positions.resize(1);
-
-        feedback_.desired.positions[0] = rad;
-        feedback_.actual.positions[0] = rad;
-        feedback_.error.positions[0] = 0;
-
-        ros::Duration wait = (goal->trajectory.header.stamp + goal->trajectory.points[i].time_from_start) - ros::Time::now();
-        if (wait > ros::Duration(0))
-            wait.sleep();
-        feedback_.header.stamp = ros::Time::now();
-        as_->publishFeedback(feedback_);
+  // Loop until end of trajectory
+  for (int i = 0; i < goal->trajectory.points.size(); i++)
+  {
+    if (as_->isPreemptRequested())
+    {
+      ROS_INFO("%s: Preempted for %s gripper", node_name.c_str(), side.c_str());
+      as_->setPreempted();
+      success = false;
+      break;
     }
 
-    control_msgs::FollowJointTrajectoryResult result_;
-    if (success) {
-        ROS_INFO("%s: Succeeded for %s gripper", node_name.c_str(), side.c_str());
-        result_.error_code = result_.SUCCESSFUL;
-        as_->setSucceeded(result_);
+    if (!ros::ok())
+    {
+      ROS_INFO("%s: Aborted for %s gripper", node_name.c_str(), side.c_str());
+      as_->setAborted();
+      return;
     }
+
+    float rad = goal->trajectory.points[i].positions[0];
+    std_msgs::Float32 angle_msg;
+    angle_msg.data = rad;
+    g_gripper_servo_angle_pub[side].publish(angle_msg);
+
+    // Publish feedbacks until next point
+    ros::Rate feedback_rate(100);
+    do
+    {
+      feedback_rate.sleep();
+
+      control_msgs::FollowJointTrajectoryFeedback feedback_;
+
+      feedback_.joint_names.push_back(goal->trajectory.joint_names[0]);
+      feedback_.desired.positions.resize(1);
+      feedback_.actual.positions.resize(1);
+      feedback_.error.positions.resize(1);
+
+      feedback_.desired.positions[0] = rad;
+      feedback_.actual.positions[0] = rad;
+      feedback_.error.positions[0] = 0;
+
+      ros::Time now = ros::Time::now();
+      feedback_.desired.time_from_start = now - start_time;
+      feedback_.actual.time_from_start = now - start_time;
+      feedback_.error.time_from_start = now - start_time;
+      feedback_.header.stamp = ros::Time::now();
+      as_->publishFeedback(feedback_);
+    } while (ros::ok() && i < (goal->trajectory.points.size() - 1) &&
+             ros::Time::now() < (goal->trajectory.header.stamp + goal->trajectory.points[i + 1].time_from_start));
+  }
+
+  control_msgs::FollowJointTrajectoryResult result_;
+  if (success)
+  {
+    ROS_INFO("%s: Succeeded for %s gripper", node_name.c_str(), side.c_str());
+    result_.error_code = result_.SUCCESSFUL;
+    as_->setSucceeded(result_);
+  }
 }
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "gripper_joint_trajectory_action_server");
-    ros::NodeHandle n;
-    right_gripper_servo_angle = n.advertise<std_msgs::Float32>("gripper_front/limb/right/servo/angle", 10);
-    Server server(n, "gripper_front/limb/right/follow_joint_trajectory", boost::bind(&execute, _1, &server, "right"), false);
-    server.start();
-    ros::spin();
-    return 0;
+  ros::init(argc, argv, "gripper_joint_trajectory_action_server");
+  ros::NodeHandle n;
+  g_gripper_servo_angle_pub["right"] = n.advertise<std_msgs::Float32>("gripper_front/limb/right/servo/angle", 10);
+  Server server(n, "gripper_front/limb/right/follow_joint_trajectory", boost::bind(&execute, _1, &server, "right"),
+                false);
+  server.start();
+  ros::spin();
+  return 0;
 }
