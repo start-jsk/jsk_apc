@@ -88,16 +88,13 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.set_apc_sample()
         # generate a binary image
         self.segmentation()
-        if np.all(self.predicted_segment[self.exist3d_img] == 0):
-            rospy.logwarn('Output of RBO does not contain any point clouds.')
-            return
-        try:
+        if np.any(self.predicted_segment[self.exist3d_img] != 0):
             predict_msg = self.bridge.cv2_to_imgmsg(
                     self.predicted_segment, encoding="mono8")
             predict_msg.header = color_msg.header
             self.img_pub.publish(predict_msg)
-        except CvBridgeError as e:
-            rospy.logerr('{}'.format(e))
+        else:
+            rospy.logwarn('Output of RBO does not contain any point clouds')
 
         # ---------------------------------------------------------------------
         # for visualization
