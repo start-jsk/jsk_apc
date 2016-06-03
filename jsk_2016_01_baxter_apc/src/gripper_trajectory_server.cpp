@@ -38,23 +38,27 @@ void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server
     angle_msg.data = rad;
     g_gripper_servo_angle_pub[side].publish(angle_msg);
 
-    control_msgs::FollowJointTrajectoryFeedback feedback_;
+    // Publish feedbacks until next point
+    ros::Rate feedback_rate(100);
+    do
+    {
+      feedback_rate.sleep();
 
-    feedback_.joint_names.push_back(goal->trajectory.joint_names[0]);
-    feedback_.desired.positions.resize(1);
-    feedback_.actual.positions.resize(1);
-    feedback_.error.positions.resize(1);
+      control_msgs::FollowJointTrajectoryFeedback feedback_;
 
-    feedback_.desired.positions[0] = rad;
-    feedback_.actual.positions[0] = rad;
-    feedback_.error.positions[0] = 0;
+      feedback_.joint_names.push_back(goal->trajectory.joint_names[0]);
+      feedback_.desired.positions.resize(1);
+      feedback_.actual.positions.resize(1);
+      feedback_.error.positions.resize(1);
 
-    ros::Duration wait =
-        (goal->trajectory.header.stamp + goal->trajectory.points[i].time_from_start) - ros::Time::now();
-    if (wait > ros::Duration(0))
-      wait.sleep();
-    feedback_.header.stamp = ros::Time::now();
-    as_->publishFeedback(feedback_);
+      feedback_.desired.positions[0] = rad;
+      feedback_.actual.positions[0] = rad;
+      feedback_.error.positions[0] = 0;
+
+      feedback_.header.stamp = ros::Time::now();
+      as_->publishFeedback(feedback_);
+    } while (ros::ok() && i < (goal->trajectory.points.size() - 1) &&
+             ros::Time::now() < (goal->trajectory.header.stamp + goal->trajectory.points[i + 1].time_from_start));
   }
 
   control_msgs::FollowJointTrajectoryResult result_;
