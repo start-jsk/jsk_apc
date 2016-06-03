@@ -10,6 +10,7 @@ from image_geometry import cameramodels
 import numpy as np
 from jsk_apc2016_common.rbo_segmentation.apc_data import APCSample
 import pickle
+from jsk_topic_tools import log_utils
 
 
 class RBOSegmentationInBinNode(ConnectionBasedTransport):
@@ -49,7 +50,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.bin_info_dict = self.bin_info_array_to_dict(bin_info_array_msg)
 
     def _callback(self, sync_msg):
-        rospy.loginfo('started')
+        log_utils.loginfo_throttle(10, 'started')
+
         if self.bin_info_dict == {}:
             return
 
@@ -116,7 +118,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         masked_input_msg.header = color_msg.header
         self.masked_input_img_pub.publish(masked_input_msg)
 
-        rospy.loginfo('ended')
+        log_utils.loginfo_throttle(10, 'ended')
 
     def bin_info_array_to_dict(self, bin_info_array):
         bin_info_dict = {}
