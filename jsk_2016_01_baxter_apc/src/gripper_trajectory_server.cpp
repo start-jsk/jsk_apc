@@ -64,6 +64,10 @@ void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server
       feedback_.actual.positions[0] = rad;
       feedback_.error.positions[0] = 0;
 
+      ros::Time now = ros::Time::now();
+      feedback_.desired.time_from_start = now - start_time;
+      feedback_.actual.time_from_start = now - start_time;
+      feedback_.error.time_from_start = now - start_time;
       feedback_.header.stamp = ros::Time::now();
       as_->publishFeedback(feedback_);
     } while (ros::ok() && i < (goal->trajectory.points.size() - 1) &&
