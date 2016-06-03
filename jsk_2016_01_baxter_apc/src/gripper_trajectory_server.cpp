@@ -1,3 +1,5 @@
+#include <map>
+
 #include <ros/ros.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <actionlib/server/simple_action_server.h>
@@ -5,7 +7,7 @@
 
 typedef actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> Server;
 
-ros::Publisher right_gripper_servo_angle;
+std::map<std::string, ros::Publisher> g_gripper_servo_angle_pub;
 
 void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server* as_, std::string side)
 {
@@ -34,8 +36,7 @@ void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server
     float rad = goal->trajectory.points[i].positions[0];
     std_msgs::Float32 angle_msg;
     angle_msg.data = rad;
-    if (side == "right")
-      right_gripper_servo_angle.publish(angle_msg);
+    g_gripper_servo_angle_pub[side].publish(angle_msg);
 
     control_msgs::FollowJointTrajectoryFeedback feedback_;
 
@@ -69,7 +70,7 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "gripper_joint_trajectory_action_server");
   ros::NodeHandle n;
-  right_gripper_servo_angle = n.advertise<std_msgs::Float32>("gripper_front/limb/right/servo/angle", 10);
+  g_gripper_servo_angle_pub["right"] = n.advertise<std_msgs::Float32>("gripper_front/limb/right/servo/angle", 10);
   Server server(n, "gripper_front/limb/right/follow_joint_trajectory", boost::bind(&execute, _1, &server, "right"),
                 false);
   server.start();
