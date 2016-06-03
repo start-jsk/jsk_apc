@@ -47,7 +47,10 @@
             (assert
               (or
                 (ik-with-rotating-gripper robot :rarm (make-cascoords :pos pos) :gripper-angle 90)
-                (ik-with-rotating-gripper robot :rarm (make-cascoords :pos pos :rpy (float-vector 0 (deg2rad -90) 0)) :gripper-angle 0)
+                (ik-with-rotating-gripper
+                  robot :rarm
+                  (make-cascoords :pos pos :rpy (float-vector 0 (deg2rad -90) 0))
+                  :gripper-angle 0)
                 (ik-with-rotating-gripper robot :larm (make-cascoords :pos pos))
                 (> tmp-x limit))
               "fail to solve ik")
