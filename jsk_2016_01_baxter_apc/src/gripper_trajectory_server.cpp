@@ -16,6 +16,15 @@ void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server
 
   ROS_INFO("%s: Executing requested joint trajectory for %s gripper", node_name.c_str(), side.c_str());
 
+  // Wait for the specified execution time, if not provided use now
+  ros::Time start_time = goal->trajectory.header.stamp;
+  if (start_time == ros::Time(0, 0))
+    start_time = ros::Time::now();
+  ros::Duration wait = start_time - ros::Time::now();
+  if (wait > ros::Duration(0))
+    wait.sleep();
+
+  // Loop until end of trajectory
   for (int i = 0; i < goal->trajectory.points.size(); i++)
   {
     if (as_->isPreemptRequested())
