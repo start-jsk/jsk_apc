@@ -24,7 +24,7 @@ class SaveData(ConnectionBasedTransport):
 
         ConnectionBasedTransport.__init__(self)
 
-        self.layout_name = rospy.get_param('~layout_name')
+        self.set_layout_name(rospy.get_param('~json'))
 
         bin_info_array_msg = rospy.wait_for_message(
                 "~input/bin_info_array", BinInfoArray, timeout=50)
@@ -38,6 +38,9 @@ class SaveData(ConnectionBasedTransport):
 
     def unsubscribe(self):
         self.sub.unregister()
+
+    def set_layout_name(self, json):
+        self.layout_name = json.split('/').[-1][:-5]
 
     def _callback(self, sync_msg):
         rospy.loginfo('started')
