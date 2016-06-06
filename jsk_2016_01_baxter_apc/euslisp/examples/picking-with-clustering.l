@@ -39,7 +39,7 @@
   (send *ri* :move-arm-body->bin *arm* *bin*)
   (send *ri* :wait-interpolation)
 
-  (send *ri* :pick-object *arm* *bin* :n-trial 1 :n-trial-same-pos 1)
+  (send *ri* :pick-object *arm* *bin* :n-trial 1 :n-trial-same-pos 1 :use-sib nil)
 
   (send *baxter* :avoid-shelf-pose *arm* *bin*)
   (send *ri* :send-av 3000)
