@@ -16,7 +16,7 @@
   ],
   "findPotentialReviewers": true,
   "fileBlacklist": [],
-  "userBlacklist": ["aginika", "garaemon", "wkentaro"],
+  "userBlacklist": ["aginika", "garaemon"],
   "userBlacklistForPR": [],
   "requiredOrgs": ["start-jsk"],
   "actions": ["opened"],
