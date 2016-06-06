@@ -6,6 +6,13 @@
   </node>
 
   <!-- from main.launch -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_2016_01_baxter_apc)/robots/baxter.xacro" />
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="joint_states" to="/robot/joint_states"/>
+  </node>
+
   <arg name="json" value="$(find jsk_2015_05_baxter_apc)/json/layout_12.json"/>
   <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
   <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
