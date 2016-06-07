@@ -394,7 +394,7 @@
       (setq world-x :z world-y :x world-z :y)
       (if (eq arm :rarm)
         ;; if object is higher than highest end-coords when gripper is 90 degrees
-        (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))
+        (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))  ;; FIXME
           (let ((obj-pos-y (elt (send (send self :tf-pose->coords
                                             (send obj-box :header :frame_id)
                                             (send obj-box :pose)) :pos) 1))
@@ -444,7 +444,7 @@
         (if (eq arm :rarm)
           (if (< sign_y 0)
             (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
-            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l -40)))
+            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l -40)))  ;; FIXME
             )
           (setq offset-from-entrance
                 (float-vector -30 0
@@ -476,7 +476,7 @@
             (send end-coords :translate
                   (float-vector
                     (- (/ bin-dim-x 2))
-                    (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0)
+                    (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0)  ;; FIXME
                   :world)
             (send end-coords :rotate (* sign pi/2) :x :local)
             ;; decide target coords depending on size of gripper and bin
