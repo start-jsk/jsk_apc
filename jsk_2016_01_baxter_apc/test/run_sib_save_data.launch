@@ -6,6 +6,13 @@
   </node>
 
   <!-- from main.launch -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_2016_01_baxter_apc)/robots/baxter.xacro" />
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="joint_states" to="/robot/joint_states"/>
+  </node>
+
   <arg name="json" value="$(find jsk_apc2016_common)/json/pick_layout_2.json"/>
   <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
   <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
@@ -42,11 +49,11 @@
     <arg name="RIGHT_INPUT_CLOUD_FILTERED" default="right_softkinetic_camera/depth_registered/points_filtered"/>
     <arg name="RIGHT_INPUT_INFO" default="right_softkinetic_camera/rgb/camera_info"/>
   </include>
-<param name="/left_hand/target_bin" value="j"/>
+<param name="/left_hand/target_bin" value="f"/>
 <param name="/right_hand/target_bin" value="l"/>
 
 <include file="$(find jsk_2016_01_baxter_apc)/launch/save_data.launch">
   <arg name="hand" value="right"/>
-  <arg name="layout_name" value="test_layout_12"/>
+  <arg name="json" value="$(arg json)"/>
 </include>
 </launch>
