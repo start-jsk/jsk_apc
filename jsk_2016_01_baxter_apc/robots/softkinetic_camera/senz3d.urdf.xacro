@@ -44,9 +44,9 @@
     <joint name="${name}_rgb_optical_joint" type="fixed">
       <origin xyz="0.0 0.0 0.0" rpy="${-M_PI/2} 0.0 ${-M_PI/2}"/>
       <parent link="${name}_rgb_frame"/>
-      <child link="${name}_rgb_optical_frame"/>
+      <child link="${name}_rgb_optical_frame_base"/>
     </joint>
-    <link name="${name}_rgb_optical_frame"/>
+    <link name="${name}_rgb_optical_frame_base"/>
     
     <joint name="${name}_depth_joint" type="fixed">
       <origin xyz="0.0 -0.0125 0.0" rpy="0.0 0.0 0.0"/>

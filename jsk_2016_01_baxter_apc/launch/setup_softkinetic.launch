@@ -63,6 +63,13 @@
     <param name="depth_calibration_file" type="string" value="$(find jsk_2016_01_baxter_apc)/data/softkinetic/137DS32528260700380/calib_depth.yaml" />
   </node>
 
+  <node name="right_softkinetic_tf_publisher"
+        pkg="tf" type="static_transform_publisher"
+        args="0.0 0.0 0.0 0.0 0.0 0.0 right_softkinetic_camera_rgb_optical_frame_base right_softkinetic_camera_rgb_optical_frame 10" />
+  <node name="left_softkinetic_tf_publisher"
+        pkg="tf" type="static_transform_publisher"
+        args="0.0 0.0 0.0 0.0 0.0 0.0 left_softkinetic_camera_rgb_optical_frame_base left_softkinetic_camera_rgb_optical_frame 10" />
+
   <node name="$(arg NODELET_MANAGER_RIGHT)"
         pkg="jsk_topic_tools" type="standalone_complexed_nodelet"
         respawn="true" output="screen">
