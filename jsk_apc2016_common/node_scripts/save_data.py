@@ -11,6 +11,7 @@ import pickle
 from time import gmtime, strftime
 import rospkg
 from jsk_rqt_plugins.srv import YesNo
+import os
 
 
 class SaveData(ConnectionBasedTransport):
@@ -41,6 +42,7 @@ class SaveData(ConnectionBasedTransport):
         # TODO: add Lock
         rospy.loginfo('get_bin_info')
         self.set_layout_name(rospy.get_param('~json'))
+        self.try_dir = rospy.get_param('~try_dir')
         self.bin_info_dict = self.bin_info_array_to_dict(bin_info_arr_msg)
 
     def _callback(self, sync_msg):
@@ -96,7 +98,10 @@ class SaveData(ConnectionBasedTransport):
 
         time = strftime('%Y%m%d%H', gmtime())
         rospack = rospkg.RosPack()
-        dir_path = rospack.get_path('jsk_apc2016_common') + '/data/tokyo_run/'
+        dir_path = rospack.get_path('jsk_apc2016_common') + \
+            '/data/tokyo_run/' + str(self.try_dir) + '/'
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
         save_path = (dir_path + self.layout_name + '_' + time + '_bin_' +
                      self.target_bin_name)
         pkl_path = save_path + '.pkl'

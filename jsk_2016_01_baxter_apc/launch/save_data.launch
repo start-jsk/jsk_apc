@@ -15,6 +15,7 @@
     <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
     <remap from="~target_bin_name" to="$(arg hand)_hand/target_bin"/>
     <param name="~json" value="$(arg json)" />
+    <param name="~try_dir" value="1" />
     <param name="always_subscribe" value="True" />
   </node>
 </launch>
