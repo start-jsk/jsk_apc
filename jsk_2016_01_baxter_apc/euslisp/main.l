@@ -239,6 +239,7 @@
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm)
           (send *ri* :spin-off-by-wrist arm :times 20)
+          (send *ri* :gripper-servo-on arm)
           (send *ri* :wait-interpolation)
           (send *baxter* :fold-pose-back arm)
           (send *ri* :send-av)
