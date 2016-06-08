@@ -91,9 +91,9 @@ class SaveData(ConnectionBasedTransport):
         data = {}
         data['target_object'] = self.target_object
         data['objects'] = self.target_bin_info.objects
-        data['dist_image'] = self.dist_img
-        data['heigh_image'] = self.height_img
-        data['color_img'] = self.color_img
+        data['dist2shelf'] = self.dist_img
+        data['height3D'] = self.height_img
+        data['color'] = self.color_img
         data['mask_img'] = self.mask_img
 
         time = strftime('%Y%m%d%H', gmtime())
