@@ -40,13 +40,14 @@
   (:inverse-kinematics
     (target-coords
       &rest args
-      &key link-list
+      &key link-list (use-gripper nil)
       &allow-other-keys)
     ;; if the last lik of link-list is a gripper, remove them
-    (when (member (send (car (last link-list)) :name)
-                  (list "right_gripper_vacuum_pad_base"
-                        "left_gripper_vacuum_pad_base") :test #'equal)
-      (setq link-list (butlast link-list)))
+    (if (null use-gripper)
+      (when (member (send (car (last link-list)) :name)
+                    (list "right_gripper_vacuum_pad_base"
+                          "left_gripper_vacuum_pad_base") :test #'equal)
+            (setq link-list (butlast link-list))) nil)
     (send-super* :inverse-kinematics target-coords :link-list link-list
                  args)
     )
