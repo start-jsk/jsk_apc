@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
     roseus
     control_msgs
     roscpp
+    message_generation
     std_msgs
     baxter_core_msgs
 )
@@ -46,11 +47,17 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  StowWorkOrder.msg
+  StowWorkOrderArray.msg
+)
+
+## Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
