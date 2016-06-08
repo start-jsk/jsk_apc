@@ -10,9 +10,7 @@ import numpy as np
 import pickle
 from time import gmtime, strftime
 import rospkg
-import matplotlib.pyplot as plt
-from jsk_rqt_plugins.srv import YesNo, YesNoResponse
-
+from jsk_rqt_plugins.srv import YesNo
 
 
 class SaveData(ConnectionBasedTransport):
@@ -25,16 +23,12 @@ class SaveData(ConnectionBasedTransport):
 
         ConnectionBasedTransport.__init__(self)
 
-        self.set_layout_name(rospy.get_param('~json'))
-
-        bin_info_array_msg = rospy.wait_for_message(
-                "~input/bin_info_array", BinInfoArray, timeout=50)
-        self.bin_info_dict = self.bin_info_array_to_dict(bin_info_array_msg)
-
         self.bridge = CvBridge()
 
     def subscribe(self):
-        self.subscriber = rospy.Subscriber(
+        self.bin_info_sub = rospy.Subscriber(
+            '~input/bin_info_array', BinInfoArray, self._topic_cb)
+        self.synctopic_sub = rospy.Subscriber(
             '~input', SegmentationInBinSync, self._callback)
 
     def unsubscribe(self):
@@ -43,8 +37,16 @@ class SaveData(ConnectionBasedTransport):
     def set_layout_name(self, json):
         self.layout_name = json.split('/')[-1][:-5]
 
+    def _topic_cb(self, bin_info_arr_msg):
+        # TODO: add Lock
+        rospy.loginfo('get_bin_info')
+        self.set_layout_name(rospy.get_param('~json'))
+        self.bin_info_dict = self.bin_info_array_to_dict(bin_info_arr_msg)
+
     def _callback(self, sync_msg):
         rospy.loginfo('started')
+
+        # wait until yn_botton is pressed
         rospy.wait_for_service('rqt_yn_btn')
         try:
             client = rospy.ServiceProxy('rqt_yn_btn', YesNo)
@@ -114,7 +116,3 @@ if __name__ == '__main__':
 
     seg = SaveData()
     rospy.spin()
-
-
-
-
