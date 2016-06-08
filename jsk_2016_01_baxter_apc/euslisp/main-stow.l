@@ -20,7 +20,7 @@
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
   ;; TODO recognize order bin
   ;; (ros::ros-info "[main] recognizing order-bin")
-  ;; (send *ri* :recognize-order-bin-box :stamp (ros::time-now))
+  ;; (send *ri* :recognize-order-bin-box :arm arm :stamp (ros::time-now))
   (let (state target-bin)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
@@ -54,17 +54,16 @@
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
             (progn
               ;; run motion
-              ;; TODO Recognizing objects in order bin
-              ;; (send *ri* :move-arm-body->order-bin-overlook-pose arm)
-              ;; (ros::ros-info "[main] Recognizing objects in bin")
-              ;; (send *ri* :recognize-objects-in-order-bin :stamp (ros::time-now))
+              (ros::ros-info "[main] Recognizing objects in tote")
+              (send *ri* :move-arm-body->order-bin-overlook-pose arm)
+              (send *ri* :wait-interpolation)
+              (send *ri* :recognize-objects-in-order-bin :arm arm :stamp (ros::time-now))
               (send *ri* :move-arm-body->order-bin arm)
               (send *ri* :wait-interpolation)
+              (send *ri* :gripper-servo-on arm)
               (setq graspingp
-                    ;; TODO
-                    ;; modify method :pick-object in baxter-interface.l
                     (send *ri* :pick-object-in-order-bin arm
-                          :n-trial 1
+                          :n-trial 3
                           :n-trial-same-pos 1
                           ;; :object-index (send *ri* :detect-target-object-in-bin target-bin)
                           :do-stop-grasp nil

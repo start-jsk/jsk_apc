@@ -23,7 +23,7 @@
    _hard-coded-variables
    _order-bin-box
    _objects-in-order-bin-boxes
-   _objects-in-order-bin-coms
+   _objects-in-order-bin-coords
    )
   )
 
@@ -59,8 +59,8 @@
     (sethash :offset-gripper-bin-top _hard-coded-variables 10)
     (sethash :offset-gripper-bin-side _hard-coded-variables 40)
     (setq _order-bin-box nil)
-    (setq _objects-in-order-bin-boxes nil)
-    (setq _objects-in-order-bin-coms nil)
+    (setq _objects-in-order-bin-boxes (make-hash-table))
+    (setq _objects-in-order-bin-coords (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
@@ -364,11 +364,11 @@
         (t
          (ros::ros-error "[:recognize-objects-segmentation-in-bin] arm: ~a failed to get sib msg" arm)))))
   (:recognize-objects-in-order-bin
-    (&key (stamp (ros::time-now)) (timeout 10))
-    (let ((box-topic (format nil "order_bin_cpi_decomposer/boxes"))
+    (&key arm (stamp (ros::time-now)) (timeout 10))
+    (let ((box-topic (format nil "~a_in_tote_cpi_decomposer/boxes" (send *ri* :arm-symbol2str arm)))
           box-msg
-          (com-topic (format nil "order_bin_cpi_decomposer/centroid_pose_array"))
-          com-msg)
+          (com-topic (format nil "~a_in_tote_cpi_decomposer/centroid_pose_array" (send *ri* :arm-symbol2str arm)))
+          com-msg obj-box obj-coords)
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
                           (let ((st (send msg :header :stamp)))
@@ -384,8 +384,19 @@
              (ros::spin-once))
       (ros::unsubscribe box-topic)
       (ros::unsubscribe com-topic)
-      (setq _objects-in-order-bin-boxes (send box-msg :boxes))
-      (setq _objects-in-order-bin-coms com-msg)))
+      (cond
+        ((and box-msg com-msg)
+         (ros::ros-info "[:recognize-objects-in-order-bin] arm: ~a get cpi msg" arm)
+         (setq obj-box (send box-msg :boxes))
+         (setq obj-coords
+               (mapcar #'(lambda (obj-pose)
+                           (send self :tf-pose->coords
+                                 (send com-msg :header :frame_id) obj-pose))
+                       (send com-msg :poses)))
+         (sethash arm _objects-in-order-bin-boxes obj-box)
+         (sethash arm _objects-in-order-bin-coords obj-coords))
+        (t
+         (ros::ros-error "[:recognize-objects-in-order-bin] arm: ~a failed to get cpi msg" arm)))))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
@@ -756,32 +767,26 @@
   (:pick-object-in-order-bin
     (arm &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
     (let (order-bin-box graspingp avs)
-      ;; TODO require recognize program
-      ;; abort when no objects found
-      ;; (if (or
-      ;;     (null _objects-in-order-bin-boxes)
-      ;;     (null _objects-in-order-bin-coms))
-      ;;   (return-from :pick-object nil) t)
-      ;; move arm overlook-pose -> pos above object to z direction
-      ;; (setq order-bin-box _order-bin-boxes)
+      (if (or
+          (null (gethash arm _objects-in-order-bin-boxes))
+          (null (gethash arm _objects-in-order-bin-coords)))
+        (return-from :pick-object-in-order-bin nil) t)
+      ;; (send self :fold-pose-back arm)
+      ;; (send self :wait-interpolation)
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
             (setq graspingp
                   (send self :try-to-pick-object-in-order-bin arm :object-index object-index
-                        :offset (float-vector (* i 50) 0 0)))
+                        :offset (float-vector 0 0 (* i -50))))
             (pushback (send *baxter* :angle-vector) avs))))
       (when do-stop-grasp (unless graspingp (send self :stop-grasp arm)))
       (send self :angle-vector-sequence (reverse avs) :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-order-bin -> view-hand-pose" arm)
-      ;; move arm in-order-bin -> view-hand-pose
-      ;; TODO define view-hand-pose for stow task
-      ;; temporary defined
-      ;; rarm view-hand-pose-l
-      ;; larm view-hand-pose-j
       (if (eq arm :rarm) (send *baxter* :view-hand-pose arm :l)
           (send *baxter* :view-hand-pose arm :j))
+      (send *baxter* arm :move-end-pos #f(-50 0 200) :world)
       (send *ri* :send-av 5000)
       (send self :wait-interpolation)
       (if (eq arm :rarm)
@@ -790,17 +795,17 @@
   (:try-to-pick-object-in-order-bin
     (arm &key (object-index 0) (offset #f(0 0 0)))
     (let (avs obj-box graspingp order-bin-box)
-      ;; TODO require recognize  order bin and objects in order bin
-      ;; ;; validate
-      ;; (unless
-      ;;   (setq obj-box (elt _objects-in-order-bin-boxes object-index))
-      ;;   (ros::ros-warn "[:try-to-pick-object-in-order-bin] No bbox  is found: ~a, ~a" arm bin)
-      ;;   (return-from :try-to-pick-object-in-order-bin nil))
-      ;; ;; with Center of Mass
-      ;; (unless
-      ;;   (setq obj-coords (elt _objects-in-order-bin-coms object-index))
-      ;;   (ros::ros-warn "[:try-to-pick-in-order-bin] No com is found: ~a, ~a" arm bin)
-      ;;   (return-from :try-to-pick-object-in-order-bin nil))
+      ;; validate
+      (unless
+        (setq obj-box (elt (gethash arm _objects-in-order-bin-boxes) object-index))
+        (ros::ros-warn "[:try-to-pick-object-in-order-bin] No bbox  is found: ~a, ~a" arm bin)
+        (return-from :try-to-pick-object-in-order-bin nil))
+      ;; with Center of Mass
+      (unless
+        (setq obj-coords (elt (gethash arm _objects-in-order-bin-coords) object-index))
+        (ros::ros-warn "[:try-to-pick-in-order-bin] No com is found: ~a, ~a" arm bin)
+        (return-from :try-to-pick-object-in-order-bin nil))
+      ;; TODO recognize bbox of order bin
       ;; (unless
       ;;   (setq order-bin-box _order-bin-box)
       ;;   (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
@@ -819,12 +824,12 @@
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a approach to the object" arm)
       ;; gripper is straight
-      ;; TODO recognize objects in order bin
-      ;; temporary constant coords used
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
-                  (make-coords :pos #f(750 0 -300) :rpy #f(0 0 0))
-                  :rotation-axis nil)
+                  (make-coords :pos (v+ (send obj-coords :pos) offset)
+                               :rpy #f(0 0 0))
+                  :use-gripper t
+                  :rotation-axis :z)
             3000)
       (send self :wait-interpolation)
       (if (eq arm :rarm)
@@ -833,17 +838,15 @@
           (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a start vacuum gripper" arm)
           (send self :start-grasp arm)
           (unix::sleep 1)) nil)
-      ;; TODO recognize objects in order bin
-      ;; temporary constant coords used
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
-                  (make-coords :pos #f(750 0 -350) :rpy #f(0 0 0))
-                  :rotation-axis nil)
+                  (make-coords :pos (send obj-coords :pos)
+                               :rpy #f(0 0 0))
+                  :use-gripper t
+                  :rotation-axis :z)
             3000)
       (send self :wait-interpolation)
-      ;; DEBUG comment out 
       (setq graspingp (send self :graspingp arm))
-      (setq graspingp t)
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
         (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a again approach to the object" arm)
@@ -954,13 +957,19 @@
       (pushback (send *baxter* :place-object-pose arm) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
-  ;;TODO
-  ;;make method :move-arm-body->order-bin-overlook-pose
   (:move-arm-body->order-bin-overlook-pose
     (arm)
     (let (avs)
-      (pushback (send *baxter* :fold-to-keep-object arm) avs)
-      (pushback (send *baxter* :place-object-pose arm) avs)
+      (send *ri* :angle-vector (send *baxter* :rotate-gripper arm 90 :relative nil))
+      (if (eq arm :rarm)
+        (pushback (send *baxter* arm :inverse-kinematics
+                      (make-coords :pos #f(750 -350 -150)
+                                   :rpy (list pi/2 (/ pi 3) 0)))
+                avs)
+        (pushback (send *baxter* arm :inverse-kinematics
+                      (make-coords :pos #f(750 350 -150)
+                                   :rpy (list -pi/2 (/ pi 3) 0)))
+                avs))
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)))
   (:spin-off-by-wrist
     (arm &key (times 10))
