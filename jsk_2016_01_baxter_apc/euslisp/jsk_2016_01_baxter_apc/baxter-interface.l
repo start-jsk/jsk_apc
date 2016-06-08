@@ -171,14 +171,6 @@
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
     (let (msg bin bin-box-pos-z bin-name-list-a-f bin-name-list-g-l)
-      ;; get the order of bin box array
-      (setq bin-name-list-a-f
-            (mapcar #'(lambda (x) (intern (string-upcase (subseq x 4)) *keyword-package*))
-                    (ros::get-param "/bin_atof_clipper/prefixes" nil))
-            bin-name-list-g-l
-            (mapcar #'(lambda (x) (intern (string-upcase (subseq x 4)) *keyword-package*))
-                    (ros::get-param "/bin_gtol_clipper/prefixes" nil))
-            )
       ;; for bin A-F
       (setq
         msg
@@ -187,9 +179,16 @@
                             :timeout 10000
                             :after-stamp stamp))
       (if msg
-        (dotimes (i (length bin-name-list-a-f))
-          (setq bin (elt bin-name-list-a-f i))
-          (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+        (if
+          ;; get the order of bin box array
+          (setq bin-name-list-a-f
+                (mapcar #'(lambda (x) (intern (string-upcase (subseq x 4)) *keyword-package*))
+                        (ros::get-param "/bin_atof_clipper/prefixes" nil)))
+          (dotimes (i (length bin-name-list-a-f))
+            (setq bin (elt bin-name-list-a-f i))
+            (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+          (ros::ros-fatal "Cannot get ROS param /bin_atof_clipper/prefixes")
+          )
         (ros::ros-fatal "Cannot find bin A - F")
         )
       ;; for bin G-L
@@ -200,9 +199,16 @@
                             :timeout 10000
                             :after-stamp stamp))
       (if msg
-        (dotimes (i (length bin-name-list-g-l))
-          (setq bin (elt bin-name-list-g-l i))
-          (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+        (if
+          ;; get the order of bin box array
+          (setq bin-name-list-g-l
+                (mapcar #'(lambda (x) (intern (string-upcase (subseq x 4)) *keyword-package*))
+                        (ros::get-param "/bin_gtol_clipper/prefixes" nil)))
+          (dotimes (i (length bin-name-list-g-l))
+            (setq bin (elt bin-name-list-g-l i))
+            (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+          (ros::ros-fatal "Cannot get ROS param /bin_gtol_clipper/prefixes")
+          )
         (ros::ros-fatal "Cannot find bin G - K")
         )
       ))
