@@ -170,7 +170,7 @@
       (position box-size box-sizes-bak)))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
-    (let (msg bin bin-box-pos-z)
+    (let (msg bin bin-box-pos-z bin-name-list-a-f bin-name-list-g-l)
       ;; for bin A-F
       (setq
         msg
@@ -179,9 +179,16 @@
                             :timeout 10000
                             :after-stamp stamp))
       (if msg
-        (dotimes (i 6)
-          (setq bin (elt '(:a :b :c :d :e :f) i))
-          (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+        (if
+          ;; get the order of bin box array
+          (setq bin-name-list-a-f
+                (mapcar #'(lambda (x) (intern (string-upcase (subseq x 4)) *keyword-package*))
+                        (ros::get-param "/bin_atof_clipper/prefixes" nil)))
+          (dotimes (i (length bin-name-list-a-f))
+            (setq bin (elt bin-name-list-a-f i))
+            (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+          (ros::ros-fatal "Cannot get ROS param /bin_atof_clipper/prefixes")
+          )
         (ros::ros-fatal "Cannot find bin A - F")
         )
       ;; for bin G-L
@@ -192,9 +199,16 @@
                             :timeout 10000
                             :after-stamp stamp))
       (if msg
-        (dotimes (i 6)
-          (setq bin (elt '(:j :k :l :g :h :i) i))
-          (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+        (if
+          ;; get the order of bin box array
+          (setq bin-name-list-g-l
+                (mapcar #'(lambda (x) (intern (string-upcase (subseq x 4)) *keyword-package*))
+                        (ros::get-param "/bin_gtol_clipper/prefixes" nil)))
+          (dotimes (i (length bin-name-list-g-l))
+            (setq bin (elt bin-name-list-g-l i))
+            (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
+          (ros::ros-fatal "Cannot get ROS param /bin_gtol_clipper/prefixes")
+          )
         (ros::ros-fatal "Cannot find bin G - K")
         )
       ))
@@ -444,7 +458,7 @@
         (if (eq arm :rarm)
           (if (< sign_y 0)
             (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
-            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l -40)))
+            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l 5)))
             )
           (setq offset-from-entrance
                 (float-vector -30 0

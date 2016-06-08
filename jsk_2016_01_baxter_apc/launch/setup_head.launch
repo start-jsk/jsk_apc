@@ -1,0 +1,26 @@
+<launch>
+
+  <arg name="NODELET_MANAGER" default="kinect2_head" />
+
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_head.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+  </include>
+
+
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin_atof.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="NODELET_ID_0" default="0" />
+    <arg name="NODELET_ID_1" default="1" />
+    <arg name="NODELET_ID_2" default="2" />
+    <arg name="NODELET_ID_3" default="3" />
+    <arg name="NODELET_ID_4" default="4" />
+    <arg name="NODELET_ID_5" default="5" />
+    <arg name="NODELET_ID_6" default="6" />
+    <arg name="INPUT_IMAGE" value="/kinect2_head/hd/image_color" />
+    <arg name="INPUT_DEPTH" value="/kinect2_head/hd/image_depth_rect" />
+    <arg name="INPUT_CLOUD" value="/kinect2_head/hd/points" />
+    <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
+  </include>
+
+
+</launch>
