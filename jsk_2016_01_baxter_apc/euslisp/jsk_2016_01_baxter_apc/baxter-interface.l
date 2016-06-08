@@ -284,7 +284,7 @@
           (com-topic (format nil
                              "~a_sib_cpi_decomposer/centroid_pose_array"
                              (send self :arm-symbol2str arm)))
-          com-msg)
+          com-msg obj-box obj-coords)
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
                           (let ((st (send msg :header :stamp)))
