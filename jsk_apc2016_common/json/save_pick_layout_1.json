@@ -1,0 +1,124 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "elmers_washable_no_run_school_glue",
+            "creativity_chenille_stems"
+        ],
+        "bin_B": [
+            "dasani_water_bottle",
+            "scotch_bubble_mailer",
+            "up_glucose_bottle",
+            "creativity_chenille_stems",
+            "cherokee_easy_tee_shirt",
+            "cloud_b_plush_bear",
+            "folgers_classic_roast_coffee"
+        ],
+        "bin_C": [
+            "soft_white_lightbulb",
+            "cloud_b_plush_bear",
+            "dasani_water_bottle",
+            "cool_shot_glue_sticks",
+            "rawlings_baseball"
+        ],
+        "bin_D": [
+            "dasani_water_bottle",
+            "womens_knit_gloves"
+        ],
+        "bin_E": [
+            "scotch_bubble_mailer",
+            "i_am_a_bunny_book",
+            "elmers_washable_no_run_school_glue",
+            "laugh_out_loud_joke_book"
+        ],
+        "bin_F": [
+            "laugh_out_loud_joke_book",
+            "barkely_hide_bones",
+            "peva_shower_curtain_liner",
+            "creativity_chenille_stems"
+        ],
+        "bin_G": [
+            "folgers_classic_roast_coffee",
+            "kyjen_squeakin_eggs_plush_puppies",
+            "cool_shot_glue_sticks",
+            "hanes_tube_socks",
+            "elmers_washable_no_run_school_glue",
+            "i_am_a_bunny_book",
+            "soft_white_lightbulb",
+            "elmers_washable_no_run_school_glue",
+            "rawlings_baseball"
+        ],
+        "bin_H": [
+            "cherokee_easy_tee_shirt",
+            "up_glucose_bottle",
+            "scotch_bubble_mailer"
+        ],
+        "bin_I": [
+            "peva_shower_curtain_liner"
+        ],
+        "bin_J": [
+            "creativity_chenille_stems",
+            "hanes_tube_socks"
+        ],
+        "bin_K": [
+            "barkely_hide_bones",
+            "up_glucose_bottle",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_L": [
+            "dasani_water_bottle",
+            "scotch_bubble_mailer",
+            "womens_knit_gloves"
+        ]
+    },
+    "tote_contents": [],
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "elmers_washable_no_run_school_glue"
+        },
+        {
+            "bin": "bin_B",
+            "item": "dasani_water_bottle"
+        },
+        {
+            "bin": "bin_C",
+            "item": "soft_white_lightbulb"
+        },
+        {
+            "bin": "bin_D",
+            "item": "dasani_water_bottle"
+        },
+        {
+            "bin": "bin_E",
+            "item": "scotch_bubble_mailer"
+        },
+        {
+            "bin": "bin_F",
+            "item": "laugh_out_loud_joke_book"
+        },
+        {
+            "bin": "bin_G",
+            "item": "folgers_classic_roast_coffee"
+        },
+        {
+            "bin": "bin_H",
+            "item": "cherokee_easy_tee_shirt"
+        },
+        {
+            "bin": "bin_I",
+            "item": "peva_shower_curtain_liner"
+        },
+        {
+            "bin": "bin_J",
+            "item": "creativity_chenille_stems"
+        },
+        {
+            "bin": "bin_K",
+            "item": "barkely_hide_bones"
+        },
+        {
+            "bin": "bin_L",
+            "item": "dasani_water_bottle"
+        }
+    ]
+}
