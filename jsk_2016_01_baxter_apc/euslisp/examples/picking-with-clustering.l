@@ -18,9 +18,11 @@
 
 (defun place-object ()
   (send *ri* :move-arm-body->order-bin *arm*)
+  (send *ri* :gripper-servo-off *arm*)  ;; power off gripper servo not to overload it
   (send *ri* :wait-interpolation)
   (send *ri* :stop-grasp *arm*)
   (send *ri* :spin-off-by-wrist *arm* :times 20)
+  (send *ri* :gripper-servo-on *arm*)
   (send *ri* :wait-interpolation)
   (send *baxter* :fold-pose-back *arm*)
   (send *ri* :send-av)
