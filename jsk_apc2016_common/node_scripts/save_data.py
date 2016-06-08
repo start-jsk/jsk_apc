@@ -11,6 +11,7 @@ import pickle
 from time import gmtime, strftime
 import rospkg
 import matplotlib.pyplot as plt
+from jsk_rqt_plugins.srv import YesNo, YesNoResponse
 
 
 
@@ -40,10 +41,18 @@ class SaveData(ConnectionBasedTransport):
         self.sub.unregister()
 
     def set_layout_name(self, json):
-        self.layout_name = json.split('/').[-1][:-5]
+        self.layout_name = json.split('/')[-1][:-5]
 
     def _callback(self, sync_msg):
         rospy.loginfo('started')
+        rospy.wait_for_service('rqt_yn_btn')
+        try:
+            client = rospy.ServiceProxy('rqt_yn_btn', YesNo)
+        except rospy.ServiceException, e:
+            print 'service {}'.format(e)
+        yn = client.call()
+        if not yn.yes:
+            return
 
         dist_msg = sync_msg.dist_msg
         height_msg = sync_msg.height_msg
@@ -101,5 +110,11 @@ class SaveData(ConnectionBasedTransport):
 
 if __name__ == '__main__':
     rospy.init_node('save_data')
+    # wait until gui button is pressed
+
     seg = SaveData()
     rospy.spin()
+
+
+
+
