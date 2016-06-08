@@ -383,19 +383,38 @@
       (send self :wait-interpolation)
       ))
   (:try-to-pick-object
-    (arm bin &key (object-index 0) (offset #f(0 0 0)))
+    (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
     (let (avs obj-boxes obj-box obj-coms obj-com graspingp (pad-link-l 115)
               (gripper-tube-t 40) gripper-req-l bin-box bin-y-l bin-z-l)
       ;; validate
-      (unless
-        (setq obj-box (elt (gethash bin _objects-sib-boxes) object-index))
-        (ros::ros-warn "[SIB] No bbox  is found: ~a, ~a" arm bin)
-        (return-from :try-to-pick-object nil))
-      ;; with Center of Mass
-      (unless
-        (setq obj-coords (elt (gethash bin _objects-sib-coords) object-index))
-        (ros::ros-warn "[SIB] No com is found: ~a, ~a" arm bin)
-        (return-from :try-to-pick-object nil))
+      (cond (use-sib
+              (unless
+                (setq obj-box (elt (gethash bin _objects-sib-boxes) object-index))
+                (ros::ros-warn "[SIB] No bbox  is found: ~a, ~a" arm bin)
+                (return-from :try-to-pick-object nil))
+              ;; with Center of Mass
+              (unless
+                (setq obj-coords (elt (gethash bin _objects-sib-coords) object-index))
+                (ros::ros-warn "[SIB] No com is found: ~a, ~a" arm bin)
+                (return-from :try-to-pick-object nil))
+              )
+            (t
+              (unless
+                (setq obj-boxes (gethash bin _objects-in-bin-boxes))
+                (ros::ros-warn "No object is found: ~a, ~a" arm bin)
+                (return-from :try-to-pick-object nil))
+              (unless
+                (setq obj-box (elt obj-boxes object-index))
+                (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
+                (return-from :try-to-pick-object nil))
+              (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
+              (setq obj-com (elt (send obj-coms-msg :poses) object-index))
+              ;; ik to obj a bit distant
+              ;; with Center of Mass
+              (setq obj-coords (send self :tf-pose->coords
+                                     (send obj-coms-msg :header :frame_id) obj-com))
+              )
+            )
       ;; set requisite length for gripper to enter bin
       (setq gripper-req-l (+ pad-link-l (/ gripper-tube-t 2)))
       (unless
@@ -405,7 +424,13 @@
         (return-from :try-to-pick-object nil))
       (setq bin-y-l (m->mm (send bin-box :dimensions :y))
             bin-z-l (m->mm (send bin-box :dimensions :z)))
-      (setq world-x :z world-y :x world-z :y)
+      (if use-sib
+        (setq world-x :z world-y :x world-z :y)
+        (if (find bin '(:a :b :c :d :e :f))
+          (setq world-x :z world-y :x world-z :y)
+          (setq world-x :z world-y :y world-z :x)
+          )
+        )
       (if (eq arm :rarm)
         ;; if object is higher than highest end-coords when gripper is 90 degrees
         (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))
@@ -625,7 +650,7 @@
       (unix::sleep 1)  ;; wait for arm to follow
     graspingp))
   (:pick-object
-    (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
+    (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil) (use-sib t))
     (if (eq arm :rarm)
       (send *ri* :angle-vector-sequence
             (list (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)))
@@ -637,11 +662,16 @@
     (send *ri* :wait-interpolation)
     (let (bin-box graspingp avs)
       ;; abort when no objects found
-      (if
-        (or
-          (eq (length (gethash bin _objects-sib-boxes)) 0)
-          (eq (length (gethash bin _objects-sib-coords)) 0))
-        (return-from :pick-object nil) t)
+      (if use-sib
+        (if
+          (or
+            (eq (length (gethash bin _objects-sib-boxes)) 0)
+            (eq (length (gethash bin _objects-sib-coords)) 0))
+          (return-from :pick-object nil) t)
+        (if
+          (eq (length (gethash bin _objects-in-bin-boxes)) 0)
+          (return-from :pick-object nil) t)
+        )
       ;; move arm bin-entrance -> pos above object to z direction
       (setq bin-box (gethash bin _bin-boxes))
       (dotimes (i n-trial)
@@ -649,7 +679,7 @@
           (unless graspingp
             (setq graspingp
                   (send self :try-to-pick-object arm bin :object-index object-index
-                        :offset (float-vector (* i 50) 0 0))
+                        :offset (float-vector (* i 50) 0 0) :use-sib use-sib)
                   )
             (pushback (send *baxter* :angle-vector) avs)
             )
