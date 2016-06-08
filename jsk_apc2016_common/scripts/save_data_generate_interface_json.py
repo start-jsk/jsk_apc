@@ -58,16 +58,16 @@ pkg_path = rp.get_path(PKG)
 save_dir = os.path.join(pkg_path, 'json')
 ids = []
 for f in os.listdir(save_dir):
-    m = re.match('^(pick|stow)_layout_([0-9]*).json$', f)
+    m = re.match('^save_(pick|stow)_layout_([0-9]*).json$', f)
     if m:
         id = int(m.groups()[1])
-        assert osp.exists(osp.join(save_dir, 'pick_layout_%d.json' % id))
+        assert osp.exists(osp.join(save_dir, 'save_pick_layout_%d.json' % id))
         ids.append(id)
 if ids:
     next_json_id = max(ids) + 1
 else:
     next_json_id = 1
-pick_json_file = osp.join(save_dir, 'pick_layout_%d.json' % next_json_id)
+pick_json_file = osp.join(save_dir, 'save_pick_layout_%d.json' % next_json_id)
 
 # ------------------------------------------------------------------------------
 
