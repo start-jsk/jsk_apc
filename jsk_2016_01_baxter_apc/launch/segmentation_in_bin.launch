@@ -37,7 +37,7 @@
     <arg name="INPUT_IMAGE_RESIZED" value="$(arg LEFT_INPUT_IMAGE_RESIZED)"/>
     <arg name="INPUT_CLOUD" value="$(arg LEFT_INPUT_CLOUD_FILTERED)"/>
     <arg name="INPUT_INFO" value="$(arg LEFT_INPUT_INFO)"/>
-    <arg name="INPUT_INFO_RESIZED" value="$(LEFT_INPUT_INFO_RESIZED)"/>
+    <arg name="INPUT_INFO_RESIZED" value="$(arg LEFT_INPUT_INFO_RESIZED)"/>
     <arg name="HAND" value="left" />
     <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
