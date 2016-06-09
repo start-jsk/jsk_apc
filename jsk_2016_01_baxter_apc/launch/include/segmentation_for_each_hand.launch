@@ -1,10 +1,11 @@
 <launch>
   <arg name="NODELET_MANAGER" />
   <arg name="NODELET_ID_0" />
-
   <arg name="INPUT_CLOUD"/>
   <arg name="INPUT_IMAGE"/>
+  <arg name="INPUT_IMAGE_RESIZED"/>
   <arg name="INPUT_INFO"/>
+  <arg name="INPUT_INFO_RESIZED" />
   <arg name="HAND" />
   <arg name="INPUT_BIN_ARRAY" />
   <arg name="TRAINED_PATH" />
@@ -29,14 +30,14 @@
       name="$(arg HAND)_sib_mask" output="screen">
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
     <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
-    <remap from="~input" to="/$(arg HAND)_softkinetic_camera_resized/camera_info"/>
+    <remap from="~input" to="$(arg INPUT_INFO_RESIZED)"/>
   </node>
 
   <node pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
         name="$(arg HAND)_sib_topic_sync" output="screen">
     <remap from="~input/dist" to="/$(arg HAND)_sib_spatial/dist"/>
     <remap from="~input/height" to="/$(arg HAND)_sib_spatial/height"/>
-    <remap from="~input/image" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+    <remap from="~input/image" to="$(arg INPUT_IMAGE_RESIZED)"/>
     <remap from="~input/mask" to="/$(arg HAND)_sib_mask/output"/>
   </node>
 
@@ -111,7 +112,7 @@
       <arg name="HEIGHT" value="/$(arg HAND)_sib_spatial/height"/>
       <arg name="POSTERIOR" value="/$(arg HAND)_sib_rbo/posterior"/>
       <arg name="POSTERIOR_UNMASK" value="/$(arg HAND)_sib_rbo/posterior_unmask"/>
-      <arg name="INPUT_IMAGE" value="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+      <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE_RESIZED)"/>
       <arg name="MASK" value="/$(arg HAND)_sib_rbo/target_mask"/>
       <arg name="MASKED_INPUT" value="/$(arg HAND)_sib_rbo/masked_input"/>
       <arg name="LABEL_IMAGE" value="/$(arg HAND)_sib_rbo/class_label"/>
