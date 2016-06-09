@@ -106,6 +106,7 @@ class SaveData(ConnectionBasedTransport):
         data['height3D'] = self.height_img
         data['color'] = self.color_img
         data['mask_img'] = self.mask_img
+        data['depth'] = self.depth_img
 
         time = strftime('%Y%m%d%H', gmtime())
         rospack = rospkg.RosPack()
