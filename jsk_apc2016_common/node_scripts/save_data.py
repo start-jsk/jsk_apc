@@ -11,6 +11,7 @@ import pickle
 from time import gmtime, strftime
 import rospkg
 from jsk_rqt_plugins.srv import YesNo
+from sensor_msgs.msg import Image
 import os
 
 
@@ -21,6 +22,7 @@ class SaveData(ConnectionBasedTransport):
         self.dist_img = None
         self._target_bin = None
         self.camera_model = cameramodels.PinholeCameraModel()
+        self.depth_img = None
 
         ConnectionBasedTransport.__init__(self)
 
@@ -31,6 +33,8 @@ class SaveData(ConnectionBasedTransport):
             '~input/bin_info_array', BinInfoArray, self._topic_cb)
         self.synctopic_sub = rospy.Subscriber(
             '~input', SegmentationInBinSync, self._callback)
+        self.depth_sub = rospy.Subscriber(
+            '~input/depth', Image, self._depth_cb)
 
     def unsubscribe(self):
         self.sub.unregister()
@@ -45,6 +49,9 @@ class SaveData(ConnectionBasedTransport):
         self.try_dir = rospy.get_param('~try_dir')
         self.bin_info_dict = self.bin_info_array_to_dict(bin_info_arr_msg)
 
+    def _depth_cb(self, depth_msg):
+        self.depth_img = self.bridge.imgmsg_to_cv2(depth_msg, "passthrough")
+
     def _callback(self, sync_msg):
         rospy.loginfo('started')
 
@@ -56,6 +63,10 @@ class SaveData(ConnectionBasedTransport):
             print 'service {}'.format(e)
         yn = client.call()
         if not yn.yes:
+            return
+
+        if self.depth_img == None:
+            rospy.loginfo('depth image not stored yet')
             return
 
         dist_msg = sync_msg.dist_msg

@@ -13,6 +13,7 @@
         name="$(arg hand)_save_data" output="screen">
     <remap from="~input" to="$(arg hand)_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
+    <remap from="~input/depth" to="/kinect2_torso/hd/depth"/>
     <remap from="~target_bin_name" to="$(arg hand)_hand/target_bin"/>
     <param name="~json" value="$(arg json)" />
     <param name="~try_dir" value="1" />
