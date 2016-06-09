@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="rosserial_python" name="suction_manager_serial_node"
+	type="serial_node.py" >
+    <param name="boud" value="115200" />
+  </node>
+</launch>

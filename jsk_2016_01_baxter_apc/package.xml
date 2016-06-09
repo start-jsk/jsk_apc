@@ -38,8 +38,14 @@
   <run_depend>roscpp</run_depend>
   <run_depend>rosserial_python</run_depend>
   <run_depend>std_msgs</run_depend>
+  <run_depend>rqt_gui</run_depend>
+  <run_depend>rqt_gui_py</run_depend>
 
   <test_depend>python-gdown</test_depend>
   <test_depend>rostest</test_depend>
   <test_depend>jsk_tools</test_depend>
+
+  <export>
+    <rqt_gui plugin="${prefix}/plugin.xml" />
+  </export>
 </package>

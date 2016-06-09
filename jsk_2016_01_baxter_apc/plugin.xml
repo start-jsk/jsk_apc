@@ -1,0 +1,15 @@
+<library path="src">
+  <class name="SuctionManagerGUI" type="jsk_2016_01_baxter_apc.suction_manager_gui.SuctionManagerGUI" base_class_type="rqt_gui_py::Plugin">
+    <description>GUI for suction manager</description>
+    <qtgui>
+      <group>
+        <label>Visualization</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to visualization.</statustip>
+      </group>
+      <label>Suction Manager GUI</label>
+      <icon type="theme">utilities-system-monitor</icon>
+      <statustip>A plugin to control suction manager.</statustip>
+    </qtgui>
+  </class>
+</library>
