@@ -9,6 +9,7 @@ import jsk_apc2016_common.segmentation_in_bin.\
 from std_msgs.msg import Header
 
 import json
+import os
 
 
 def get_bin_contents_from_json(json_file):
@@ -44,6 +45,10 @@ class BinInfoArrayPublisher(object):
 
             # update bin_info_arr only when rosparam: json is changd
             if self.json_file != json:
+                if not os.path.isfile(json) or json[-4:] != 'json':
+                    rospy.logwarn('wrong json file name')
+                    rate.sleep()
+                    continue
                 self.json_file = json
 
                 # get bbox from rosparam
