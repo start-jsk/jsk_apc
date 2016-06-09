@@ -1,6 +1,7 @@
 <launch>
 
   <arg name="NODELET_MANAGER" default="kinect2_torso" />
+  <arg name="use_stow" default="false" />
 
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_torso.launch">
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
@@ -22,10 +23,15 @@
     <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
   </include>
 
-  <include file="$(find jsk_2016_01_baxter_apc)/launch/recognition_in_hand.launch">
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/recognition_in_hand.launch" unless="$(arg use_stow)">
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
     <arg name="NODELET_ID_7" default="7" />
     <arg name="INPUT_IMAGE" value="/kinect2_torso/hd/image_color" />
+    <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
+  </include>
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/recognition_in_hand_for_stow.launch" if="$(arg use_stow)">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="NODELET_ID_7" default="7" />
     <arg name="INPUT_CLOUD" value="/kinect2_torso/hd/points" />
   </include>
 
