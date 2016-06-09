@@ -56,9 +56,9 @@ class SaveData(ConnectionBasedTransport):
         rospy.loginfo('started')
 
         # wait until yn_botton is pressed
-        rospy.wait_for_service('rqt_yn_btn')
+        rospy.wait_for_service('save_data/rqt_yn_btn')
         try:
-            client = rospy.ServiceProxy('rqt_yn_btn', YesNo)
+            client = rospy.ServiceProxy('save_data/rqt_yn_btn', YesNo)
         except rospy.ServiceException, e:
             print 'service {}'.format(e)
         yn = client.call()
