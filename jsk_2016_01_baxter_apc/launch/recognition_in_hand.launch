@@ -83,10 +83,10 @@
   <group ns="in_hand_clipper">
     <rosparam>
       use_multiple_attention: true
-      initial_pos_list: [[0.0, -0.1, 0.3], [0.0, 0.0, 0.15]]
+      initial_pos_list: [[0.0, 0.0, 0.15], [0.0, 0.0, 0.15]]
       initial_rot_list: [[0, 0, 0], [0, 0, 0]]
-      dimensions: [[0.3, 0.2, 0.3], [0.3, 0.3, 0.2]]
-      frame_id_list: [left_custom_vacuum_link_base, right_gripper_vacuum_pad]
+      dimensions: [[0.3, 0.3, 0.2], [0.3, 0.3, 0.2]]
+      frame_id_list: [left_gripper_vacuum_pad, right_gripper_vacuum_pad]
       prefixes: [left_hand, right_hand]
     </rosparam>
   </group>
