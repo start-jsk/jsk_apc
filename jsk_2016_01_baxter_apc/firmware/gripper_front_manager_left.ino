@@ -33,10 +33,10 @@ std_msgs::Bool bool_msg;
 std_msgs::Bool servo_torque_msg;
 std_msgs::Float32 servo_angle_msg;
 
-ros::Publisher pressure_pub("gripper_front/limb/right/pressure/state", &pressure_msg);
-ros::Publisher state_pub("gripper_front/limb/right/pressure/grabbed/state", &bool_msg);
-ros::Publisher servo_torque_pub("gripper_front/limb/right/servo/torque/state", &servo_torque_msg);
-ros::Publisher servo_angle_pub("gripper_front/limb/right/servo/angle/state", &servo_angle_msg);
+ros::Publisher pressure_pub("gripper_front/limb/left/pressure/state", &pressure_msg);
+ros::Publisher state_pub("gripper_front/limb/left/pressure/grabbed/state", &bool_msg);
+ros::Publisher servo_torque_pub("gripper_front/limb/left/servo/torque/state", &servo_torque_msg);
+ros::Publisher servo_angle_pub("gripper_front/limb/left/servo/angle/state", &servo_angle_msg);
 
 unsigned long  publisher_timer = 0;
 bool state = false;
@@ -50,7 +50,7 @@ inline float rad_to_deg(float rad)
 
 void set_angle(void)
 {
-    myservo.write((int)(rad_to_deg(servo_angle_msg.data) - 90.0));
+    myservo.write((int)(-rad_to_deg(servo_angle_msg.data) + 90.0));
 }
 
 void servo_angleCb(const std_msgs::Float32& angle_msg)
@@ -86,8 +86,8 @@ void servo_enableCb(const std_msgs::Bool& servo_enable_msg)
     }
 }
 
-ros::Subscriber<std_msgs::Float32> servo_angle_sub("gripper_front/limb/right/servo/angle", &servo_angleCb);
-ros::Subscriber<std_msgs::Bool> servo_torque_sub("gripper_front/limb/right/servo/torque", &servo_torqueCb);
+ros::Subscriber<std_msgs::Float32> servo_angle_sub("gripper_front/limb/left/servo/angle", &servo_angleCb);
+ros::Subscriber<std_msgs::Bool> servo_torque_sub("gripper_front/limb/left/servo/torque", &servo_torqueCb);
 ros::Subscriber<std_msgs::Bool> servo_enable_sub("gripper_front/enable", &servo_enableCb);
 
 void setup() {
