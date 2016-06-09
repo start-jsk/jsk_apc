@@ -179,9 +179,9 @@ def generateBinContents():
         for ii in range(0, bin_count):
             bin_name = random.choice(abins)
             abins.remove(bin_name)
-            if bin_name == 'bin_L':
-                bin_size_l = 3
-                for jj in range(0, bin_size_l):
+            if bin_name in ['bin_G', 'bin_H', 'bin_J', 'bin_K']:
+                bin_size_selected = 3
+                for jj in range(0, bin_size_selected):
                     item_name = random.choice(items)
                     items.remove(item_name)
                     bin_contents[bin_name].append(item_name)
