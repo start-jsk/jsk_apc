@@ -51,7 +51,11 @@
                   robot :rarm
                   (make-cascoords :pos pos :rpy (float-vector 0 (deg2rad -90) 0))
                   :gripper-angle 0)
-                (ik-with-rotating-gripper robot :larm (make-cascoords :pos pos))
+                (ik-with-rotating-gripper robot :larm (make-cascoords :pos pos) :gripper-angle 90)
+                (ik-with-rotating-gripper
+                  robot :larm
+                  (make-cascoords :pos pos :rpy (float-vector 0 (deg2rad -90) 0))
+                  :gripper-angle 0)
                 (> tmp-x limit))
               "fail to solve ik")
             )

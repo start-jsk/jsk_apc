@@ -29,11 +29,16 @@
     ;; initialize controllers
     (send-super* :init :joint-states-queue-size 2 args)
     (send self :add-controller :rgripper-controller)
+    (send self :add-controller :lgripper-controller)
     ;; hack for https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/227
     (if (not (equal (send (car (gethash :rarm-controller (self . controller-table))) :name)
                     (cdr (assoc :controller-action (car (send self :rarm-controller))))))
         (let ((tmp-actions (gethash :rarm-controller controller-table)))
           (setf (gethash :rarm-controller controller-table) (reverse tmp-actions))))
+    (if (not (equal (send (car (gethash :larm-controller (self . controller-table))) :name)
+                    (cdr (assoc :controller-action (car (send self :larm-controller))))))
+        (let ((tmp-actions (gethash :larm-controller controller-table)))
+          (setf (gethash :larm-controller controller-table) (reverse tmp-actions))))
     ;; initialize slots
     (setq _tfl (instance ros::transform-listener :init))
     (setq _bin-boxes (make-hash-table))
@@ -54,6 +59,11 @@
    (append
     (send-super :rarm-controller)
     (send self :rgripper-controller)))
+  ;; Overwrite super class's :larm-controller
+  (:larm-controller ()
+   (append
+    (send-super :larm-controller)
+    (send self :lgripper-controller)))
   (:rgripper-controller ()
    (list
     (list
@@ -61,6 +71,13 @@
      (cons :controller-state "/gripper_front/limb/right/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "right_gripper_vacuum_pad_joint")))))
+  (:lgripper-controller ()
+   (list
+    (list
+     (cons :controller-action "/gripper_front/limb/left/follow_joint_trajectory")
+     (cons :controller-state "/gripper_front/limb/left/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "left_gripper_vacuum_pad_joint")))))
 
   (:start-grasp
     (&optional (arm :arms))
@@ -136,8 +153,8 @@
   (:arm-potentio-vector
     (arm)
     (case arm
-      (:larm (subseq (send *ri* :state :potentio-vector) 1 8))
-      (:rarm (subseq (send *ri* :state :potentio-vector) 8 15))
+      (:larm (subseq (send *ri* :state :potentio-vector) 1 9))
+      (:rarm (subseq (send *ri* :state :potentio-vector) 9 17))
       (t nil)
       )
     )
