@@ -52,12 +52,9 @@
                  args)
     )
   (:rotate-wrist
-    (arm angle)
-    (let (wrist-index av-tmp)
-      (setq wrist-index (if (eq arm :larm) 7 14))
-      (setq av-tmp (send self :angle-vector))
-      (setf (elt av-tmp wrist-index) (+ (elt av-tmp wrist-index) angle))
-      (send self :angle-vector av-tmp))
+    (arm angle &key (relative t))
+    (send self arm :wrist-r :joint-angle angle :relative relative)
+    (send self :angle-vector)
     )
   (:rotate-gripper
     (arm angle &key (relative t))
