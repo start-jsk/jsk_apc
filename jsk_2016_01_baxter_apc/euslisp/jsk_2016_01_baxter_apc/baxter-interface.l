@@ -153,8 +153,8 @@
   (:arm-potentio-vector
     (arm)
     (case arm
-      (:larm (subseq (send *ri* :state :potentio-vector) 1 8))
-      (:rarm (subseq (send *ri* :state :potentio-vector) 8 15))
+      (:larm (subseq (send *ri* :state :potentio-vector) 1 9))
+      (:rarm (subseq (send *ri* :state :potentio-vector) 9 17))
       (t nil)
       )
     )
