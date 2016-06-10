@@ -1,6 +1,5 @@
 <launch>
   <arg name="hand" />
-  <arg name="json" />
 
   <group ns="save_data">
     <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="save_data_yn_btn" />
@@ -12,7 +11,6 @@
     <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
     <remap from="~input/depth" to="/kinect2_torso/hd/image_depth_rect"/>
     <remap from="~target_bin_name" to="$(arg hand)_hand/target_bin"/>
-    <param name="~json" value="$(arg json)" />
     <param name="~try_dir" value="1" />
     <param name="always_subscribe" value="True" />
   </node>
