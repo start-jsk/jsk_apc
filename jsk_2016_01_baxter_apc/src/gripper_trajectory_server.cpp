@@ -9,7 +9,7 @@ typedef actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction>
 
 std::map<std::string, ros::Publisher> g_gripper_servo_angle_pub;
 
-void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server* as_, std::string side)
+void execute(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal, Server* as_, const std::string& side)
 {
   bool success = true;
   std::string node_name(ros::this_node::getName());
@@ -88,9 +88,13 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "gripper_joint_trajectory_action_server");
   ros::NodeHandle n;
   g_gripper_servo_angle_pub["right"] = n.advertise<std_msgs::Float32>("gripper_front/limb/right/servo/angle", 10);
-  Server server(n, "gripper_front/limb/right/follow_joint_trajectory", boost::bind(&execute, _1, &server, "right"),
-                false);
-  server.start();
+  g_gripper_servo_angle_pub["left"] = n.advertise<std_msgs::Float32>("gripper_front/limb/left/servo/angle", 10);
+  Server right_server(n, "gripper_front/limb/right/follow_joint_trajectory",
+                      boost::bind(&execute, _1, &right_server, "right"), false);
+  Server left_server(n, "gripper_front/limb/left/follow_joint_trajectory",
+                     boost::bind(&execute, _1, &left_server, "left"), false);
+  right_server.start();
+  left_server.start();
   ros::spin();
   return 0;
 }
