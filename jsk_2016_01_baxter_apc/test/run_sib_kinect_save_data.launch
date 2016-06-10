@@ -34,7 +34,7 @@
   <include file="$(find jsk_2016_01_baxter_apc)/launch/sib_kinect.launch">
   </include>
   <param name="/left_hand/target_bin" value="g"/>
-  <param name="/right_hand/target_bin" value="l"/>
+  <param name="/right_hand/target_bin" value="h"/>
 
   <include file="$(find jsk_2016_01_baxter_apc)/launch/save_data.launch">
     <arg name="hand" value="right"/>
