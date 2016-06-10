@@ -193,21 +193,13 @@
           (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
           (setq avs-picked->return-bin
-                (if (eq arm :rarm)
-                  (cons (send *baxter* :avoid-shelf-pose arm target-bin)
-                        (mapcar
-                          #'(lambda (x)
-                              (send *ri* :ik->bin-entrance arm target-bin
-                                    :offset (float-vector x 0 -20)))
-                          '(-200 -150 -100 -50 0 150))
-                        )
-                  (list
-                    (send *baxter* :avoid-shelf-pose arm target-bin)
-                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(-300 0 50))
-                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(-100 0 50))
-                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(0 0 50))
-                    (send *ri* :ik->bin-entrance arm target-bin :offset #f(200 0 50)))
-                  )
+                (cons (send *baxter* :avoid-shelf-pose arm target-bin)
+                      (mapcar
+                        #'(lambda (x)
+                            (send *ri* :ik->bin-entrance arm target-bin
+                                  :offset (float-vector x 0 -20)))
+                        '(-200 -150 -100 -50 0 150))
+                      )
                 )
           (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)

@@ -122,10 +122,7 @@
     (let (topic)
       (if (ros::get-param "/apc_on_gazebo" nil)
         (setq topic (format nil "/robot/~a_vacuum_gripper/grasping" (arm-to-str arm)))
-        (if (eq arm :rarm)
-          (setq topic (format nil "gripper_front/limb/~a/pressure/grabbed/state" (arm-to-str arm)))
-          (setq topic (format nil "gripper_grabbed/limb/~a/state" (arm-to-str arm)))
-          )
+        (setq topic (format nil "gripper_front/limb/~a/pressure/grabbed/state" (arm-to-str arm)))
         )
       (send (one-shot-subscribe topic std_msgs::Bool) :data)))
   (:opposite-arm (arm) (if (eq arm :larm) :rarm :larm))
@@ -448,194 +445,133 @@
           (setq world-x :z world-y :y world-z :x)
           )
         )
-      (if (eq arm :rarm)
-        ;; if object is higher than highest end-coords when gripper is 90 degrees
-        (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))
-          (let ((obj-pos-y (elt (send (send self :tf-pose->coords
-                                            (send obj-box :header :frame_id)
-                                            (send obj-box :pose)) :pos) 1))
-                (obj-y-l (m->mm (send obj-box :dimensions world-y)))
-                (bin-center-y (elt (send (send *baxter* arm :end-coords) :worldpos) 1))
-                ;; :ik->bin-entrance brought y-coordinates of end-coords
-                ;; to the same value as center of bin
-                )
-            (cond ((< (+ obj-pos-y (/ obj-y-l 2))
-                      ;; if space gripper can enter exists on right
-                      (- (+ bin-center-y (/ bin-y-l 2)) gripper-req-l))
-                   (setq sign -1)
-                   (setq sign_y 0))
-                  ((> (- obj-pos-y (/ obj-y-l 2))
-                      ;; if space gripper can enter exists on left
-                      (+ (- bin-center-y (/ bin-y-l 2)) gripper-req-l))
-                   (setq sign 1)
-                   (setq sign_y 0))
-                  (t
-                    (setq sign 0)
-                    (setq sign_y -1))
-                  )
-            )
-          (progn
-            (setq sign 0)
-            (setq sign_y 0)
-            )
-          )
-        (if (and
-              (< (send obj-box :dimensions world-y)
-                 (send obj-box :dimensions world-z))
-              (> (send obj-box :dimensions world-z)
-                 (/ (send (gethash bin _bin-boxes) :dimensions :z) 2))
+      ;; if object is higher than highest end-coords when gripper is 90 degrees
+      (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))
+        (let ((obj-pos-y (elt (send (send self :tf-pose->coords
+                                          (send obj-box :header :frame_id)
+                                          (send obj-box :pose)) :pos) 1))
+              (obj-y-l (m->mm (send obj-box :dimensions world-y)))
+              (bin-center-y (elt (send (send *baxter* arm :end-coords) :worldpos) 1))
+              ;; :ik->bin-entrance brought y-coordinates of end-coords
+              ;; to the same value as center of bin
               )
-          ;; compare y
-          (setq sign (if (< (elt (send obj-coords :pos) 1)
-                            (elt (send (send *baxter* arm :end-coords)
-                                       :worldpos) 1)) -1 1))
-          (setq sign 0))
-        )
-      (if (eq arm :rarm)
-        (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
-        (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a" arm sign))
-      (if (ros::get-param "/apc_on_gazebo" nil)
-        ;; FIXME: this condition is needed to avoid collisio to the shelf at this moment
-        (setq offset-from-entrance #f(-30 0 0))
-        (if (eq arm :rarm)
-          (if (< sign_y 0)
-            (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
-            (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l 5)))
-            )
-          (setq offset-from-entrance
-                (float-vector -30 0
-                              (m->mm (/ (send (gethash bin _bin-boxes)
-                                              :dimensions :z) 4))))
+          (cond ((< (+ obj-pos-y (/ obj-y-l 2))
+                    ;; if space gripper can enter exists on right
+                    (- (+ bin-center-y (/ bin-y-l 2)) gripper-req-l))
+                 (setq sign -1)
+                 (setq sign_y 0))
+                ((> (- obj-pos-y (/ obj-y-l 2))
+                    ;; if space gripper can enter exists on left
+                    (+ (- bin-center-y (/ bin-y-l 2)) gripper-req-l))
+                 (setq sign 1)
+                 (setq sign_y 0))
+                (t
+                  (setq sign 0)
+                  (setq sign_y -1))
+                )
+          )
+        (progn
+          (setq sign 0)
+          (setq sign_y 0)
           )
         )
-      (if (eq arm :rarm)
-        (send self :angle-vector
-              (send self :ik->bin-entrance arm bin
-                    :offset offset-from-entrance :gripper-angle (* (+ sign_y 1) 90))
-              3000)
-        (send self :angle-vector
-              (send self :ik->bin-entrance arm bin :offset offset-from-entrance) 3000)
+      (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
+      (if (ros::get-param "/apc_on_gazebo" nil)
+        ;; FIXME: this condition is needed to avoid collision to the shelf at this moment
+        (setq offset-from-entrance #f(-30 0 0))
+        (if (< sign_y 0)
+          (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
+          (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l 5)))
+          )
         )
+      (send self :angle-vector
+            (send self :ik->bin-entrance arm bin
+                  :offset offset-from-entrance :gripper-angle (* (+ sign_y 1) 90))
+            3000)
       (send self :wait-interpolation)
       ; (pushback
       ;   (send *baxter* arm :inverse-kinematics
       ;       (send (send (send *baxter* arm :end-coords)
       ;                   :copy-worldcoords) :translate offset :local))
       ;   avs)
-      (if (eq arm :rarm)
-        (if (and (not (= sign 0)) (>= sign_y 0))
-          (let (end-coords bin-dim-x)
-            (setq end-coords (send self :tf-pose->coords
-                                   (send (send bin-box :header) :frame_id)
-                                   (send bin-box :pose)))
-            (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
-            (send end-coords :translate
-                  (float-vector
-                    (- (/ bin-dim-x 2))
-                    (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0)
-                  :world)
-            (send end-coords :rotate (* sign pi/2) :x :local)
-            ;; decide target coords depending on size of gripper and bin
-            (pushback
-              (send *baxter* arm :inverse-kinematics
-                    end-coords
-                    )
-              avs)
-            (pushback
-              (send *baxter* arm :move-end-pos #f(0 0 50) :local)
-              ;; press back of gripper against bin wall
-              avs)
-            (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
-            (send self :wait-interpolation)
-            ;; stop pressing and detach gripper from wall
-            (send self :state)
-            (send *baxter* :angle-vector (send self :potentio-vector))
-            (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -20) :local) 2000)
-            (send self :wait-interpolation)
-            )
-          )
-        (progn
+      (if (and (not (= sign 0)) (>= sign_y 0))
+        (let (end-coords bin-dim-x)
+          (setq end-coords (send self :tf-pose->coords
+                                 (send (send bin-box :header) :frame_id)
+                                 (send bin-box :pose)))
+          (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
+          (send end-coords :translate
+                (float-vector
+                  (- (/ bin-dim-x 2))
+                  (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0)
+                :world)
+          (send end-coords :rotate (* sign pi/2) :x :local)
+          ;; decide target coords depending on size of gripper and bin
           (pushback
             (send *baxter* arm :inverse-kinematics
-                  (send (send (send *baxter* arm :end-coords) :copy-worldcoords)
-                        :rotate (* sign pi/2) :x :local))
+                  end-coords
+                  )
+            avs)
+          (pushback
+            (send *baxter* arm :move-end-pos #f(0 0 50) :local)
+            ;; press back of gripper against bin wall
             avs)
           (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
           (send self :wait-interpolation)
-          )
-        )
-      (if (eq arm :larm)
-        (progn
-          ;; start the vacuum gripper
-          (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
-          (send self :start-grasp arm)
+          ;; stop pressing and detach gripper from wall
+          (send self :state)
+          (send *baxter* :angle-vector (send self :potentio-vector))
+          (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -20) :local) 2000)
+          (send self :wait-interpolation)
           )
         )
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object] arm:~a approach to the object" arm)
-      (if (eq arm :rarm)
-        (let (target-coords)
-          (setq target-coords
-                (make-coords
-                  :pos (v+ (send obj-coords :pos) offset)
-                  :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
-                  ))
-          (if (< sign_y 0)
-            ;; when gripper is straight
-            (send self :angle-vector
-                  (send *baxter* arm :inverse-kinematics target-coords)
-                  3000)
-            ;; when gripper isn't straight
-            (let (end-coords end->above target-above-coords (elapsed-t 0))
-              (setq end-coords (send (send *baxter* arm :end-coords) :copy-worldcoords))
-              (setq end->above (send end-coords :transformation target-coords :local))
-              (setf (elt (send end->above :pos) 2) 0)
-              (setq target-above-coords
-                    (send end-coords :transform end->above :local))
-              ;; move arm in the local x, y direction only if robot can solve IK
-              (if (send *baxter* arm :inverse-kinematics target-above-coords
-                        :revert-if-fail t)
-                (send self :angle-vector (send *baxter* :angle-vector)
-                      (setq elapsed-t 2500))
-                )
-              (send self :wait-interpolation)
-              ;; move arm to the target
-              ;; if above IK succeeded, arm moves in the local z direction
-              (if (send *baxter* arm :inverse-kinematics target-coords)
-                (send self :angle-vector
-                  (send *baxter* :angle-vector)
-                  (- 4000 elapsed-t))
-                (ros::ros-warn "[:try-to-pick-object] arm:~a cannot approach closer" arm))
+      (let (target-coords)
+        (setq target-coords
+              (make-coords
+                :pos (v+ (send obj-coords :pos) offset)
+                :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
+                ))
+        (if (< sign_y 0)
+          ;; when gripper is straight
+          (send self :angle-vector
+                (send *baxter* arm :inverse-kinematics target-coords)
+                3000)
+          ;; when gripper isn't straight
+          (let (end-coords end->above target-above-coords (elapsed-t 0))
+            (setq end-coords (send (send *baxter* arm :end-coords) :copy-worldcoords))
+            (setq end->above (send end-coords :transformation target-coords :local))
+            (setf (elt (send end->above :pos) 2) 0)
+            (setq target-above-coords
+                  (send end-coords :transform end->above :local))
+            ;; move arm in the local x, y direction only if robot can solve IK
+            (if (send *baxter* arm :inverse-kinematics target-above-coords
+                      :revert-if-fail t)
+              (send self :angle-vector (send *baxter* :angle-vector)
+                    (setq elapsed-t 2500))
               )
+            (send self :wait-interpolation)
+            ;; move arm to the target
+            ;; if above IK succeeded, arm moves in the local z direction
+            (if (send *baxter* arm :inverse-kinematics target-coords)
+              (send self :angle-vector
+                    (send *baxter* :angle-vector)
+                    (- 4000 elapsed-t))
+              (ros::ros-warn "[:try-to-pick-object] arm:~a cannot approach closer" arm))
             )
           )
-        (send self :angle-vector
-              (send *baxter* arm :inverse-kinematics
-                    (make-coords
-                      :pos (v+ (send obj-coords :pos) offset)
-                      :rpy (list 0 0 (* sign pi/2))
-                      )
-                    )
-              3000)
         )
       (send self :wait-interpolation)
-      (if (eq arm :rarm)
-        (progn
-          ;; start the vacuum gripper after approaching to the object
-          (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
-          (send self :start-grasp arm)
-          (unix::sleep 1)
-          (send self :angle-vector
-                (send *baxter* arm :inverse-kinematics
-                      (make-coords :pos (send obj-coords :pos)
-                                   :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
-                3000)
-          )
-        (send self :angle-vector
-              (send *baxter* arm :inverse-kinematics
-                    (make-coords :pos (send obj-coords :pos) :rpy (list 0 0 (* sign pi/2))))
-              3000)
-        )
+      ;; start the vacuum gripper after approaching to the object
+      (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
+      (send self :start-grasp arm)
+      (unix::sleep 1)
+      (send self :angle-vector
+            (send *baxter* arm :inverse-kinematics
+                  (make-coords :pos (send obj-coords :pos)
+                               :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
+            3000)
       (send self :wait-interpolation)
       (setq graspingp (send self :graspingp arm))
       (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
@@ -652,30 +588,23 @@
         )
       ;; lift object
       (ros::ros-info "[:try-to-pick-object] arm:~a lift the object" arm)
-      (if (eq arm :rarm)
-        (cond ((< sign_y 0)
-               (send self :gripper-servo-off arm)
-               (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 20) :world) 3000))
-              (t
-                ;; only if robot can solve IK
-                (if (send *baxter* arm :move-end-pos #f(0 0 80) :local)
-                  (send self :angle-vector (send *baxter* :angle-vector) 3000)
-                  ))
-              )
-        (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 80) :local) 3000))
+      (cond ((< sign_y 0)
+             (send self :gripper-servo-off arm)
+             (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 20) :world) 3000))
+            (t
+              ;; only if robot can solve IK
+              (if (send *baxter* arm :move-end-pos #f(0 0 80) :local)
+                (send self :angle-vector (send *baxter* :angle-vector) 3000)
+                ))
+            )
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
-    graspingp))
+      graspingp))
   (:pick-object
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil) (use-sib t))
-    (if (eq arm :rarm)
-      (send *ri* :angle-vector-sequence
-            (list (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)))
-            :fast nil 0 :scale 5.0)
-      (send *ri* :angle-vector-sequence
-            (list (send self :ik->bin-entrance arm bin :offset #f(-100 0 50)))
-            :fast nil 0 :scale 5.0)
-      )
+    (send *ri* :angle-vector-sequence
+          (list (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)))
+          :fast nil 0 :scale 5.0)
     (send *ri* :wait-interpolation)
     (let (bin-box graspingp avs)
       ;; abort when no objects found
@@ -700,9 +629,7 @@
                   )
             (pushback (send *baxter* :angle-vector) avs)
             )
-          (when (and graspingp
-                     (> (send self :real-sim-end-coords-diff arm)
-                        (if (eq arm :rarm) 80 60)))
+          (when (and graspingp (> (send self :real-sim-end-coords-diff arm) 80))
             (ros::ros-info
               "arm:~a Grasped wall so stop-grasp, diff: ~a" arm
               (send self :real-sim-end-coords-diff arm))
@@ -710,9 +637,7 @@
             (unix::sleep 3)
             )
           )
-        (when (and graspingp
-                   (> (send self :real-sim-end-coords-diff arm)
-                      (if (eq arm :rarm) 80 60)))
+        (when (and graspingp (> (send self :real-sim-end-coords-diff arm) 80))
           (ros::ros-info
             "arm:~a Grasped wall so stop-grasp, diff: ~a" arm
             (send self :real-sim-end-coords-diff arm))
@@ -725,31 +650,20 @@
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-bin -> bin-entrance" arm)
       ;; move arm in-bin -> bin-entrance
-      (if (eq arm :rarm)
-        (send self :angle-vector-sequence
-              (list
-                (send *baxter* arm :move-end-pos #f(0 0 -30))
-                (send self :ik->bin-entrance arm bin :offset #f(0 0 -30))
-                (send self :ik->bin-entrance arm bin :offset #f(-100 0 -30))
-                (send self :ik->bin-entrance arm bin :offset #f(-200 0 -30))
-                )
-              :fast nil 0 :scale 5.0)
-        (send self :angle-vector-sequence
-              (list
-                (send *baxter* arm :move-end-pos #f(0 0 50))
-                (send self :ik->bin-entrance arm bin :offset #f(0 0 50))
-                (send self :ik->bin-entrance arm bin :offset #f(-100 0 50))
-                (send self :ik->bin-entrance arm bin :offset #f(-300 0 50))
-                )
-              :fast nil 0 :scale 5.0)
-        )
+      (send self :angle-vector-sequence
+            (list
+              (send *baxter* arm :move-end-pos #f(0 0 -30))
+              (send self :ik->bin-entrance arm bin :offset #f(0 0 -30))
+              (send self :ik->bin-entrance arm bin :offset #f(-100 0 -30))
+              (send self :ik->bin-entrance arm bin :offset #f(-200 0 -30))
+              )
+            :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       ;; move arm bin-entrance -> body
       (send *baxter* :avoid-shelf-pose arm bin)
       (send self :send-av)
       (send self :wait-interpolation)
-      (if (eq arm :rarm)
-        (send self :gripper-servo-on arm))
+      (send self :gripper-servo-on arm)
       graspingp))
   (:send-av
     (&optional (tm 3000))
@@ -801,7 +715,7 @@
       ;; apply offset
       (send bin-coords :translate offset :world)
       (send bin-coords :rotate overlook-angle :y :world)
-      (if (and (eq arm :rarm) (or (< gripper-angle 45) (eq bin :h)))
+      (if (or (< gripper-angle 45) (eq bin :h))
         (send *baxter* arm :inverse-kinematics bin-coords
               :rotation-axis t
               ;; if this is :z when gripper is straight, wrist sometimes rotates overly
@@ -817,10 +731,7 @@
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
-      (if (eq arm :rarm)
-        (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)) avs)
-        (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 0)) avs)
-        )
+      (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
   (:move-arm-body->bin-overlook-pose

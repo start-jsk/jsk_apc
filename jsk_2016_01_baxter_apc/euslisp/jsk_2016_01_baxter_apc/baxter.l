@@ -58,8 +58,7 @@
     )
   (:rotate-gripper
     (arm angle &key (relative t))
-    (if (eq arm :rarm)
-      (send self arm :gripper-p :joint-angle angle :relative relative))
+    (send self arm :gripper-p :joint-angle angle :relative relative)
     (send self :angle-vector)
     )
   (:avoid-shelf-pose
