@@ -1,0 +1,9 @@
+<launch>
+
+  <env name="DISPLAY" value="" />
+
+  <test test-name="test_again_approach_bin_l"
+        name="test_again_approach_bin_l"
+        pkg="jsk_2016_01_baxter_apc" type="test-again-approach-bin-l.l"/>
+
+</launch>
