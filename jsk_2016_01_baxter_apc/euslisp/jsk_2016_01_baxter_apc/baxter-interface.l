@@ -49,11 +49,11 @@
     (setq _objects-sib-coords (make-hash-table))
     ;; set hard-coded variables
     (setq _hard-coded-variables (make-hash-table))
-    (sethash :offset-avoid-bin-top _hard-coded-variables -30)
+    (sethash :offset-avoid-bin-top _hard-coded-variables -50)
     (sethash :pad-link-l _hard-coded-variables 115)
     (sethash :gripper-tube-t _hard-coded-variables 40)
     (sethash :offset-object-h _hard-coded-variables -10)
-    (sethash :offset-gripper-bin-top _hard-coded-variables 5)
+    (sethash :offset-gripper-bin-top _hard-coded-variables 10)
     (sethash :offset-gripper-bin-side _hard-coded-variables 40)
 
     (unless (ros::get-param "/apc_on_gazebo" nil)
