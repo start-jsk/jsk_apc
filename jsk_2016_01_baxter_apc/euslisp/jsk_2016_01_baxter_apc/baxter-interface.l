@@ -20,6 +20,7 @@
    _objects-sib-boxes
    _objects-sib-coords
    _bin-coords-list
+   _hard-coded-variables
    )
   )
 
@@ -46,6 +47,15 @@
     (setq _objects-in-bin-coms (make-hash-table))
     (setq _objects-sib-boxes (make-hash-table))
     (setq _objects-sib-coords (make-hash-table))
+    ;; set hard-coded variables
+    (setq _hard-coded-variables (make-hash-table))
+    (sethash :offset-avoid-bin-top _hard-coded-variables -30)
+    (sethash :pad-link-l _hard-coded-variables 115)
+    (sethash :gripper-tube-t _hard-coded-variables 40)
+    (sethash :offset-object-h _hard-coded-variables -10)
+    (sethash :offset-gripper-bin-top _hard-coded-variables 5)
+    (sethash :offset-gripper-bin-side _hard-coded-variables 40)
+
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
@@ -398,8 +408,7 @@
       ))
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
-    (let (avs obj-boxes obj-box obj-coms obj-com graspingp (pad-link-l 115)
-              (gripper-tube-t 40) gripper-req-l bin-box bin-y-l bin-z-l)
+    (let (avs obj-boxes obj-box obj-coms obj-com graspingp gripper-req-l bin-box bin-y-l bin-z-l)
       ;; validate
       (cond (use-sib
               (unless
@@ -430,7 +439,8 @@
               )
             )
       ;; set requisite length for gripper to enter bin
-      (setq gripper-req-l (+ pad-link-l (/ gripper-tube-t 2)))
+      (setq gripper-req-l (+ (gethash :pad-link-l _hard-coded-variables)
+                             (/ (gethash :gripper-tube-t _hard-coded-variables) 2)))
       (unless
         (setq bin-box (gethash bin _bin-boxes))
         (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a." bin)
@@ -446,7 +456,8 @@
           )
         )
       ;; if object is higher than highest end-coords when gripper is 90 degrees
-      (if (> (m->mm (send obj-box :dimensions world-z)) (- bin-z-l gripper-req-l -10))
+      (if (> (m->mm (send obj-box :dimensions world-z))
+             (- bin-z-l gripper-req-l (gethash :offset-object-h _hard-coded-variables)))
         (let ((obj-pos-y (elt (send (send self :tf-pose->coords
                                           (send obj-box :header :frame_id)
                                           (send obj-box :pose)) :pos) 1))
@@ -481,7 +492,13 @@
         (setq offset-from-entrance #f(-30 0 0))
         (if (< sign_y 0)
           (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
-          (setq offset-from-entrance (float-vector -30 0 (- (/ bin-z-l 2) gripper-req-l 5)))
+          (setq offset-from-entrance
+                (float-vector
+                  -30 0
+                  (- (/ bin-z-l 2) gripper-req-l
+                     (gethash :offset-gripper-bin-top _hard-coded-variables))
+                  )
+                )
           )
         )
       (send self :angle-vector
@@ -503,7 +520,9 @@
           (send end-coords :translate
                 (float-vector
                   (- (/ bin-dim-x 2))
-                  (* sign (- gripper-req-l (/ bin-y-l 2) -40)) 0)
+                  (* sign (- gripper-req-l (/ bin-y-l 2)
+                             (- (gethash :offset-gripper-bin-side _hard-coded-variables))))
+                  0)
                 :world)
           (send end-coords :rotate (* sign pi/2) :x :local)
           ;; decide target coords depending on size of gripper and bin
@@ -513,7 +532,12 @@
                   )
             avs)
           (pushback
-            (send *baxter* arm :move-end-pos #f(0 0 50) :local)
+            (send *baxter* arm :move-end-pos
+                  (float-vector
+                    0 0
+                    (+ (gethash :offset-gripper-bin-side _hard-coded-variables) 10)
+                    )
+                  :local)
             ;; press back of gripper against bin wall
             avs)
           (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
@@ -603,7 +627,12 @@
   (:pick-object
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil) (use-sib t))
     (send *ri* :angle-vector-sequence
-          (list (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)))
+          (list (send self :ik->bin-entrance arm bin
+                      :offset (float-vector
+                                -150 0
+                                (gethash :offset-avoid-bin-top _hard-coded-variables)
+                                )
+                      ))
           :fast nil 0 :scale 5.0)
     (send *ri* :wait-interpolation)
     (let (bin-box graspingp avs)
@@ -652,10 +681,22 @@
       ;; move arm in-bin -> bin-entrance
       (send self :angle-vector-sequence
             (list
-              (send *baxter* arm :move-end-pos #f(0 0 -30))
-              (send self :ik->bin-entrance arm bin :offset #f(0 0 -30))
-              (send self :ik->bin-entrance arm bin :offset #f(-100 0 -30))
-              (send self :ik->bin-entrance arm bin :offset #f(-200 0 -30))
+              (send *baxter* arm :move-end-pos
+                    (float-vector
+                      0 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                    )
+              (send self :ik->bin-entrance arm bin
+                    :offset (float-vector
+                              0 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                    )
+              (send self :ik->bin-entrance arm bin
+                    :offset (float-vector
+                              -100 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                    )
+              (send self :ik->bin-entrance arm bin
+                    :offset (float-vector
+                              -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                    )
               )
             :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
@@ -731,7 +772,11 @@
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
-      (pushback (send self :ik->bin-entrance arm bin :offset #f(-150 0 -30)) avs)
+      (pushback (send self :ik->bin-entrance arm bin
+                      :offset (float-vector
+                                -150 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                      )
+                avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
   (:move-arm-body->bin-overlook-pose
