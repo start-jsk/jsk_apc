@@ -45,7 +45,7 @@ class SaveData(ConnectionBasedTransport):
     def _topic_cb(self, bin_info_arr_msg):
         # TODO: add Lock
         rospy.loginfo('get_bin_info')
-        self.set_layout_name(rospy.get_param('~json'))
+        self.set_layout_name(rospy.get_param('/set_bin_param/json'))
         self.try_dir = rospy.get_param('~try_dir')
         self.bin_info_dict = self.bin_info_array_to_dict(bin_info_arr_msg)
 
