@@ -1,53 +1,113 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="left_vaccum_gripper">
-  <xacro:property name="width" value=".02" />
-  <xacro:property name="width_base" value=".1" />
-  <xacro:property name="width_side2_base" value=".035" />
-  <xacro:property name="bodylen" value=".49" />
-  <xacro:property name="bodylen_base" value=".12" />
-  <xacro:property name="left_wrist_offset_x" value="-0.01" />
+  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/common_constants.xacro"/>
+  <!--Link bodies-->
+  <xacro:property name="rect_tube_l" value="0.285" />
+  <xacro:property name="rect_tube_h" value="0.06" />
+  <xacro:property name="rect_tube_w" value="0.114" />
+  <xacro:property name="cyl_tube_x" value="0.005" />
+  <xacro:property name="cyl_tube_z" value="0.038" />
+  <xacro:property name="cyl_tube_r" value="0.018" />
+  <xacro:property name="cyl_tube_l" value="0.107" />
+  <xacro:property name="connection_z" value="-0.00725" />
+  <xacro:property name="connection_r" value="0.03" />
+  <xacro:property name="connection_l" value="0.0905" />
+  <xacro:property name="pad_base_z" value="0.025" />
+  <xacro:property name="pad_base_w" value="0.069" />
+  <xacro:property name="pad_base_h" value="0.038" />
+  <xacro:property name="pad_base_d" value="0.06" />
+  <xacro:property name="pad_r" value="0.026" />
+  <xacro:property name="pad_l" value="0.06" />
+  <xacro:property name="pad_x" value="-0.0005" />
+  <xacro:property name="pad_y" value="0" />
+  <xacro:property name="pad_z" value="0.085" />
+  <!--Joints-->
+  <xacro:property name="left_hand_offset_x" value="-0.01" />
+  <xacro:property name="left_hand_offset_z" value="0" />
+  <xacro:property name="left_gripper_joint_offset_x" value="0.005" />
+  <xacro:property name="left_gripper_joint_offset_y" value="0" />
+  <xacro:property name="left_gripper_joint_offset_z" value="0.264" />
 
-  <link name="left_custom_vacuum_link">
+  <link name="left_gripper_base">
     <visual>
-      <origin rpy="0 0 1.57" xyz="0 0 -0.07"/>
+      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2015_05_baxter_apc/meshes/long1_simple.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/left_gripper_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="white">
         <color rgba="1 1 1 1"/>
       </material>
     </visual>
     <collision>
+      <origin rpy="0 0 0" xyz="0 0 ${rect_tube_l/2}"/>
       <geometry>
-        <cylinder radius="${width}" length="${bodylen}"/>
+        <box size="${rect_tube_h} ${rect_tube_w} ${rect_tube_l}"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="${M_PI/2} 0 0" xyz="${cyl_tube_x} ${cyl_tube_l/2} ${cyl_tube_z}"/>
+      <geometry>
+        <cylinder radius="${cyl_tube_r}" length="${cyl_tube_l}"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="${cyl_tube_x} ${cyl_tube_l} ${connection_z}"/>
+      <geometry>
+        <cylinder radius="${connection_r}" length="${connection_l}"/>
       </geometry>
     </collision>
   </link>
-  <link name="left_custom_vacuum_link_base">
+  <link name="left_gripper_vacuum_pad_base">
     <visual>
+      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2015_05_baxter_apc/meshes/light/jigu_long2_left_kari2.dae" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/left_gripper_vacuum_pad_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="white">
-        <color rgba="1 1 1 1"/>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
     <collision>
+      <origin rpy="0 0 0" xyz="0 0 ${pad_base_z}"/>
       <geometry>
-        <cylinder radius="${width_base}" length="${bodylen_base}"/>
+        <box size="${pad_base_h} ${pad_base_w} ${pad_base_d}"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="left_gripper_vacuum_pad">
+    <visual>
+      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/left_gripper_vacuum_pad.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="${pad_x} ${pad_y} ${pad_z}"/>
+      <geometry>
+        <cylinder radius="${pad_r}" length="${pad_l}"/>
       </geometry>
     </collision>
   </link>
 
-  <joint name="left_custom_joint" type="fixed">
-    <parent link="left_wrist"/>
-    <child link="left_custom_vacuum_link"/>
-    <origin rpy="0 0 0" xyz="${left_wrist_offset_x} 0 0.19" />
+  <joint name="left_gripper_base_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${left_hand_offset_x} 0 ${left_hand_offset_z}" />
+    <parent link="left_hand"/>
+    <child link="left_gripper_base"/>
   </joint>
-  <joint name="left_custom_joint_base" type="fixed">
-    <parent link="left_wrist"/>
-    <child link="left_custom_vacuum_link_base"/>
-    <origin rpy="0 0 1.57" xyz="${left_wrist_offset_x} -0 0.13" />
+  <joint name="left_gripper_vacuum_pad_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${left_gripper_joint_offset_x} ${left_gripper_joint_offset_y} ${left_gripper_joint_offset_z}" />
+    <parent link="left_gripper_base"/>
+    <child link="left_gripper_vacuum_pad_base"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.58" upper="1.58" effort="0" velocity="4.5"/>
+  </joint>
+  <joint name="left_gripper_vacuum_pad_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="left_gripper_vacuum_pad_base"/>
+    <child link="left_gripper_vacuum_pad"/>
   </joint>
 
 </robot>
