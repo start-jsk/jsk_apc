@@ -192,12 +192,13 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
+          (setq hcv (send *ri* :get-val '_hard-coded-variables))
           (setq avs-picked->return-bin
                 (cons (send *baxter* :avoid-shelf-pose arm target-bin)
                       (mapcar
                         #'(lambda (x)
                             (send *ri* :ik->bin-entrance arm target-bin
-                                  :offset (float-vector x 0 -20)))
+                                  :offset (float-vector x 0 (gethash :offset-avoid-bin-top hcv))))
                         '(-200 -150 -100 -50 0 150))
                       )
                 )
