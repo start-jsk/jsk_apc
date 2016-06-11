@@ -46,8 +46,8 @@ def train(dataset_path):
 
     for file_prefix in data_file_prefixes:
         dataset.samples.append(
-            APCSample(data_2016_path=os.path.join(dataset_path, file_prefix),
-                      labeled=True))
+            APCSample(data_2016_prefix=os.path.join(dataset_path, file_prefix),
+                      labeled=True, is_2016=True))
 
     """
     dataset = APCDataSet(
