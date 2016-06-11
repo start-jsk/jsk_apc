@@ -157,11 +157,31 @@
       (if (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))
         t
         nil)))
-  (:need-to-wait-opposite-arm-for-stow
+  (:need-to-wait-opposite-arm-in-pick
     (arm)
     (let (opposite-state)
-      (setq opposite-state (str2symbol (ros::get-param (format nil "~a_hand/state" (send self :arm-symbol2str (send self :opposite-arm arm))))))
-      (if (eq opposite-state :pick_object) t nil)))
+      (setq opposite-state
+            (str2symbol (ros::get-param
+                          (format nil "~a_hand/state"
+                                  (send self :arm-symbol2str
+                                        (send self :opposite-arm arm))))))
+      (eq opposite-state :pick_object)))
+  (:need-to-wait-opposite-arm-in-place
+    (arm)
+    (let (opposite-state opposite-target)
+      (setq opposite-state
+            (str2symbol (ros::get-param
+                          (format nil "~a_hand/state"
+                                  (send self :arm-symbol2str
+                                        (send self :opposite-arm arm))))))
+      (setq opposite-target
+            (str2symbol (ros::get-param
+                          (format nil "~a_hand/target_bin"
+                                  (send self :arm-symbol2str
+                                        (send self :opposite-arm arm))))))
+
+      (and (eq opposite-state :place_object)
+           (find opposite-target (list :b :e :h :k)))))
   (:arm-symbol2str
     (arm)
     (case arm
@@ -789,8 +809,7 @@
       (send *baxter* arm :move-end-pos #f(-50 0 200) :world)
       (send *ri* :send-av 5000)
       (send self :wait-interpolation)
-      (if (eq arm :rarm)
-        (send self :gripper-servo-on arm))
+      (send self :gripper-servo-on arm)
       graspingp))
   (:try-to-pick-object-in-order-bin
     (arm &key (object-index 0) (offset #f(0 0 0)))
@@ -812,15 +831,7 @@
       ;;   (return-from :try-to-pick-object nil))
       (setq sign 0)
       (setq sign_y -1)
-      (if (eq arm :rarm)
-        (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
-        (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a sign: ~a" arm sign))
-      (if (eq arm :larm)
-        (progn
-          ;; start the vacuum gripper
-          (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a start vacuum gripper" arm)
-          (send self :start-grasp arm)
-          (unix::sleep 1)) nil)
+      (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a approach to the object" arm)
       ;; gripper is straight
@@ -832,12 +843,10 @@
                   :rotation-axis :z)
             3000)
       (send self :wait-interpolation)
-      (if (eq arm :rarm)
-        (progn
-          ;; start the vacuum gripper after approaching to the object
-          (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a start vacuum gripper" arm)
-          (send self :start-grasp arm)
-          (unix::sleep 1)) nil)
+      ;; start the vacuum gripper after approaching to the object
+      (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a start vacuum gripper" arm)
+      (send self :start-grasp arm)
+      (unix::sleep 1)
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (send obj-coords :pos)
@@ -859,8 +868,7 @@
           (send self :wait-interpolation)))
       ;; lift object
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a lift the object" arm)
-      (if (eq arm :rarm)
-          (send self :gripper-servo-off arm) nil)
+      (send self :gripper-servo-off arm)
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world) 3000)
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
