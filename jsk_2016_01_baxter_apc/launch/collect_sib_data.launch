@@ -5,8 +5,8 @@
     <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="save_data_yn_btn" />
   </group>
 
-  <node pkg="jsk_apc2016_common" type="save_data.py"
-        name="$(arg hand)_save_data" output="screen">
+  <node pkg="jsk_apc2016_common" type="collect_sib_data.py"
+        name="$(arg hand)_collect_sib_data" output="screen">
     <remap from="~input" to="$(arg hand)_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
     <remap from="~input/depth" to="/kinect2_torso/hd/image_depth_rect"/>
