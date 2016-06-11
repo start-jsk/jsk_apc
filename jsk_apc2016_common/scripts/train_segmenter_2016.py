@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import sys
 import os
 import rospkg
@@ -23,49 +24,30 @@ params = {
         'do_greedy_resegmentation': True}
 
 
-def create_apc_sample(path):
-    """Create APCSample from path
-
-    Args:
-        path (str): example... 'save_pick_layout_1_2016061006_bin_l'
-
+def train(dataset_path):
     """
-    data = {}
-    with open(path + '.pkl', 'rb') as f:
-        data = pickle.load(f)
+    Args:
+        dataset_path (str): ex.. /home/leus/ros/indigo/src/start-jsk/jsk_apc/jsk_apc2016_common/data/tokyo_run
+    """
 
-    data['color'] = cv2.cvtColor(cv2.imread(path + '_color.png'), cv2.COLOR_BGR2HSV)
+    # initialize empty dataset
+    dataset = APCDataSet(from_pkl=True)
 
-    data['mask_image'] = np.sum(cv2.imread(path + '_mask.pbm'), axis=2).astype(np.bool)
+    data_file_prefixes = []
+    key = '_color.png'
+    for dir_name, sub_dirs, files in os.walk(dataset_path):
+        for f in files:
+            if key == f[-len(key):]:
+                data_file_prefixes.append(
+                    os.path.join(dir_name, f[:-len(key)]))
 
-    # scale x5 is due to saving procedure
-    data['depth_image'] = cv2.imread(path + '_depth.png').astype(np.float32) * 5.
-    data['dist2shelf_image'] = cv2.imread(path + '_dist.png').astype(np.float32)
-    data['height3D_image'] = cv2.imread(path + '_height.png').astype(np.float32)
-
-    # complete neccesary data
-    data['height2D_image'] = np.zeros_like(data['height3D_image'])
-    data['has3D_image'] = (data['depth_image'] > 0).astype(np.uint8)
-
-    # read label and set label
-    apc_sample = APCSample(labeled=False, data_dict=data)
-    return apc_sample
+    print data_file_prefixes
 
 
-
-
-def train(pkl_path):
-    sys.modules['apc_data'] = apc_data
-
-    data_path = common_path + '/data/'
-    dataset_name = 'tokyo_run/1'
-    dataset_path = os.path.join(data_path, dataset_name)
-
-    create_apc_sample(os.path.join(
-        dataset_path, 'save_pick_layout_1_2016061006_bin_l'))
-
-
-
+    for file_prefix in data_file_prefixes:
+        dataset.samples.append(
+            APCSample(data_2016_path=os.path.join(dataset_path, file_prefix),
+                      labeled=True))
 
     """
     dataset = APCDataSet(
@@ -75,10 +57,9 @@ def train(pkl_path):
     """
 
 
-
-
-
-
-
 if __name__ == '__main__':
-    train(common_path + '/data/trained_segmenter_2016.pkl')
+    sys.modules['apc_data'] = apc_data
+    data_path = common_path + '/data/'
+    dataset_name = 'tokyo_run'
+    dataset_path = os.path.join(data_path, dataset_name)
+    train(dataset_path)
