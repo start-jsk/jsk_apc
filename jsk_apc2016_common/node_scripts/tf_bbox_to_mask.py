@@ -64,7 +64,7 @@ class TFBboxToMask(ConnectionBasedTransport):
             log_utils.logwarn_throttle(10, 'Bin mask image is all zero. ' +
                                            'Position of an arm might be wrong.')
             return
-        mask_msg = self.bridge.cv2_to_imgmsg(mask_img, encoding="passthrough")
+        mask_msg = self.bridge.cv2_to_imgmsg(mask_img, encoding="mono8")
         mask_msg.header = camera_info.header
         self.pub.publish(mask_msg)
 
