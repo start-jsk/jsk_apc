@@ -37,20 +37,20 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           (setq state :pick_object)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
-        (:wait_for_opposite_arm
+        (:wait_for_opposite_arm_in_pick
           (ros::ros-info "[main] ~a, ~a" arm state)
           (while
-            (send *ri* :need-to-wait-opposite-arm-for-stow arm)
+            (send *ri* :need-to-wait-opposite-arm-in-pick arm)
             (unix::sleep 1))
           (setq state :pick_object)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; if necessary wait for opposite arm
-          (if (send *ri* :need-to-wait-opposite-arm-for-stow arm)
+          (if (send *ri* :need-to-wait-opposite-arm-in-pick arm)
             (progn
               (ros::ros-info "[main] Need to wait for opposite arm: ~a" arm)
-              (setq state :wait_for_opposite_arm)
+              (setq state :wait_for_opposite_arm_in_pick)
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
             (progn
               ;; run motion
@@ -96,33 +96,46 @@
                 (ros::ros-error "[main] could not find bin box: ~a" target-bin)
                 (setq state :set_target_bin)
                 (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))))
-        (:place_object
+        (:wait_for_opposite_arm_in_place
           (ros::ros-info "[main] ~a, ~a" arm state)
-          (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
-          (send *ri* :move-arm-body->bin arm target-bin)
-          (send *ri* :wait-interpolation)
-          (setq hcv (send *ri* :get-val '_hard-coded-variables))
-          (setq avs-picked->return-bin
-                (mapcar
-                  #'(lambda (x)
-                      (send *ri* :ik->bin-entrance arm target-bin
-                            :offset (float-vector x 0 (gethash :offset-avoid-bin-top hcv))))
-                  '(-200 -150 -100 -50 0 150)))
-          (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
-          (send *ri* :wait-interpolation)
-          (send *ri* :stop-grasp arm) ;; release object
-          (send *ri* :spin-off-by-wrist arm :times 20)
-          (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector-sequence
-                (reverse avs-picked->return-bin)
-                :fast nil 0 :scale 5.0)
-          (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector (send *baxter* :avoid-shelf-pose arm target-bin))
-          (send *ri* :wait-interpolation)
-          (send *ri* :fold-pose-back arm)
-          (send *ri* :wait-interpolation)
-          (setq state :pick_object)
+          (while
+            (send *ri* :need-to-wait-opposite-arm-in-place arm)
+            (unix::sleep 1))
+          (setq state :set_target_bin)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+        (:place_object
+          (if (send *ri* :need-to-wait-opposite-arm-in-place arm)
+            (progn
+              (ros::ros-info "[main] Need to wait for opposite arm: ~a" arm)
+              (setq state :wait_for_opposite_arm_in_place)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+            (progn
+              (ros::ros-info "[main] ~a, ~a" arm state)
+              (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
+              (send *ri* :move-arm-body->bin arm target-bin)
+              (send *ri* :wait-interpolation)
+              (setq hcv (send *ri* :get-val '_hard-coded-variables))
+              (setq avs-picked->return-bin
+                    (mapcar
+                      #'(lambda (x)
+                          (send *ri* :ik->bin-entrance arm target-bin
+                                :offset (float-vector x 0 (gethash :offset-avoid-bin-top hcv))))
+                      '(-200 -150 -100 -50 0 150)))
+              (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
+              (send *ri* :wait-interpolation)
+              (send *ri* :stop-grasp arm) ;; release object
+              (send *ri* :spin-off-by-wrist arm :times 20)
+              (send *ri* :wait-interpolation)
+              (send *ri* :angle-vector-sequence
+                    (reverse avs-picked->return-bin)
+                    :fast nil 0 :scale 5.0)
+              (send *ri* :wait-interpolation)
+              (send *ri* :angle-vector (send *baxter* :avoid-shelf-pose arm target-bin))
+              (send *ri* :wait-interpolation)
+              (send *ri* :fold-pose-back arm)
+              (send *ri* :wait-interpolation)
+              (setq state :pick_object)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))))
         ))  ;; while & case
     ))
 
