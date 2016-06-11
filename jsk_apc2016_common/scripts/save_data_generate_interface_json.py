@@ -180,7 +180,7 @@ def generateBinContents():
             bin_name = random.choice(abins)
             abins.remove(bin_name)
             if bin_name in ['bin_G', 'bin_H', 'bin_J', 'bin_K']:
-                bin_size_selected = 3
+                bin_size_selected = 2
                 for jj in range(0, bin_size_selected):
                     item_name = random.choice(items)
                     items.remove(item_name)
