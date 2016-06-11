@@ -34,7 +34,7 @@ def load_datasets(dataset_names, data_path, cache_path):
                 data_path, 'rbo_apc/{}'.format(dataset_name))
         datasets[dataset_name] = APCDataSet(
                 name=dataset_name, dataset_path=dataset_path,
-                cache_path=cache_path, load_from_cache=True)
+                cache_path=cache_path, load_from_cache=False)
 
     return datasets
 
