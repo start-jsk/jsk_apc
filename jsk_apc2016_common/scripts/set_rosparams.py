@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""A script that changes rosparams of visualize_json and publish_bin_info
+"""A script that changes all json rosparams related to data collecting routine
 """
 
 import sh
