@@ -54,6 +54,5 @@
 
 <include file="$(find jsk_2016_01_baxter_apc)/launch/save_data.launch">
   <arg name="hand" value="right"/>
-  <arg name="json" value="$(arg json)"/>
 </include>
 </launch>
