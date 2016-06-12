@@ -51,8 +51,6 @@ class BinInfoArrayPublisher(object):
 
             self.bbox_array.header.stamp = rospy.Time.now()
             self.bin_info_arr.header.stamp = rospy.Time.now()
-            self.bbox_array.header.seq += 1
-            self.bin_info_arr.header.seq += 1
             pub_bbox_arr.publish(self.bbox_array)
             pub_bin_info_arr.publish(self.bin_info_arr)
             rate.sleep()
