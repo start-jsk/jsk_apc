@@ -12,6 +12,6 @@
 
   <node name="kinect2_torso_tf_publisher"
         pkg="tf" type="static_transform_publisher"
-        args="0.19 0.09 0.465 -0.01 -1.57 3.14 base kinect2_torso_rgb_optical_frame 100" />
+        args="0.21 0.075 0.45 -0.01 -1.57 3.14 base kinect2_torso_rgb_optical_frame 100" />
 
 </launch>
