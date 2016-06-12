@@ -78,6 +78,7 @@
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
+          (setq object-length (send *ri* :recognize-object-length-in-hand arm :timeout 10000))
           (if graspingp
             (setq state :set_target_bin)
             (setq state :pick_object))
@@ -115,13 +116,16 @@
               (send *ri* :move-arm-body->bin arm target-bin)
               (send *ri* :wait-interpolation)
               (setq hcv (send *ri* :get-val '_hard-coded-variables))
-              (setq avs-picked->return-bin
+              (if (> 0.20 object-length)
+                (setq entrance-x-list (list -200 -150 -100 -50 0 150))
+                (setq entrance-x-list (list -200 -150 -100 -50 0 150 200)))
+              (setq avs-picked->place-bin
                     (mapcar
                       #'(lambda (x)
                           (send *ri* :ik->bin-entrance arm target-bin
                                 :offset (float-vector x 0 (gethash :offset-avoid-bin-top hcv))))
-                      '(-200 -150 -100 -50 0 150)))
-              (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
+                      entrance-x-list))
+              (send *ri* :angle-vector-sequence avs-picked->place-bin :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 20)
