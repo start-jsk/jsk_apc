@@ -6,27 +6,11 @@ from jsk_recognition_msgs.msg import BoundingBox, BoundingBoxArray
 from geometry_msgs.msg import Pose
 import jsk_apc2016_common.segmentation_in_bin.\
         segmentation_in_bin_helper as helper
+import jsk_apc2016_common
 from std_msgs.msg import Header
 
 import json
 import os
-
-
-def get_bin_contents_from_json(json_file):
-    with open(json_file, 'r') as f:
-        bin_contents = json.load(f)['bin_contents']
-    for bin_, objects in bin_contents.items():
-        bin_ = bin_.split('_')[1].lower()  # bin_A -> a
-        yield (bin_, objects)
-
-
-def get_target_from_json(json_file):
-    with open(json_file, 'r') as f:
-        data = json.load(f)['work_order']
-    for order in data:
-        bin_ = order['bin'].split('_')[1].lower()  # bin_A -> a
-        target_object = order['item']
-        yield (bin_, target_object)
 
 
 class BinInfoArrayPublisher(object):
@@ -59,8 +43,8 @@ class BinInfoArrayPublisher(object):
                 self.bbox_array = self.get_bounding_box_array(self.bbox_dict)
 
                 # get contents of bin from json
-                self.bin_contents_dict = self.get_bin_contents(self.json_file)
-                self.targets_dict = self.get_targets(self.json_file)
+                self.bin_contents_dict = jsk_apc2016_common.get_bin_contents(self.json_file)
+                self.targets_dict = jsk_apc2016_common.get_work_order(self.json_file)
 
                 # create bin_msg
                 self.create_bin_info_arr()
@@ -74,10 +58,7 @@ class BinInfoArrayPublisher(object):
             rate.sleep()
 
     def get_bounding_box_array(self, bbox_dict):
-        bbox_list = [(key, bbox) for key, bbox in bbox_dict.iteritems()]
-        sorted(bbox_list, key=lambda x: x[0])
-        bbox_list = [bbox for key, bbox in bbox_list]
-
+        bbox_list = [bbox_dict[bin_] for bin_ in 'abcdefghijkl']
         bbox_array = BoundingBoxArray(boxes=bbox_list)
         bbox_array.header.stamp = rospy.Time(0)
         bbox_array.header.seq = 0
@@ -112,35 +93,9 @@ class BinInfoArrayPublisher(object):
                     dimensions=helper.vector3(dimensions[i]))
             self.cam_direction_dict[bin_] = camera_directions[i]
 
-    def get_bin_contents(self, json_file):
-        bin_contents_dict = {}
-        if json_file is None:
-            rospy.logerr('must set json file path to ~json')
-            return
-        bin_contents = get_bin_contents_from_json(
-                json_file=json_file)
-        bin_contents = list(bin_contents)
-
-        for bin_, objects in bin_contents:
-            bin_contents_dict[bin_.encode('ascii')] = objects
-        return bin_contents_dict
-
-    def get_targets(self, json_file):
-        targets_dict = {}
-        if json_file is None:
-            rospy.logerr('must set json file path to ~json')
-            return
-        targets = get_target_from_json(
-                json_file=json_file)
-        targets = list(targets)
-
-        for bin_, target in targets:
-            targets_dict[bin_.encode('ascii')] = target
-        return targets_dict
-
     def create_bin_info_arr(self):
         self.bin_info_arr = BinInfoArray()
-        for bin_ in self.bin_contents_dict.keys():
+        for bin_ in 'abcdefghijkl':
             self.bin_info_arr.array.append(BinInfo(
                     header=Header(
                             stamp=rospy.Time(0),
