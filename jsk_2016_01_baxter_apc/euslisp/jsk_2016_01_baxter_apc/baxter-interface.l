@@ -224,48 +224,21 @@
       (position box-size box-sizes-bak)))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
-    (let (msg bin bin-box-pos-z bin-name-list-a-f bin-name-list-g-l)
-      ;; for bin A-F
-      (setq
-        msg
-        (one-shot-subscribe "bin_atof_clipper/output/box_array"
-                            jsk_recognition_msgs::BoundingBoxArray
-                            :timeout 10000
-                            :after-stamp stamp))
-      (if msg
-        (if
-          ;; get the order of bin box array
-          (setq bin-name-list-a-f
-                (mapcar #'(lambda (x) (intern (string-upcase (subseq x 4)) *keyword-package*))
-                        (ros::get-param "/bin_atof_clipper/prefixes" nil)))
-          (dotimes (i (length bin-name-list-a-f))
-            (setq bin (elt bin-name-list-a-f i))
-            (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
-          (ros::ros-fatal "Cannot get ROS param /bin_atof_clipper/prefixes")
-          )
-        (ros::ros-fatal "Cannot find bin A - F")
-        )
-      ;; for bin G-L
-      (setq
-        msg
-        (one-shot-subscribe "bin_gtol_clipper/output/box_array"
-                            jsk_recognition_msgs::BoundingBoxArray
-                            :timeout 10000
-                            :after-stamp stamp))
-      (if msg
-        (if
-          ;; get the order of bin box array
-          (setq bin-name-list-g-l
-                (mapcar #'(lambda (x) (intern (string-upcase (subseq x 4)) *keyword-package*))
-                        (ros::get-param "/bin_gtol_clipper/prefixes" nil)))
-          (dotimes (i (length bin-name-list-g-l))
-            (setq bin (elt bin-name-list-g-l i))
-            (setf (gethash bin _bin-boxes) (elt (send msg :boxes) i)))
-          (ros::ros-fatal "Cannot get ROS param /bin_gtol_clipper/prefixes")
-          )
-        (ros::ros-fatal "Cannot find bin G - K")
-        )
-      ))
+    (let ((box-topic (format nil "set_bin_param/bbox_array"))
+          box-msg bin-list)
+      (setq box-msg (one-shot-subscribe box-topic
+                                        jsk_recognition_msgs::BoundingBoxArray
+                                        :timeout 10000
+                                        :after-stamp stamp))
+      (if box-msg
+        (progn
+          (ros::ros-info "[:recognize-bin-boxes] recognize bin boxes")
+          (setq box-list (send box-msg :boxes))
+          (setq bin-list (list :a :b :c :d :e :f :g :h :i :j :k :l))
+          (dolist (bin bin-list)
+            (setf (gethash bin _bin-boxes) (car box-list))
+            (setq box-list (cdr box-list))))
+        (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:recognize-order-bin-box
     (&key (stamp (ros::time-now)))
     (let (msg bin bin-box-pos-z)
