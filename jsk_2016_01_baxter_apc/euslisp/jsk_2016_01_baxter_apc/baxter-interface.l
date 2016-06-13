@@ -432,6 +432,24 @@
           (send msg :matched))
         nil)
       ))
+  (:recognize-object-length-in-hand
+    (arm &key (stamp (ros::time-now)) (timeout))
+    (let (msg x-length)
+      (setq msg
+            (one-shot-subscribe
+              (format nil "cpi_decomposer_~a_hand/boxes" (send *ri* :arm-symbol2str arm))
+              jsk_recognition_msgs::BoundingBoxArray
+              :after-stamp stamp
+              :timeout timeout))
+      (if msg
+        (progn
+          (setq x-length
+                (apply #'max
+                       (mapcar #'(lambda (box) (send (send box :dimensions) :x))
+                               (send msg :boxes))))
+          (ros::ros-info "[:recognize-object-size-in-hand] length of object in hand : ~a" x-length)
+          x-length)
+        nil)))
   (:verify-object
     (arm object-name &key (stamp (ros::time-now)))
     (let (matched)
