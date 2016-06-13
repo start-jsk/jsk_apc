@@ -113,7 +113,7 @@
             (progn
               (ros::ros-info "[main] ~a, ~a" arm state)
               (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
-              (send *ri* :move-arm-body->bin arm target-bin)
+              (send *ri* :move-arm-body->bin arm target-bin :scale 5.0)
               (send *ri* :wait-interpolation)
               (setq hcv (send *ri* :get-val '_hard-coded-variables))
               (if (and object-length (> 0.20 object-length))
