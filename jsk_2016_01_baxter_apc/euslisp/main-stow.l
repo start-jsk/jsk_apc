@@ -116,7 +116,7 @@
               (send *ri* :move-arm-body->bin arm target-bin)
               (send *ri* :wait-interpolation)
               (setq hcv (send *ri* :get-val '_hard-coded-variables))
-              (if (> 0.20 object-length)
+              (if (and object-length (> 0.20 object-length))
                 (setq entrance-x-list (list -200 -150 -100 -50 0 150))
                 (setq entrance-x-list (list -200 -150 -100 -50 0 150 200)))
               (setq avs-picked->place-bin
@@ -131,7 +131,7 @@
               (send *ri* :spin-off-by-wrist arm :times 20)
               (send *ri* :wait-interpolation)
               (send *ri* :angle-vector-sequence
-                    (reverse avs-picked->return-bin)
+                    (reverse avs-picked->place-bin)
                     :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
               (send *ri* :angle-vector (send *baxter* :avoid-shelf-pose arm target-bin))

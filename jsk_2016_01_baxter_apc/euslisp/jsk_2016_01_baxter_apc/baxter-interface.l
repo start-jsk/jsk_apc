@@ -441,7 +441,7 @@
               jsk_recognition_msgs::BoundingBoxArray
               :after-stamp stamp
               :timeout timeout))
-      (if msg
+      (if (and msg (send msg :boxes))
         (progn
           (setq x-length
                 (apply #'max
