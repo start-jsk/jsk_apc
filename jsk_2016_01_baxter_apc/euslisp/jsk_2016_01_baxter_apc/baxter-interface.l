@@ -385,9 +385,9 @@
          (ros::ros-error "[:recognize-objects-segmentation-in-bin] arm: ~a failed to get sib msg" arm)))))
   (:recognize-objects-in-order-bin
     (&key arm (stamp (ros::time-now)) (timeout 10))
-    (let ((box-topic (format nil "~a_in_tote_cpi_decomposer/boxes" (send *ri* :arm-symbol2str arm)))
+    (let ((box-topic (format nil "~a_in_tote_supervoxel_cpi_decomposer/boxes" (send *ri* :arm-symbol2str arm)))
           box-msg
-          (com-topic (format nil "~a_in_tote_cpi_decomposer/centroid_pose_array" (send *ri* :arm-symbol2str arm)))
+          (com-topic (format nil "~a_in_tote_supervoxel_cpi_decomposer/centroid_pose_array" (send *ri* :arm-symbol2str arm)))
           com-msg obj-box obj-coords)
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
