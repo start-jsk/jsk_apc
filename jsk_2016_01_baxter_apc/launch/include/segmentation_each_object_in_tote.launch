@@ -33,6 +33,18 @@
               to: $(arg HAND)_in_tote_extract_pi/output
             - from: ~target
               to: $(arg HAND)_in_tote_euclid_clustering/output
+        - name: $(arg HAND)_in_tote_supervoxel
+          type: jsk_pcl/SupervoxelSegmentation
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_in_tote_extract_pi/output
+        - name: $(arg HAND)_in_tote_supervoxel_cpi_decomposer
+          type: jsk_pcl/ClusterPointIndicesDecomposer
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_in_tote_supervoxel/output/cloud
+            - from: ~target
+              to: $(arg HAND)_in_tote_supervoxel/output/indices
     </rosparam>
   </group>
   <group ns="$(arg HAND)_in_tote_clipper">
@@ -59,6 +71,20 @@
     </rosparam>
   </group>
   <group ns="$(arg HAND)_in_tote_cpi_decomposer">
+    <rosparam>
+      queue_size: 50
+    </rosparam>
+  </group>
+  <group ns="$(arg HAND)_in_tote_supervoxel">
+    <rosparam>
+      color_importance: 0.2
+      spatial_importance: 0.4
+      normal_importance: 1.0
+      voxel_resolution: 0.01
+      seed_resolution: 0.1
+    </rosparam>
+  </group>
+  <group ns="$(arg HAND)_in_tote_supervoxel_cpi_decomposer">
     <rosparam>
       queue_size: 50
     </rosparam>
