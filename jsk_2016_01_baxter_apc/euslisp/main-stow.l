@@ -113,9 +113,14 @@
             (progn
               (ros::ros-info "[main] ~a, ~a" arm state)
               (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
-              (send *ri* :move-arm-body->bin arm target-bin :scale 5.0)
-              (send *ri* :wait-interpolation)
               (setq hcv (send *ri* :get-val '_hard-coded-variables))
+              (send *ri* :angle-vector-sequence
+                    (list
+                      (send *baxter* :avoid-shelf-pose arm target-bin)
+                      (send *ri* :ik->bin-entrance arm target-bin
+                            :offset (float-vector -200 0 (gethash :offset-avoid-bin-top hcv))))
+                    :fast nil 0 :scale 5.0)
+              (send *ri* :wait-interpolation)
               (if (and object-length (> 0.20 object-length))
                 (setq entrance-x-list (list -200 -150 -100 -50 0 150))
                 (setq entrance-x-list (list -200 -150 -100 -50 0 150 200)))
