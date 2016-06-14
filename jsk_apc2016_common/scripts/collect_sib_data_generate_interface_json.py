@@ -58,18 +58,16 @@ pkg_path = rp.get_path(PKG)
 save_dir = os.path.join(pkg_path, 'json')
 ids = []
 for f in os.listdir(save_dir):
-    m = re.match('^(pick|stow)_layout_([0-9]*).json$', f)
+    m = re.match('^save_(pick|stow)_layout_([0-9]*).json$', f)
     if m:
         id = int(m.groups()[1])
-        assert osp.exists(osp.join(save_dir, 'pick_layout_%d.json' % id))
-        assert osp.exists(osp.join(save_dir, 'stow_layout_%d.json' % id))
+        assert osp.exists(osp.join(save_dir, 'save_pick_layout_%d.json' % id))
         ids.append(id)
 if ids:
     next_json_id = max(ids) + 1
 else:
     next_json_id = 1
-pick_json_file = osp.join(save_dir, 'pick_layout_%d.json' % next_json_id)
-stow_json_file = osp.join(save_dir, 'stow_layout_%d.json' % next_json_id)
+pick_json_file = osp.join(save_dir, 'save_pick_layout_%d.json' % next_json_id)
 
 # ------------------------------------------------------------------------------
 
@@ -86,6 +84,7 @@ CONST_BIN_NAMES = ['bin_A',
                    'bin_J',
                    'bin_K',
                    'bin_L']
+# test with half the number of objects first
 CONST_ITEM_NAMES = ["i_am_a_bunny_book",
                     "laugh_out_loud_joke_book",
                     "scotch_bubble_mailer",
@@ -108,30 +107,53 @@ CONST_ITEM_NAMES = ["i_am_a_bunny_book",
                     "creativity_chenille_stems",
                     "creativity_chenille_stems",
                     "soft_white_lightbulb",
-                    "safety_first_outlet_plugs",
-                    "oral_b_toothbrush_green",
-                    "oral_b_toothbrush_red",
-                    "dr_browns_bottle_brush",
-                    "command_hooks",
-                    "easter_turtle_sippy_cup",
-                    "fiskars_scissors_red",
-                    "scotch_duct_tape",
-                    "scotch_duct_tape",
-                    "woods_extension_cord",
-                    "platinum_pets_dog_bowl",
-                    "fitness_gear_3lb_dumbbell",
-                    "rolodex_jumbo_pencil_cup",
-                    "clorox_utility_brush",
-                    "kleenex_paper_towels",
-                    "expo_dry_erase_board_eraser",
-                    "expo_dry_erase_board_eraser",
-                    "kleenex_tissue_box",
-                    "ticonderoga_12_pencils",
-                    "crayola_24_ct",
-                    "jane_eyre_dvd",
-                    "dove_beauty_bar",
-                    "staples_index_cards",
-                    "staples_index_cards"]
+                    "i_am_a_bunny_book", # copy of above objects
+                    "laugh_out_loud_joke_book",
+                    "scotch_bubble_mailer",
+                    "scotch_bubble_mailer",
+                    "up_glucose_bottle",
+                    "dasani_water_bottle",
+                    "dasani_water_bottle",
+                    "rawlings_baseball",
+                    "folgers_classic_roast_coffee",
+                    "elmers_washable_no_run_school_glue",
+                    "elmers_washable_no_run_school_glue",
+                    "hanes_tube_socks",
+                    "womens_knit_gloves",
+                    "cherokee_easy_tee_shirt",
+                    "peva_shower_curtain_liner",
+                    "cloud_b_plush_bear",
+                    "barkely_hide_bones",
+                    "kyjen_squeakin_eggs_plush_puppies",
+                    "cool_shot_glue_sticks",
+                    "creativity_chenille_stems",
+                    "creativity_chenille_stems",
+                    "soft_white_lightbulb",
+                    "up_glucose_bottle"]
+#                    "safety_first_outlet_plugs",
+#                    "oral_b_toothbrush_green",
+#                    "oral_b_toothbrush_red",
+#                    "dr_browns_bottle_brush",
+#                    "command_hooks",
+#                    "easter_turtle_sippy_cup",
+#                    "fiskars_scissors_red",
+#                    "scotch_duct_tape",
+#                    "scotch_duct_tape",
+#                    "woods_extension_cord",
+#                    "platinum_pets_dog_bowl",
+#                    "fitness_gear_3lb_dumbbell",
+#                    "rolodex_jumbo_pencil_cup",
+#                    "clorox_utility_brush",
+#                    "kleenex_paper_towels",
+#                    "expo_dry_erase_board_eraser",
+#                    "expo_dry_erase_board_eraser",
+#                    "kleenex_tissue_box",
+#                    "ticonderoga_12_pencils",
+#                    "crayola_24_ct",
+#                    "jane_eyre_dvd",
+#                    "dove_beauty_bar",
+#                    "staples_index_cards",
+#                    "staples_index_cards"]
 
 # bin_size_count is a mapping of bin "sizes" to number of bins of that size.
 # key is size of bin contents, value is number of bins.
@@ -157,10 +179,17 @@ def generateBinContents():
         for ii in range(0, bin_count):
             bin_name = random.choice(abins)
             abins.remove(bin_name)
-            for jj in range(0, bin_size):
-                item_name = random.choice(items)
-                items.remove(item_name)
-                bin_contents[bin_name].append(item_name)
+            if bin_name in ['bin_G', 'bin_H', 'bin_J', 'bin_K']:
+                bin_size_selected = 2
+                for jj in range(0, bin_size_selected):
+                    item_name = random.choice(items)
+                    items.remove(item_name)
+                    bin_contents[bin_name].append(item_name)
+            else:
+                for jj in range(0, bin_size):
+                    item_name = random.choice(items)
+                    items.remove(item_name)
+                    bin_contents[bin_name].append(item_name)
 
     return bin_contents
 
@@ -189,27 +218,3 @@ data = {'bin_contents': bin_contents, 'work_order': work_order, 'tote_contents':
 with open(pick_json_file, 'w') as outfile:
     json.dump(data, outfile, sort_keys=True, indent=4, separators=(',', ': '))
 print("Generated '%s'" % pick_json_file)
-
-
-# Do the work for the stowing task
-# ------------------------------------------------------------------------------
-# Generate bin contents for the stow pod
-bin_size_count = {}
-bin_size_count[2] = 3
-bin_size_count[3] = 4
-bin_size_count[4] = 2
-bin_size_count[6] = 2
-bin_size_count[8] = 1
-
-bin_contents = generateBinContents()
-
-# Stowing task begins with 12 items in tote
-tote_contents = []
-for bin_name in CONST_BIN_NAMES:
-    tote_contents.append(bin_contents[bin_name].pop())
-
-# Write data to appropriately-named json file
-data = {'bin_contents': bin_contents, 'tote_contents': tote_contents}
-with open(stow_json_file, 'w') as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=4, separators=(',', ': '))
-print("Generated '%s'" % stow_json_file)

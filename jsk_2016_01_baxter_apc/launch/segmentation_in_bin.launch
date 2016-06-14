@@ -8,13 +8,17 @@
   <arg name="TRAINED_PATH" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
 
   <arg name="RIGHT_INPUT_IMAGE" default="right_softkinetic_camera/rgb/image_color" />
+  <arg name="RIGHT_INPUT_IMAGE_RESIZED" default="right_softkinetic_camera_resized/image_raw"/>
   <arg name="RIGHT_INPUT_CLOUD" default="right_softkinetic_camera/depth_registered/points" />
   <arg name="RIGHT_INPUT_CLOUD_FILTERED" default="right_softkinetic_camera/depth_registered/points_filtered"/>
   <arg name="RIGHT_INPUT_INFO" default="right_softkinetic_camera/rgb/camera_info"/>
+  <arg name="RIGHT_INPUT_INFO_RESIZED" default="right_softkinetic_camera_resized/camera_info"/>
   <arg name="LEFT_INPUT_IMAGE" default="left_softkinetic_camera/rgb/image_color" />
+  <arg name="LEFT_INPUT_IMAGE_RESIZED" default="left_softkinetic_camera_resized/image_raw"/>
   <arg name="LEFT_INPUT_CLOUD" default="left_softkinetic_camera/depth_registered/points" />
   <arg name="LEFT_INPUT_CLOUD_FILTERED" default="left_softkinetic_camera/depth_registered/points_filtered"/>
   <arg name="LEFT_INPUT_INFO" default="left_softkinetic_camera/rgb/camera_info"/>
+  <arg name="LEFT_INPUT_INFO_RESIZED" default="left_softkinetic_camera_resized/camera_info"/>
 
   <!-- self filter -->
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/self_filter.launch">
@@ -30,8 +34,10 @@
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER_LEFT)" />
     <arg name="NODELET_ID_0" value="$(arg NODELET_ID_0)" />
     <arg name="INPUT_IMAGE" value="$(arg LEFT_INPUT_IMAGE)"/>
+    <arg name="INPUT_IMAGE_RESIZED" value="$(arg LEFT_INPUT_IMAGE_RESIZED)"/>
     <arg name="INPUT_CLOUD" value="$(arg LEFT_INPUT_CLOUD_FILTERED)"/>
     <arg name="INPUT_INFO" value="$(arg LEFT_INPUT_INFO)"/>
+    <arg name="INPUT_INFO_RESIZED" value="$(arg LEFT_INPUT_INFO_RESIZED)"/>
     <arg name="HAND" value="left" />
     <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
@@ -40,8 +46,10 @@
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER_RIGHT)" />
     <arg name="NODELET_ID_0" value="$(arg NODELET_ID_1)" />
     <arg name="INPUT_IMAGE" value="$(arg RIGHT_INPUT_IMAGE)"/>
+    <arg name="INPUT_IMAGE_RESIZED" value="$(arg RIGHT_INPUT_IMAGE_RESIZED)"/>
     <arg name="INPUT_CLOUD" value="$(arg RIGHT_INPUT_CLOUD_FILTERED)"/>
     <arg name="INPUT_INFO" value="$(arg RIGHT_INPUT_INFO)"/>
+    <arg name="INPUT_INFO_RESIZED" value="$(arg RIGHT_INPUT_INFO_RESIZED)"/>
     <arg name="HAND" value="right" />
     <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />

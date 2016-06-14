@@ -36,6 +36,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
             '~class_label', Image, queue_size=10)
         self.posteior_unmask_pub = self.advertise(
             '~posterior_unmask', Image, queue_size=10)
+        self.height_exist_pub = self.advertise(
+            '~height_exist', Image, queue_size=3)
 
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
@@ -118,6 +120,13 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
                 masked_input_img, encoding='bgr8')
         masked_input_msg.header = color_msg.header
         self.masked_input_img_pub.publish(masked_input_msg)
+
+        # for each pixel, visualize if height is calculated as binary
+        height_exist_img = (self.height_img > 0).astype(np.uint8) * 255
+        height_exist_msg = self.bridge.cv2_to_imgmsg(
+                height_exist_img, encoding='mono8')
+        height_exist_msg.header = color_msg.header
+        self.height_exist_pub.publish(height_exist_msg)
 
         log_utils.loginfo_throttle(10, 'ended')
 

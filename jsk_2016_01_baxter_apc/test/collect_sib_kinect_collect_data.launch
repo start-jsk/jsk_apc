@@ -1,0 +1,42 @@
+<launch>
+  <param name="/use_sim_time" value="true" type="bool"/> 
+  <node name="rosbag_play"
+    pkg="rosbag" type="play"
+    args="$(find jsk_2016_01_baxter_apc)/test_data/sib_kinect2_save_data.bag --loop --clock --rate=0.2">
+  </node>
+
+  <!-- from main.launch -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_2016_01_baxter_apc)/robots/baxter.xacro" />
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="joint_states" to="/robot/joint_states"/>
+  </node>
+
+  <arg name="json" value="$(find jsk_apc2016_common)/json/save_pick_layout_1.json"/>
+  <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
+  <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
+  <!-- Publish jsk_apc2016_common/BinInfo from json -->
+  <node name="set_bin_param"
+        pkg="jsk_apc2016_common" type="publish_bin_info.py"
+        output="screen">
+    <param name="json" value="$(arg json)"/>
+    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
+    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
+  </node>
+  <!-- publish bin tf -->
+  <node pkg="jsk_apc2016_common" type="publish_bin_tf.py"
+    name="pub_bin_tf">
+    <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
+  </node>
+  <!-- from main.launch END -->
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/sib_kinect.launch">
+  </include>
+  <param name="/left_hand/target_bin" value="k"/>
+  <param name="/right_hand/target_bin" value="k"/>
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/collect_sib_data.launch">
+    <arg name="hand" value="left"/>
+  </include>
+</launch>

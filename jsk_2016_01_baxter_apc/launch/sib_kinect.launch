@@ -1,0 +1,35 @@
+<launch>
+  <arg name="NODELET_MANAGER_RIGHT" value="right_kinect_manager" />
+  <arg name="NODELET_MANAGER_LEFT" value="left_kinect_manager" />
+  <arg name="NODELET_ID_0" value="nodelets_0" />
+  <arg name="NODELET_ID_1" value="nodelets_1" />
+
+
+  <node name="$(arg NODELET_MANAGER_RIGHT)"
+        pkg="jsk_topic_tools" type="standalone_complexed_nodelet"
+        respawn="true" output="screen">
+  </node>
+  <node name="$(arg NODELET_MANAGER_LEFT)"
+        pkg="jsk_topic_tools" type="standalone_complexed_nodelet"
+        respawn="true" output="screen">
+  </node>
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/segmentation_in_bin.launch">
+    <arg name="NODELET_MANAGER_RIGHT" value="$(arg NODELET_MANAGER_RIGHT)" />
+    <arg name="NODELET_MANAGER_LEFT" value="$(arg NODELET_MANAGER_LEFT)" />
+    <arg name="NODELET_ID_0" value="$(arg NODELET_ID_0)" />
+    <arg name="NODELET_ID_1" value="$(arg NODELET_ID_1)" />
+    <arg name="RIGHT_INPUT_IMAGE" default="kinect2_torso/hd/image_color_rect" />
+    <arg name="RIGHT_INPUT_IMAGE_RESIZED" default="kinect2_torso/hd/image_color_rect"/>
+    <arg name="RIGHT_INPUT_CLOUD" default="kinect2_torso/hd/points" />
+    <arg name="RIGHT_INPUT_CLOUD_FILTERED" default="kinect2_torso/hd/points"/>
+    <arg name="RIGHT_INPUT_INFO" default="kinect2_torso/hd/camera_info"/>
+    <arg name="RIGHT_INPUT_INFO_RESIZED" default="kinect2_torso/hd/camera_info"/>
+    <arg name="LEFT_INPUT_IMAGE" default="kinect2_torso/hd/image_color_rect" />
+    <arg name="LEFT_INPUT_IMAGE_RESIZED" default="kinect2_torso/hd/image_color_rect"/>
+    <arg name="LEFT_INPUT_CLOUD" default="kinect2_torso/hd/points" />
+    <arg name="LEFT_INPUT_CLOUD_FILTERED" default="kinect2_torso/hd/points"/>
+    <arg name="LEFT_INPUT_INFO" default="kinect2_torso/hd/camera_info"/>
+    <arg name="LEFT_INPUT_INFO_RESIZED" default="kinect2_torso/hd/camera_info"/>
+  </include>
+</launch>

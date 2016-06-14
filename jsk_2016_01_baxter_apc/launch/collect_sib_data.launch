@@ -1,0 +1,23 @@
+<launch>
+  <arg name="hand" />
+
+  <group ns="save_data">
+    <node name="save_data_yn_btn" pkg="jsk_rqt_plugins" type="rqt_yn_btn"/>
+  </group>
+
+  <node name="collect_sib_data_depth_colorize"
+        pkg="jsk_perception" type="colorize_float_image">
+  <remap from="~input" to="/kinect2_torso/hd/image_depth_rect"/>
+  </node>
+
+  <node name="$(arg hand)_collect_sib_data"
+        pkg="jsk_apc2016_common" type="collect_sib_data.py"
+        output="screen">
+    <remap from="~input" to="$(arg hand)_sib_topic_sync/output"/>
+    <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
+    <remap from="~input/depth" to="/kinect2_torso/hd/image_depth_rect"/>
+    <remap from="~target_bin_name" to="$(arg hand)_hand/target_bin"/>
+    <param name="~try_dir" value="1" />
+    <param name="always_subscribe" value="True" />
+  </node>
+</launch>

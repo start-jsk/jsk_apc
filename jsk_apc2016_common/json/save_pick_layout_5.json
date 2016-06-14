@@ -1,0 +1,113 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "womens_knit_gloves",
+            "cloud_b_plush_bear",
+            "peva_shower_curtain_liner",
+            "creativity_chenille_stems"
+        ],
+        "bin_B": [
+            "soft_white_lightbulb",
+            "scotch_bubble_mailer"
+        ],
+        "bin_C": [
+            "laugh_out_loud_joke_book",
+            "scotch_bubble_mailer",
+            "i_am_a_bunny_book"
+        ],
+        "bin_D": [
+            "creativity_chenille_stems",
+            "cool_shot_glue_sticks",
+            "dasani_water_bottle"
+        ],
+        "bin_E": [
+            "creativity_chenille_stems",
+            "i_am_a_bunny_book"
+        ],
+        "bin_F": [
+            "folgers_classic_roast_coffee",
+            "cloud_b_plush_bear",
+            "elmers_washable_no_run_school_glue",
+            "hanes_tube_socks",
+            "elmers_washable_no_run_school_glue",
+            "barkely_hide_bones",
+            "rawlings_baseball",
+            "dasani_water_bottle",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_G": [
+            "up_glucose_bottle",
+            "creativity_chenille_stems"
+        ],
+        "bin_H": [
+            "kyjen_squeakin_eggs_plush_puppies",
+            "laugh_out_loud_joke_book"
+        ],
+        "bin_I": [
+            "dasani_water_bottle"
+        ],
+        "bin_J": [
+            "soft_white_lightbulb",
+            "womens_knit_gloves"
+        ],
+        "bin_K": [
+            "cherokee_easy_tee_shirt",
+            "rawlings_baseball"
+        ],
+        "bin_L": [
+            "hanes_tube_socks",
+            "peva_shower_curtain_liner"
+        ]
+    },
+    "tote_contents": [],
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "womens_knit_gloves"
+        },
+        {
+            "bin": "bin_B",
+            "item": "soft_white_lightbulb"
+        },
+        {
+            "bin": "bin_C",
+            "item": "laugh_out_loud_joke_book"
+        },
+        {
+            "bin": "bin_D",
+            "item": "creativity_chenille_stems"
+        },
+        {
+            "bin": "bin_E",
+            "item": "creativity_chenille_stems"
+        },
+        {
+            "bin": "bin_F",
+            "item": "folgers_classic_roast_coffee"
+        },
+        {
+            "bin": "bin_G",
+            "item": "up_glucose_bottle"
+        },
+        {
+            "bin": "bin_H",
+            "item": "kyjen_squeakin_eggs_plush_puppies"
+        },
+        {
+            "bin": "bin_I",
+            "item": "dasani_water_bottle"
+        },
+        {
+            "bin": "bin_J",
+            "item": "soft_white_lightbulb"
+        },
+        {
+            "bin": "bin_K",
+            "item": "cherokee_easy_tee_shirt"
+        },
+        {
+            "bin": "bin_L",
+            "item": "hanes_tube_socks"
+        }
+    ]
+}
