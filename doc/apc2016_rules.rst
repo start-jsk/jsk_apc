@@ -13,6 +13,66 @@ Bonus and Stocks
 .. image:: _media/apc2016_bonus_and_stocks.jpg
    :width: 50% 
 
+Scoring
+-------
+
+Pick Task
++++++++++
+
+- Bins with 1 or 2 items
+
+  - +10 points
+
+- Bins with 3 or 4 items
+
+  - +15 points
+
+- Bins with 5 or more items
+
+  - +20 points
+
+Stow Task
++++++++++
+
+- Bins that started with 1 or 2 items
+
+  - +10 points
+
+- Bins that started with 3 or 4 items
+
+  - +15 points
+
+- Bins that started with 5 or more items
+
+  - +20 points
+
+Penalties
+---------
+
+- For each item that is not in a bin, the tote, or actively held by the robot at the and of the attempt:
+
+  - -10 points
+
+- For each incorrect final position in the Task Output File for an item that is in a bin or the tote:
+
+  - -10 points
+
+- Minor damage to any item or the shelf:
+
+  - -5 points
+
+- Major damage to any item or the shelf:
+
+  - -20 points
+
+- Dropping an item from a height of more than 0.3 meters:
+
+  - -5 points
+
+- Leaving an item protruding out of its bin by more than 0.5cm:
+
+  - -5 points
+
 Names
 -----
 
