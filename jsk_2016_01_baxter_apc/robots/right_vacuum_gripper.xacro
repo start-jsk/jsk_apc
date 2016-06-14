@@ -17,10 +17,10 @@
   <xacro:property name="pad_base_h" value="0.038" />
   <xacro:property name="pad_base_d" value="0.06" />
   <xacro:property name="pad_r" value="0.026" />
-  <xacro:property name="pad_l" value="0.06" />
+  <xacro:property name="pad_l" value="0.03" />
   <xacro:property name="pad_x" value="-0.0005" />
   <xacro:property name="pad_y" value="0.0085" />
-  <xacro:property name="pad_z" value="0.085" />
+  <xacro:property name="pad_z" value="0.07" />
   <!--Joints-->
   <xacro:property name="right_hand_offset_x" value="-0.01" />
   <xacro:property name="right_hand_offset_z" value="0" />
