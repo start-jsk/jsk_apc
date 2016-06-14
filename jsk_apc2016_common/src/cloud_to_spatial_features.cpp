@@ -4,7 +4,7 @@
 using namespace message_filters;
 using namespace sensor_msgs;
 
-const float Z_OFFSET = 0.020;
+const float Z_OFFSET = 0.000;
 
 
 void CloudToSpatial::onInit()
