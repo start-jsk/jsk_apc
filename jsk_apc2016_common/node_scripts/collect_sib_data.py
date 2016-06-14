@@ -52,7 +52,6 @@ class SaveData(ConnectionBasedTransport):
     def _depth_cb(self, depth_msg):
         self.depth_img = self.bridge.imgmsg_to_cv2(
             depth_msg, "passthrough")
-        self.depth_img = (self.depth_img / 5).astype(np.uint8)
 
     def _callback(self, sync_msg):
         rospy.loginfo('started')
@@ -79,9 +78,9 @@ class SaveData(ConnectionBasedTransport):
         self.mask_img = self.bridge.imgmsg_to_cv2(
             mask_msg, "passthrough").astype(np.bool)
         self.dist_img = self.bridge.imgmsg_to_cv2(
-            dist_msg, "passthrough").astype(np.uint8)
+            dist_msg, "passthrough")
         self.height_img = self.bridge.imgmsg_to_cv2(
-            height_msg, "passthrough").astype(np.uint8)
+            height_msg, "passthrough")
 
         self.color_img = self.bridge.imgmsg_to_cv2(color_msg, "bgr8")
         # self.color_img = cv2.cvtColor(color_img, cv2.COLOR_BGR2HSV)
@@ -97,7 +96,7 @@ class SaveData(ConnectionBasedTransport):
         self.save_images(save_path)
 
         with open(save_path + '.pkl', 'wb') as f:
-            pickle.dump(data, f)
+            pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
         rospy.loginfo('saved to {}'.format(save_path))
 
     def save_images(self, save_path):
@@ -105,20 +104,15 @@ class SaveData(ConnectionBasedTransport):
 
         1. Color: 3 channel uint8, BGR
         2. Mask Image: bool->uint8, 0 or 255
-        3. Depth: uint8 (5mm)
+        3. Depth: uint8 (mm)
         4. Dist2Shelf: uint8 (mm)
         5. Height3D_image: uint8 (mm)
         """
         mask_img = self.mask_img.astype(np.uint8) * 255
 
-        cv2.imwrite(save_path + '_color' + '.png', self.color_img)
-        cv2.imwrite(save_path + '_mask' + '.pbm', mask_img)
-        cv2.imwrite(
-            save_path + '_depth' + '.png', self.depth_img.astype(np.uint8))
-        cv2.imwrite(
-            save_path + '_dist' + '.png', self.dist_img.astype(np.uint8))
-        cv2.imwrite(
-            save_path + '_height' + '.png', self.height_img.astype(np.uint8))
+        cv2.imwrite(save_path + '.jpg', self.color_img)
+        cv2.imwrite(save_path + '.pbm', mask_img)
+
         
 
     def get_save_info(self):
@@ -127,14 +121,14 @@ class SaveData(ConnectionBasedTransport):
         data = {}
         data['target_object'] = self.target_object
         data['objects'] = self.target_bin_info.objects
-        # data['dist2shelf_image'] = self.dist_img
-        # data['height3D_image'] = self.height_img
+        data['dist2shelf_image'] = self.dist_img.astype(np.float16)
+        data['height3D_image'] = self.height_img.astype(np.float16)
 
 
         # data['height2D_image'] = np.zeros_like(self.height_img)
 
         #data['mask_img'] = self.mask_img
-        # data['depth_image'] = self.depth_img
+        data['depth_image'] = self.depth_img.astype(np.float16)
 
         # data['has3D_image'] = (self.depth_img > 0).astype(np.uint8)
 
