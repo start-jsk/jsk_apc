@@ -1,0 +1,122 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "scotch_bubble_mailer",
+            "creativity_chenille_stems",
+            "rawlings_baseball"
+        ],
+        "bin_B": [
+            "folgers_classic_roast_coffee"
+        ],
+        "bin_C": [
+            "soft_white_lightbulb",
+            "creativity_chenille_stems"
+        ],
+        "bin_D": [
+            "peva_shower_curtain_liner",
+            "kyjen_squeakin_eggs_plush_puppies",
+            "laugh_out_loud_joke_book",
+            "cherokee_easy_tee_shirt"
+        ],
+        "bin_E": [
+            "hanes_tube_socks",
+            "dasani_water_bottle",
+            "cloud_b_plush_bear",
+            "rawlings_baseball",
+            "scotch_bubble_mailer",
+            "i_am_a_bunny_book",
+            "creativity_chenille_stems"
+        ],
+        "bin_F": [
+            "dasani_water_bottle",
+            "hanes_tube_socks",
+            "i_am_a_bunny_book",
+            "cool_shot_glue_sticks",
+            "creativity_chenille_stems"
+        ],
+        "bin_G": [
+            "womens_knit_gloves",
+            "scotch_bubble_mailer"
+        ],
+        "bin_H": [
+            "up_glucose_bottle",
+            "up_glucose_bottle"
+        ],
+        "bin_I": [
+            "folgers_classic_roast_coffee",
+            "womens_knit_gloves",
+            "soft_white_lightbulb",
+            "laugh_out_loud_joke_book",
+            "cool_shot_glue_sticks",
+            "elmers_washable_no_run_school_glue",
+            "barkely_hide_bones",
+            "barkely_hide_bones",
+            "cherokee_easy_tee_shirt"
+        ],
+        "bin_J": [
+            "peva_shower_curtain_liner",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_K": [
+            "elmers_washable_no_run_school_glue",
+            "cloud_b_plush_bear"
+        ],
+        "bin_L": [
+            "dasani_water_bottle",
+            "elmers_washable_no_run_school_glue",
+            "kyjen_squeakin_eggs_plush_puppies",
+            "scotch_bubble_mailer"
+        ]
+    },
+    "tote_contents": [],
+    "work_order": [
+        {
+            "bin": "bin_A",
+            "item": "scotch_bubble_mailer"
+        },
+        {
+            "bin": "bin_B",
+            "item": "folgers_classic_roast_coffee"
+        },
+        {
+            "bin": "bin_C",
+            "item": "soft_white_lightbulb"
+        },
+        {
+            "bin": "bin_D",
+            "item": "peva_shower_curtain_liner"
+        },
+        {
+            "bin": "bin_E",
+            "item": "hanes_tube_socks"
+        },
+        {
+            "bin": "bin_F",
+            "item": "dasani_water_bottle"
+        },
+        {
+            "bin": "bin_G",
+            "item": "womens_knit_gloves"
+        },
+        {
+            "bin": "bin_H",
+            "item": "up_glucose_bottle"
+        },
+        {
+            "bin": "bin_I",
+            "item": "folgers_classic_roast_coffee"
+        },
+        {
+            "bin": "bin_J",
+            "item": "peva_shower_curtain_liner"
+        },
+        {
+            "bin": "bin_K",
+            "item": "elmers_washable_no_run_school_glue"
+        },
+        {
+            "bin": "bin_L",
+            "item": "dasani_water_bottle"
+        }
+    ]
+}
