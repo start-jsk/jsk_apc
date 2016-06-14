@@ -52,6 +52,7 @@
     (setq _objects-sib-coords (make-hash-table))
     ;; set hard-coded variables
     (setq _hard-coded-variables (make-hash-table))
+    (sethash :pressure-threshold _hard-coded-variables 840)
     (sethash :offset-avoid-bin-top _hard-coded-variables -20)
     (sethash :pad-link-l _hard-coded-variables 85)
     (sethash :gripper-tube-t _hard-coded-variables 40)
@@ -136,10 +137,18 @@
     (arm)
     (let (topic)
       (if (ros::get-param "/apc_on_gazebo" nil)
-        (setq topic (format nil "/robot/~a_vacuum_gripper/grasping" (arm-to-str arm)))
-        (setq topic (format nil "gripper_front/limb/~a/pressure/grabbed/state" (arm-to-str arm)))
+        (progn
+          (setq topic (format nil "/robot/~a_vacuum_gripper/grasping" (arm-to-str arm)))
+          (send (one-shot-subscribe topic std_msgs::Bool) :data)
+          )
+        (progn
+          (setq topic (format nil "gripper_front/limb/~a/pressure/state" (arm-to-str arm)))
+          (< (send (one-shot-subscribe topic std_msgs::Float64) :data)
+             (gethash :pressure-threshold _hard-coded-variables))
+          )
         )
-      (send (one-shot-subscribe topic std_msgs::Bool) :data)))
+      )
+    )
   (:opposite-arm (arm) (if (eq arm :larm) :rarm :larm))
   (:need-to-wait-opposite-arm
     (arm)
