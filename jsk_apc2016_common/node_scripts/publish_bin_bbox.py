@@ -10,7 +10,7 @@ from geometry_msgs.msg import Pose, Quaternion, Vector3, Point
 class BinBoundingBoxPublisher():
     def __init__(self):
         self.bbox_dict = {}
-        self.pub = rospy.Publisher('~bbox_array', BoundingBoxArray, queue_size=1)
+        self.pub = rospy.Publisher('~boxes', BoundingBoxArray, queue_size=1)
         for shelf in ['~upper_shelf', '~lower_shelf']:
             initial_pos_list = rospy.get_param(shelf + '/initial_pos_list')
             initial_quat_list = rospy.get_param(shelf + '/initial_quat_list')
