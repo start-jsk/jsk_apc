@@ -118,20 +118,25 @@
               (if (and object-length (> object-length 0.2))
                 (progn
                   (setq entrance-x-list (list -200 -150 -100 -50 0 150 200))
-                  (setq offset-avoid-bin-top 50))
-                (setq entrance-x-list (list -200 -150 -100 -50 0 150)))
+                  (setq offset-avoid-bin-top 50)
+                  (setq gripper-angle 45))
+                (progn
+                  (setq entrance-x-list (list -200 -150 -100 -50 0 150))
+                  (setq gripper-angle 90)))
               (send *ri* :angle-vector-sequence
                     (list
                       (send *baxter* :avoid-shelf-pose arm target-bin)
                       (send *ri* :ik->bin-entrance arm target-bin
-                            :offset (float-vector -200 0 offset-avoid-bin-top)))
+                            :offset (float-vector -200 0 offset-avoid-bin-top)
+                            :gripper-angle gripper-angle))
                     :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
               (setq avs-picked->place-bin
                     (mapcar
                       #'(lambda (x)
                           (send *ri* :ik->bin-entrance arm target-bin
-                                :offset (float-vector x 0 offset-avoid-bin-top)))
+                                :offset (float-vector x 0 offset-avoid-bin-top)
+                                :gripper-angle gripper-angle))
                       entrance-x-list))
               (send *ri* :angle-vector-sequence avs-picked->place-bin :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
