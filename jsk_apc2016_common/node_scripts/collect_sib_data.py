@@ -13,7 +13,9 @@ import rospkg
 from jsk_rqt_plugins.srv import YesNo
 from sensor_msgs.msg import Image
 import os
+import threading
 
+# 1. TODO: make the class to accept service that is more general
 
 class SaveData(ConnectionBasedTransport):
     def __init__(self):
@@ -23,6 +25,8 @@ class SaveData(ConnectionBasedTransport):
         self._target_bin = None
         self.camera_model = cameramodels.PinholeCameraModel()
         self.depth_img = None
+
+        self.lock = threading.Lock()
 
         ConnectionBasedTransport.__init__(self)
 
@@ -43,18 +47,21 @@ class SaveData(ConnectionBasedTransport):
         self.layout_name = json.split('/')[-1][:-5]
 
     def _topic_cb(self, bin_info_arr_msg):
-        # TODO: add Lock
         rospy.loginfo('get_bin_info')
         self.set_layout_name(rospy.get_param('/set_bin_param/json'))
         self.try_dir = rospy.get_param('~try_dir')
         self.bin_info_dict = self.bin_info_array_to_dict(bin_info_arr_msg)
 
     def _depth_cb(self, depth_msg):
+        self.lock.acquire()
+        rospy.loginfo('depth')
         self.depth_img = self.bridge.imgmsg_to_cv2(
             depth_msg, "passthrough")
+        self.lock.release()
 
     def _callback(self, sync_msg):
         rospy.loginfo('started')
+        self.lock.acquire()
 
         # wait until yn_botton is pressed
         rospy.wait_for_service('save_data/rqt_yn_btn')
@@ -92,11 +99,11 @@ class SaveData(ConnectionBasedTransport):
         data, save_path = self.get_save_info()
 
         # save image
-
         self.save_images(save_path)
 
         with open(save_path + '.pkl', 'wb') as f:
             pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+        self.lock.release()
         rospy.loginfo('saved to {}'.format(save_path))
 
     def save_images(self, save_path):
