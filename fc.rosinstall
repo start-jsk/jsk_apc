@@ -47,6 +47,6 @@
     uri: https://github.com/wkentaro/iai_kinect2.git
     version: jsk_apc
 - git:
-    local-name: knorth55/softkinetic
-    uri: https://github.com/knorth55/softkinetic.git
-    version: jsk_apc
+    local-name: ros-drivers/openni2_camera
+    uri: https://github.com/ros-drivers/openni2_camera.git
+    version: indigo-devel
