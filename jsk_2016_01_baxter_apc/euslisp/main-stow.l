@@ -138,8 +138,18 @@
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 20)
               (send *ri* :wait-interpolation)
+              (if (and object-length (> object-length 0.2))
+                (setq offset-avoid-bin-top-exit 0)
+                (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
+              (setq avs-place-bin->exit
+                    (mapcar
+                      #'(lambda (x)
+                          (send *ri* :ik->bin-entrance arm target-bin
+                                :offset (float-vector x 0 offset-avoid-bin-top-exit)
+                                :gripper-angle 0))
+                      (reverse entrance-x-list)))
               (send *ri* :angle-vector-sequence
-                    (reverse avs-picked->place-bin)
+                    avs-place-bin->exit
                     :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
               (send *ri* :angle-vector (send *baxter* :avoid-shelf-pose arm target-bin))
