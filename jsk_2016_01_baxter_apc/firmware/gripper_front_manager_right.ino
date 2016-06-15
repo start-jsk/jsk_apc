@@ -128,7 +128,7 @@ void loop() {
         temp_act = (float)temp_cal / 100.0;
         press_act = (float)press_cal / 100.0;
 
-        bool_msg.data = (press_act < 900);
+        bool_msg.data = (press_act < 840);
         pressure_msg.data = press_act;
 
         state_pub.publish(&bool_msg);
