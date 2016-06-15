@@ -36,6 +36,14 @@
     <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
   </node>
 
+  <!-- publish bin bbox -->
+  <node name="publish_bin_bbox"
+        pkg="jsk_apc2016_common" type="publish_bin_bbox.py"
+        output="screen">
+    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
+    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
+  </node>
+
   <!-- publish bin tf -->
   <node pkg="jsk_apc2016_common" type="publish_bin_tf.py"
     name="pub_bin_tf">

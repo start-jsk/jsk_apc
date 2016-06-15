@@ -22,7 +22,6 @@ class BinInfoArrayPublisher(object):
         self.json_file = None
 
         pub_bin_info_arr = rospy.Publisher('~bin_array', BinInfoArray, queue_size=1)
-        pub_bbox_arr = rospy.Publisher('~bbox_array', BoundingBoxArray, queue_size=1)
         rate = rospy.Rate(rospy.get_param('rate', 1))
         while not rospy.is_shutdown():
             json = rospy.get_param('~json', None)
@@ -39,9 +38,6 @@ class BinInfoArrayPublisher(object):
                 self.from_shelf_param('upper')
                 self.from_shelf_param('lower')
 
-                # create bounding box array
-                self.bbox_array = self.get_bounding_box_array(self.bbox_dict)
-
                 # get contents of bin from json
                 self.bin_contents_dict = jsk_apc2016_common.get_bin_contents(self.json_file)
                 self.targets_dict = jsk_apc2016_common.get_work_order(self.json_file)
@@ -49,19 +45,9 @@ class BinInfoArrayPublisher(object):
                 # create bin_msg
                 self.create_bin_info_arr()
 
-            self.bbox_array.header.stamp = rospy.Time.now()
             self.bin_info_arr.header.stamp = rospy.Time.now()
-            pub_bbox_arr.publish(self.bbox_array)
             pub_bin_info_arr.publish(self.bin_info_arr)
             rate.sleep()
-
-    def get_bounding_box_array(self, bbox_dict):
-        bbox_list = [bbox_dict[bin_] for bin_ in 'abcdefghijkl']
-        bbox_array = BoundingBoxArray(boxes=bbox_list)
-        bbox_array.header.stamp = rospy.Time(0)
-        bbox_array.header.seq = 0
-        bbox_array.header.frame_id = 'kiva_pod_base'
-        return bbox_array
 
     def from_shelf_param(self, upper_lower):
         upper_lower = upper_lower + '_shelf'
