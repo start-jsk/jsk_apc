@@ -1060,11 +1060,18 @@
  ;; defmethod :select-stow-target-bin
  ;; randomly choose bin for stow task
   (:select-stow-target-bin
-    (arm)
-    (setq i (random 5))
-    (if (eq arm :rarm)
-        (elt '(:c :f :h :i :k :l) i)
-        (elt '(:a :b :d :e :g :j) i)))
+    (arm &key (object-length))
+    (if (and object-length (> object-length 0.2))
+        (progn
+          (setq i (random 2))
+          (if (eq arm :rarm)
+              (elt '(:c :k :l) i)
+              (elt '(:a :b :j) i)))
+        (progn
+          (setq i (random 5))
+          (if (eq arm :rarm)
+              (elt '(:c :f :h :i :k :l) i)
+              (elt '(:a :b :d :e :g :j) i)))))
   )
 
 (defun jsk_2016_01_baxter_apc::baxter-init (&key (ctype :default-controller))
