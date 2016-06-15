@@ -17,7 +17,9 @@ import threading
 
 # 1. TODO: make the class to accept service that is more general
 
-class SaveData(ConnectionBasedTransport):
+class CollectSIBData(ConnectionBasedTransport):
+    """
+    """
     def __init__(self):
         self.shelf = {}
         self.mask_img = None
@@ -47,14 +49,13 @@ class SaveData(ConnectionBasedTransport):
         self.layout_name = json.split('/')[-1][:-5]
 
     def _topic_cb(self, bin_info_arr_msg):
-        rospy.loginfo('get_bin_info')
+        rospy.loginfo('get bin_info')
         self.set_layout_name(rospy.get_param('/set_bin_param/json'))
-        self.try_dir = rospy.get_param('~try_dir')
         self.bin_info_dict = self.bin_info_array_to_dict(bin_info_arr_msg)
 
     def _depth_cb(self, depth_msg):
         self.lock.acquire()
-        rospy.loginfo('depth')
+        rospy.loginfo('get depth')
         self.depth_img = self.bridge.imgmsg_to_cv2(
             depth_msg, "passthrough")
         self.lock.release()
@@ -64,9 +65,9 @@ class SaveData(ConnectionBasedTransport):
         self.lock.acquire()
 
         # wait until yn_botton is pressed
-        rospy.wait_for_service('save_data/rqt_yn_btn')
+        rospy.wait_for_service('~yes_no')
         try:
-            client = rospy.ServiceProxy('save_data/rqt_yn_btn', YesNo)
+            client = rospy.ServiceProxy('~yes_no', YesNo)
         except rospy.ServiceException, e:
             print 'service {}'.format(e)
         yn = client.call()
@@ -136,16 +137,13 @@ class SaveData(ConnectionBasedTransport):
 
         #data['mask_img'] = self.mask_img
         data['depth_image'] = self.depth_img.astype(np.float16)
-
-        # data['has3D_image'] = (self.depth_img > 0).astype(np.uint8)
-
-        time = strftime('%Y%m%d%H', gmtime())
-        rospack = rospkg.RosPack()
-        dir_path = rospack.get_path('jsk_apc2016_common') + \
-            '/data/tokyo_run/' + str(self.try_dir) + '/'
+        
+        dir_path = rospy.get_param('~save_dir')
+        print dir_path
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-        save_path = (dir_path + self.layout_name + '_' + time + '_bin_' +
+        time = strftime('%Y%m%d%H', gmtime())
+        save_path = (dir_path + '/' + self.layout_name + '_' + time + '_bin_' +
                      self.target_bin_name)
         return data, save_path
 
@@ -160,5 +158,5 @@ if __name__ == '__main__':
     rospy.init_node('save_data')
     # wait until gui button is pressed
 
-    seg = SaveData()
+    seg = CollectSIBData()
     rospy.spin()

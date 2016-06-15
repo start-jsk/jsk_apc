@@ -17,7 +17,8 @@
     <remap from="~input/bin_info_array" to="/set_bin_param/bin_array"/>
     <remap from="~input/depth" to="/kinect2_torso/hd/image_depth_rect"/>
     <remap from="~target_bin_name" to="$(arg hand)_hand/target_bin"/>
-    <param name="~try_dir" value="1" />
+    <remap from="~yes_no" to="save_data/rqt_yn_btn"/>
+    <param name="~save_dir" value="$(find jsk_apc2016_common)/data/tokyo_run/1" />
     <param name="always_subscribe" value="True" />
   </node>
 </launch>
