@@ -113,22 +113,25 @@
             (progn
               (ros::ros-info "[main] ~a, ~a" arm state)
               (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
-              (setq hcv (send *ri* :get-val '_hard-coded-variables))
+              (setq offset-avoid-bin-top
+                    (gethash :offset-avoid-bin-top (send *ri* :get-val '_hard-coded-variables)))
+              (if (and object-length (> object-length 0.2))
+                (progn
+                  (setq entrance-x-list (list -200 -150 -100 -50 0 150 200))
+                  (setq offset-avoid-bin-top 50))
+                (setq entrance-x-list (list -200 -150 -100 -50 0 150)))
               (send *ri* :angle-vector-sequence
                     (list
                       (send *baxter* :avoid-shelf-pose arm target-bin)
                       (send *ri* :ik->bin-entrance arm target-bin
-                            :offset (float-vector -200 0 (gethash :offset-avoid-bin-top hcv))))
+                            :offset (float-vector -200 0 offset-avoid-bin-top)))
                     :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
-              (if (and object-length (> 0.20 object-length))
-                (setq entrance-x-list (list -200 -150 -100 -50 0 150))
-                (setq entrance-x-list (list -200 -150 -100 -50 0 150 200)))
               (setq avs-picked->place-bin
                     (mapcar
                       #'(lambda (x)
                           (send *ri* :ik->bin-entrance arm target-bin
-                                :offset (float-vector x 0 (gethash :offset-avoid-bin-top hcv))))
+                                :offset (float-vector x 0 offset-avoid-bin-top)))
                       entrance-x-list))
               (send *ri* :angle-vector-sequence avs-picked->place-bin :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
