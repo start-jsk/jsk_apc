@@ -21,33 +21,36 @@ class BinInfoArrayPublisher(object):
         self.cam_direction_dict = {}
         self.json_file = None
 
-        pub_bin_info_arr = rospy.Publisher('~bin_array', BinInfoArray, queue_size=1)
-        rate = rospy.Rate(rospy.get_param('rate', 1))
-        while not rospy.is_shutdown():
-            json = rospy.get_param('~json', None)
+        self.pub_bin_info_arr = rospy.Publisher('~bin_array', BinInfoArray, queue_size=1)
 
-            # update bin_info_arr only when rosparam: json is changd
-            if self.json_file != json:
-                if not os.path.isfile(json) or json[-4:] != 'json':
-                    rospy.logwarn('wrong json file name')
-                    rate.sleep()
-                    continue
-                self.json_file = json
+    def main(self):
+        duration = rospy.Duration(rospy.get_param('~duration', 1))
+        rospy.Timer(duration, self.bin_info_publlish)
+        rospy.spin()
 
-                # get bbox from rosparam
-                self.from_shelf_param('upper')
-                self.from_shelf_param('lower')
+    def bin_info_publlish(self, event):
+        json = rospy.get_param('~json', None)
 
-                # get contents of bin from json
-                self.bin_contents_dict = jsk_apc2016_common.get_bin_contents(self.json_file)
-                self.targets_dict = jsk_apc2016_common.get_work_order(self.json_file)
+        # update bin_info_arr only when rosparam: json is changd
+        if self.json_file != json:
+            if not os.path.isfile(json) or json[-4:] != 'json':
+                rospy.logwarn('wrong json file name')
+                return
+            self.json_file = json
 
-                # create bin_msg
-                self.create_bin_info_arr()
+            # get bbox from rosparam
+            self.from_shelf_param('upper')
+            self.from_shelf_param('lower')
 
-            self.bin_info_arr.header.stamp = rospy.Time.now()
-            pub_bin_info_arr.publish(self.bin_info_arr)
-            rate.sleep()
+            # get contents of bin from json
+            self.bin_contents_dict = jsk_apc2016_common.get_bin_contents(self.json_file)
+            self.targets_dict = jsk_apc2016_common.get_work_order(self.json_file)
+
+            # create bin_msg
+            self.create_bin_info_arr()
+
+        self.bin_info_arr.header.stamp = rospy.Time.now()
+        self.pub_bin_info_arr.publish(self.bin_info_arr)
 
     def from_shelf_param(self, upper_lower):
         upper_lower = upper_lower + '_shelf'
@@ -95,6 +98,4 @@ class BinInfoArrayPublisher(object):
 if __name__ == '__main__':
     rospy.init_node('set_bin_param')
     bin_publisher = BinInfoArrayPublisher()
-    rate = rospy.Rate(rospy.get_param('rate', 1))
-    while not rospy.is_shutdown():
-        rate.sleep()
+    bin_publisher.main()
