@@ -92,15 +92,15 @@ def main():
     ls_stdout = sh.ls(args.path).stdout
     ls_results = ls_stdout.split()
 
-    color_results = [result for result in ls_results if '_color.png' in result]
+    color_results = [result for result in ls_results if '.jpg' in result]
 
     for result in color_results:
-        json_path = os.path.join(args.path, result[:-10] + '.json')
+        json_path = os.path.join(args.path, result[:-4] + '.json')
         labelme_cmd = sh.Command('labelme')
         print '\n\n'
-        print 'working on......  ', result[-15:-10]
+        print 'working on......  ', result[-9:-4]
         print '=============================================================='
-        print_target_objects(os.path.join(args.path, result[:-10]))
+        print_target_objects(os.path.join(args.path, result[:-4]))
 
         # create label json
         labelme_cmd('-O', json_path, os.path.join(args.path, result))
