@@ -3,10 +3,6 @@
   <xacro:include filename="$(find baxter_description)/urdf/baxter_base/baxter_base.urdf.xacro" />
   <xacro:include filename="$(find baxter_description)/urdf/pedestal/pedestal.xacro" />
 
-  <!-- Arm Camera -->
-  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/right_arm_camera.xacro"/>
-  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/left_arm_camera.xacro"/>
-
   <!-- Vacuum Gripper -->
   <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/right_vacuum_gripper.xacro"/>
   <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/left_vacuum_gripper.xacro"/>

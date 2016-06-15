@@ -1,0 +1,8 @@
+<launch>
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" />
+
+  <node name="check_astra_rviz" type="rviz" pkg="rviz"
+    args="-d $(find jsk_2016_01_baxter_apc)/rvizconfig/check_astra.rviz" />
+
+</launch>
