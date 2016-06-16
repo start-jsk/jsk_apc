@@ -78,14 +78,14 @@
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
-          (setq object-length (send *ri* :recognize-object-length-in-hand arm :timeout 10000))
+          (setq object-length (send *ri* :recognize-object-length-in-hand arm :timeout 40000))
           (if graspingp
             (setq state :set_target_bin)
             (setq state :pick_object))
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:set_target_bin
           (ros::ros-info "[main] ~a, ~a" arm state)
-          (setq target-bin (send *ri* :select-stow-target-bin arm :object-length object-length))
+          (setq target-bin (send *ri* :select-stow-target-bin arm :object-length object-length :object-length-limit 0.1))
           (if (send *ri* :check-bin-exist target-bin)
               (progn
                 (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
@@ -115,7 +115,7 @@
               (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
               (setq offset-avoid-bin-top
                     (gethash :offset-avoid-bin-top (send *ri* :get-val '_hard-coded-variables)))
-              (if (and object-length (> object-length 0.2))
+              (if (and object-length (> object-length 0.1))
                 (progn
                   (setq entrance-x-list (list -200 -150 -100 -50 0 150 200))
                   (setq offset-avoid-bin-top 50)
@@ -143,7 +143,7 @@
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 20)
               (send *ri* :wait-interpolation)
-              (if (and object-length (> object-length 0.2))
+              (if (and object-length (> object-length 0.1))
                 (setq offset-avoid-bin-top-exit 0)
                 (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
               (setq avs-place-bin->exit
