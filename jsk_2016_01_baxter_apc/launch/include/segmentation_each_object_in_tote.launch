@@ -9,11 +9,6 @@
   <group ns="$(arg NODELET_MANAGER)">
     <rosparam subst_value="true">
       $(arg NODELET_ID_0):
-        - name: $(arg HAND)_in_tote_clipper
-          type: jsk_pcl/AttentionClipper
-          remappings:
-            - from: ~input/points
-              to: $(arg INPUT_CLOUD)
         - name: $(arg HAND)_in_tote_extract_pi
           type: jsk_pcl/ExtractIndices
           remappings:
@@ -45,16 +40,6 @@
               to: $(arg HAND)_in_tote_supervoxel/output/cloud
             - from: ~target
               to: $(arg HAND)_in_tote_supervoxel/output/indices
-    </rosparam>
-  </group>
-  <group ns="$(arg HAND)_in_tote_clipper">
-    <rosparam>
-      initial_pos: [0.75, 0, -0.25]
-      initial_rot: [0, 0, 0]
-      dimension_x: 0.30
-      dimension_y: 0.40
-      dimension_z: 0.15
-      frame_id: base
     </rosparam>
   </group>
   <group ns="$(arg HAND)_in_tote_extract_pi">

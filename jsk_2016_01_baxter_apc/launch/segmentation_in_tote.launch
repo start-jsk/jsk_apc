@@ -4,6 +4,8 @@
   <arg name="NODELET_MANAGER_LEFT" />
   <arg name="NODELET_ID_0" />
   <arg name="NODELET_ID_1" />
+  <arg name="NODELET_ID_2" />
+  <arg name="NODELET_ID_3" />
   <arg name="RIGHT_INPUT_IMAGE" />
   <arg name="RIGHT_INPUT_CLOUD" />
   <arg name="LEFT_INPUT_IMAGE" />
@@ -23,5 +25,47 @@
     <arg name="INPUT_CLOUD" value="$(arg RIGHT_INPUT_CLOUD)"/>
     <arg name="HAND" value="right" />
   </include>
+
+  <group ns="$(arg NODELET_MANAGER_LEFT)">
+    <rosparam subst_value="true">
+      $(arg NODELET_ID_2):
+        - name: left_in_tote_clipper
+          type: jsk_pcl/AttentionClipper
+          remappings:
+            - from: ~input/points
+              to: $(arg LEFT_INPUT_CLOUD)
+    </rosparam>
+  </group>
+  <group ns="left_in_tote_clipper">
+    <rosparam>
+      initial_pos: [0.75, 0.12, -0.33]
+      initial_rot: [0, -0.06, 0]
+      dimension_x: 0.30
+      dimension_y: 0.32
+      dimension_z: 0.15
+      frame_id: base
+    </rosparam>
+  </group>
+
+  <group ns="$(arg NODELET_MANAGER_RIGHT)">
+    <rosparam subst_value="true">
+      $(arg NODELET_ID_3):
+        - name: right_in_tote_clipper
+          type: jsk_pcl/AttentionClipper
+          remappings:
+            - from: ~input/points
+              to: $(arg RIGHT_INPUT_CLOUD)
+    </rosparam>
+  </group>
+  <group ns="right_in_tote_clipper">
+    <rosparam>
+      initial_pos: [0.75, -0.12, -0.33]
+      initial_rot: [0, -0.06, 0]
+      dimension_x: 0.30
+      dimension_y: 0.32
+      dimension_z: 0.15
+      frame_id: base
+    </rosparam>
+  </group>
 
 </launch>
