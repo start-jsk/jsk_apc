@@ -13,7 +13,7 @@
         args="-0.05 0.04 0.04 -1.57 0 0 left_hand left_hand_camera_rgb_optical_frame 100" />
   <node name="left_hand_camera_depth_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
-        args="-0.05 0.065 0.04 -1.57 0 0 left_hand left_hand_camera_depth_optical_frame 100" />
+        args="-0.05 0.03 -0.0 -1.6 -0.05 -0.0 left_hand left_hand_camera_depth_optical_frame 100" />
 
 
   <!-- right USB #1 -->
@@ -29,7 +29,7 @@
         args="-0.05 0.065 0.04 -1.57 0 0 right_hand right_hand_camera_rgb_optical_frame 100" />
   <node name="right_hand_camera_depth_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
-        args="-0.05 0.1 0.04 -1.57 0 0 right_hand right_hand_camera_depth_optical_frame 100" />
+        args="-0.03 -0.01 0.01 -1.57 -0.02 0.0 right_hand right_hand_camera_depth_optical_frame 100" />
 
 
 </launch>
