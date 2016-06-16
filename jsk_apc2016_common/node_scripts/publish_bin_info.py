@@ -96,6 +96,6 @@ class BinInfoArrayPublisher(object):
 
 
 if __name__ == '__main__':
-    rospy.init_node('set_bin_param')
+    rospy.init_node('publish_bin_info')
     bin_publisher = BinInfoArrayPublisher()
     bin_publisher.main()
