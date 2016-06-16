@@ -33,7 +33,7 @@
     <arg name="INPUT_CLOUD" value="$(arg LEFT_INPUT_CLOUD_FILTERED)"/>
     <arg name="INPUT_INFO" value="$(arg LEFT_INPUT_INFO)"/>
     <arg name="HAND" value="left" />
-    <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
+    <arg name="INPUT_BIN_ARRAY" value="/publish_bin_info/bin_array"/>
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
   </include>
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_for_each_hand.launch">
@@ -43,7 +43,7 @@
     <arg name="INPUT_CLOUD" value="$(arg RIGHT_INPUT_CLOUD_FILTERED)"/>
     <arg name="INPUT_INFO" value="$(arg RIGHT_INPUT_INFO)"/>
     <arg name="HAND" value="right" />
-    <arg name="INPUT_BIN_ARRAY" value="/set_bin_param/bin_array"/>
+    <arg name="INPUT_BIN_ARRAY" value="/publish_bin_info/bin_array"/>
     <arg name="TRAINED_PATH" value="$(arg TRAINED_PATH)" />
   </include>
 
