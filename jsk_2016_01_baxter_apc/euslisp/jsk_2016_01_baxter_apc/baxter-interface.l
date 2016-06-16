@@ -1069,8 +1069,8 @@
  ;; defmethod :select-stow-target-bin
  ;; randomly choose bin for stow task
   (:select-stow-target-bin
-    (arm &key (object-length))
-    (if (and object-length (> object-length 0.2))
+    (arm &key (object-length) (object-length-limit 0.1))
+    (if (and object-length (> object-length object-length-limit))
         (progn
           (setq i (random 2))
           (if (eq arm :rarm)
