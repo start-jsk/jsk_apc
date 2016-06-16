@@ -85,7 +85,10 @@
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:set_target_bin
           (ros::ros-info "[main] ~a, ~a" arm state)
-          (setq target-bin (send *ri* :select-stow-target-bin arm :object-length object-length :object-length-limit 0.1))
+          (setq target-bin
+                (send *ri* :select-stow-target-bin arm
+                      :object-length object-length
+                      :object-length-limit 0.1))
           (if (send *ri* :check-bin-exist target-bin)
               (progn
                 (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
