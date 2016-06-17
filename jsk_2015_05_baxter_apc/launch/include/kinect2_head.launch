@@ -3,6 +3,7 @@
 
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
     <arg name="base_name" value="$(arg NODELET_MANAGER)" />
+    <arg name="calib_path" value="$(find jsk_2015_05_baxter_apc)/data/kinect2_calib_data/" />
     <arg name="depth_method" value="cpu" />
     <arg name="reg_method" value="cpu" />
     <arg name="use_machine" value="true" />
