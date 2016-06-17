@@ -1,0 +1,34 @@
+<launch>
+
+  <arg name="NODELET_MANAGER_RIGHT" value="right_hand_astra_manager" />
+  <arg name="NODELET_MANAGER_LEFT" value="left_hand_astra_manager" />
+  <arg name="NODELET_ID_0" value="nodelets_0" />
+  <arg name="NODELET_ID_1" value="nodelets_1" />
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" />
+
+  <node name="$(arg NODELET_MANAGER_RIGHT)"
+        pkg="jsk_topic_tools" type="standalone_complexed_nodelet"
+        respawn="true" output="screen">
+  </node>
+  <node name="$(arg NODELET_MANAGER_LEFT)"
+        pkg="jsk_topic_tools" type="standalone_complexed_nodelet"
+        respawn="true" output="screen">
+  </node>
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/segmentation_in_bin.launch">
+    <arg name="NODELET_MANAGER_RIGHT" value="$(arg NODELET_MANAGER_RIGHT)" />
+    <arg name="NODELET_MANAGER_LEFT" value="$(arg NODELET_MANAGER_LEFT)" />
+    <arg name="NODELET_ID_0" value="$(arg NODELET_ID_0)" />
+    <arg name="NODELET_ID_1" value="$(arg NODELET_ID_1)" />
+    <arg name="RIGHT_INPUT_IMAGE" value="right_hand_camera/rgb/image_rect_color" />
+    <arg name="RIGHT_INPUT_CLOUD" value="right_hand_camera/depth_registered/points" />
+    <arg name="RIGHT_INPUT_CLOUD_FILTERED" value="right_hand_camera/depth_registered/points_filtered" />
+    <arg name="RIGHT_INPUT_INFO" value="right_hand_camera/rgb/camera_info"/>
+    <arg name="LEFT_INPUT_IMAGE" value="left_hand_camera/rgb/image_rect_color" />
+    <arg name="LEFT_INPUT_CLOUD" value="left_hand_camera/depth_registered/points" />
+    <arg name="LEFT_INPUT_CLOUD_FILTERED" value="left_hand_camera/depth_registered/points_filtered" />
+    <arg name="LEFT_INPUT_INFO" value="left_hand_camera/rgb/camera_info"/>
+  </include>
+
+</launch>
