@@ -155,19 +155,16 @@
 
 
   <!-- object recognition -->
-  <!-- FIXME: in sheeta, vgg16 net infering is too slow, so we use doura. -->
-  <machine name="doura" address="133.11.216.167"
-           env-loader="/home/baxter/env-indigo.sh" user="baxter" />
   <group ns="left_hand">
     <include file="$(find jsk_apc2015_common)/launch/vgg16_object_recognition.launch">
       <arg name="INPUT_IMAGE" value="/apply_mask_left_hand/output" />
-      <arg name="MACHINE" value="doura" />
+      <arg name="MACHINE" value="localhost" />
     </include>
   </group>
   <group ns="right_hand">
     <include file="$(find jsk_apc2015_common)/launch/vgg16_object_recognition.launch">
       <arg name="INPUT_IMAGE" value="/apply_mask_right_hand/output" />
-      <arg name="MACHINE" value="doura" />
+      <arg name="MACHINE" value="localhost" />
     </include>
   </group>
 
