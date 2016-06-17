@@ -2,12 +2,13 @@
   <arg name="NODELET_MANAGER" />
   <arg name="use_machine" default="true" />
 
-  <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_bridge.launch">
     <arg name="base_name" value="$(arg NODELET_MANAGER)" />
+    <arg name="calib_path" value="$(find jsk_2015_05_baxter_apc)/data/kinect2_calib_data/" />
     <arg name="max_depth" value="1.05" />
     <arg name="use_machine" value="$(arg use_machine)"/>
-    <arg name="depth_method" value="cpu" />
-    <arg name="reg_method" value="cpu" />
+    <!-- <arg name="depth_method" value="cpu" /> -->
+    <!-- <arg name="reg_method" value="cpu" /> -->
   </include>
 
   <node name="kinect2_torso_tf_publisher"
