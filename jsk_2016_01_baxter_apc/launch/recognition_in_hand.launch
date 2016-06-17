@@ -12,6 +12,7 @@
           remappings:
             - from: ~input/points
               to: $(arg INPUT_CLOUD)
+        <!--
         - name: extract_indices_left_hand
           type: jsk_pcl/ExtractIndices
           remappings:
@@ -40,18 +41,21 @@
           remappings:
           - from: ~input
             to: /extract_indices_right_hand/points_filtered
+        -->
         - name: pi_to_mask_left_hand
           type: jsk_pcl/PointIndicesToMaskImage
           remappings:
           - from: ~input
-            to: /pc_to_pi_left_hand/output
+            <!-- to: /pc_to_pi_left_hand/output -->
+            to: /in_hand_clipper/left_hand/point_indices
           - from: ~input/image
             to: $(arg INPUT_IMAGE)
         - name: pi_to_mask_right_hand
           type: jsk_pcl/PointIndicesToMaskImage
           remappings:
           - from: ~input
-            to: /pc_to_pi_right_hand/output
+            <!-- to: /pc_to_pi_right_hand/output -->
+            to: /in_hand_clipper/right_hand/point_indices
           - from: ~input/image
             to: $(arg INPUT_IMAGE)
         - name: closing_left_hand
@@ -144,6 +148,7 @@
 
 
   <!-- self filter -->
+  <!--
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/self_filter.launch">
     <arg name="INPUT_CLOUD" value="extract_indices_left_hand/points" />
     <arg name="OUTPUT_CLOUD" value="extract_indices_left_hand/points_filtered" />
@@ -152,6 +157,7 @@
     <arg name="INPUT_CLOUD" value="extract_indices_right_hand/points" />
     <arg name="OUTPUT_CLOUD" value="extract_indices_right_hand/points_filtered" />
   </include>
+  -->
 
 
   <!-- object recognition -->
