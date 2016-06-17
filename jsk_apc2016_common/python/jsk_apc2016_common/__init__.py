@@ -85,9 +85,9 @@ def visualize_stow_contents(work_order):
     rp = rospkg.RosPack()
     pkg_path = rp.get_path(PKG)
     tote_img = cv2.imread(osp.join(pkg_path, 'models/tote/image.jpg'))
-    object_list = jsk_apc2015_common.get_object_list()
+    object_list = [datum['name'] for datum in get_object_data()]
     object_imgs = {}
-    pkg_path = rp.get_path('jsk_apc2015_common')
+    pkg_path = rp.get_path(PKG)
     for obj in object_list:
         img_path = osp.join(pkg_path, 'models/{obj}/image.jpg'.format(obj=obj))
         img = cv2.imread(img_path)
@@ -124,10 +124,10 @@ def _load_stow_json(json_file):
     for bin, item in json_data['bin_contents'].items():
         bin = bin[len('bin_'):].lower()
         bin_contents[bin] = item
-    work_order = []
-    for contents in json_data['work_order']:
-        work_order.append(contents)
-    return bin_contents, work_order
+    tote_contents = []
+    for contents in json_data['tote_contents']:
+        tote_contents.append(contents)
+    return bin_contents, tote_contents
 
 
 def visualize_stow_json(json_file):
@@ -139,11 +139,19 @@ def visualize_stow_json(json_file):
     Returns:
         dest (~numpy.ndarray): Image of objects in bins and tote.
     """
-    bin_contents, work_order = _load_stow_json(json_file)
+    bin_contents, tote_contents = _load_stow_json(json_file)
+    # set extra image paths that is added in APC2016
+    rp = rospkg.RosPack()
+    pkg_path = rp.get_path(PKG)
+    extra_img_paths = {}
+    for entry in get_object_data():
+        obj = entry['name']
+        extra_img_paths[obj] = osp.join(pkg_path, 'models', obj, 'image.jpg')
     # draw bin contents
-    kiva_pod_img = jsk_apc2015_common.visualize_bin_contents(bin_contents)
+    kiva_pod_img = jsk_apc2015_common.visualize_bin_contents(
+        bin_contents, extra_img_paths=extra_img_paths)
     # draw tote contents
-    tote_img = visualize_stow_contents(work_order)
+    tote_img = visualize_stow_contents(tote_contents)
 
     # merge two images
     kiva_w = kiva_pod_img.shape[1]
