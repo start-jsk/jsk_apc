@@ -47,6 +47,6 @@
     uri: https://github.com/start-jsk/jsk_apc.git
     version: master
 - git:
-    local-name: wkentaro/iai_kinect2
-    uri: https://github.com/wkentaro/iai_kinect2.git
-    version: jsk_apc
+    local-name: code-iai/iai_kinect2
+    uri: https://github.com/code-iai/iai_kinect2.git
+    version: master
