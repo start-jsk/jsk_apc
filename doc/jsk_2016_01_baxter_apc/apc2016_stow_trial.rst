@@ -1,7 +1,7 @@
 APC2016 Stow Task Trial on Real World
 =====================================
 
-Stow task trial on real world for APC2016 can be done on ``baxter@sheeta.jsk.imi.i.u-tokyo.ac.jp``.
+Stow task trial on real world for APC2016 can be done on ``baxter@satan`` and ``baxter@eyelash``.
 
 - Prepare json.
 - Setup objects in Kiva.
@@ -10,19 +10,18 @@ Stow task trial on real world for APC2016 can be done on ``baxter@sheeta.jsk.imi
 
 .. code-block:: bash
 
-  baxter@sheeta $ roscd jsk_apc && git fetch origin
-  baxter@sheeta $ git checkout stow-task -b origin/stow-task
-  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc baxter.launch
-  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc setup_torso.launch use_stow:=true
-  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc setup_softkinetic.launch use_stow:=true
+  # use satan
+  baxter@satan $ roscd jsk_apc && git fetch origin
+  baxter@satan $ git checkout stow-task -b origin/stow-task
+  baxter@satan $ roslaunch jsk_2016_01_baxter_apc baxter.launch
+  baxter@satan $ roslaunch jsk_2016_01_baxter_apc setup_torso.launch use_stow:=true
 
-  baxter@sheeta $ ssh doura
-  baxter@doura $ tmux
-  # on a tmux session
-  baxter@doura $ sudo -s  # necessary for launch kinect2 with ssh login
-  baxter@doura $ roslaunch jsk_2016_01_baxter_apc setup_head.launch
-  # detach from the tmux session and logout from doura here
+  # use eyelash
+  baxter@eyelash $ roscd jsk_apc && git fetch origin
+  baxter@eyelash $ git checkout stow-task -b origin/stow-task
+  baxter@eyelash $ roslaunch jsk_2016_01_baxter_apc setup_astra.launch use_stow:=true
 
-  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc main_stow.launch json:=$(rospack find jsk_apc2016_common)/json/stow_layout_1.json
+  # use satan
+  baxter@satan $ roslaunch jsk_2016_01_baxter_apc main_stow.launch json:=$(rospack find jsk_apc2016_common)/json/stow_layout_1.json
 
 
