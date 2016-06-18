@@ -1417,9 +1417,11 @@
           (if (eq arm :rarm)
               (elt '(:c :k :l) i)
               (elt '(:a :b :j) i)))
-        (if (eq arm :rarm)
-            (elt '(:c :f :h :i :k :l) (random 5))
-            (elt '(:a :b :d :g :j) (random 4)))))
+        (progn
+          (setq i (random 5))
+          (if (eq arm :rarm)
+              (elt '(:c :f :h :i :k :l) i)
+              (elt '(:a :b :d :e :g :j) i)))))
   )
 
 (defun jsk_2016_01_baxter_apc::baxter-init (&key (ctype :default-controller))
