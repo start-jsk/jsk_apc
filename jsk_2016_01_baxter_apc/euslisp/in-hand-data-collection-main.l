@@ -205,7 +205,7 @@
     ()
     (ros::ros-info "[~a] Collecting data for an object" (ros::get-name))
     (dotimes (_ 4)
-      ;; Pick object from tote
+      ;; Pick object from table
       (while
         (null (send self :pick-object-from-table))
         (ros::ros-warn "[~a] Failed to pick object from table. Retrying.." (ros::get-name))
