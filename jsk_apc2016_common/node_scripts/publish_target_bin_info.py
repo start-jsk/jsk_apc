@@ -20,9 +20,14 @@ class PublishTargetBinInfo(object):
     def _publish(self, event):
         if self.bin_info_dict == {}:
             return
-        target_bin_name = rospy.get_param('~target_bin_name')
-        if target_bin_name not in 'abcdefghijkl' or target_bin_name == '':
+        target_bin_name = rospy.get_param('~target_bin_name', '')
+        if target_bin_name not in 'abcdefghijkl':
+            rospy.logwarn('wrong target_bin_name')
             return
+        if target_bin_name == '':
+            log_utils.logwarn_throttle(10, 'target_bin_name is empty string. This shows up every 10 seconds.')
+            return
+
         with self.lock:
             self.bin_info_dict[target_bin_name].header.seq = (
                 self.bin_info_dict[target_bin_name].header.seq + 1)
