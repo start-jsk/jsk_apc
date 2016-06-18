@@ -39,6 +39,10 @@
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
     version: master
 - git:
+    local-name: ros-drivers/axis_camera
+    uri: https://github.com/ros-drivers/axis_camera.git
+    version: 8e17a795120ce97e59506c4228d023247451119e
+- git:
     local-name: ros-drivers/openni2_camera
     uri: https://github.com/ros-drivers/openni2_camera.git
     version: indigo-devel
