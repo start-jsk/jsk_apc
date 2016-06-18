@@ -20,7 +20,7 @@ class PublishTargetBinInfo(object):
     def _publish(self, event):
         if self.bin_info_dict == {}:
             return
-        target_bin_name = rospy.get_param('~target_bin_name')
+        target_bin_name = rospy.get_param('~target_bin_name', '')
         if target_bin_name not in 'abcdefghijkl':
             rospy.logwarn('wrong target_bin_name')
             return
