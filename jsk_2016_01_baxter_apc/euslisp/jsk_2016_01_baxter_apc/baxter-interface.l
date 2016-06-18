@@ -1023,7 +1023,7 @@
       (setq graspingp (send self :graspingp arm))
       graspingp))
   (:pick-object-in-order-bin
-    (arm &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
+    (arm &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
     (let (order-bin-box graspingp avs)
       (if (or
           (null (gethash arm _objects-in-order-bin-boxes))
@@ -1035,7 +1035,7 @@
         (dotimes (j n-trial-same-pos)
           (unless graspingp
             (setq graspingp
-                  (send self :try-to-pick-object-in-order-bin arm :object-index object-index
+                  (send self :try-to-pick-object-in-order-bin arm
                         :offset (float-vector 0 0 (* i -50))))
             (pushback (send *baxter* :angle-vector) avs))))
       (when do-stop-grasp (unless graspingp (send self :stop-grasp arm)))
@@ -1050,9 +1050,10 @@
       (send self :gripper-servo-on arm)
       graspingp))
   (:try-to-pick-object-in-order-bin
-    (arm &key (object-index 0) (offset #f(0 0 0)))
-    (let (avs obj-box graspingp order-bin-box)
+    (arm &key (offset #f(0 0 0)))
+    (let (avs obj-box graspingp order-bin-box object-index)
       ;; validate
+      (setq object-index (random (length (gethash arm _objects-in-order-bin-boxes))))
       (unless
         (setq obj-box (elt (gethash arm _objects-in-order-bin-boxes) object-index))
         (ros::ros-warn "[:try-to-pick-object-in-order-bin] No bbox  is found: ~a, ~a" arm bin)
