@@ -151,7 +151,7 @@
     )
   (:opposite-arm (arm) (if (eq arm :larm) :rarm :larm))
   (:need-to-wait-opposite-arm
-    (arm)
+    (arm &key (state))
     (let (opposite-state opposite-target)
       (setq opposite-state
             (str2symbol (ros::get-param
@@ -163,34 +163,13 @@
                           (format nil "~a_hand/target_bin"
                                   (send self :arm-symbol2str
                                         (send self :opposite-arm arm))))))
-      (if (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))
-        t
-        nil)))
-  (:need-to-wait-opposite-arm-in-pick
-    (arm)
-    (let (opposite-state)
-      (setq opposite-state
-            (str2symbol (ros::get-param
-                          (format nil "~a_hand/state"
-                                  (send self :arm-symbol2str
-                                        (send self :opposite-arm arm))))))
-      (eq opposite-state :pick_object)))
-  (:need-to-wait-opposite-arm-in-place
-    (arm)
-    (let (opposite-state opposite-target)
-      (setq opposite-state
-            (str2symbol (ros::get-param
-                          (format nil "~a_hand/state"
-                                  (send self :arm-symbol2str
-                                        (send self :opposite-arm arm))))))
-      (setq opposite-target
-            (str2symbol (ros::get-param
-                          (format nil "~a_hand/target_bin"
-                                  (send self :arm-symbol2str
-                                        (send self :opposite-arm arm))))))
-
-      (and (eq opposite-state :place_object)
-           (find opposite-target (list :b :e :h :k)))))
+      (cond
+        ((or (eq state :pick_object) (eq state :wait_for_opposite_arm_in_pick))
+         (eq opposite-state :pick_object))
+        ((or (eq state :place_object) (eq state :wait_for_opposite_arm_in_place))
+         (and (eq opposite-state :place_object)
+              (find opposite-target (list :b :e :h :k))))
+        (t (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))))))
   (:arm-symbol2str
     (arm)
     (case arm
