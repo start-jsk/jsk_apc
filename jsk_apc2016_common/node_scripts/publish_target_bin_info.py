@@ -4,6 +4,7 @@ import threading
 
 import rospy
 from jsk_apc2016_common.msg import BinInfo, BinInfoArray
+from jsk_topic_tools import log_utils
 
 
 class PublishTargetBinInfo(object):
