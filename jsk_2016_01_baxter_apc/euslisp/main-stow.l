@@ -65,7 +65,6 @@
                     (send *ri* :pick-object-in-order-bin arm
                           :n-trial 3
                           :n-trial-same-pos 1
-                          ;; :object-index (send *ri* :detect-target-object-in-bin target-bin)
                           :do-stop-grasp nil
                           )
                     )
