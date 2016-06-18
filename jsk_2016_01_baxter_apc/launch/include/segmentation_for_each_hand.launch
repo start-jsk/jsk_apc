@@ -38,6 +38,7 @@
     <remap from="~input/height" to="/$(arg HAND)_sib_spatial/height"/>
     <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
     <remap from="~input/mask" to="/$(arg HAND)_sib_mask/output"/>
+    <remap from="~input/depth" to="/$(arg HAND)_hand_camera/depth_registered/image_raw"/>
   </node>
 
   <node pkg="jsk_apc2016_common" type="rbo_segmentation_in_bin_node.py"
