@@ -40,14 +40,14 @@
         (:wait_for_opposite_arm_in_pick
           (ros::ros-info "[main] ~a, ~a" arm state)
           (while
-            (send *ri* :need-to-wait-opposite-arm-in-pick arm)
+            (send *ri* :need-to-wait-opposite-arm arm :state state)
             (unix::sleep 1))
           (setq state :pick_object)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; if necessary wait for opposite arm
-          (if (send *ri* :need-to-wait-opposite-arm-in-pick arm)
+          (if (send *ri* :need-to-wait-opposite-arm arm :state state)
             (progn
               (ros::ros-info "[main] Need to wait for opposite arm: ~a" arm)
               (setq state :wait_for_opposite_arm_in_pick)
@@ -103,12 +103,12 @@
         (:wait_for_opposite_arm_in_place
           (ros::ros-info "[main] ~a, ~a" arm state)
           (while
-            (send *ri* :need-to-wait-opposite-arm-in-place arm)
+            (send *ri* :need-to-wait-opposite-arm arm :state state)
             (unix::sleep 1))
           (setq state :set_target_bin)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:place_object
-          (if (send *ri* :need-to-wait-opposite-arm-in-place arm)
+          (if (send *ri* :need-to-wait-opposite-arm arm :state state)
             (progn
               (ros::ros-info "[main] Need to wait for opposite arm: ~a" arm)
               (setq state :wait_for_opposite_arm_in_place)
@@ -146,6 +146,22 @@
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 20)
               (send *ri* :wait-interpolation)
+              (setq state :return_from_bin)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))))
+        (:wait_for_opposite_arm_in_return
+          (ros::ros-info "[main] ~a, ~a" arm state)
+          (while
+            (send *ri* :need-to-wait-opposite-arm arm :state state)
+            (unix::sleep 1))
+          (setq state :return_from_bin)
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+        (:return_from_bin
+          (if (send *ri* :need-to-wait-opposite-arm arm :state state)
+            (progn
+              (ros::ros-info "[main] Need to wait for opposite arm: ~a" arm)
+              (setq state :wait_for_opposite_arm_in_return)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+            (progn
               (if (and object-length (> object-length 0.1))
                 (setq offset-avoid-bin-top-exit 0)
                 (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
