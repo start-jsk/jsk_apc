@@ -1,0 +1,78 @@
+<launch>
+
+  <arg name="HAND" />
+  <arg name="MANAGER" />
+
+  <node name="passthrough_z_$(arg HAND)_hand_camera"
+        pkg="nodelet" type="nodelet"
+        args="load pcl/PassThrough $(arg MANAGER)">
+    <remap from="~input" to="/$(arg HAND)_hand_camera/depth/points" />
+    <rosparam>
+      input_frame: base
+      filter_field_name: z
+      filter_limit_min: -0.2
+      filter_limit_max: 0.5
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node name="passthrough_x_$(arg HAND)_hand_camera"
+        pkg="nodelet" type="nodelet"
+        args="load pcl/PassThrough $(arg MANAGER)">
+    <remap from="~input" to="passthrough_z_$(arg HAND)_hand_camera/output" />
+    <rosparam>
+      input_frame: base
+      filter_field_name: x
+      filter_limit_min: 0.8
+      filter_limit_max: 1.5
+      keep_organized: true
+    </rosparam>
+  </node>
+  <node name="multi_plane_estimate_$(arg HAND)_hand_camera"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/OrganizedMultiPlaneSegmentation $(arg MANAGER)"
+        clear_params="true">
+    <remap from="~input" to="passthrough_x_$(arg HAND)_hand_camera/output" />
+    <rosparam>
+      max_curvature: 0.01
+      estimate_normal: true
+      distance_threshold: 0.03
+    </rosparam>
+  </node>
+  <node name="plane_extraction_$(arg HAND)_hand_camera"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/MultiPlaneExtraction $(arg MANAGER)"
+        clear_params="true">
+    <remap from="~input" to="passthrough_x_$(arg HAND)_hand_camera/output" />
+    <remap from="~indices" to="multi_plane_estimate_$(arg HAND)_hand_camera/output_refined" />
+    <remap from="~input_polygons" to="multi_plane_estimate_$(arg HAND)_hand_camera/output_refined_polygon" />
+    <remap from="~input_coefficients" to="multi_plane_estimate_$(arg HAND)_hand_camera/output_refined_coefficients" />
+    <rosparam subst_value="true">
+      use_sensor_frame: true
+      sensor_frame: $(arg HAND)_hand_camera_rgb_optical_frame
+      min_height: 0.01
+    </rosparam>
+  </node>
+
+  <node name="euclid_clustering_$(arg HAND)_table"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/EuclideanClustering $(arg MANAGER)">
+    <remap from="~input" to="plane_extraction_$(arg HAND)_hand_camera/output" />
+  </node>
+
+  <node name="cpi_decomposer_$(arg HAND)_table"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg MANAGER)">
+    <remap from="~input" to="plane_extraction_$(arg HAND)_hand_camera/output" />
+    <remap from="~target" to="euclid_clustering_$(arg HAND)_table/output" />
+    <remap from="~align_planes" to="multi_plane_estimate_$(arg HAND)_hand_camera/output_refined_polygon" />
+    <remap from="~align_planes_coefficients" to="multi_plane_estimate_$(arg HAND)_hand_camera/output_refined_coefficients" />
+    <rosparam>
+      align_boxes: true
+      use_pca: true
+      publish_clouds: falsec
+      publish_tf: false
+    </rosparam>
+  </node>
+
+</launch>

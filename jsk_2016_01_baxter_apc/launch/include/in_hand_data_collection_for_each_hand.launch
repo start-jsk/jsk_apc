@@ -1,0 +1,64 @@
+<launch>
+
+  <arg name="HAND" />
+  <arg name="MANAGER" />
+
+  <!-- bounding rect -->
+  <node name="bounding_rect_mask_in_hand_region_$(arg HAND)"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_perception/BoundingRectMaskImage $(arg MANAGER)">
+    <remap from="~input" to="pi_to_mask_$(arg HAND)_hand/output" />
+  </node>
+  <!-- object image -->
+  <node name="apply_mask_in_hand_region_color_$(arg HAND)"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_perception/ApplyMaskImage $(arg MANAGER)">
+    <remap from="~input" to="/kinect2_torso/hd/image_color" />
+    <remap from="~input/mask" to="bounding_rect_mask_in_hand_region_$(arg HAND)/output" />
+  </node>
+  <!-- object depth -->
+  <node name="apply_mask_in_hand_region_depth_$(arg HAND)"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_perception/ApplyMaskImage $(arg MANAGER)">
+    <remap from="~input" to="/kinect2_torso/hd/image_depth_rect" />
+    <remap from="~input/mask" to="bounding_rect_mask_in_hand_region_$(arg HAND)/output" />
+  </node>
+  <node name="image_16uc1_to_32fc1_$(arg HAND)"
+        pkg="jsk_recognition_utils" type="image_16uc1_to_32fc1.py">
+    <remap from="~input" to="apply_mask_in_hand_region_depth_$(arg HAND)/output" />
+  </node>
+  <!-- object mask -->
+  <node name="apply_mask_in_hand_region_mask_$(arg HAND)"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_perception/ApplyMaskImage $(arg MANAGER)">
+    <remap from="~input" to="closing_$(arg HAND)_hand/output" />
+    <remap from="~input/mask" to="bounding_rect_mask_in_hand_region_$(arg HAND)/output" />
+  </node>
+
+  <!-- Data saver -->
+  <node name="data_collection_server_$(arg HAND)"
+        pkg="jsk_data" type="data_collection_server.py"
+        output="screen">
+    <rosparam subst_value="true">
+      save_dir: ~/.ros/jsk_2016_01_baxter_apc/in_hand_data_collection
+      topics:
+        - name: /apply_mask_in_hand_region_color_$(arg HAND)/output
+          msg_class: sensor_msgs/Image
+          fname: image.png
+          savetype: ColorImage
+        - name: /apply_mask_in_hand_region_mask_$(arg HAND)/output
+          msg_class: sensor_msgs/Image
+          fname: mask.png
+          savetype: ColorImage
+        - name: /image_16uc1_to_32fc1_$(arg HAND)/output
+          msg_class: sensor_msgs/Image
+          fname: depth.pkl
+          savetype: DepthImage
+      params:
+        - key: /in_hand_data_collection_$(arg HAND)_main/object_label
+          fname: label.txt
+          savetype: Text
+    </rosparam>
+  </node>
+
+</launch>

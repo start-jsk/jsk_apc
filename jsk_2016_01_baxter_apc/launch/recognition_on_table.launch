@@ -1,0 +1,17 @@
+<launch>
+
+  <arg name="MANAGER" value="hand_cameras_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_on_table.launch">
+    <arg name="HAND" value="left" />
+    <arg name="MANAGER" value="$(arg MANAGER)" />
+  </include>
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_on_table.launch">
+    <arg name="HAND" value="right" />
+    <arg name="MANAGER" value="$(arg MANAGER)" />
+  </include>
+
+</launch>
