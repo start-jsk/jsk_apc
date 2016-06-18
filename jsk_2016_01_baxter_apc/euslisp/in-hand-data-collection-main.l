@@ -186,7 +186,7 @@
           (setq plane-center (send *ri* :tf-pose->coords (send msg :header :frame_id) pose))
           (make-coords :pos (send plane-center :worldpos))))
       ))
-  (:place-object-on-plane
+  (:place-object-on-table
     ()
     (ros::ros-info "[~a] Placing object on table" (ros::get-name))
     (send *ri* :gripper-servo-on arm_)
@@ -217,7 +217,7 @@
         ;; Send saving request
         (send self :send-save-request)
         )
-      (send self :place-object-on-plane)
+      (send self :place-object-on-table)
       )
     )
   (:request-next-object
