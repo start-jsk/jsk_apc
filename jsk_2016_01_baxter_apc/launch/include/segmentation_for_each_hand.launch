@@ -29,14 +29,14 @@
       name="$(arg HAND)_sib_mask" output="screen">
     <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
     <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
-    <remap from="~input" to="/$(arg HAND)_softkinetic_camera_resized/camera_info"/>
+    <remap from="~input" to="$(arg INPUT_INFO)"/>
   </node>
 
   <node pkg="jsk_apc2016_common" type="sib_topic_synchronizer"
         name="$(arg HAND)_sib_topic_sync" output="screen">
     <remap from="~input/dist" to="/$(arg HAND)_sib_spatial/dist"/>
     <remap from="~input/height" to="/$(arg HAND)_sib_spatial/height"/>
-    <remap from="~input/image" to="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+    <remap from="~input/image" to="$(arg INPUT_IMAGE)"/>
     <remap from="~input/mask" to="/$(arg HAND)_sib_mask/output"/>
   </node>
 
@@ -51,13 +51,6 @@
   <group ns="$(arg NODELET_MANAGER)">
     <rosparam subst_value="true">
       $(arg NODELET_ID_0):
-        - name: $(arg HAND)_image_resizer
-          type: resized_image_transport/ImageResizer
-          remappings:
-            - from: ~input/image
-              to: $(arg HAND)_softkinetic_camera/rgb/image_color
-            - from: ~output/image
-              to: $(arg HAND)_softkinetic_camera_resized/image_raw
         - name: $(arg HAND)_sib_mask_image_to_pi
           type: jsk_pcl/MaskImageToPointIndices
           remappings:
@@ -89,10 +82,6 @@
               to: $(arg HAND)_sib_pc_to_cpi/output
     </rosparam>
   </group>
-  <group ns="$(arg HAND)_image_resizer">
-    <param name="resize_scale_x" value="0.375"/>
-    <param name="resize_scale_y" value="0.375"/>
-  </group>
   <group ns="$(arg HAND)_sib_extract_pi">
     <rosparam>
       max_queue_size: 100
@@ -111,7 +100,7 @@
       <arg name="HEIGHT" value="/$(arg HAND)_sib_spatial/height"/>
       <arg name="POSTERIOR" value="/$(arg HAND)_sib_rbo/posterior"/>
       <arg name="POSTERIOR_UNMASK" value="/$(arg HAND)_sib_rbo/posterior_unmask"/>
-      <arg name="INPUT_IMAGE" value="/$(arg HAND)_softkinetic_camera_resized/image_raw"/>
+      <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)"/>
       <arg name="MASK" value="/$(arg HAND)_sib_rbo/target_mask"/>
       <arg name="MASKED_INPUT" value="/$(arg HAND)_sib_rbo/masked_input"/>
       <arg name="LABEL_IMAGE" value="/$(arg HAND)_sib_rbo/class_label"/>
