@@ -51,46 +51,18 @@
   <group ns="$(arg NODELET_MANAGER)">
     <rosparam subst_value="true">
       $(arg NODELET_ID_0):
-        - name: $(arg HAND)_sib_mask_image_to_pi
-          type: jsk_pcl/MaskImageToPointIndices
-          remappings:
-            - from: ~input
-              to: $(arg HAND)_sib_rbo/target_mask
-        - name: $(arg HAND)_sib_extract_pi
-          type: jsk_pcl/ExtractIndices
-          remappings:
-            - from: ~input
-              to: $(arg INPUT_CLOUD)
-            - from: ~indices
-              to: $(arg HAND)_sib_mask_image_to_pi/output
-        - name: $(arg HAND)_sib_centroid_publisher
-          type: jsk_pcl/CentroidPublisher
-          remappings:
-            - from: ~input
-              to: $(arg HAND)_sib_extract_pi/output
-        - name: $(arg HAND)_sib_pc_to_cpi
-          type: jsk_pcl_utils/PointCloudToClusterPointIndices
-          remappings:
-            - from: ~input
-              to: $(arg HAND)_sib_extract_pi/output
         - name: $(arg HAND)_sib_cpi_decomposer
           type: jsk_pcl/ClusterPointIndicesDecomposer
           remappings:
             - from: ~input
-              to: $(arg HAND)_sib_extract_pi/output
+              to: $(arg INPUT_CLOUD)
             - from: ~target
-              to: $(arg HAND)_sib_pc_to_cpi/output
+              to: $(arg HAND)_sib_rbo/cpi
     </rosparam>
   </group>
-  <group ns="$(arg HAND)_sib_extract_pi">
-    <rosparam>
-      max_queue_size: 100
-      approximate_sync: true
-    </rosparam>
-  </group>
-
   <group ns="$(arg HAND)_sib_cpi_decomposer">
     <rosparam>
+      approximate_sync: True
       queue_size: 1000
     </rosparam>
   </group>
