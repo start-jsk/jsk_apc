@@ -152,7 +152,7 @@
   (:opposite-arm (arm) (if (eq arm :larm) :rarm :larm))
   (:need-to-wait-opposite-arm
     (arm)
-    (let (opposite-state)
+    (let (opposite-state opposite-target)
       (setq opposite-state
             (str2symbol (ros::get-param
                           (format nil "~a_hand/state"
