@@ -176,7 +176,7 @@
       (if (or (null msg) (null (send msg :polygons)))
         (progn
           (ros::ros-warn "[~a] No plane is found. Retrying.." (ros::get-name))
-          (self :detect-table-center))
+          (send self :detect-table-center))
         (progn
           (setq center (polygon->center (elt (send msg :polygons) 0)))
           (send pose :position :x (elt center 0))
