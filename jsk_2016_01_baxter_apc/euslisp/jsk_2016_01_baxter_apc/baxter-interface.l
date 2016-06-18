@@ -728,9 +728,10 @@
       (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
       (case bin
         ((:a :b :c) (send *baxter* :fold-pose-upper arm))
-        ((:j :k :l) (send *baxter* :fold-pose-middle arm))
+        ((:j :l) (send *baxter* :fold-pose-middle arm))
         ((:d :f :g :h :i) (send *baxter* :fold-pose-lower arm))
         ((:e) (send *baxter* :avoid-shelf-pose arm :e))
+        ((:k) (send *baxter* :avoid-shelf-pose arm :k))
         )
       (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t)
       ;; apply rotation
