@@ -616,7 +616,7 @@
             )
           )
         )
-      (send self :wait-interpolation)
+      (send self :wait-interpolation-smooth 1000)
       ;; start the vacuum gripper after approaching to the object
       (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
       (send self :start-grasp arm)
