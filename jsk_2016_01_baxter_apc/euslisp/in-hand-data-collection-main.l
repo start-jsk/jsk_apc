@@ -97,6 +97,16 @@
       (send *baxter* :rarm :angle-vector
             #f(-9.25049 42.3633 132.869 125.244 -140.471 107.71 19.1602 0.0))
       )
+    (let ((random-x 20)
+          (random-y 20)
+          (random-z 20))
+      (send *baxter* arm_ :move-end-pos
+            (float-vector (random random-x) (random random-y) (random random-z))
+            :local
+            :use-gripper t
+            :revert-if-fail nil)
+      )
+    (send *ri* :gripper-servo-on arm_)
     (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
     (send *ri* :wait-interpolation)
     )
