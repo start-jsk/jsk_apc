@@ -63,7 +63,7 @@
               (send *ri* :gripper-servo-on arm)
               (setq graspingp
                     (send *ri* :pick-object-in-order-bin arm
-                          :n-trial 3
+                          :n-trial 2
                           :n-trial-same-pos 1
                           :do-stop-grasp nil
                           )
