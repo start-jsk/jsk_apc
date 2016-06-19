@@ -11,6 +11,16 @@ import jsk_apc2016_common
 
 
 def publish_cb(event):
+    br = cv_bridge.CvBridge()
+    json = rospy.get_param('~json', None)
+    if json is None:
+        if json_arg is not None:
+            json = json_arg
+        else:
+            rospy.logerr('no json is given')
+            return
+    img = jsk_apc2016_common.visualize_pick_json(json)
+    imgmsg = br.cv2_to_imgmsg(img, encoding='bgr8')
     imgmsg.header.stamp = rospy.Time.now()
     pub.publish(imgmsg)
 
@@ -20,15 +30,10 @@ if __name__ == '__main__':
     pub = rospy.Publisher('~output', Image, queue_size=10)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('json',
-                        help='JSON file with bin_contents and work_order')
+    parser.add_argument('--json',
+                        help='JSON file with bin_contents and work_order',
+                        required=False)
     args = parser.parse_args(rospy.myargv()[1:])
-    json = args.json
-
-    img = jsk_apc2016_common.visualize_pick_json(json)
-
-    br = cv_bridge.CvBridge()
-    imgmsg = br.cv2_to_imgmsg(img, encoding='bgr8')
-
-    timer = rospy.Timer(rospy.Duration(0.1), publish_cb)
+    json_arg = args.json
+    timer = rospy.Timer(rospy.Duration(1.), publish_cb)
     rospy.spin()
