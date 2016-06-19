@@ -605,6 +605,8 @@
             )
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
+      (setq graspingp (send self :graspingp arm))
+      (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
   (:pick-object
     (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil) (use-sib t))
