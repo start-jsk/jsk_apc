@@ -159,7 +159,11 @@
         (send *ri* :wait-interpolation)
         (send *ri* :gripper-servo-on arm_)
         t)
-      nil)
+      (progn
+        (send *ri* :stop-grasp arm_)
+        (unix::sleep 5)
+        nil)
+      )
     )
   (:detect-table-center
     ()
