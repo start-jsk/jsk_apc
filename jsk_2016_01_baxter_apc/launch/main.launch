@@ -90,8 +90,9 @@
 
   <!-- visualization -->
   <node name="visualize_json"
-        pkg="jsk_apc2016_common" type="visualize_pick_json.py"
-        args="$(arg json)" />
+        pkg="jsk_apc2016_common" type="visualize_pick_json.py">
+    <param name="~json" value="$(arg json)" />
+  </node>
   <node name="visualize_on_rviz"
         pkg="jsk_2015_05_baxter_apc" type="visualize_on_rviz.py">
     <param name="json" value="$(arg json)" />
