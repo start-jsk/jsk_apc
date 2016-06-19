@@ -104,6 +104,9 @@
   </node>
 
   <!-- Recoding -->
-  <include file="$(find jsk_tools)/launch/record_axis_camera.launch" />
+  <include file="$(find jsk_tools)/launch/record_axis_camera.launch">
+    <arg name="stamped_filename" value="true" />
+    <arg name="filename" value="$(env HOME)/.ros/jsk_2016_01_baxter_apc/in_hand_data_collection/.avi" />
+  </include>
 
 </launch>
