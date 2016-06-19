@@ -8,6 +8,7 @@
 ;; ---------------
 (setq *bin* :c)
 (setq *arm* :rarm)
+(setq *use-kinect* nil)
 
 
 (defun demo-init ()
@@ -41,10 +42,18 @@
   ; (ros::ros-info "Getting solidity rag merge result")
   ; (send *ri* :recognize-grasp-coords-list *bin* :stamp (ros::time-now))
 
-  (send *ri* :move-arm-body->bin-overlook-pose *arm* *bin*)
-  (send *ri* :wait-interpolation)
-  (unix::sleep 2)
-  (send *ri* :recognize-objects-segmentation-in-bin *arm* *bin* :stamp (ros::time-now))
+  (cond ((not *use-kinect*)
+         (send *ri* :move-arm-body->bin-overlook-pose *arm* *bin*)
+         (send *ri* :wait-interpolation)
+         (unix::sleep 2)
+         (send *ri* :recognize-objects-segmentation-in-bin *arm* *bin* :stamp (ros::time-now))
+         )
+        (t
+          (send *ri* :recognize-objects-segmentation-in-bin *arm* *bin* :stamp (ros::time-now))
+          (send *ri* :move-arm-body->bin *arm* *bin*)
+          (send *ri* :wait-interpolation)
+          )
+        )
 
   (send *ri* :pick-object *arm* *bin* :n-trial 1 :n-trial-same-pos 1)
 
