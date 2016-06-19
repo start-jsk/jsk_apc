@@ -817,6 +817,7 @@
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a approach to the object" arm)
       ;; gripper is straight
+      (send self :gripper-servo-on arm)
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ (send obj-coords :pos) offset)
