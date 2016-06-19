@@ -855,6 +855,8 @@
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world) 3000)
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
+      (setq graspingp (send self :graspingp arm))
+      (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a graspingp: ~a" arm graspingp)
     graspingp))
   (:send-av
     (&optional (tm 3000))
