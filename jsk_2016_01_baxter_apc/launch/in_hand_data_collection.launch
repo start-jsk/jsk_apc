@@ -18,8 +18,9 @@
   <node name="in_hand_data_collection_left_main"
         pkg="jsk_2016_01_baxter_apc" type="in-hand-data-collection-main.l"
         output="screen">
-    <rosparam>
+    <rosparam subst_value="true">
       arm: left
+      grasping_log_filename: $(env HOME)/.ros/jsk_2016_01_baxter_apc/grasping_log_left.csv
       object_list:
         - barkely_hide_bones
         - cherokee_easy_tee_shirt
@@ -45,8 +46,9 @@
   <node name="in_hand_data_collection_right_main"
         pkg="jsk_2016_01_baxter_apc" type="in-hand-data-collection-main.l"
         output="screen">
-    <rosparam>
+    <rosparam subst_value="true">
       arm: right
+      grasping_log_filename: $(env HOME)/.ros/jsk_2016_01_baxter_apc/grasping_log_right.csv
       object_list:
         - jane_eyre_dvd
         - kleenex_paper_towels
