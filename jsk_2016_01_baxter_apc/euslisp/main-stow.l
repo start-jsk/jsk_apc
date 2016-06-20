@@ -18,9 +18,8 @@
 (defun apc-stow-mainloop (arm)
   (ros::ros-info "[main] recognizing bin boxes")
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
-  ;; TODO recognize order bin
-  ;; (ros::ros-info "[main] recognizing order-bin")
-  ;; (send *ri* :recognize-order-bin-box :arm arm :stamp (ros::time-now))
+  (ros::ros-info "[main] recognizing order-bin")
+  (send *ri* :recognize-order-bin-box arm :stamp (ros::time-now))
   (let (state target-bin)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
