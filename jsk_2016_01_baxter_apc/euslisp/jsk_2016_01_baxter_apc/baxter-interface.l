@@ -220,7 +220,7 @@
     )
   (:need-to-wait-opposite-arm-for-stow
     (arm &key (state))
-    (let (opposite-state opposite-target)
+    (let (opposite-state opposite-target arm-target)
       (setq opposite-state
             (str2symbol (ros::get-param
                           (format nil "~a_hand/state"
@@ -231,6 +231,10 @@
                           (format nil "~a_hand/target_bin"
                                   (send self :arm-symbol2str
                                         (send self :opposite-arm arm))))))
+      (setq arm-target
+            (str2symbol (ros::get-param
+                          (format nil "~a_hand/target_bin"
+                                  (send self :arm-symbol2str arm)))))
       (cond
         ((or (eq state :pick_object) (eq state :wait_for_opposite_arm_in_pick))
          (eq opposite-state :pick_object))
@@ -238,7 +242,8 @@
          (or (and (eq opposite-state :place_object)
                   (find opposite-target (list :b :e :h :k)))
              (and (eq opposite-state :return_from_bin)
-                  (find opposite-target (list :b :e :h :k)))))
+                  (or (find opposite-target (list :b :e :h :k))
+                      (find arm-target (list :b :e :h :k))))))
         ((or (eq state :return_from_bin) (eq state :wait_for_opposite_arm_in_return))
          (eq opposite-state :pick_object))
         (t (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))))))
