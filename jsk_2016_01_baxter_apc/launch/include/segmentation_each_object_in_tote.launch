@@ -16,18 +16,6 @@
               to: $(arg INPUT_CLOUD)
             - from: ~indices
               to: $(arg HAND)_in_tote_clipper/output/point_indices
-        - name: $(arg HAND)_in_tote_euclid_clustering
-          type: jsk_pcl/EuclideanClustering
-          remappings:
-            - from: ~input
-              to: $(arg HAND)_in_tote_extract_pi/output
-        - name: $(arg HAND)_in_tote_cpi_decomposer
-          type: jsk_pcl/ClusterPointIndicesDecomposer
-          remappings:
-            - from: ~input
-              to: $(arg HAND)_in_tote_extract_pi/output
-            - from: ~target
-              to: $(arg HAND)_in_tote_euclid_clustering/output
         - name: $(arg HAND)_in_tote_supervoxel
           type: jsk_pcl/SupervoxelSegmentation
           remappings:
@@ -46,18 +34,6 @@
     <rosparam>
       max_queue_size: 50
       keep_organized: true
-    </rosparam>
-  </group>
-  <group ns="$(arg HAND)_in_tote_euclid_clustering">
-    <rosparam>
-      tolerance: 0.02
-      min_size: 500
-      max_size: 100000
-    </rosparam>
-  </group>
-  <group ns="$(arg HAND)_in_tote_cpi_decomposer">
-    <rosparam>
-      queue_size: 50
     </rosparam>
   </group>
   <group ns="$(arg HAND)_in_tote_supervoxel">
