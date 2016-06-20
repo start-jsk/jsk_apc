@@ -128,7 +128,6 @@
                           :do-stop-grasp nil
                           )
                     )
-              (setq graspingp t)  ;; don't trust pressure sensor
               (incf target-n-tried)
               (setq state :verify_object)
               (ros::set-param
