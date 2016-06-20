@@ -79,6 +79,7 @@
     (sethash :offset-gripper-bin-top _hard-coded-variables 10)
     (sethash :offset-gripper-bin-side _hard-coded-variables 40)
     (setq _order-bin-box (make-hash-table))
+    (setq _movable-region (make-hash-table))
     (setq _objects-in-order-bin-boxes (make-hash-table))
     (setq _objects-in-order-bin-coords (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
@@ -375,6 +376,25 @@
         nil)
       )
     )
+  (:get-movable-region-for-tote
+    (arm &key (offset (list 0 0 0)))
+    (let (cube)
+      (if (gethash arm _order-bin-box)
+        (progn
+          (setq cube (send self :bbox->cube (gethash arm _order-bin-box)))
+          (sethash arm _movable-region (send self :cube->movable-region cube :offset offset)))
+        (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (send self :arm-symbol2str arm)))))
+  (:cube->movable-region
+    (cube &key (offset (list 0 0 0)))
+    (let (movable-region cube-pos vertex-values)
+      (dotimes (i 3)
+        (setq cube-pos (aref (send (send cube :coords) :pos) i))
+        (setq vertex-values (mapcar #'(lambda (x) (aref x i)) (send cube :vertices)))
+        (pushback (list
+                    (+ cube-pos (apply #'min vertex-values) (elt offset i))
+                    (+ cube-pos (apply #'max vertex-values) (- (elt offset i))))
+                  movable-region))
+      movable-region))
   (:visualize-bins
     ()
     (let (bins)
@@ -1059,7 +1079,7 @@
       graspingp))
   (:try-to-pick-object-in-order-bin
     (arm &key (offset #f(0 0 0)))
-    (let (avs obj-box graspingp order-bin-box object-index)
+    (let (avs obj-box graspingp order-bin-box object-index movable-region obj-pos)
       ;; validate
       (setq object-index (random (length (gethash arm _objects-in-order-bin-boxes))))
       (unless
@@ -1071,11 +1091,14 @@
         (setq obj-coords (elt (gethash arm _objects-in-order-bin-coords) object-index))
         (ros::ros-warn "[:try-to-pick-in-order-bin] No com is found: ~a, ~a" arm bin)
         (return-from :try-to-pick-object-in-order-bin nil))
-      ;; TODO recognize bbox of order bin
-      ;; (unless
-      ;;   (setq order-bin-box _order-bin-box)
-      ;;   (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a. Call :recognize-bin-boxes first." bin)
-      ;;   (return-from :try-to-pick-object nil))
+      (unless
+        (setq order-bin-box (gethash arm _order-bin-box))
+        (ros::ros-error "[:try-to-pick-object] No data about order bin box. Call :recognize-order-bin-box first.")
+        (return-from :try-to-pick-object-in-order-bin nil))
+      (unless
+        (setq movable-region (gethash arm _movable-region))
+        (ros::ros-error "[:try-to-pick-object] No data about movable region for order bin box. Call :get-movable-region-for-tote first.")
+        (return-from :try-to-pick-object-in-order-bin nil))
       (setq sign 0)
       (setq sign_y -1)
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
@@ -1083,9 +1106,20 @@
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a approach to the object" arm)
       ;; gripper is straight
       (send self :gripper-servo-on arm)
+      (setq obj-pos (send obj-coords :pos))
+      (dolist (i (list 0 1))
+        (cond ((> (elt (elt movable-region i) 0) (aref obj-pos i))
+               (setf (aref obj-pos i) (elt (elt movable-region i) 0)))
+              ((> (aref obj-pos i) (elt (elt movable-region i) 1))
+               (setf (aref obj-pos i) (elt (elt movable-region i) 1)))
+              (t nil))
+        (ros::ros-info "[:try-to-pick-in-order-bin] object is out of movable region. ~a > ~a > ~a"
+                        (elt (elt movable-region i) 1)
+                        (elt (send obj-coords :pos) i)
+                        (elt (elt movable-region i) 0)))
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
-                  (make-coords :pos (v+ (send obj-coords :pos) offset)
+                  (make-coords :pos (v+ obj-pos offset)
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
@@ -1097,7 +1131,7 @@
       (unix::sleep 1)
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
-                  (make-coords :pos (send obj-coords :pos)
+                  (make-coords :pos obj-pos
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
