@@ -59,7 +59,7 @@
     (sethash :offset-object-h _hard-coded-variables -10)
     (sethash :offset-gripper-bin-top _hard-coded-variables 10)
     (sethash :offset-gripper-bin-side _hard-coded-variables 40)
-    (setq _order-bin-box nil)
+    (setq _order-bin-box (make-hash-table))
     (setq _objects-in-order-bin-boxes (make-hash-table))
     (setq _objects-in-order-bin-coords (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
@@ -237,19 +237,20 @@
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:recognize-order-bin-box
-    (&key (stamp (ros::time-now)))
-    (let (msg bin bin-box-pos-z)
-      (setq
-        msg
-        (one-shot-subscribe "order_bin_clipper/output/box_array"
-                            jsk_recognition_msgs::BoundingBoxArray
-                            :timeout 10000
-                            :after-stamp stamp))
-      (if msg
-        (setq _order-bin-box msg)
-        (ros::ros-fatal "Cannot find order bin")
-        )
-      ))
+    (arm &key (stamp (ros::time-now)))
+    (let ((box-topic (format nil "~a_in_tote_clipper/output/box_array"
+                             (send self :arm-symbol2str arm)))
+                     box-msg bbox)
+      (setq box-msg (one-shot-subscribe box-topic
+                                        jsk_recognition_msgs::BoundingBoxArray
+                                        :timeout 10000
+                                        :after-stamp stamp))
+      (if box-msg
+        (progn
+          (ros::ros-info "[:recognize-order-bin-box] arm: ~a Recognize order bin box" (send self :arm-symbol2str arm))
+          (setq bbox (car (send box-msg :boxes)))
+          (sethash arm _order-bin-box bbox))
+        (ros::ros-fatal "[:recognize-order-bin-box] arm: ~a Cannot find order bin" (send self :arm-symbol2str arm)))))
   (:bbox->cube
     (bbox)
     (let* ((dims (ros::tf-point->pos (send bbox :dimensions)))
