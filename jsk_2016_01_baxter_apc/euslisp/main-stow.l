@@ -68,7 +68,6 @@
                           :do-stop-grasp nil
                           )
                     )
-              (setq graspingp t)  ;; don't trust pressure sensor
               (setq state :verify_object)
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))))
         ;; verify whether grasping or not
