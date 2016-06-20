@@ -78,9 +78,16 @@ class LabelMeMultiple(object):
         """
         for shape in self.json_data['shapes']:
             label = shape['label']
-            shape['label'] = object_names[int(label)]
+            label_name = object_names[int(label)]
+
+            if label_name not in self.data['objects']:
+                print 'wrong object id'
+                return False
+
+            shape['label'] = label_name
         with open(self.json_path, 'w') as f:
             f.write(json.dumps(self.json_data, indent=2))
+        return True
 
     def check_delete_command(self):
         for shape in self.json_data['shapes']:
@@ -158,7 +165,8 @@ class LabelMeMultiple(object):
             return
 
         # convert labeled ids to valid object names
-        self.convert_id_to_object_name()
+        if not self.convert_id_to_object_name():
+            return
 
         # create binary mask from json
         self.save_bin_mask()
