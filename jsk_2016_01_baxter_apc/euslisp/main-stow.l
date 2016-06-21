@@ -163,6 +163,7 @@
               (setq state :wait_for_opposite_arm_in_return)
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
             (progn
+              (ros::ros-info "[main] ~a, ~a" arm state)
               (if (and object-length (> object-length 0.1))
                 (setq offset-avoid-bin-top-exit 0)
                 (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
