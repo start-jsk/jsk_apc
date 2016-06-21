@@ -76,9 +76,10 @@
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
-          (setq object-length (send *ri* :recognize-object-length-in-hand arm :timeout 40000))
           (if graspingp
-            (setq state :set_target_bin)
+            (progn
+              (setq object-length (send *ri* :recognize-object-length-in-hand arm :timeout 40000))
+              (setq state :set_target_bin))
             (progn
               (send *ri* :stop-grasp arm)
               (setq state :pick_object)))
