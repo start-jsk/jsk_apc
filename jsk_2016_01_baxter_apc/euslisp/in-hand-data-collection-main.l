@@ -255,12 +255,14 @@
         (send self :view-hand-pose :pos :g)
         (send self :view-hand-pose :pos :i)
         )
+      (send self :set-param-hand-pose)
       (send self :send-save-request)
       ;; View hand randomly (optimally in future)
       ;; TODO(wkentaro): view hand optimally here with ML
       (dotimes (_ 4)
         ;; View hand pose
         (send self :view-hand-pose)
+        (send self :set-param-hand-pose)
         ;; Send saving request
         (send self :send-save-request)
         )
@@ -279,6 +281,25 @@
       (unix::system (format nil "rosrun dynamic_reconfigure dynparam set_from_parameters ~a_image_publisher _file_name:=$(rospack find jsk_apc2016_common)/models/~a/image.jpg" (arm-to-str arm_) object-name))
       (unix::sleep 5)
       (send self :wait-for-user-input)
+      )
+    )
+  (:set-param-hand-pose
+    ()
+    (let* ((camera-frame "kinect2_torso_rgb_optical_frame")
+           (end-coords
+             (send
+               (send (*ri* . _tfl) :lookup-transform camera-frame "base" (ros::time 0))
+               :transform (send *baxter* arm_ :end-coords :worldcoords)))
+           (pos (ros::pos->tf-point (send end-coords :pos)))
+           (quaternion (ros::rot->tf-quaternion (send end-coords :rot))))
+      (ros::set-param "~hand_pose/frame_id" camera-frame)
+      (ros::set-param "~hand_pose/position/x" (send pos :x))
+      (ros::set-param "~hand_pose/position/y" (send pos :y))
+      (ros::set-param "~hand_pose/position/z" (send pos :z))
+      (ros::set-param "~hand_pose/orientation/x" (send quaternion :x))
+      (ros::set-param "~hand_pose/orientation/y" (send quaternion :y))
+      (ros::set-param "~hand_pose/orientation/z" (send quaternion :z))
+      (ros::set-param "~hand_pose/orientation/w" (send quaternion :w))
       )
     )
   (:mainloop

@@ -38,7 +38,7 @@
   <!-- Data saver -->
   <node name="data_collection_server_$(arg HAND)"
         pkg="jsk_data" type="data_collection_server.py"
-        output="screen">
+        output="screen" clear_params="true">
     <rosparam subst_value="true">
       save_dir: ~/.ros/jsk_2016_01_baxter_apc/in_hand_data_collection
       topics:
@@ -58,6 +58,9 @@
         - key: /in_hand_data_collection_$(arg HAND)_main/object_label
           fname: label.txt
           savetype: Text
+        - key: /in_hand_data_collection_$(arg HAND)_main/hand_pose
+          fname: hand_pose.yaml
+          savetype: YAML
     </rosparam>
   </node>
 
