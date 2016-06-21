@@ -21,6 +21,7 @@
    _objects-sib-coords
    _bin-coords-list
    _hard-coded-variables
+   _av-before-approach
    )
   )
 
@@ -531,6 +532,7 @@
           (send self :wait-interpolation)
           )
         )
+      (setq _av-before-approach (send *baxter* :angle-vector))
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object] arm:~a approach to the object" arm)
       (let (target-coords)
@@ -599,7 +601,7 @@
              (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 20) :world) 3000))
             (t
               ;; only if robot can solve IK
-              (if (send *baxter* arm :move-end-pos #f(0 0 80) :local)
+              (if (send *baxter* arm :move-end-pos #f(0 0 60) :local)
                 (send self :angle-vector (send *baxter* :angle-vector) 3000)
                 ))
             )
@@ -665,14 +667,8 @@
       ;; move arm in-bin -> bin-entrance
       (send self :angle-vector-sequence
             (list
-              (send *baxter* arm :move-end-pos
-                    (float-vector
-                      0 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
-                    )
-              (send self :ik->bin-entrance arm bin
-                    :offset (float-vector
-                              0 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
-                    )
+              (send *baxter* :angle-vector _av-before-approach)
+              (send *baxter* arm :move-end-pos #f(-50 0 0) :world)
               (send self :ik->bin-entrance arm bin
                     :offset (float-vector
                               -100 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
