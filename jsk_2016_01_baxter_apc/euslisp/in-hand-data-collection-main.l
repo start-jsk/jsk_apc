@@ -17,9 +17,6 @@
                           (float-vector (send p :x) (send p :y) (send p :z)))
                       (send polygon-msg :polygon :points))) :centroid))
 
-(defun ros::time->string (tm)
-  (format nil "~a.~a" (send tm :sec) (send tm :nsec)))
-
 
 ;; ------------------------------------------------------------------------------------------------
 ;; collector class
@@ -193,7 +190,7 @@
     ;; 14XXXX.XXXXX,oreo_mega_stuf,0
     (with-open-file (f grasping-log-filename_ :direction :output :if-exists :append)
       (format f "~a,~a,~a~%"
-              (ros::time->string (ros::time-now))
+              (send (ros::time-now) :to-nsec)
               (elt object-list_ object-id_)
               (if success 1 0))
       )
