@@ -181,6 +181,8 @@
                       (find arm-target (list :b :e :h :k))))))
         ((or (eq state :return_from_bin) (eq state :wait_for_opposite_arm_in_return))
          (eq opposite-state :pick_object))
+        ((eq state :wait_opposite_arm_start_picking)
+         (null (eq opposite-state :pick_object)))
         (t (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))))))
   (:arm-symbol2str
     (arm)
