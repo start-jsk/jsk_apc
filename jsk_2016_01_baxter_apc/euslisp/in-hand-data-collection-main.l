@@ -84,10 +84,12 @@
       )
     )
   (:view-hand-pose
-    ()
-    (send *ri* :angle-vector
-          (send *baxter* :view-hand-pose arm_ (elt bin-list_ (random (length bin-list_))))
-          3000)
+    (&key (pos :random))
+    (if (eq pos :random)
+      (send *baxter* :view-hand-pose arm_ (elt bin-list_ (random (length bin-list_))))
+      (send *baxter* :view-hand-pose arm_ pos)
+      )
+    (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
     (send *ri* :wait-interpolation)
     (unix::sleep 1)
     )
@@ -246,6 +248,16 @@
         (ros::ros-warn "[~a] Failed to pick object from table. Retrying.." (ros::get-name))
         (unix::sleep 3)
          )
+      (unix::system (format nil "rosrun dynamic_reconfigure dynparam set_from_parameters data_collection_server_~a _save_dir:='~/.ros/jsk_2016_01_baxter_apc/in_hand_data_collection/picked_~a" (arm-to-str arm_) (send (ros::time-now) :to-nsec)))
+      (unix::sleep 2)
+      ;; View hand in a static position at first
+      (if (eq arm_ :larm)
+        (send self :view-hand-pose :pos :g)
+        (send self :view-hand-pose :pos :i)
+        )
+      (send self :send-save-request)
+      ;; View hand randomly (optimally in future)
+      ;; TODO(wkentaro): view hand optimally here with ML
       (dotimes (_ 4)
         ;; View hand pose
         (send self :view-hand-pose)
