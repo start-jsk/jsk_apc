@@ -1,1 +1,3 @@
 trained_segmenter.pkl
+data/trained_segmenter_2016.pkl
+data/dataset.pkl
