@@ -21,9 +21,10 @@
   (ros::ros-info "[main] recognizing order-bin")
   (send *ri* :recognize-order-bin-box arm :stamp (ros::time-now))
   (send *ri* :get-movable-region-for-tote arm :offset (list 80 80 0))
-  (let (state target-bin)
+  (let (state target-bin fail-count)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+    (setq fail-count 0)
     (while
       t
       (case state
@@ -78,11 +79,23 @@
           (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
           (if graspingp
             (progn
+              (setq fail-count 0)
               (setq object-length (send *ri* :recognize-object-length-in-hand arm :timeout 40000))
               (setq state :set_target_bin))
             (progn
+              (setq fail-count (incf fail-count))
               (send *ri* :stop-grasp arm)
-              (setq state :wait_for_opposite_arm_in_pick)))
+              (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm fail-count)
+              (if (> fail-count 1)
+                (setq state :wait_opposite_arm_start_picking)
+                (setq state :wait_for_opposite_arm_in_pick))))
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+        (:wait_opposite_arm_start_picking
+          (ros::ros-info "[main] ~a, ~a" arm state)
+          (while
+            (send *ri* :need-to-wait-opposite-arm arm :state state)
+            (unix::sleep 1))
+          (setq state :wait_for_opposite_arm_in_pick)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:set_target_bin
           (ros::ros-info "[main] ~a, ~a" arm state)
