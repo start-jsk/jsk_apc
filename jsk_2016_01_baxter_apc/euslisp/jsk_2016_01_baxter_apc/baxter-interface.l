@@ -238,7 +238,9 @@
                                   (send self :arm-symbol2str arm)))))
       (cond
         ((or (eq state :pick_object) (eq state :wait_for_opposite_arm_in_pick))
-         (eq opposite-state :pick_object))
+         (or (eq opposite-state :pick_object)
+             (and (eq opposite-state :place_object)
+                  (find opposite-target (list :b :e: h :k)))))
         ((or (eq state :place_object) (eq state :wait_for_opposite_arm_in_place))
          (or (and (eq opposite-state :place_object)
                   (find opposite-target (list :b :e :h :k)))
