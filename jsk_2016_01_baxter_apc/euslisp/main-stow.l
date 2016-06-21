@@ -82,7 +82,7 @@
               (setq state :set_target_bin))
             (progn
               (send *ri* :stop-grasp arm)
-              (setq state :pick_object)))
+              (setq state :wait_for_opposite_arm_in_pick)))
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:set_target_bin
           (ros::ros-info "[main] ~a, ~a" arm state)
