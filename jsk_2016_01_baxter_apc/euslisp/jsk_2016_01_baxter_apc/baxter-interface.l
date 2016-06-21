@@ -228,6 +228,53 @@
                   (send bbox :header :frame_id)
                   (send bbox :pose)))
       bx))
+  (:cube->cube-parallel-to-coords
+    (cube &rest args)
+    (let (copycoords target-ids cube-min-max-list)
+      (send cube :worldcoords)
+      ;; without this, body isn't updated
+      (setq copycoords
+            (send
+              (if (member :coords args) (cadr (member :coords args)) *world-coords*)
+              :copy-worldcoords))
+      (cond ((member :include-original-cube args)
+             (setq target-ids '(0 7))
+             )
+            ((member :included-in-original-cube args)
+             (setq target-ids '(3 4))
+             )
+            )
+      (dotimes (i 3)
+        (dolist (id target-ids)
+          (pushback
+            (elt (sort
+                   (mapcar
+                     #'(lambda (x) (aref (send copycoords :inverse-transform-vector x) i))
+                           (send cube :vertices)
+                           )
+                   #'<) id)
+            cube-min-max-list)
+          )
+        )
+      (if cube-min-max-list
+        (let (bx)
+          (setq bx
+                (make-cube (- (elt cube-min-max-list 1) (elt cube-min-max-list 0))
+                           (- (elt cube-min-max-list 3) (elt cube-min-max-list 2))
+                           (- (elt cube-min-max-list 5) (elt cube-min-max-list 4)))
+                )
+          (send bx :newcoords copycoords)
+          (send bx :locate
+                (float-vector
+                  (/ (+ (elt cube-min-max-list 1) (elt cube-min-max-list 0)) 2)
+                  (/ (+ (elt cube-min-max-list 3) (elt cube-min-max-list 2)) 2)
+                  (/ (+ (elt cube-min-max-list 5) (elt cube-min-max-list 4)) 2)
+                  )
+                :local)
+          bx)
+        nil)
+      )
+    )
   (:visualize-bins
     ()
     (let (bins)
