@@ -815,7 +815,7 @@
       (ros::ros-info "[:pick-object] arm:~a in-order-bin -> view-hand-pose" arm)
       (if (eq arm :rarm) (send *baxter* :view-hand-pose arm :l)
           (send *baxter* :view-hand-pose arm :j))
-      (send *baxter* arm :move-end-pos #f(-50 0 200) :world)
+      (send *baxter* arm :move-end-pos #f(-50 0 180) :world)
       (send *ri* :send-av 5000)
       (send self :wait-interpolation)
       (send self :gripper-servo-on arm)
