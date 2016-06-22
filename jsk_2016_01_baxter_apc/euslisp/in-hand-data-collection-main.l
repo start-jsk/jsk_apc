@@ -46,7 +46,8 @@
       (jsk_2016_01_baxter_apc::baxter-init :ctype :rarm-controller))
     ;; Initialize grasping log file
     (setq grasping-log-filename_ (pathname (ros::get-param "~grasping_log_filename")))
-    (with-open-file (f grasping-log-filename_ :direction :output :if-exists :append)
+    (with-open-file
+      (f grasping-log-filename_ :direction :output :if-exists :append :if-does-not-exist :create)
       (format f "timestamp,object_name,grasp_success~%"))
     (setq *robot* *baxter*)
     ;; Set slots
