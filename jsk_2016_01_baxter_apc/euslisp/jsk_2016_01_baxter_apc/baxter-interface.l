@@ -799,19 +799,21 @@
       graspingp))
   (:pick-object-in-order-bin
     (arm &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
-    (let (order-bin-box graspingp avs)
+    (let (order-bin-box graspingp object-index avs)
       (if (or
           (null (gethash arm _objects-in-order-bin-boxes))
           (null (gethash arm _objects-in-order-bin-coords)))
         (return-from :pick-object-in-order-bin nil) t)
       ;; (send self :fold-pose-back arm)
       ;; (send self :wait-interpolation)
+      (setq object-index (random (length (gethash arm _objects-in-order-bin-boxes))))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
             (setq graspingp
                   (send self :try-to-pick-object-in-order-bin arm
-                        :offset (float-vector 0 0 (* i -50))))
+                        :offset (float-vector 0 0 (* i -50))
+                        :object-index object-index))
             (pushback (send *baxter* :angle-vector) avs))))
       (when do-stop-grasp (unless graspingp (send self :stop-grasp arm)))
       (send self :angle-vector-sequence (reverse avs) :fast nil 0 :scale 5.0)
@@ -825,10 +827,9 @@
       (send self :gripper-servo-on arm)
       graspingp))
   (:try-to-pick-object-in-order-bin
-    (arm &key (offset #f(0 0 0)))
-    (let (avs obj-box graspingp order-bin-box object-index movable-region obj-pos)
+    (arm &key (offset #f(0 0 0)) (object-index 0))
+    (let (avs obj-box graspingp order-bin-box movable-region obj-pos)
       ;; validate
-      (setq object-index (random (length (gethash arm _objects-in-order-bin-boxes))))
       (unless
         (setq obj-box (elt (gethash arm _objects-in-order-bin-boxes) object-index))
         (ros::ros-warn "[:try-to-pick-object-in-order-bin] No bbox  is found: ~a, ~a" arm bin)
