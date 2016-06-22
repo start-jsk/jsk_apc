@@ -1461,11 +1461,9 @@
   (:select-stow-target-bin
     (arm &key (object-length) (object-length-limit 0.1))
     (if (and object-length (> object-length object-length-limit))
-        (progn
-          (setq i (random 2))
-          (if (eq arm :rarm)
-              (elt '(:c :k :l) i)
-              (elt '(:a :b :j) i)))
+        (if (eq arm :rarm)
+            (elt '(:c :k :l) (random 1))
+            (elt '(:a :b :j) (random 2)))
         (progn
           (setq i (random 5))
           (if (eq arm :rarm)
