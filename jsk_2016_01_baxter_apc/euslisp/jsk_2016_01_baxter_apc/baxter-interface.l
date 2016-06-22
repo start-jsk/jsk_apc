@@ -228,6 +228,53 @@
                   (send bbox :header :frame_id)
                   (send bbox :pose)))
       bx))
+  (:cube->cube-parallel-to-coords
+    (cube &rest args)
+    (let (copycoords target-ids cube-min-max-list)
+      (send cube :worldcoords)
+      ;; without this, body isn't updated
+      (setq copycoords
+            (send
+              (if (member :coords args) (cadr (member :coords args)) *world-coords*)
+              :copy-worldcoords))
+      (cond ((member :include-original-cube args)
+             (setq target-ids '(0 7))
+             )
+            ((member :included-in-original-cube args)
+             (setq target-ids '(3 4))
+             )
+            )
+      (dotimes (i 3)
+        (dolist (id target-ids)
+          (pushback
+            (elt (sort
+                   (mapcar
+                     #'(lambda (x) (aref (send copycoords :inverse-transform-vector x) i))
+                           (send cube :vertices)
+                           )
+                   #'<) id)
+            cube-min-max-list)
+          )
+        )
+      (if cube-min-max-list
+        (let (bx)
+          (setq bx
+                (make-cube (- (elt cube-min-max-list 1) (elt cube-min-max-list 0))
+                           (- (elt cube-min-max-list 3) (elt cube-min-max-list 2))
+                           (- (elt cube-min-max-list 5) (elt cube-min-max-list 4)))
+                )
+          (send bx :newcoords copycoords)
+          (send bx :locate
+                (float-vector
+                  (/ (+ (elt cube-min-max-list 1) (elt cube-min-max-list 0)) 2)
+                  (/ (+ (elt cube-min-max-list 3) (elt cube-min-max-list 2)) 2)
+                  (/ (+ (elt cube-min-max-list 5) (elt cube-min-max-list 4)) 2)
+                  )
+                :local)
+          bx)
+        nil)
+      )
+    )
   (:visualize-bins
     ()
     (let (bins)
@@ -429,44 +476,43 @@
         (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a." bin)
         (ros::ros-error "[:try-to-pick-object] Call :recognize-bin-boxes first.")
         (return-from :try-to-pick-object nil))
-      (setq bin-y-l (m->mm (send bin-box :dimensions :y))
-            bin-z-l (m->mm (send bin-box :dimensions :z)))
-      (if use-sib
-        (setq world-x :z world-y :x world-z :y)
-        (if (find bin '(:a :b :c :d :e :f))
-          (setq world-x :z world-y :x world-z :y)
-          (setq world-x :z world-y :y world-z :x)
-          )
-        )
-      ;; if object is higher than highest end-coords when gripper is 90 degrees
-      (if (> (m->mm (send obj-box :dimensions world-z))
-             (- bin-z-l gripper-req-l (gethash :offset-object-h _hard-coded-variables)))
-        (let ((obj-pos-y (elt (send (send self :tf-pose->coords
-                                          (send obj-box :header :frame_id)
-                                          (send obj-box :pose)) :pos) 1))
-              (obj-y-l (m->mm (send obj-box :dimensions world-y)))
-              (bin-center-y (elt (send (send *baxter* arm :end-coords) :worldpos) 1))
-              ;; :ik->bin-entrance brought y-coordinates of end-coords
-              ;; to the same value as center of bin
-              )
-          (cond ((< (+ obj-pos-y (/ obj-y-l 2))
+      (let (bin-cube-base obj-cube-base)
+        (setq bin-cube-base (send self :cube->cube-parallel-to-coords
+                                  (send self :bbox->cube bin-box)
+                                  :included-in-original-cube)
+              obj-cube-base (send self :cube->cube-parallel-to-coords
+                                  (send self :bbox->cube obj-box)
+                                  :include-original-cube)
+              bin-y-l (y-of-cube bin-cube-base)
+              bin-z-l (z-of-cube bin-cube-base))
+        ;; if object is higher than highest end-coords when gripper is 90 degrees
+        (if (> (+ (elt (send obj-cube-base :pos) 2) (/ (z-of-cube obj-cube-base) 2))
+               (- (+ (elt (send bin-cube-base :pos) 2) (/ (z-of-cube bin-cube-base) 2))
+                  gripper-req-l
+                  (gethash :offset-object-h _hard-coded-variables))
+               )
+          (cond ((< gripper-req-l
                     ;; if space gripper can enter exists on right
-                    (- (+ bin-center-y (/ bin-y-l 2)) gripper-req-l))
-                 (setq sign -1)
-                 (setq sign_y 0))
-                ((> (- obj-pos-y (/ obj-y-l 2))
-                    ;; if space gripper can enter exists on left
-                    (+ (- bin-center-y (/ bin-y-l 2)) gripper-req-l))
+                    (- (- (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2))
+                       (- (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2)))
+                    )
                  (setq sign 1)
+                 (setq sign_y 0))
+                ((< gripper-req-l
+                    ;; if space gripper can enter exists on left
+                    (- (+ (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2))
+                       (+ (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2)))
+                    )
+                 (setq sign -1)
                  (setq sign_y 0))
                 (t
                   (setq sign 0)
                   (setq sign_y -1))
                 )
-          )
-        (progn
-          (setq sign 0)
-          (setq sign_y 0)
+          (progn
+            (setq sign 0)
+            (setq sign_y 0)
+            )
           )
         )
       (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
