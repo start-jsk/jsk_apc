@@ -256,6 +256,10 @@
         (send self :view-hand-pose :pos :i)
         )
       (send self :set-param-hand-pose)
+      (if (send *ri* :graspingp arm_)
+        (ros::set-param "~object_label" (elt object-list_ object-id_))
+        (ros::set-param "~object_label" "no_object")
+        )
       (send self :send-save-request)
       ;; View hand randomly (optimally in future)
       ;; TODO(wkentaro): view hand optimally here with ML
@@ -264,6 +268,10 @@
         (send self :view-hand-pose)
         (send self :set-param-hand-pose)
         ;; Send saving request
+        (if (send *ri* :graspingp arm_)
+          (ros::set-param "~object_label" (elt object-list_ object-id_))
+          (ros::set-param "~object_label" "no_object")
+          )
         (send self :send-save-request)
         )
       (while
