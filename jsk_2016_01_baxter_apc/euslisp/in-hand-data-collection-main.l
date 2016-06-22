@@ -85,10 +85,6 @@
   (:view-hand-pose
     ()
     (send *ri* :angle-vector
-          (send *baxter* :fold-to-keep-object arm_)
-          3000)
-    (send *ri* :wait-interpolation)
-    (send *ri* :angle-vector
           (send *baxter* :view-hand-pose arm_ (elt bin-list_ (random (length bin-list_))))
           3000)
     (send *ri* :wait-interpolation)
