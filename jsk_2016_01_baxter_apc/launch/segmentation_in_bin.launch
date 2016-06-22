@@ -5,7 +5,7 @@
   <arg name="NODELET_ID_0" />
   <arg name="NODELET_ID_1" />
 
-  <arg name="TRAINED_PATH" value="$(find jsk_apc2016_common)/data/trained_segmenter.pkl" />
+  <arg name="TRAINED_PATH" value="$(find jsk_apc2016_common)/data/trained_segmenter_2016.pkl" />
 
   <arg name="RIGHT_INPUT_IMAGE"  />
   <arg name="RIGHT_INPUT_CLOUD"  />
