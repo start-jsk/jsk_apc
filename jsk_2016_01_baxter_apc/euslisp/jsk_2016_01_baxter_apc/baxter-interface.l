@@ -1004,11 +1004,11 @@
       (send *ri* :angle-vector (send *baxter* :rotate-gripper arm 90 :relative nil))
       (if (eq arm :rarm)
         (pushback (send *baxter* arm :inverse-kinematics
-                      (make-coords :pos #f(550 -150 -150)
+                      (make-coords :pos #f(600 -150 -50)
                                    :rpy (list 0 pi/2 0)))
                 avs)
         (pushback (send *baxter* arm :inverse-kinematics
-                      (make-coords :pos #f(550 150 -150)
+                      (make-coords :pos #f(600 150 -50)
                                    :rpy (list 0 pi/2 0)))
                 avs))
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)))
