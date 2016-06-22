@@ -84,10 +84,12 @@
       )
     )
   (:view-hand-pose
-    ()
-    (send *ri* :angle-vector
-          (send *baxter* :view-hand-pose arm_ (elt bin-list_ (random (length bin-list_))))
-          3000)
+    (&key (pos :random))
+    (if (eq pos :random)
+      (send *baxter* :view-hand-pose arm_ (elt bin-list_ (random (length bin-list_))))
+      (send *baxter* :view-hand-pose arm_ pos)
+      )
+    (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
     (send *ri* :wait-interpolation)
     (unix::sleep 1)
     )
@@ -246,9 +248,21 @@
         (ros::ros-warn "[~a] Failed to pick object from table. Retrying.." (ros::get-name))
         (unix::sleep 3)
          )
+      (unix::system (format nil "rosrun dynamic_reconfigure dynparam set_from_parameters data_collection_server_~a _save_dir:='~/.ros/jsk_2016_01_baxter_apc/in_hand_data_collection/picked_~a" (arm-to-str arm_) (send (ros::time-now) :to-nsec)))
+      (unix::sleep 2)
+      ;; View hand in a static position at first
+      (if (eq arm_ :larm)
+        (send self :view-hand-pose :pos :g)
+        (send self :view-hand-pose :pos :i)
+        )
+      (send self :set-param-hand-pose)
+      (send self :send-save-request)
+      ;; View hand randomly (optimally in future)
+      ;; TODO(wkentaro): view hand optimally here with ML
       (dotimes (_ 4)
         ;; View hand pose
         (send self :view-hand-pose)
+        (send self :set-param-hand-pose)
         ;; Send saving request
         (send self :send-save-request)
         )
@@ -267,6 +281,25 @@
       (unix::system (format nil "rosrun dynamic_reconfigure dynparam set_from_parameters ~a_image_publisher _file_name:=$(rospack find jsk_apc2016_common)/models/~a/image.jpg" (arm-to-str arm_) object-name))
       (unix::sleep 5)
       (send self :wait-for-user-input)
+      )
+    )
+  (:set-param-hand-pose
+    ()
+    (let* ((camera-frame "kinect2_torso_rgb_optical_frame")
+           (end-coords
+             (send
+               (send (*ri* . _tfl) :lookup-transform camera-frame "base" (ros::time 0))
+               :transform (send *baxter* arm_ :end-coords :worldcoords)))
+           (pos (ros::pos->tf-point (send end-coords :pos)))
+           (quaternion (ros::rot->tf-quaternion (send end-coords :rot))))
+      (ros::set-param "~hand_pose/frame_id" camera-frame)
+      (ros::set-param "~hand_pose/position/x" (send pos :x))
+      (ros::set-param "~hand_pose/position/y" (send pos :y))
+      (ros::set-param "~hand_pose/position/z" (send pos :z))
+      (ros::set-param "~hand_pose/orientation/x" (send quaternion :x))
+      (ros::set-param "~hand_pose/orientation/y" (send quaternion :y))
+      (ros::set-param "~hand_pose/orientation/z" (send quaternion :z))
+      (ros::set-param "~hand_pose/orientation/w" (send quaternion :w))
       )
     )
   (:mainloop
