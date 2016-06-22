@@ -275,13 +275,13 @@
         (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (send self :arm-symbol2str arm)))))
   (:cube->movable-region
     (cube &key (offset (list 0 0 0)))
-    (let (movable-region cube-pos vertex-values)
+    (let (movable-region vertex-values)
+      (send cube :worldcoords)
       (dotimes (i 3)
-        (setq cube-pos (aref (send (send cube :coords) :pos) i))
         (setq vertex-values (mapcar #'(lambda (x) (aref x i)) (send cube :vertices)))
         (pushback (list
-                    (+ cube-pos (apply #'min vertex-values) (elt offset i))
-                    (+ cube-pos (apply #'max vertex-values) (- (elt offset i))))
+                    (+ (apply #'min vertex-values) (elt offset i))
+                    (- (apply #'max vertex-values) (elt offset i)))
                   movable-region))
       movable-region))
   (:visualize-bins
