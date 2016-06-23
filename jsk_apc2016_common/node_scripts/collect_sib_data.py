@@ -4,7 +4,6 @@ from jsk_apc2016_common.msg import BinInfoArray, SegmentationInBinSync
 import rospy
 from cv_bridge import CvBridge
 import cv2
-from image_geometry import cameramodels
 import numpy as np
 import pickle
 from time import gmtime, strftime
