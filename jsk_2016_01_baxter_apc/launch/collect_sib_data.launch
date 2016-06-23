@@ -1,15 +1,16 @@
 <launch>
   <arg name="hand" />
   <arg name="json" default=""/>
+  <arg name="save_dir" default="~/.ros/sib_data"/>
 
   <node name="$(arg hand)_collect_sib_data"
         pkg="jsk_apc2016_common" type="collect_sib_data.py"
         output="screen">
     <remap from="~input" to="$(arg hand)_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="/publish_bin_info/bin_array"/>
-    <remap from="~input/depth" to="/right_hand_camera/depth_registered/image_raw"/>
+    <remap from="~input/depth" to="/$(arg hand)_hand_camera/depth_registered/image_raw"/>
     <remap from="~target_bin_name" to="$(arg hand)_hand/target_bin"/>
-    <param name="~save_dir" value="$(find jsk_apc2016_common)/data/tokyo_run/1" />
+    <param name="~save_dir" value="$(arg save_dir)" />
     <param name="~json" value="$(arg json)"/>
     <param name="always_subscribe" value="True" />
     <param name="~ready_to_save" value="false" />
