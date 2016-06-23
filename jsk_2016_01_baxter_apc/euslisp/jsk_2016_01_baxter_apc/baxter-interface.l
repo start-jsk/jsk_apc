@@ -50,7 +50,7 @@
     (setq _objects-sib-coords (make-hash-table))
     ;; set hard-coded variables
     (setq _hard-coded-variables (make-hash-table))
-    (sethash :pressure-threshold _hard-coded-variables 840)
+    (sethash :pressure-threshold _hard-coded-variables 810)
     (sethash :offset-avoid-bin-top _hard-coded-variables -20)
     (sethash :pad-link-l _hard-coded-variables 85)
     (sethash :gripper-tube-t _hard-coded-variables 40)
