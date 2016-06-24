@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.1 (2016-06-24)
+------------------
 * make object list in alphabetical order
 * fix path of install_dataset
 * install dataset 2016

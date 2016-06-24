@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.1 (2016-06-24)
+------------------
 * adjust kiva pod base
 * Use standalone_complexed_nodelet for Kinect2 in jsk_apc
 * Put Kinect2 calib data on jsk_apc
