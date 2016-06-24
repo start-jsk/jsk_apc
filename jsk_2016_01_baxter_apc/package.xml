@@ -4,10 +4,13 @@
   <version>0.8.0</version>
   <description>Common stacks for Amazon Picking Challenge 2016</description>
 
-  <maintainer email="pazeshun3684@gmail.com">pazeshun</maintainer>
+  <maintainer email="pazeshun3684@gmail.com">Hasegawa Shun</maintainer>
   <maintainer email="kimhc6028@gmail.com">Kim Heecheol</maintainer>
   <maintainer email="shingogo@hotmail.co.jp">Shingo Kitagawa</maintainer>
   <maintainer email="bowofvinderre@gmail.com">Bando Masahiro</maintainer>
+  <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+  <maintainer email="niitani@jsk.imi.i.u-tokyo.ac.jp">Yusuke Niitani</maintainer>
+
 
   <license>BSD</license>
 
@@ -43,5 +46,6 @@
 
   <test_depend>python-gdown</test_depend>
   <test_depend>rostest</test_depend>
+  <test_depend>roslint</test_depend>
   <test_depend>jsk_tools</test_depend>
 </package>
