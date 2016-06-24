@@ -52,7 +52,8 @@
     (setq _objects-sib-coords (make-hash-table))
     ;; set hard-coded variables
     (setq _hard-coded-variables (make-hash-table))
-    (sethash :pressure-threshold _hard-coded-variables 810)
+    (sethash :r-pressure-threshold _hard-coded-variables 1000)
+    (sethash :l-pressure-threshold _hard-coded-variables 1000)
     (sethash :offset-avoid-bin-top _hard-coded-variables -20)
     (sethash :pad-link-l _hard-coded-variables 85)
     (sethash :gripper-tube-t _hard-coded-variables 40)
@@ -145,7 +146,13 @@
         (progn
           (setq topic (format nil "gripper_front/limb/~a/pressure/state" (arm-to-str arm)))
           (< (send (one-shot-subscribe topic std_msgs::Float64) :data)
-             (gethash :pressure-threshold _hard-coded-variables))
+             (cond
+               ((eq arm :rarm)
+                (gethash :r-pressure-threshold _hard-coded-variables))
+               ((eq arm :larm)
+                (gethash :l-pressure-threshold _hard-coded-variables))
+               )
+             )
           )
         )
       )
@@ -1117,6 +1124,31 @@
         )
       (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~a" arm)
       ))
+  (:update-pressure-threshold
+    (arm)
+    (let (pressure hashkey topic)
+      (cond
+        ((eq arm :rarm)
+         (setq hashkey :r-pressure-threshold))
+        ((eq arm :larm)
+         (setq hashkey :l-pressure-threshold)))
+      (setq topic (format nil "/gripper_front/limb/~a/pressure/state" (arm-to-str arm)))
+      (setf pressure (- (send (one-shot-subscribe topic std_msgs::Float64) :data) 7))
+      (if (< pressure (gethash hashkey _hard-coded-variables))
+        (setf (gethash hashkey _hard-coded-variables) pressure))))
+
+  (:calib-pressure-threshold
+    (&optional (arm :arms))
+    (send self :start-grasp arm)
+    (dotimes (i 7)
+      (dolist (l/r (if (eq arm :arms) (list :rarm :larm) (list arm)))
+        (send self :update-pressure-threshold l/r)
+        )
+      (unix::sleep 1))
+    (send self :stop-grasp arm)
+    (ros::ros-info "[:calib-pressure-threshold] Threshold r:~a l:~a"
+                   (gethash :r-pressure-threshold _hard-coded-variables)
+                   (gethash :l-pressure-threshold _hard-coded-variables)))
  ;; defmethod :select-stow-target-bin
  ;; randomly choose bin for stow task
   (:select-stow-target-bin
