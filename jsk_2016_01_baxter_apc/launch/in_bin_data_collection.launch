@@ -1,0 +1,80 @@
+<launch>
+
+  <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
+  <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
+
+  <node name="publish_bin_bbox"
+        pkg="jsk_apc2016_common" type="publish_bin_bbox.py"
+        output="screen">
+    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
+    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
+  </node>
+
+  <node name="tf_bbox_to_mask_left_hand"
+        pkg="jsk_apc2016_common" type="tf_bbox_to_mask.py">
+    <remap from="~input" to="/left_hand_camera/rgb/camera_info"/>
+    <remap from="~input/boxes" to="publish_bin_bbox/boxes"/>
+    <rosparam>
+      use_bin_info: false
+    </rosparam>
+  </node>
+  <node name="tf_bbox_to_mask_right_hand"
+        pkg="jsk_apc2016_common" type="tf_bbox_to_mask.py">
+    <remap from="~input" to="/right_hand_camera/rgb/camera_info"/>
+    <remap from="~input/boxes" to="publish_bin_bbox/boxes"/>
+    <rosparam>
+      use_bin_info: false
+    </rosparam>
+  </node>
+
+  <!-- data collection server -->
+  <node name="data_collection_server_left"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true" output="screen">
+    <rosparam subst_value="true">
+      save_dir: ~/.ros/jsk_2016_01_baxter_apc/in_bin_data_collection
+      topics:
+        - name: /left_hand_camera/rgb/image_rect_color
+          msg_class: sensor_msgs/Image
+          fname: image.png
+          savetype: ColorImage
+        - name: /tf_bbox_to_mask_left_hand/output
+          msg_class: sensor_msgs/Image
+          fname: bin_mask.png
+          savetype: ColorImage
+    </rosparam>
+  </node>
+  <node name="data_collection_server_right"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true" output="screen">
+    <rosparam subst_value="true">
+      save_dir: ~/.ros/jsk_2016_01_baxter_apc/in_bin_data_collection
+      topics:
+        - name: /right_hand_camera/rgb/image_rect_color
+          msg_class: sensor_msgs/Image
+          fname: image.png
+          savetype: ColorImage
+        - name: /tf_bbox_to_mask_right_hand/output
+          msg_class: sensor_msgs/Image
+          fname: bin_mask.png
+          savetype: ColorImage
+    </rosparam>
+  </node>
+
+  <!-- main -->
+  <node name="in_bin_data_collection_main"
+        pkg="jsk_2016_01_baxter_apc" type="in-bin-data-collection-main.l"
+        output="screen">
+  </node>
+
+  <!-- gui -->
+  <node name="rqt_yn_btn"
+        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+  </node>
+
+  <!-- Recoding -->
+  <include file="$(find jsk_tools)/launch/record_axis_camera.launch">
+    <arg name="filename" value="$(env HOME)/.ros/jsk_2016_01_baxter_apc/in_bin_data_collection/output.avi" />
+  </include>
+
+</launch>
