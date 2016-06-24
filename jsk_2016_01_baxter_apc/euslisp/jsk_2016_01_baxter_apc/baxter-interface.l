@@ -598,7 +598,10 @@
               ;; when gripper is straight
               ;; move arm to the target only if robot can solve IK
               (if (send *baxter* arm :inverse-kinematics target-coords)
-                (send self :angle-vector (send *baxter* :angle-vector) 3000)
+                (progn
+                  (send self :angle-vector (send *baxter* :angle-vector) 3000)
+                  (send self :wait-interpolation-smooth 1000)
+                  )
                 (ros::ros-warn
                   "[:try-to-pick-object] arm:~a cannot approach closer with offset" arm)
                 )
@@ -619,16 +622,18 @@
                 ;; move arm to the target
                 ;; if above IK succeeded, arm moves in the local z direction
                 (if (send *baxter* arm :inverse-kinematics target-coords)
-                  (send self :angle-vector
-                        (send *baxter* :angle-vector)
-                        (- 4000 elapsed-t))
+                  (progn
+                    (send self :angle-vector
+                          (send *baxter* :angle-vector)
+                          (- 4000 elapsed-t))
+                    (send self :wait-interpolation-smooth 1000)
+                    )
                   (ros::ros-warn
                     "[:try-to-pick-object] arm:~a cannot approach closer with offset" arm)
                   )
                 )
               )
             )
-          (send self :wait-interpolation-smooth 1000)
           ;; move arm to the target only if robot can solve IK
           (if (send *baxter* arm :inverse-kinematics
                     (make-coords :pos (send obj-coords :pos)
