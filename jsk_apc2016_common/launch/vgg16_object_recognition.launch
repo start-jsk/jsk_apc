@@ -1,12 +1,15 @@
 <launch>
 
   <arg name="INPUT_IMAGE" />
+  <arg name="INPUT_MASK" />
   <arg name="GPU" default="-1" />
 
   <node name="vgg16_object_recognition"
         pkg="jsk_perception" type="vgg16_object_recognition.py">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="$(arg INPUT_MASK)" />
     <rosparam subst_value="true">
+      use_mask: true
       gpu: $(arg GPU)
       model_name: vgg16_batch_normalization
       model_h5: $(find jsk_apc2016_common)/trained_data/vgg16_96000.chainermodel
