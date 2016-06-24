@@ -2,6 +2,54 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* make object list in alphabetical order
+* fix path of install_dataset
+* install dataset 2016
+* fixed mistake in gitignore
+* add update for rbo
+* train script for RBO
+* add gitignore for jsk_apc2016_common
+* collect sib data server
+* labelme tool checks if a user has made mistake
+* fix: forgotten import publish_target_bin_info
+* add default value for rosparam
+* print log when target_bin_name is not set
+* Fix test for official stow json format
+* Visualize official stow json with APC2016 objects
+* labelme tool
+* rename set_bin_param -> publish_bin_info
+* modify publish_bin_info to rospy.Timer
+* publish bin bbox node split from publish bin info
+* remove header sequence in publish_bin_info
+* sort alphabetically in publish_bin_info
+* Fix encoding of in bin mask: 8UC1 -> mono8
+* raise warning when wrong json is given
+* update bin model to measured size
+* Merge pull request `#1628 <https://github.com/start-jsk/jsk_apc/issues/1628>`_ from yuyu2172/throttle
+  changed log to throttle
+* publish_bin_info publishes messages with headers
+* fix unsubscribe in rbo_segmentation_in_bin_node
+* changed log to throttle
+* Merge pull request `#1609 <https://github.com/start-jsk/jsk_apc/issues/1609>`_ from yuyu2172/publish-bin-info-bbox
+  publish_bin_info additionally publishes bin's bounding box array
+* fix bug: update self.json
+* fix line length
+* make main loop of rbo_segmentation_in_bin_node simpler
+* catch error when rbo raises key error
+  Conflicts:
+  jsk_apc2016_common/node_scripts/rbo_segmentation_in_bin_node.py
+* publish_bin_info now publishes bbox_array
+* Merge pull request `#1597 <https://github.com/start-jsk/jsk_apc/issues/1597>`_ from yuyu2172/publish-when-fail
+  rbo_segmentation_in_bin_node publishes debug topics even when segmentation fails
+* rbo_segmentation_in_bin_node publishes debug topics even when segmentation fails
+* read json only when there is update
+* publish_bin_info publishes bin_info of the current json rosparam
+* visualize posterior overlaid with color
+* Update CHANGELOG.rst for 0.8.0
+* Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
+
 0.8.0 (2016-05-31)
 ------------------
 * Fix using float object not rospy.Rate in publish_target_bin_info.py

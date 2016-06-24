@@ -2,6 +2,133 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add roslint to package.xml
+* update maintainers
+* changed pressure threshold 840 -> 810
+* Use wait-interpolation-smooth for objects not to run away from gripper
+* Check the grasp before saving data
+* Use stamped filename for video recording with axis camera
+* Save hand pose at each view hand pose
+* Change save directory at each time of picking
+* Add script to randomly change the view hand pose
+* Merge pull request `#1775 <https://github.com/start-jsk/jsk_apc/issues/1775>`_ from wkentaro/fix-grasp-log
+  Fix writing grasp success/fail log when file does not exist
+* Merge pull request `#1773 <https://github.com/start-jsk/jsk_apc/issues/1773>`_ from wkentaro/remove-fold-pose
+  Remove fold-to-keep pose at each time for viewing
+* Fix writing grasp success/fail log when file does not exist
+* Remove fold-to-keep pose at each time for viewing
+* update path for trained segmenter pkl
+* Use :to-nec to strify the rostime in roseus
+* Enable to get floating bounding box
+* Add cube->cube-parallel-to-coords method
+* Adjust depth frame of astra cameras on 2016-06-22 00:17:11
+* right left hand rgb/depth calib
+* changed vacuum_gripper.launch not to launch rosserial_node3
+* Add :visualize-path method to jsk_2016_01_baxter_apc::baxter-robot
+* collect sib data launch
+* added firmware of arduino which controls vacuum switch
+* Don't rotate objects in Bin
+* Trust pressure sensor again
+* Enable to use kinect in picking-with-sib.l
+* get graspingp after second approach
+* Write grasp success/fail log while data collection on table
+* sib kinect
+* Merge pull request `#1750 <https://github.com/start-jsk/jsk_apc/issues/1750>`_ from wkentaro/stop-grasp-in-data-collection
+  Stop grasp unless grasped object when picking
+* Stop grasp unless grasped object when picking
+* Retry when ik failed to place object on table
+* Look for view pose to detect table center
+* Control vacuum gripper with a script
+* removed image resizer from launch because astra does not need them
+* Fix motion to Bin k
+* Fix motion to Bin e
+* add local variable in :need-to-wait-opposite-arm
+* Fix typo
+* Enhance naming of method :place-object-on-plane -> :place-object-on-table
+* Fix typo
+* Enhance the order of sleep and gripper servo on
+* Add data collection program for in-hand object recognition
+* Add reset-pose script
+* Stop doing self_filter while recognizing object in hand
+* Merge pull request `#1727 <https://github.com/start-jsk/jsk_apc/issues/1727>`_ from wkentaro/respawn-astra-2
+  Respawn true for astra camera
+* Respawn true for astra camera
+* Fix typo in astra_hand.launch
+* Launch vgg16_object_recognition in satan
+* color frame fixed
+* add setup_astra launch file
+* Push gripper joint states back of other joint states
+* Adjust depth_frame of hand cameras
+* rename set_bin_param -> publish_bin_info
+* publish bin bbox node split from publish bin info
+* add astra check launch and rvizconfig
+* use astra camera instead of softkinetic
+* changed threshold of pressure
+* Detect grasps with pressure threshold 840 [hPa]
+  For `#1699 <https://github.com/start-jsk/jsk_apc/issues/1699>`_
+* Adjust baxter-interface to SPB2f
+* Adjust end-coords to SPB2f
+* Change collision link of vacuum pad to SPB2f
+* use publish_bin_info node for :recognize-bin-boxes
+* add pick task json output node
+* Avoid collision to Bin top
+* Collect hard-coded variables to slot
+* Add left gripper to gripper jta server
+* Add left gripper to gripper_joint_states_publisher.cpp
+* Add left gripper to enable_gripper.cpp
+* added offset for left gripper servo
+* added firmware of left gripper-v3 arduino
+* Add new arduino node to baxter.launch
+* Adjust left arm motion to right
+* Adjust angle-vector in test-again-approach to new robot
+* Rename test-ik -> test-again-approach-bin-l
+* Rotate left gripper servo in test-ik-in-bin
+* Fix :arm-potentio-vector to get proper vector
+* Fix :rotate-wrist not to depend on joint num
+* Add lgripper-controller to baxter-interface
+* Add left gripper joint to baxter.yaml and adjust left arm pose to right
+* Add gripper-v3 to left arm
+* Add gripper-v3 meshes
+* Add left gripper to in_hand_clipper
+* Add left gripper to self filter
+* Merge pull request `#1644 <https://github.com/start-jsk/jsk_apc/issues/1644>`_ from knorth55/servo-separate
+  split gripper-servo-off and gripper-servo-on from certain method
+* use local variable in :recognize-objects-segmentation-in-bin
+* split gripper-servo-on from :spin-off-by-wrist
+* Merge pull request `#1633 <https://github.com/start-jsk/jsk_apc/issues/1633>`_ from pazeshun/use-clustering
+  Enable to use clustering instead of SIB
+* split gripper-servo-off from :move-arm-body->order-bin
+* Output simple error message if unable to get param
+* Disable test_move_arm_to_bin
+* Add setup_head.launch to jsk_2016_01_baxter_apc
+* Adjust baxter-interface to new bin model
+* add option :use-gripper in :inverse-kinematics
+* Enable to use clustering instead of SIB
+* fixed sib_softkinetic_test to not publish errors
+* Fill time_from_start in feedback
+* Sleep until trajectory start time
+* Publish feedbacks continuously among command points
+* Fix extendability of gripper_trajectory_server.cpp
+* Fix indent of gripper_trajectory_server.cpp
+* modify gripper-angle to 90 in overlook pose
+* fix style in euslisp/*.l and test/*.l
+* euslint test only euslisp/*.l and test/*.l
+* add white space, line length and indent test in euslint and improve result output
+  indent test is diabled
+* euslint style fix
+* stop-grasp only one arm in return_object
+* update main.launch to call layout visualizer in 2016
+* add timeout in method :recognize-objects-segmentation-in-bin
+* edit download_test_data.py
+* test for sib_softkinetic
+* make sib_visualization modular & fix indent
+* visualize posterior overlaid with color
+* use jsk_recognition overlay_color_to_mono
+* Update CHANGELOG.rst for 0.8.0
+* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
+
 0.8.0 (2016-05-31)
 ------------------
 * add image jsk image_resizer

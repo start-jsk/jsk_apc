@@ -2,6 +2,15 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* adjust kiva pod base
+* Use standalone_complexed_nodelet for Kinect2 in jsk_apc
+* Put Kinect2 calib data on jsk_apc
+* Adjust kinect2_torso tf and add rvizconfig for that
+* Update CHANGELOG.rst for 0.8.0
+* Contributors: Kentaro Wada, Yusuke Niitani
+
 0.8.0 (2016-05-31)
 ------------------
 * kinect2_head launch use standalone complex nodelet
