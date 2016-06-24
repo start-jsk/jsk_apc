@@ -37,11 +37,6 @@
             (send *ri* :arm-symbol2str *arm*))
     (symbol2str *bin*))
 
-  (send *ri* :recognize-objects-in-bin *bin* :stamp (ros::time-now))
-
-  ; (ros::ros-info "Getting solidity rag merge result")
-  ; (send *ri* :recognize-grasp-coords-list *bin* :stamp (ros::time-now))
-
   (cond ((not *use-kinect*)
          (send *ri* :move-arm-body->bin-overlook-pose *arm* *bin*)
          (send *ri* :wait-interpolation)
