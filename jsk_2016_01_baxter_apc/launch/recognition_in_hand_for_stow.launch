@@ -4,15 +4,6 @@
   <arg name="INPUT_IMAGE" />
   <arg name="NODELET_ID_7" />
 
-  <!-- self filter -->
-  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/self_filter.launch">
-    <arg name="INPUT_CLOUD" value="extract_indices_left_hand/points" />
-    <arg name="OUTPUT_CLOUD" value="extract_indices_left_hand/points_filtered" />
-  </include>
-  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/self_filter.launch">
-    <arg name="INPUT_CLOUD" value="extract_indices_right_hand/points" />
-    <arg name="OUTPUT_CLOUD" value="extract_indices_right_hand/points_filtered" />
-  </include>
 
   <group ns="$(arg NODELET_MANAGER)">
     <rosparam subst_value="true">
@@ -44,36 +35,36 @@
           type: jsk_pcl/EuclideanClustering
           remappings:
             - from: ~input
-              to: extract_indices_left_hand/points_filtered
+              to: extract_indices_left_hand/points
         - name: euclid_clustering_right_hand
           type: jsk_pcl/EuclideanClustering
           remappings:
             - from: ~input
-              to: extract_indices_right_hand/points_filtered
+              to: extract_indices_right_hand/points
         - name: cpi_decomposer_left_hand
           type: jsk_pcl/ClusterPointIndicesDecomposer
           remappings:
             - from: ~input
-              to: extract_indices_left_hand/points_filtered
+              to: extract_indices_left_hand/points
             - from: ~target
               to: euclid_clustering_left_hand/output
         - name: cpi_decomposer_right_hand
           type: jsk_pcl/ClusterPointIndicesDecomposer
           remappings:
             - from: ~input
-              to: extract_indices_right_hand/points_filtered
+              to: extract_indices_right_hand/points
             - from: ~target
               to: euclid_clustering_right_hand/output
         - name: pc_to_pi_left_hand
           type: jsk_pcl/OrganizedPointCloudToPointIndices
           remappings:
           - from: ~input
-            to: /extract_indices_left_hand/points_filtered
+            to: /extract_indices_left_hand/points
         - name: pc_to_pi_right_hand
           type: jsk_pcl/OrganizedPointCloudToPointIndices
           remappings:
           - from: ~input
-            to: /extract_indices_right_hand/points_filtered
+            to: /extract_indices_right_hand/points
         - name: pi_to_mask_left_hand
           type: jsk_pcl/PointIndicesToMaskImage
           remappings:
