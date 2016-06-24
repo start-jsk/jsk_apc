@@ -758,7 +758,7 @@
     )
   (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)) (gripper-angle 90)
-         (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil))
+         (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil) (use-current-pose nil))
     (let (bin-box bin-coords bin-dim-x current-angle-vector pose-candidates chosen-pose)
       (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
@@ -770,7 +770,8 @@
                              (send bin-box :pose)))
       (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
       (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
-      (send *baxter* :avoid-shelf-pose arm bin)
+      (if (not use-current-pose)
+        (send *baxter* :avoid-shelf-pose arm bin))
       (setq current-angle-vector (send *baxter* arm :angle-vector))
       (setq pose-candidates (list
                               :fold-pose-upper
