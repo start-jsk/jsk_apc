@@ -112,6 +112,10 @@
               (ros::ros-info "[main] Recognizing objects in bin" target-bin)
               (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
               (send *ri* :wait-interpolation)
+              (unix::sleep 6)
+              (ros::set-param
+                (format nil "~a_collect_sib_data/ready_to_save" (send *ri* :arm-symbol2str arm))
+                t)
               (unix::sleep 2)
               (ros::ros-info "[main] Segmentating objects in bin" target-bin)
               (send *ri* :recognize-objects-segmentation-in-bin arm target-bin
