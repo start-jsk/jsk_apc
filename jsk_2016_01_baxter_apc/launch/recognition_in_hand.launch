@@ -156,15 +156,13 @@
 
   <!-- object recognition -->
   <group ns="left_hand">
-    <include file="$(find jsk_apc2015_common)/launch/vgg16_object_recognition.launch">
+    <include file="$(find jsk_apc2016_common)/launch/vgg16_object_recognition.launch">
       <arg name="INPUT_IMAGE" value="/apply_mask_left_hand/output" />
-      <arg name="MACHINE" value="localhost" />
     </include>
   </group>
   <group ns="right_hand">
-    <include file="$(find jsk_apc2015_common)/launch/vgg16_object_recognition.launch">
+    <include file="$(find jsk_apc2016_common)/launch/vgg16_object_recognition.launch">
       <arg name="INPUT_IMAGE" value="/apply_mask_right_hand/output" />
-      <arg name="MACHINE" value="localhost" />
     </include>
   </group>
 
