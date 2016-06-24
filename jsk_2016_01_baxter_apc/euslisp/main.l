@@ -12,6 +12,7 @@
   (send *ri* :gripper-servo-on)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
+  (send *ri* :calib-pressure-threshold)
   (objects (list *baxter*))
   t)
 
