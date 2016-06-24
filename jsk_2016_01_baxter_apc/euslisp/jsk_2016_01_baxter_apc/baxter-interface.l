@@ -758,8 +758,8 @@
     )
   (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)) (gripper-angle 90)
-         (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil))
-    (let (bin-box bin-coords bin-dim-x)
+         (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil) (use-current-pose nil))
+    (let (bin-box bin-coords bin-dim-x current-angle-vector pose-candidates chosen-pose)
       (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
         (ros::ros-error "[:ik->bin-entrance] No data about bin-box ~a." bin)
@@ -770,13 +770,30 @@
                              (send bin-box :pose)))
       (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
       (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
-      (case bin
-        ((:a :b :c) (send *baxter* :fold-pose-upper arm))
-        ((:j :l) (send *baxter* :fold-pose-middle arm))
-        ((:d :f :g :h :i) (send *baxter* :fold-pose-lower arm))
-        ((:e) (send *baxter* :avoid-shelf-pose arm :e))
-        ((:k) (send *baxter* :avoid-shelf-pose arm :k))
-        )
+      (if (not use-current-pose)
+        (send *baxter* :avoid-shelf-pose arm bin))
+      (setq current-angle-vector (send *baxter* arm :angle-vector))
+      (setq pose-candidates (list
+                              :fold-pose-upper
+                              :fold-pose-middle
+                              :fold-pose-lower
+                              :avoid-shelf-pose))
+      (setq chosen-pose
+            (car (sort pose-candidates #'<
+                       #'(lambda (pose)
+                           (norm
+                             (v-
+                               current-angle-vector
+                               (progn
+                                 (if (eq pose :avoid-shelf-pose)
+                                   (send *baxter* pose arm bin)
+                                   (send *baxter* pose arm))
+                                 (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t)
+                                 (send *baxter* arm :angle-vector))))))))
+      (format t "[:ik->bin-entrance] midpose: ~a~%" chosen-pose)
+      (if (eq chosen-pose :avoid-shelf-pose)
+        (send *baxter* chosen-pose arm bin)
+        (send *baxter* chosen-pose arm))
       (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis t)
       ;; apply rotation
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
