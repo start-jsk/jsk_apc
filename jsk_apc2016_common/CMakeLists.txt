@@ -168,6 +168,9 @@ add_dependencies(cloud_to_spatial_features ${${PROJECT_NAME}_EXPORTED_TARGETS} $
 target_link_libraries(sib_topic_synchronizer ${catkin_LIBRARIES})
 target_link_libraries(cloud_to_spatial_features ${catkin_LIBRARIES} ${Eigen_LIBRARIES})
 
+# trained data
+add_custom_target(install_trained_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_trained_data.py)
+
 #############
 ## Install ##
 #############
