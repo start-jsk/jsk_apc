@@ -24,6 +24,12 @@
 
   <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="rqt_yn_btn" />
 
+  <node pkg="jsk_2016_01_baxter_apc" type="output_json_stow.py" name="output_json_stow" respawn="true">
+    <rosparam subst_value="true">
+        json: $(arg json)
+    </rosparam>
+  </node>
+
   <!-- object verification -->
   <group ns="left_hand">
     <node name="object_verification"
