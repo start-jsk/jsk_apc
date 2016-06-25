@@ -34,6 +34,7 @@ class ApplyBinContentsHint(ConnectionBasedTransport):
 
         # get candidates probabilities
         candidates = self.bin_contents.get(target_bin)
+        candidates.append(['no_object'])
         label_to_proba = dict(zip(msg.target_names, msg.probabilities))
         candidates_proba = [label_to_proba[label] for label in candidates]
         candidates_proba = np.array(candidates_proba)
