@@ -91,6 +91,9 @@
 
   <group ns="$(arg HAND)_sib_cpi_decomposer">
     <rosparam>
+      align_boxes: true
+      align_boxes_with_plane: false
+      target_frame_id: base
       queue_size: 1000
     </rosparam>
   </group>
