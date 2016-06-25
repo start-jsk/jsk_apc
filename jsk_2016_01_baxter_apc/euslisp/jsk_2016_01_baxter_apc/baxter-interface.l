@@ -476,6 +476,43 @@
             )
       (list obj-box obj-coords))
     )
+  (:decide-approach-direction
+    (obj-cube bin-cube)
+    (let (sign sign_y gripper-req-l)
+      ;; set requisite length for gripper to enter bin
+      (setq gripper-req-l (+ (gethash :pad-link-l _hard-coded-variables)
+                             (/ (gethash :gripper-tube-t _hard-coded-variables) 2)))
+      ;; if object is higher than highest end-coords when gripper is 90 degrees
+      (if (> (+ (elt (send obj-cube :pos) 2) (/ (z-of-cube obj-cube) 2))
+             (- (+ (elt (send bin-cube :pos) 2) (/ (z-of-cube bin-cube) 2))
+                gripper-req-l
+                (gethash :offset-object-h _hard-coded-variables))
+             )
+        (cond ((< gripper-req-l
+                  ;; if space gripper can enter exists on right
+                  (- (- (elt (send obj-cube :pos) 1) (/ (y-of-cube obj-cube) 2))
+                     (- (elt (send bin-cube :pos) 1) (/ (y-of-cube bin-cube) 2)))
+                  )
+               (setq sign 1)
+               (setq sign_y 0))
+              ((< gripper-req-l
+                  ;; if space gripper can enter exists on left
+                  (- (+ (elt (send bin-cube :pos) 1) (/ (y-of-cube bin-cube) 2))
+                     (+ (elt (send obj-cube :pos) 1) (/ (y-of-cube obj-cube) 2)))
+                  )
+               (setq sign -1)
+               (setq sign_y 0))
+              (t
+                (setq sign 0)
+                (setq sign_y -1))
+              )
+        (progn
+          (setq sign 0)
+          (setq sign_y 0)
+          )
+        )
+      (list sign sign_y))
+    )
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
     (let (avs-before-approach obj-box graspingp gripper-req-l bin-box bin-y-l bin-z-l)
@@ -492,7 +529,7 @@
         (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a." bin)
         (ros::ros-error "[:try-to-pick-object] Call :recognize-bin-boxes first.")
         (return-from :try-to-pick-object nil))
-      (let (bin-cube-base obj-cube-base)
+      (let (bin-cube-base obj-cube-base approach-direction)
         (setq bin-cube-base (send self :cube->cube-parallel-to-coords
                                   (send self :bbox->cube bin-box)
                                   :included-in-original-cube)
@@ -501,35 +538,9 @@
                                   :include-original-cube)
               bin-y-l (y-of-cube bin-cube-base)
               bin-z-l (z-of-cube bin-cube-base))
-        ;; if object is higher than highest end-coords when gripper is 90 degrees
-        (if (> (+ (elt (send obj-cube-base :pos) 2) (/ (z-of-cube obj-cube-base) 2))
-               (- (+ (elt (send bin-cube-base :pos) 2) (/ (z-of-cube bin-cube-base) 2))
-                  gripper-req-l
-                  (gethash :offset-object-h _hard-coded-variables))
-               )
-          (cond ((< gripper-req-l
-                    ;; if space gripper can enter exists on right
-                    (- (- (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2))
-                       (- (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2)))
-                    )
-                 (setq sign 1)
-                 (setq sign_y 0))
-                ((< gripper-req-l
-                    ;; if space gripper can enter exists on left
-                    (- (+ (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2))
-                       (+ (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2)))
-                    )
-                 (setq sign -1)
-                 (setq sign_y 0))
-                (t
-                  (setq sign 0)
-                  (setq sign_y -1))
-                )
-          (progn
-            (setq sign 0)
-            (setq sign_y 0)
-            )
-          )
+        (setq approach-direction (send self :decide-approach-direction obj-cube-base bin-cube-base))
+        (setq sign (elt approach-direction 0))
+        (setq sign_y (elt approach-direction 1))
         )
       (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
       (if (ros::get-param "/apc_on_gazebo" nil)
