@@ -1,6 +1,7 @@
 <launch>
   <arg name="launch_main" default="true" />
   <arg name="json" />
+  <arg name="collect_data" default="false" />
 
   <!-- bin contents data -->
   <node pkg="jsk_2015_05_baxter_apc" type="bin_contents.py" name="bin_contents" respawn="true">
@@ -81,11 +82,17 @@
     args="&quot;(progn (apc-init :larm-controller) (apc-mainloop :larm))&quot;"
     respawn="true" output="screen">
     <env name="DISPLAY" value="" />
+    <rosparam subst_value="true">
+      collect_data: $(arg collect_data)
+    </rosparam>
   </node>
   <node if="$(arg launch_main)" pkg="jsk_2016_01_baxter_apc" type="main.l" name="right_hand"
     args="&quot;(progn (apc-init :rarm-controller) (apc-mainloop :rarm))&quot;"
     respawn="true" output="screen">
     <env name="DISPLAY" value="" />
+    <rosparam subst_value="true">
+      collect_data: $(arg collect_data)
+    </rosparam>
   </node>
 
   <!-- visualization -->
@@ -96,5 +103,17 @@
         pkg="jsk_2015_05_baxter_apc" type="visualize_on_rviz.py">
     <param name="json" value="$(arg json)" />
   </node>
+
+  <!-- collecting data for sib -->
+  <group if="$(arg collect_data)">
+    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/collect_sib_data.launch">
+      <arg name="hand" value="right"/>
+      <arg name="json" value="$(arg json)"/>
+    </include>
+    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/collect_sib_data.launch">
+      <arg name="hand" value="left"/>
+      <arg name="json" value="$(arg json)"/>
+    </include>
+  </group>
 
 </launch>
