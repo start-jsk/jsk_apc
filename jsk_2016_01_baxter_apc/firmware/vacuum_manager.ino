@@ -9,7 +9,7 @@ const int LEFT = 6;
 ros::NodeHandle nh;
 
 void message_rightCb(const std_msgs::Bool& toggle_msg) {
-  if (toggle_msg.data) {
+  if (toggle_msg.data && digitalRead(3)) {
     digitalWrite(RIGHT, HIGH);
   } else {
     digitalWrite(RIGHT, LOW);
@@ -17,7 +17,7 @@ void message_rightCb(const std_msgs::Bool& toggle_msg) {
 }
 
 void message_leftCb(const std_msgs::Bool& toggle_msg) {
-  if (toggle_msg.data) {
+  if (toggle_msg.data && digitalRead(3)) {
     digitalWrite(LEFT, HIGH);
   } else {
     digitalWrite(LEFT, LOW);
@@ -39,6 +39,7 @@ void setup()
 {
   pinMode(RIGHT, OUTPUT);
   pinMode(LEFT, OUTPUT);
+  pinMode(3, INPUT_PULLUP);
   nh.getHardware()->setBaud(115200);
   nh.initNode();
   nh.subscribe(sub_right);
@@ -49,6 +50,10 @@ void setup()
 
 void loop()
 {
+  if (digitalRead(3) == LOW) {
+    digitalWrite(RIGHT, LOW);
+    digitalWrite(LEFT, LOW);
+  }
   if (millis() > publisher_timer) {
     if (digitalRead(RIGHT)) {
       str_msg_right.data = "ON";
