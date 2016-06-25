@@ -376,7 +376,9 @@
          (sethash bin _objects-sib-boxes obj-box)
          (sethash bin _objects-sib-coords obj-coords))
         (t
-         (ros::ros-error "[:recognize-objects-segmentation-in-bin] arm: ~a failed to get sib msg" arm)))))
+         (ros::ros-error "[:recognize-objects-segmentation-in-bin] arm: ~a failed to get sib msg" arm)
+         (sethash bin _objects-sib-boxes (list nil))
+         (sethash bin _objects-sib-coords (list nil))))))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
@@ -448,6 +450,8 @@
     (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
     (let (avs-before-approach obj-boxes obj-box obj-coms obj-com graspingp
                               gripper-req-l bin-box bin-y-l bin-z-l)
+      ;; initialize _last-av-before-approach
+      (setq _last-av-before-approach (send *baxter* :angle-vector))
       ;; validate
       (cond (use-sib
               (unless
@@ -540,8 +544,6 @@
                 )
           )
         )
-      ;; initialize _last-av-before-approach
-      (setq _last-av-before-approach (send *baxter* :angle-vector))
       (pushback
         (send self :ik->bin-entrance arm bin
               :offset offset-from-entrance :gripper-angle (* (+ sign_y 1) 90))
