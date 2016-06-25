@@ -4,7 +4,6 @@ from jsk_apc2016_common.msg import BinInfoArray, SegmentationInBinSync
 import rospy
 from cv_bridge import CvBridge
 import cv2
-from image_geometry import cameramodels
 import numpy as np
 import pickle
 from time import gmtime, strftime
@@ -41,7 +40,6 @@ class CollectSIBData(object):
             '~input/depth', Image, self.depth_cb)
 
     def topic_cb(self, bin_info_arr_msg):
-        rospy.loginfo('get bin_info')
         json_path = rospy.get_param('/visualize_on_rviz/json')
         self.layout_name = json_path.split('/')[-1][:-5]
         self.bin_info_dict = self.bin_info_array_to_dict(bin_info_arr_msg)
@@ -55,7 +53,6 @@ class CollectSIBData(object):
     def depth_cb(self, depth_msg):
         self.lock.acquire()
         self.depth_msg = depth_msg
-        rospy.loginfo('get depth')
         self.depth_img = self.bridge.imgmsg_to_cv2(
             depth_msg, "passthrough")
         self.lock.release()
@@ -65,7 +62,6 @@ class CollectSIBData(object):
             rospy.loginfo('bin_info_dict is not stored yet')
             return
 
-        rospy.loginfo(rospy.get_param('~ready_to_save'))
         if rospy.get_param('~ready_to_save') is True:
             self.lock.acquire()
 
@@ -93,7 +89,6 @@ class CollectSIBData(object):
             # debug message
             self.debug_color_pub.publish(color_msg)
             self.debug_depth_pub.publish(self.depth_msg)
-            rospy.loginfo(self.target_object)
 
             self.save_data()
 
@@ -134,7 +129,8 @@ class CollectSIBData(object):
             pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
 
         # log mesage
-        rospy.loginfo('saved to {}'.format(save_path))
+        rospy.loginfo('saved: {}\n target_object: {}'.format(
+            save_path, self.target_object))
 
 
 if __name__ == '__main__':
