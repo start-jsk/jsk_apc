@@ -58,6 +58,7 @@
     (sethash :offset-object-h _hard-coded-variables -10)
     (sethash :offset-gripper-bin-top _hard-coded-variables 10)
     (sethash :offset-gripper-bin-side _hard-coded-variables 40)
+    (sethash :draw-out-from-bin-l _hard-coded-variables 80)
 
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
@@ -531,7 +532,8 @@
           (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
           (setq offset-from-entrance
                 (float-vector
-                  -30 0
+                  (if (= sign 0) -30 (- (gethash :draw-out-from-bin-l _hard-coded-variables)))
+                  0
                   (- (/ bin-z-l 2) gripper-req-l
                      (gethash :offset-gripper-bin-top _hard-coded-variables))
                   )
@@ -552,7 +554,7 @@
           (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
           (send end-coords :translate
                 (float-vector
-                  (- (/ bin-dim-x 2))
+                  (- (+ (/ bin-dim-x 2) (gethash :draw-out-from-bin-l _hard-coded-variables)))
                   (* sign (- gripper-req-l (/ bin-y-l 2)
                              (- (gethash :offset-gripper-bin-side _hard-coded-variables))))
                   0)
@@ -563,6 +565,13 @@
             (send *baxter* arm :inverse-kinematics
                   end-coords
                   )
+            avs-before-approach)
+          (pushback
+            (send *baxter* arm :move-end-pos
+                  (float-vector
+                    (gethash :draw-out-from-bin-l _hard-coded-variables)
+                    0 0)
+                  :world)
             avs-before-approach)
           (pushback
             (send *baxter* arm :move-end-pos
@@ -758,7 +767,11 @@
       (send self :angle-vector-sequence
             (list
               (send *baxter* :angle-vector _last-av-before-approach)
-              (send *baxter* arm :move-end-pos #f(-50 0 0) :world)
+              (send *baxter* arm :move-end-pos
+                    (float-vector
+                      (- (gethash :draw-out-from-bin-l _hard-coded-variables))
+                      0 0)
+                    :world)
               (send self :ik->bin-entrance arm bin
                     :offset (float-vector
                               -100 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
