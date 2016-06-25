@@ -444,28 +444,28 @@
       (send self :wait-interpolation)
       ))
   (:get-obj-box-and-coords
-    (bin &key (object-index 0) (use-sib t))
+    (arm bin &key (object-index 0) (use-sib t))
     (let (obj-box obj-coords obj-boxes obj-coms-msg obj-com)
       (cond (use-sib
               (unless
                 (setq obj-box (elt (gethash bin _objects-sib-boxes) object-index))
                 (ros::ros-warn "[SIB] No bbox  is found: ~a, ~a" arm bin)
-                (return-from :try-to-pick-object nil))
+                (return-from :get-obj-box-and-coords nil))
               ;; with Center of Mass
               (unless
                 (setq obj-coords (elt (gethash bin _objects-sib-coords) object-index))
                 (ros::ros-warn "[SIB] No com is found: ~a, ~a" arm bin)
-                (return-from :try-to-pick-object nil))
+                (return-from :get-obj-box-and-coords nil))
               )
             (t
               (unless
                 (setq obj-boxes (gethash bin _objects-in-bin-boxes))
                 (ros::ros-warn "No object is found: ~a, ~a" arm bin)
-                (return-from :try-to-pick-object nil))
+                (return-from :get-obj-box-and-coords nil))
               (unless
                 (setq obj-box (elt obj-boxes object-index))
                 (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
-                (return-from :try-to-pick-object nil))
+                (return-from :get-obj-box-and-coords nil))
               (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
               (setq obj-com (elt (send obj-coms-msg :poses) object-index))
               ;; ik to obj a bit distant
@@ -474,7 +474,9 @@
                                      (send obj-coms-msg :header :frame_id) obj-com))
               )
             )
-      (list obj-box obj-coords))
+      (print obj-box)
+      (print obj-coords)
+      (print (list obj-box obj-coords)))
     )
   (:decide-approach-direction
     (obj-cube bin-cube)
@@ -518,7 +520,10 @@
     (let (avs-before-approach obj-box graspingp gripper-req-l bin-box bin-y-l bin-z-l)
       ;; validate
       (let (obj-box-and-coords
-             (send self :get-obj-box-and-coords bin :object-index object-index :use-sib use-sib))
+             (send self :get-obj-box-and-coords
+                   arm bin :object-index object-index :use-sib use-sib))
+        (if (null obj-box-and-coords)
+          (return-from :try-to-pick-object nil))
         (setq obj-box (elt obj-box-and-coords 0))
         (setq obj-coords (elt obj-box-and-coords 1)))
       ;; set requisite length for gripper to enter bin
