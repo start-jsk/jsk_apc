@@ -901,7 +901,7 @@
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
       (pushback (send self :ik->bin-entrance arm bin
-                      :offset #f(-150 0 -150)
+                      :offset #f(-250 0 -100)
                       :rotation-axis t
                       :gripper-angle 90
                       :overlook-angle (/ pi 9)) avs)
