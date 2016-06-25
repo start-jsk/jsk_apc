@@ -444,31 +444,29 @@
       (send self :angle-vector (send *baxter* arm :inverse-kinematics centroid) 3000)
       (send self :wait-interpolation)
       ))
-  (:try-to-pick-object
-    (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
-    (let (avs-before-approach obj-boxes obj-box obj-coms obj-com graspingp
-                              gripper-req-l bin-box bin-y-l bin-z-l)
-      ;; validate
+  (:get-obj-box-and-coords
+    (arm bin &key (object-index 0) (use-sib t))
+    (let (obj-box obj-coords obj-boxes obj-coms-msg obj-com)
       (cond (use-sib
               (unless
                 (setq obj-box (elt (gethash bin _objects-sib-boxes) object-index))
                 (ros::ros-warn "[SIB] No bbox  is found: ~a, ~a" arm bin)
-                (return-from :try-to-pick-object nil))
+                (return-from :get-obj-box-and-coords nil))
               ;; with Center of Mass
               (unless
                 (setq obj-coords (elt (gethash bin _objects-sib-coords) object-index))
                 (ros::ros-warn "[SIB] No com is found: ~a, ~a" arm bin)
-                (return-from :try-to-pick-object nil))
+                (return-from :get-obj-box-and-coords nil))
               )
             (t
               (unless
                 (setq obj-boxes (gethash bin _objects-in-bin-boxes))
                 (ros::ros-warn "No object is found: ~a, ~a" arm bin)
-                (return-from :try-to-pick-object nil))
+                (return-from :get-obj-box-and-coords nil))
               (unless
                 (setq obj-box (elt obj-boxes object-index))
                 (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
-                (return-from :try-to-pick-object nil))
+                (return-from :get-obj-box-and-coords nil))
               (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
               (setq obj-com (elt (send obj-coms-msg :poses) object-index))
               ;; ik to obj a bit distant
@@ -477,6 +475,58 @@
                                      (send obj-coms-msg :header :frame_id) obj-com))
               )
             )
+      (print obj-box)
+      (print obj-coords)
+      (print (list obj-box obj-coords)))
+    )
+  (:decide-approach-direction
+    (obj-cube bin-cube)
+    (let (sign sign_y gripper-req-l)
+      ;; set requisite length for gripper to enter bin
+      (setq gripper-req-l (+ (gethash :pad-link-l _hard-coded-variables)
+                             (/ (gethash :gripper-tube-t _hard-coded-variables) 2)))
+      ;; if object is higher than highest end-coords when gripper is 90 degrees
+      (if (> (+ (elt (send obj-cube :pos) 2) (/ (z-of-cube obj-cube) 2))
+             (- (+ (elt (send bin-cube :pos) 2) (/ (z-of-cube bin-cube) 2))
+                gripper-req-l
+                (gethash :offset-object-h _hard-coded-variables))
+             )
+        (cond ((< gripper-req-l
+                  ;; if space gripper can enter exists on right
+                  (- (- (elt (send obj-cube :pos) 1) (/ (y-of-cube obj-cube) 2))
+                     (- (elt (send bin-cube :pos) 1) (/ (y-of-cube bin-cube) 2)))
+                  )
+               (setq sign 1)
+               (setq sign_y 0))
+              ((< gripper-req-l
+                  ;; if space gripper can enter exists on left
+                  (- (+ (elt (send bin-cube :pos) 1) (/ (y-of-cube bin-cube) 2))
+                     (+ (elt (send obj-cube :pos) 1) (/ (y-of-cube obj-cube) 2)))
+                  )
+               (setq sign -1)
+               (setq sign_y 0))
+              (t
+                (setq sign 0)
+                (setq sign_y -1))
+              )
+        (progn
+          (setq sign 0)
+          (setq sign_y 0)
+          )
+        )
+      (list sign sign_y))
+    )
+  (:try-to-pick-object
+    (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
+    (let (avs-before-approach obj-box graspingp gripper-req-l bin-box bin-y-l bin-z-l)
+      ;; validate
+      (let (obj-box-and-coords
+             (send self :get-obj-box-and-coords
+                   arm bin :object-index object-index :use-sib use-sib))
+        (if (null obj-box-and-coords)
+          (return-from :try-to-pick-object nil))
+        (setq obj-box (elt obj-box-and-coords 0))
+        (setq obj-coords (elt obj-box-and-coords 1)))
       ;; set requisite length for gripper to enter bin
       (setq gripper-req-l (+ (gethash :pad-link-l _hard-coded-variables)
                              (/ (gethash :gripper-tube-t _hard-coded-variables) 2)))
@@ -485,7 +535,7 @@
         (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a." bin)
         (ros::ros-error "[:try-to-pick-object] Call :recognize-bin-boxes first.")
         (return-from :try-to-pick-object nil))
-      (let (bin-cube-base obj-cube-base)
+      (let (bin-cube-base obj-cube-base approach-direction)
         (setq bin-cube-base (send self :cube->cube-parallel-to-coords
                                   (send self :bbox->cube bin-box)
                                   :included-in-original-cube)
@@ -494,35 +544,9 @@
                                   :include-original-cube)
               bin-y-l (y-of-cube bin-cube-base)
               bin-z-l (z-of-cube bin-cube-base))
-        ;; if object is higher than highest end-coords when gripper is 90 degrees
-        (if (> (+ (elt (send obj-cube-base :pos) 2) (/ (z-of-cube obj-cube-base) 2))
-               (- (+ (elt (send bin-cube-base :pos) 2) (/ (z-of-cube bin-cube-base) 2))
-                  gripper-req-l
-                  (gethash :offset-object-h _hard-coded-variables))
-               )
-          (cond ((< gripper-req-l
-                    ;; if space gripper can enter exists on right
-                    (- (- (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2))
-                       (- (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2)))
-                    )
-                 (setq sign 1)
-                 (setq sign_y 0))
-                ((< gripper-req-l
-                    ;; if space gripper can enter exists on left
-                    (- (+ (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2))
-                       (+ (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2)))
-                    )
-                 (setq sign -1)
-                 (setq sign_y 0))
-                (t
-                  (setq sign 0)
-                  (setq sign_y -1))
-                )
-          (progn
-            (setq sign 0)
-            (setq sign_y 0)
-            )
-          )
+        (setq approach-direction (send self :decide-approach-direction obj-cube-base bin-cube-base))
+        (setq sign (elt approach-direction 0))
+        (setq sign_y (elt approach-direction 1))
         )
       (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
       (if (ros::get-param "/apc_on_gazebo" nil)
