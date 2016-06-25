@@ -443,11 +443,9 @@
       (send self :angle-vector (send *baxter* arm :inverse-kinematics centroid) 3000)
       (send self :wait-interpolation)
       ))
-  (:try-to-pick-object
-    (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
-    (let (avs-before-approach obj-boxes obj-box obj-coms obj-com graspingp
-                              gripper-req-l bin-box bin-y-l bin-z-l)
-      ;; validate
+  (:get-obj-box-and-coords
+    (bin &key (object-index 0) (use-sib t))
+    (let (obj-box obj-coords obj-boxes obj-coms-msg obj-com)
       (cond (use-sib
               (unless
                 (setq obj-box (elt (gethash bin _objects-sib-boxes) object-index))
@@ -476,6 +474,16 @@
                                      (send obj-coms-msg :header :frame_id) obj-com))
               )
             )
+      (list obj-box obj-coords))
+    )
+  (:try-to-pick-object
+    (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
+    (let (avs-before-approach obj-box graspingp gripper-req-l bin-box bin-y-l bin-z-l)
+      ;; validate
+      (let (obj-box-and-coords
+             (send self :get-obj-box-and-coords bin :object-index object-index :use-sib use-sib))
+        (setq obj-box (elt obj-box-and-coords 0))
+        (setq obj-coords (elt obj-box-and-coords 1)))
       ;; set requisite length for gripper to enter bin
       (setq gripper-req-l (+ (gethash :pad-link-l _hard-coded-variables)
                              (/ (gethash :gripper-tube-t _hard-coded-variables) 2)))
