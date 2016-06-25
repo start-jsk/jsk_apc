@@ -132,7 +132,7 @@
                           :n-trial-same-pos 1
                           ;; :object-index (send *ri* :detect-target-object-in-bin
                           ;;                     target-obj target-bin)
-                          :do-stop-grasp nil
+                          :do-stop-grasp t
                           )
                     )
               (incf target-n-tried)
