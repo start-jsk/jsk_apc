@@ -16,7 +16,7 @@ Image mask_msg;
 
 ros::Publisher pub_;
 
-void callback(const ImageConstPtr& color_msg, const ImageConstPtr& dist_msg, const ImageConstPtr& height_msg, const ImageConstPtr& mask_msg)
+void callback(const ImageConstPtr& color_msg, const ImageConstPtr& dist_msg, const ImageConstPtr& height_msg, const ImageConstPtr& mask_msg, const ImageConstPtr& depth_msg)
 {
     jsk_apc2016_common::SegmentationInBinSync sync_msg;
     sync_msg.header = color_msg->header;
@@ -24,6 +24,7 @@ void callback(const ImageConstPtr& color_msg, const ImageConstPtr& dist_msg, con
     sync_msg.dist_msg = *dist_msg;
     sync_msg.height_msg = *height_msg;
     sync_msg.mask_msg = *mask_msg;
+    sync_msg.depth_msg = *depth_msg;
     pub_.publish(sync_msg);
     ros::Duration(0.5).sleep();
 }
@@ -40,11 +41,12 @@ int main(int argc, char** argv)
     message_filters::Subscriber<Image> dist_sub(nh, "input/dist", 1);
     message_filters::Subscriber<Image> height_sub(nh, "input/height", 1);
     message_filters::Subscriber<Image> mask_sub(nh, "input/mask", 1);
+    message_filters::Subscriber<Image> depth_sub(nh, "input/depth", 1);
 
-    typedef sync_policies::ApproximateTime<Image, Image, Image, Image> MySyncPolicy;
-    Synchronizer<MySyncPolicy> sync(MySyncPolicy(100), image_sub, dist_sub, height_sub, mask_sub);
+    typedef sync_policies::ApproximateTime<Image, Image, Image, Image, Image> MySyncPolicy;
+    Synchronizer<MySyncPolicy> sync(MySyncPolicy(100), image_sub, dist_sub, height_sub, mask_sub, depth_sub);
 
-    sync.registerCallback(boost::bind(&callback, _1, _2, _3, _4));
+    sync.registerCallback(boost::bind(&callback, _1, _2, _3, _4, _5));
     ros::spin();
     return 0;
 }

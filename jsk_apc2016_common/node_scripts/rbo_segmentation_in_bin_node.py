@@ -12,6 +12,11 @@ from jsk_apc2016_common.rbo_segmentation.apc_data import APCSample
 import pickle
 from jsk_topic_tools import log_utils
 
+from pcl_msgs.msg import PointIndices
+from std_msgs.msg import Header
+from jsk_recognition_msgs.msg import ClusterPointIndices
+import copy
+
 
 class RBOSegmentationInBinNode(ConnectionBasedTransport):
     def __init__(self):
@@ -20,6 +25,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.dist_img = None
         self._target_bin = None
         self.camera_model = cameramodels.PinholeCameraModel()
+        self.seq = 0
 
         ConnectionBasedTransport.__init__(self)
 
@@ -36,6 +42,8 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
             '~class_label', Image, queue_size=10)
         self.posteior_unmask_pub = self.advertise(
             '~posterior_unmask', Image, queue_size=10)
+        self.cpi_pub = self.advertise(
+            '~cpi', ClusterPointIndices, queue_size=3)
 
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
@@ -60,10 +68,12 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         height_msg = sync_msg.height_msg
         color_msg = sync_msg.color_msg
         mask_msg = sync_msg.mask_msg
-        self.header = sync_msg.color_msg.header
+        depth_msg = sync_msg.depth_msg
+        self.header = sync_msg.depth_msg.header
 
         self.height = dist_msg.height
         self.width = dist_msg.width
+        self.frame_id = dist_msg.header.frame_id
         try:
             self.mask_img = self.bridge.imgmsg_to_cv2(mask_msg, "passthrough")
             self.mask_img = self.mask_img.astype('bool')
@@ -72,6 +82,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
         self.dist_img = self.bridge.imgmsg_to_cv2(dist_msg, "passthrough")
         self.height_img = self.bridge.imgmsg_to_cv2(height_msg, "passthrough")
         self.height_img = self.height_img.astype(np.float)/255.0
+        self.depth_img = self.bridge.imgmsg_to_cv2(depth_msg, "passthrough")
 
         try:
             color_img = self.bridge.imgmsg_to_cv2(color_msg, "bgr8")
@@ -105,6 +116,12 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
             else:
                 rospy.logwarn(
                     'Output of RBO does not contain any point clouds.')
+
+            cluster_indices = [self.create_pi_from_mask(predicted_seg) for
+                               predicted_seg in self.predicted_segments]
+            cpi = ClusterPointIndices(self.header, cluster_indices)
+            self.cpi_pub.publish(cpi)
+
             # publish images which contain object probabilities
             self.publish_predicted_results()
         except KeyError, e:
@@ -154,9 +171,32 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
                 desired_object=self.target_object)
         self.predicted_segment = self.apc_sample.unzoom_segment(
                 zoomed_predicted_segment)
-
-        # Masked region needs to contain value 255.
         self.predicted_segment = 255 * self.predicted_segment.astype('uint8')
+
+        # segment all objects
+        self.predicted_segments = []
+        # remove shelf
+        objects = copy.deepcopy(self.target_bin_info.objects)
+        if 'shelf' in objects:
+            objects.remove('shelf')
+
+        # segment all objects in the bin
+        for object_ in self.target_bin_info.objects:
+            zoomed_predicted_segment = self.trained_segmenter.predict(
+                    apc_sample=self.apc_sample,
+                    desired_object=object_)
+            predicted_segment = self.apc_sample.unzoom_segment(
+                    zoomed_predicted_segment)
+            # Masked region needs to contain value 255.
+            predicted_segment = 255 * predicted_segment.astype('uint8')
+            self.predicted_segments.append(predicted_segment)
+
+    def create_pi_from_mask(self, mask_img):
+        # remove pi where dist does not exist
+        mask_img_filtered = np.logical_and(mask_img, ~np.isnan(self.depth_img))
+
+        indices = list(np.where(mask_img_filtered.reshape(-1))[0])
+        return PointIndices(self.header, indices)
 
     def load_trained(self, path):
         with open(path, 'rb') as f:
