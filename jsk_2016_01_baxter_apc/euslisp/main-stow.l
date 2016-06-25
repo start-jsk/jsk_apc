@@ -73,16 +73,31 @@
               (setq state :verify_object)
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))))
         ;; verify whether grasping or not
-        ;; yes -> set_target_bin to place_object
-        ;; no  -> try to pick from order-bin
+        ;;     yes -> verify what the object is
+        ;;         get result -> :place_object
+        ;;         timeout -> :return_object
+        ;;     no  -> :pick_object
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
           (if graspingp
             (progn
               (setq fail-count 0)
-              (setq object-length (send *ri* :recognize-object-length-in-hand arm :timeout 40000))
-              (setq state :set_target_bin))
+              (setq target-obj
+                    (send *ri* :recognize-object-in-hand arm
+                               :stamp (ros::time-now)
+                               :timeout 10000))
+              (if (equal target-obj "no_object") (setq target-obj nil))
+              (if target-obj
+                  (progn
+                    (ros::set-param
+                      (format nil "~a_hand/target_object"
+                              (send *ri* :arm-symbol2str arm)) target-obj)
+                    (setq object-length
+                          (send *ri* :recognize-object-length-in-hand arm
+                                :timeout 40000))
+                    (setq state :set_target_bin))
+                  (setq state :return_object)))
             (progn
               (setq fail-count (incf fail-count))
               (send *ri* :stop-grasp arm)
@@ -122,6 +137,22 @@
             (unix::sleep 1))
           (setq state :set_target_bin)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+        (:return_object
+          (ros::ros-info "[main] ~a, ~a" arm state)
+          (send *ri* :move-arm-body->order-bin arm)
+          (send *ri* :gripper-servo-off arm)  ;; power off gripper servo not to overload it
+          (send *ri* :wait-interpolation)
+          (send *ri* :stop-grasp arm)
+          (send *ri* :spin-off-by-wrist arm :times 20)
+          (send *ri* :gripper-servo-on arm)
+          (send *ri* :wait-interpolation)
+          (send *baxter* :fold-pose-back arm)
+          (send *ri* :send-av)
+          (send *ri* :wait-interpolation)
+          (setq state :pick_object)
+          (ros::set-param
+            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
+            (symbol2str state)))
         (:place_object
           (if (send *ri* :need-to-wait-opposite-arm-for-stow arm :state state)
             (progn
