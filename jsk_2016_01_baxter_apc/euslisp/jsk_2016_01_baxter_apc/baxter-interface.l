@@ -437,6 +437,11 @@
   (:recognize-object-length-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let (msg x-length)
+      ; (if (eq arm :rarm) (send *baxter* :view-hand-pose arm :l)
+      ;     (send *baxter* :view-hand-pose arm :j))
+      ; (send *baxter* arm :move-end-pos #f(-50 0 180) :world)
+      ; (send *ri* :send-av 5000)
+      ; (send *ri* :wait-interpolation)
       (setq msg
             (one-shot-subscribe
               (format nil "cpi_decomposer_~a_hand/boxes" (send *ri* :arm-symbol2str arm))
@@ -806,7 +811,7 @@
       graspingp))
   (:pick-object-in-order-bin
     (arm &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
-    (let (order-bin-box graspingp object-index avs)
+    (let (order-bin-box graspingp object-index avs bin)
       (if (or
           (null (gethash arm _objects-in-order-bin-boxes))
           (null (gethash arm _objects-in-order-bin-coords)))
@@ -826,10 +831,8 @@
       (send self :angle-vector-sequence (reverse avs) :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-order-bin -> view-hand-pose" arm)
-      (if (eq arm :rarm) (send *baxter* :view-hand-pose arm :l)
-          (send *baxter* :view-hand-pose arm :j))
-      (send *baxter* arm :move-end-pos #f(-50 0 180) :world)
-      (send *ri* :send-av 5000)
+      (if (eq arm :rarm) (setq bin :i) (setq bin :g))
+      (send *ri* :angle-vector (send *baxter* :view-hand-pose arm bin) :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       (send self :gripper-servo-on arm)
       graspingp))
