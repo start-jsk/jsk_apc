@@ -3,7 +3,9 @@
 import rospy
 import tf2_ros
 from sensor_msgs.msg import Image, CameraInfo
+from jsk_apc2016_common.msg import BinInfo
 from jsk_apc2016_common.msg import BinInfoArray
+from jsk_recognition_msgs.msg import BoundingBoxArray
 from image_geometry import cameramodels
 from jsk_apc2016_common.segmentation_in_bin.bin_data import BinData
 from tf2_geometry_msgs import do_transform_point
@@ -26,8 +28,12 @@ class TFBboxToMask(ConnectionBasedTransport):
         self.pub = self.advertise('~output', Image, queue_size=1)
 
     def subscribe(self):
-        self.bin_info_array_sub = rospy.Subscriber(
-            '~input/bin_info_array', BinInfoArray, self._bin_info_callback)
+        if rospy.get_param('~use_bin_info', True):
+            self.bin_info_array_sub = rospy.Subscriber(
+                '~input/bin_info_array', BinInfoArray, self._bin_info_callback)
+        else:
+            self.boxes_sub = rospy.Subscriber(
+                '~input/boxes', BoundingBoxArray, self._boxes_callback)
         self.sub = rospy.Subscriber('~input', CameraInfo, self._callback, queue_size=3)
 
     def unsubscribe(self):
@@ -37,11 +43,21 @@ class TFBboxToMask(ConnectionBasedTransport):
         for bin_info in bin_info_array_msg.array:
             self.shelf[bin_info.name] = BinData(bin_info=bin_info)
 
+    def _boxes_callback(self, boxes_msg):
+        for i, bin_name in enumerate('abcdefghijkl'):
+            bin_info = BinInfo(
+                header=boxes_msg.header,
+                name=bin_name,
+                camera_direction='x',
+                bbox=boxes_msg.boxes[i],
+            )
+            self.shelf[bin_name] = BinData(bin_info=bin_info)
+
     def _callback(self, camera_info):
         if self.shelf == {}:
             return
 
-        target_bin_name = rospy.get_param('~target_bin_name')
+        target_bin_name = rospy.get_param('~target_bin_name', '')
         if target_bin_name not in 'abcdefghijkl':
             rospy.logwarn('wrong target_bin_name')
             return
