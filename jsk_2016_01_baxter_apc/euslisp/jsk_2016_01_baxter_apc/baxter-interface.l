@@ -460,10 +460,12 @@
   (:verify-object
     (arm object-name &key (stamp (ros::time-now)))
     (let (matched)
-      (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp :timeout 10000))
+      (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp :timeout 20000))
         (progn (ros::ros-info "~a == ~a" object-name matched)
                (string= object-name matched))
-        :timeout)
+        (progn
+          (ros::ros-warn "[:verify-object] Timeout")
+          :timeout))
       ))
   (:try-to-pick-in-bin
     (arm bin)
