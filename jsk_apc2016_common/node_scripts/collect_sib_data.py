@@ -105,7 +105,7 @@ class CollectSIBData(object):
         5. Height3D_image: uint8 (mm)
         """
         # path of files to save
-        dir_path = rospy.get_param('~save_dir')
+        dir_path = os.path.expanduser(rospy.get_param('~save_dir'))
         print dir_path
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
