@@ -7,7 +7,6 @@
   <arg name="INPUT_INFO"/>
   <arg name="HAND" />
   <arg name="INPUT_BIN_ARRAY" />
-  <arg name="TRAINED_PATH" />
 
   <param name="$(arg HAND)_hand/target_bin" value=""/>
 
@@ -40,14 +39,6 @@
     <remap from="~input/mask" to="/$(arg HAND)_sib_mask/output"/>
   </node>
 
-  <node pkg="jsk_apc2016_common" type="rbo_segmentation_in_bin_node.py"
-        name="$(arg HAND)_sib_rbo" output="screen">
-    <remap from="~input" to="$(arg HAND)_sib_topic_sync/output"/>
-    <remap from="~input/bin_info_array" to="$(arg INPUT_BIN_ARRAY)"/>
-    <remap from="~target_bin_name" to="$(arg HAND)_hand/target_bin"/>
-    <param name="trained_pkl_path" value="$(arg TRAINED_PATH)" />
-  </node>
-
   <group ns="$(arg NODELET_MANAGER)">
     <rosparam subst_value="true">
       $(arg NODELET_ID_0):
@@ -55,7 +46,7 @@
           type: jsk_pcl/MaskImageToPointIndices
           remappings:
             - from: ~input
-              to: $(arg HAND)_sib_rbo/target_mask
+              to: $(arg HAND)_sib_fcn/target_mask
         - name: $(arg HAND)_sib_extract_pi
           type: jsk_pcl/ExtractIndices
           remappings:
@@ -98,6 +89,7 @@
     </rosparam>
   </group>
 
+  <!--
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/sib_visualization.launch">
       <arg name="DIST" value="/$(arg HAND)_sib_spatial/dist"/>
       <arg name="HEIGHT" value="/$(arg HAND)_sib_spatial/height"/>
@@ -109,4 +101,5 @@
       <arg name="LABEL_IMAGE" value="/$(arg HAND)_sib_rbo/class_label"/>
       <arg name="HAND" value="$(arg HAND)"/>
   </include>
+  -->
 </launch>
