@@ -1,4 +1,5 @@
 <launch>
+  <arg name="GPU" default="0"/>
 
   <arg name="NODELET_MANAGER_RIGHT" value="right_hand_astra_manager" />
   <arg name="NODELET_MANAGER_LEFT" value="left_hand_astra_manager" />
