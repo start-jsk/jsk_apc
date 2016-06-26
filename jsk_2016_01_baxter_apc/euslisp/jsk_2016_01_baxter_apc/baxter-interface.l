@@ -72,11 +72,13 @@
   ;; Overwrite super class's :rarm-controller
   (:rarm-controller ()
    (append
+    (send-super :head-controller)
     (send-super :rarm-controller)
     (send self :rgripper-controller)))
   ;; Overwrite super class's :larm-controller
   (:larm-controller ()
    (append
+    (send-super :head-controller)
     (send-super :larm-controller)
     (send self :lgripper-controller)))
   (:rgripper-controller ()
@@ -887,12 +889,21 @@
   (:bin-overlook-pose
     (arm bin &key (offset #f(-250 0 -100))
          (overlook-angle (gethash :default-overlook-angle _hard-coded-variables)))
-    (if (eq bin :b) (setq overlook-angle (/ pi 9)))
     (send self :ik->bin-entrance arm bin
           :offset offset
           :rotation-axis t
           :gripper-angle 90
           :overlook-angle overlook-angle)
+    (if (eq bin :b)
+      (let (av)
+        (if (eq arm :rarm)
+          (setf (elt av 0) 70)
+          (setf (elt av 0) -70)
+          )
+        (send *baxter* :angle-vector av)
+        )
+      (send *baxter* :angle-vector)
+      )
     )
   (:move-arm-body->bin
     (arm bin)
