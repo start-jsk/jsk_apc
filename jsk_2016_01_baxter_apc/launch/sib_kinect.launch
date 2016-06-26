@@ -21,11 +21,9 @@
     <arg name="NODELET_ID_1" value="$(arg NODELET_ID_1)" />
     <arg name="RIGHT_INPUT_IMAGE" value="kinect2_torso/hd/image_color_rect" />
     <arg name="RIGHT_INPUT_CLOUD" value="kinect2_torso/hd/points" />
-    <arg name="RIGHT_INPUT_CLOUD_FILTERED" value="kinect2_torso/hd/points"/>
     <arg name="RIGHT_INPUT_INFO" value="kinect2_torso/hd/camera_info"/>
     <arg name="LEFT_INPUT_IMAGE" value="kinect2_torso/hd/image_color_rect" />
     <arg name="LEFT_INPUT_CLOUD" value="kinect2_torso/hd/points" />
-    <arg name="LEFT_INPUT_CLOUD_FILTERED" value="kinect2_torso/hd/points"/>
     <arg name="LEFT_INPUT_INFO" value="kinect2_torso/hd/camera_info"/>
   </include>
 </launch>

@@ -24,11 +24,9 @@
     <arg name="NODELET_ID_1" value="$(arg NODELET_ID_1)" />
     <arg name="RIGHT_INPUT_IMAGE" value="right_hand_camera/rgb/image_rect_color" />
     <arg name="RIGHT_INPUT_CLOUD" value="right_hand_camera/depth_registered/points" />
-    <arg name="RIGHT_INPUT_CLOUD_FILTERED" value="right_hand_camera/depth_registered/points_filtered" />
     <arg name="RIGHT_INPUT_INFO" value="right_hand_camera/rgb/camera_info"/>
     <arg name="LEFT_INPUT_IMAGE" value="left_hand_camera/rgb/image_rect_color" />
     <arg name="LEFT_INPUT_CLOUD" value="left_hand_camera/depth_registered/points" />
-    <arg name="LEFT_INPUT_CLOUD_FILTERED" value="left_hand_camera/depth_registered/points_filtered" />
     <arg name="LEFT_INPUT_INFO" value="left_hand_camera/rgb/camera_info"/>
   </include>
 
