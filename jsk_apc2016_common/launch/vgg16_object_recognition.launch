@@ -5,7 +5,8 @@
   <arg name="GPU" default="-1" />
 
   <node name="vgg16_object_recognition"
-        pkg="jsk_perception" type="vgg16_object_recognition.py">
+        pkg="jsk_perception" type="vgg16_object_recognition.py"
+        respawn="true">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <remap from="~input/mask" to="$(arg INPUT_MASK)" />
     <rosparam subst_value="true">
