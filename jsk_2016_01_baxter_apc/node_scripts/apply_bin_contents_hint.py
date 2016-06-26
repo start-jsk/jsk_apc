@@ -33,8 +33,12 @@ class ApplyBinContentsHint(ConnectionBasedTransport):
             return
 
         # get candidates probabilities
-        candidates = self.bin_contents.get(target_bin)
-        candidates.append(['no_object'])
+        if target_bin not in self.bin_contents:
+            rospy.logerr("target_bin '{0}' is not found in json: {1}"
+                         .format(target_bin, self.bin_contents))
+            return
+
+        candidates = ['no_object'] + self.bin_contents[target_bin]
         label_to_proba = dict(zip(msg.target_names, msg.probabilities))
         candidates_proba = [label_to_proba[label] for label in candidates]
         candidates_proba = np.array(candidates_proba)
