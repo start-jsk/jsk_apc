@@ -1,0 +1,37 @@
+<launch>
+
+  <arg name="GPU" default="0"/>
+  <arg name="CHAINER_MODEL" default="$(find jsk_apc2016_common)/data/fcn32s.chainermodel"/>
+  
+  <node name="right_sib_fcn" pkg="jsk_apc2016_common"
+        type="fcn_segmentation_in_bin_node.py" output="screen">
+        <remap from="~input" to="right_sib_topic_sync/output"/>
+    <remap from="~input/bin_info_array" to="/publish_bin_info/bin_array"/>
+    <remap from="~target_bin_name" to="right_hand/target_bin"/>
+    <param name="chainermodel" value="$(arg CHAINER_MODEL)" />
+    <param name="gpu" value="$(arg GPU)" />
+  </node>
+  <node name="left_sib_fcn" pkg="jsk_apc2016_common"
+        type="fcn_segmentation_in_bin_node.py" output="screen">
+        <remap from="~input" to="left_sib_topic_sync/output"/>
+    <remap from="~input/bin_info_array" to="/publish_bin_info/bin_array"/>
+    <remap from="~target_bin_name" to="left_hand/target_bin"/>
+    <param name="chainermodel" value="$(arg CHAINER_MODEL)" />
+    <param name="gpu" value="$(arg GPU)" />
+  </node>
+
+  <node name="right_sib_apply_target_mask"
+        pkg="jsk_perception" type="apply_mask_image">
+        <remap from="~input" to="/right_hand_camera/rgb/image_rect_color"/>
+      <remap from="~input/mask" to="/right_sib_fcn/target_mask"/>
+      <param name="approximate_sync" value="true"/>
+      <param name="queue_size" value="100"/>
+  </node>
+  <node name="left_sib_apply_target_mask"
+        pkg="jsk_perception" type="apply_mask_image">
+        <remap from="~input" to="/left_hand_camera/rgb/image_rect_color"/>
+      <remap from="~input/mask" to="/left_sib_fcn/target_mask"/>
+      <param name="approximate_sync" value="true"/>
+      <param name="queue_size" value="100"/>
+  </node>
+</launch>
