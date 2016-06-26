@@ -165,12 +165,16 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         candidate_labels =\
             np.array([self.objects.index(obj_name) for
                       obj_name in self.target_bin_info.objects + ['background']])
+        # self.target_bin_info.objects are not sorted alphabetically
+        candidate_labels = np.sort(candidate_labels)
 
         # labels for all objects in the bin
         self.label = pred_datum.argmax(axis=0)
-        self.label_pred = pred_datum[candidate_labels].argmax(axis=0)
+        label_pred = pred_datum[candidate_labels].argmax(axis=0)
+        self.label_pred = np.zeros_like(label_pred)
         for idx, label_val in enumerate(candidate_labels):
-            self.label_pred[self.label_pred == idx] = label_val
+            # don't mix self.label_pred and label_pred
+            self.label_pred[label_pred == idx] = label_val
         self.label_pred[self.mask_img == 0] = 0
 
         # for the target object
