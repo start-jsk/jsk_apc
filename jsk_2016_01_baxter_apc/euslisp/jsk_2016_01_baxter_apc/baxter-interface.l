@@ -59,6 +59,7 @@
     (sethash :offset-gripper-bin-top _hard-coded-variables 10)
     (sethash :offset-gripper-bin-side _hard-coded-variables 40)
     (sethash :draw-out-from-bin-l _hard-coded-variables 80)
+    (sethash :default-overlook-angle _hard-coded-variables (/ pi 5))
 
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
@@ -71,11 +72,13 @@
   ;; Overwrite super class's :rarm-controller
   (:rarm-controller ()
    (append
+    (send-super :head-controller)
     (send-super :rarm-controller)
     (send self :rgripper-controller)))
   ;; Overwrite super class's :larm-controller
   (:larm-controller ()
    (append
+    (send-super :head-controller)
     (send-super :larm-controller)
     (send self :lgripper-controller)))
   (:rgripper-controller ()
@@ -883,6 +886,25 @@
               :revert-if-fail revert-if-fail)
         )
       ))
+  (:bin-overlook-pose
+    (arm bin &key (offset #f(-250 0 -100))
+         (overlook-angle (gethash :default-overlook-angle _hard-coded-variables)))
+    (send self :ik->bin-entrance arm bin
+          :offset offset
+          :rotation-axis t
+          :gripper-angle 90
+          :overlook-angle overlook-angle)
+    (if (eq bin :b)
+      (let (av)
+        (if (eq arm :rarm)
+          (setf (elt av 0) 70)
+          (setf (elt av 0) -70)
+          )
+        (send *baxter* :angle-vector av)
+        )
+      (send *baxter* :angle-vector)
+      )
+    )
   (:move-arm-body->bin
     (arm bin)
     (let (avs)
@@ -900,11 +922,7 @@
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
-      (pushback (send self :ik->bin-entrance arm bin
-                      :offset #f(-250 0 -100)
-                      :rotation-axis t
-                      :gripper-angle 90
-                      :overlook-angle (/ pi 9)) avs)
+      (pushback (send self :bin-overlook-pose arm bin) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
   (:move-arm-body->order-bin
