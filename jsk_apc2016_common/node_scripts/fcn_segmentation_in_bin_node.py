@@ -21,6 +21,7 @@ import message_filters
 
 
 class FCNSegmentationInBinNode(ConnectionBasedTransport):
+    mean_bgr = np.array((104.00698793, 116.66876762, 122.67891434))
 
     def __init__(self):
         self.mask_img = None
@@ -147,7 +148,8 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
     def _segmentation(self):
         """Predict and store the result in self.predicted_segment using RGB
         """
-        datum = self.color_img.transpose((2, 0, 1))
+        datum = self.color_img - self.mean_bgr
+        datum = datum.transpose((2, 0, 1))
 
         x_data = np.array([datum], dtype=np.float32)
         if self.gpu != -1:
