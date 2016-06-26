@@ -2,3 +2,4 @@ trained_segmenter.pkl
 trained_segmenter_2016.pkl
 dataset.pkl
 tokyo_run/
+fcn32s.chainermodel
