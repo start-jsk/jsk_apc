@@ -377,8 +377,8 @@
          (sethash bin _objects-sib-coords obj-coords))
         (t
          (ros::ros-error "[:recognize-objects-segmentation-in-bin] arm: ~a failed to get sib msg" arm)
-         (sethash bin _objects-sib-boxes (list nil))
-         (sethash bin _objects-sib-coords (list nil))))))
+         (sethash bin _objects-sib-boxes nil)
+         (sethash bin _objects-sib-coords nil)))))
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
