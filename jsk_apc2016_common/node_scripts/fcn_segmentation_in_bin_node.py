@@ -42,8 +42,8 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
             '~target_mask', Image, queue_size=3)
         self.masked_input_img_pub = self.advertise(
             '~masked_input', Image, queue_size=3)
-        self.debug_output_pub = self.advertise(
-            '~debug_output', Image, queue_size=3)
+        self.label_pub = self.advertise(
+            '~label', Image, queue_size=3)
 
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
@@ -143,7 +143,9 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
             rospy.loginfo(repr(e))
 
         # debug output
-        self.debug_output_pub.publish(target_mask_msg)
+        label_msg = self.bridge.cv2_to_imgmsg(self.label.astype(np.int32))
+        label_msg.header = self.header
+        self.label_pub.publish(label_msg)
 
     def _segmentation(self):
         """Predict and store the result in self.predicted_segment using RGB
@@ -165,6 +167,7 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
                       obj_name in self.target_bin_info.objects + ['background']])
 
         # labels for all objects in the bin
+        self.label = pred_datum.argmax(axis=0)
         self.label_pred = pred_datum[candidate_labels].argmax(axis=0)
         for idx, label_val in enumerate(candidate_labels):
             self.label_pred[self.label_pred == idx] = label_val
