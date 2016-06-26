@@ -317,6 +317,7 @@
           (send *baxter* :reset-pose arm_)
           5000)
     (send *ri* :wait-interpolation)
+    (send *ri* :calib-pressure-threshold)
     (while
       (ros::ok)
       ;; Show next object
