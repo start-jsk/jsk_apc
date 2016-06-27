@@ -38,7 +38,7 @@ class ApplyBinContentsHint(ConnectionBasedTransport):
                          .format(target_bin, self.bin_contents))
             return
 
-        candidates = ['no_object'] + self.bin_contents[target_bin]
+        candidates = self.bin_contents[target_bin]
         label_to_proba = dict(zip(msg.target_names, msg.probabilities))
         candidates_proba = [label_to_proba[label] for label in candidates]
         candidates_proba = np.array(candidates_proba)
