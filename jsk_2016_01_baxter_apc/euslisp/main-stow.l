@@ -212,6 +212,7 @@
               (if (and object-length (> object-length 0.1))
                 (setq offset-avoid-bin-top-exit 0)
                 (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
+              (send *baxter* :rotate-gripper arm 0 :relative nil)
               (setq avs-place-bin->exit
                     (mapcar
                       #'(lambda (x)
