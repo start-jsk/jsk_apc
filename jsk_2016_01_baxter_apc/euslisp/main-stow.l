@@ -218,7 +218,7 @@
                           (send *ri* :ik->bin-entrance arm target-bin
                                 :offset (float-vector x 0 offset-avoid-bin-top-exit)
                                 :gripper-angle 0))
-                      (reverse entrance-x-list)))
+                      (reverse (cdr entrance-x-list))))
               (send *ri* :angle-vector-sequence
                     avs-place-bin->exit
                     :fast nil 0 :scale 5.0)
