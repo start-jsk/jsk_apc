@@ -389,6 +389,33 @@
          (ros::ros-error "[:recognize-objects-segmentation-in-bin] arm: ~a failed to get sib msg" arm)
          (sethash bin _objects-sib-boxes nil)
          (sethash bin _objects-sib-coords nil)))))
+  (:recognize-objects-in-bin-loop
+    (arm bin &key (max-try-num 2))
+    (let (overlook-n-tried offset)
+      (dotimes (overlook-n-tried max-try-num)
+             (unix::sleep 10)
+             (when (ros::get-param "~collect_data")
+               (ros::set-param
+                 (format nil "~a_collect_sib_data/ready_to_save" (send self :arm-symbol2str arm))
+                 t)
+               (unix::sleep 2)
+               )
+             (ros::ros-info "[recognize-objects-in-bin-loop] Segmentating objects in bin ~a" bin)
+             (setq offset (gethash bin (gethash :default-overlook-offset _hard-coded-variables)))
+             (send self :angle-vector (send self :bin-overlook-pose arm bin :offset offset) 3000)
+             (if (send *ri* :recognize-objects-segmentation-in-bin
+                           arm target-bin :stamp (ros::time-now))
+               (return-from :recognize-objects-in-bin-loop t))
+             (ros::ros-info
+               "[recognize-objects-in-bin-loop] Segmentating in bin ~a failed  overlook-n-tried: ~a"
+               bin overlook-n-tried)
+             (dotimes (i 3) (setf (aref offset i) (+ (aref offset i) (randam 10) -5)))
+             (ros::ros-info
+               "[recognize-objects-in-bin-loop] Change offset of overlook pose to ~a"
+               offset)
+             )
+      nil)
+    )
   (:recognize-object-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let* (msg)
