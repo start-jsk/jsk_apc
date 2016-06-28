@@ -113,29 +113,28 @@
               (ros::ros-info "[main] Recognizing objects in bin" target-bin)
               (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
               (send *ri* :wait-interpolation)
-              (unix::sleep 10)
-              (when (ros::get-param "~collect_data")
-                (ros::set-param
-                  (format nil "~a_collect_sib_data/ready_to_save" (send *ri* :arm-symbol2str arm))
-                  t)
-                (unix::sleep 2)
+              (if (send *ri* :recognize-objects-in-bin-loop arm target-bin)
+                (progn
+                  (setq is-object-found t)
+                  ;; (ros::ros-info "detected_object_index: ~A"
+                  ;;                (send *ri* :detect-target-object-in-bin target-obj
+                  ;;                      target-bin))
+                  (setq graspingp
+                        (send *ri* :pick-object arm target-bin
+                              :n-trial 1
+                              :n-trial-same-pos 1
+                              ;; :object-index (send *ri* :detect-target-object-in-bin
+                              ;;                     target-obj target-bin)
+                              :do-stop-grasp t
+                              )
+                        )
+                  (incf target-n-tried)
+                  )
+                (progn
+                  (setq graspingp nil)
+                  (setq is-object-found nil)
+                  )
                 )
-              (ros::ros-info "[main] Segmentating objects in bin" target-bin)
-              (send *ri* :recognize-objects-segmentation-in-bin arm target-bin
-                    :stamp (ros::time-now))
-              ;; (ros::ros-info "detected_object_index: ~A"
-              ;;                (send *ri* :detect-target-object-in-bin target-obj
-              ;;                      target-bin))
-              (setq graspingp
-                    (send *ri* :pick-object arm target-bin
-                          :n-trial 1
-                          :n-trial-same-pos 1
-                          ;; :object-index (send *ri* :detect-target-object-in-bin
-                          ;;                     target-obj target-bin)
-                          :do-stop-grasp t
-                          )
-                    )
-              (incf target-n-tried)
               (setq state :verify_object)
               (ros::set-param
                 (format nil "~a_hand/state"
@@ -195,7 +194,8 @@
                     :fast nil 0 :scale 5.0)
               ;; if have tried N times and N is larger than
               ;; number of bin contents, robot should abort the target
-              (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
+              (if (and (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
+                       is-object-found)
                 (setq state :pick_object)
                 (setq state :set_target)
                 )
