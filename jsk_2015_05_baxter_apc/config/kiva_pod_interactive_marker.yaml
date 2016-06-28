@@ -1,8 +1,8 @@
 frame_id: /base
-initial_orientation: [0.00325133162551, -0.00693140178919, -0.00992589257658, 0.999921441078]
-initial_x: 1.47352457047
-initial_y: -0.0344418957829
-initial_z: 0.423083603382
+initial_orientation: [0.001, -0.034, 0.039, 0.999]
+initial_x: 1.453
+initial_y: 0.042
+initial_z: 0.406
 object_a: 0.2
 object_b: 0.2
 object_g: 0.0
