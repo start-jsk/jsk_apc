@@ -846,7 +846,15 @@
   (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)) (gripper-angle 90)
          (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil) (use-current-pose nil))
-    (let (bin-box bin-coords bin-dim-x)
+    (let ((bin-box)
+          (bin-coords)
+          (bin-dim-x)
+          (nearest-pose-candidates
+            (list
+              (send *baxter* :fold-pose-upper arm)
+              (send *baxter* :fold-pose-middle arm)
+              (send *baxter* :fold-pose-lower arm)
+              (send *baxter* :avoid-shelf-pose arm bin))))
       (setq bin-box (gethash bin _bin-boxes))
       (unless bin-box
         (ros::ros-error "[:ik->bin-entrance] No data about bin-box ~a." bin)
@@ -859,15 +867,7 @@
       (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
       (if (not use-current-pose)
         (send *baxter* :avoid-shelf-pose arm bin))
-      (send self :ik->nearest-pose arm bin-coords
-            (list
-              (send *baxter* :fold-pose-upper arm)
-              (send *baxter* :fold-pose-middle arm)
-              (send *baxter* :fold-pose-lower arm)
-              (send *baxter* :avoid-shelf-pose arm bin)
-              )
-            :rotation-axis t
-            )
+      (send self :ik->nearest-pose arm bin-coords nearest-pose-candidates :rotation-axis t)
       ;; apply rotation
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
       (send bin-coords :rotate (deg2rad (- gripper-angle 90)) :y :world)
@@ -875,16 +875,19 @@
       (send bin-coords :translate offset :world)
       (send bin-coords :rotate overlook-angle :y :world)
       (if (or (< gripper-angle 45) (eq bin :h))
-        (send *baxter* arm :inverse-kinematics bin-coords
+        (send self :ik->nearest-pose arm bin-coords
+              nearest-pose-candidates
               :rotation-axis t
               ;; if this is :z when gripper is straight, wrist sometimes rotates overly
               ;; if this is :z when Bin is h, body and arm collides on pulling out arm
               :revert-if-fail revert-if-fail)
-        (send *baxter* arm :inverse-kinematics bin-coords
+        (send self :ik->nearest-pose arm bin-coords
+              nearest-pose-candidates
               :rotation-axis rotation-axis
               :revert-if-fail revert-if-fail)
         )
-      ))
+      )
+    )
   (:move-arm-body->bin
     (arm bin)
     (let (avs)
@@ -899,15 +902,38 @@
       ))
   (:move-arm-body->bin-overlook-pose
     (arm bin)
-    (let (avs)
+    (let (avs av offset)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
       (pushback (send self :ik->bin-entrance arm bin
-                      :offset #f(-280 0 -100)
-                      :rotation-axis t
-                      :gripper-angle 90
-                      :overlook-angle (/ pi 5)) avs)
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
+                      :offset (float-vector
+                                -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                      ) avs)
+      (if (find bin (list :b :i :k))
+        (setq offset (float-vector -280 0 -60))
+        (setq offset (float-vector -280 0 -10))
+        )
+      (setq av
+        (send self :ik->bin-entrance arm bin
+              :offset offset
+              :rotation-axis t
+              :gripper-angle 90
+              :overlook-angle (/ pi 4.5)
+              :revert-if-fail t)
+        )
+      (if av
+        (pushback av avs)
+        (pushback
+          (send self :ik->bin-entrance arm bin
+                :offset offset
+                :rotation-axis :z
+                :gripper-angle 90
+                :overlook-angle (/ pi 4.5)
+                :revert-if-fail nil)
+          avs)
+        )
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
+      (send self :wait-interpolation)
       ))
   (:move-arm-body->order-bin
     (arm)
