@@ -21,7 +21,7 @@ class StowWorkOrderServer():
                 'output',
                 'output_' + osp.basename(self.json_file)
                 )
-        self.black_list = rospy.get_param('~black_list', [])
+        self.volume_first = rospy.get_param('~volume_first', [])
         self.limit_volume = rospy.get_param('~limit_volume', 3000)
         if self.json_file is None:
             rospy.logerr('must set json file path to ~json')
@@ -93,7 +93,7 @@ class StowWorkOrderServer():
             else:
                 sorted_bin_list = [x for x in 'cfhikl']
             msg[arm] = WorkOrderArray()
-            if target_object[arm] in self.black_list:
+            if target_object[arm] in self.volume_first:
                 sorted_bin_list = sorted(
                         sorted_bin_list,
                         key=lambda bin_: self.bin_point_dict[bin_],
