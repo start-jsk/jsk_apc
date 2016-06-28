@@ -62,6 +62,13 @@ def get_work_order_msg(json_file, gripper, max_weight, object_data=None):
                             .format(obj=target_object_data['name'], bin_=bin_,
                                     weight=target_object_data['weight'], max_weight=max_weight))
                 continue
+            if target_object_data['graspability'][gripper] > 3:
+                jsk_logwarn('Skipping target {obj} in {bin_}: it exceeds graspability {grasp} > {max_grasp} with gripper {gripper}'
+                            .format(obj=target_object_data['name'], bin_=bin_,
+                                    grasp=target_object_data['graspability'][gripper],
+                                    max_grasp=3,
+                                    gripper=gripper))
+                continue
         else:
             if target_object in abandon_target_objects:
                 jsk_logwarn('Skipping target {obj} in {bin_}: it is listed as abandon target'
