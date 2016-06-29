@@ -176,11 +176,11 @@
               (if (and object-length (> object-length 0.1))
                 (progn
                   (setq entrance-x-list (list -100 -50 0 150 200))
-                  (setq offset-avoid-bin-top 80)
+                  (setq offset-avoid-bin-top 40)
                   (setq gripper-angle 45))
                 (progn
                   (setq entrance-x-list (list -100 -50 0 150))
-                  (setq offset-avoid-bin-top 30)
+                  (setq offset-avoid-bin-top -10)
                   (setq gripper-angle 90)))
               (if (eq arm :larm)
                 (send *baxter* :head_pan :joint-angle -80) ;; larm
@@ -225,7 +225,7 @@
             (progn
               (ros::ros-info "[main] ~a, ~a" arm state)
               (if (and object-length (> object-length 0.1))
-                (setq offset-avoid-bin-top-exit 60)
+                (setq offset-avoid-bin-top-exit 20)
                 (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
               (send *baxter* :rotate-gripper arm 0 :relative nil)
               (setq avs-place-bin->exit
