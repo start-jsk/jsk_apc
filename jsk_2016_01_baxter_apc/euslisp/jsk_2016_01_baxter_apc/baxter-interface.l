@@ -1470,9 +1470,11 @@
         (delete nil (mapcar
                       #'(lambda (work-order)
                           (setq bin (str2symbol (send work-order :bin)))
-                          (if (and object-length
+                          (if (eq bin :tote)
+                            bin
+                            (if (and object-length
                                    (> object-length object-length-limit))
-                              (if (member bin (list :a :b :c :k :l :j)) bin nil) bin))
+                              (if (member bin (list :a :b :c :k :l :j)) bin nil) bin)))
                   (send self :get-work-orders arm))))))
   )
 
