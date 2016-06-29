@@ -153,7 +153,6 @@
               (setq verify-ret (send *ri* :verify-object arm target-obj))
               (ros::ros-info "[main] arm: ~a, verify-ret: ~a" arm verify-ret)
               (cond
-                ((not (send *ri* :graspingp arm)) (setq state :return_object))
                 ((eq verify-ret :timeout) (setq state :return_object))
                 ((null verify-ret) (setq state :return_object))
                 (verify-ret (setq state :place_object))
