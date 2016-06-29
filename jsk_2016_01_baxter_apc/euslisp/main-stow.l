@@ -162,22 +162,28 @@
             (progn
               (ros::ros-info "[main] ~a, ~a" arm state)
               (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
-              (setq offset-avoid-bin-top
-                    (gethash :offset-avoid-bin-top (send *ri* :get-val '_hard-coded-variables)))
+              ;; (setq offset-avoid-bin-top
+              ;;       (gethash :offset-avoid-bin-top (send *ri* :get-val '_hard-coded-variables)))
               (if (and object-length (> object-length 0.1))
                 (progn
-                  (setq entrance-x-list (list -200 -150 -100 -50 0 150 200))
-                  (setq offset-avoid-bin-top 50)
+                  (setq entrance-x-list (list -100 -50 0 150 200))
+                  (setq offset-avoid-bin-top 80)
                   (setq gripper-angle 45))
                 (progn
-                  (setq entrance-x-list (list -200 -150 -100 -50 0 150))
+                  (setq entrance-x-list (list -100 -50 0 150))
+                  (setq offset-avoid-bin-top 30)
                   (setq gripper-angle 90)))
+              (if (eq arm :larm)
+                (send *baxter* :head_pan :joint-angle -80) ;; larm
+                (send *baxter* :head_pan :joint-angle 80)  ;; rarm
+                )
               (send *ri* :angle-vector-sequence
                     (list
                       (send *baxter* :avoid-shelf-pose arm target-bin)
                       (send *ri* :ik->bin-entrance arm target-bin
-                            :offset (float-vector -200 0 offset-avoid-bin-top)
-                            :gripper-angle gripper-angle))
+                            :offset (float-vector -100 0 offset-avoid-bin-top)
+                            :gripper-angle gripper-angle)
+                      )
                     :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
               (setq avs-picked->place-bin
@@ -210,7 +216,7 @@
             (progn
               (ros::ros-info "[main] ~a, ~a" arm state)
               (if (and object-length (> object-length 0.1))
-                (setq offset-avoid-bin-top-exit 0)
+                (setq offset-avoid-bin-top-exit 60)
                 (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
               (send *baxter* :rotate-gripper arm 0 :relative nil)
               (setq avs-place-bin->exit
@@ -219,7 +225,7 @@
                           (send *ri* :ik->bin-entrance arm target-bin
                                 :offset (float-vector x 0 offset-avoid-bin-top-exit)
                                 :gripper-angle 0))
-                      (reverse (cdr entrance-x-list))))
+                      (reverse entrance-x-list)))
               (send *ri* :angle-vector-sequence
                     avs-place-bin->exit
                     :fast nil 0 :scale 5.0)
