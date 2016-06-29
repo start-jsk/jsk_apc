@@ -193,7 +193,7 @@
 - name: scotch_duct_tape
   graspability:
     gripper2015: 3
-    gripper2016: 3
+    gripper2016: 4
   stock: 2
   weight: 2
 - name: soft_white_lightbulb
