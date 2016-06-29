@@ -404,12 +404,12 @@
              (setq offset (gethash bin (gethash :default-overlook-offset _hard-coded-variables)))
              (send self :angle-vector (send self :bin-overlook-pose arm bin :offset offset) 3000)
              (if (send *ri* :recognize-objects-segmentation-in-bin
-                           arm target-bin :stamp (ros::time-now))
+                           arm bin :stamp (ros::time-now))
                (return-from :recognize-objects-in-bin-loop t))
              (ros::ros-info
                "[recognize-objects-in-bin-loop] Segmentating in bin ~a failed  overlook-n-tried: ~a"
                bin overlook-n-tried)
-             (dotimes (i 3) (setf (aref offset i) (+ (aref offset i) (randam 10) -5)))
+             (dotimes (i 3) (setf (aref offset i) (+ (aref offset i) (random 10) -5)))
              (ros::ros-info
                "[recognize-objects-in-bin-loop] Change offset of overlook pose to ~a"
                offset)
