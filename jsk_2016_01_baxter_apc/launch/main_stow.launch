@@ -17,7 +17,16 @@
   <node pkg="jsk_2016_01_baxter_apc" type="stow_work_order_server.py" name="work_order" respawn="true" output="screen">
     <rosparam subst_value="true">
         json: $(arg json)
-        volume_first: ['kleenex_paper_towels']
+        volume_first:
+          - dasani_water_bottle
+          - dr_browns_bottle_brush
+          - folgers_classic_roast_coffee
+          - hanes_tube_socks
+          - kleenex_tissue_box
+          - peva_shower_curtain_liner
+          - up_glucose_bottle
+        black_list:
+          - kleenex_paper_towels
     </rosparam>
   </node>
 

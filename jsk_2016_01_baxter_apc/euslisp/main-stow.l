@@ -119,17 +119,21 @@
                 (send *ri* :select-stow-target-bin arm
                       :object-length object-length
                       :object-length-limit 0.1))
-          (if (send *ri* :check-bin-exist target-bin)
-              (progn
-                (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
-                ;; logging
-                (ros::ros-info "[main] target-bin: ~a" target-bin)
-                (setq state :place_object)
-                (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
-              (progn
-                (ros::ros-error "[main] could not find bin box: ~a" target-bin)
-                (setq state :set_target_bin)
-                (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))))
+          (cond
+            ((eq target-bin :tote)
+              (ros::ros-info "[main] blacklisted object, return to tote")
+              (setq state :return_object)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+            ((send *ri* :check-bin-exist target-bin)
+              (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
+              ;; logging
+              (ros::ros-info "[main] target-bin: ~a" target-bin)
+              (setq state :place_object)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
+            (t
+              (ros::ros-error "[main] could not find bin box: ~a" target-bin)
+              (setq state :set_target_bin)
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))))
         (:wait_for_opposite_arm_in_place
           (ros::ros-info "[main] ~a, ~a" arm state)
           (while
