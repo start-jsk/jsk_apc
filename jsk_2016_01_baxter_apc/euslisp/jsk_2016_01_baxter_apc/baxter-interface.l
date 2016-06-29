@@ -749,7 +749,8 @@
       (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
   (:pick-object
-    (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil) (use-sib t))
+    (arm bin &key (object-index 0) (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil) (use-sib t)
+         (target-offset #f(0 0 0)))
     (send *ri* :angle-vector-sequence
           (list (send self :ik->bin-entrance arm bin
                       :offset (float-vector
@@ -780,7 +781,7 @@
           (unless graspingp
             (setq graspingp
                   (send self :try-to-pick-object arm bin :object-index object-index
-                        :offset (float-vector (* i 50) 0 0) :use-sib use-sib)
+                        :offset (v+ (float-vector (* i 50) 0 0) target-offset) :use-sib use-sib)
                   )
             (pushback (send *baxter* :angle-vector) avs)
             )

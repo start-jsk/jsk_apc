@@ -126,6 +126,7 @@
                               ;; :object-index (send *ri* :detect-target-object-in-bin
                               ;;                     target-obj target-bin)
                               :do-stop-grasp t
+                              :target-offset #f(50 0 0)
                               )
                         )
                   (incf target-n-tried)
