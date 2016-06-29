@@ -915,18 +915,29 @@
       ;; apply offset
       (send bin-coords :translate offset :world)
       (send bin-coords :rotate overlook-angle :y :world)
-      (if (or (< gripper-angle 45) (eq bin :h))
-        (send self :ik->nearest-pose arm bin-coords
-              nearest-pose-candidates
-              :rotation-axis t
-              ;; if this is :z when gripper is straight, wrist sometimes rotates overly
-              ;; if this is :z when Bin is h, body and arm collides on pulling out arm
-              :revert-if-fail revert-if-fail)
-        (send self :ik->nearest-pose arm bin-coords
-              nearest-pose-candidates
-              :rotation-axis rotation-axis
-              :revert-if-fail revert-if-fail)
-        )
+      (cond ((< gripper-angle 45)
+             (send self :ik->nearest-pose arm bin-coords
+                   nil
+                   :rotation-axis t
+                   ;; if this is :z when gripper is straight, wrist sometimes rotates overly
+                   ;; if this is :z when Bin is h, body and arm collides on pulling out arm
+                   :revert-if-fail revert-if-fail)
+             )
+            ((eq bin :h)
+             (send self :ik->nearest-pose arm bin-coords
+                   nearest-pose-candidates
+                   :rotation-axis t
+                   ;; if this is :z when gripper is straight, wrist sometimes rotates overly
+                   ;; if this is :z when Bin is h, body and arm collides on pulling out arm
+                   :revert-if-fail revert-if-fail)
+             )
+            (t
+              (send self :ik->nearest-pose arm bin-coords
+                    nearest-pose-candidates
+                    :rotation-axis rotation-axis
+                    :revert-if-fail revert-if-fail)
+              )
+            )
       )
     )
   (:move-arm-body->bin
