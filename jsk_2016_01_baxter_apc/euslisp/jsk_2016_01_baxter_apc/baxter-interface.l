@@ -69,6 +69,7 @@
                  )
                )
       )
+    (sethash :bin-reachable-depth _hard-coded-variables 220)
 
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
@@ -487,8 +488,8 @@
       ))
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
-    (let (avs-before-approach obj-boxes obj-box obj-coms obj-com graspingp
-                              gripper-req-l bin-box bin-y-l bin-z-l)
+    (let (avs-before-approach obj-boxes obj-box obj-coms obj-com graspingp gripper-req-l
+                              bin-box bin-y-l bin-z-l target-coords-with-offset)
       ;; validate
       (cond (use-sib
               (unless
@@ -564,8 +565,39 @@
             (setq sign_y 0)
             )
           )
+        (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
+        (setq target-coords-with-offset
+              (make-coords
+                :pos (v+ (send obj-coords :pos) offset)
+                :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
+                ))
+        (when (> (elt (send target-coords-with-offset :worldpos) 0)
+                 (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
+                    (- (gethash :bin-reachable-depth _hard-coded-variables))))
+          (ros::ros-warn
+            "[:try-to-pick-object] arm:~a  object is too deep to approach with sign_y: 0"
+            arm)
+          (if (< (elt (send target-coords-with-offset :worldpos) 0)
+                 (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
+                    (- (gethash :bin-reachable-depth _hard-coded-variables))
+                    (- (gethash :pad-link-l _hard-coded-variables))))
+            (progn
+              (ros::ros-info
+                "[:try-to-pick-object] arm:~a  approach object with sign_y: -1"
+                arm)
+              (setq sign 0)
+              (setq sign_y -1)
+              )
+            (progn
+              (ros::ros-warn
+                "[:try-to-pick-object] arm:~a  object is too deep to approach with sign_y: -1"
+                arm)
+              (ros::ros-warn "[:try-to-pick-object] abort picking")
+              (return-from :try-to-pick-object nil)
+              )
+            )
+          )
         )
-      (ros::ros-info "[:try-to-pick-object] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
       (if (ros::get-param "/apc_on_gazebo" nil)
         ;; FIXME: this condition is needed to avoid collision to the shelf at this moment
         (setq offset-from-entrance #f(-30 0 0))
@@ -643,49 +675,42 @@
           (setq _last-av-before-approach (send *baxter* :angle-vector))
           ;; grasp object
           (ros::ros-info "[:try-to-pick-object] arm:~a approach to the object" arm)
-          (let (target-coords)
-            (setq target-coords
-                  (make-coords
-                    :pos (v+ (send obj-coords :pos) offset)
-                    :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
-                    ))
-            (if (< sign_y 0)
-              ;; when gripper is straight
-              ;; move arm to the target only if robot can solve IK
-              (if (send *baxter* arm :inverse-kinematics target-coords)
+          (if (< sign_y 0)
+            ;; when gripper is straight
+            ;; move arm to the target only if robot can solve IK
+            (if (send *baxter* arm :inverse-kinematics target-coords-with-offset)
+              (progn
+                (send self :angle-vector (send *baxter* :angle-vector) 3000)
+                (send self :wait-interpolation-smooth 1000)
+                )
+              (ros::ros-warn
+                "[:try-to-pick-object] arm:~a cannot approach closer with offset" arm)
+              )
+            ;; when gripper isn't straight
+            (let (end-coords end->above target-above-coords (elapsed-t 0))
+              (setq end-coords (send (send *baxter* arm :end-coords) :copy-worldcoords))
+              (setq end->above (send end-coords :transformation target-coords-with-offset :local))
+              (setf (elt (send end->above :pos) 2) 0)
+              (setq target-above-coords
+                    (send end-coords :transform end->above :local))
+              ;; move arm in the local x, y direction only if robot can solve IK
+              (if (send *baxter* arm :inverse-kinematics target-above-coords
+                        :revert-if-fail t)
+                (send self :angle-vector (send *baxter* :angle-vector)
+                      (setq elapsed-t 2500))
+                )
+              (send self :wait-interpolation)
+              ;; move arm to the target
+              ;; if above IK succeeded, arm moves in the local z direction
+              (if (send *baxter* arm :inverse-kinematics target-coords-with-offset)
                 (progn
-                  (send self :angle-vector (send *baxter* :angle-vector) 3000)
+                  (send self :angle-vector
+                        (send *baxter* :angle-vector)
+                        (- 4000 elapsed-t))
                   (send self :wait-interpolation-smooth 1000)
                   )
                 (ros::ros-warn
                   "[:try-to-pick-object] arm:~a cannot approach closer with offset" arm)
-                )
-              ;; when gripper isn't straight
-              (let (end-coords end->above target-above-coords (elapsed-t 0))
-                (setq end-coords (send (send *baxter* arm :end-coords) :copy-worldcoords))
-                (setq end->above (send end-coords :transformation target-coords :local))
-                (setf (elt (send end->above :pos) 2) 0)
-                (setq target-above-coords
-                      (send end-coords :transform end->above :local))
-                ;; move arm in the local x, y direction only if robot can solve IK
-                (if (send *baxter* arm :inverse-kinematics target-above-coords
-                          :revert-if-fail t)
-                  (send self :angle-vector (send *baxter* :angle-vector)
-                        (setq elapsed-t 2500))
-                  )
-                (send self :wait-interpolation)
-                ;; move arm to the target
-                ;; if above IK succeeded, arm moves in the local z direction
-                (if (send *baxter* arm :inverse-kinematics target-coords)
-                  (progn
-                    (send self :angle-vector
-                          (send *baxter* :angle-vector)
-                          (- 4000 elapsed-t))
-                    (send self :wait-interpolation-smooth 1000)
-                    )
-                  (ros::ros-warn
-                    "[:try-to-pick-object] arm:~a cannot approach closer with offset" arm)
-                  )
                 )
               )
             )
