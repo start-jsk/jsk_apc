@@ -575,11 +575,6 @@
   (:recognize-object-length-in-hand
     (arm &key (stamp (ros::time-now)) (timeout))
     (let (msg x-length)
-      ; (if (eq arm :rarm) (send *baxter* :view-hand-pose arm :l)
-      ;     (send *baxter* :view-hand-pose arm :j))
-      ; (send *baxter* arm :move-end-pos #f(-50 0 180) :world)
-      ; (send *ri* :send-av 5000)
-      ; (send *ri* :wait-interpolation)
       (setq msg
             (one-shot-subscribe
               (format nil "cpi_decomposer_~a_hand/boxes" (send *ri* :arm-symbol2str arm))

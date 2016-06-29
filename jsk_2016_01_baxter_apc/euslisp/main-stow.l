@@ -93,6 +93,11 @@
                     (ros::set-param
                       (format nil "~a_hand/target_object"
                               (send *ri* :arm-symbol2str arm)) target-obj)
+                    (if (eq arm :rarm) (send *baxter* :view-hand-pose arm :l)
+                        (send *baxter* :view-hand-pose arm :j))
+                    (send *baxter* arm :move-end-pos #f(-50 0 180) :world)
+                    (send *ri* :angle-vector (send *baxter* :angle-vector))
+                    (send *ri* :wait-interpolation)
                     (setq object-length
                           (send *ri* :recognize-object-length-in-hand arm
                                 :timeout 40000))
