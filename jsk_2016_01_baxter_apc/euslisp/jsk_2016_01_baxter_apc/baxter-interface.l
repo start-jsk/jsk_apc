@@ -59,6 +59,16 @@
     (sethash :offset-gripper-bin-top _hard-coded-variables 10)
     (sethash :offset-gripper-bin-side _hard-coded-variables 40)
     (sethash :draw-out-from-bin-l _hard-coded-variables 80)
+    (sethash :default-overlook-angle _hard-coded-variables (/ pi 4.5))
+    (sethash :default-overlook-offset _hard-coded-variables (make-hash-table))
+    (dolist (bin (list :a :b :c :d :e :f :g :h :i :j :k :l))
+      (sethash bin (gethash :default-overlook-offset _hard-coded-variables)
+               (if (find bin (list :b :i :k))
+                 (float-vector -280 0 -60)
+                 (float-vector -280 0 -10)
+                 )
+               )
+      )
 
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
@@ -903,38 +913,42 @@
                 avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
       ))
+  (:bin-overlook-pose
+    (arm bin &key offset angle)
+    (if (not offset)
+      (setq offset (gethash bin (gethash :default-overlook-offset _hard-coded-variables))))
+    (if (not angle)
+      (setq angle (gethash :default-overlook-angle _hard-coded-variables)))
+    (let (av)
+      (setq av
+            (send self :ik->bin-entrance arm bin
+                  :offset offset
+                  :rotation-axis t
+                  :gripper-angle 90
+                  :overlook-angle angle
+                  :revert-if-fail t)
+            )
+      (if av
+        av
+        (send self :ik->bin-entrance arm bin
+              :offset offset
+              :rotation-axis :z
+              :gripper-angle 90
+              :overlook-angle angle
+              :revert-if-fail nil)
+        )
+      )
+    )
   (:move-arm-body->bin-overlook-pose
     (arm bin)
-    (let (avs av offset)
+    (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
       (pushback (send self :ik->bin-entrance arm bin
                       :offset (float-vector
                                 -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
                       ) avs)
-      (if (find bin (list :b :i :k))
-        (setq offset (float-vector -280 0 -60))
-        (setq offset (float-vector -280 0 -10))
-        )
-      (setq av
-        (send self :ik->bin-entrance arm bin
-              :offset offset
-              :rotation-axis t
-              :gripper-angle 90
-              :overlook-angle (/ pi 4.5)
-              :revert-if-fail t)
-        )
-      (if av
-        (pushback av avs)
-        (pushback
-          (send self :ik->bin-entrance arm bin
-                :offset offset
-                :rotation-axis :z
-                :gripper-angle 90
-                :overlook-angle (/ pi 4.5)
-                :revert-if-fail nil)
-          avs)
-        )
+      (pushback (send self :bin-overlook-pose arm bin) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
       (send self :wait-interpolation)
       ))
