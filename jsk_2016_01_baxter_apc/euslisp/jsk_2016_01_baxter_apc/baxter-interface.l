@@ -452,8 +452,6 @@
     (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
     (let (avs-before-approach obj-boxes obj-box obj-coms obj-com graspingp
                               gripper-req-l bin-box bin-y-l bin-z-l)
-      ;; initialize _last-av-before-approach
-      (setq _last-av-before-approach (send *baxter* :angle-vector))
       ;; validate
       (cond (use-sib
               (unless
@@ -591,8 +589,8 @@
       ;; check if IK to object succeed
       ;; if that IK fails, abort picking
       (if (send *baxter* arm :inverse-kinematics
-                (make-coords :pos (send obj-coords :pos)
-                             :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
+                (print (make-coords :pos (send obj-coords :pos)
+                             :rpy (list 0 (* sign_y pi/2) (* sign pi/2)))))
         (progn
           (send self :angle-vector-sequence avs-before-approach :fast nil 0 :scale 5.0)
           (send self :wait-interpolation)
@@ -724,6 +722,8 @@
                       ))
           :fast nil 0 :scale 5.0)
     (send *ri* :wait-interpolation)
+    ;; initialize _last-av-before-approach
+    (setq _last-av-before-approach (send *baxter* :angle-vector))
     (let (bin-box graspingp avs)
       ;; abort when no objects found
       (if use-sib
@@ -771,19 +771,22 @@
       (send self :angle-vector-sequence
             (list
               (send *baxter* :angle-vector _last-av-before-approach)
-              (send *baxter* arm :move-end-pos
-                    (float-vector
-                      (- (gethash :draw-out-from-bin-l _hard-coded-variables))
-                      0 0)
-                    :world)
-              (send self :ik->bin-entrance arm bin
-                    :offset (float-vector
-                              -100 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
-                    )
-              (send self :ik->bin-entrance arm bin
-                    :offset (float-vector
-                              -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
-                    )
+              (print (send *baxter* arm :move-end-pos
+                           (float-vector
+                             (- (gethash :draw-out-from-bin-l _hard-coded-variables))
+                             0 0)
+                           :world
+                           :rotation-axis :z
+                           :revert-if-fail nil
+                           ))
+              (print (send self :ik->bin-entrance arm bin
+                           :offset (float-vector
+                                     -100 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                           ))
+              (print (send self :ik->bin-entrance arm bin
+                           :offset (float-vector
+                                     -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                           ))
               )
             :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
