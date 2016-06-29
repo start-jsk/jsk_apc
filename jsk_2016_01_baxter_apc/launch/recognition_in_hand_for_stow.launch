@@ -31,6 +31,17 @@
               to: /in_hand_clipper/right_hand/point_indices
             - from: ~output
               to: ~points
+        - name: pc_to_cpi_right_hand
+          type: jsk_pcl/PointCloudToClusterPointIndices
+          remappings:
+            - from: ~input
+              to: extract_indices_right_hand/points
+        - name: pc_to_cpi_left_hand
+          type: jsk_pcl/PointCloudToClusterPointIndices
+          remappings:
+            - from: ~input
+              to: extract_indices_left_hand/points
+        <!--
         - name: euclid_clustering_left_hand
           type: jsk_pcl/EuclideanClustering
           remappings:
@@ -41,20 +52,21 @@
           remappings:
             - from: ~input
               to: extract_indices_right_hand/points
+        -->
         - name: cpi_decomposer_left_hand
           type: jsk_pcl/ClusterPointIndicesDecomposer
           remappings:
             - from: ~input
               to: extract_indices_left_hand/points
             - from: ~target
-              to: euclid_clustering_left_hand/output
+              to: pc_to_cpi_left_hand/output
         - name: cpi_decomposer_right_hand
           type: jsk_pcl/ClusterPointIndicesDecomposer
           remappings:
             - from: ~input
               to: extract_indices_right_hand/points
             - from: ~target
-              to: euclid_clustering_right_hand/output
+              to: pc_to_cpi_right_hand/output
         - name: pc_to_pi_left_hand
           type: jsk_pcl/OrganizedPointCloudToPointIndices
           remappings:
@@ -128,6 +140,7 @@
       keep_organized: true
     </rosparam>
   </group>
+  <!--
   <group ns="euclid_clustering_left_hand">
     <rosparam>
       tolerance: 0.02
@@ -142,6 +155,7 @@
       max_size: 100000
     </rosparam>
   </group>
+  -->
   <group ns="cpi_decomposer_left_hand">
     <rosparam>
       queue_size: 1000
