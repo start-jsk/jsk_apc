@@ -1474,8 +1474,10 @@
                                     (if (not (eq bin :k)) bin nil))))
                         (send self :get-work-orders arm)))))
       (if (not target-bin)
-        (if (eq arm :larm) (elt (list :a :b :d :e :g :k) (random 5))
-          (elt (list :c :f :h :i :k :l) (random 5))))))
+        (if (eq arm :larm)
+          (setq target-bin (elt (list :a :b :d :e :g :k) (random 5)))
+          (setq target-bin (elt (list :c :f :h :i :k :l) (random 5)))))
+      target-bin))
   )
 
 (defun jsk_2016_01_baxter_apc::baxter-init (&key (ctype :default-controller))
