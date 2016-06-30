@@ -32,7 +32,7 @@ class OutputJsonStow():
             json.dump(self.output_data, f, sort_keys=True, indent=4)
 
     def main(self):
-        duration = rospy.Duration(rospy.get_param('~duration', 1.0))
+        duration = rospy.Duration(rospy.get_param('~duration', 0.5))
         timer = rospy.Timer(duration, self.update_json)
         rospy.spin()
 
