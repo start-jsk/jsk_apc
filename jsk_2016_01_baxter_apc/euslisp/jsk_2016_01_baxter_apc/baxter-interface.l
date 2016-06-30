@@ -70,7 +70,7 @@
                  )
                )
       )
-    (sethash :bin-reachable-depth-gripper-90 _hard-coded-variables 220)
+    (sethash :bin-reachable-depth-gripper-90 _hard-coded-variables 200)
 
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
