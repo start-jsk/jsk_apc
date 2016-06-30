@@ -86,7 +86,7 @@
               (setq target-obj
                     (send *ri* :recognize-object-in-hand arm
                                :stamp (ros::time-now)
-                               :timeout 10000))
+                               :timeout 20000))
               (if (equal target-obj "no_object") (setq target-obj nil))
               (if target-obj
                   (progn
