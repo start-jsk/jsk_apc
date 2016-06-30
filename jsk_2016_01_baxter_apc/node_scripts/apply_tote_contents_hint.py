@@ -33,7 +33,7 @@ class ApplyToteContentsHint(ConnectionBasedTransport):
     def _apply(self, msg):
         # get candidates probabilities
         candidates = [obj for obj in self.tote_contents
-                      if obj not in blacklist]
+                      if obj not in self.blacklist]
         label_to_proba = dict(zip(msg.target_names, msg.probabilities))
         candidates_proba = [label_to_proba[label] for label in candidates]
         candidates_proba = np.array(candidates_proba)
