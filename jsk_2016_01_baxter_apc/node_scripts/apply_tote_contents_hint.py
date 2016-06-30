@@ -19,6 +19,9 @@ class ApplyToteContentsHint(ConnectionBasedTransport):
         json_file = rospy.get_param('~json')
         self.tote_contents = jsk_apc2016_common.get_tote_contents(json_file)
         self.pub = self.advertise('~output', ObjectRecognition, queue_size=1)
+        object_data = jsk_apc2016_common.get_object_data()
+        self.blacklist = [d['name'] for d in object_data
+                          if d['graspability']['gripper2016'] >= 4]
 
     def subscribe(self):
         self.sub = rospy.Subscriber('~input', ClassificationResult,
@@ -29,7 +32,8 @@ class ApplyToteContentsHint(ConnectionBasedTransport):
 
     def _apply(self, msg):
         # get candidates probabilities
-        candidates = self.tote_contents
+        candidates = [obj for obj in self.tote_contents
+                      if obj not in blacklist]
         label_to_proba = dict(zip(msg.target_names, msg.probabilities))
         candidates_proba = [label_to_proba[label] for label in candidates]
         candidates_proba = np.array(candidates_proba)
