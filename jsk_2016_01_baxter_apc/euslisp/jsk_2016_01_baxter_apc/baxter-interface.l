@@ -378,7 +378,7 @@
       (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
       (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-objects-segmentation-in-bin
-    (arm bin &key (stamp (ros::time-now)) (timeout 30))
+    (arm bin &key (stamp (ros::time-now)) (timeout 5))
     (let ((box-topic (format nil "~a_sib_cpi_decomposer/boxes" (send self :arm-symbol2str arm)))
           box-msg
           (com-topic (format nil
