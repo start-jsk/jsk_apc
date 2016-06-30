@@ -49,7 +49,7 @@
 - name: dasani_water_bottle
   graspability:
     gripper2015: 3
-    gripper2016: 3
+    gripper2016: 4
   stock: 2
   weight: 16.9
 - name: dove_beauty_bar
