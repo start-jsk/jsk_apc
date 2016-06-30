@@ -182,6 +182,20 @@
       (if (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))
         t
         nil)))
+  (:keep-picking-p
+    (bin past-graspingps object-found-p &key (max-retry-grasp-num 3))
+    (let ((latest-grasp-failure-num 0))
+      (dolist (p (reverse past-graspingps))
+        (if p
+          (return)
+          (1+ latest-grasp-failure-num))
+        )
+      (if (< latest-grasp-failure-num max-retry-grasp-num)
+        (and (> (+ (length (send self :get-bin-contents bin)) 1)
+                (length past-graspingps)) object-found-p)
+        nil)
+      )
+    )
   (:arm-symbol2str
     (arm)
     (case arm
