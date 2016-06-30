@@ -7,6 +7,8 @@
 #include <std_msgs/Float32.h>
 
 ros::Publisher g_gripper_enable_pub;
+ros::Publisher g_vacuum_right_pub;
+ros::Publisher g_vacuum_left_pub;
 bool g_robot_enabled;
 std::map<std::string, ros::Time> g_last_command_time;
 std::map<std::string, bool> g_servo_on;
@@ -16,6 +18,11 @@ void robot_stateCb(const baxter_core_msgs::AssemblyState::ConstPtr& sub_msg)
   std_msgs::Bool pub_msg;
   pub_msg.data = sub_msg->enabled;
   g_gripper_enable_pub.publish(pub_msg);
+  if (!pub_msg.data)
+  {
+    g_vacuum_right_pub.publish(pub_msg);
+    g_vacuum_left_pub.publish(pub_msg);
+  }
   if (g_robot_enabled == false && sub_msg->enabled == true)
   {
     g_last_command_time["right"] = ros::Time::now();
@@ -43,6 +50,8 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "enable_gripper");
   ros::NodeHandle n;
   g_gripper_enable_pub = n.advertise<std_msgs::Bool>("gripper_front/enable", 10);
+  g_vacuum_right_pub = n.advertise<std_msgs::Bool>("vacuum_gripper/limb/right", 10);
+  g_vacuum_left_pub = n.advertise<std_msgs::Bool>("vacuum_gripper/limb/left", 10);
   std::map<std::string, ros::Publisher> servo_torque_pub;
   servo_torque_pub["right"] = n.advertise<std_msgs::Bool>("gripper_front/limb/right/servo/torque", 10);
   servo_torque_pub["left"] = n.advertise<std_msgs::Bool>("gripper_front/limb/left/servo/torque", 10);
