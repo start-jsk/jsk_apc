@@ -85,9 +85,9 @@ def get_work_order_msg(json_file, gripper, max_weight, object_data=None):
             if any(bin_object in abandon_bin_objects for bin_object in bin_contents[bin_]):
                 jsk_logwarn('Skipping {bin_}: this bin contains abandon objects'.format(bin_=bin_))
                 continue
-        if len(bin_contents[bin_]) > 5:  # Level3
-            jsk_logwarn('Skipping {bin_}: this bin contains more than 5 objects'.format(bin_=bin_))
-            continue
+        # if len(bin_contents[bin_]) > 5:  # Level3
+        #     jsk_logwarn('Skipping {bin_}: this bin contains more than 5 objects'.format(bin_=bin_))
+        #     continue
         order = WorkOrder(bin=bin_, object=target_object)
         if bin_ in 'abdegj':
             msg['left'].array.append(order)
