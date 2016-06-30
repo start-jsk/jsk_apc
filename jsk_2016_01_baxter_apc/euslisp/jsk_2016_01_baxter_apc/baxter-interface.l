@@ -1021,7 +1021,7 @@
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :place-object-pose arm) avs)
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 3.0)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
       ))
   (:spin-off-by-wrist
     (arm &key (times 10))
