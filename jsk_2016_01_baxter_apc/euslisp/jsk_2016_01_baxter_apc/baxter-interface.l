@@ -56,6 +56,7 @@
     (sethash :pad-link-l _hard-coded-variables 85)
     (sethash :gripper-tube-t _hard-coded-variables 40)
     (sethash :offset-object-h _hard-coded-variables 10)
+    (sethash :offset-object-w _hard-coded-variables 10)
     (sethash :offset-gripper-bin-top _hard-coded-variables -10)
     (sethash :offset-gripper-bin-side _hard-coded-variables 40)
     (sethash :draw-out-from-bin-l _hard-coded-variables 80)
@@ -545,14 +546,16 @@
           (cond ((< gripper-req-l
                     ;; if space gripper can enter exists on right
                     (- (- (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2))
-                       (- (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2)))
+                       (- (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2))
+                       (gethash :offset-object-w _hard-coded-variables))
                     )
                  (setq sign 1)
                  (setq sign_y 0))
                 ((< gripper-req-l
                     ;; if space gripper can enter exists on left
                     (- (+ (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2))
-                       (+ (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2)))
+                       (+ (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2))
+                       (gethash :offset-object-w _hard-coded-variables))
                     )
                  (setq sign -1)
                  (setq sign_y 0))
