@@ -1460,17 +1460,22 @@
  ;; randomly choose bin for stow task
   (:select-stow-target-bin
     (arm &key (object-length) (object-length-limit 0.1))
-    (let (bin)
-      (car
-        (delete nil (mapcar
-                      #'(lambda (work-order)
-                          (setq bin (str2symbol (send work-order :bin)))
-                          (if (eq bin :tote)
-                            bin
-                            (if (and object-length
-                                   (> object-length object-length-limit))
-                              (if (member bin (list :a :b :c :k :l :j)) bin nil) bin)))
-                  (send self :get-work-orders arm))))))
+    (let (bin target-bin)
+      (setq target-bin
+            (car
+              (delete nil (mapcar
+                            #'(lambda (work-order)
+                                (setq bin (str2symbol (send work-order :bin)))
+                                (if (eq bin :tote)
+                                  bin
+                                  (if (and object-length
+                                         (> object-length object-length-limit))
+                                    (if (member bin (list :a :b :c :k :l :j)) bin nil)
+                                    (if (not (eq bin :k)) bin nil))))
+                        (send self :get-work-orders arm)))))
+      (if (not target-bin)
+        (if (eq arm :larm) (elt (list :a :b :d :e :g :k) (random 5))
+          (elt (list :c :f :h :i :k :l) (random 5))))))
   )
 
 (defun jsk_2016_01_baxter_apc::baxter-init (&key (ctype :default-controller))
