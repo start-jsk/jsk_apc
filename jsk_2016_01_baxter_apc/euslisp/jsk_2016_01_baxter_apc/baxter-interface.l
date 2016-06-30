@@ -588,31 +588,20 @@
                 :pos (v+ (send obj-coords :pos) offset)
                 :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
                 ))
-        (when (> (elt (send target-coords-with-offset :worldpos) 0)
-                 (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
-                    (- (gethash :bin-reachable-depth _hard-coded-variables))))
+        (when (or (and (> (elt (send target-coords-with-offset :worldpos) 0)
+                          (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
+                             (- (gethash :bin-reachable-depth _hard-coded-variables))))
+                       (= sign_y 0))
+                  (and (> (elt (send target-coords-with-offset :worldpos) 0)
+                          (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
+                             (- (gethash :bin-reachable-depth _hard-coded-variables))
+                             (- (gethash :pad-link-l _hard-coded-variables))))
+                       (< sign_y 0)))
           (ros::ros-warn
-            "[:try-to-pick-object] arm:~a  object is too deep to approach with sign_y: 0"
-            arm)
-          (if (< (elt (send target-coords-with-offset :worldpos) 0)
-                 (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
-                    (- (gethash :bin-reachable-depth _hard-coded-variables))
-                    (- (gethash :pad-link-l _hard-coded-variables))))
-            (progn
-              (ros::ros-info
-                "[:try-to-pick-object] arm:~a  approach object with sign_y: -1"
-                arm)
-              (setq sign 0)
-              (setq sign_y -1)
-              )
-            (progn
-              (ros::ros-warn
-                "[:try-to-pick-object] arm:~a  object is too deep to approach with sign_y: -1"
-                arm)
-              (ros::ros-warn "[:try-to-pick-object] abort picking")
-              (return-from :try-to-pick-object nil)
-              )
-            )
+            "[:try-to-pick-object] arm:~a  object is too deep to approach with sign_y: ~a"
+            arm sign_y)
+          (ros::ros-warn "[:try-to-pick-object] abort picking")
+          (return-from :try-to-pick-object nil)
           )
         )
       (if (ros::get-param "/apc_on_gazebo" nil)
