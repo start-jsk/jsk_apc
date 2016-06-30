@@ -23,7 +23,7 @@
   (ros::ros-info "[main] recognizing order-bin")
   (send *ri* :recognize-order-bin-box arm :stamp (ros::time-now))
   (send *ri* :get-movable-region-for-tote arm :offset (list 60 80 0))
-  (let (state target-bin fail-count)
+  (let (state target-bin fail-count avs-overlook->tote)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
     (setq fail-count 0)
@@ -59,6 +59,11 @@
               ;; run motion
               (ros::ros-info "[main] Recognizing objects in tote")
               (send *ri* :move-arm-body->order-bin-overlook-pose arm)
+              (setq avs-overlook->tote (list (send *baxter* :fold-to-keep-object arm)))
+              (send *baxter* :place-object-pose arm)
+              (send *baxter* :move-end-pos #f(0 0 100) :world)
+              (pushback (send *baxter* :angle-vector) avs-overlook->tote)
+              (send *ri* :angle-vector-sequence avs-overlook->tote :fast nil 0 :scale 3.0)
               (send *ri* :wait-interpolation)
               (send *ri* :recognize-objects-in-order-bin :arm arm :stamp (ros::time-now))
               (send *ri* :move-arm-body->order-bin arm)
@@ -88,21 +93,16 @@
                     (send *ri* :recognize-object-in-hand arm
                                :stamp (ros::time-now)
                                :timeout 20000))
-              (if (equal target-obj "no_object") (setq target-obj nil))
               (if (null target-obj)
                 (ros::ros-warn "[~a] [main] in hand object recognition is timed out" (ros::get-name))
                 (ros::ros-info-green "[~a] [main] recognized as '~a'" (ros::get-name) target-obj)  ;; green ros-info
                 )
+              (if (equal target-obj "no_object") (setq target-obj nil))
               (if target-obj
                   (progn
                     (ros::set-param
                       (format nil "~a_hand/target_object"
                               (send *ri* :arm-symbol2str arm)) target-obj)
-                    (if (eq arm :rarm) (send *baxter* :view-hand-pose arm :l)
-                        (send *baxter* :view-hand-pose arm :j))
-                    (send *baxter* arm :move-end-pos #f(-50 0 180) :world)
-                    (send *ri* :angle-vector (send *baxter* :angle-vector))
-                    (send *ri* :wait-interpolation)
                     (setq object-length
                           (send *ri* :recognize-object-length-in-hand arm
                                 :timeout 40000))
@@ -163,6 +163,7 @@
           (send *baxter* :fold-pose-back arm)
           (send *ri* :send-av)
           (send *ri* :wait-interpolation)
+          (ros::ros-info "[main] ~a, return in tote" arm)
           (setq state :pick_object)
           (ros::set-param
             (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
@@ -178,6 +179,8 @@
               (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
               ;; (setq offset-avoid-bin-top
               ;;       (gethash :offset-avoid-bin-top (send *ri* :get-val '_hard-coded-variables)))
+              (send *ri* :angle-vector (send *baxter* :fold-to-keep-object arm) 4000)
+              (send *ri* :wait-interpolation)
               (if (and object-length (> object-length 0.1))
                 (progn
                   (setq entrance-x-list (list -100 -50 0 150 200))
