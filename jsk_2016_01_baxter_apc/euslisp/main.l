@@ -27,23 +27,20 @@
       t
       (case state
         (:wait_for_user_input
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; wait user input to start the task
           (send *ri* :wait-for-user-input-to-start arm)
           (setq state :initialize)
-          (ros::set-param
-            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
-            (symbol2str state))
           )
         (:initialize
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
           (setq order nil)
           (setq state :set_target)
-          (ros::set-param
-            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
-            (symbol2str state))
           )
         (:set_target
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; next order
           (setq order (send *ri* :get-next-work-order arm order))
@@ -51,9 +48,6 @@
             (progn
               ;; all work orders are done so go to 'wait' status
               (setq state :wait_for_user_input)
-              (ros::set-param
-                (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
-                (symbol2str state))
               )
             (progn
               (ros::ros-warn "next-work-order: ~a" order)
@@ -73,44 +67,37 @@
                   (ros::ros-info "[main] target-bin: ~a" target-bin)
                   (ros::ros-info "[main] target-obj: ~a" target-obj)
                   (setq state :pick_object)
-                  (ros::set-param
-                    (format nil "~a_hand/state"
-                            (send *ri* :arm-symbol2str arm))
-                    (symbol2str state)))
+                  )
                 (progn
                   (ros::ros-info "[main] could not find bin box: ~a" target-bin)
                   (setq state :set_target)
-                  (ros::set-param
-                    (format nil "~a_hand/state"
-                            (send *ri* :arm-symbol2str arm))
-                    (symbol2str state)))
+                  )
                 )
               )
             )
           )
         (:wait_for_opposite_arm
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
           (while
             (send *ri* :need-to-wait-opposite-arm arm)
             (unix::sleep 1))
           (setq state :pick_object)
-          (ros::set-param
-            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
-            (symbol2str state))
           )
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; if necessary wait for opposite arm
+          (unix::sleep 2)
           (if (send *ri* :need-to-wait-opposite-arm arm)
             (progn
               (ros::ros-info "[main] Need to wait for opposite arm: ~a ~a" arm target-bin)
               (setq state :wait_for_opposite_arm)
-              (ros::set-param
-                (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
-                (symbol2str state)))
+              )
             (progn
+              ;; set state to pick here
+              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
               ;; run motion
-              (ros::ros-info "[main] Recognizing objects in bin" target-bin)
+              (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
               (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
               (send *ri* :wait-interpolation)
               (if (send *ri* :recognize-objects-in-bin-loop arm target-bin)
@@ -137,12 +124,10 @@
                   )
                 )
               (setq state :verify_object)
-              (ros::set-param
-                (format nil "~a_hand/state"
-                        (send *ri* :arm-symbol2str arm))
-                (symbol2str state)))
+              )
             ))
         (:verify_object
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
           (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
           ;; Avoid shelf for safety
@@ -184,12 +169,9 @@
                 )
               )
             )
-          (ros::set-param
-            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
-            (symbol2str state)
-            )
           )
         (:return_object
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
@@ -222,11 +204,9 @@
             (setq state :pick_object)
             (setq state :set_target)
             (ros::ros-warn "[main] Abort ~a and go to next target" target-bin))
-          (ros::set-param
-            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
-            (symbol2str state))
           )
         (:place_object
+          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :gripper-servo-off arm)  ;; power off gripper servo not to overload it
           (send *ri* :move-arm-body->order-bin arm)
@@ -239,9 +219,6 @@
           (send *ri* :send-av)
           (send *ri* :wait-interpolation)
           (setq state :set_target)
-          (ros::set-param
-            (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm))
-            (symbol2str state))
           )
         ))  ;; while & case
     ))
