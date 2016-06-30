@@ -53,7 +53,15 @@ def get_work_order_msg(json_file, gripper, max_weight, object_data=None):
         'rolodex_jumbo_pencil_cup',
         'oreo_mega_stuf'
     ]
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    # TODO: PLEASE FILL ABANDON BINS
+    abandon_bins = ''
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     for bin_, target_object in work_order:
+        if bin_ in abandon_bins:
+            jsk_logwarn('Skipping bin {bin} because of user request'
+                        .format(bin=bin_))
+            continue
         if object_data is not None:
             target_object_data = [data for data in object_data
                                   if data['name'] == target_object][0]
