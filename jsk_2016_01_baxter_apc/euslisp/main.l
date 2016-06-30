@@ -10,7 +10,7 @@
 (defun apc-init (&optional (ctype :default-controller))
   (jsk_2016_01_baxter_apc::baxter-init :ctype ctype)
   (send *ri* :gripper-servo-on)
-  (send *ri* :angle-vector (send *baxter* :fold-pose-back))
+  (send *ri* :angle-vector (send *baxter* :view-kiva-pose))
   (send *ri* :wait-interpolation)
   (send *ri* :calib-pressure-threshold)
   (objects (list *baxter*))
@@ -36,6 +36,8 @@
         (:initialize
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
+          (send *ri* :angle-vector (send *baxter* :fold-pose-back) 3000)
+          (send *ri* :wait-interpolation)
           (setq order nil)
           (setq state :set_target)
           )
