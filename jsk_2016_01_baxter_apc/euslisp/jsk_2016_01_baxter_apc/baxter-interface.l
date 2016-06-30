@@ -509,7 +509,7 @@
   (:try-to-pick-object
     (arm bin &key (object-index 0) (offset #f(0 0 0)) (use-sib t))
     (let (avs-before-approach obj-boxes obj-box obj-coms obj-com graspingp gripper-req-l
-                              bin-box bin-y-l bin-z-l target-coords-with-offset)
+                              bin-box bin-y-l bin-z-l target-coords-with-offset target-coords)
       ;; validate
       (cond (use-sib
               (unless
@@ -593,14 +593,34 @@
                 :pos (v+ (send obj-coords :pos) offset)
                 :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
                 ))
-        (when (> (elt (send target-coords-with-offset :worldpos) 0)
-                 (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
-                    (- (send self :bin-reachable-depth (+ 90 (* sign_y 90))))))
-          (ros::ros-warn
-            "[:try-to-pick-object] arm:~a  object is too deep to approach with sign_y: ~a"
-            arm sign_y)
-          (ros::ros-warn "[:try-to-pick-object] abort picking")
-          (return-from :try-to-pick-object nil)
+        (setq target-coords
+              (make-coords
+                :pos (send obj-coords :pos)
+                :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
+                ))
+        (let ((bin-reachable-limit-x
+                (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
+                   (- (send self :bin-reachable-depth (+ 90 (* sign_y 90)))))
+                ))
+          (when (> (elt (send target-coords-with-offset :worldpos) 0)
+                   bin-reachable-limit-x)
+            (ros::ros-warn
+              "[:try-to-pick-object] arm:~a  cog of object is too deep to approach with sign_y: ~a"
+              arm sign_y)
+            (when (> (- (elt (send obj-cube-base :pos) 0) (x-of-cube obj-cube-base))
+                     bin-reachable-limit-x)
+              (ros::ros-warn
+                "[:try-to-pick-object] arm:~a  whole object bbox is in unreachable zone"
+                arm)
+              (ros::ros-warn "[:try-to-pick-object] abort picking")
+              (return-from :try-to-pick-object nil)
+              )
+            (setf (elt (send target-coords-with-offset :pos) 0) bin-reachable-limit-x)
+            (setf (elt (send target-coords :pos) 0) bin-reachable-limit-x)
+            (ros::ros-info
+              "[:try-to-pick-object] arm:~a  change target position to ~a"
+              arm (send target-coords :pos))
+            )
           )
         )
       (if (ros::get-param "/apc_on_gazebo" nil)
@@ -662,9 +682,7 @@
         )
       ;; check if IK to object succeed
       ;; if that IK fails, abort picking
-      (if (send *baxter* arm :inverse-kinematics
-                (print (make-coords :pos (send obj-coords :pos)
-                             :rpy (list 0 (* sign_y pi/2) (* sign pi/2)))))
+      (if (send *baxter* arm :inverse-kinematics target-coords)
         (progn
           (send self :angle-vector-sequence avs-before-approach :fast nil 0 :scale 5.0)
           (send self :wait-interpolation)
@@ -720,9 +738,7 @@
               )
             )
           ;; move arm to the target only if robot can solve IK
-          (if (send *baxter* arm :inverse-kinematics
-                    (make-coords :pos (send obj-coords :pos)
-                                 :rpy (list 0 (* sign_y pi/2) (* sign pi/2))))
+          (if (send *baxter* arm :inverse-kinematics target-coords)
             (progn
               ;; start the vacuum gripper after approaching to the object
               (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
