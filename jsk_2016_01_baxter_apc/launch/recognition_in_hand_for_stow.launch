@@ -122,7 +122,7 @@
       use_multiple_attention: true
       initial_pos_list: [[0.0, 0.0, 0.2], [0.0, 0.0, 0.2]]
       initial_rot_list: [[0, 0, 0], [0, 0, 0]]
-      dimensions: [[0.3, 0.5, 0.3], [0.3, 0.5, 0.3]]
+      dimensions: [[0.3, 0.3, 0.3], [0.3, 0.3, 0.3]]
       frame_id_list: [left_gripper_vacuum_pad, right_gripper_vacuum_pad]
       prefixes: [left_hand, right_hand]
     </rosparam>
