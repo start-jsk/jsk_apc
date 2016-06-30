@@ -1072,7 +1072,7 @@
           (unless graspingp
             (setq graspingp
                   (send self :try-to-pick-object-in-order-bin arm
-                        :offset (float-vector 0 0 (* i -50))
+                        :offset (float-vector 0 0 (- (* i -50) 30))
                         :object-index object-index))
             (pushback (send *baxter* :angle-vector) avs))))
       (when do-stop-grasp (unless graspingp (send self :stop-grasp arm)))
