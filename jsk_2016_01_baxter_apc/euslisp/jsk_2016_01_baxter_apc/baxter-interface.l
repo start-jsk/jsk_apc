@@ -886,6 +886,8 @@
       (send self :send-av)
       (send self :wait-interpolation)
       (send self :gripper-servo-on arm)
+      (unix::sleep 1)
+      (setq graspingp (send self :graspingp arm))
       graspingp))
   (:send-av
     (&optional (tm 3000))
