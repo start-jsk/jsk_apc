@@ -123,7 +123,7 @@
           (setq target-bin
                 (send *ri* :select-stow-target-bin arm
                       :object-length object-length
-                      :object-length-limit 0.1))
+                      :object-length-limit 0.15))
           (cond
             ((eq target-bin :tote)
               (ros::ros-info "[main] blacklisted object, return to tote")
