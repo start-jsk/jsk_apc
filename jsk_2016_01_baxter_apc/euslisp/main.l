@@ -20,7 +20,7 @@
   ;; recognize bin boxes position and dimension
   (ros::ros-info "[main] recognizing bin boxes")
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
-  (let (state order past-graspingps target-bin target-obj)
+  (let (state order past-graspingps target-bin target-obj object-found-p)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
     (while
