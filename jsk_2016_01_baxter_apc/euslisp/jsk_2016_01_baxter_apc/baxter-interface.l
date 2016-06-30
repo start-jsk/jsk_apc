@@ -1081,12 +1081,12 @@
       (ros::ros-info "[:pick-object] arm:~a in-order-bin -> view-hand-pose" arm)
       (if (eq arm :larm)
         (progn
-          (pushback (send *baxter* :place-object-pose arm) avs->view)
-          (pushback (send *baxter* arm :move-end-pos #f(0 80 150) :world) avs->view)
+          (send *baxter* :place-object-pose arm)
+          (pushback (send *baxter* arm :move-end-pos #f(0 50 150) :world) avs->view)
           (pushback (send *baxter* :view-hand-pose arm :g) avs->view))
         (progn
-          (pushback (send *baxter* :place-object-pose arm) avs->view)
-          (pushback (send *baxter* arm :move-end-pos #f(0 -80 150) :world) avs->view)
+          (send *baxter* :place-object-pose arm)
+          (pushback (send *baxter* arm :move-end-pos #f(0 -50 150) :world) avs->view)
           (pushback (send *baxter* :view-hand-pose arm :i) avs->view)))
       (send *ri* :angle-vector-sequence avs->view :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
