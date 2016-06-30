@@ -17,6 +17,7 @@
   <node pkg="jsk_2016_01_baxter_apc" type="stow_work_order_server.py" name="work_order" respawn="true" output="screen">
     <rosparam subst_value="true">
         json: $(arg json)
+        limit_volume: 5000
         volume_first:
           - dasani_water_bottle
           - dr_browns_bottle_brush
