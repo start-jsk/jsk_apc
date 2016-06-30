@@ -303,7 +303,7 @@
                                         :after-stamp stamp))
       (if box-msg
         (progn
-          (ros::ros-info "[:recognize-bin-boxes] recognize bin boxes")
+          (ros::ros-info "[~a] [:recognize-bin-boxes] recognize bin boxes" (ros::get-name))
           (setq box-list (send box-msg :boxes))
           (setq bin-list (list :a :b :c :d :e :f :g :h :i :j :k :l))
           (dolist (bin bin-list)
@@ -568,7 +568,7 @@
               :timeout timeout))
       (if msg
         (progn
-          (ros::ros-info "[:recognize-object-in-hand] recognized as: ~a" (send msg :matched))
+          (ros::ros-info "[~a] [:recognize-object-in-hand] recognized as: ~a" (ros::get-name) (send msg :matched))
           (send msg :matched))
         nil)
       ))
