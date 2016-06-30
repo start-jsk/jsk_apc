@@ -28,6 +28,7 @@
           - up_glucose_bottle
         black_list:
           - kleenex_paper_towels
+          - dr_browns_bottle_brush
     </rosparam>
   </node>
 
