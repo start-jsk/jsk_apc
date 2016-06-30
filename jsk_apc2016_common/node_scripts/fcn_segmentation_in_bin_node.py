@@ -22,6 +22,7 @@ import message_filters
 
 class FCNSegmentationInBinNode(ConnectionBasedTransport):
     mean_bgr = np.array((104.00698793, 116.66876762, 122.67891434))
+    MIN_MASK_SIZE = 0
 
     def __init__(self):
         self.mask_img = None
@@ -132,7 +133,7 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
                 self.target_mask, encoding='mono8')
             target_mask_msg.header = self.header
             target_mask_msg.header.stamp = rospy.Time.now()
-            if np.any(self.target_mask[self.exist3d_img] != 0):
+            if self.check_valid_mask(self.target_mask, self.exist3d_img):
                 self.target_mask_pub.publish(target_mask_msg)
             else:
                 rospy.logwarn(
@@ -146,6 +147,13 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         label_msg = self.bridge.cv2_to_imgmsg(self.label.astype(np.int32))
         label_msg.header = self.header
         self.label_pub.publish(label_msg)
+
+    def check_valid_mask(self, mask_img, exist3d_img):
+        if np.any(mask_img[exist3d_img] != 0):
+            return True
+        if np.all(mask_img == 0):
+            return True
+        return False
 
     def _segmentation(self):
         """Predict and store the result in self.predicted_segment using RGB
@@ -191,6 +199,11 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         if len(contour_areas) == 0:
             return np.zeros_like(mask)
         max_contour = contours[np.argmax(contour_areas)]
+        # DEBUG
+        rospy.loginfo(np.max(contour_areas))
+        if contour_areas < self.MIN_MASK_SIZE:
+            return np.zeros_like(mask)
+
         extracted_mask = np.zeros_like(mask)
         cv2.drawContours(extracted_mask, [max_contour], -1, 255, -1)
         return extracted_mask
