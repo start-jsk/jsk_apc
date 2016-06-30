@@ -20,7 +20,7 @@
   ;; recognize bin boxes position and dimension
   (ros::ros-info "[main] recognizing bin boxes")
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
-  (let (state order target-n-tried target-bin target-obj)
+  (let (state order past-graspingps target-bin target-obj)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
     (while
@@ -58,7 +58,7 @@
             (progn
               (ros::ros-warn "next-work-order: ~a" order)
               ;; get target param
-              (setq target-n-tried 0)
+              (setq past-graspingps nil)
               (setq target-bin (str2symbol (send order :bin)))
               (setq target-obj (send order :object))
               (if (send *ri* :check-bin-exist target-bin)
@@ -129,7 +129,7 @@
                               :target-offset #f(50 0 0)
                               )
                         )
-                  (incf target-n-tried)
+                  (pushback graspingp past-graspingps)
                   )
                 (progn
                   (setq graspingp nil)
@@ -171,7 +171,7 @@
               ;           :fast nil 0 :scale 5.0)
               ;     ;; if have tried N times and N is larger than
               ;     ;; number of bin contents, robot should abort the target
-              ;     (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
+              ;     (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) (length past-graspingps))
               ;       (setq state :pick_object)
               ;       (setq state :set_target)
               ;       )
@@ -194,8 +194,7 @@
                     :fast nil 0 :scale 5.0)
               ;; if have tried N times and N is larger than
               ;; number of bin contents, robot should abort the target
-              (if (and (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
-                       object-found-p)
+              (if (send *ri* :keep-picking-p target-bin past-graspingps object-found-p)
                 (setq state :pick_object)
                 (setq state :set_target)
                 )
@@ -231,7 +230,7 @@
           (send *ri* :wait-interpolation)
           ;; if have tried N times and N is larger than
           ;; number of bin contents, robot should abort the target
-          (if (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
+          (if (send *ri* :keep-picking-p target-bin past-graspingps object-found-p)
             (setq state :pick_object)
             (setq state :set_target)
             (ros::ros-warn "[main] Abort ~a and go to next target" target-bin))
