@@ -1,0 +1,76 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "cherokee_easy_tee_shirt",
+            "elmers_washable_no_run_school_glue",
+            "cloud_b_plush_bear",
+            "hanes_tube_socks",
+            "jane_eyre_dvd"
+        ],
+        "bin_B": [
+            "scotch_duct_tape"
+        ],
+        "bin_C": [
+            "soft_white_lightbulb",
+            "scotch_bubble_mailer",
+            "safety_first_outlet_plugs"
+        ],
+        "bin_D": [
+            "i_am_a_bunny_book",
+            "rawlings_baseball",
+            "oral_b_toothbrush_green",
+            "platinum_pets_dog_bowl",
+            "command_hooks",
+            "kleenex_tissue_box",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_E": [
+            "dr_browns_bottle_brush",
+            "woods_extension_cord",
+            "ticonderoga_12_pencils"
+        ],
+        "bin_F": [
+            "scotch_duct_tape",
+            "fitness_gear_3lb_dumbbell"
+        ],
+        "bin_G": [
+            "peva_shower_curtain_liner",
+            "easter_turtle_sippy_cup"
+        ],
+        "bin_H": [
+            "womens_knit_gloves"
+        ],
+        "bin_I": [
+            "up_glucose_bottle",
+            "creativity_chenille_stems"
+        ],
+        "bin_J": [
+            "crayola_24_ct"
+        ],
+        "bin_K": [
+            "staples_index_cards",
+            "barkely_hide_bones"
+        ],
+        "bin_L": [
+            "expo_dry_erase_board_eraser",
+            "clorox_utility_brush",
+            "dasani_water_bottle",
+            "kyjen_squeakin_eggs_plush_puppies",
+            "oral_b_toothbrush_red"
+        ]
+    },
+    "tote_contents": [
+        "cool_shot_glue_sticks",
+        "creativity_chenille_stems",
+        "expo_dry_erase_board_eraser",
+        "dove_beauty_bar",
+        "folgers_classic_roast_coffee",
+        "dasani_water_bottle",
+        "scotch_bubble_mailer",
+        "staples_index_cards",
+        "kleenex_paper_towels",
+        "rolodex_jumbo_pencil_cup",
+        "fiskars_scissors_red",
+        "laugh_out_loud_joke_book"
+    ]
+}
