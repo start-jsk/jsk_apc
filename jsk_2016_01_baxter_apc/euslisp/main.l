@@ -115,7 +115,7 @@
               (send *ri* :wait-interpolation)
               (if (send *ri* :recognize-objects-in-bin-loop arm target-bin)
                 (progn
-                  (setq is-object-found t)
+                  (setq object-found-p t)
                   ;; (ros::ros-info "detected_object_index: ~A"
                   ;;                (send *ri* :detect-target-object-in-bin target-obj
                   ;;                      target-bin))
@@ -133,7 +133,7 @@
                   )
                 (progn
                   (setq graspingp nil)
-                  (setq is-object-found nil)
+                  (setq object-found-p nil)
                   )
                 )
               (setq state :verify_object)
@@ -195,7 +195,7 @@
               ;; if have tried N times and N is larger than
               ;; number of bin contents, robot should abort the target
               (if (and (> (+ (length (send *ri* :get-bin-contents target-bin)) 1) target-n-tried)
-                       is-object-found)
+                       object-found-p)
                 (setq state :pick_object)
                 (setq state :set_target)
                 )
