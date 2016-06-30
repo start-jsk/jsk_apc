@@ -22,7 +22,7 @@ import message_filters
 
 class FCNSegmentationInBinNode(ConnectionBasedTransport):
     mean_bgr = np.array((104.00698793, 116.66876762, 122.67891434))
-    MIN_MASK_SIZE = 0
+    MIN_MASK_SIZE = 200
 
     def __init__(self):
         self.mask_img = None
@@ -152,6 +152,7 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         if np.any(mask_img[exist3d_img] != 0):
             return True
         if np.all(mask_img == 0):
+            rospy.loginfo('there is no target object in the bin')
             return True
         return False
 
@@ -200,7 +201,7 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
             return np.zeros_like(mask)
         max_contour = contours[np.argmax(contour_areas)]
         # DEBUG
-        rospy.loginfo(np.max(contour_areas))
+        rospy.loginfo("target bin {}  area {}".format(self.target_bin_name, np.max(contour_areas)))
         if contour_areas < self.MIN_MASK_SIZE:
             return np.zeros_like(mask)
 
