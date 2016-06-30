@@ -60,7 +60,7 @@
   <group ns="right_in_tote_clipper">
     <rosparam>
       initial_pos: [0.75, -0.12, -0.33]
-      initial_rot: [0, -0.06, 0]
+      initial_rot: [0, -0.03, 0]
       dimension_x: 0.30
       dimension_y: 0.32
       dimension_z: 0.15
