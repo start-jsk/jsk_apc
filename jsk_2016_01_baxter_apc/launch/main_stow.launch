@@ -36,9 +36,11 @@
   <param name="/left_hand/state" value="" />
   <param name="/left_hand/target_bin" value="" />
   <param name="/left_hand/target_object" value="" />
+  <param name="/left_hand/update_json" value="false" />
   <param name="/right_hand/state" value="" />
   <param name="/right_hand/target_bin" value="" />
   <param name="/right_hand/target_object" value="" />
+  <param name="/right_hand/update_json" value="false" />
 
   <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="rqt_yn_btn" />
 

@@ -27,6 +27,7 @@ class OutputJsonStow():
         self.arm_state = {}
         self.arm_target_bin = {}
         self.arm_target_object = {}
+        self.arm_update_json = {}
         self.finished_object_list = []
         with open(self.output_path, 'w') as f:
             json.dump(self.output_data, f, sort_keys=True, indent=4)
@@ -51,11 +52,15 @@ class OutputJsonStow():
             rospy.get_param('/right_hand/target_bin')
         self.arm_target_object['right'] = \
             rospy.get_param('/right_hand/target_object')
+        self.arm_update_json['right'] = \
+            rospy.get_param('/right_hand/update_json')
         self.arm_state['left'] = rospy.get_param('/left_hand/state')
         self.arm_target_bin['left'] = \
             rospy.get_param('/left_hand/target_bin')
         self.arm_target_object['left'] = \
             rospy.get_param('/left_hand/target_object')
+        self.arm_update_json['left'] = \
+            rospy.get_param('/left_hand/update_json')
 
     def update_data(self):
         is_updated = False
@@ -64,7 +69,8 @@ class OutputJsonStow():
             target_object = self.arm_target_object[arm]
             if not target_bin:
                 continue
-            if target_object not in self.finished_object_list and \
+            if self.arm_update_json[arm] is True and \
+                    target_object not in self.finished_object_list and \
                     target_bin in 'abcdefghijkl' and \
                     self.arm_state[arm] == "place_object":
                 target_bin_ = 'bin_' + target_bin.upper()

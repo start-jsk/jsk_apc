@@ -23,7 +23,7 @@
   (ros::ros-info "[main] recognizing order-bin")
   (send *ri* :recognize-order-bin-box arm :stamp (ros::time-now))
   (send *ri* :get-movable-region-for-tote arm :offset (list 60 80 0))
-  (let (state target-bin fail-count avs-overlook->tote)
+  (let (state target-bin fail-count avs-overlook->tote dropped)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
     (setq fail-count 0)
@@ -124,6 +124,8 @@
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:set_target_bin
           (ros::ros-info "[main] ~a, ~a" arm state)
+          (setq dropped nil)
+          (ros::set-param (format nil "~a_hand/update_json" (send *ri* :arm-symbol2str arm)) (not dropped))
           (setq target-bin
                 (send *ri* :select-stow-target-bin arm
                       :object-length object-length
@@ -211,6 +213,8 @@
                       entrance-x-list))
               (send *ri* :angle-vector-sequence avs-picked->place-bin :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
+              (setq dropped (not (if (send *ri* :graspingp arm))))
+              (ros::set-param (format nil "~a_hand/update_json" (send *ri* :arm-symbol2str arm)) (not dropped))
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 20)
               (send *ri* :wait-interpolation)
@@ -231,6 +235,8 @@
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
             (progn
               (ros::ros-info "[main] ~a, ~a" arm state)
+              (if (not dropped)
+                (ros::ros-info "[main] update json ~a from tote to bin ~a" target-obj target-bin))
               (if (and object-length (> object-length 0.1))
                 (setq offset-avoid-bin-top-exit 20)
                 (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
