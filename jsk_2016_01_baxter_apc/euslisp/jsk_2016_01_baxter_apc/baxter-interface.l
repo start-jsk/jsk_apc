@@ -70,7 +70,7 @@
                  )
                )
       )
-    (sethash :bin-reachable-depth _hard-coded-variables 220)
+    (sethash :bin-reachable-depth-gripper-90 _hard-coded-variables 220)
 
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
@@ -195,6 +195,11 @@
                 (length past-graspingps)) object-found-p)
         nil)
       )
+    )
+  (:bin-reachable-depth
+    (gripper-angle)
+    (+ (gethash :bin-reachable-depth-gripper-90 _hard-coded-variables)
+       (* (gethash :pad-link-l _hard-coded-variables) (cos (deg2rad gripper-angle))))
     )
   (:arm-symbol2str
     (arm)
@@ -588,15 +593,9 @@
                 :pos (v+ (send obj-coords :pos) offset)
                 :rpy (list 0 (* sign_y pi/2) (* sign pi/2))
                 ))
-        (when (or (and (> (elt (send target-coords-with-offset :worldpos) 0)
-                          (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
-                             (- (gethash :bin-reachable-depth _hard-coded-variables))))
-                       (= sign_y 0))
-                  (and (> (elt (send target-coords-with-offset :worldpos) 0)
-                          (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
-                             (- (gethash :bin-reachable-depth _hard-coded-variables))
-                             (- (gethash :pad-link-l _hard-coded-variables))))
-                       (< sign_y 0)))
+        (when (> (elt (send target-coords-with-offset :worldpos) 0)
+                 (- (elt (send bin-cube-base :pos) 0) (/ (x-of-cube bin-cube-base) 2)
+                    (- (send self :bin-reachable-depth (+ 90 (* sign_y 90))))))
           (ros::ros-warn
             "[:try-to-pick-object] arm:~a  object is too deep to approach with sign_y: ~a"
             arm sign_y)
