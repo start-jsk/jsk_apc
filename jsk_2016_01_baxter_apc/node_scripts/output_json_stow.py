@@ -62,6 +62,8 @@ class OutputJsonStow():
         for arm in ['right', 'left']:
             target_bin = self.arm_target_bin[arm]
             target_object = self.arm_target_object[arm]
+            if not target_bin:
+                continue
             if target_object not in self.finished_object_list and \
                     target_bin in 'abcdefghijkl' and \
                     self.arm_state[arm] == "place_object":
