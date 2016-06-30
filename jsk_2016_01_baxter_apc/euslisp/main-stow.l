@@ -6,6 +6,7 @@
 
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
 
 (defun apc-stow-init (&optional (ctype :default-controller))
   (jsk_2016_01_baxter_apc::baxter-init :ctype ctype)
@@ -88,6 +89,10 @@
                                :stamp (ros::time-now)
                                :timeout 20000))
               (if (equal target-obj "no_object") (setq target-obj nil))
+              (if (null target-obj)
+                (ros::ros-warn "[~a] [main] in hand object recognition is timed out" (ros::get-name))
+                (ros::ros-info-green "[~a] [main] recognized as '~a'" (ros::get-name) target-obj)  ;; green ros-info
+                )
               (if target-obj
                   (progn
                     (ros::set-param
