@@ -175,14 +175,17 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
-          (setq hcv (send *ri* :get-val '_hard-coded-variables))
+          (case target-bin
+            ((:a :b :c :j :k :l) (setq offset-avoid-bin-top 40))
+            ((:d :e :f :g :h :i) (setq offset-avoid-bin-top -10)))
           (setq avs-picked->return-bin
                 (cons (send *baxter* :avoid-shelf-pose arm target-bin)
                       (mapcar
                         #'(lambda (x)
                             (send *ri* :ik->bin-entrance arm target-bin
-                                  :offset (float-vector x 0 (gethash :offset-avoid-bin-top hcv))))
-                        '(-200 -150 -100 -50 0 150))
+                                  :offset (float-vector x 0 offset-avoid-bin-top)
+                                  :gripper-angle 45))
+                        '(-120 -100 -50 0 150))
                       )
                 )
           (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
@@ -190,8 +193,17 @@
           (send *ri* :stop-grasp arm) ;; release object
           (send *ri* :spin-off-by-wrist arm :times 20)
           (send *ri* :wait-interpolation)
+          (setq avs-returned->exit-bin
+                (mapcar
+                  #'(lambda (x)
+                      (send *ri* :ik->bin-entrance arm target-bin
+                            :offset (float-vector x 0 offset-avoid-bin-top)
+                            :gripper-angle 0))
+                  '(150 0 -50 -100))
+                )
+          (pushback (send *baxter* :avoid-shelf-pose arm target-bin) avs-returned->exit-bin)
           (send *ri* :angle-vector-sequence
-                (reverse avs-picked->return-bin)
+               avs-returned->exit-bin
                 :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector (send *baxter* :avoid-shelf-pose arm target-bin))
