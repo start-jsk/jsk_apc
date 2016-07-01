@@ -8,6 +8,7 @@
   <arg name="NODELET_ID_2" value="nodelets_2" />
   <arg name="NODELET_ID_3" value="nodelets_3" />
   <arg name="use_stow" default="false" />
+  <arg name="use_fcn" default="false" />
 
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" />
 
@@ -44,6 +45,7 @@
     <arg name="RIGHT_INPUT_CLOUD" value="right_hand_camera/depth_registered/points" />
     <arg name="LEFT_INPUT_IMAGE" value="left_hand_camera/rgb/image_rect_color" />
     <arg name="LEFT_INPUT_CLOUD" value="left_hand_camera/depth_registered/points" />
+    <arg name="use_fcn" value="$(arg use_fcn)" />
   </include>
 
 </launch>
