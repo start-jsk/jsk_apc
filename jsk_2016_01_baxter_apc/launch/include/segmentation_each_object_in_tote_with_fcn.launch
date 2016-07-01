@@ -64,22 +64,6 @@
     </rosparam>
   </group>
 
-  <machine name="boa" address="boa" env-loader="/home/baxter/env-indigo.sh" />
-  <node name="$(arg HAND)_fcn_mask_for_label_names"
-        pkg="jsk_2016_01_baxter_apc" type="fcn_mask_for_label_names.py"
-        machine="boa">
-    <remap from="~input" to="$(arg HAND)_in_tote_apply_mask/output" />
-    <remap from="~input" to="$(arg HAND)_in_tote_apply_mask/output/mask" />
-    <!-- params -->
-    <rosparam>
-      chainermodel: $(find jsk_apc2016_common)/data/fcn32s.chainermodel
-      negative: true
-      label_names:
-        - kleenex_paper_towels
-    </rosparam>
-    <remap from="~tote_contents" to="/apc2016_tote_contents" />
-  </node>
-
   <group ns="$(arg HAND)_in_tote_extract_pi">
     <rosparam>
       max_queue_size: 50

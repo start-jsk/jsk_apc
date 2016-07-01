@@ -10,6 +10,7 @@ import numpy as np
 
 import jsk_apc2016_common
 from jsk_topic_tools import ConnectionBasedTransport
+from jsk_topic_tools.log_utils import logwarn_throttle
 import message_filters
 import rospy
 from sensor_msgs.msg import Image
@@ -21,10 +22,6 @@ class FCNMaskForLabelNames(ConnectionBasedTransport):
 
     def __init__(self):
         super(self.__class__, self).__init__()
-
-        self.tote_contents = rospy.get_param('~tote_contents')
-        self.label_names = rospy.get_param('~label_names')
-        self.negative = rospy.get_param('~negative', False)
 
         # set target_names
         self.target_names = ['background'] + \
@@ -40,6 +37,15 @@ class FCNMaskForLabelNames(ConnectionBasedTransport):
         S.load_hdf5(chainermodel, self.model)
         if self.gpu != -1:
             self.model.to_gpu(self.gpu)
+
+        while True:
+            self.tote_contents = rospy.get_param('~tote_contents', None)
+            if self.tote_contents is not None:
+                break
+            logwarn_throttle(10, 'param ~tote_contents is not set. Waiting..')
+            rospy.sleep(0.1)
+        self.label_names = rospy.get_param('~label_names')
+        self.negative = rospy.get_param('~negative', False)
 
         self.pub = self.advertise('~output', Image, queue_size=1)
         self.pub_debug = self.advertise('~debug', Image, queue_size=1)
