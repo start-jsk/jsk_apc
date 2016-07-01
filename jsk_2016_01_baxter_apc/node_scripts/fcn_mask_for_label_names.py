@@ -117,7 +117,7 @@ class FCNMaskForLabelNames(ConnectionBasedTransport):
             if label_name in self.label_names:
                 assert label_name == 'kleenex_paper_towels'
                 assert label_val == 21
-                label_mask = (label_pred == label_val)
+                label_mask = ((label_pred == label_val) * 255).astype(np.uint8)
                 contours, hierachy = cv2.findContours(
                     label_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
                 cv2.drawContours(output_mask, contours, -1, 255, -1)
