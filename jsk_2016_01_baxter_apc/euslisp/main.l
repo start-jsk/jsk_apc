@@ -165,6 +165,7 @@
                 )
               )
             (progn
+              (send *ri* :stop-grasp arm)
               (send *ri* :angle-vector-sequence
                     (list
                       (send *baxter* :fold-to-keep-object arm)
