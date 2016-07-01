@@ -3,9 +3,9 @@
   <node name="left_fcn_mask_for_label_names"
         pkg="jsk_2016_01_baxter_apc" type="fcn_mask_for_label_names.py">
     <remap from="~input" to="left_in_tote_apply_mask/output" />
-    <remap from="~input" to="left_in_tote_apply_mask/output/mask" />
+    <remap from="~input/mask" to="left_in_tote_apply_mask/output/mask" />
     <!-- params -->
-    <rosparam>
+    <rosparam subst_value="true">
       chainermodel: $(find jsk_apc2016_common)/data/fcn32s.chainermodel
       negative: true
       label_names:
@@ -17,9 +17,9 @@
   <node name="right_fcn_mask_for_label_names"
         pkg="jsk_2016_01_baxter_apc" type="fcn_mask_for_label_names.py">
     <remap from="~input" to="right_in_tote_apply_mask/output" />
-    <remap from="~input" to="right_in_tote_apply_mask/output/mask" />
+    <remap from="~input/mask" to="right_in_tote_apply_mask/output/mask" />
     <!-- params -->
-    <rosparam>
+    <rosparam subst_value="true">
       chainermodel: $(find jsk_apc2016_common)/data/fcn32s.chainermodel
       negative: true
       label_names:
