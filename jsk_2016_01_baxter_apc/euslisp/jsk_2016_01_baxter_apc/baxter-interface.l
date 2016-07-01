@@ -3,6 +3,7 @@
 (require "package://baxtereus/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
 
 (ros::load-ros-manifest "jsk_2016_01_baxter_apc")
 
@@ -475,10 +476,11 @@
       )
     (let (matched)
       (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp :timeout 20000))
-        (progn (ros::ros-info "~a == ~a" object-name matched)
-               (string= object-name matched))
         (progn
-          (ros::ros-warn "[:verify-object] Timeout")
+          (ros::ros-info "[~a] [:verify-object] Must be ~a == ~a" (ros::get-name) object-name matched)
+          (string= object-name matched))
+        (progn
+          (ros::ros-warn "[~a] [:verify-object] Timeout" (ros::get-name))
           :timeout))
       ))
   (:try-to-pick-in-bin
