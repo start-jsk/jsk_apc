@@ -1,0 +1,76 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "oral_b_toothbrush_green",
+            "command_hooks",
+            "dasani_water_bottle"
+        ],
+        "bin_B": [
+            "cool_shot_glue_sticks",
+            "kleenex_tissue_box",
+            "creativity_chenille_stems",
+            "jane_eyre_dvd",
+            "ticonderoga_12_pencils"
+        ],
+        "bin_C": [
+            "scotch_bubble_mailer"
+        ],
+        "bin_D": [
+            "rolodex_jumbo_pencil_cup",
+            "soft_white_lightbulb",
+            "i_am_a_bunny_book",
+            "cherokee_easy_tee_shirt",
+            "clorox_utility_brush",
+            "expo_dry_erase_board_eraser",
+            "scotch_duct_tape"
+        ],
+        "bin_E": [
+            "scotch_duct_tape",
+            "dr_browns_bottle_brush"
+        ],
+        "bin_F": [
+            "crayola_24_ct",
+            "safety_first_outlet_plugs",
+            "dasani_water_bottle",
+            "staples_index_cards",
+            "rawlings_baseball"
+        ],
+        "bin_G": [
+            "kyjen_squeakin_eggs_plush_puppies",
+            "barkely_hide_bones"
+        ],
+        "bin_H": [
+            "expo_dry_erase_board_eraser",
+            "cloud_b_plush_bear"
+        ],
+        "bin_I": [
+            "folgers_classic_roast_coffee",
+            "oral_b_toothbrush_red",
+            "peva_shower_curtain_liner"
+        ],
+        "bin_J": [
+            "fiskars_scissors_red",
+            "kleenex_paper_towels"
+        ],
+        "bin_K": [
+            "staples_index_cards"
+        ],
+        "bin_L": [
+            "platinum_pets_dog_bowl"
+        ]
+    },
+    "tote_contents": [
+        "hanes_tube_socks",
+        "woods_extension_cord",
+        "dove_beauty_bar",
+        "scotch_bubble_mailer",
+        "easter_turtle_sippy_cup",
+        "womens_knit_gloves",
+        "elmers_washable_no_run_school_glue",
+        "up_glucose_bottle",
+        "laugh_out_loud_joke_book",
+        "elmers_washable_no_run_school_glue",
+        "creativity_chenille_stems",
+        "fitness_gear_3lb_dumbbell"
+    ]
+}
