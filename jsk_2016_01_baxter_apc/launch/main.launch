@@ -125,9 +125,11 @@
           - name: /apply_mask_left_hand/output
             msg_class: sensor_msgs/Image
             savetype: ColorImage
+            fname: image.png
           - name: /apply_mask_left_hand/output/mask
             msg_class: sensor_msgs/Image
             savetype: ColorImage
+            fname: mask.png
       </rosparam>
     </node>
     <node name="data_collection_server_right"
@@ -138,9 +140,11 @@
           - name: /apply_mask_right_hand/output
             msg_class: sensor_msgs/Image
             savetype: ColorImage
+            fname: image.png
           - name: /apply_mask_right_hand/output/mask
             msg_class: sensor_msgs/Image
             savetype: ColorImage
+            fname: mask.png
       </rosparam>
     </node>
   </group>
