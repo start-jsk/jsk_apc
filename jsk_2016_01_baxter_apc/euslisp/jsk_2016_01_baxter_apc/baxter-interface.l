@@ -876,22 +876,22 @@
       (send self :angle-vector-sequence
             (list
               (send *baxter* :angle-vector _last-av-before-approach)
-              (print (send *baxter* arm :move-end-pos
+              (send *baxter* arm :move-end-pos
                            (float-vector
                              (- (gethash :draw-out-from-bin-l _hard-coded-variables))
                              0 0)
                            :world
                            :rotation-axis :z
                            :revert-if-fail nil
-                           ))
-              (print (send self :ik->bin-entrance arm bin
+                           )
+              (send self :ik->bin-entrance arm bin
                            :offset (float-vector
                                      -100 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
-                           ))
-              (print (send self :ik->bin-entrance arm bin
+                           )
+              (send self :ik->bin-entrance arm bin
                            :offset (float-vector
                                      -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
-                           ))
+                           )
               )
             :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
