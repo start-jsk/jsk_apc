@@ -14,7 +14,7 @@
           type: jsk_pcl_utils/PointIndicesToMaskImage
           remappings:
             - from: ~input
-              to: $(arg INPUT_CLOUD)
+              to: $(arg HAND)_in_tote_clipper/output/point_indices
             - from: ~input/image
               to: $(arg INPUT_IMAGE)
         - name: $(arg HAND)_in_tote_apply_mask
