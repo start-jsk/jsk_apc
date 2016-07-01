@@ -6,6 +6,7 @@
 
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
 
 (defun apc-init (&optional (ctype :default-controller))
   (jsk_2016_01_baxter_apc::baxter-init :ctype ctype)
@@ -106,7 +107,7 @@
               ;; set state to pick here
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
               ;; run motion
-              (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
+              (ros::ros-info-green "[main] Recognizing objects in bin ~a" target-bin)
               (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
               (send *ri* :wait-interpolation)
               (if (send *ri* :recognize-objects-in-bin-loop arm target-bin)
