@@ -626,7 +626,7 @@
             (ros::ros-warn
               "[:try-to-pick-object] arm:~a  cog of object is too deep to approach with sign_y: ~a"
               arm sign_y)
-            (when (> (- (elt (send obj-cube-base :pos) 0) (x-of-cube obj-cube-base))
+            (when (> (- (elt (send obj-cube-base :pos) 0) (/ (x-of-cube obj-cube-base) 2))
                      bin-reachable-limit-x)
               (ros::ros-warn
                 "[:try-to-pick-object] arm:~a  whole object bbox is in unreachable zone"
