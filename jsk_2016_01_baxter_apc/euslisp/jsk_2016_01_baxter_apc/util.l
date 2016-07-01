@@ -1,5 +1,9 @@
 ;; vim: set ft=lisp:
 
+;; ------------------------------------------------------------------------------------------------
+;; Dynamic reconfigure util
+;; ------------------------------------------------------------------------------------------------
+
 (ros::load-ros-manifest "dynamic_reconfigure")
 
 (defun ros::set-dynparam (node params)
@@ -41,3 +45,32 @@
     (ros::service-call (format nil "~A/set_parameters" node) req)
     ) ;; let
   ) ;; defun
+
+
+;; ------------------------------------------------------------------------------------------------
+;; Logging Utils
+;; ------------------------------------------------------------------------------------------------
+
+(defun ros::ros-info-red (fmt &rest args)
+  (ros::ros-info "~C[3~Cm~A~C[0m" #x1b 49 (apply #'format nil fmt args) #x1b)
+  )
+
+(defun ros::ros-info-green (fmt &rest args)
+  (ros::ros-info "~C[3~Cm~A~C[0m" #x1b 50 (apply #'format nil fmt args) #x1b)
+  )
+
+(defun ros::ros-info-yellow (fmt &rest args)
+  (ros::ros-info "~C[3~Cm~A~C[0m" #x1b 51 (apply #'format nil fmt args) #x1b)
+  )
+
+(defun ros::ros-info-blue (fmt &rest args)
+  (ros::ros-info "~C[3~Cm~A~C[0m" #x1b 52 (apply #'format nil fmt args) #x1b)
+  )
+
+(defun ros::ros-info-purple (fmt &rest args)
+  (ros::ros-info "~C[3~Cm~A~C[0m" #x1b 53 (apply #'format nil fmt args) #x1b)
+  )
+
+(defun ros::ros-info-cyan (fmt &rest args)
+  (ros::ros-info "~C[3~Cm~A~C[0m" #x1b 54 (apply #'format nil fmt args) #x1b)
+  )
