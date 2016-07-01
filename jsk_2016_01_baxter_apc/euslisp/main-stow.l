@@ -237,6 +237,7 @@
               (ros::ros-info "[main] ~a, ~a" arm state)
               (if (not dropped)
                 (ros::ros-info "[main] update json ~a from tote to bin ~a" target-obj target-bin))
+              (send *ri* :gripper-servo-on arm)
               (if (and object-length (> object-length 0.1))
                 (setq offset-avoid-bin-top-exit 20)
                 (setq offset-avoid-bin-top-exit offset-avoid-bin-top))
