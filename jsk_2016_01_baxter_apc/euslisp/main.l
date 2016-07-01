@@ -36,6 +36,7 @@
         (:initialize
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
           (ros::ros-info "[main] ~a, ~a" arm state)
+          (send *ri* :gripper-servo-on arm)
           (send *ri* :angle-vector (send *baxter* :fold-pose-back) 3000)
           (send *ri* :wait-interpolation)
           (setq order nil)
