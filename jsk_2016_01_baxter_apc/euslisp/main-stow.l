@@ -125,7 +125,7 @@
         (:set_target_bin
           (ros::ros-info "[main] ~a, ~a" arm state)
           (setq dropped nil)
-          (ros::set-param (format nil "~a_hand/update_json" (send *ri* :arm-symbol2str arm)) (not dropped))
+          (ros::set-param (format nil "~a_hand/update_json" (send *ri* :arm-symbol2str arm)) nil)
           (setq target-bin
                 (send *ri* :select-stow-target-bin arm
                       :object-length object-length
