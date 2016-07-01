@@ -11,8 +11,6 @@
             "cool_shot_glue_sticks"
         ],
         "bin_C": [
-            "scotch_bubble_mailer",
-            "i_am_a_bunny_book",
             "laugh_out_loud_joke_book",
             "kleenex_tissue_box",
             "scotch_bubble_mailer"
@@ -39,10 +37,7 @@
         ],
         "bin_G": [
             "fitness_gear_3lb_dumbbell",
-            "dr_browns_bottle_brush",
-            "expo_dry_erase_board_eraser",
-            "up_glucose_bottle",
-            "dasani_water_bottle",
+
             "jane_eyre_dvd",
             "folgers_classic_roast_coffee",
             "kyjen_squeakin_eggs_plush_puppies",
@@ -53,11 +48,17 @@
             "cherokee_easy_tee_shirt"
         ],
         "bin_I": [
-            "womens_knit_gloves"
+            "womens_knit_gloves",
+            "dr_browns_bottle_brush",
+            "expo_dry_erase_board_eraser",
+            "up_glucose_bottle",
+            "dasani_water_bottle"
         ],
         "bin_J": [
             "staples_index_cards",
-            "barkely_hide_bones"
+            "barkely_hide_bones",
+            "scotch_bubble_mailer",
+            "i_am_a_bunny_book"
         ],
         "bin_K": [
             "woods_extension_cord",

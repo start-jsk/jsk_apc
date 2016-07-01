@@ -33,12 +33,13 @@
         "bin_F": [
             "dove_beauty_bar",
             "crayola_24_ct",
-            "dasani_water_bottle",
-            "cool_shot_glue_sticks",
+
             "kleenex_paper_towels"
         ],
         "bin_G": [
-            "elmers_washable_no_run_school_glue"
+            "elmers_washable_no_run_school_glue",
+            "dasani_water_bottle",
+            "cool_shot_glue_sticks"
         ],
         "bin_H": [
             "up_glucose_bottle",
@@ -53,15 +54,15 @@
         ],
         "bin_J": [
             "i_am_a_bunny_book",
-            "woods_extension_cord"
-        ],
-        "bin_K": [
-            "hanes_tube_socks",
+            "woods_extension_cord",
             "dr_browns_bottle_brush",
             "scotch_bubble_mailer",
             "folgers_classic_roast_coffee",
             "oral_b_toothbrush_green",
-            "peva_shower_curtain_liner",
+            "peva_shower_curtain_liner"
+        ],
+        "bin_K": [
+            "hanes_tube_socks",
             "fitness_gear_3lb_dumbbell",
             "creativity_chenille_stems",
             "soft_white_lightbulb"
