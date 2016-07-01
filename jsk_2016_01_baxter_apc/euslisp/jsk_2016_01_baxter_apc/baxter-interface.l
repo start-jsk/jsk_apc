@@ -936,6 +936,10 @@
         (send *baxter* :angle-vector pose)
         (if (send* *baxter* arm :inverse-kinematics target-coords args)
           (pushback pose ik-solvable-poses)))
+      (unless ik-solvable-poses
+        (ros::ros-error "[:ik->nearest-pose] Cannot solve IK from poses")
+        (return-from :ik->nearest-pose nil)
+        )
       (setq chosen-pose
             (car (sort ik-solvable-poses #'<
                        #'(lambda (pose)
@@ -982,7 +986,8 @@
       ;; apply offset
       (send bin-coords :translate offset :world)
       (send bin-coords :rotate overlook-angle :y :world)
-      (cond ((< gripper-angle 45)
+      (ros::ros-info "gripper-angle: ~a" gripper-angle)
+      (cond ((< gripper-angle 89)
              (send self :ik->nearest-pose arm bin-coords
                    nil
                    :rotation-axis t
