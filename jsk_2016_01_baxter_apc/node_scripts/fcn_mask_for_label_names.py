@@ -113,6 +113,7 @@ class FCNMaskForLabelNames(ConnectionBasedTransport):
         self.pub_debug.publish(debug_msg)
 
         output_mask = np.ones(mask_img.shape, dtype=np.uint8)
+        output_mask *= 255
         for label_val, label_name in enumerate(self.target_names):
             if label_name in self.label_names:
                 assert label_name == 'kleenex_paper_towels'
