@@ -126,7 +126,7 @@ def visualize_bin_contents(bin_contents, work_order=None,
                     if work_order and work_order[bin] == obj:
                         pt1 = (x_min + 10, y_min + 10)
                         pt2 = (x_max - 10, y_max - 10)
-                        cv2.rectangle(bin_region, pt1, pt2, (0, 255, 0), 3)
+                        cv2.rectangle(bin_region, pt1, pt2, (0, 255, 0), 8)
     # draw bin regions
     for bin, region in BIN_REGION.items():
         bin_pt1, bin_pt2 = region
