@@ -8,6 +8,7 @@
         <remap from="~input" to="right_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="/publish_bin_info/bin_array"/>
     <remap from="~target_bin_name" to="right_hand/target_bin"/>
+    <remap from="~input/depth" to="/right_hand_camera/depth_registered/image_raw"/>
     <param name="chainermodel" value="$(arg CHAINER_MODEL)" />
     <param name="gpu" value="$(arg GPU)" />
   </node>
@@ -16,6 +17,7 @@
         <remap from="~input" to="left_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="/publish_bin_info/bin_array"/>
     <remap from="~target_bin_name" to="left_hand/target_bin"/>
+    <remap from="~input/depth" to="/left_hand_camera/depth_registered/image_raw"/>
     <param name="chainermodel" value="$(arg CHAINER_MODEL)" />
     <param name="gpu" value="$(arg GPU)" />
   </node>
