@@ -22,7 +22,7 @@ class ApplyBinContentsHint(ConnectionBasedTransport):
 
     def subscribe(self):
         self.sub = rospy.Subscriber('~input', ClassificationResult,
-                                    self._apply)
+                                    self._apply, queue_size=1)
 
     def unsubscribe(self):
         self.sub.unregister()
