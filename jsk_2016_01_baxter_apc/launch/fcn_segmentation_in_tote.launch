@@ -28,4 +28,26 @@
     <remap from="~tote_contents" to="/apc2016_tote_contents" />
   </node>
 
+  <node name="left_fcn_mask_apply_mask_image"
+        pkg="jsk_perception" type="apply_mask_image">
+    <remap from="~input" to="/left_hand_camera/rgb/image_rect_color" />
+    <remap from="~input/mask" to="left_fcn_mask_for_label_names/output" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 500
+      clip: false
+    </rosparam>
+  </node>
+
+  <node name="right_fcn_mask_apply_mask_image"
+        pkg="jsk_perception" type="apply_mask_image">
+    <remap from="~input" to="/right_hand_camera/rgb/image_rect_color" />
+    <remap from="~input/mask" to="right_fcn_mask_for_label_names/output" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 500
+      clip: false
+    </rosparam>
+  </node>
+
 </launch>
