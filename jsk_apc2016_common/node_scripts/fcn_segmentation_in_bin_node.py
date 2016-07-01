@@ -140,7 +140,7 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
                 self.target_mask, encoding='mono8')
             target_mask_msg.header = self.header
             target_mask_msg.header.stamp = rospy.Time.now()
-            if not self.check_valid_mask(
+            if self.check_valid_mask(
                     self.target_mask, self.depth_img, self.dist_img):
                 self.target_mask_pub.publish(target_mask_msg)
             else:
@@ -167,6 +167,7 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         n_valid_pixels = np.sum(mask_img[exist3d_bin_img] != 0)
         n_mask_pixels = np.sum(mask_img[exist3d_img] != 0)
         if n_mask_pixels == 0:
+            rospy.loginfo('n mask pixel is zero')
             return False
         rate = np.float(n_valid_pixels) / n_mask_pixels
         if rate < 0.005:
