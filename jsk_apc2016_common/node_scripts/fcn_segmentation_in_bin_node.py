@@ -45,6 +45,8 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
             '~masked_input', Image, queue_size=3)
         self.label_pub = self.advertise(
             '~label', Image, queue_size=3)
+        self.debug_mask_pub = self.advertise(
+            '~debug', Image, queue_size=3)
 
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
@@ -153,6 +155,7 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         label_msg = self.bridge.cv2_to_imgmsg(self.label.astype(np.int32))
         label_msg.header = self.header
         self.label_pub.publish(label_msg)
+        self.debug_mask_pub.publish(target_mask_msg)
 
     def check_valid_mask(self, mask_img, depth_img, dist_img):
         if np.all(mask_img == 0):
