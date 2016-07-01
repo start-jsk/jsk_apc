@@ -112,18 +112,18 @@ class FCNMaskForLabelNames(ConnectionBasedTransport):
         debug_msg.header = img_msg.header
         self.pub_debug.publish(debug_msg)
 
-        output_mask = np.ones(mask_img.shape, dtype=bool)
+        output_mask = np.ones(mask_img.shape, dtype=np.uint8)
         for label_val, label_name in enumerate(self.target_names):
             if label_name in self.label_names:
                 assert label_name == 'kleenex_paper_towels'
                 assert label_val == 21
                 label_mask = (label_pred == label_val)
-                # contours, hierachy = cv2.findContours(
-                #     label_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-                # cv2.drawContours(output_mask, contours, -1, 255, -1)
-                output_mask[label_pred == label_val] = False
-        output_mask = output_mask.astype(np.uint8)
-        output_mask[output_mask == 1] = 255
+                contours, hierachy = cv2.findContours(
+                    label_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                cv2.drawContours(output_mask, contours, -1, 255, -1)
+                # output_mask[label_pred == label_val] = False
+        # output_mask = output_mask.astype(np.uint8)
+        # output_mask[output_mask == 1] = 255
         output_mask[mask_img == 0] = 0
         output_mask_msg = bridge.cv2_to_imgmsg(output_mask, encoding='mono8')
         output_mask_msg.header = img_msg.header
