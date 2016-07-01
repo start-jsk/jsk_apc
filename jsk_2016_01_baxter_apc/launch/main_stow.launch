@@ -26,9 +26,6 @@
           - kleenex_tissue_box
           - peva_shower_curtain_liner
           - up_glucose_bottle
-        black_list:
-          - kleenex_paper_towels
-          - dr_browns_bottle_brush
     </rosparam>
   </node>
 
