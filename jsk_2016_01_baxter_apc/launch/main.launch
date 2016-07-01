@@ -107,6 +107,7 @@
   -->
 
   <!-- collecting data for sib -->
+  <param name="/apc2016_collect_data" value="$(arg collect_data)" />
   <group if="$(arg collect_data)">
     <include file="$(find jsk_2016_01_baxter_apc)/launch/include/collect_sib_data.launch">
       <arg name="hand" value="right"/>
@@ -116,6 +117,32 @@
       <arg name="hand" value="left"/>
       <arg name="json" value="$(arg json)"/>
     </include>
+    <node name="data_collection_server_left"
+          pkg="jsk_data" type="data_collection_server.py">
+      <rosparam>
+        save_dir: ~/.ros/jsk_2016_01_baxter_apc/robocup2016
+        topics:
+          - name: /apply_mask_left_hand/output
+            msg_class: sensor_msgs/Image
+            savetype: ColorImage
+          - name: /apply_mask_left_hand/output/mask
+            msg_class: sensor_msgs/Image
+            savetype: ColorImage
+      </rosparam>
+    </node>
+    <node name="data_collection_server_right"
+          pkg="jsk_data" type="data_collection_server.py">
+      <rosparam>
+        save_dir: ~/.ros/jsk_2016_01_baxter_apc/robocup2016
+        topics:
+          - name: /apply_mask_right_hand/output
+            msg_class: sensor_msgs/Image
+            savetype: ColorImage
+          - name: /apply_mask_right_hand/output/mask
+            msg_class: sensor_msgs/Image
+            savetype: ColorImage
+      </rosparam>
+    </node>
   </group>
 
   <node name="rosconsole_overlay_text"

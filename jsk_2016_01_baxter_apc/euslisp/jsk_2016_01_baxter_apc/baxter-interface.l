@@ -461,6 +461,18 @@
       ))
   (:verify-object
     (arm object-name &key (stamp (ros::time-now)))
+    (let ((req (instance std_srvs::TriggerRequest :init)))
+      (when (ros::get-param "/apc2016_collect_data" nil)
+        (ros::ros-info "[~a] [:verify-object] Saving image in hand" (ros::get-name))
+        (while
+          (not
+            (send
+              (ros::service-call "data_collection_server_~a/save_request" req (arm-to-str arm))
+              :success))
+          (unix::sleep 1)
+          )
+        )
+      )
     (let (matched)
       (if (setq matched (send self :recognize-object-in-hand arm :stamp stamp :timeout 20000))
         (progn (ros::ros-info "~a == ~a" object-name matched)
