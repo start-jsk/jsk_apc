@@ -217,6 +217,10 @@
               (if (not dropped)
                 (ros::ros-info-green "place object ~a in bin ~a, update json" target-obj target-bin)
                 (ros::ros-warn "dropped object, not update json"))
+              (ros::set-param
+                (format nil "~a_hand/target_object"
+                        (send *ri* :arm-symbol2str arm)) target-obj)
+              (ros::set-param (format nil "~a_hand/target_bin" (send *ri* :arm-symbol2str arm)) (symbol2str target-bin))
               (ros::set-param (format nil "~a_hand/update_json" (send *ri* :arm-symbol2str arm)) (not dropped))
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 20)
