@@ -188,7 +188,7 @@
           (send *ri* :wait-interpolation)
           (case target-bin
             ((:a :b :c :j :k :l) (setq offset-avoid-bin-top 40))
-            ((:d :e :f :g :h :i) (setq offset-avoid-bin-top -10)))
+            ((:d :e :f :g :h :i) (setq offset-avoid-bin-top 0)))
           (setq avs-picked->return-bin
                 (cons (send *baxter* :avoid-shelf-pose arm target-bin)
                       (mapcar
@@ -196,7 +196,7 @@
                             (send *ri* :ik->bin-entrance arm target-bin
                                   :offset (float-vector x 0 offset-avoid-bin-top)
                                   :gripper-angle 45))
-                        '(-120 -100 -50 0 150))
+                        '(-120 -100 -50 0 150 180))
                       )
                 )
           (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
@@ -210,7 +210,7 @@
                       (send *ri* :ik->bin-entrance arm target-bin
                             :offset (float-vector x 0 offset-avoid-bin-top)
                             :gripper-angle 0))
-                  '(150 0 -50 -100))
+                  '(180 150 0 -50 -100))
                 )
           (pushback (send *baxter* :avoid-shelf-pose arm target-bin) avs-returned->exit-bin)
           (send *ri* :angle-vector-sequence
