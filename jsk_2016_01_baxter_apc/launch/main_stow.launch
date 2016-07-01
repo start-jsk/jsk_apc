@@ -14,7 +14,7 @@
     <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
   </node>
 
-  <node pkg="jsk_2016_01_baxter_apc" type="stow_work_order_server.py" name="work_order" respawn="true" output="screen">
+  <node pkg="jsk_2016_01_baxter_apc" type="stow_work_order_server.py" name="work_order" respawn="true" output="screen" clear_params="true">
     <rosparam subst_value="true">
         json: $(arg json)
         limit_volume: 5000
@@ -26,6 +26,7 @@
           - kleenex_tissue_box
           - peva_shower_curtain_liner
           - up_glucose_bottle
+        black_list: []
     </rosparam>
   </node>
 
