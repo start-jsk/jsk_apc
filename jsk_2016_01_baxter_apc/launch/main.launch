@@ -118,4 +118,13 @@
     </include>
   </group>
 
+  <node name="rosconsole_overlay_text"
+        pkg="jsk_rviz_plugins" type="rosconsole_overlay_text.py">
+    <rosparam>
+      nodes:
+        - /left_hand
+        - /right_hand
+    </rosparam>
+  </node>
+
 </launch>
