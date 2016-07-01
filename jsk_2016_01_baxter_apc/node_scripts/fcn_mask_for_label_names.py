@@ -4,12 +4,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import cv2
 from chainer import cuda
 import chainer.serializers as S
 from chainer import Variable
 from fcn.models import FCN32s
 import numpy as np
 
+import cv_bridge
 import jsk_apc2016_common
 from jsk_topic_tools import ConnectionBasedTransport
 from jsk_topic_tools.log_utils import logwarn_throttle
@@ -17,6 +19,8 @@ from jsk_topic_tools.log_utils import jsk_logwarn
 import message_filters
 import rospy
 from sensor_msgs.msg import Image
+from skimage.color import label2rgb
+from skimage.transform import resize
 
 
 class FCNMaskForLabelNames(ConnectionBasedTransport):
@@ -49,15 +53,16 @@ class FCNMaskForLabelNames(ConnectionBasedTransport):
             logwarn_throttle(10, 'param ~tote_contents is not set. Waiting..')
             rospy.sleep(0.1)
         self.label_names = rospy.get_param('~label_names')
-        self.negative = rospy.get_param('~negative', False)
         jsk_logwarn('>> Param is set <<')
 
         self.pub = self.advertise('~output', Image, queue_size=1)
         self.pub_debug = self.advertise('~debug', Image, queue_size=1)
 
     def subscribe(self):
-        self.sub_img = message_filters.Subscriber('~input', Image)
-        self.sub_mask = message_filters.Subscriber('~input/mask', Image)
+        self.sub_img = message_filters.Subscriber(
+            '~input', Image, queue_size=1, buff_size=2**24)
+        self.sub_mask = message_filters.Subscriber(
+            '~input/mask', Image, queue_size=1, buff_size=2**24)
         sync = message_filters.ApproximateTimeSynchronizer(
             [self.sub_img, self.sub_mask], queue_size=100, slop=0.1)
         sync.registerCallback(self._callback)
@@ -67,25 +72,25 @@ class FCNMaskForLabelNames(ConnectionBasedTransport):
         self.sub_mask.unregister()
 
     def _callback(self, img_msg, mask_msg):
-        jsk_logwarn('>> Start Processing <<')
-        import cv_bridge
         bridge = cv_bridge.CvBridge()
         bgr_img = bridge.imgmsg_to_cv2(img_msg, desired_encoding='bgr8')
         mask_img = bridge.imgmsg_to_cv2(mask_msg, desired_encoding='mono8')
+        if mask_img.size < 1:
+            logwarn_throttle(10, 'Too small sized image')
+            return
+        logwarn_throttle(10, '[FCNMaskForLabelNames] >> Start Processing <<')
         if mask_img.ndim == 3 and mask_img.shape[2] == 1:
             mask_img = mask_img.reshape(mask_img.shape[:2])
         if mask_img.shape != bgr_img.shape[:2]:
-            from skimage.transform import resize
             jsk_logwarn('Size of mask and color image is different.'
                         'Resizing.. mask {0} to {1}'
                         .format(mask_img.shape, bgr_img.shape[:2]))
-            mask_img = resize(mask_img, bgr_img,
+            mask_img = resize(mask_img, bgr_img.shape[:2],
                               preserve_range=True).astype(np.uint8)
 
         blob = bgr_img - self.mean_bgr
         blob = blob.transpose((2, 0, 1))
 
-        import numpy as np
         x_data = np.array([blob], dtype=np.float32)
         if self.gpu != -1:
             x_data = cuda.to_gpu(x_data, device=self.gpu)
@@ -101,25 +106,29 @@ class FCNMaskForLabelNames(ConnectionBasedTransport):
             label_pred[label_pred_in_candidates == idx] = label_val
         label_pred[mask_img == 0] = 0  # set bg_label
 
-        from skimage.color import label2rgb
         label_viz = label2rgb(label_pred, bgr_img, bg_label=0)
         label_viz = (label_viz * 255).astype(np.uint8)
         debug_msg = bridge.cv2_to_imgmsg(label_viz, encoding='rgb8')
         debug_msg.header = img_msg.header
         self.pub_debug.publish(debug_msg)
 
-        output_mask = np.zeros(mask_img.shape, dtype=bool)
+        output_mask = np.ones(mask_img.shape, dtype=bool)
         for label_val, label_name in enumerate(self.target_names):
             if label_name in self.label_names:
-                output_mask[label_pred == label_val] = True
-        if self.negative:
-            output_mask = ~output_mask
+                assert label_name == 'kleenex_paper_towels'
+                assert label_val == 21
+                label_mask = (label_pred == label_val)
+                # contours, hierachy = cv2.findContours(
+                #     label_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                # cv2.drawContours(output_mask, contours, -1, 255, -1)
+                output_mask[label_pred == label_val] = False
         output_mask = output_mask.astype(np.uint8)
         output_mask[output_mask == 1] = 255
+        output_mask[mask_img == 0] = 0
         output_mask_msg = bridge.cv2_to_imgmsg(output_mask, encoding='mono8')
         output_mask_msg.header = img_msg.header
         self.pub.publish(output_mask_msg)
-        jsk_logwarn('>> Finshed processing <<')
+        logwarn_throttle(10, '[FCNMaskForLabelNames] >> Finshed processing <<')
 
 
 if __name__ == '__main__':
