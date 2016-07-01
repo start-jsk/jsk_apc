@@ -787,12 +787,12 @@
               (cond ((< sign_y 0)
                      (send self :gripper-servo-off arm)
                      ;; only if robot can solve IK
-                     (if (send *baxter* arm :move-end-pos #f(0 0 20) :world)
+                     (if (send *baxter* arm :move-end-pos #f(0 0 40) :world)
                        (send self :angle-vector (send *baxter* :angle-vector) 3000)
                        (ros::ros-warn "[:try-to-pick-object] arm:~a fail to lift the object" arm)))
                     (t
                       ;; only if robot can solve IK
-                      (if (send *baxter* arm :move-end-pos #f(0 0 60) :local)
+                      (if (send *baxter* arm :move-end-pos #f(0 0 80) :local)
                         (send self :angle-vector (send *baxter* :angle-vector) 3000)
                         (ros::ros-warn "[:try-to-pick-object] arm:~a fail to lift the object" arm)))
                     )
