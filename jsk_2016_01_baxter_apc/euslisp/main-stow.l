@@ -214,6 +214,9 @@
               (send *ri* :angle-vector-sequence avs-picked->place-bin :fast nil 0 :scale 5.0)
               (send *ri* :wait-interpolation)
               (setq dropped (not (if (send *ri* :graspingp arm))))
+              (if (not dropped)
+                (ros::ros-info-green "place object ~a in bin ~a, update json" target-obj target-bin)
+                (ros::ros-warn "dropped object, not update json"))
               (ros::set-param (format nil "~a_hand/update_json" (send *ri* :arm-symbol2str arm)) (not dropped))
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 20)
