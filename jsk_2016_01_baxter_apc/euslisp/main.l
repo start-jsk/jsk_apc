@@ -25,7 +25,7 @@
 
 (defun apc-mainloop (arm)
   ;; recognize bin boxes position and dimension
-  (ros::ros-info "[main] recognizing bin boxes")
+  (ros::ros-info-green "[~a] [main] recognizing bin boxes" (ros::get-name))
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
   (let (state order past-graspingps target-bin target-obj object-found-p)
     (setq state :wait_for_user_input)
@@ -35,14 +35,14 @@
       (case state
         (:wait_for_user_input
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
-          (ros::ros-info "[main] ~a, ~a" arm state)
+          (ros::ros-info "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           ;; wait user input to start the task
           (send *ri* :wait-for-user-input-to-start arm)
           (setq state :initialize)
           )
         (:initialize
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
-          (ros::ros-info "[main] ~a, ~a" arm state)
+          (ros::ros-info "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           (send *ri* :gripper-servo-on arm)
           (send *ri* :angle-vector (send *baxter* :fold-pose-back) 3000)
           (send *ri* :wait-interpolation)
@@ -51,7 +51,7 @@
           )
         (:set_target
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
-          (ros::ros-info "[main] ~a, ~a" arm state)
+          (ros::ros-info "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           ;; next order
           (setq order (send *ri* :get-next-work-order arm order))
           (if (null order)
@@ -72,14 +72,14 @@
                             (send *ri* :arm-symbol2str arm))
                     (symbol2str target-bin))
                   ;; logging
-                  (ros::ros-info "[main] state: ~a" state)
-                  (ros::ros-info "[main] arm: ~a" arm)
-                  (ros::ros-info "[main] target-bin: ~a" target-bin)
-                  (ros::ros-info "[main] target-obj: ~a" target-obj)
+                  (ros::ros-info "[~a] [main] state: ~a" (ros::get-name) state)
+                  (ros::ros-info "[~a] [main] arm: ~a" (ros::get-name) arm)
+                  (ros::ros-info "[~a] [main] target-bin: ~a" (ros::get-name) target-bin)
+                  (ros::ros-info "[~a] [main] target-obj: ~a" (ros::get-name) target-obj)
                   (setq state :pick_object)
                   )
                 (progn
-                  (ros::ros-info "[main] could not find bin box: ~a" target-bin)
+                  (ros::ros-info "[~a] [main] could not find bin box: ~a" (ros::get-name) target-bin)
                   (setq state :set_target)
                   )
                 )
@@ -88,26 +88,26 @@
           )
         (:wait_for_opposite_arm
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
-          (ros::ros-info "[main] ~a, ~a" arm state)
+          (ros::ros-info "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           (while
             (send *ri* :need-to-wait-opposite-arm arm)
             (unix::sleep 1))
           (setq state :pick_object)
           )
         (:pick_object
-          (ros::ros-info "[main] ~a, ~a" arm state)
+          (ros::ros-info "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           ;; if necessary wait for opposite arm
           (unix::sleep 2)
           (if (send *ri* :need-to-wait-opposite-arm arm)
             (progn
-              (ros::ros-info "[main] Need to wait for opposite arm: ~a ~a" arm target-bin)
+              (ros::ros-info "[~a] [main] Need to wait for opposite arm: ~a ~a" (ros::get-name) arm target-bin)
               (setq state :wait_for_opposite_arm)
               )
             (progn
               ;; set state to pick here
               (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
               ;; run motion
-              (ros::ros-info-green "[main] Recognizing objects in bin ~a" target-bin)
+              (ros::ros-info-green "[~a] [main] Recognizing objects in bin ~a" (ros::get-name) target-bin)
               (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
               (send *ri* :wait-interpolation)
               (if (send *ri* :recognize-objects-in-bin-loop arm target-bin)
