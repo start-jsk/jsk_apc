@@ -215,8 +215,8 @@
               (send *ri* :wait-interpolation)
               (setq dropped (not (if (send *ri* :graspingp arm))))
               (if (not dropped)
-                (ros::ros-info-green "place object ~a in bin ~a, update json" target-obj target-bin)
-                (ros::ros-warn "dropped object, not update json"))
+                (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a and update json" arm target-obj target-bin)
+                (ros::ros-warn "[main] arm ~a: dropped object and update json" arm))
               (ros::set-param
                 (format nil "~a_hand/target_object"
                         (send *ri* :arm-symbol2str arm)) target-obj)
