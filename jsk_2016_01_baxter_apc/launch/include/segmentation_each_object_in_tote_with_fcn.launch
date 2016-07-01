@@ -35,7 +35,7 @@
             - from: ~input
               to: $(arg INPUT_CLOUD)
             - from: ~indices
-              to: $(arg HAND)_in_tote_mask_to_pi
+              to: $(arg HAND)_in_tote_mask_to_pi/output
         - name: $(arg HAND)_in_tote_supervoxel
           type: jsk_pcl/SupervoxelSegmentation
           remappings:
@@ -61,13 +61,15 @@
     <rosparam>
       approximate_sync: true
       queue_size: 500
+      clip: false
     </rosparam>
   </group>
 
   <group ns="$(arg HAND)_in_tote_extract_pi">
     <rosparam>
-      max_queue_size: 50
+      max_queue_size: 500
       keep_organized: true
+      approximate_sync: true
     </rosparam>
   </group>
   <group ns="$(arg HAND)_in_tote_supervoxel">
