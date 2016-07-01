@@ -468,7 +468,7 @@
         (while
           (not
             (send
-              (ros::service-call "data_collection_server_~a/save_request" req (arm-to-str arm))
+              (ros::service-call (format nil "data_collection_server_~a/save_request" (arm-to-str arm)) req)
               :success))
           (unix::sleep 1)
           )
