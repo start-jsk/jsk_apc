@@ -134,7 +134,7 @@ def visualize_bin_contents(bin_contents, work_order=None,
         cv2.rectangle(kiva_pod_img, bin_pt1, bin_pt2, (0, 0, 255), 2)
         text_pos = (bin_pt2[0] - bin_h//2 - 100, bin_pt2[1])
         cv2.putText(kiva_pod_img, bin.upper(), text_pos,
-                    cv2.FONT_HERSHEY_PLAIN, 10, (0, 0, 255), 3)
+                    cv2.FONT_HERSHEY_PLAIN, 10, (0, 0, 255), 6)
     return kiva_pod_img
 
 
