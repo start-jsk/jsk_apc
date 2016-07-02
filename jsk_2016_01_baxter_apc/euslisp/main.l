@@ -145,7 +145,8 @@
           ;; Skip verification if no object is grasped
           (if graspingp
             ;; Skip verification if number of bin contents is 1
-            (if (= (length (send *ri* :get-bin-contents target-bin)) 1)
+            (if (or (= (length (send *ri* :get-bin-contents target-bin)) 1)
+                    (find target-bin (list nil)))  ;; TODO: write here to skip verification like (list :a :b :c)
               (progn (setq state :place_object))
               (progn
                 (send *baxter* :view-hand-pose arm target-bin)
