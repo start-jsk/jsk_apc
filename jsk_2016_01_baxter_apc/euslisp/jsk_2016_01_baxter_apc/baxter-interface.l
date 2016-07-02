@@ -59,7 +59,7 @@
     (sethash :offset-object-h _hard-coded-variables 20)
     (sethash :offset-object-w _hard-coded-variables 20)
     (sethash :offset-gripper-bin-top _hard-coded-variables -10)
-    (sethash :offset-gripper-bin-side _hard-coded-variables 40)
+    (sethash :offset-gripper-bin-side _hard-coded-variables 60)
     (sethash :draw-out-from-bin-l _hard-coded-variables 100)
     (sethash :default-overlook-angle _hard-coded-variables (/ pi 4.5))
     (sethash :default-overlook-offset _hard-coded-variables (make-hash-table))
