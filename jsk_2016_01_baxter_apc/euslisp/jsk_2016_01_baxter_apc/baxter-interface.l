@@ -905,6 +905,7 @@
                            :rotation-axis :z
                            :revert-if-fail nil
                            )
+              (send *baxter* :rotate-gripper arm 90 :relative nil)
               (send self :ik->bin-entrance arm bin
                            :offset (float-vector
                                      -100 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
