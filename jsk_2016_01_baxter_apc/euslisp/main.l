@@ -186,15 +186,20 @@
           (case target-bin
             ((:a :b :c :j :k :l) (setq offset-avoid-bin-top 40))
             ((:d :e :f :g :h :i) (setq offset-avoid-bin-top 30)))
+          (send *baxter* :rotate-gripper arm 45 :relative nil)
+          (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
           (setq avs-picked->return-bin
-                (cons (send *baxter* :avoid-shelf-pose arm target-bin)
-                      (mapcar
-                        #'(lambda (x)
-                            (send *ri* :ik->bin-entrance arm target-bin
-                                  :offset (float-vector x 0 offset-avoid-bin-top)
-                                  :gripper-angle 45))
-                        '(-100 -50 0 150 180))
-                      )
+                (cons
+                  (progn
+                    (send *baxter* :avoid-shelf-pose arm target-bin)
+                    (send *baxter* :rotate-gripper arm 45 :relative nil))
+                  (mapcar
+                    #'(lambda (x)
+                        (send *ri* :ik->bin-entrance arm target-bin
+                              :offset (float-vector x 0 offset-avoid-bin-top)
+                              :gripper-angle 45))
+                    '(-100 -50 0 150 180))
+                  )
                 )
           (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
