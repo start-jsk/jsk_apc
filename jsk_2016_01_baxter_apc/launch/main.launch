@@ -158,4 +158,9 @@
     </rosparam>
   </node>
 
+  <node name="team_k_desktop_xdisplay"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/visualize_json/output">
+  </node>
+
 </launch>
