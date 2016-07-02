@@ -737,14 +737,19 @@
               (setf (elt (send end->above :pos) 2) 0)
               (setq target-above-coords
                     (send end-coords :transform end->above :local))
+              ;; change gripper-angle to 45 not to push target object
+              (send *baxter* :rotate-gripper arm 45 :relative nil)
+              (send self :angle-vector (send *baxter* :angle-vector) 1000)
+              (send *ri* :wait-interpolation)
+              (send *baxter* :rotate-gripper arm 90 :relative nil)
               ;; move arm in the local x, y direction only if robot can solve IK
               (if (send *baxter* arm :inverse-kinematics target-above-coords
                         :revert-if-fail t)
                 (progn
-                  ;; change gripper-angle to 45 not to push target object
                   (send *baxter* :rotate-gripper arm 45 :relative nil)
                   (send self :angle-vector (send *baxter* :angle-vector)
                         (setq elapsed-t 2500))
+                  (send self :wait-interpolation)
                   (send *baxter* :rotate-gripper arm 90 :relative nil)
                   (send self :angle-vector (send *baxter* :angle-vector) 1000)
                   )
@@ -879,6 +884,9 @@
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-bin -> bin-entrance" arm)
       ;; move arm in-bin -> bin-entrance
+      (unless graspingp
+        (send *baxter* :rotate-gripper arm 0 :relative nil)
+        (send self :angle-vector (send *baxter* :angle-vector) 1000))
       (send *baxter* :angle-vector _last-av-before-approach)
       (unless graspingp
         (send *baxter* :rotate-gripper arm 0 :relative nil))
