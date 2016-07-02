@@ -879,9 +879,12 @@
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-bin -> bin-entrance" arm)
       ;; move arm in-bin -> bin-entrance
+      (send *baxter* :angle-vector _last-av-before-approach)
+      (unless graspingp
+        (send *baxter* :rotate-gripper arm 0 :relative nil))
       (send self :angle-vector-sequence
             (list
-              (send *baxter* :angle-vector _last-av-before-approach)
+              (send *baxter* :angle-vector)
               (send *baxter* arm :move-end-pos
                            (float-vector
                              (- (gethash :draw-out-from-bin-l _hard-coded-variables))
