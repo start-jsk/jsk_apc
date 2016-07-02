@@ -740,8 +740,14 @@
               ;; move arm in the local x, y direction only if robot can solve IK
               (if (send *baxter* arm :inverse-kinematics target-above-coords
                         :revert-if-fail t)
-                (send self :angle-vector (send *baxter* :angle-vector)
-                      (setq elapsed-t 2500))
+                (progn
+                  ;; change gripper-angle to 45 not to push target object
+                  (send *baxter* :rotate-gripper arm 45 :relative nil)
+                  (send self :angle-vector (send *baxter* :angle-vector)
+                        (setq elapsed-t 2500))
+                  (send *baxter* :rotate-gripper arm 90 :relative nil)
+                  (send self :angle-vector (send *baxter* :angle-vector) 1000)
+                  )
                 )
               (send self :wait-interpolation)
               ;; move arm to the target
