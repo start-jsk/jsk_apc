@@ -185,7 +185,7 @@
           (send *ri* :wait-interpolation)
           (case target-bin
             ((:a :b :c :j :k :l) (setq offset-avoid-bin-top 40))
-            ((:d :e :f :g :h :i) (setq offset-avoid-bin-top 0)))
+            ((:d :e :f :g :h :i) (setq offset-avoid-bin-top 30)))
           (setq avs-picked->return-bin
                 (cons (send *baxter* :avoid-shelf-pose arm target-bin)
                       (mapcar
