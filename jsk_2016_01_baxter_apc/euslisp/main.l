@@ -193,7 +193,7 @@
                             (send *ri* :ik->bin-entrance arm target-bin
                                   :offset (float-vector x 0 offset-avoid-bin-top)
                                   :gripper-angle 45))
-                        '(-120 -100 -50 0 150 180))
+                        '(-100 -50 0 150 180))
                       )
                 )
           (send *ri* :angle-vector-sequence avs-picked->return-bin :fast nil 0 :scale 5.0)
