@@ -1190,7 +1190,7 @@
         ((eq arm :larm)
          (setq hashkey :l-pressure-threshold)))
       (setq topic (format nil "/gripper_front/limb/~a/pressure/state" (arm-to-str arm)))
-      (setf pressure (- (send (one-shot-subscribe topic std_msgs::Float64) :data) 7))
+      (setf pressure (- (send (one-shot-subscribe topic std_msgs::Float64) :data) 8))
       (if (< pressure (gethash hashkey _hard-coded-variables))
         (setf (gethash hashkey _hard-coded-variables) pressure))))
 
