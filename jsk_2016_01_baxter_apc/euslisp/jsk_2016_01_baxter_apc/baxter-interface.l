@@ -804,7 +804,11 @@
                     (t
                       ;; only if robot can solve IK
                       (if (send *baxter* arm :move-end-pos #f(0 0 80) :local)
-                        (send self :angle-vector (send *baxter* :angle-vector) 3000)
+                        (progn
+                          (if (not (= sign 0))
+                            (send *baxter* arm :move-end-pos #f(0 0 30) :world :revert-if-fail t))
+                          (send self :angle-vector (send *baxter* :angle-vector) 3000)
+                          )
                         (ros::ros-warn "[:try-to-pick-object] arm:~a fail to lift the object" arm)))
                     )
               (send self :wait-interpolation)
