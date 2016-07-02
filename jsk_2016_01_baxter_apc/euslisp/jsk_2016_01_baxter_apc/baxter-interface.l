@@ -1080,7 +1080,7 @@
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-order-bin -> view-hand-pose" arm)
       (send self :gripper-servo-on arm)
-      (send *baxter* :rotate-gripper arm 90 :relative nil)
+      (send *ri* :angle-vector (send *baxter* :rotate-gripper arm 90 :relative nil))
       (if (eq arm :larm)
         (progn
           (send *baxter* :place-object-pose arm)
