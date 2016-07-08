@@ -13,7 +13,7 @@
   (send *ri* :gripper-servo-on)
   (send *baxter* :fold-pose-back)
   ;; view kiva pose
-  (send *baxter* :larm :shoulder-y :joint-angle  70)
+  (send *baxter* :larm :shoulder-y :joint-angle 70)
   (send *baxter* :rarm :shoulder-y :joint-angle -70)
   (send *baxter* :larm :move-end-pos #f(0 0 100))
   (send *baxter* :rarm :move-end-pos #f(0 0 100))
@@ -146,7 +146,8 @@
           (if graspingp
             ;; Skip verification if number of bin contents is 1
             (if (or (= (length (send *ri* :get-bin-contents target-bin)) 1)
-                    (find target-bin (list nil)))  ;; TODO: write here to skip verification like (list :a :b :c)
+                    ;; TODO: write here to skip verification like (list :a :b :c)
+                    (find target-bin (list nil)))
               (progn (setq state :place_object))
               (progn
                 (send *baxter* :view-hand-pose arm target-bin)
