@@ -2,6 +2,7 @@
 ;; vim: set ft=lisp:
 
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
 
 (ros::load-ros-manifest "jsk_2016_01_baxter_apc")
 
@@ -286,7 +287,11 @@
     (let ((object-name (elt object-list_ object-id_)))
       (ros::ros-info "[~a] Requesting next object: '~a'" (ros::get-name) object-name)
       (ros::set-param "~object_label" object-name)
-      (unix::system (format nil "rosrun dynamic_reconfigure dynparam set_from_parameters ~a_image_publisher _file_name:=$(rospack find jsk_apc2016_common)/models/~a/image.jpg" (arm-to-str arm_) object-name))
+      (ros::set-dynparam
+        (format nil "~a_image_publisher" (arm-to-str arm_))
+        (list
+          (cons "file_name"
+                (format nil (ros::resolve-ros-path "package://jsk_apc2016_common/models/~a/image.jpg") object-name))))
       (unix::sleep 5)
       (send self :wait-for-user-input)
       )
