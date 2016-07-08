@@ -1,7 +1,7 @@
 <launch>
 
   <arg name="GPU" default="0"/>
-  <arg name="CHAINER_MODEL" default="$(find jsk_apc2016_common)/data/fcn32s.chainermodel"/>
+  <arg name="CHAINER_MODEL" default="$(find jsk_apc2016_common)/trained_data/fcn32s_6000.chainermodel"/>
   
   <node name="right_sib_fcn" pkg="jsk_apc2016_common"
         type="fcn_segmentation_in_bin_node.py" output="screen">
