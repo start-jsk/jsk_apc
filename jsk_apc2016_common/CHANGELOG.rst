@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2016-07-08)
+------------------
 * Rename traial json
 * Add robocup2016 apc_pick_task.json
 * add offset for verifying whether clouds are in bins

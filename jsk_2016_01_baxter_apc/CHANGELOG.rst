@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2016-07-08)
+------------------
 * Fix for pep8
 * Fix for euslint
 * Revert "Enhance :view-hand-pose for each bin"
