@@ -4,231 +4,270 @@
     gripper2016: 1
   stock: 1
   weight: 4
+  volume: 290
 - name: cherokee_easy_tee_shirt
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 1
   weight: 1
+  volume: 250
 - name: clorox_utility_brush
   graspability:
     gripper2015: 3
     gripper2016: 3
   stock: 1
   weight: 7
+  volume: 450
 - name: cloud_b_plush_bear
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 1
   weight: 3.2
+  volume: 150
 - name: command_hooks
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 1
   weight: 1.6
+  volume: 450
 - name: cool_shot_glue_sticks
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 1
   weight: 2.4
+  volume: 110
 - name: crayola_24_ct
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 1
   weight: 8
+  volume: 175
 - name: creativity_chenille_stems
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 2
   weight: 4
+  volume: 360
 - name: dasani_water_bottle
   graspability:
     gripper2015: 3
     gripper2016: 4
   stock: 2
   weight: 16.9
+  volume: 500
 - name: dove_beauty_bar
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 1
   weight: 4
+  volume: 190
 - name: dr_browns_bottle_brush
   graspability:
     gripper2015: 3
     gripper2016: 3
   stock: 1
   weight: 4.2
+  volume: 305
 - name: easter_turtle_sippy_cup
   graspability:
     gripper2015: 3
     gripper2016: 3
   stock: 1
   weight: 12
+  volume: 435
 - name: elmers_washable_no_run_school_glue
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 2
   weight: 4
+  volume: 215
 - name: expo_dry_erase_board_eraser
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 2
   weight: 0.3
+  volume: 250
 - name: fiskars_scissors_red
   graspability:
     gripper2015: 1
     gripper2016: 4
   stock: 1
   weight: 1.4
+  volume: 55
 - name: fitness_gear_3lb_dumbbell
   graspability:
     gripper2015: 4
     gripper2016: 4
   stock: 1
   weight: 48
+  volume: 335
 - name: folgers_classic_roast_coffee
   graspability:
     gripper2015: 3
     gripper2016: 3
   stock: 1
   weight: 11.3
+  volume: 1100
 - name: hanes_tube_socks
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 1
   weight: 16
+  volume: 2880
 - name: i_am_a_bunny_book
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 1
   weight: 3.2
+  volume: 170
 - name: jane_eyre_dvd
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 1
   weight: 5.12
+  volume: 385
 - name: kleenex_paper_towels
   graspability:
     gripper2015: 3
     gripper2016: 1
   stock: 1
   weight: 12.8
+  volume: 3165
 - name: kleenex_tissue_box
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 1
   weight: 10
+  volume: 1575
 - name: kyjen_squeakin_eggs_plush_puppies
   graspability:
     gripper2015: 1
     gripper2016: 4
   stock: 1
   weight: 3.2
+  volume: 575
 - name: laugh_out_loud_joke_book
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 1
   weight: 2.9
+  volume: 200
 - name: oral_b_toothbrush_green
   graspability:
     gripper2015: 3
     gripper2016: 4
   stock: 1
   weight: 0.5
+  volume: 60
 - name: oral_b_toothbrush_red
   graspability:
     gripper2015: 3
     gripper2016: 4
   stock: 1
   weight: 0.5
+  volume: 60
 - name: peva_shower_curtain_liner
   graspability:
     gripper2015: 2
     gripper2016: 1
   stock: 1
   weight: 11.8
+  volume: 585
 - name: platinum_pets_dog_bowl
   graspability:
     gripper2015: 2
     gripper2016: 3
   stock: 1
   weight: 1.6
+  volume: 125
 - name: rawlings_baseball
   graspability:
     gripper2015: 4
     gripper2016: 4
   stock: 1
   weight: 6
+  volume: 180
 - name: rolodex_jumbo_pencil_cup
   graspability:
     gripper2015: 4
     gripper2016: 4
   stock: 1
   weight: 3.2
+  volume: 920
 - name: safety_first_outlet_plugs
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 1
   weight: 0.3
+  volume: 155
 - name: scotch_bubble_mailer
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 2
   weight: 1.6
+  volume: 140
 - name: scotch_duct_tape
   graspability:
     gripper2015: 3
     gripper2016: 4
   stock: 2
   weight: 2
+  volume: 355
 - name: soft_white_lightbulb
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 1
   weight: 3
+  volume: 460
 - name: staples_index_cards
   graspability:
     gripper2015: 1
     gripper2016: 2
   stock: 2
   weight: 3
+  volume: 210
 - name: ticonderoga_12_pencils
   graspability:
     gripper2015: 1
     gripper2016: 1
   stock: 1
   weight: 2.1
+  volume: 180
 - name: up_glucose_bottle
   graspability:
     gripper2015: 2
     gripper2016: 3
   stock: 1
   weight: 11.2
+  volume: 540
 - name: womens_knit_gloves
   graspability:
     gripper2015: 1
     gripper2016: 4
   stock: 1
   weight: 2
+  volume: 200
 - name: woods_extension_cord
   graspability:
     gripper2015: 2
     gripper2016: 2
   stock: 1
   weight: 6.4
+  volume: 255

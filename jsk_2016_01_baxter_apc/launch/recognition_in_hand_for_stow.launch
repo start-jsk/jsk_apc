@@ -1,0 +1,223 @@
+<launch>
+  <arg name="NODELET_MANAGER" />
+  <arg name="INPUT_CLOUD" />
+  <arg name="INPUT_IMAGE" />
+  <arg name="NODELET_ID_7" />
+
+
+  <group ns="$(arg NODELET_MANAGER)">
+    <rosparam subst_value="true">
+      nodelets_$(arg NODELET_ID_7):
+        - name: in_hand_clipper
+          type: jsk_pcl/AttentionClipper
+          remappings:
+            - from: ~input/points
+              to: $(arg INPUT_CLOUD)
+        - name: extract_indices_left_hand
+          type: jsk_pcl/ExtractIndices
+          remappings:
+            - from: ~input
+              to: $(arg INPUT_CLOUD)
+            - from: ~indices
+              to: /in_hand_clipper/left_hand/point_indices
+            - from: ~output
+              to: ~points
+        - name: extract_indices_right_hand
+          type: jsk_pcl/ExtractIndices
+          remappings:
+            - from: ~input
+              to: $(arg INPUT_CLOUD)
+            - from: ~indices
+              to: /in_hand_clipper/right_hand/point_indices
+            - from: ~output
+              to: ~points
+        - name: pc_to_cpi_right_hand
+          type: jsk_pcl/PointCloudToClusterPointIndices
+          remappings:
+            - from: ~input
+              to: extract_indices_right_hand/points
+        - name: pc_to_cpi_left_hand
+          type: jsk_pcl/PointCloudToClusterPointIndices
+          remappings:
+            - from: ~input
+              to: extract_indices_left_hand/points
+        <!--
+        - name: euclid_clustering_left_hand
+          type: jsk_pcl/EuclideanClustering
+          remappings:
+            - from: ~input
+              to: extract_indices_left_hand/points
+        - name: euclid_clustering_right_hand
+          type: jsk_pcl/EuclideanClustering
+          remappings:
+            - from: ~input
+              to: extract_indices_right_hand/points
+        -->
+        - name: cpi_decomposer_left_hand
+          type: jsk_pcl/ClusterPointIndicesDecomposer
+          remappings:
+            - from: ~input
+              to: extract_indices_left_hand/points
+            - from: ~target
+              to: pc_to_cpi_left_hand/output
+        - name: cpi_decomposer_right_hand
+          type: jsk_pcl/ClusterPointIndicesDecomposer
+          remappings:
+            - from: ~input
+              to: extract_indices_right_hand/points
+            - from: ~target
+              to: pc_to_cpi_right_hand/output
+        - name: pc_to_pi_left_hand
+          type: jsk_pcl/OrganizedPointCloudToPointIndices
+          remappings:
+          - from: ~input
+            to: /extract_indices_left_hand/points
+        - name: pc_to_pi_right_hand
+          type: jsk_pcl/OrganizedPointCloudToPointIndices
+          remappings:
+          - from: ~input
+            to: /extract_indices_right_hand/points
+        - name: pi_to_mask_left_hand
+          type: jsk_pcl/PointIndicesToMaskImage
+          remappings:
+          - from: ~input
+            to: /pc_to_pi_left_hand/output
+          - from: ~input/image
+            to: $(arg INPUT_IMAGE)
+        - name: pi_to_mask_right_hand
+          type: jsk_pcl/PointIndicesToMaskImage
+          remappings:
+          - from: ~input
+            to: /pc_to_pi_right_hand/output
+          - from: ~input/image
+            to: $(arg INPUT_IMAGE)
+        - name: closing_left_hand
+          type: jsk_perception/Closing
+          remappings:
+          - from: ~input
+            to: /pi_to_mask_left_hand/output
+        - name: closing_right_hand
+          type: jsk_perception/Closing
+          remappings:
+          - from: ~input
+            to: /pi_to_mask_right_hand/output
+        - name: apply_mask_left_hand
+          type: jsk_perception/ApplyMaskImage
+          remappings:
+          - from: ~input
+            to: $(arg INPUT_IMAGE)
+          - from: ~input/mask
+            to: /closing_left_hand/output
+        - name: apply_mask_right_hand
+          type: jsk_perception/ApplyMaskImage
+          remappings:
+          - from: ~input
+            to: $(arg INPUT_IMAGE)
+          - from: ~input/mask
+            to: /closing_right_hand/output
+    </rosparam>
+  </group>
+  <group ns="in_hand_clipper">
+    <rosparam>
+      use_multiple_attention: true
+      initial_pos_list: [[0.0, 0.0, 0.2], [0.0, 0.0, 0.2]]
+      initial_rot_list: [[0, 0, 0], [0, 0, 0]]
+      dimensions: [[0.3, 0.3, 0.3], [0.3, 0.3, 0.3]]
+      frame_id_list: [left_gripper_vacuum_pad, right_gripper_vacuum_pad]
+      prefixes: [left_hand, right_hand]
+    </rosparam>
+  </group>
+
+  <group ns="extract_indices_left_hand">
+    <rosparam>
+      max_queue_size: 50
+      keep_organized: true
+    </rosparam>
+  </group>
+  <group ns="extract_indices_right_hand">
+    <rosparam>
+      max_queue_size: 50
+      keep_organized: true
+    </rosparam>
+  </group>
+  <!--
+  <group ns="euclid_clustering_left_hand">
+    <rosparam>
+      tolerance: 0.02
+      min_size: 500
+      max_size: 100000
+    </rosparam>
+  </group>
+  <group ns="euclid_clustering_right_hand">
+    <rosparam>
+      tolerance: 0.02
+      min_size: 500
+      max_size: 100000
+    </rosparam>
+  </group>
+  -->
+  <group ns="cpi_decomposer_left_hand">
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </group>
+  <group ns="cpi_decomposer_right_hand">
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </group>
+
+  <!-- convert point indices to mask image -->
+  <group ns="pi_to_mask_left_hand">
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </group>
+  <group ns="pi_to_mask_right_hand">
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </group>
+
+  <!-- process mask image -->
+  <group ns="closing_left_hand">
+    <rosparam>
+      size: 8
+      iterations: 4
+    </rosparam>
+  </group>
+  <group ns="closing_right_hand">
+    <rosparam>
+      size: 8
+      iterations: 4
+    </rosparam>
+  </group>
+  <!-- apply mask image -->
+  <group ns="apply_mask_left_hand">
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </group>
+  <group ns="apply_mask_right_hand">
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </group>
+
+
+  <!-- object recognition -->
+  <group ns="left_hand">
+    <include file="$(find jsk_apc2016_common)/launch/vgg16_object_recognition.launch">
+      <arg name="INPUT_IMAGE" value="/apply_mask_left_hand/output" />
+      <arg name="INPUT_MASK" value="/apply_mask_left_hand/output/mask" />
+    </include>
+  </group>
+  <group ns="right_hand">
+    <include file="$(find jsk_apc2016_common)/launch/vgg16_object_recognition.launch">
+      <arg name="INPUT_IMAGE" value="/apply_mask_right_hand/output" />
+      <arg name="INPUT_MASK" value="/apply_mask_right_hand/output/mask" />
+    </include>
+  </group>
+
+
+</launch>

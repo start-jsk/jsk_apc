@@ -1,0 +1,77 @@
+{
+    "bin_contents": {
+        "bin_A": [
+            "kleenex_tissue_box"
+        ],
+        "bin_B": [
+            "kleenex_paper_towels"
+        ],
+        "bin_C": [
+            "scotch_bubble_mailer",
+            "up_glucose_bottle"
+        ],
+        "bin_D": [
+            "rolodex_jumbo_pencil_cup",
+            "kyjen_squeakin_eggs_plush_puppies"
+        ],
+        "bin_E": [
+            "hanes_tube_socks"
+        ],
+        "bin_F": [
+            "clorox_utility_brush",
+            "fitness_gear_3lb_dumbbell"
+        ],
+        "bin_G": [
+            "expo_dry_erase_board_eraser",
+            "creativity_chenille_stems",
+            "i_am_a_bunny_book"
+        ],
+        "bin_H": [
+            "staples_index_cards",
+            "easter_turtle_sippy_cup",
+            "rawlings_baseball",
+            "oral_b_toothbrush_red",
+            "laugh_out_loud_joke_book"
+        ],
+        "bin_I": [
+            "barkely_hide_bones",
+            "scotch_duct_tape",
+            "elmers_washable_no_run_school_glue"
+        ],
+        "bin_J": [
+            "fiskars_scissors_red",
+            "crayola_24_ct",
+            "cool_shot_glue_sticks",
+            "staples_index_cards",
+            "dove_beauty_bar",
+            "womens_knit_gloves",
+            "dr_browns_bottle_brush"
+        ],
+        "bin_K": [
+            "dasani_water_bottle",
+            "scotch_duct_tape",
+            "cloud_b_plush_bear",
+            "elmers_washable_no_run_school_glue",
+            "safety_first_outlet_plugs"
+        ],
+        "bin_L": [
+            "platinum_pets_dog_bowl",
+            "peva_shower_curtain_liner"
+        ]
+    },
+    "tote_contents": [
+        "soft_white_lightbulb",
+        "jane_eyre_dvd",
+        "ticonderoga_12_pencils",
+        "cherokee_easy_tee_shirt",
+        "folgers_classic_roast_coffee",
+        "creativity_chenille_stems",
+        "woods_extension_cord",
+        "dasani_water_bottle",
+        "scotch_bubble_mailer",
+        "clorox_utility_brush",
+        "oral_b_toothbrush_green",
+        "expo_dry_erase_board_eraser"
+    ]
+}
+
