@@ -93,11 +93,13 @@
   ;; Overwrite super class's :rarm-controller
   (:rarm-controller ()
    (append
+    (send-super :head-controller)
     (send-super :rarm-controller)
     (send self :rgripper-controller)))
   ;; Overwrite super class's :larm-controller
   (:larm-controller ()
    (append
+    (send-super :head-controller)
     (send-super :larm-controller)
     (send self :lgripper-controller)))
   ;; Overwrite super class's :default-controller
