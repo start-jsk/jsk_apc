@@ -119,4 +119,35 @@
       (objects (append robots coords-list))
       )
     )
+  (:inverse-kinematics
+    (target-coords &rest args)
+    """Compute IK from some predefined poses."""
+    (let ((av)
+          (prev-av (send self :angle-vector))
+          (poses (list
+                   :angle-vector
+                   :reset-pose
+                   :reset-manip-pose
+                   :fold-pose-upper
+                   :fold-pose-middle
+                   :fold-pose-lower
+                   :fold-pose-back
+                   ))
+          (moving-joints (send-all (cadr (memq :link-list args)) :joint))
+          (moving-av (mapcar #'(lambda (j) (send j :joint-angle)) (send self :joint-list)))
+          )
+      (dolist (pose poses)
+        (when (not av)
+          (send self pose)
+          (mapcar #'(lambda (j a)
+                      (if (not (memq j moving-joints))
+                        (send j :joint-angle a)))
+                  (send self :joint-list) moving-av)
+          (setq av (send-super* :inverse-kinematics target-coords args))
+          )
+        )
+      (when (and (null av) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
+          (send self :angle-vector prev-av))
+      )
+    (send self :angle-vector))
   )
