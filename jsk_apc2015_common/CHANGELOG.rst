@@ -2,6 +2,12 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Thicker bin name to visualize json
+* Thicker target object identification when visualizing json
+* Contributors: Kentaro Wada
+
 0.8.1 (2016-06-24)
 ------------------
 * Update CHANGELOG.rst for 0.8.0

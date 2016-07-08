@@ -2,6 +2,154 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix for pep8
+* Fix for euslint
+* Revert "Enhance :view-hand-pose for each bin"
+  This reverts commit 4949769c068829e4a490f5cb007545578c17727e.
+* Revert "Revert view-hand-pose for bin :g :h :i"
+  This reverts commit 708196580f5bd1f2e54fe2ef99669f4df70d6434.
+* Add feature to skip verification in main.l
+* Show visualize json on xdisplay in main.launch
+* astra calibration
+* Fix pressure threshold
+* Fix return_object
+* Rotate gripper earlier in drawing out arm
+* Fix return_object to avoid collision between body and arm
+* Fix offset-gripper-bin-side
+* Fix offset of return_object
+* Lift object to world-z in side approaching
+* Fix offset of object width
+* Fix timing of rotating grippers
+* Change gripper-angle not to draw out objects
+* Change gripper-angle not to push target object
+* Lift object higher
+* Enhance main.l for logging
+* Avoid collision between gripper and bin side wall
+* Improve return_object not to drop
+* Enhance ros-info in main.l and baxter-interface.l
+* Fix typo for data collection in main.launch
+* Fix typo in data collection
+* Remove no need debug printing in baxter-interface.l
+* Add no_object label as candidate for picking
+* Enhance the logging in :verify-object with green color
+* Stop grasp when graspingp is nil in verify_object
+* Fix bug of deciding object depth
+* Fix offset of object height
+* change launch to handle debug output
+* change fcn launch file to use depth img
+* Show recognition result as green
+* Fix bug of ik->bin-entrance
+* Set queue_size=1 for apply_bin_contents_hint.py
+* Add tools for euslisp to log info with color
+* astra camera calib
+* Improve view-kiva-pose
+* Data collection program in hand while apc main loop
+* Gripper servo on after user input
+* Change initial pose to view-kiva-pose
+* Fix return_object not to drop
+* visualize rosinfo output of main.l on rviz
+* Set graspingp after avoid-shelf-pose
+* Decrease segmentation in bin timeout
+* Set rosparam at the top of state in main.l
+* Stop vacuum when e-stop is pressed
+* baxter-interface.l : remove head-controller from defaut-controller ( @pazeshun I think we should not change :rarm-contller instaed, we should use rarm-head-controller, or when there is :ctype :rarm-controller, then we add :head-controller
+* Remove abanding strategy for level3
+* Add avoid-shelf-pose for safety and skip verification if number of bin contents is 1
+* Feature to abandon work_order by user requests
+* Change bin reachable depth
+* Get deep object with shallow hand position
+* Add bin-reachable-depth method and use it
+* Make aborting by depth safe
+* Change object-found-p to local variable
+* Use keep-picking-p in main.l
+* Add keep-picking-p method
+* Change variable name is-object-found -> object-found-p
+* Add offset of object width to decide approach direction
+* Fix typo of offset
+* Revert view-hand-pose for bin :g :h :i
+* Enhance :place_object in order not to drop object
+* Fix offset
+* Remove checking grasps in :verify_object state
+* Enhance :view-hand-pose for each bin
+* Prevent collision between gripper camera and bin
+* Add script to check ik-bin-entrance
+* Change hardcoded pose in baxter-interface
+* Fix typo of main.l
+* Fix typo in baxter-interface
+* astra hand calib
+* Fix ik->bin-entrance not to fail when gripper-angle is 0
+* Apply offset to pick object's center
+* Change main.l to use recognize-objects-in-bin-loop
+* Add recognize-objects-in-bin-loop method
+* Add bin-overlook-pose method
+* Prevent IK fail when drawing out arm
+* Set rthre as 10 degree
+* Return object when graspingp nil
+* Use object_data in work_order.py
+* Adjust move-arm-body->bin-overlook-pose for APC final
+* Add script to test bin-overlook-pose
+* Skip objects whose graspability exceeds threshold 3
+* Fix :verify_object mode in main.l
+* Add fold-pose-back.l script
+* Adjust left astra hand camera
+* Update check_astra.rviz
+* Adjust right astra hand camera
+* Remove subscribing topic for visualization on rviz
+  For computational loss.
+* Merge pull request `#1838 <https://github.com/start-jsk/jsk_apc/issues/1838>`_ from wkentaro/set-dynparam-eus
+  Set dynamic reconfigure parameters in euslisp node
+* Use ros::set-dynparam in in-hand-data-collection.l
+* Set dynamic reconfigure parameters in euslisp node
+* Merge pull request `#1831 <https://github.com/start-jsk/jsk_apc/issues/1831>`_ from wkentaro/longer-verify
+  Longer timeout for vgg16 object recognition
+* Merge pull request `#1817 <https://github.com/start-jsk/jsk_apc/issues/1817>`_ from pazeshun/not-need-nil-list
+  Set nil instead of list when no object found
+* Remove no_object label in apply_bin_contents_hint.py to trust pressure
+* Longer timeout for vgg16 object recognition
+* Merge pull request `#1792 <https://github.com/start-jsk/jsk_apc/issues/1792>`_ from yuyu2172/stop-self-filter
+  stop using self filters
+* Change overlook pose by @yuyu2172
+* launch that visualizes fcn class label
+* wait longer before starting to subscribe to sib result
+* Set nil instead of list when no object found
+* Fix memory leak in apply_bin_contents_hint.py
+* add fcn launch file
+* segmentation_in_bin.launch does not launch sib node
+* Calibrate grasps in in-hand-data-collection-main.l
+* Merge pull request `#1807 <https://github.com/start-jsk/jsk_apc/issues/1807>`_ from pazeshun/fix-overlook-pose
+  Fix bin-overlook-pose
+* Erase previous SIB data when SIB fails
+* Fix bin-overlook-pose
+* changed do-stop-grasp t
+* Rolling gripper on closer point to robot
+* Make data collection in main.launch as optional
+* add collect sib data in main.launch
+* move collect sib to launch/include
+* collect sib data more modular
+* Add no_object label in apply_bin_contents
+* Fix bug of arm variable
+* fixed firmware to use toggle switch
+* Make :ik->nearest-pose method
+* Data collection program for segmentation in bin
+* Merge pull request `#1793 <https://github.com/start-jsk/jsk_apc/issues/1793>`_ from ban-masa/auto-pressure-calib
+  Auto calib pressure threshold
+* Use mask image to enhance object recognition result with vgg16 net
+* added calib-pressure-threshold
+* Prepare for logging
+* Use VGG16 net for APC2016 in recognition_in_hand.launch
+* Align bounding boxes to robot base frame
+* stop using self filter
+* Fix position of wait-interpolation-smooth
+* Remove :recognize-objects-in-bin in picking-with-sib.l
+* Merge pull request `#1784 <https://github.com/start-jsk/jsk_apc/issues/1784>`_ from pazeshun/abort-approach-ik-fail
+  Abort picking objects when IK to it fails
+* add use-current-pose in ik->bin-entrance
+* improve ik->bin-entrance to minimize norm
+* Abort picking objects when IK to it fails
+* Contributors: Bando Masahiro, Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, pazeshun
+
 0.8.1 (2016-06-24)
 ------------------
 * add roslint to package.xml

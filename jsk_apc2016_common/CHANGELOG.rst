@@ -2,6 +2,45 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Rename traial json
+* Add robocup2016 apc_pick_task.json
+* add offset for verifying whether clouds are in bins
+* Update chainermodel of VGG16 for rotation/translation/brightness
+* difficult layouts list
+* manual fix layout
+* add three more pick and stow layouts
+* change launch to handle debug output
+* debug output for fcn
+* fcn sib node accepts depth img
+* pick task trial
+* set parameter used to reject small target mask for fcn
+* add second stow and pick layout json
+* fix rosparam path for collect_sib_data
+* Make water graspability as 4
+* skelton for fcn_sib to reject a mask that is too small
+* Update vgg16 trained model
+* graspability of duct tape updated
+* change vgg train data
+* Update graspability of gripper2016
+* Set respawn=true for vgg16_object_recognition
+* fix a bug that messes up pred_label in loop
+* sib-fcn publishes label
+* expand path with ~ for collect_sib_data
+* fcn_node: subtract mean-rgb from input data before doing segmentation
+* fcn segmentation in bin node
+* gitignore chainermodel:
+* Add mode to create mask from BoundingBox not BinInfo
+* Merge pull request `#1795 <https://github.com/start-jsk/jsk_apc/issues/1795>`_ from wkentaro/vgg16
+  Recognize APC2016 objects with VGG16 network
+* Use mask image to enhance object recognition result with vgg16 net
+* Add jsk_data to package.xml
+* Recognize APC2016 objects with VGG16 network
+* remove unnecessary log, and make a save-log more informative
+* delete unnecessary import
+* Contributors: Kentaro Wada, Yusuke Niitani
+
 0.8.1 (2016-06-24)
 ------------------
 * make object list in alphabetical order
