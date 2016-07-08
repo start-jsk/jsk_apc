@@ -40,7 +40,7 @@ class CollectSIBData(object):
             '~input/depth', Image, self.depth_cb)
 
     def topic_cb(self, bin_info_arr_msg):
-        json_path = rospy.get_param('/visualize_on_rviz/json')
+        json_path = rospy.get_param('/publish_bin_info/json')
         self.layout_name = json_path.split('/')[-1][:-5]
         self.bin_info_dict = self.bin_info_array_to_dict(bin_info_arr_msg)
 

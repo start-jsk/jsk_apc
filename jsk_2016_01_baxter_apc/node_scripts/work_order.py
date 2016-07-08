@@ -53,7 +53,15 @@ def get_work_order_msg(json_file, gripper, max_weight, object_data=None):
         'rolodex_jumbo_pencil_cup',
         'oreo_mega_stuf'
     ]
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    # TODO: PLEASE FILL ABANDON BINS
+    abandon_bins = ''
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     for bin_, target_object in work_order:
+        if bin_ in abandon_bins:
+            jsk_logwarn('Skipping bin {bin} because of user request'
+                        .format(bin=bin_))
+            continue
         if object_data is not None:
             target_object_data = [data for data in object_data
                                   if data['name'] == target_object][0]
@@ -61,6 +69,14 @@ def get_work_order_msg(json_file, gripper, max_weight, object_data=None):
                 jsk_logwarn('Skipping target {obj} in {bin_}: it exceeds max weight {weight} > {max_weight}'
                             .format(obj=target_object_data['name'], bin_=bin_,
                                     weight=target_object_data['weight'], max_weight=max_weight))
+                continue
+            if target_object_data['graspability'][gripper] > 3:
+                jsk_logwarn('Skipping target {obj} in {bin_}: it exceeds graspability'
+                            '{grasp} > {max_grasp} with gripper {gripper}'
+                            .format(obj=target_object_data['name'], bin_=bin_,
+                                    grasp=target_object_data['graspability'][gripper],
+                                    max_grasp=3,
+                                    gripper=gripper))
                 continue
         else:
             if target_object in abandon_target_objects:
@@ -70,9 +86,9 @@ def get_work_order_msg(json_file, gripper, max_weight, object_data=None):
             if any(bin_object in abandon_bin_objects for bin_object in bin_contents[bin_]):
                 jsk_logwarn('Skipping {bin_}: this bin contains abandon objects'.format(bin_=bin_))
                 continue
-        if len(bin_contents[bin_]) > 5:  # Level3
-            jsk_logwarn('Skipping {bin_}: this bin contains more than 5 objects'.format(bin_=bin_))
-            continue
+        # if len(bin_contents[bin_]) > 5:  # Level3
+        #     jsk_logwarn('Skipping {bin_}: this bin contains more than 5 objects'.format(bin_=bin_))
+        #     continue
         order = WorkOrder(bin=bin_, object=target_object)
         if bin_ in 'abdegj':
             msg['left'].array.append(order)

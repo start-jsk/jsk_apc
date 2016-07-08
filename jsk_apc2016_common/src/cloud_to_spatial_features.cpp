@@ -4,6 +4,7 @@
 using namespace message_filters;
 using namespace sensor_msgs;
 
+const float Z_OFFSET = 0.04;
 
 void CloudToSpatial::onInit()
 {
@@ -89,7 +90,7 @@ void CloudToSpatial::callback(const PointCloud2ConstPtr& cloud_msg_ptr, const Bi
         {
             pos_x = cloud_transformed->at(u, v).x;
             pos_y = cloud_transformed->at(u, v).y;
-            pos_z = cloud_transformed->at(u, v).z;
+            pos_z = cloud_transformed->at(u, v).z + Z_OFFSET;
             dist_msg.data[v * dist_msg.step + u * sizeof(uint8_t)] = dist(pos_x, pos_y, pos_z, target_bin_ptr->bbox);
             height_msg.data[v * dist_msg.step + u * sizeof(uint8_t)] = height(pos_z, target_bin_ptr->bbox);
         }

@@ -22,6 +22,7 @@ import message_filters
 
 class FCNSegmentationInBinNode(ConnectionBasedTransport):
     mean_bgr = np.array((104.00698793, 116.66876762, 122.67891434))
+    MIN_MASK_SIZE = 200
 
     def __init__(self):
         self.mask_img = None
@@ -44,12 +45,16 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
             '~masked_input', Image, queue_size=3)
         self.label_pub = self.advertise(
             '~label', Image, queue_size=3)
+        self.debug_mask_pub = self.advertise(
+            '~debug', Image, queue_size=3)
 
     def subscribe(self):
         self.bin_info_arr_sub = rospy.Subscriber(
             '~input/bin_info_array', BinInfoArray, self.bin_info_callback)
         self.sub = rospy.Subscriber(
             '~input', SegmentationInBinSync, self.callback)
+        self.depth_sub = rospy.Subscriber(
+            '~input/depth', Image, self.depth_callback)
 
     def unsubscribe(self):
         self.bin_info_arr_sub.unregister()
@@ -65,6 +70,10 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
     def bin_info_callback(self, bin_info_array_msg):
         for bin_ in bin_info_array_msg.array:
             self.bin_info_dict[bin_.name] = bin_
+
+    def depth_callback(self, depth_msg):
+        self.depth_img = self.bridge.imgmsg_to_cv2(
+            depth_msg, 'passthrough')
 
     def callback(self, sync_msg):
         log_utils.loginfo_throttle(10, 'started')
@@ -112,7 +121,6 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         self.dist_img = self.bridge.imgmsg_to_cv2(dist_msg, 'passthrough')
         self.height_img = self.bridge.imgmsg_to_cv2(height_msg, 'passthrough')
         self.height_img = self.height_img.astype(np.float) / 255.0
-        self.exist3d_img = (self.dist_img != 0)
 
     def process_target_bin(self, target_bin_name):
         if target_bin_name not in 'abcdefghijkl':
@@ -132,11 +140,12 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
                 self.target_mask, encoding='mono8')
             target_mask_msg.header = self.header
             target_mask_msg.header.stamp = rospy.Time.now()
-            if np.any(self.target_mask[self.exist3d_img] != 0):
+            if self.check_valid_mask(
+                    self.target_mask, self.depth_img, self.dist_img):
                 self.target_mask_pub.publish(target_mask_msg)
             else:
                 rospy.logwarn(
-                    'Output of RBO does not contain any point clouds.')
+                    'Output of SIB does not contain any point clouds.')
             # publish images which contain object probabilities
             # self.publish_predicted_results()
         except KeyError, e:
@@ -146,6 +155,28 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         label_msg = self.bridge.cv2_to_imgmsg(self.label.astype(np.int32))
         label_msg.header = self.header
         self.label_pub.publish(label_msg)
+        self.debug_mask_pub.publish(target_mask_msg)
+
+    def check_valid_mask(self, mask_img, depth_img, dist_img):
+        if np.all(mask_img == 0):
+            rospy.loginfo('there is no target object in the bin')
+            return False
+
+        exist3d_img = (depth_img != 0)
+        exist3d_bin_img = (dist_img != 0)
+        n_valid_pixels = np.sum(mask_img[exist3d_bin_img] != 0)
+        n_mask_pixels = np.sum(mask_img[exist3d_img] != 0)
+        if n_mask_pixels == 0:
+            rospy.loginfo('n mask pixel is zero')
+            return False
+        rate = np.float(n_valid_pixels) / n_mask_pixels
+        if rate < 0.005:
+            rospy.loginfo('rate of valid pixels in mask image {}'.format(rate))
+            rospy.logwarn(
+                'an object in the mask is recognized to be outside of the bin')
+            return False
+
+        return True
 
     def _segmentation(self):
         """Predict and store the result in self.predicted_segment using RGB
@@ -191,6 +222,13 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
         if len(contour_areas) == 0:
             return np.zeros_like(mask)
         max_contour = contours[np.argmax(contour_areas)]
+        # DEBUG
+        rospy.loginfo("target bin {}  area {}".format(
+            self.target_bin_name, np.max(contour_areas)))
+        if np.max(contour_areas) < self.MIN_MASK_SIZE:
+            rospy.logwarn('too small mask.  area: {}'.format(np.max(contour_areas)))
+            return np.zeros_like(mask)
+
         extracted_mask = np.zeros_like(mask)
         cv2.drawContours(extracted_mask, [max_contour], -1, 255, -1)
         return extracted_mask

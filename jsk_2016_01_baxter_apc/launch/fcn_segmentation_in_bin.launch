@@ -8,6 +8,7 @@
         <remap from="~input" to="right_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="/publish_bin_info/bin_array"/>
     <remap from="~target_bin_name" to="right_hand/target_bin"/>
+    <remap from="~input/depth" to="/right_hand_camera/depth_registered/image_raw"/>
     <param name="chainermodel" value="$(arg CHAINER_MODEL)" />
     <param name="gpu" value="$(arg GPU)" />
   </node>
@@ -16,6 +17,7 @@
         <remap from="~input" to="left_sib_topic_sync/output"/>
     <remap from="~input/bin_info_array" to="/publish_bin_info/bin_array"/>
     <remap from="~target_bin_name" to="left_hand/target_bin"/>
+    <remap from="~input/depth" to="/left_hand_camera/depth_registered/image_raw"/>
     <param name="chainermodel" value="$(arg CHAINER_MODEL)" />
     <param name="gpu" value="$(arg GPU)" />
   </node>
@@ -51,4 +53,20 @@
     <param name="queue_size" value="50"/>
     <param name="slop" value="0.5" />
   </node>
+
+  <node name="right_sib_apply_debug_mask"
+        pkg="jsk_perception" type="apply_mask_image">
+        <remap from="~input" to="/right_hand_camera/rgb/image_rect_color"/>
+      <remap from="~input/mask" to="/right_sib_fcn/debug"/>
+      <param name="approximate_sync" value="true"/>
+      <param name="queue_size" value="100"/>
+  </node>
+  <node name="left_sib_apply_debug_mask"
+        pkg="jsk_perception" type="apply_mask_image">
+        <remap from="~input" to="/left_hand_camera/rgb/image_rect_color"/>
+      <remap from="~input/mask" to="/left_sib_fcn/debug"/>
+      <param name="approximate_sync" value="true"/>
+      <param name="queue_size" value="100"/>
+  </node>
+
 </launch>
