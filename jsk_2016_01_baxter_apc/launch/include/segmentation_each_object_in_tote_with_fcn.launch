@@ -1,0 +1,90 @@
+<launch>
+
+  <arg name="NODELET_MANAGER" />
+  <arg name="NODELET_ID_0" />
+
+  <arg name="INPUT_CLOUD"/>
+  <arg name="INPUT_IMAGE"/>
+  <arg name="HAND" />
+
+  <group ns="$(arg NODELET_MANAGER)">
+    <rosparam subst_value="true">
+      $(arg NODELET_ID_0):
+        - name: $(arg HAND)_in_tote_pi_to_mask
+          type: jsk_pcl_utils/PointIndicesToMaskImage
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_in_tote_clipper/output/point_indices
+            - from: ~input/image
+              to: $(arg INPUT_IMAGE)
+        - name: $(arg HAND)_in_tote_apply_mask
+          type: jsk_perception/ApplyMaskImage
+          remappings:
+            - from: ~input
+              to: $(arg INPUT_IMAGE)
+            - from: ~input/mask
+              to: $(arg HAND)_in_tote_pi_to_mask/output
+        - name: $(arg HAND)_in_tote_mask_to_pi
+          type: jsk_pcl_utils/MaskImageToPointIndices
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_fcn_mask_for_label_names/output
+        - name: $(arg HAND)_in_tote_extract_pi
+          type: jsk_pcl/ExtractIndices
+          remappings:
+            - from: ~input
+              to: $(arg INPUT_CLOUD)
+            - from: ~indices
+              to: $(arg HAND)_in_tote_mask_to_pi/output
+        - name: $(arg HAND)_in_tote_supervoxel
+          type: jsk_pcl/SupervoxelSegmentation
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_in_tote_extract_pi/output
+        - name: $(arg HAND)_in_tote_supervoxel_cpi_decomposer
+          type: jsk_pcl/ClusterPointIndicesDecomposer
+          remappings:
+            - from: ~input
+              to: $(arg HAND)_in_tote_supervoxel/output/cloud
+            - from: ~target
+              to: $(arg HAND)_in_tote_supervoxel/output/indices
+    </rosparam>
+  </group>
+
+  <group ns="$(arg HAND)_in_tote_pi_to_mask">
+    <rosparam>
+      approximate_sync: true
+      queue_size: 500
+    </rosparam>
+  </group>
+  <group ns="$(arg HAND)_in_tote_apply_mask">
+    <rosparam>
+      approximate_sync: true
+      queue_size: 500
+      clip: false
+    </rosparam>
+  </group>
+
+  <group ns="$(arg HAND)_in_tote_extract_pi">
+    <rosparam>
+      max_queue_size: 500
+      keep_organized: true
+      approximate_sync: true
+    </rosparam>
+  </group>
+  <group ns="$(arg HAND)_in_tote_supervoxel">
+    <rosparam>
+      color_importance: 0.2
+      spatial_importance: 0.4
+      normal_importance: 1.0
+      voxel_resolution: 0.01
+      seed_resolution: 0.1
+    </rosparam>
+  </group>
+  <group ns="$(arg HAND)_in_tote_supervoxel_cpi_decomposer">
+    <rosparam>
+      queue_size: 50
+    </rosparam>
+  </group>
+
+</launch>

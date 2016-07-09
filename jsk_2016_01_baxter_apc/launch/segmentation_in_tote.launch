@@ -1,0 +1,92 @@
+<launch>
+
+  <arg name="use_fcn" />
+
+  <arg name="NODELET_MANAGER_RIGHT" />
+  <arg name="NODELET_MANAGER_LEFT" />
+  <arg name="NODELET_ID_0" />
+  <arg name="NODELET_ID_1" />
+  <arg name="NODELET_ID_2" />
+  <arg name="NODELET_ID_3" />
+  <arg name="RIGHT_INPUT_IMAGE" />
+  <arg name="RIGHT_INPUT_CLOUD" />
+  <arg name="LEFT_INPUT_IMAGE" />
+  <arg name="LEFT_INPUT_CLOUD" />
+
+  <group unless="$(arg use_fcn)">
+    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_each_object_in_tote.launch">
+      <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER_LEFT)" />
+      <arg name="NODELET_ID_0" value="$(arg NODELET_ID_0)" />
+      <arg name="INPUT_IMAGE" value="$(arg LEFT_INPUT_IMAGE)"/>
+      <arg name="INPUT_CLOUD" value="$(arg LEFT_INPUT_CLOUD)"/>
+      <arg name="HAND" value="left" />
+    </include>
+    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_each_object_in_tote.launch">
+      <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER_RIGHT)" />
+      <arg name="NODELET_ID_0" value="$(arg NODELET_ID_1)" />
+      <arg name="INPUT_IMAGE" value="$(arg RIGHT_INPUT_IMAGE)"/>
+      <arg name="INPUT_CLOUD" value="$(arg RIGHT_INPUT_CLOUD)"/>
+      <arg name="HAND" value="right" />
+    </include>
+  </group>
+
+  <group if="$(arg use_fcn)">
+    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_each_object_in_tote_with_fcn.launch">
+      <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER_LEFT)" />
+      <arg name="NODELET_ID_0" value="$(arg NODELET_ID_0)" />
+      <arg name="INPUT_IMAGE" value="$(arg LEFT_INPUT_IMAGE)"/>
+      <arg name="INPUT_CLOUD" value="$(arg LEFT_INPUT_CLOUD)"/>
+      <arg name="HAND" value="left" />
+    </include>
+    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/segmentation_each_object_in_tote_with_fcn.launch">
+      <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER_RIGHT)" />
+      <arg name="NODELET_ID_0" value="$(arg NODELET_ID_1)" />
+      <arg name="INPUT_IMAGE" value="$(arg RIGHT_INPUT_IMAGE)"/>
+      <arg name="INPUT_CLOUD" value="$(arg RIGHT_INPUT_CLOUD)"/>
+      <arg name="HAND" value="right" />
+    </include>
+  </group>
+
+  <group ns="$(arg NODELET_MANAGER_LEFT)">
+    <rosparam subst_value="true">
+      $(arg NODELET_ID_2):
+        - name: left_in_tote_clipper
+          type: jsk_pcl/AttentionClipper
+          remappings:
+            - from: ~input/points
+              to: $(arg LEFT_INPUT_CLOUD)
+    </rosparam>
+  </group>
+  <group ns="left_in_tote_clipper">
+    <rosparam>
+      initial_pos: [0.75, 0.12, -0.33]
+      initial_rot: [0, -0.03, 0]
+      dimension_x: 0.30
+      dimension_y: 0.32
+      dimension_z: 0.15
+      frame_id: base
+    </rosparam>
+  </group>
+
+  <group ns="$(arg NODELET_MANAGER_RIGHT)">
+    <rosparam subst_value="true">
+      $(arg NODELET_ID_3):
+        - name: right_in_tote_clipper
+          type: jsk_pcl/AttentionClipper
+          remappings:
+            - from: ~input/points
+              to: $(arg RIGHT_INPUT_CLOUD)
+    </rosparam>
+  </group>
+  <group ns="right_in_tote_clipper">
+    <rosparam>
+      initial_pos: [0.75, -0.12, -0.33]
+      initial_rot: [0, -0.03, 0]
+      dimension_x: 0.30
+      dimension_y: 0.32
+      dimension_z: 0.15
+      frame_id: base
+    </rosparam>
+  </group>
+
+</launch>
