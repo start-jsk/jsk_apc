@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.0 (2016-07-09)
+------------------
 * rotate gripper after picking object from tote
 * Fix bug in FCNMaskForLabelNames because of mask image value
 * fix typo in dropped detection

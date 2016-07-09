@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.0 (2016-07-09)
+------------------
 * Add apc_stow_task.json for APC2016 real run
 * add volume in object_data_2016.yaml
 * add in hand recognition for stow task launch
