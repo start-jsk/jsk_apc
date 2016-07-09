@@ -2,6 +2,135 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* rotate gripper after picking object from tote
+* Fix bug in FCNMaskForLabelNames because of mask image value
+* fix typo in dropped detection
+* fix typo in dropped detection
+* json update msg improved
+* improve volume_first work order
+* rotate gripper in bin
+* Add apply mask to get reachable space image
+* Fix type to find contour with cv2
+* Draw contour to remove big object cleanly
+* Fix some bugs in fcn_mask_for_label_names.py
+* Fix launch files for removeing big object in tote
+* Fix typo in fcn_mask generation code
+* Fix typo
+* Launch fcn node in boa
+* Add feature to remove cloud of blacklist objects for stow task
+* clear params for blacklisted object
+* add info and warn for dropped while place in bin
+* listed out all blacklisted object
+* servo on when return from bin
+* servo on before view hand pose
+* detect dropped object in place_object andnot update json
+* modify json update duration
+* Skip target_bin is empty in ouptut_json_stow.py
+* Fix typo in main-stow.l
+* add offset in pick-object in -order bin
+* fix rotation of in tote clipper
+* add dr_browns_bottle_brush in blacklist
+* improve stow motion
+* add no_object in apply_tote_contents_hint
+* Fix typo in apply_tote_contents_hint.py
+* add blacklist in apply_tote_contents_hint
+* get smaller movable region
+* Enhance ros-info for recognized object in hand
+* Longer timeout for in-hand-object-recognition in main-stow.l
+* add need-to-wait condition
+* change motion of removing arm from order bin
+* modify in hand clipper size
+* fix bug in select target-bin
+* if theres is no proper target-bin, use random target-bin
+* increase object length
+* Visualize rosconsole of euslisp main script
+* Show node name in ros-info
+* increase volume limit
+* z offset modified to APC2016 real kiva
+* use object length view pose
+* add blacklist object returning back to tote
+* rename black_list to volume_first
+* adjust tote for APC2016
+* remove head controller for rarm
+* add head-controller
+* use fixed offset
+* not use euclid clustering
+* in hand clipper modified
+* rotate gripper when exiting from bin
+* avoid arm collision with head
+* remove no_object label in apply_tote_contents_hint
+* fix apply_tote_contents_hint
+* use work-order msg for :select-stow-target-bin
+* add stow_work_order_server node
+* recognize object in hand and verify
+* add no_object candidates in apply_tote_contents_hint
+* fix path in vgg16_object_recognition launch
+* add calib-pressure-threshold in stow main program
+* add node for output stow json
+* add in hand recognition for stow task launch
+* enable visualize stow json
+* remove self filter in recognition_in_hand_for_stow
+* fix bug in :cube->movable-region
+* fix random object-index to pick same object in pick-object-in-order-bin
+* blacklist bin :l for large object stow task
+* modify order-bin-overlook-pose
+* fix typo in need-to-wait-opposite-arm
+* if fail-count > 1, wait opposite arm start picking
+* add ros-info in return_from_bin in stow main
+* set boundary of tote for y axis
+* add wait condition for pick_object in stow task
+* modify order bin overlook pose
+* get into wait_for_opposite_arm_in_pick after pick fail
+* recognize object length after detecting graspingp
+* modify view hand pose for stow-task
+* stop-grasp if there is no object in view hand pose
+* trust pressure sensor in stow main program
+* set movable-region to avoid arm from moving tote
+* add recognize-order-bin-box
+* remove unused nodes from segmentation_each_object_in_tote
+* add more condition for need-to-wait-opposite-arm
+* wait opposite arm in place condition added
+* get graspingp after second approach
+* add gripper-servo-on before approaching to object
+* picking from tote n-trial 3 -> 2
+* Revert "bin :e blacklisted because of dangerous move"
+  This reverts commit b86f4374d3210823ef7801e4084c842a295de1f6.
+* pick object randomly from tote
+* add wait-opposite-arm when returning from bin
+* combine all wait-oppsite-arm-for-stow method to one
+* use satan for vgg16 in stow task
+* fix line length < 100 to pass run_tests
+* use different attention clipper for each arm
+* use astra for segmentation_in_tote
+* no more use for self filter
+* modify object length limit to 1.0 and take longer timeout
+* bin :e blacklisted because of dangerous move
+* fix clipper for gripper v3
+* rename set_bin_param -> publish_bin_info for stow main
+* use proper bin for entering large object
+* rotate gripper to 45 when entering large object
+* rotate gripper to 0 and use lower traj for exit
+* if object length > 0.2, use higher traj and put further
+* add publish_bin_bbox for stow task
+* use avoid-shelf-pose instead of move-arm-body->bin to avoid quick move
+* add scale key in move-arm-body->bin
+* add SupervoxelSegmentation for picking from tote
+* fix bug in object length method
+* add object length recognize method and use it in stow
+* use gripper v3 for in_hand_clipper
+* add wait opposite arm for place object and pick object
+* use gripper v3 for left arm in stow main program
+* add vgg16 node for stow task
+* add inside tote recognition launch and connect to main program
+* add euclid clustering in tote for stow task
+* add stow task main program and launch file
+* add stow method and slots in baxter-interface.l
+* Adjust astra_hand camera
+* Add fcn trained data to download
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 1.0.0 (2016-07-08)
 ------------------
 * Fix for pep8

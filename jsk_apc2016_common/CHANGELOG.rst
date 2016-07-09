@@ -2,6 +2,19 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add apc_stow_task.json for APC2016 real run
+* add volume in object_data_2016.yaml
+* add in hand recognition for stow task launch
+* add stow_layout_2.json
+* Merge pull request `#1839 <https://github.com/start-jsk/jsk_apc/issues/1839>`_ from wkentaro/fcn-trained-data
+  Add fcn trained data to download
+* Fix typo in install_trained_data.py
+* Add fcn trained data to download
+* Add vgg16 trained_data to download
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 1.0.0 (2016-07-08)
 ------------------
 * Rename traial json
