@@ -1,0 +1,11 @@
+1.5: APC2016 ver1.5
+===================
+
+- Opened: 2016-06-02
+- Ended: 2016-07-09
+
+Goal
+----
+
+Achieve 30pt in both pick and stow task on Official APC2016 rule
+

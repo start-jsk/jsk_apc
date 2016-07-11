@@ -2,4 +2,10 @@
 ===================
 
 - Opened: 2016-05-10
-- Deadline: --
+- Ended: 2016-07-08
+
+Goal
+----
+
+Achieve 30pt in pick task on Official APC2016 rule
+
