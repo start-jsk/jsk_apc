@@ -12,13 +12,13 @@ Stow task trial on real world for APC2016 can be done on ``baxter@satan`` and ``
 
   # use satan
   baxter@satan $ roscd jsk_apc && git fetch origin
-  baxter@satan $ git checkout stow-task -b origin/stow-task
+  baxter@satan $ git checkout 1.5.0
   baxter@satan $ roslaunch jsk_2016_01_baxter_apc baxter.launch
   baxter@satan $ roslaunch jsk_2016_01_baxter_apc setup_torso.launch use_stow:=true
 
   # use eyelash
   baxter@eyelash $ roscd jsk_apc && git fetch origin
-  baxter@eyelash $ git checkout stow-task -b origin/stow-task
+  baxter@satan $ git checkout 1.5.0
   baxter@eyelash $ roslaunch jsk_2016_01_baxter_apc setup_astra.launch use_stow:=true
 
   # use satan
