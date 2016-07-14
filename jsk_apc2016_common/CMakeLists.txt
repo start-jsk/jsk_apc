@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
     geometry_msgs
     message_generation
     std_msgs
+    jsk_data
     jsk_recognition_msgs
     sensor_msgs
     message_filters
@@ -186,18 +187,18 @@ add_custom_target(install_trained_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS jsk_apc2016_common jsk_apc2016_common_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS sib_topic_synchronizer cloud_to_spatial_features
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+install(DIRECTORY include/sib/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+  PATTERN ".svn" EXCLUDE
+)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES
