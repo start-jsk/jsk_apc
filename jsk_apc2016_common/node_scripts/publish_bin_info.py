@@ -3,9 +3,11 @@
 import rospy
 from jsk_apc2016_common.msg import BinInfo, BinInfoArray
 from jsk_recognition_msgs.msg import BoundingBox, BoundingBoxArray
-from geometry_msgs.msg import Pose
-import jsk_apc2016_common.segmentation_in_bin.\
-        segmentation_in_bin_helper as helper
+from geometry_msgs.msg import (
+    Pose,
+    Quaternion,
+    Vector3,
+    Point)
 import jsk_apc2016_common
 from std_msgs.msg import Header
 
@@ -75,9 +77,9 @@ class BinInfoArrayPublisher(object):
             self.bbox_dict[bin_] = BoundingBox(
                     header=header,
                     pose=Pose(
-                            position=helper.point(initial_pos_list[i]),
-                            orientation=helper.quaternion(initial_quat_list[i])),
-                    dimensions=helper.vector3(dimensions[i]))
+                            position=Point(*initial_pos_list[i]),
+                            orientation=Quaternion(*initial_quat_list[i])),
+                    dimensions=Vector3(*dimensions[i]))
             self.cam_direction_dict[bin_] = camera_directions[i]
 
     def create_bin_info_arr(self):

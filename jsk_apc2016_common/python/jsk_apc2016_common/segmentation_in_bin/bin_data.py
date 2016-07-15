@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import jsk_apc2016_common.segmentation_in_bin.\
-        segmentation_in_bin_helper as helper
 from geometry_msgs.msg import Point, PointStamped
 
 
@@ -20,9 +18,14 @@ class BinData(object):
         self.camera_direction = bin_info.camera_direction
 
         _header = self.bbox.header
-        dimensions = helper.list_from_point(self.bbox.dimensions)
-        initial_pos = helper.list_from_point(
-                self.bbox.pose.position)
+        dimensions = [
+            self.bbox.dimensions.x,
+            self.bbox.dimensions.y,
+            self.bbox.dimensions.z]
+        initial_pos = [
+            self.bbox.pose.position.x,
+            self.bbox.pose.position.y,
+            self.bbox.pose.position.z]
         assert type(dimensions[1]) == float
         for j in xrange(4):
             if self.camera_direction == 'x':
