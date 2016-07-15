@@ -5,6 +5,10 @@
   <description>The jsk_apc2016_common package</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+  <maintainer email="pazeshun3684@gmail.com">Hasegawa Shun</maintainer>
+  <maintainer email="shingogo@hotmail.co.jp">Shingo Kitagawa</maintainer>
+  <maintainer email="bowofvinderre@gmail.com">Bando Masahiro</maintainer>
+  <maintainer email="niitani@jsk.imi.i.u-tokyo.ac.jp">Yusuke Niitani</maintainer>
   <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
   <license>BSD</license>
 
