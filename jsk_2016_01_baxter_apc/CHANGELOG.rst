@@ -406,8 +406,8 @@ Changelog for package jsk_2016_01_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
 
-Forthcoming
------------
+1.5.1 (2016-07-15)
+------------------
 * Get lower pressure threshold in :calib-pressure-threshold
   By changing the subtraction value from 8 to 10.
 * Set minimum pressure as the threshold for no_object

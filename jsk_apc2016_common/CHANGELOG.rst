@@ -102,8 +102,8 @@ Changelog for package jsk_apc2016_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
 
-Forthcoming
------------
+1.5.1 (2016-07-15)
+------------------
 * reflected new data & organized all RBO format data & changed name of directory
 * ignore sib_rbo_tokyo directory
 * flake 8 publish_bin_info
