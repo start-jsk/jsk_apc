@@ -102,6 +102,113 @@ Changelog for package jsk_apc2016_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
 
+Forthcoming
+-----------
+* reflected new data & organized all RBO format data & changed name of directory
+* ignore sib_rbo_tokyo directory
+* flake 8 publish_bin_info
+* delete segmentation in bin helper that became unncessary
+* delete unnecessary dependency on helper func
+* delete all old scripts that are no longer used
+* update package.xml maintainers
+* Fix CMakeLists.txt to release on apt
+* 1.5.0
+* Update CHANGELOG.rst to release 1.5.0
+* Add apc_stow_task.json for APC2016 real run
+* add volume in object_data_2016.yaml
+* add in hand recognition for stow task launch
+* add stow_layout_2.json
+* Merge pull request `#1839 <https://github.com/start-jsk/jsk_apc/issues/1839>`_ from wkentaro/fcn-trained-data
+  Add fcn trained data to download
+* Fix typo in install_trained_data.py
+* Add fcn trained data to download
+* Add vgg16 trained_data to download
+* 1.0.0
+* Update CHANGELOG.rst
+* Rename traial json
+* Add robocup2016 apc_pick_task.json
+* add offset for verifying whether clouds are in bins
+* Update chainermodel of VGG16 for rotation/translation/brightness
+* difficult layouts list
+* manual fix layout
+* add three more pick and stow layouts
+* change launch to handle debug output
+* debug output for fcn
+* fcn sib node accepts depth img
+* pick task trial
+* set parameter used to reject small target mask for fcn
+* add second stow and pick layout json
+* fix rosparam path for collect_sib_data
+* Make water graspability as 4
+* skelton for fcn_sib to reject a mask that is too small
+* Update vgg16 trained model
+* graspability of duct tape updated
+* change vgg train data
+* Update graspability of gripper2016
+* Set respawn=true for vgg16_object_recognition
+* fix a bug that messes up pred_label in loop
+* sib-fcn publishes label
+* expand path with ~ for collect_sib_data
+* fcn_node: subtract mean-rgb from input data before doing segmentation
+* fcn segmentation in bin node
+* gitignore chainermodel:
+* Add mode to create mask from BoundingBox not BinInfo
+* Merge pull request `#1795 <https://github.com/start-jsk/jsk_apc/issues/1795>`_ from wkentaro/vgg16
+  Recognize APC2016 objects with VGG16 network
+* Use mask image to enhance object recognition result with vgg16 net
+* Add jsk_data to package.xml
+* Recognize APC2016 objects with VGG16 network
+* 0.8.1
+* update CHANGELOG
+* 0.8.1
+* make object list in alphabetical order
+* remove unnecessary log, and make a save-log more informative
+* delete unnecessary import
+* fix path of install_dataset
+* install dataset 2016
+* fixed mistake in gitignore
+* add update for rbo
+* train script for RBO
+* add gitignore for jsk_apc2016_common
+* collect sib data server
+* labelme tool checks if a user has made mistake
+* fix: forgotten import publish_target_bin_info
+* add default value for rosparam
+* print log when target_bin_name is not set
+* Fix test for official stow json format
+* Visualize official stow json with APC2016 objects
+* labelme tool
+* rename set_bin_param -> publish_bin_info
+* modify publish_bin_info to rospy.Timer
+* publish bin bbox node split from publish bin info
+* remove header sequence in publish_bin_info
+* sort alphabetically in publish_bin_info
+* Fix encoding of in bin mask: 8UC1 -> mono8
+* raise warning when wrong json is given
+* update bin model to measured size
+* Merge pull request `#1628 <https://github.com/start-jsk/jsk_apc/issues/1628>`_ from yuyu2172/throttle
+  changed log to throttle
+* publish_bin_info publishes messages with headers
+* fix unsubscribe in rbo_segmentation_in_bin_node
+* changed log to throttle
+* Merge pull request `#1609 <https://github.com/start-jsk/jsk_apc/issues/1609>`_ from yuyu2172/publish-bin-info-bbox
+  publish_bin_info additionally publishes bin's bounding box array
+* fix bug: update self.json
+* fix line length
+* make main loop of rbo_segmentation_in_bin_node simpler
+* catch error when rbo raises key error
+  Conflicts:
+  jsk_apc2016_common/node_scripts/rbo_segmentation_in_bin_node.py
+* publish_bin_info now publishes bbox_array
+* Merge pull request `#1597 <https://github.com/start-jsk/jsk_apc/issues/1597>`_ from yuyu2172/publish-when-fail
+  rbo_segmentation_in_bin_node publishes debug topics even when segmentation fails
+* rbo_segmentation_in_bin_node publishes debug topics even when segmentation fails
+* read json only when there is update
+* publish_bin_info publishes bin_info of the current json rosparam
+* visualize posterior overlaid with color
+* Update CHANGELOG.rst for 0.8.0
+* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
+
 0.8.0 (2016-05-31)
 ------------------
 * Fix using float object not rospy.Rate in publish_target_bin_info.py
