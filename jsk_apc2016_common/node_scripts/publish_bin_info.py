@@ -2,7 +2,7 @@
 
 import rospy
 from jsk_apc2016_common.msg import BinInfo, BinInfoArray
-from jsk_recognition_msgs.msg import BoundingBox, BoundingBoxArray
+from jsk_recognition_msgs.msg import BoundingBox
 from geometry_msgs.msg import (
     Pose,
     Quaternion,
@@ -11,7 +11,6 @@ from geometry_msgs.msg import (
 import jsk_apc2016_common
 from std_msgs.msg import Header
 
-import json
 import os
 
 
@@ -23,7 +22,8 @@ class BinInfoArrayPublisher(object):
         self.cam_direction_dict = {}
         self.json_file = None
 
-        self.pub_bin_info_arr = rospy.Publisher('~bin_array', BinInfoArray, queue_size=1)
+        self.pub_bin_info_arr = rospy.Publisher(
+            '~bin_array', BinInfoArray, queue_size=1)
 
     def main(self):
         duration = rospy.Duration(rospy.get_param('~duration', 1))
@@ -45,8 +45,10 @@ class BinInfoArrayPublisher(object):
             self.from_shelf_param('lower')
 
             # get contents of bin from json
-            self.bin_contents_dict = jsk_apc2016_common.get_bin_contents(self.json_file)
-            self.targets_dict = jsk_apc2016_common.get_work_order(self.json_file)
+            self.bin_contents_dict = jsk_apc2016_common.get_bin_contents(
+                self.json_file)
+            self.targets_dict = jsk_apc2016_common.get_work_order(
+                self.json_file)
 
             # create bin_msg
             self.create_bin_info_arr()
