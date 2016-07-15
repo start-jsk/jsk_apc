@@ -8,13 +8,16 @@ Pick task trial on real world for APC2016 can be done on ``baxter@satan`` and ``
 
 .. code-block:: bash
 
-  # use satan
-  baxter@satan $ roslaunch jsk_2016_01_baxter_apc baxter.launch
-  baxter@satan $ roslaunch jsk_2016_01_baxter_apc setup_torso.launch
+  # use sheeta
+  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc baxter.launch
+  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc setup_torso.launch
 
   # use eyelash
   baxter@eyelash $ roslaunch jsk_2016_01_baxter_apc setup_astra.launch
 
-  # use satan again
-  baxter@satan $ roslaunch jsk_2016_01_baxter_apc main.launch json:=$(rospack find jsk_apc2016_common)/json/pick_layout_1.json
+  # use boa or a computer with a good GPU
+  baxter@boa $ roslaunch jsk_2016_01_baxter_apc fcn_segmentation_in_bin.launch
+
+  # use sheeta again
+  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc main.launch json:=$(rospack find jsk_apc2016_common)/json/pick_layout_1.json
 
