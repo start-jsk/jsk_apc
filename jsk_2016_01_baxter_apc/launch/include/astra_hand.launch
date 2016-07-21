@@ -8,6 +8,7 @@
     <arg name="depth_frame_id" value="left_hand_camera_depth_optical_frame" />
     <arg name="device_id" value="#1" />
     <arg name="publish_tf" value="false" />
+    <arg name="depth_registration" value="true" />
   </include>
   <node name="left_hand_camera_rgb_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
@@ -24,6 +25,7 @@
     <arg name="depth_frame_id" value="right_hand_camera_depth_optical_frame" />
     <arg name="device_id" value="#2" />
     <arg name="publish_tf" value="false" />
+    <arg name="depth_registration" value="true" />
   </include>
   <node name="right_hand_camera_rgb_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
