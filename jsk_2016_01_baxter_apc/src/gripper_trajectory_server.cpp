@@ -5,31 +5,45 @@
 #include <actionlib/server/simple_action_server.h>
 #include <std_msgs/Float32.h>
 
-std::map<std::string, ros::Publisher> g_gripper_servo_angle_pub;
-
 class GripperAction
 {
 protected:
   ros::NodeHandle nh_;
-  // NodeHandle instance mustbe created before this line,
-
+  // member variables must be initialized in the order they're declared in.
+  // http://stackoverflow.com/questions/12222417/why-should-i-initialize-member-variables-in-the-order-theyre-declared-in
+  std::string side_;
+  std::string ns_name_;
   actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> as_;
-  std::string action_name_, side_;
   // create messages that are used to publisssh feedback/result
   control_msgs::FollowJointTrajectoryFeedback feedback_;
   control_msgs::FollowJointTrajectoryResult result_;
 
+  ros::Publisher gripper_servo_angle_pub_;
+  ros::Subscriber gripper_servo_angle_sub_;
+
+  float angle_state_;
 public:
   GripperAction(std::string name, std::string side);
   void executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal);
+  void angle_stateCB(const std_msgs::Float32::ConstPtr& angle);
 };
 
 GripperAction::GripperAction(std::string name, std::string side):
-    as_(nh_, name, boost::bind(&GripperAction::executeCB, this, _1), false),
-    action_name_(name),
-    side_(side)
+  side_(side),
+  ns_name_(name),
+  as_(nh_, ns_name_+side_ + "follow_joint_trajectory", boost::bind(&GripperAction::executeCB, this, _1), false)
 {
+  angle_state_ = 0;
+
+  gripper_servo_angle_pub_ = nh_.advertise<std_msgs::Float32>(ns_name_ + side_ + "/servo/angle", 10);
+  gripper_servo_angle_sub_ = nh_.subscribe<std_msgs::Float32>(ns_name_ + side_ + "/servo/angle/state", 10,
+                                                              &GripperAction::angle_stateCB, this);
   as_.start();
+}
+
+void GripperAction::angle_stateCB(const std_msgs::Float32::ConstPtr& angle)
+{
+  angle_state_ = angle->data;
 }
 
 void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal)
@@ -47,7 +61,7 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
   if (wait > ros::Duration(0))
     wait.sleep();
   ros::Time start_segment_time = start_time;
-  float prev_rad = 0;
+  float prev_rad = angle_state_;
 
   // Loop until end of trajectory
   for (int i = 0; i < goal->trajectory.points.size(); i++)
@@ -91,9 +105,10 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
         velocity = 0;
       }
     }
-    static float x = prev_rad;
-    static float v = 0;
-    static float a = 0;
+    float x = prev_rad;
+    float v = 0;
+    float a = 0;
+
     float gx = rad;
     float gv = velocity;
     float ga = 0;
@@ -117,7 +132,7 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
       // angle_msg.data = (rad - prev_rad) * (now - start_segment_time).toSec()/segment_time.toSec() + prev_rad; // linear
       angle_msg.data = a0+a1*t+a2*t*t+a3*t*t*t+a4*t*t*t*t+a5*t*t*t*t*t;
 
-      g_gripper_servo_angle_pub[side_].publish(angle_msg);
+      gripper_servo_angle_pub_.publish(angle_msg);
       feedback_rate.sleep();
 
       control_msgs::FollowJointTrajectoryFeedback feedback_;
@@ -146,6 +161,7 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
     v = gv;
     a = ga;
   }
+  angle_state_ = prev_rad; // just in case anlge_stae is not updated;
 
   control_msgs::FollowJointTrajectoryResult result_;
   if (success)
@@ -159,11 +175,8 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "gripper_joint_trajectory_action_server");
-  ros::NodeHandle n;
-  g_gripper_servo_angle_pub["right"] = n.advertise<std_msgs::Float32>("gripper_front/limb/right/servo/angle", 10);
-  g_gripper_servo_angle_pub["left"] = n.advertise<std_msgs::Float32>("gripper_front/limb/left/servo/angle", 10);
-  GripperAction right_server("gripper_front/limb/right/follow_joint_trajectory", "right");
-  GripperAction left_server("gripper_front/limb/left/follow_joint_trajectory", "left");
+  GripperAction right_server("gripper_front/limb/", "right/");
+  GripperAction left_server("gripper_front/limb/", "left/");
   ros::spin();
   return 0;
 }
