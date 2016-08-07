@@ -2,7 +2,7 @@
 #include <math.h>
 
 class Interpolator {
-public:
+protected:
   std::vector<double> position_list;    // list of control point
   std::vector<double> time_list;        // list of time[sec] from start for each control point
 
@@ -13,6 +13,7 @@ public:
   int segment;          // index of segment which is currently processing
   bool interpolatingp;
 
+public:
   Interpolator() {
     time = 0.0;
     segment_time = 0.0;
@@ -48,11 +49,12 @@ public:
 };
 
 class MinJerk : public Interpolator {
-public:
+private:
   std::vector<double> velocity_list;
   double velocity;
   std::vector<double> acceleration_list;
   double acceleration;
+public:
   MinJerk() : Interpolator() {
   }
   void Reset(std::vector<double> pl, std::vector<double> vl, std::vector<double> al, std::vector<double> tl) {
