@@ -116,7 +116,7 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
 
     feedback_rate.sleep();
 
-    ros::Time now = ros::Time::now();
+    now = ros::Time::now();
     std_msgs::Float32 angle_msg;
     double rad = minjerk.PassTime((now-prev).toSec());;
     angle_msg.data = rad;
@@ -140,7 +140,7 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
     as_.publishFeedback(feedback_);
 
     prev = now;
-
+    prev_rad = rad;
   } while (ros::ok() &&
            now < (start_time + goal->trajectory.points[goal->trajectory.points.size()-1].time_from_start));
 
