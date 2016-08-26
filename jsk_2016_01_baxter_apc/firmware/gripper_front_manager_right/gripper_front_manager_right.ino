@@ -50,7 +50,7 @@ inline float rad_to_deg(float rad)
 
 void set_angle(void)
 {
-    myservo.write((int)(-rad_to_deg(servo_angle_msg.data) + 90.0));
+    myservo.write((int)(rad_to_deg(servo_angle_msg.data) + 90.0));
 }
 
 void servo_angleCb(const std_msgs::Float32& angle_msg)
