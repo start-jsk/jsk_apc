@@ -24,25 +24,13 @@
     </rosparam>
   </node>
 
-  <!-- shelf-->
-  <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
-  <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
-
   <!-- Publish jsk_apc2016_common/BinInfo from json -->
   <node name="publish_bin_info"
         pkg="jsk_apc2016_common" type="publish_bin_info.py"
         output="screen">
     <param name="json" value="$(arg json)"/>
-    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
-    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
-  </node>
-
-  <!-- publish bin bbox -->
-  <node name="publish_bin_bbox"
-        pkg="jsk_apc2016_common" type="publish_bin_bbox.py"
-        output="screen">
-    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
-    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
+    <rosparam file="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml" command="load" ns="upper_shelf"/>
+    <rosparam file="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml" command="load" ns="lower_shelf"/>
   </node>
 
   <!-- publish bin tf -->

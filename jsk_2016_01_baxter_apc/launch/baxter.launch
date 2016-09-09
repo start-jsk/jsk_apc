@@ -46,7 +46,12 @@
         pkg="jsk_interactive_marker" type="marker_6dof">
     <rosparam command="load" file="$(find jsk_2015_05_baxter_apc)/config/kiva_pod_interactive_marker.yaml" />
   </node>
-
+  <node name="publish_bin_boxes"
+        pkg="jsk_apc2016_common" type="publish_bin_bbox.py">
+    <remap from="~boxes" to="~output" />
+    <rosparam file="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml" command="load" ns="upper_shelf"/>
+    <rosparam file="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml" command="load" ns="lower_shelf"/>
+  </node>
 
   <node name="desktop_bg_publisher"
         pkg="jsk_perception" type="image_publisher.py">
