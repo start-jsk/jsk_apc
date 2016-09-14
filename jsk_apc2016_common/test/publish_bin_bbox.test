@@ -1,0 +1,15 @@
+<launch>
+  <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
+  <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
+
+  <node name="publish_bin_bbox_0"
+        pkg="jsk_apc2016_common" type="publish_bin_bbox.py">
+    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
+    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
+  </node>
+
+  <test test-name="bin_bbox_published" pkg="jsk_tools"  type="test_topic_published.py" >
+    <param name="~topic_0" value="/publish_bin_bbox_0/boxes" />
+    <param name="~timeout_0" value="10" />
+  </test>
+</launch>

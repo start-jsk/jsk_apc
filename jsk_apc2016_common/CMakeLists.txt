@@ -229,4 +229,6 @@ if(CATKIN_ENABLE_TESTING)
   roslint_add_test()
   # unit tests
   catkin_add_nosetests(python/jsk_apc2016_common/tests)
+  find_package(rostest REQUIRED)
+  add_rostest(test/publish_bin_bbox.test)
 endif()
