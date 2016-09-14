@@ -1,0 +1,23 @@
+<launch>
+  <node pkg="jsk_2016_01_baxter_apc" name="stow_work_order_0" type="stow_work_order_server.py" >
+    <rosparam subst_value="true">
+        json: $(find jsk_apc2016_common)/json/stow_layout_1.json
+        create_output_json: false
+        limit_volume: 5000
+        volume_first:
+          - kleenex_paper_towels
+          - dr_browns_bottle_brush
+          - hanes_tube_socks
+        black_list: []
+    </rosparam>
+  </node>
+  <param name="/left_hand/target_object" value="scotch_bubble_mailer" />
+  <param name="/right_hand/target_object" value="up_glucose_bottle" />
+
+  <test test-name="stow_work_order_published" pkg="jsk_tools"  type="test_topic_published.py" >
+    <param name="~topic_0" value="/stow_work_order_0/left_hand" />
+    <param name="~timeout_0" value="10" />
+    <param name="~topic_1" value="/stow_work_order_0/right_hand" />
+    <param name="~timeout_1" value="10" />
+  </test>
+</launch>
