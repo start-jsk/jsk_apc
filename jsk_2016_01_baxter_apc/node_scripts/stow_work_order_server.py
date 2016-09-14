@@ -16,11 +16,15 @@ class StowWorkOrderServer():
     def __init__(self):
         rp = rospkg.RosPack()
         self.json_file = rospy.get_param('~json', None)
-        self.output_json_file = osp.join(
-                rp.get_path('jsk_2016_01_baxter_apc'),
-                'output',
-                'output_' + osp.basename(self.json_file)
-                )
+        self.create_output_json = rospy.get_param('~create_output_json', True)
+        if self.create_output_json:
+            self.output_json_file = osp.join(
+                    rp.get_path('jsk_2016_01_baxter_apc'),
+                    'output',
+                    'output_' + osp.basename(self.json_file)
+                    )
+        else:
+            self.output_json_file = self.json_file
         self.black_list = rospy.get_param('~black_list', [])
         self.volume_first = rospy.get_param('~volume_first', [])
         self.limit_volume = rospy.get_param('~limit_volume', 3000)
