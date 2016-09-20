@@ -2,18 +2,6 @@
   <arg name="launch_main" default="true" />
   <arg name="json" />
 
-  <!-- shelf-->
-  <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
-  <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
-
-  <!-- Publish jsk_apc2016_common/BinInfo from json -->
-  <node name="publish_bin_bbox"
-        pkg="jsk_apc2016_common" type="publish_bin_bbox.py"
-        output="screen">
-    <rosparam file="$(arg UPPER_SHELF)" command="load" ns="upper_shelf"/>
-    <rosparam file="$(arg LOWER_SHELF)" command="load" ns="lower_shelf"/>
-  </node>
-
   <node pkg="jsk_2016_01_baxter_apc" type="stow_work_order_server.py" name="work_order" respawn="true" output="screen" clear_params="true">
     <rosparam subst_value="true">
         json: $(arg json)

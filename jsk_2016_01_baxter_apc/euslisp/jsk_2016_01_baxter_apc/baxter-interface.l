@@ -297,7 +297,7 @@
       (position box-size box-sizes-bak)))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
-    (let ((box-topic (format nil "publish_bin_bbox/boxes"))
+    (let ((box-topic (format nil "publish_bin_boxes/output"))
           box-msg bin-list)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
