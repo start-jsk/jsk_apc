@@ -8,12 +8,13 @@
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
 
-(defun apc-stow-init (&optional (ctype :default-controller))
+(defun apc-stow-init (&optional (ctype :default-controller) (calib-pressure t))
   (jsk_2016_01_baxter_apc::baxter-init :ctype ctype)
   (send *ri* :gripper-servo-on)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
-  (send *ri* :calib-pressure-threshold)
+  (if calib-pressure
+    (send *ri* :calib-pressure-threshold) nil)
   (objects (list *baxter*))
   t)
 
