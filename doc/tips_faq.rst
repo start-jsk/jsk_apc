@@ -75,3 +75,16 @@ If you have error like below, check `here <http://answers.ros.org/question/41446
 
   If you wish to configure roslaunch to automatically recognize unknown
   hosts, please set the environment variable ROSLAUNCH_SSH_UNKNOWN=1
+
+
+Gripper used in APC2016
+-----------------------
+
+.. image:: _media/apc2016_gripper_base_tube.jpg
+   :width: 50%
+
+This gripper has two parts made by 3D printers. "base" part is made by ProJet and "tube" part is made by Dimension. 3D data of these parts are `here <https://github.com/pazeshun/jsk_apc_2016_meshes>`_. For now(2016/9/27), left gripper is gripper-v3 and right gripper is gripper-v4.
+
+Also, PCB data of the control board on this gripper are `here <https://github.com/ban-masa/arm_manager_arduino>`_.
+
+The servo motor used in this gripper is `GWS S11HP/2BBMG/JR <http://akizukidenshi.com/catalog/g/gM-01724/>`_.
