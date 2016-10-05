@@ -71,6 +71,7 @@
     (:rarm :rarm-controller)))
 
 
+(defun arm2str (arm) (arm-to-str arm))
 (defun arm-to-str (arm)
   (cond
     ((eq arm :larm) "left")
