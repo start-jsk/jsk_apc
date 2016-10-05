@@ -28,6 +28,10 @@
   ;; recognize bin boxes position and dimension
   (ros::ros-info-blue "[~a] [main] recognizing bin boxes" (ros::get-name))
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
+
+  (setq label-names (ros::get-param (format nil "/~a_hand_camera/label_names" (arm2str arm))))
+  (setq bins (list :a :b :c :d :e :f :g :h :i :j :k :l))
+
   (let (state order past-graspingps target-bin target-obj object-found-p)
     (setq state :wait_for_user_input)
     (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
@@ -66,6 +70,21 @@
               (setq past-graspingps nil)
               (setq target-bin (str2symbol (send order :bin)))
               (setq target-obj (send order :object))
+              (setq bin-contents (send *ri* :get-bin-contents target-bin))
+              (ros::set-dynparam
+                (format nil "/~a_hand_camera/bbox_array_to_bbox" (arm2str arm))
+                (cons "index" (position target-bin bins)))
+              (ros::set-dynparam
+                (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
+                (cons "label_value" (position target-obj label-names :test #'string=)))
+              (ros::set-param
+                (format nil "/~a_hand_camera/apply_context_to_label_proba/candidates"
+                        (arm2str arm))
+                (mapcar #'(lambda (x) (position x label-names :test #'string=))
+                        (append (list "background") bin-contents)))
+              (ros::set-dynparam
+                (format nil "/~a_hand_camera/apply_context_to_label_proba" (arm2str arm))
+                (cons "update_candidates" t))
               (if (send *ri* :check-bin-exist target-bin)
                 (progn
                   (ros::set-param
