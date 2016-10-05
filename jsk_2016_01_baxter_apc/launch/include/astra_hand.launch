@@ -13,6 +13,8 @@
     <arg name="device_id" value="#2" unless="$(arg left_first)" />
     <arg name="publish_tf" value="false" />
     <arg name="depth_registration" value="$(arg depth_registration)" />
+    <arg name="rgb_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/left_hand_rgb.yaml" />
+    <arg name="depth_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/left_hand_depth.yaml" />
   </include>
   <node name="left_hand_camera_rgb_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
@@ -31,6 +33,8 @@
     <arg name="device_id" value="#1" unless="$(arg left_first)" />
     <arg name="publish_tf" value="false" />
     <arg name="depth_registration" value="$(arg depth_registration)" />
+    <arg name="rgb_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/right_hand_rgb.yaml" />
+    <arg name="depth_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/right_hand_depth.yaml" />
   </include>
   <node name="right_hand_camera_rgb_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
