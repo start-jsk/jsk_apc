@@ -1,0 +1,84 @@
+<launch>
+
+  <arg name="left_first" default="true" />
+
+  <!-- Launch hand mounted astra cameras. -->
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
+    <arg name="left_first" value="$(arg left_first)" />
+  </include>
+
+  <!-- Launch pipeline for 3D object segmentation. -->
+  <!-- for left hand camera -->
+  <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
+  <group ns="left_hand_camera">
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_left)">
+      <remap from="~input" to="/publish_bin_boxes/output" />
+    </node>
+    <node name="attention_clipper_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg manager_left)">
+      <remap from="~input" to="/left_hand_camera/depth_registered/camera_info" />
+      <remap from="~input/points" to="/left_hand_camera/depth_registered/points" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="extract_indices_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg manager_left)">
+      <remap from="~input" to="/left_hand_camera/depth_registered/points" />
+      <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
+      <rosparam>
+        keep_organized: true
+        approximate_sync: true
+        max_queue_size: 100
+      </rosparam>
+    </node>
+    <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
+      <arg name="NODELET_MANAGER" value="$(arg manager_left)" />
+      <arg name="INPUT_IMAGE" value="/left_hand_camera/rgb/image_rect_color"/>
+      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
+      <arg name="FIXED_FRAME" value="base" />
+    </include>
+  </group>
+  <!-- for right hand camera -->
+  <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
+  <group ns="right_hand_camera">
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_right)">
+      <remap from="~input" to="/publish_bin_boxes/output" />
+    </node>
+    <node name="attention_clipper_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg manager_right)">
+      <remap from="~input" to="/right_hand_camera/depth_registered/camera_info" />
+      <remap from="~input/points" to="/right_hand_camera/depth_registered/points" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="extract_indices_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg manager_right)">
+      <remap from="~input" to="/right_hand_camera/depth_registered/points" />
+      <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
+      <rosparam>
+        keep_organized: true
+        approximate_sync: true
+        max_queue_size: 100
+      </rosparam>
+    </node>
+    <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
+      <arg name="NODELET_MANAGER" value="$(arg manager_right)" />
+      <arg name="INPUT_IMAGE" value="/right_hand_camera/rgb/image_rect_color"/>
+      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
+      <arg name="FIXED_FRAME" value="base" />
+    </include>
+  </group>
+
+</launch>
