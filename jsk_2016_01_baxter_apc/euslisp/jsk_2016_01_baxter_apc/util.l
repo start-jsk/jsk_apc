@@ -14,6 +14,11 @@
   "
   (let ((config (instance dynamic_reconfigure::Config :init))
         (req (instance dynamic_reconfigure::ReconfigureRequest :init)))
+    (cond
+      ((not (listp params)) (warn "Unexpected type for params"))
+      ((<= (length params) 0) (return-from 'ros::set-dynparam t))
+      ((not (listp (elt params 0))) (setq params (list params)))
+      )
     (dolist (param params)
       (let ((name (car param)) (value (cdr param)) (dynparam))
         (cond
