@@ -323,10 +323,10 @@
                                         :after-stamp stamp))
       (if box-msg
         (progn
-          (ros::ros-info "[:recognize-order-bin-box] arm: ~a Recognize order bin box" (send self :arm-symbol2str arm))
+          (ros::ros-info "[:recognize-order-bin-box] arm: ~a Recognize order bin box" (arm2str arm))
           (setq bbox (car (send box-msg :boxes)))
           (sethash arm _order-bin-box bbox))
-        (ros::ros-fatal "[:recognize-order-bin-box] arm: ~a Cannot find order bin" (send self :arm-symbol2str arm)))))
+        (ros::ros-fatal "[:recognize-order-bin-box] arm: ~a Cannot find order bin" (arm2str arm)))))
   (:bbox->cube
     (bbox)
     (let* ((dims (ros::tf-point->pos (send bbox :dimensions)))
@@ -390,7 +390,7 @@
         (progn
           (setq cube (send self :bbox->cube (gethash arm _order-bin-box)))
           (sethash arm _movable-region (send self :cube->movable-region cube :offset offset)))
-        (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (send self :arm-symbol2str arm)))))
+        (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (arm2str arm)))))
   (:cube->movable-region
     (cube &key (offset (list 0 0 0)))
     (let (movable-region vertex-values)
@@ -581,7 +581,7 @@
     (let (msg x-length)
       (setq msg
             (one-shot-subscribe
-              (format nil "cpi_decomposer_~a_hand/boxes" (send *ri* :arm-symbol2str arm))
+              (format nil "cpi_decomposer_~a_hand/boxes" (arm2str arm))
               jsk_recognition_msgs::BoundingBoxArray
               :after-stamp stamp
               :timeout timeout))
