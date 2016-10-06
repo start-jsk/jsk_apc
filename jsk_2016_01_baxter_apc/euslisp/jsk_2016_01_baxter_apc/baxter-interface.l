@@ -460,11 +460,12 @@
       (sethash bin _objects-in-bin-coms com-msg)))
   (:recognize-objects-segmentation-in-bin
     (arm bin &key (stamp (ros::time-now)) (timeout 5))
-    (let ((box-topic (format nil "~a_sib_cpi_decomposer/boxes" (send self :arm-symbol2str arm)))
+    (let ((box-topic
+            (format nil "~a_hand_camera/cluster_indices_decomposer_target/boxes" (arm2str arm)))
           box-msg
-          (com-topic (format nil
-                             "~a_sib_cpi_decomposer/centroid_pose_array"
-                             (send self :arm-symbol2str arm)))
+          (com-topic
+            (format nil "~a_hand_camera/cluster_indices_decomposer_target/centroid_pose_array"
+                        (arm2str arm)))
           com-msg obj-box obj-coords)
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)

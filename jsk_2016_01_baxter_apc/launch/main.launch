@@ -24,21 +24,6 @@
     </rosparam>
   </node>
 
-  <!-- Publish jsk_apc2016_common/BinInfo from json -->
-  <node name="publish_bin_info"
-        pkg="jsk_apc2016_common" type="publish_bin_info.py"
-        output="screen">
-    <param name="json" value="$(arg json)"/>
-    <rosparam file="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml" command="load" ns="upper_shelf"/>
-    <rosparam file="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml" command="load" ns="lower_shelf"/>
-  </node>
-
-  <!-- publish bin tf -->
-  <node pkg="jsk_apc2016_common" type="publish_bin_tf.py"
-    name="pub_bin_tf">
-    <remap from="~input/bin_info_array" to="/publish_bin_info/bin_array"/>
-  </node>
-
   <!-- parameter -->
   <param name="/left_hand/state" value="" />
   <param name="/left_hand/target_bin" value="" />
@@ -48,6 +33,7 @@
   <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="rqt_yn_btn" />
 
   <!-- object verification -->
+  <!-- TODO(unknown): Currently object verification is unstable.
   <group ns="left_hand">
     <node name="object_verification"
           pkg="jsk_2016_01_baxter_apc" type="apply_bin_contents_hint.py"
@@ -64,11 +50,12 @@
       <param name="json" value="$(arg json)" />
     </node>
   </group>
+  -->
 
   <!-- robot main -->
   <node if="$(arg launch_main)" pkg="jsk_2016_01_baxter_apc" type="main.l" name="left_hand"
-    args="&quot;(progn (apc-init :larm-controller) (apc-mainloop :larm))&quot;"
-    respawn="true" output="screen">
+        args="&quot;(progn (apc-init :larm-controller) (apc-mainloop :larm))&quot;"
+        respawn="true" output="screen">
     <env name="DISPLAY" value="" />
     <rosparam subst_value="true">
       collect_data: $(arg collect_data)
@@ -97,14 +84,6 @@
   <!-- collecting data for sib -->
   <param name="/apc2016_collect_data" value="$(arg collect_data)" />
   <group if="$(arg collect_data)">
-    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/collect_sib_data.launch">
-      <arg name="hand" value="right"/>
-      <arg name="json" value="$(arg json)"/>
-    </include>
-    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/collect_sib_data.launch">
-      <arg name="hand" value="left"/>
-      <arg name="json" value="$(arg json)"/>
-    </include>
     <node name="data_collection_server_left"
           pkg="jsk_data" type="data_collection_server.py">
       <rosparam>

@@ -28,21 +28,25 @@
   ;; recognize bin boxes position and dimension
   (ros::ros-info-blue "[~a] [main] recognizing bin boxes" (ros::get-name))
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
+
+  (setq label-names (ros::get-param (format nil "/~a_hand_camera/label_names" (arm2str arm))))
+  (setq bins (list :a :b :c :d :e :f :g :h :i :j :k :l))
+
   (let (state order past-graspingps target-bin target-obj object-found-p)
     (setq state :wait_for_user_input)
-    (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+    (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
     (while
       t
       (case state
         (:wait_for_user_input
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
           (ros::ros-info-blue "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           ;; wait user input to start the task
           (send *ri* :wait-for-user-input-to-start arm)
           (setq state :initialize)
           )
         (:initialize
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
           (ros::ros-info-blue "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           (send *ri* :gripper-servo-on arm)
           (send *ri* :angle-vector (send *baxter* :fold-pose-back) 3000)
@@ -51,7 +55,7 @@
           (setq state :set_target)
           )
         (:set_target
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
           (ros::ros-info-blue "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           ;; next order
           (setq order (send *ri* :get-next-work-order arm order))
@@ -66,11 +70,25 @@
               (setq past-graspingps nil)
               (setq target-bin (str2symbol (send order :bin)))
               (setq target-obj (send order :object))
+              (setq bin-contents (send *ri* :get-bin-contents target-bin))
+              (ros::set-dynparam
+                (format nil "/~a_hand_camera/bbox_array_to_bbox" (arm2str arm))
+                (cons "index" (position target-bin bins)))
+              (ros::set-dynparam
+                (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
+                (cons "label_value" (position target-obj label-names :test #'string=)))
+              (ros::set-param
+                (format nil "/~a_hand_camera/apply_context_to_label_proba/candidates"
+                        (arm2str arm))
+                (mapcar #'(lambda (x) (position x label-names :test #'string=))
+                        (append (list "background") bin-contents)))
+              (ros::set-dynparam
+                (format nil "/~a_hand_camera/apply_context_to_label_proba" (arm2str arm))
+                (cons "update_candidates" t))
               (if (send *ri* :check-bin-exist target-bin)
                 (progn
                   (ros::set-param
-                    (format nil "~a_hand/target_bin"
-                            (send *ri* :arm-symbol2str arm))
+                    (format nil "~a_hand/target_bin" (arm2str arm))
                     (symbol2str target-bin))
                   ;; logging
                   (ros::ros-info-blue "[~a] [main] state: ~a, target-bin: ~a, target-obj: ~a" (ros::get-name) state target-bin target-obj)
@@ -85,7 +103,7 @@
             )
           )
         (:wait_for_opposite_arm
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
           (ros::ros-info-blue "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           (while
             (send *ri* :need-to-wait-opposite-arm arm)
@@ -103,7 +121,7 @@
               )
             (progn
               ;; set state to pick here
-              (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+              (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
               ;; run motion
               (ros::ros-info-blue "[~a] [main] Recognizing objects in bin ~a" (ros::get-name) target-bin)
               (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
@@ -135,7 +153,7 @@
               )
             ))
         (:verify_object
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
           (ros::ros-info-blue "[~a] [main] ~a, ~a" (ros::get-name) arm state)
           (ros::ros-info-blue "[~a] [main] arm: ~a graspingp: ~a" (ros::get-name) arm graspingp)
           ;; Avoid shelf for safety
@@ -145,10 +163,11 @@
           (send *ri* :wait-interpolation)
           ;; Skip verification if no object is grasped
           (if graspingp
-            ;; Skip verification if number of bin contents is 1
-            (if (or (= (length (send *ri* :get-bin-contents target-bin)) 1)
-                    ;; TODO: write here to skip verification like (list :a :b :c)
-                    (find target-bin (list nil)))
+            ;; TODO(unknown): Make verification more stable, currently we skip the verification.
+            ;; (if (or (= (length (send *ri* :get-bin-contents target-bin)) 1)
+            ;;         ;; write here to skip verification like (list :a :b :c)
+            ;;         (find target-bin (list nil)))
+            (if t
               (progn (setq state :place_object))
               (progn
                 (send *baxter* :view-hand-pose arm target-bin)
@@ -182,7 +201,7 @@
             )
           )
         (:return_object
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
           (ros::ros-info-blue "[main] ~a, ~a" arm state)
           (send *ri* :angle-vector-sequence (reverse avs-picked->view-pose) :fast nil 0 :scale 5.0)
           (send *ri* :wait-interpolation)
@@ -234,7 +253,7 @@
             (ros::ros-warn "[main] Abort ~a and go to next target" target-bin))
           )
         (:place_object
-          (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+          (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))
           (ros::ros-info-blue "[main] ~a, ~a" arm state)
           (send *ri* :gripper-servo-off arm)  ;; power off gripper servo not to overload it
           (send *ri* :move-arm-body->order-bin arm)
