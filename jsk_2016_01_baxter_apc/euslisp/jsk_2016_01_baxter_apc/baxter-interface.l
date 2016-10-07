@@ -314,8 +314,8 @@
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:recognize-order-bin-box
     (arm &key (stamp (ros::time-now)))
-    (let ((box-topic (format nil "~a_in_tote_clipper/output/box_array"
-                             (send self :arm-symbol2str arm)))
+    (let ((box-topic (format nil "~a_hand_camera/in_tote_clipper/output/box_array"
+                             (arm2str arm)))
                      box-msg bbox)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
@@ -323,10 +323,10 @@
                                         :after-stamp stamp))
       (if box-msg
         (progn
-          (ros::ros-info "[:recognize-order-bin-box] arm: ~a Recognize order bin box" (send self :arm-symbol2str arm))
+          (ros::ros-info "[:recognize-order-bin-box] arm: ~a Recognize order bin box" (arm2str arm))
           (setq bbox (car (send box-msg :boxes)))
           (sethash arm _order-bin-box bbox))
-        (ros::ros-fatal "[:recognize-order-bin-box] arm: ~a Cannot find order bin" (send self :arm-symbol2str arm)))))
+        (ros::ros-fatal "[:recognize-order-bin-box] arm: ~a Cannot find order bin" (arm2str arm)))))
   (:bbox->cube
     (bbox)
     (let* ((dims (ros::tf-point->pos (send bbox :dimensions)))
@@ -390,7 +390,7 @@
         (progn
           (setq cube (send self :bbox->cube (gethash arm _order-bin-box)))
           (sethash arm _movable-region (send self :cube->movable-region cube :offset offset)))
-        (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (send self :arm-symbol2str arm)))))
+        (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (arm2str arm)))))
   (:cube->movable-region
     (cube &key (offset (list 0 0 0)))
     (let (movable-region vertex-values)
@@ -501,9 +501,10 @@
          (sethash bin _objects-sib-coords nil)))))
   (:recognize-objects-in-order-bin
     (&key arm (stamp (ros::time-now)) (timeout 10))
-    (let ((box-topic (format nil "~a_in_tote_supervoxel_cpi_decomposer/boxes" (send *ri* :arm-symbol2str arm)))
+    (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_target/boxes" (arm2str arm)))
           box-msg
-          (com-topic (format nil "~a_in_tote_supervoxel_cpi_decomposer/centroid_pose_array" (send *ri* :arm-symbol2str arm)))
+          (com-topic (format nil "~a_hand_camera/cluster_indices_decomposer_target/centroid_pose_array"
+                        (arm2str arm)))
           com-msg obj-box obj-coords)
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
@@ -580,7 +581,7 @@
     (let (msg x-length)
       (setq msg
             (one-shot-subscribe
-              (format nil "cpi_decomposer_~a_hand/boxes" (send *ri* :arm-symbol2str arm))
+              (format nil "cpi_decomposer_~a_hand/boxes" (arm2str arm))
               jsk_recognition_msgs::BoundingBoxArray
               :after-stamp stamp
               :timeout timeout))
@@ -1420,6 +1421,8 @@
       (dolist (c (send msg :array))
         (when (string= (symbol2str bin) (send c :bin))
           (return-from :get-bin-contents (send c :objects))))))
+  (:get-tote-contents ()
+    (ros::get-param "/set_tote_contents_param/tote_contents"))
   (:real-sim-end-coords-diff
     (arm)
     (let (real-coords sim-coords diff-coords thresh)
