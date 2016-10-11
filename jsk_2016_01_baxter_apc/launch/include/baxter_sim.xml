@@ -26,7 +26,7 @@
 
   <!-- Load the URDF into the ROS Parameter Server -->
   <param name="robot_description"
-         command="$(find xacro)/xacro.py $(find jsk_2015_05_baxter_apc)/robots/baxter_sim.xacro" />
+         command="$(find xacro)/xacro.py --inorder $(find jsk_2016_01_baxter_apc)/robots/baxter.xacro gazebo:=true" />
 
   <!-- Load the software version into the ROS Parameter Server -->
   <param name="rethink/software_version" value="1.2.0" />
@@ -35,12 +35,14 @@
   <node pkg="tf" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 world base 100" />
 
   <!-- tf for end effector which is required by gazebo plugin for vacuum_gripper -->
+  <!--
   <node name="left_vacuum_gripper_tf_publisher"
         pkg="tf2_ros" type="static_transform_publisher"
         args="0.07 0 0.45 0 0 0 left_wrist left_end_effector" />
   <node name="right_vacuum_gripper_tf_publisher"
         pkg="tf2_ros" type="static_transform_publisher"
         args="0.07 0 0.45 0 0 0 right_wrist right_end_effector" />
+   -->
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
@@ -60,8 +62,40 @@
     -J baxter::left_w1 -0.0610333
     -J baxter::left_w2 -0.0124707" />
 
+  <!-- baxter startup -->
+  <include file="$(find jsk_baxter_startup)/baxter.launch">
+    <arg name="launch_servo" value="false"/>
+    <arg name="launch_joint_trajectory" value="false"/>
+    <arg name="launch_gripper_action" value="false"/>
+    <arg name="launch_openni" value="false"/>
+    <arg name="launch_kinect2" value="false"/>
+    <arg name="launch_voice_echo" value="false"/>
+    <arg name="launch_moveit" value="false"/>
+    <arg name="launch_teleop" value="false"/>
+    <arg name="launch_tweet" value="false"/>
+    <arg name="launch_mongodb" value="false"/>
+    <arg name="launch_wrench" value="false"/>
+    <arg name="launch_time_signal" value="false"/>
+    <arg name="start_openni" value="false"/>
+    <arg name="USER_NAME" value="false"/>
+  </include>
+
   <!-- ros_control baxter launch file -->
-  <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch" />
+  <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch">
+    <arg name="right_electric_gripper" value="false"/>
+    <arg name="left_electric_gripper" value="false"/>
+    <arg name="grav_right_name" value="right_gripper_base" />
+    <arg name="grav_left_name" value="left_gripper_base" />
+    <arg name="right_tip_name" value="right_gripper_base" />
+    <arg name="left_tip_name" value="left_gripper_base" />
+    <!-- FIXME: gripper_vacuum_pad_base cannot be loaded to gazebo -->
+    <!--
+    <arg name="grav_right_name" value="right_gripper_vacuum_pad_base" />
+    <arg name="grav_left_name" value="left_gripper_vacuum_pad_base" />
+    <arg name="right_tip_name" value="right_gripper_vacuum_pad_base" />
+    <arg name="left_tip_name" value="left_gripper_vacuum_pad_base" />
+    -->
+  </include>
 
   <!-- kiva pod state tf and urdf param -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kiva_pod_state.launch" />
