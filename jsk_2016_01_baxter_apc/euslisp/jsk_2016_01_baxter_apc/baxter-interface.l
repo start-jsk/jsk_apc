@@ -1422,7 +1422,7 @@
         (when (string= (symbol2str bin) (send c :bin))
           (return-from :get-bin-contents (send c :objects))))))
   (:get-tote-contents ()
-    (ros::get-param "/set_tote_contents_param/tote_contents"))
+    (ros::get-param "/tote_contents"))
   (:real-sim-end-coords-diff
     (arm)
     (let (real-coords sim-coords diff-coords thresh)
