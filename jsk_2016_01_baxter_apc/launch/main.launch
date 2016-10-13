@@ -3,9 +3,14 @@
   <arg name="json" />
   <arg name="collect_data" default="false" />
 
-  <!-- bin contents data -->
-  <node pkg="jsk_2015_05_baxter_apc" type="bin_contents.py" name="bin_contents" respawn="true">
-    <param name="json" value="$(arg json)" />
+  <!-- set bin_contents rosparam -->
+  <node name="set_bin_contents_param"
+        pkg="jsk_2016_01_baxter_apc" type="json_to_rosparam.py">
+    <remap from="~param" to="/bin_contents" />
+    <rosparam subst_value="true">
+      json: $(arg json)
+      key: bin_contents
+    </rosparam>
   </node>
 
   <!-- work order data -->
