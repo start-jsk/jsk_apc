@@ -2,6 +2,7 @@
   <arg name="launch_main" default="true" />
   <arg name="json" />
   <arg name="collect_data" default="false" />
+  <arg name="rviz" default="true" />
 
   <!-- bin contents data -->
   <node pkg="jsk_2015_05_baxter_apc" type="bin_contents.py" name="bin_contents" respawn="true">
@@ -30,12 +31,12 @@
   <param name="/right_hand/state" value="" />
   <param name="/right_hand/target_bin" value="" />
 
-  <!-- We should use YesNoButton panel in rviz.
-  <node name="rqt_yn_btn"
-        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
-    <remap from="~" to="/rviz/yes_no_button" />
-  </node>
-  -->
+  <group if="$(arg rviz)">
+    <node name="rviz"
+          pkg="rviz" type="rviz"
+          args="-d $(find jsk_2016_01_baxter_apc)/rvizconfig/pick.rviz">
+    </node>
+  </group>
 
   <!-- object verification -->
   <!-- TODO(unknown): Currently object verification is unstable.
