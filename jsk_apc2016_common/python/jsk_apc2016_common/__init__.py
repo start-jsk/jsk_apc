@@ -12,6 +12,7 @@ import numpy as np
 
 import jsk_apc2015_common
 import rospkg
+import rospy
 
 
 PKG = 'jsk_apc2016_common'
@@ -67,14 +68,19 @@ def get_tote_contents(json_file):
     return tote_contents
 
 
-def get_work_order(json_file):
+def get_work_order(json_file=None, param=None):
     """Return work order data from picking json.
 
     Returns:
         data (dict): work order written in picking json file.
     """
-    with open(json_file, 'r') as f:
-        data = json.load(f)['work_order']
+    if json_file is not None:
+        with open(json_file, 'r') as f:
+            data = json.load(f)['work_order']
+    elif param is not None:
+        data = rospy.get_param(param)
+    else:
+        raise ValueError('Either argument json_file or param must be passed.')
     dict_order = {}
     for order in data:
         bin_ = order['bin'].split('_')[1].lower()  # bin_A -> a

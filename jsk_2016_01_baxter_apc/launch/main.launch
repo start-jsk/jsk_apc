@@ -14,8 +14,19 @@
     </rosparam>
   </node>
 
+  <!-- set work_order rosparam -->
+  <node name="set_work_order_param"
+        pkg="jsk_2016_01_baxter_apc" type="json_to_rosparam.py">
+    <remap from="~param" to="/work_order" />
+    <rosparam subst_value="true">
+      json: $(arg json)
+      key: work_order
+    </rosparam>
+  </node>
+
   <!-- work order data -->
   <node pkg="jsk_2016_01_baxter_apc" type="work_order.py" name="strategic_work_order" respawn="true">
+    <remap from="~param" to="/work_order" />
     <rosparam subst_value="true">
       json: $(arg json)
       is_apc2016: true
