@@ -1438,11 +1438,11 @@
     """wait for user input to start"""
     (let (can-start)
       (ros::ros-info "[:wait-for-user-input-to-start] wait for user input to start: ~a" arm)
-      (ros::wait-for-service "rqt_yn_btn")
+      (ros::wait-for-service "/rviz/yes_no_button")
       (while
         (not can-start)
         (setq can-start (send (ros::service-call
-                                "rqt_yn_btn" (instance jsk_rqt_plugins::YesNoRequest)) :yes))
+                                "/rviz/yes_no_button" (instance jsk_gui_msgs::YesNoRequest)) :yes))
         )
       (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~a" arm)
       ))
