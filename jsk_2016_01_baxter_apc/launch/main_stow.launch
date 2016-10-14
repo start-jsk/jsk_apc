@@ -2,7 +2,7 @@
   <arg name="launch_main" default="true" />
   <arg name="json" />
 
-  <node pkg="jsk_2016_01_baxter_apc" type="stow_work_order_server.py" name="work_order" respawn="true" output="screen" clear_params="true">
+  <node pkg="jsk_2016_01_baxter_apc" type="stow_work_order_server.py" name="strategic_work_order" respawn="true" output="screen" clear_params="true">
     <rosparam subst_value="true">
         json: $(arg json)
         limit_volume: 5000
