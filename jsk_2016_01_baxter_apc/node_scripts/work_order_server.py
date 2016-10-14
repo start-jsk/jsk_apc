@@ -21,6 +21,9 @@ class WorkOrderServer(object):
         if self.json_file is None:
             rospy.logerr('must set json file path to ~json')
             return
+        data = json.load(open(self.json_file))
+        rospy.set_param('~work_order', data['work_order'])
+
         self.object_data = None
         if self.is_apc2016:
             self.object_data = jsk_apc2016_common.get_object_data()
@@ -37,8 +40,8 @@ class WorkOrderServer(object):
 
     def get_sorted_work_order(self):
         """Sort work order to maximize the score"""
-        bin_contents = jsk_apc2016_common.get_bin_contents(json_file=self.json_file)
-        work_order = jsk_apc2016_common.get_work_order(json_file=self.json_file)
+        bin_contents = jsk_apc2016_common.get_bin_contents(param='~bin_contents')
+        work_order = jsk_apc2016_common.get_work_order(param='~work_order')
         sorted_bin_list = bin_contents.keys()
 
         if self.object_data is not None:
