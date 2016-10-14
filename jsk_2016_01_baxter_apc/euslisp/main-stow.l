@@ -56,14 +56,15 @@
           (ros::set-dynparam
             (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
             (cons "label_value" (position target-obj label-names :test #'string=)))
-          (ros::set-param
-            (format nil "/~a_hand_camera/apply_context_to_label_proba/candidates"
-                    (arm2str arm))
-            (mapcar #'(lambda (x) (position x label-names :test #'string=))
-                    (append (list "background") tote-contents)))
-          (ros::set-dynparam
-            (format nil "/~a_hand_camera/apply_context_to_label_proba" (arm2str arm))
-            (cons "update_candidates" t))
+          (let ((req (instance jsk_recognition_msgs::SetLabelsRequest :init)))
+            (send req :labels
+              (mapcar #'(lambda (x) (position x label-names :test #'string=))
+                      (append (list "background") tote-contents)))
+            (ros::service-call
+              (format nil "/~a_hand_camera/apply_context_to_label_proba/update_candidates"
+                      (arm2str arm))
+              req)
+            )
           (setq state :pick_object)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:pick_object
