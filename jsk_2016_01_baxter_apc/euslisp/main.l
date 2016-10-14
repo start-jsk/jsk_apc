@@ -17,7 +17,7 @@
   (send *baxter* :rarm :shoulder-y :joint-angle -70)
   (send *baxter* :larm :move-end-pos #f(0 0 100))
   (send *baxter* :rarm :move-end-pos #f(0 0 100))
-  (send *ri* :angle-vector (send *baxter* :angle-vector))
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 10000)
   (send *ri* :wait-interpolation)
   (if calib-pressure
     (send *ri* :calib-pressure-threshold) nil)
