@@ -24,9 +24,8 @@
   <param name="/right_hand/target_object" value="" />
   <param name="/right_hand/update_json" value="false" />
 
-  <node name="rqt_yn_btn"
-        pkg="jsk_rqt_plugins" type="rqt_yn_btn" >
-    <remap from="~" to="/rviz/yes_no_button" />
+  <node name="yes_no_button"
+        pkg="jsk_2016_01_baxter_apc" type="yes_no_button" >
   </node>
 
   <node pkg="jsk_2016_01_baxter_apc" type="output_json_stow.py" name="output_json_stow" respawn="true">

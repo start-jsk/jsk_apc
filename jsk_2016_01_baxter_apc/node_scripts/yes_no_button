@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+rosrun jsk_rqt_plugins rqt_yn_btn /rqt_yn_btn:=/rviz/yes_no_button
