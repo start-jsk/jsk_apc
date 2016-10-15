@@ -220,6 +220,16 @@
     (+ (gethash :bin-reachable-depth-gripper-90 _hard-coded-variables)
        (* (gethash :pad-link-l _hard-coded-variables) (cos (deg2rad gripper-angle))))
     )
+  (:set-object-segmentation-candidates
+    (&key arm candidates)
+    (let ((req (instance jsk_recognition_msgs::SetLabelsRequest :init)))
+      (send req :labels candidates)
+      (ros::service-call
+        (format nil "/~a_hand_camera/apply_context_to_label_proba/update_candidates"
+                (arm2str arm))
+        req)
+      )
+    )
   (:need-to-wait-opposite-arm-for-stow
     (arm &key (state))
     (let (opposite-state opposite-target arm-target)

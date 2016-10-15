@@ -56,14 +56,10 @@
           (ros::set-dynparam
             (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
             (cons "label_value" (position target-obj label-names :test #'string=)))
-          (ros::set-param
-            (format nil "/~a_hand_camera/apply_context_to_label_proba/candidates"
-                    (arm2str arm))
-            (mapcar #'(lambda (x) (position x label-names :test #'string=))
-                    (append (list "background") tote-contents)))
-          (ros::set-dynparam
-            (format nil "/~a_hand_camera/apply_context_to_label_proba" (arm2str arm))
-            (cons "update_candidates" t))
+          (send *ri* :set-object-segmentation-candidates
+                :arm arm
+                :candidates (mapcar #'(lambda (x) (position x label-names :test #'string=))
+                                    (append (list "background") tote-contents)))
           (setq state :pick_object)
           (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state)))
         (:pick_object
