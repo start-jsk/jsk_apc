@@ -83,11 +83,14 @@
     </rosparam>
   </node>
 
-  <!-- set rosparam for fcn -->
+  <!-- set tote_contents rosparam -->
   <node name="set_tote_contents_param"
-        pkg="jsk_2016_01_baxter_apc" type="set_tote_contents_param.py"
-        args="$(arg json)">
-    <remap from="~tote_contents" to="/apc2016_tote_contents" />
+        pkg="jsk_2016_01_baxter_apc" type="json_to_rosparam.py">
+    <remap from="~param" to="/tote_contents" />
+    <rosparam subst_value="true">
+      json: $(arg json)
+      key: tote_contents
+    </rosparam>
   </node>
 
 </launch>
