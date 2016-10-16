@@ -6,7 +6,7 @@ import rospkg
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtGui import QDialog
+from python_qt_binding.QtGui import QDialog, QPixmap
 
 
 class SelectTargetWidget(QDialog):
@@ -19,7 +19,10 @@ class SelectTargetWidget(QDialog):
                 'select_target.ui'
                 )
         loadUi(ui_file, self)
-
+        self.image_path = os.path.join(
+                rp.get_path('jsk_apc2016_common'),
+                'models',
+                )
         work_order_list = rospy.get_param("/work_order")
         self.work_order = {}
         for order in work_order_list:
@@ -30,35 +33,36 @@ class SelectTargetWidget(QDialog):
             bin_ = bin_.split('_')[1].lower()
             self.bin_contents[bin_] = items
         self.bin_dict = {
-                'a': self.bin_A,
-                'b': self.bin_B,
-                'c': self.bin_C,
-                'd': self.bin_D,
-                'e': self.bin_E,
-                'f': self.bin_F,
-                'g': self.bin_G,
-                'h': self.bin_H,
-                'i': self.bin_I,
-                'j': self.bin_J,
-                'k': self.bin_K,
-                'l': self.bin_L
+                'a': {'combo': self.bin_A, 'image': self.bin_A_image},
+                'b': {'combo': self.bin_B, 'image': self.bin_B_image},
+                'c': {'combo': self.bin_C, 'image': self.bin_C_image},
+                'd': {'combo': self.bin_D, 'image': self.bin_D_image},
+                'e': {'combo': self.bin_E, 'image': self.bin_E_image},
+                'f': {'combo': self.bin_F, 'image': self.bin_F_image},
+                'g': {'combo': self.bin_G, 'image': self.bin_G_image},
+                'h': {'combo': self.bin_H, 'image': self.bin_H_image},
+                'i': {'combo': self.bin_I, 'image': self.bin_I_image},
+                'j': {'combo': self.bin_J, 'image': self.bin_J_image},
+                'k': {'combo': self.bin_K, 'image': self.bin_K_image},
+                'l': {'combo': self.bin_L, 'image': self.bin_L_image}
                 }
 
         self.setObjectName('SelectTargetUI')
 
         for bin_ in 'abcdefghijkl':
-            self.bin_dict[bin_].addItems(self.bin_contents[bin_])
-            self.bin_dict[bin_].currentIndexChanged.connect(
+            self.bin_dict[bin_]['combo'].addItems(self.bin_contents[bin_])
+            self.bin_dict[bin_]['combo'].currentIndexChanged.connect(
                     self._select_target(bin_)
                     )
         self.update.accepted.connect(self._update_param)
         self.update.rejected.connect(self._reset_param)
         self._get_init_index()
-        self._set_init_index()
+        self._set_init_target()
 
     def _select_target(self, bin_):
         def _select_target_curried(index):
             self.work_order[bin_] = self.bin_contents[bin_][index]
+            self._show_image(bin_, index)
         return _select_target_curried
 
     def _get_init_index(self):
@@ -68,9 +72,21 @@ class SelectTargetWidget(QDialog):
                     self.init_work_order[bin_]
                     )
 
-    def _set_init_index(self):
+    def _set_init_target(self):
         for bin_ in 'abcdefghijkl':
-            self.bin_dict[bin_].setCurrentIndex(self.init_index[bin_])
+            self.bin_dict[bin_]['combo'].setCurrentIndex(self.init_index[bin_])
+            self._show_image(bin_, self.init_index[bin_])
+
+    def _show_image(self, bin_, index):
+        target_name = self.bin_contents[bin_][index]
+        target_image_path = os.path.join(
+                self.image_path,
+                target_name,
+                'image.jpg'
+                )
+        target_pixmap = QPixmap(target_image_path).scaled(100, 100)
+        self.bin_dict[bin_]['image'].setPixmap(target_pixmap)
+        self.bin_dict[bin_]['image'].show()
 
     def _update_param(self):
         self._set_param(self.work_order)
@@ -78,7 +94,7 @@ class SelectTargetWidget(QDialog):
 
     def _reset_param(self):
         self._set_param(self.init_work_order)
-        self._set_init_index()
+        self._set_init_target()
         self.show()
 
     def _set_param(self, work_order):
