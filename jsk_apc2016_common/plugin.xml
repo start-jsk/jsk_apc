@@ -1,0 +1,15 @@
+<library path="src">
+  <class name="SelectTarget" type="jsk_apc2016_common.rqt_plugin.select_target.SelectTarget" base_class_type="rqt_gui_py::Plugin">
+    <description>Select target objects for each bin.</description>
+    <qtgui>
+      <group>
+        <label>Configuration</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to Configuration.</statustip>
+      </group>
+      <label>Select Target</label>
+      <icon type="theme">utilities-system-monitor</icon>
+      <statustip>A plugin to select and update APC target objects with rosparam.</statustip>
+    </qtgui>
+  </class>
+</library>
