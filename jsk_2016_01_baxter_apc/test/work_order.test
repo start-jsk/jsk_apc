@@ -1,5 +1,5 @@
 <launch>
-  <node pkg="jsk_2016_01_baxter_apc" name="work_order_0" type="work_order.py" >
+  <node pkg="jsk_2016_01_baxter_apc" name="work_order_0" type="work_order_server.py" >
     <rosparam subst_value="True">
        json: $(find jsk_apc2016_common)/json/pick_layout_1.json
        rate: 10
@@ -8,7 +8,7 @@
        max_weight: 5.0
     </rosparam>
   </node>
-  <node pkg="jsk_2016_01_baxter_apc" name="work_order_1" type="work_order.py" >
+  <node pkg="jsk_2016_01_baxter_apc" name="work_order_1" type="work_order_server.py" >
     <rosparam subst_value="True">
        json: $(find jsk_2015_05_baxter_apc)/json/layout_12.json
        rate: 10
