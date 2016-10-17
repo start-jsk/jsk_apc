@@ -1408,7 +1408,7 @@
     (setq
       msg
       (one-shot-subscribe
-        (format nil "work_order/~a_hand" (send self :arm-symbol2str arm))
+        (format nil "/strategic_work_order/~a_hand" (send self :arm-symbol2str arm))
         jsk_2015_05_baxter_apc::WorkOrderArray))
     (send msg :array))
   (:get-next-work-order

@@ -14,7 +14,7 @@ import numpy as np
 def get_sorted_work_order(json_file, gripper, object_data):
     """Sort work order to maximize the score"""
     bin_contents = jsk_apc2016_common.get_bin_contents(json_file=json_file)
-    work_order = jsk_apc2016_common.get_work_order(json_file=json_file)
+    work_order = jsk_apc2016_common.get_work_order(param='~param')
     sorted_bin_list = bin_contents.keys()
 
     if object_data is not None:

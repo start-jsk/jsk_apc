@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SelectTarget</class>
+ <widget class="QDialog" name="SelectTarget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QDialogButtonBox" name="update">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>750</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_A">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>160</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_B">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>160</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_C">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>160</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_E">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>340</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_F">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>340</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_D">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>340</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_G">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>520</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_I">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>520</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_H">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>520</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_J">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>700</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_L">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>700</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="bin_K">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>700</y>
+     <width>200</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_A_label">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>20</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin A</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_B_label">
+   <property name="geometry">
+    <rect>
+     <x>375</x>
+     <y>20</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin B</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_C_label">
+   <property name="geometry">
+    <rect>
+     <x>625</x>
+     <y>20</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin C</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_E_label">
+   <property name="geometry">
+    <rect>
+     <x>375</x>
+     <y>200</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin E</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_D_label">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>200</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin D</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_F_label">
+   <property name="geometry">
+    <rect>
+     <x>625</x>
+     <y>200</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin F</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_G_label">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>380</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin G</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_H_label">
+   <property name="geometry">
+    <rect>
+     <x>375</x>
+     <y>380</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_I_label">
+   <property name="geometry">
+    <rect>
+     <x>625</x>
+     <y>380</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin I</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_J_label">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>560</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin J</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_K_label">
+   <property name="geometry">
+    <rect>
+     <x>375</x>
+     <y>560</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin K</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_L_label">
+   <property name="geometry">
+    <rect>
+     <x>625</x>
+     <y>560</y>
+     <width>50</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>50</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>bin L</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_A_image">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>50</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_B_image">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>50</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_C_image">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>50</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_C_image_2">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>230</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_B_image_2">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>230</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_A_image_2">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>230</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_F_image">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>230</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_D_image">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>230</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_E_image">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>230</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_H_image">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>410</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_G_image">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>410</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_I_image">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>410</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_J_image">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>590</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_L_image">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>590</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bin_K_image">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>590</y>
+     <width>100</width>
+     <height>100</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>update</sender>
+   <signal>accepted()</signal>
+   <receiver>SelectTarget</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>update</sender>
+   <signal>rejected()</signal>
+   <receiver>SelectTarget</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
