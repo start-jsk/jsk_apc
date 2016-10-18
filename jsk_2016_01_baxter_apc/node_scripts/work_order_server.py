@@ -37,12 +37,10 @@ class WorkOrderServer(object):
 
         self.msg = self.get_work_order_msg()
 
-        self.pub_left = rospy.Publisher('~left_hand',
-                                   WorkOrderArray,
-                                   queue_size=1)
-        self.pub_right = rospy.Publisher('~right_hand',
-                                    WorkOrderArray,
-                                    queue_size=1)
+        self.pub_left = rospy.Publisher(
+            '~left_hand', WorkOrderArray, queue_size=1)
+        self.pub_right = rospy.Publisher(
+            '~right_hand', WorkOrderArray, queue_size=1)
         rospy.Service('~update_target', UpdateTarget, self._update_target_cb)
         self.updated = False
         rospy.Timer(rospy.Duration(rospy.get_param('~duration', 1)), self._timer_cb)
