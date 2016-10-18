@@ -7,6 +7,7 @@ import rospkg
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtGui import QDialog, QPixmap
+from jsk_2016_01_baxter_apc.srv import UpdateTarget
 
 
 class SelectTargetWidget(QDialog):
@@ -23,13 +24,14 @@ class SelectTargetWidget(QDialog):
                 rp.get_path('jsk_apc2016_common'),
                 'models',
                 )
-        work_order_list = rospy.get_param("/work_order")
+        work_order_list = rospy.get_param("~work_order")
         self.work_order = {}
         for order in work_order_list:
             self.work_order[order['bin']] = order['item']
         self.init_work_order = self.work_order.copy()
+        self.prev_work_order = self.work_order.copy()
         self.bin_contents = {}
-        for bin_, items in rospy.get_param('/bin_contents').items():
+        for bin_, items in rospy.get_param('~bin_contents').items():
             bin_ = bin_.split('_')[1].lower()
             self.bin_contents[bin_] = items
         self.bin_dict = {
@@ -46,7 +48,6 @@ class SelectTargetWidget(QDialog):
                 'k': {'combo': self.bin_K, 'image': self.bin_K_image},
                 'l': {'combo': self.bin_L, 'image': self.bin_L_image}
                 }
-
         self.setObjectName('SelectTargetUI')
 
         for bin_ in 'abcdefghijkl':
@@ -98,10 +99,23 @@ class SelectTargetWidget(QDialog):
         self.show()
 
     def _set_param(self, work_order):
-        work_order_list = []
-        for bin_, item in work_order.items():
-            work_order_list.append({'bin': bin_, 'item': item})
-        rospy.set_param('/work_order', work_order_list)
+        for bin_ in 'abcdefghijkl':
+            if work_order[bin_] != self.prev_work_order[bin_]:
+                rospy.wait_for_service('~service')
+                try:
+                    update_target = rospy.ServiceProxy(
+                            '~service',
+                            UpdateTarget
+                            )
+                    response = update_target(bin=bin_, target=work_order[bin_])
+                    if response.success is False:
+                        rospy.logerr(
+                                "{} : Failed to update target object"
+                                .format(bin_)
+                                )
+                except rospy.ServiceException, e:
+                    rospy.logerr("Service call failed. {}".format(e))
+        self.prev_work_order = work_order.copy()
 
 
 class SelectTarget(Plugin):

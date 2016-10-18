@@ -24,6 +24,12 @@
     </rosparam>
   </node>
 
+  <!-- target select GUI -->
+  <node pkg="jsk_apc2016_common" type="rqt_select_target" name="rqt_select_target" output="screen">
+    <remap from="~bin_contents" to="/bin_contents" />
+    <remap from="~work_order" to="/strategic_work_order/work_order" />
+    <remap from="~service" to="/strategic_work_order/update_target" />
+  </node>
 
   <node pkg="jsk_2016_01_baxter_apc" type="output_json_pick.py" name="output_json_pick" respawn="true">
     <rosparam subst_value="true">
