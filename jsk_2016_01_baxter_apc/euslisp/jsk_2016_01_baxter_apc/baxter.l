@@ -119,4 +119,27 @@
       (objects (append robots coords-list))
       )
     )
+  (:view-opposite-hand-pose
+    (arm)
+    (let (opposite-arm gripper-coords dy theta)
+      (setq opposite-arm (if (eq arm :larm) :rarm :larm))
+      (setq gripper-coords
+            (send (send self opposite-arm :end-coords)
+                  :copy-worldcoords))
+      (send gripper-coords :orient 0 :z :world)
+      (if (eq arm :larm)
+        (progn
+          (setq dy 250)
+          (setq theta -1.57))
+        (progn
+          (setq dy -250)
+          (setq theta 1.57)))
+      (send gripper-coords :translate (float-vector 0 dy -200))
+      (send gripper-coords :rotate theta :z :world)
+      (send self :rotate-gripper arm 70 :relative nil)
+      (send self arm
+            :inverse-kinematics gripper-coords
+            :use-gripper nil
+            :rotation-axis t
+            :revert-if-fail nil)))
   )
