@@ -15,7 +15,8 @@
   </node>
 
   <!-- work order data -->
-  <node pkg="jsk_2016_01_baxter_apc" type="work_order.py" name="work_order" respawn="true">
+  <node pkg="jsk_2016_01_baxter_apc" type="work_order_server.py" name="strategic_work_order" respawn="true">
+    <remap from="~bin_contents" to="/bin_contents" />
     <rosparam subst_value="true">
       json: $(arg json)
       is_apc2016: true
@@ -23,6 +24,12 @@
     </rosparam>
   </node>
 
+  <!-- target select GUI -->
+  <node pkg="jsk_apc2016_common" type="rqt_select_target" name="rqt_select_target" output="screen">
+    <remap from="~bin_contents" to="/bin_contents" />
+    <remap from="~work_order" to="/strategic_work_order/work_order" />
+    <remap from="~service" to="/strategic_work_order/update_target" />
+  </node>
 
   <node pkg="jsk_2016_01_baxter_apc" type="output_json_pick.py" name="output_json_pick" respawn="true">
     <rosparam subst_value="true">
