@@ -1,53 +1,13 @@
 - git:
-    local-name: RethinkRobotics/baxter
-    uri: https://github.com/RethinkRobotics/baxter.git
-    version: v1.2.0
-- git:
-    local-name: RethinkRobotics/baxter_common
-    uri: https://github.com/RethinkRobotics/baxter_common.git
-    version: v1.2.0
-- git:
-    local-name: RethinkRobotics/baxter_examples
-    uri: https://github.com/RethinkRobotics/baxter_examples.git
-    version: v1.2.0
-- git:
-    local-name: RethinkRobotics/baxter_interface
-    uri: https://github.com/RethinkRobotics/baxter_interface.git
-    version: v1.2.0
-- git:
-    local-name: RethinkRobotics/baxter_simulator
-    uri: https://github.com/RethinkRobotics/baxter_simulator.git
-    version: v1.2.0
-- git:
-    local-name: RethinkRobotics/baxter_tools
-    uri: https://github.com/RethinkRobotics/baxter_tools.git
-    version: v1.2.0
-- git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    version: master
-- git:
-    local-name: jsk-ros-pkg/jsk_model_tools
-    uri: https://github.com/jsk-ros-pkg/jsk_model_tools.git
     version: master
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
     version: master
 - git:
-    local-name: jsk-ros-pkg/jsk_robot
-    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-    version: master
-- git:
-    local-name: jsk-ros-pkg/jsk_pr2eus
-    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
-    version: 0.3.4
-- git:
-    local-name: ros-drivers/axis_camera
-    uri: https://github.com/ros-drivers/axis_camera.git
-    version: 8e17a795120ce97e59506c4228d023247451119e
-- git:
-    local-name: ros-drivers/openni2_camera
+    local-name: FOR_ASTRA/openni2_camera
     uri: https://github.com/ros-drivers/openni2_camera.git
     version: indigo-devel
 - git:
@@ -55,6 +15,18 @@
     uri: https://github.com/start-jsk/jsk_apc.git
     version: master
 - git:
-    local-name: code-iai/iai_kinect2
-    uri: https://github.com/code-iai/iai_kinect2.git
+    local-name: FOR_LATEST_BAXTEREUS/baxter_interface
+    uri: https://github.com/wkentaro/baxter_interface.git
+    version: baxtereus-devel
+- git:
+    local-name: FOR_LATEST_BAXTEREUS/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
     version: master
+- git:
+    local-name: FOR_PCL1.8/octomap_mapping
+    uri: https://github.com/OctoMap/octomap_mapping.git
+    version: indigo-devel
+- git:
+    local-name: FOR_PCL1.8/perception_pcl
+    uri: https://github.com/ros-perception/perception_pcl.git
+    version: indigo-devel
