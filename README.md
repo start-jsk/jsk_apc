@@ -1,7 +1,7 @@
 jsk\_apc
 =======
 
-<img src="images/icon_white.png" align="right" width="192px" />
+<img src="jsk_apc2016_common/resource/icons/icon_white.png" align="right" width="192px" />
 
 [![GitHub version](https://badge.fury.io/gh/start-jsk%2Fjsk_apc.svg)](https://badge.fury.io/gh/start-jsk%2Fjsk_apc)
 [![](https://travis-ci.org/start-jsk/jsk_apc.svg)](https://travis-ci.org/start-jsk/jsk_apc)
