@@ -102,6 +102,19 @@ Changelog for package jsk_apc2016_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
 
+Forthcoming
+-----------
+* rqt_select_target use service to update work_order
+* reinforce rqt_select_target to show target image
+* add rqt_select_target GUI
+* rosparam pass work_order bin_contents from json
+* Add json for picking demonstration
+* Introduce new 3D object segmentation pipeline
+  As proposed in https://github.com/start-jsk/jsk_apc/issues/1865
+* Add mode to display json with --display
+* add publish bin bbox test
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 1.5.1 (2016-07-15)
 ------------------
 * reflected new data & organized all RBO format data & changed name of directory

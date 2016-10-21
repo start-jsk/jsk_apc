@@ -406,6 +406,72 @@ Changelog for package jsk_2016_01_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
 
+Forthcoming
+-----------
+* fix error Unknown limb is passed: :arms
+* format to pass test work_order_server
+* rqt_select_target use service to update work_order
+* rosparam pass work_order bin_contents from json
+* use class and rospy.timer for work_order_server
+* rename work_order.py -> work_order_server.py
+* rename node: work_order -> strategic_work_order
+* Merge pull request `#1895 <https://github.com/start-jsk/jsk_apc/issues/1895>`_ from knorth55/param-contents
+  use param to pass bin contents and tote contents
+* Merge pull request `#1896 <https://github.com/start-jsk/jsk_apc/issues/1896>`_ from start-jsk/fit-apply-context-to-label-probability
+  Fit to apply_context_to_label_proba which is merged to jsk_perception
+* Add yes_no_button for user input
+* Launch rviz for user input in main.launch
+* use rosparam to pass bin_contents
+* change set_tote_contents_param to json_to_rosparam
+* Use yes_no_button panel in rviz for user input
+* Slower fold-pose-back initialization for apc task
+* Add method to set object segmentation candidates to ri
+* Fit to apply_context_to_label_proba which is merged to jsk_perception
+* add json utils in util.l
+* fix apc2016 simulation for baxter_simulator v1.2
+* use arm2str in baxter-interface
+* use object_segmentation_3d launch for stow task
+* update tote pose
+* Set initial target bin to check sanity
+* Add checking sanity script for setup_for_pick.launch
+* Add rviz config for pick demo
+* Remove no need nodes from main.launch
+* Use new 3D object segmentaion pipeline with euslisp controller
+* Introduce new 3D object segmentation pipeline
+  As proposed in https://github.com/start-jsk/jsk_apc/issues/1865
+* Support non-list arg for ros::set-dynparam
+* Add arm2str as util and use it
+* Skip verification because of its unreliability
+* Calibrate extrinsic parameters of astra cameras
+* add astra intrinsic calibration file
+* Add args to astra_hand.launch
+* Add calibboard stickers
+* Calibrate right hand mounted camera depth
+  Also this updates the rvizconfig
+  Conflicts:
+  jsk_2016_01_baxter_apc/launch/include/astra_hand.launch
+* add calib-pressure option in main program
+* Use nodes to test arm-to-bin motion instead of rosbag
+* Publish bin bounding boxes in baxter.launch
+  This is useful because we can use baxter-interface.l without main.launch or main_stow.lauch.
+* CMakeLists.txt: need to set current directory to ROS_PACKAGE_PATH
+* Merge pull request `#1871 <https://github.com/start-jsk/jsk_apc/issues/1871>`_ from knorth55/test-stow-work-order
+  add stow_work_order test
+* add stow_work_order test
+* add stow_work_order option not to output json
+* add ik test in tote for stow task
+* Adjust right gripper firmware to gripper-v4
+* minor fix for real robot
+* use protected/private for variable
+* add minjerk class
+* include pub/sub within c++ object
+* use Object Oriented callback style
+* Adjust astra hand
+* Adjust calib pressure threshold again
+* minjerk and continuous feedback
+* depth register works with explicit arg
+* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, pazeshun
+
 1.5.1 (2016-07-15)
 ------------------
 * Get lower pressure threshold in :calib-pressure-threshold
