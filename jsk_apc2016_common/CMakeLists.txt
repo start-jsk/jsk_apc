@@ -203,7 +203,7 @@ install(DIRECTORY include/sib/
 ## rqt plugin
 install(FILES plugin.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-install(PROGRAMS bin/rqt_select_target
+install(PROGRAMS node_scripts/rqt_select_target
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 install(DIRECTORY resource
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
