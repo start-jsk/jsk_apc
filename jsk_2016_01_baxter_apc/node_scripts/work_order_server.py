@@ -7,7 +7,7 @@ import rospy
 from jsk_2015_05_baxter_apc.msg import WorkOrder, WorkOrderArray
 import jsk_apc2016_common
 from jsk_topic_tools.log_utils import jsk_logwarn
-from jsk_2016_01_baxter_apc.srv import UpdateTarget, UpdateTargetResponse
+from jsk_apc2016_common.srv import UpdateTarget, UpdateTargetResponse
 
 import numpy as np
 
