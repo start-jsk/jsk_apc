@@ -286,7 +286,8 @@
       ))
   (:fold-pose-back
     (&optional (arm :arms))
-    (send *baxter* :fold-pose-back arm)
+    (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
+      (send *baxter* :fold-pose-back tmp-arm))
     (send *ri* :send-av))
   (:detect-target-object-in-bin
     (target-object bin)
