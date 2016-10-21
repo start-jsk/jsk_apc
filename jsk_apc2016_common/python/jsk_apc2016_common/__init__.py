@@ -18,28 +18,21 @@ import rospy
 PKG = 'jsk_apc2016_common'
 
 
-def get_object_data():
-    """Returns object data for APC2016.
+def get_object_data(year=2016):
+    """Returns object data for APC in {year}.
 
     Returns:
-        data (dict): objects data wrote in object_data.yaml file.
+        data (dict): objects data wrote in the Yaml file.
     """
     rp = rospkg.RosPack()
-    fname = osp.join(rp.get_path(PKG), 'data/object_data_2016.yaml')
+    fname = osp.join(rp.get_path(PKG),
+                     'resource/object_data/{year}.yaml'.format(year=year))
     data = yaml.load(open(fname))
     return data
 
 
 def get_object_data_2015():
-    """Returns object data for APC2015.
-
-    Returns:
-        data (dict): objects data wrote in object_data.yaml file.
-    """
-    rp = rospkg.RosPack()
-    fname = osp.join(rp.get_path(PKG), 'data/object_data.yaml')
-    data = yaml.load(open(fname))
-    return data
+    return get_object_data(year=2015)
 
 
 def get_bin_contents(json_file=None, param=None):
