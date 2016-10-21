@@ -102,8 +102,8 @@ Changelog for package jsk_apc2016_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
 
-Forthcoming
------------
+2.0.0 (2016-10-22)
+------------------
 * rqt_select_target use service to update work_order
 * reinforce rqt_select_target to show target image
 * add rqt_select_target GUI

@@ -406,8 +406,8 @@ Changelog for package jsk_2016_01_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
 
-Forthcoming
------------
+2.0.0 (2016-10-22)
+------------------
 * fix error Unknown limb is passed: :arms
 * format to pass test work_order_server
 * rqt_select_target use service to update work_order

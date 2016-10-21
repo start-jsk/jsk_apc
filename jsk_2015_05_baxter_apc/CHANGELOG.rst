@@ -24,8 +24,8 @@ Changelog for package jsk_2015_05_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Yusuke Niitani
 
-Forthcoming
------------
+2.0.0 (2016-10-22)
+------------------
 * Add arm2str as util and use it
 * Adjust kiva pod pose to base
 * Contributors: Kentaro Wada

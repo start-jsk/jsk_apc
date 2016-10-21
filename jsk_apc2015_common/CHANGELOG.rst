@@ -16,8 +16,8 @@ Changelog for package jsk_apc2015_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada
 
-Forthcoming
------------
+2.0.0 (2016-10-22)
+------------------
 
 1.5.1 (2016-07-15)
 ------------------
