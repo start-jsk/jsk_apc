@@ -56,7 +56,7 @@
   <node name="desktop_bg_publisher"
         pkg="jsk_perception" type="image_publisher.py">
     <rosparam subst_value="true">
-      file_name: $(find jsk_2015_05_baxter_apc)/../images/desktop_bg_black.png
+      file_name: $(find jsk_apc2016_common)/resource/wallpapers/wallpaper_black.png
     </rosparam>
   </node>
   <node name="team_k_desktop_xdisplay"
