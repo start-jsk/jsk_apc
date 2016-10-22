@@ -8,7 +8,7 @@
 (defun setup ()
   (unless (boundp '*baxter*)
     (setq *baxter* (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
-  (objects (list *baxter*))
+  ;; (objects (list *baxter*))
   (send *baxter* :angle-vector
         #f(0.0 97.4707 -2.39502 -94.5483 134.67 91.4062 8.70117 0.0 0.0
            -5.40301 55.9257 117.063 72.4793 -62.7243 -7.73117 -87.322 90.0)))
@@ -22,7 +22,7 @@
       (do ((i 0 (incf i 0.1)))
           ((>= i 1))
           (send *baxter* :angle-vector (midpoint i av1 av2))
-          (send *irtviewer* :draw-objects)
+          ;; (send *irtviewer* :draw-objects)
           (print i))
       )))
 
@@ -92,7 +92,7 @@
   (let (av1 av2)
     (setup)
     (setq av1 (send *baxter* :angle-vector))
-    (send *irtviewer* :draw-objects)
+    ;; (send *irtviewer* :draw-objects)
     (setq av2
           (send-message *baxter* robot-model :inverse-kinematics
                         (send (send *baxter* :rarm :end-coords
@@ -118,7 +118,7 @@
   (let (av1 av2)
     (setup)
     (setq av1 (send *baxter* :angle-vector))
-    (send *irtviewer* :draw-objects)
+    ;; (send *irtviewer* :draw-objects)
     (setq av2
           (send-message *baxter* robot-model :inverse-kinematics
                         (send (send *baxter* :rarm :end-coords
