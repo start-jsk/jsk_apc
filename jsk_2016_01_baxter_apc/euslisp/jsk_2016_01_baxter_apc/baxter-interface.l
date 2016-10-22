@@ -1399,6 +1399,26 @@
              (progn
                (ros::ros-info "[:wait-interpolation-until-grasp] Grasping detected. Cancel angle vector: ~a" arm)
                (send self :cancel-angle-vector)))))
+  (:hold-opposite-hand-object
+    (arm distance)
+    (let (avs)
+      (setq avs
+            (list
+              (send *baxter* :approaching-from-downside-pose arm)
+              (send *baxter* arm :inverse-kinematics
+                    (send *baxter* :get-support-arm-coords (send self :opposite-arm arm)
+                          :dz (- (+ distance 100)))
+                    :use-gripper t
+                    :rotation-axis :z)
+              (send *baxter* arm :inverse-kinematics
+                    (send *baxter* :get-support-arm-coords (send self :opposite-arm arm)
+                          :dz (- distance))
+                    :use-gripper t
+                    :rotation-axis :z
+                    :revert-if-fail nil)))
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+      (send self :wait-interpolation-until-grasp arm)
+      (send *baxter* :angle-vector (send self :state :potentio-vector))))
   (:place-object
     (arm)
     (send self :move-arm-body->order-bin arm)

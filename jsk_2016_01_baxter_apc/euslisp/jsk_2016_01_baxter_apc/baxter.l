@@ -142,4 +142,14 @@
             :use-gripper nil
             :rotation-axis t
             :revert-if-fail nil)))
+  (:get-support-arm-coords
+    (arm &key (dx 0) (dy 0) (dz 0))
+    (let (support-arm-coords)
+      (setq support-arm-coords
+            (send (send self arm :end-coords)
+                  :copy-worldcoords))
+      (send support-arm-coords :orient 0 :z :world)
+      (send support-arm-coords :rotate 3.14 :y :world)
+      (send support-arm-coords :translate (float-vector dx dy dz) :world)
+      support-arm-coords))
   )
