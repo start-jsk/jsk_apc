@@ -51,7 +51,7 @@
                               (send *baxter* :right_gripper_vacuum_pad_joint
                                     :parent-link)
                               (send *baxter* :rarm :root-link))
-                            :debug-view t))
+                            :debug-view nil))
     (check-result av2 av3)
     (assert (and av2 av3))
     (assert (< (norm (v- av2 av3)) 5)) ;;
