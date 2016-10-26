@@ -49,25 +49,27 @@ class WorkOrderServer(object):
 
     def get_sorted_work_order(self):
         """Sort work order to maximize the score"""
-        sorted_bin_list = self.bin_contents.keys()
-
+        bin_order = self.work_order.keys()
         if self.object_data is not None:
             if all(self.gripper in x for x in [d['graspability'].keys() for d in self.object_data]):
+
                 def get_graspability(bin_):
                     target_object = self.work_order[bin_]
                     target_object_data = [data for data in self.object_data
                                           if data['name'] == target_object][0]
                     graspability = target_object_data['graspability'][self.gripper]
                     return graspability
-                sorted_bin_list = sorted(sorted_bin_list, key=get_graspability)
+
+                # re-sort the work_order with graspability
+                bin_order = sorted(bin_order, key=get_graspability)
             else:
                 jsk_logwarn('Not sorted by graspability')
                 jsk_logwarn('Not all object_data have graspability key: {gripper}'
                             .format(gripper=self.gripper))
-        sorted_bin_list = sorted(sorted_bin_list,
-                                 key=lambda bin_: len(self.bin_contents[bin_]))
-        sorted_work_order = [(bin_, self.work_order[bin_]) for bin_ in sorted_bin_list]
-        return sorted_work_order
+        bin_order = sorted(self.work_order.keys(),
+                           key=lambda bin_: len(self.bin_contents[bin_]))
+        work_order = [(bin_, self.work_order[bin_]) for bin_ in bin_order]
+        return work_order
 
     def get_work_order_msg(self):
         work_order = self.get_sorted_work_order()
