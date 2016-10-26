@@ -34,6 +34,8 @@ class SelectTargetWidget(QDialog):
         for bin_, items in rospy.get_param('~bin_contents').items():
             bin_ = bin_.split('_')[1].lower()
             self.bin_contents[bin_] = items
+            # for user to have robot stop going that bin
+            self.bin_contents[bin_].append('<no target>')
         self.bin_dict = {
                 'a': {'combo': self.bin_A, 'image': self.bin_A_image},
                 'b': {'combo': self.bin_B, 'image': self.bin_B_image},
@@ -57,7 +59,6 @@ class SelectTargetWidget(QDialog):
                     )
         self.update.accepted.connect(self._update_param)
         self.update.rejected.connect(self._reset_param)
-        self._get_init_index()
         self._set_init_target()
 
     def _select_target(self, bin_):
@@ -66,17 +67,13 @@ class SelectTargetWidget(QDialog):
             self._show_image(bin_, index)
         return _select_target_curried
 
-    def _get_init_index(self):
-        self.init_index = {}
-        for bin_ in 'abcdefghijkl':
-            self.init_index[bin_] = self.bin_contents[bin_].index(
-                    self.init_work_order[bin_]
-                    )
-
     def _set_init_target(self):
         for bin_ in 'abcdefghijkl':
-            self.bin_dict[bin_]['combo'].setCurrentIndex(self.init_index[bin_])
-            self._show_image(bin_, self.init_index[bin_])
+            init_index = self.bin_contents[bin_].index(
+                    self.init_work_order[bin_]
+                    )
+            self.bin_dict[bin_]['combo'].setCurrentIndex(init_index)
+            self._show_image(bin_, init_index)
 
     def _show_image(self, bin_, index):
         target_name = self.bin_contents[bin_][index]
@@ -107,7 +104,10 @@ class SelectTargetWidget(QDialog):
                             '~service',
                             UpdateTarget
                             )
-                    response = update_target(bin=bin_, target=work_order[bin_])
+                    if work_order[bin_] == '<no target>':
+                        response = update_target(bin=bin_, target='')
+                    else:
+                        response = update_target(bin=bin_, target=work_order[bin_])
                     if response.success is False:
                         rospy.logerr(
                                 "{} : Failed to update target object"
