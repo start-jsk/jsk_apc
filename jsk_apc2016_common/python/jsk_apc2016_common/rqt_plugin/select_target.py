@@ -7,7 +7,7 @@ import rospkg
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtGui import QDialog, QPixmap
-from jsk_2016_01_baxter_apc.srv import UpdateTarget
+from jsk_apc2016_common.srv import UpdateTarget
 
 
 class SelectTargetWidget(QDialog):
