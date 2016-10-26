@@ -38,6 +38,8 @@
   <run_depend>control_msgs</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
+  <run_depend>jsk_apc2016_common</run_depend>
+  <run_depend>jsk_baxter_startup</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
   <run_depend>jsk_recognition_msgs</run_depend>
   <run_depend>roscpp</run_depend>
