@@ -35,6 +35,8 @@ class WorkOrderServer(object):
         if self.is_apc2016:
             self.object_data = jsk_apc2016_common.get_object_data()
 
+        self.bin_contents = jsk_apc2016_common.get_bin_contents(param='~bin_contents')
+
         self.msg = self.get_work_order_msg()
 
         self.pub_left = rospy.Publisher(
@@ -47,30 +49,30 @@ class WorkOrderServer(object):
 
     def get_sorted_work_order(self):
         """Sort work order to maximize the score"""
-        bin_contents = jsk_apc2016_common.get_bin_contents(param='~bin_contents')
-        sorted_bin_list = bin_contents.keys()
-
+        bin_order = self.work_order.keys()
         if self.object_data is not None:
             if all(self.gripper in x for x in [d['graspability'].keys() for d in self.object_data]):
+
                 def get_graspability(bin_):
                     target_object = self.work_order[bin_]
                     target_object_data = [data for data in self.object_data
                                           if data['name'] == target_object][0]
                     graspability = target_object_data['graspability'][self.gripper]
                     return graspability
-                sorted_bin_list = sorted(sorted_bin_list, key=get_graspability)
+
+                # re-sort the work_order with graspability
+                bin_order = sorted(bin_order, key=get_graspability)
             else:
                 jsk_logwarn('Not sorted by graspability')
                 jsk_logwarn('Not all object_data have graspability key: {gripper}'
                             .format(gripper=self.gripper))
-        sorted_bin_list = sorted(sorted_bin_list,
-                                 key=lambda bin_: len(bin_contents[bin_]))
-        sorted_work_order = [(bin_, self.work_order[bin_]) for bin_ in sorted_bin_list]
-        return sorted_work_order
+        bin_order = sorted(self.work_order.keys(),
+                           key=lambda bin_: len(self.bin_contents[bin_]))
+        work_order = [(bin_, self.work_order[bin_]) for bin_ in bin_order]
+        return work_order
 
     def get_work_order_msg(self):
         work_order = self.get_sorted_work_order()
-        bin_contents = jsk_apc2016_common.get_bin_contents(json_file=self.json_file)
         if self.max_weight == -1:
             self.max_weight = np.inf
         msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
@@ -115,7 +117,7 @@ class WorkOrderServer(object):
                     jsk_logwarn('Skipping target {obj} in {bin_}: it is listed as abandon target'
                                 .format(obj=target_object, bin_=bin_))
                     continue
-                if any(bin_object in abandon_bin_objects for bin_object in bin_contents[bin_]):
+                if any(bin_object in abandon_bin_objects for bin_object in self.bin_contents[bin_]):
                     jsk_logwarn('Skipping {bin_}: this bin contains abandon objects'.format(bin_=bin_))
                     continue
             # if len(bin_contents[bin_]) > 5:  # Level3
@@ -140,7 +142,14 @@ class WorkOrderServer(object):
         self.updated = False
 
     def _update_target_cb(self, req):
-        self.work_order[req.bin] = req.target
+        if not req.target:
+            del self.work_order[req.bin]
+        elif req.target in self.bin_contents[req.bin]:
+            self.work_order[req.bin] = req.target
+        else:
+            rospy.logerr(
+                'Unexpected target object is passed: {} for bin_contents {}'
+                .format(req.target, self.bin_contents[req.bin]))
         self.updated = True
         return UpdateTargetResponse(success=True)
 
