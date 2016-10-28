@@ -1392,6 +1392,13 @@
       (pushback (send *baxter* arm :inverse-kinematics coords-tmp :rotation-axis t) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
       ))
+  (:wait-interpolation-until-grasp
+    (arm)
+    (while (send self :interpolatingp)
+           (if (send self :graspingp arm)
+             (progn
+               (ros::ros-info "[:wait-interpolation-until-grasp] Grasping detected. Cancel angle vector: ~a" arm)
+               (send self :cancel-angle-vector)))))
   (:place-object
     (arm)
     (send self :move-arm-body->order-bin arm)
