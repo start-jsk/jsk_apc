@@ -1414,6 +1414,9 @@
       ))
   (:wait-interpolation-until-grasp
     (arm)
+    (when (send self :simulation-modep)
+      (return-from :wait-interpolation-until-grasp (send self :wait-interpolation))
+      )
     (while (send self :interpolatingp)
            (if (send self :graspingp arm)
              (progn
