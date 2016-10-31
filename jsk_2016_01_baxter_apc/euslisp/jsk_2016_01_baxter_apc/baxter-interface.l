@@ -1308,6 +1308,26 @@
                 avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale scale)
       ))
+  (:move-arm-body->bin-with-support-arm
+    (arm bin &key (scale 3.0))
+    (let (avs support-arm)
+         (send *baxter* :avoid-shelf-pose arm bin)
+         (send *baxter* (send self :opposite-arm arm) :inverse-kinematics
+               (send *baxter* :get-support-arm-coords arm :dz -150)
+               :use-gripper t
+               :rotation-axis :z
+               :revert-if-fail nil)
+         (pushback (send *baxter* :angle-vector) avs)
+         (send self :ik->bin-entrance arm bin
+               :offset (float-vector
+                         -150 0 (gethash :offset-avoid-bin-top _hard-coded-variables)))
+         (send *baxter* (send self :opposite-arm arm) :inverse-kinematics
+               (send *baxter* :get-support-arm-coords arm :dz -150)
+               :use-gripper t
+               :rotation-axis :z
+               :revert-if-fail nil)
+         (pushback (send *baxter* :angle-vector) avs)
+         (send self :angle-vector-sequence avs :fast nil 0 :scale scale)))
   (:bin-overlook-pose
     (arm bin &key offset angle)
     (if (not offset)
@@ -1394,11 +1414,34 @@
       ))
   (:wait-interpolation-until-grasp
     (arm)
+    (when (send self :simulation-modep)
+      (return-from :wait-interpolation-until-grasp (send self :wait-interpolation))
+      )
     (while (send self :interpolatingp)
            (if (send self :graspingp arm)
              (progn
                (ros::ros-info "[:wait-interpolation-until-grasp] Grasping detected. Cancel angle vector: ~a" arm)
                (send self :cancel-angle-vector)))))
+  (:hold-opposite-hand-object
+    (arm distance)
+    (let (avs)
+      (setq avs
+            (list
+              (send *baxter* :approaching-from-downside-pose arm)
+              (send *baxter* arm :inverse-kinematics
+                    (send *baxter* :get-support-arm-coords (send self :opposite-arm arm)
+                          :dz (- (+ distance 100)))
+                    :use-gripper t
+                    :rotation-axis :z)
+              (send *baxter* arm :inverse-kinematics
+                    (send *baxter* :get-support-arm-coords (send self :opposite-arm arm)
+                          :dz (- distance))
+                    :use-gripper t
+                    :rotation-axis :z
+                    :revert-if-fail nil)))
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+      (send self :wait-interpolation-until-grasp arm)
+      (send *baxter* :angle-vector (send self :state :potentio-vector))))
   (:place-object
     (arm)
     (send self :move-arm-body->order-bin arm)
