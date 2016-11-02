@@ -35,6 +35,7 @@
   </node>
 
   <!-- object verification -->
+  <!-- TODO(unknown): Currently object verification is unstable.
   <group ns="left_hand">
     <node name="object_verification"
           pkg="jsk_2016_01_baxter_apc" type="apply_tote_contents_hint.py"
@@ -51,7 +52,7 @@
       <param name="json" value="$(arg json)" />
     </node>
   </group>
-
+  -->
   <!-- robot main -->
   <node if="$(arg launch_main)" pkg="jsk_2016_01_baxter_apc" type="main-stow.l" name="right_hand"
     args="&quot;(progn (apc-stow-init :rarm-controller) (apc-stow-mainloop :rarm))&quot;"
