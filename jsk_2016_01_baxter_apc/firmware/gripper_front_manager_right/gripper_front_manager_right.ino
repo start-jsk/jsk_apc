@@ -2,9 +2,9 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 #include <std_msgs/Bool.h>
-#include <std_msgs/Float64.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/Int16.h>
+#include <sensor_msgs/FluidPressure.h>
 #include <Servo.h>
 
 const float pi = 3.14159;
@@ -28,7 +28,7 @@ int16_t dig_P9;
 ros::NodeHandle nh; //write with IDE
 // ros::NodeHandle_<ArduinoHardware, 1, 2, 512, 512> nh;
 
-std_msgs::Float64 pressure_msg;
+sensor_msgs::FluidPressure pressure_msg;
 std_msgs::Bool bool_msg;
 std_msgs::Bool servo_torque_msg;
 std_msgs::Float32 servo_angle_msg;
@@ -129,7 +129,10 @@ void loop() {
         press_act = (float)press_cal / 100.0;
 
         bool_msg.data = (press_act < 840);
-        pressure_msg.data = press_act;
+        pressure_msg.header.stamp = nh.now();
+        pressure_msg.header.frame_id = "right_gripper_vacuum_pad";
+        pressure_msg.fluid_pressure = press_act;
+        pressure_msg.variance = (float)0.0;
 
         state_pub.publish(&bool_msg);
         pressure_pub.publish(&pressure_msg);
