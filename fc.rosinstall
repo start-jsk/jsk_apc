@@ -34,3 +34,7 @@
     local-name: FOR_SIMULATION/baxter_simulator
     uri: https://github.com/knorth55/baxter_simulator.git
     version: gripper-sim
+- git:
+    local-name: FOR_SIMULATION/baxter_common
+    uri: https://github.com/knorth55/baxter_common.git
+    version: if-gripper
