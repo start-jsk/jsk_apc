@@ -1102,15 +1102,10 @@
       (ros::ros-info "[:pick-object] arm:~a in-order-bin -> view-hand-pose" arm)
       (send self :gripper-servo-on arm)
       (send *ri* :angle-vector (send *baxter* :rotate-gripper arm 90 :relative nil))
+      (pushback (send *baxter* arm :move-end-pos #f(0 0 150) :world) avs->view)
       (if (eq arm :larm)
-        (progn
-          (send *baxter* :place-object-pose arm)
-          (pushback (send *baxter* arm :move-end-pos #f(0 50 150) :world) avs->view)
-          (pushback (send *baxter* :view-hand-pose arm :j) avs->view))
-        (progn
-          (send *baxter* :place-object-pose arm)
-          (pushback (send *baxter* arm :move-end-pos #f(0 -50 150) :world) avs->view)
-          (pushback (send *baxter* :view-hand-pose arm :l) avs->view)))
+        (pushback (send *baxter* :view-hand-pose arm :j) avs->view)
+        (pushback (send *baxter* :view-hand-pose arm :l) avs->view))
       (send *ri* :angle-vector-sequence avs->view :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       graspingp))
