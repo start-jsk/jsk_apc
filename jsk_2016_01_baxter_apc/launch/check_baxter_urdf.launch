@@ -1,0 +1,9 @@
+<launch>
+  <arg name="gui" default="True" />
+  <arg name="rvizconfig" default="$(find jsk_2015_05_baxter_apc)/rvizconfig/real_demo.rviz" />
+  <param name="robot_description" command="$(find xacro)/xacro.py $(find jsk_2016_01_baxter_apc)/robots/baxter.xacro" />
+  <param name="use_gui" value="$(arg gui)"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+</launch>
