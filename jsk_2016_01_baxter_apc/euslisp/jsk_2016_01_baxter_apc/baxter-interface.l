@@ -1312,11 +1312,11 @@
       (send self :angle-vector-sequence avs :fast nil 0 :scale scale)
       ))
   (:move-arm-body->bin-with-support-arm
-    (arm bin &key (scale 3.0))
+    (arm bin distance &key (scale 3.0))
     (let (avs support-arm)
          (send *baxter* :avoid-shelf-pose arm bin)
          (send *baxter* (send self :opposite-arm arm) :inverse-kinematics
-               (send *baxter* :get-support-arm-coords arm :dz -150)
+               (send *baxter* :get-support-arm-coords arm :dz (- distance))
                :use-gripper t
                :rotation-axis :z
                :revert-if-fail nil)
@@ -1325,7 +1325,7 @@
                :offset (float-vector
                          -150 0 (gethash :offset-avoid-bin-top _hard-coded-variables)))
          (send *baxter* (send self :opposite-arm arm) :inverse-kinematics
-               (send *baxter* :get-support-arm-coords arm :dz -150)
+               (send *baxter* :get-support-arm-coords arm :dz (- distance))
                :use-gripper t
                :rotation-axis :z
                :revert-if-fail nil)
