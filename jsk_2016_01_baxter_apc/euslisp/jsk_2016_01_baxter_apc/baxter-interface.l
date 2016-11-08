@@ -1106,11 +1106,11 @@
         (progn
           (send *baxter* :place-object-pose arm)
           (pushback (send *baxter* arm :move-end-pos #f(0 50 150) :world) avs->view)
-          (pushback (send *baxter* :view-hand-pose arm :g) avs->view))
+          (pushback (send *baxter* :view-hand-pose arm :j) avs->view))
         (progn
           (send *baxter* :place-object-pose arm)
           (pushback (send *baxter* arm :move-end-pos #f(0 -50 150) :world) avs->view)
-          (pushback (send *baxter* :view-hand-pose arm :i) avs->view)))
+          (pushback (send *baxter* :view-hand-pose arm :l) avs->view)))
       (send *ri* :angle-vector-sequence avs->view :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       graspingp))
