@@ -88,3 +88,50 @@ This gripper has two parts made by 3D printers. "base" part is made by ProJet an
 Also, PCB data of the control board on this gripper are `here <https://github.com/ban-masa/arm_manager_arduino>`_.
 
 The servo motor used in this gripper is `GWS S11HP/2BBMG/JR <http://akizukidenshi.com/catalog/g/gM-01724/>`_.
+
+
+How to calibrate extrinsic parameters of Astra
+----------------------------------------------
+
+.. code-block:: bash
+
+  % roslaunch jsk_2016_01_baxter_apc baxter.launch
+  % roscd jsk_2016_01_baxter_apc/rvizconfig
+  % rviz -d check_astra.rviz
+  % roslaunch jsk_2016_01_baxter_apc astra_hand.launch
+
+You can see Rviz like below:
+
+.. image:: _media/check_astra_raw_point_cloud.jpg
+
+If you want to reverse right and left camera vision:
+
+.. code-block:: bash
+
+  % roslaunch jsk_2016_01_baxter_apc astra_hand.launch left_first:=false
+
+If the point cloud and the robot model are too different in Rviz, you should change the pose of depth optical frame like below:
+
+.. code-block:: bash
+
+  % rosrun tf static_transform_publisher -0.10 -0.008 0.015 -1.56 0.00 -0.08 right_hand right_hand_camera_depth_optical_frame 100 __name:=right_hand_camera_depth_static_tf_publisher  # This is just an example
+
+  # OR
+
+  # % roslaunch jsk_2016_01_baxter_apc astra_hand.launch --args /right_hand_camera_depth_static_tf_publisher
+  % /opt/ros/indigo/lib/tf/static_transform_publisher -0.10 -0.008 0.015 -1.56 0.00 -0.08 right_hand right_hand_camera_depth_optical_frame 100 __name:=right_hand_camera_depth_static_tf_publisher  # This is just an example
+
+After you adjust point cloud, you should check color point cloud:
+
+.. image:: _media/check_astra_color_point_cloud.jpg
+
+If the color point cloud and the robot model are too different in Rviz, you should change the pose of RGB optical frame like below:
+
+.. code-block:: bash
+
+  % rosrun tf static_transform_publisher 0.040 0.01 0 0.0 0 0 right_hand_camera_depth_optical_frame right_hand_camera_rgb_optical_frame 100 __name:=right_hand_camera_rgb_static_tf_publisher  # This is just an example
+
+  # OR
+
+  # % roslaunch jsk_2016_01_baxter_apc astra_hand.launch --args /right_hand_camera_rgb_static_tf_publisher
+  % /opt/ros/indigo/lib/tf/static_transform_publisher 0.040 0.01 0 0.0 0 0 right_hand_camera_depth_optical_frame right_hand_camera_rgb_optical_frame 100 __name:=right_hand_camera_rgb_static_tf_publisher  # This is just an example
