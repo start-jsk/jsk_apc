@@ -1442,9 +1442,7 @@
                     :use-gripper t
                     :rotation-axis :z
                     :revert-if-fail nil)))
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
-      (send self :wait-interpolation-until-grasp arm)
-      (send *baxter* :angle-vector (send self :state :potentio-vector))))
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)))
   (:place-object
     (arm)
     (send self :move-arm-body->order-bin arm)
