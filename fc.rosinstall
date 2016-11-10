@@ -38,3 +38,7 @@
     local-name: FOR_SIMULATION/baxter_common
     uri: https://github.com/knorth55/baxter_common.git
     version: jsk_apc
+- git:
+    local-name: FOR_GRIPPER_V5/dynamixel_motor
+    uri: https://github.com/pazeshun/dynamixel_motor.git
+    version: gripper-v5-devel
