@@ -120,19 +120,17 @@
       )
     )
   (:view-opposite-hand-pose
-    (arm)
-    (let (opposite-arm gripper-coords dy theta)
+    (arm &key (dy 300))
+    (let (opposite-arm gripper-coords theta)
       (setq opposite-arm (if (eq arm :larm) :rarm :larm))
       (setq gripper-coords
             (send (send self opposite-arm :end-coords)
                   :copy-worldcoords))
       (send gripper-coords :orient 0 :z :world)
       (if (eq arm :larm)
+        (setq theta -1.57)
         (progn
-          (setq dy 250)
-          (setq theta -1.57))
-        (progn
-          (setq dy -250)
+          (setq dy (- dy))
           (setq theta 1.57)))
       (send gripper-coords :translate (float-vector 0 dy -200))
       (send gripper-coords :rotate theta :z :world)
