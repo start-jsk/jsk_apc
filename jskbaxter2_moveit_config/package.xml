@@ -1,0 +1,30 @@
+<package>
+
+  <name>jskbaxter2_moveit_config</name>
+  <version>0.2.0</version>
+  <description>
+      jskbaxter2_moveit_config
+  </description>
+  <maintainer email="pazeshun3684@gmail.com">Hasegawa Shun</maintainer>
+  <maintainer email="shingogo@hotmail.co.jp">Shingo Kitagawa</maintainer>
+  <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+
+  <license>BSD</license>
+
+  <url type="bugtracker">https://github.com/start-jsk/jsk_apc/issues</url>
+  <url type="repository">https://github.com/start-jsk/jsk_apc</url>
+
+  <build_depend>jsk_2016_01_baxter_apc</build_depend>
+  <build_depend>xacro</build_depend>
+  <run_depend>moveit_ros_move_group</run_depend>
+  <run_depend>moveit_planners_ompl</run_depend>
+  <run_depend>moveit_ros_visualization</run_depend>
+  <run_depend>joint_state_publisher</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>xacro</run_depend>
+  <run_depend>jsk_2016_01_baxter_apc</run_depend>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+</package>

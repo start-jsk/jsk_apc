@@ -1,0 +1,8 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: jsk_2016_01_baxter_apc
+    relative_path: robots/baxter.xacro
+  SRDF:
+    relative_path: config/baxter.srdf
+  CONFIG:
+    generated_timestamp: 1478849708
