@@ -109,4 +109,7 @@
         pkg="jsk_2015_05_baxter_apc" type="initialize_baxter.py"
         output="screen" />
 
+  <node name="gripper_trajectory_server"
+        pkg="jsk_2016_01_baxter_apc" type="gripper_trajectory_server" output="screen" />
+
 </launch>
