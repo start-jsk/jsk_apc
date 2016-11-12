@@ -1,6 +1,19 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="right_vaccum_gripper">
   <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/common_constants.xacro"/>
+  <!-- Gazebo Tags -->
+  <gazebo reference="right_gripper_base">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="right_gripper_vacuum_pad_base">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="right_gripper_vacuum_pad">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="right_gripper_vacuum_pad_joint">
+    <implicitSpringDamper>false</implicitSpringDamper>
+  </gazebo>
   <!--Link bodies-->
   <xacro:property name="rect_tube_l" value="0.285" />
   <xacro:property name="rect_tube_h" value="0.06" />
