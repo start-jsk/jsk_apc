@@ -33,7 +33,9 @@
   (:init
     (&rest args)
     ;; initialize controllers
-    (send-super* :init :joint-states-queue-size 2 args)
+    (send-super* :init :joint-states-queue-size 2
+                 :moveit-environment nil
+                 :moveit-robot nil args)
     (send self :add-controller :rgripper-controller)
     (send self :add-controller :lgripper-controller)
     ;; hack for https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/227
