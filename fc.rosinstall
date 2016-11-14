@@ -13,7 +13,7 @@
 - git:
     local-name: start-jsk/jsk_apc
     uri: https://github.com/start-jsk/jsk_apc.git
-    version: master
+    version: gripper-v5
 - git:
     local-name: FOR_LATEST_BAXTEREUS/baxter_interface
     uri: https://github.com/wkentaro/baxter_interface.git
