@@ -1,0 +1,53 @@
+prismatic_joint_controller:
+  controller:
+    package: jsk_baxter_dxl_controllers
+    module: calib_required_joint_controller
+    type: CalibRequiredJointController
+  joint_name: right_gripper_prismatic_joint_motor
+  joint_speed: 1.0
+  joint_torque_limit: 0.2
+  detect_limit_load: 0.15
+  motor:
+    id: 1
+    init: 0
+    min: 0
+    max: 3300
+vacuum_pad_tendon_controller:
+  controller:
+    package: dynamixel_controllers
+    module: joint_position_controller
+    type: JointPositionController
+  joint_name: right_gripper_vacuum_pad_tendon_winder
+  joint_speed: 1.0
+  #joint_torque_limit: 0.2
+  motor:
+    id: 4
+    init: 490
+    min: 940
+    max: 40
+finger_yaw_joint_controller:
+  controller:
+    package: dynamixel_controllers
+    module: joint_position_controller
+    type: JointPositionController
+  joint_name: right_gripper_finger_yaw_joint_motor
+  joint_speed: 1.0
+  #joint_torque_limit: 0.2
+  motor:
+    id: 2
+    init: 330
+    min: 330
+    max: 750
+finger_tendon_controller:
+  controller:
+    package: dynamixel_controllers
+    module: joint_position_controller
+    type: JointPositionController
+  joint_name: right_gripper_finger_tendon_winder
+  joint_speed: 1.0
+  #joint_torque_limit: 0.2
+  motor:
+    id: 3
+    init: 3500
+    min: 3500
+    max: 2000
