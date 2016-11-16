@@ -31,7 +31,11 @@
 
 (defmethod jsk_2016_01_baxter_apc::baxter-interface
   (:init
-    (&rest args)
+    (&rest args &key
+           ((:moveit-environment mvit-env)
+            (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
+           ((:moveit-robot mvit-rb) (instance jsk_2016_01_baxter_apc::baxter-robot :init))
+           &allow-other-keys)
     ;; initialize controllers
     (send-super* :init :joint-states-queue-size 2
                  :moveit-environment nil
@@ -90,6 +94,8 @@
       )
     (ros::advertise "/gripper_front/limb/left/servo/torque" std_msgs::Bool)
     (ros::advertise "/gripper_front/limb/right/servo/torque" std_msgs::Bool)
+    (if mvit-rb (setq moveit-robot mvit-rb))
+    (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot)))
     )
 
   ;; Overwrite super class's :rarm-controller
@@ -1552,11 +1558,35 @@
       target-bin))
   )
 
-(defun jsk_2016_01_baxter_apc::baxter-init (&key (ctype :default-controller))
-  (unless (boundp '*ri*)
-    (setq *ri* (instance jsk_2016_01_baxter_apc::baxter-interface :init :type ctype)))
-  (unless (boundp '*baxter*)
-    (setq *baxter* (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
-  (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
-  (send *ri* :calib-grasp :arms)
-  )
+(defclass jsk_2016_01_baxter_apc::baxter-moveit-environment
+  :super moveit-environment)
+(defmethod jsk_2016_01_baxter_apc::baxter-moveit-environment
+  (:init (&key ((:robot rb) (instance jsk_2016_01_baxter_apc::baxter-robot :init)) &rest args)
+         (send-super* :init :robot rb :frame-id "world" args))
+  (:default-configuration ()
+   (list (list :rarm
+               (cons :group-name "right_arm")
+               (cons :target-link
+                     (send self :search-link-from-name "right_gripper_vacuum_pad"))
+               (cons :joint-list (send robot :rarm :joint-list))
+               )
+         (list :larm
+               (cons :group-name "left_arm")
+               (cons :target-link
+                     (send self :search-link-from-name "left_gripper_vacuum_pad"))
+               (cons :joint-list (send robot :larm :joint-list))))))
+
+(defun jsk_2016_01_baxter_apc::baxter-init (&key (ctype :default-controller) (moveit nil))
+  (let (mvit-env mvit-rb)
+    (when moveit
+      (setq mvit-env (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
+      (setq mvit-rb (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
+    (unless (boundp '*ri*)
+      (setq *ri* (instance jsk_2016_01_baxter_apc::baxter-interface :init :type ctype
+                           :moveit-environment mvit-env
+                           :moveit-robot mvit-rb)))
+    (unless (boundp '*baxter*)
+      (setq *baxter* (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
+    (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+    (send *ri* :calib-grasp :arms)
+  ))
