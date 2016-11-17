@@ -1140,14 +1140,18 @@
       (setq obj-pos (send obj-coords :pos))
       (dolist (i (list 0 1))
         (cond ((> (elt (elt movable-region i) 0) (aref obj-pos i))
+               (ros::ros-info "[:try-to-pick-in-order-bin] object is out of movable region. ~a > ~a < ~a"
+                              (elt (elt movable-region i) 1)
+                              (elt (send obj-coords :pos) i)
+                              (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 0)))
               ((> (aref obj-pos i) (elt (elt movable-region i) 1))
+               (ros::ros-info "[:try-to-pick-in-order-bin] object is out of movable region. ~a < ~a > ~a"
+                              (elt (elt movable-region i) 1)
+                              (elt (send obj-coords :pos) i)
+                              (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 1)))
-              (t nil))
-        (ros::ros-info "[:try-to-pick-in-order-bin] object is out of movable region. ~a > ~a > ~a"
-                        (elt (elt movable-region i) 1)
-                        (elt (send obj-coords :pos) i)
-                        (elt (elt movable-region i) 0)))
+              (t nil)))
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos offset)
