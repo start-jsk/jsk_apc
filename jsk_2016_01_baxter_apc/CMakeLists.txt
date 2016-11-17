@@ -10,6 +10,10 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
     std_msgs
     baxter_core_msgs
+    hardware_interface
+    transmission_interface
+    controller_manager
+    dynamixel_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,7 +108,15 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES jsk_apc2016_common
-  CATKIN_DEPENDS control_msgs roscpp std_msgs baxter_core_msgs
+  CATKIN_DEPENDS
+  control_msgs
+  roscpp
+  std_msgs
+  baxter_core_msgs
+  hardware_interface
+  transmission_interface
+  controller_manager
+  dynamixel_msgs
 #  DEPENDS system_lib
 )
 
@@ -162,16 +174,19 @@ endif()
 add_executable(gripper_joint_states_publisher src/gripper_joint_states_publisher.cpp)
 add_executable(gripper_trajectory_server src/gripper_trajectory_server.cpp)
 add_executable(enable_gripper src/enable_gripper.cpp)
+add_executable(gripper_ros_control_node src/gripper_ros_control.cpp)
 
 ## Add cmake target dependencies of the executable
 add_dependencies(gripper_joint_states_publisher ${catkin_EXPORTED_TARGETS})
 add_dependencies(gripper_trajectory_server ${catkin_EXPORTED_TARGETS})
 add_dependencies(enable_gripper ${catkin_EXPORTED_TARGETS})
+add_dependencies(gripper_ros_control_node ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(gripper_joint_states_publisher ${catkin_LIBRARIES})
 target_link_libraries(gripper_trajectory_server ${catkin_LIBRARIES})
 target_link_libraries(enable_gripper ${catkin_LIBRARIES})
+target_link_libraries(gripper_ros_control_node ${catkin_LIBRARIES})
 
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/worlds/pick_kiva.world
   DEPENDS ${PROJECT_SOURCE_DIR}/worlds/pick_kiva.world.erb
