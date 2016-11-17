@@ -8,9 +8,6 @@ class PrismaticJointController(JointPositionController):
         JointPositionController.__init__(self, dxl_io, controller_namespace, port_namespace)
 
         self.detect_limit_load = rospy.get_param(self.controller_namespace + '/detect_limit_load', 0.15)
-        self.teeth_per_rev = rospy.get_param(self.controller_namespace + '/m_per_rev', 48)
-        self.gear_mod = rospy.get_param(self.controller_namespace + '/gear_module', 1)
-        self.m_per_rev = self.teeth_per_rev * self.gear_mod * math.pi * 0.001
 
     def initialize(self):
         if not JointPositionController.initialize(self):
@@ -61,11 +58,3 @@ class PrismaticJointController(JointPositionController):
     def __set_speed_wheel(self, speed):
         mcv = (self.motor_id, self.__spd_rad_to_raw_wheel(speed))
         self.dxl_io.set_multi_speed([mcv])
-
-    def pos_m_to_raw(self, pos):
-        return self.pos_rad_to_raw((pos / self.m_per_rev) * 2 * math.pi)
-
-    def process_command(self, msg):
-        pos = msg.data
-        mcv = (self.motor_id, self.pos_m_to_raw(pos))
-        self.dxl_io.set_multi_position([mcv])
