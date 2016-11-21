@@ -211,4 +211,46 @@
     <limit lower="0" upper="3.14" effort="0" velocity="1.0"/>
   </joint>
 
+  <!--Transmission-->
+  <transmission name="right_gripper_prismatic_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_gripper_prismatic_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_gripper_prismatic_joint_motor">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>0.024</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="right_gripper_vacuum_pad_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_gripper_vacuum_pad_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_gripper_vacuum_pad_tendon_winder">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1.46484375</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="right_gripper_finger_yaw_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_gripper_finger_yaw_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_gripper_finger_yaw_joint_motor">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1.5</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="right_gripper_finger_roll_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_gripper_finger_roll_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_gripper_finger_tendon_winder">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+
 </robot>
