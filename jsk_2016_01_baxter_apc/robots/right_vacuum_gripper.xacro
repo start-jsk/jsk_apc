@@ -18,125 +18,141 @@
     <implicitSpringDamper>false</implicitSpringDamper>
   </gazebo>
   <!--Link bodies-->
-  <xacro:property name="rect_tube_l" value="0.285" />
-  <xacro:property name="rect_tube_h" value="0.06" />
-  <xacro:property name="rect_tube_w" value="0.0952" />
-  <xacro:property name="cyl_tube_x" value="0.005" />
-  <xacro:property name="cyl_tube_z" value="0.038" />
-  <xacro:property name="cyl_tube_r" value="0.018" />
-  <xacro:property name="cyl_tube_l" value="0.107" />
-  <xacro:property name="connection_z" value="-0.00725" />
-  <xacro:property name="connection_r" value="0.03" />
-  <xacro:property name="connection_l" value="0.0905" />
-  <xacro:property name="pad_base_z" value="0.025" />
-  <xacro:property name="pad_base_w" value="0.09" />
-  <xacro:property name="pad_base_h" value="0.038" />
-  <xacro:property name="pad_base_d" value="0.06" />
-  <xacro:property name="pad_r" value="0.026" />
-  <xacro:property name="pad_l" value="0.03" />
-  <xacro:property name="pad_x" value="-0.0005" />
-  <xacro:property name="pad_y" value="0.0085" />
-  <xacro:property name="pad_z" value="0.07" />
+  <xacro:property name="pad_with_base_offset_x" value="-0.048" />
+  <xacro:property name="pad_with_base_offset_y" value="-0.0005" />
+  <xacro:property name="pad_with_base_offset_z" value="-0.302" />
   <!--Joints-->
-  <xacro:property name="right_hand_offset_x" value="-0.01" />
-  <xacro:property name="right_hand_offset_z" value="0" />
-  <xacro:property name="right_gripper_joint_offset_x" value="0.005" />
-  <xacro:property name="right_gripper_joint_offset_y" value="-0.0085" />
-  <xacro:property name="right_gripper_joint_offset_z" value="0.264" />
+  <xacro:property name="hand_offset_x" value="-0.01" />
+  <xacro:property name="hand_offset_z" value="0" />
+  <xacro:property name="pad_joint_offset_x" value="0.048" />
+  <xacro:property name="pad_joint_offset_y" value="0.0005" />
+  <xacro:property name="pad_joint_offset_z" value="0.302" />
+  <xacro:property name="finger_base_offset_z" value="0.291352" />
+  <xacro:property name="finger_base_offset_x" value="-0.014" />
+  <xacro:property name="l_finger_base_offset_y" value="0.026" />
+  <xacro:property name="r_finger_base_offset_y" value="-0.026" />
 
+  <!--Link bodies-->
   <link name="right_gripper_base">
     <visual>
-      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+      <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="0 0 0"/>
       <geometry>
         <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="white">
-        <color rgba="1 1 1 1"/>
+      <material name="lightgrey">
+        <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--When using this stl file, robot_self_filter doesn't work-->
-    <!--<collision>
-      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_base.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </collision>-->
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${rect_tube_l/2}"/>
-      <geometry>
-        <box size="${rect_tube_h} ${rect_tube_w} ${rect_tube_l}"/>
-      </geometry>
-    </collision>
-    <collision>
-      <origin rpy="${M_PI/2} 0 0" xyz="${cyl_tube_x} -${cyl_tube_l/2} ${cyl_tube_z}"/>
-      <geometry>
-        <cylinder radius="${cyl_tube_r}" length="${cyl_tube_l}"/>
-      </geometry>
-    </collision>
-    <collision>
-      <origin rpy="0 0 0" xyz="${cyl_tube_x} -${cyl_tube_l} ${connection_z}"/>
-      <geometry>
-        <cylinder radius="${connection_r}" length="${connection_l}"/>
-      </geometry>
-    </collision>
+    <!--FIXME: Add collision-->
+    <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.3"/>
       <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
     </inertial>
   </link>
-  <link name="right_gripper_vacuum_pad_base">
+  <link name="right_gripper_tube">
     <visual>
-      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+      <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_vacuum_pad_base.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_tube.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="gray">
+      <material name="lightgrey">
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--When using this stl file, robot_self_filter doesn't work-->
-    <!--<collision>
-      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+    <!--FIXME: Add collision-->
+    <!--FIXME: Adjust inertia-->
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <link name="right_gripper_pad_with_base">
+    <visual>
+      <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="${pad_with_base_offset_x} ${pad_with_base_offset_y} ${pad_with_base_offset_z}"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_vacuum_pad_base.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_pad_with_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-    </collision>-->
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${pad_base_z}"/>
-      <geometry>
-        <box size="${pad_base_h} ${pad_base_w} ${pad_base_d}"/>
-      </geometry>
-    </collision>
+      <material name="lightgrey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <!--FIXME: Add collision-->
+    <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.01"/>
       <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
     </inertial>
   </link>
-  <link name="right_gripper_vacuum_pad">
+  <link name="right_gripper_r_finger_base">
     <visual>
-      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_vacuum_pad.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="green">
-        <color rgba="0 1 0 1"/>
+      <material name="lightgrey">
+        <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--When using this stl file, robot_self_filter doesn't work-->
-    <!--<collision>
-      <origin rpy="${M_PI/2} 0 -${M_PI/2}" xyz="0 0 0"/>
+    <!--FIXME: Add collision-->
+    <!--FIXME: Adjust inertia-->
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <link name="right_gripper_l_finger_base">
+    <visual>
+      <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/collision/right_gripper_vacuum_pad.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-    </collision>-->
-    <collision>
-      <origin rpy="0 0 0" xyz="${pad_x} ${pad_y} ${pad_z}"/>
+      <material name="lightgrey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <!--FIXME: Add collision-->
+    <!--FIXME: Adjust inertia-->
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <link name="right_gripper_r_finger">
+    <visual>
+      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
       <geometry>
-        <cylinder radius="${pad_r}" length="${pad_l}"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-    </collision>
+      <material name="lightgrey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <!--FIXME: Add collision-->
+    <!--FIXME: Adjust inertia-->
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <link name="right_gripper_l_finger">
+    <visual>
+      <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="lightgrey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <!--FIXME: Add collision-->
+    <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.01"/>
@@ -144,22 +160,55 @@
     </inertial>
   </link>
 
+  <!--Joints-->
   <joint name="right_gripper_base_fixed" type="fixed">
-    <origin rpy="0 0 0" xyz="${right_hand_offset_x} 0 ${right_hand_offset_z}" />
+    <origin rpy="0 0 0" xyz="${hand_offset_x} 0 ${hand_offset_z}" />
     <parent link="right_hand"/>
     <child link="right_gripper_base"/>
   </joint>
-  <joint name="right_gripper_vacuum_pad_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="${right_gripper_joint_offset_x} ${right_gripper_joint_offset_y} ${right_gripper_joint_offset_z}" />
+  <joint name="right_gripper_prismatic_joint" type="prismatic">
+    <origin rpy="0 0 0" xyz="0 0 0" />
     <parent link="right_gripper_base"/>
-    <child link="right_gripper_vacuum_pad_base"/>
-    <axis xyz="0 1 0"/>
-    <limit lower="-1.58" upper="1.58" effort="0" velocity="4.5"/>
+    <child link="right_gripper_tube"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0" upper="0.124" effort="0" velocity="0.024"/>
   </joint>
-  <joint name="right_gripper_vacuum_pad_fixed" type="fixed">
+  <joint name="right_gripper_vacuum_pad_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${pad_joint_offset_x} ${pad_joint_offset_y} ${pad_joint_offset_z}"/>
+    <parent link="right_gripper_tube"/>
+    <child link="right_gripper_pad_with_base"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.58" upper="1.58" effort="0" velocity="0.68"/>
+  </joint>
+  <joint name="right_gripper_finger_yaw_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${finger_base_offset_x} ${l_finger_base_offset_y} ${finger_base_offset_z}"/>
+    <parent link="right_gripper_base"/>
+    <child link="right_gripper_l_finger_base"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0" upper="1.58" effort="0" velocity="0.66"/>
+  </joint>
+  <joint name="right_gripper_r_finger_yaw_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${finger_base_offset_x} ${r_finger_base_offset_y} ${finger_base_offset_z}"/>
+    <parent link="right_gripper_base"/>
+    <child link="right_gripper_r_finger_base"/>
+    <mimic joint="right_gripper_finger_yaw_joint" multiplier="1"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="0" upper="1.58" effort="0" velocity="0.66"/>
+  </joint>
+  <joint name="right_gripper_finger_roll_joint" type="revolute">
     <origin rpy="0 0 0" xyz="0 0 0"/>
-    <parent link="right_gripper_vacuum_pad_base"/>
-    <child link="right_gripper_vacuum_pad"/>
+    <parent link="right_gripper_l_finger_base"/>
+    <child link="right_gripper_l_finger"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0" upper="3.14" effort="0" velocity="1.0"/>
+  </joint>
+  <joint name="right_gripper_r_finger_roll_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="right_gripper_r_finger_base"/>
+    <child link="right_gripper_r_finger"/>
+    <mimic joint="right_gripper_finger_roll_joint" multiplier="1"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="0" upper="3.14" effort="0" velocity="1.0"/>
   </joint>
 
 </robot>
