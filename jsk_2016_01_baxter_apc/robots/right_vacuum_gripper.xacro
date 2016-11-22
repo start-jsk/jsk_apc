@@ -18,9 +18,35 @@
     <implicitSpringDamper>false</implicitSpringDamper>
   </gazebo>
   <!--Link bodies-->
+  <xacro:property name="base_rect_offset_x" value="0.0065" />
+  <xacro:property name="base_rect_l" value="0.2805" />
+  <xacro:property name="base_rect_h" value="0.107" />
+  <xacro:property name="base_rect_w" value="0.15" />
+  <xacro:property name="camera_rect_offset_x" value="-0.061" />
+  <xacro:property name="camera_rect_offset_y" value="-0.037" />
+  <xacro:property name="camera_rect_offset_z" value="0.004" />
+  <xacro:property name="camera_rect_l" value="0.04" />
+  <xacro:property name="camera_rect_h" value="0.03" />
+  <xacro:property name="camera_rect_w" value="0.165" />
+  <xacro:property name="tube_rect_offset_x" value="0.0475" />
+  <xacro:property name="tube_rect_offset_y" value="0.012" />
+  <xacro:property name="tube_rect_offset_z" value="0.17" />
+  <xacro:property name="tube_rect_l" value="0.29" />
+  <xacro:property name="tube_rect_h" value="0.034" />
+  <xacro:property name="tube_rect_w" value="0.081" />
   <xacro:property name="pad_with_base_offset_x" value="-0.048" />
   <xacro:property name="pad_with_base_offset_y" value="-0.0005" />
   <xacro:property name="pad_with_base_offset_z" value="-0.302" />
+  <xacro:property name="pad_with_base_col_z" value="0.0145" />
+  <xacro:property name="pad_with_base_rect_l" value="0.055" />
+  <xacro:property name="pad_with_base_rect_h" value="0.028" />
+  <xacro:property name="pad_with_base_rect_w" value="0.028" />
+  <xacro:property name="finger_base_rect_l" value="0.022" />
+  <xacro:property name="finger_base_rect_h" value="0.032" />
+  <xacro:property name="finger_base_rect_w" value="0.036" />
+  <xacro:property name="finger_rect_l" value="0.04" />
+  <xacro:property name="finger_rect_h" value="0.016" />
+  <xacro:property name="finger_rect_w" value="0.11" />
   <!--Joints-->
   <xacro:property name="hand_offset_x" value="-0.01" />
   <xacro:property name="hand_offset_z" value="0" />
@@ -43,7 +69,18 @@
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--FIXME: Add collision-->
+    <collision>
+      <origin rpy="0 0 0" xyz="${base_rect_offset_x} 0 ${base_rect_l/2}"/>
+      <geometry>
+        <box size="${base_rect_h} ${base_rect_w} ${base_rect_l}"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="${camera_rect_offset_x} ${camera_rect_offset_y} ${camera_rect_offset_z}"/>
+      <geometry>
+        <box size="${camera_rect_h} ${camera_rect_w} ${camera_rect_l}"/>
+      </geometry>
+    </collision>
     <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -61,7 +98,12 @@
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--FIXME: Add collision-->
+    <collision>
+      <origin rpy="0 0 0" xyz="${tube_rect_offset_x} ${tube_rect_offset_y} ${tube_rect_offset_z}"/>
+      <geometry>
+        <box size="${tube_rect_h} ${tube_rect_w} ${tube_rect_l}"/>
+      </geometry>
+    </collision>
     <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -79,7 +121,12 @@
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--FIXME: Add collision-->
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 ${pad_with_base_col_z}"/>
+      <geometry>
+        <box size="${pad_with_base_rect_h} ${pad_with_base_rect_w} ${pad_with_base_rect_l}"/>
+      </geometry>
+    </collision>
     <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -97,7 +144,12 @@
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--FIXME: Add collision-->
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 ${-finger_base_rect_l/2}"/>
+      <geometry>
+        <box size="${finger_base_rect_h} ${finger_base_rect_w} ${finger_base_rect_l}"/>
+      </geometry>
+    </collision>
     <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -115,7 +167,12 @@
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--FIXME: Add collision-->
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 ${-finger_base_rect_l/2}"/>
+      <geometry>
+        <box size="${finger_base_rect_h} ${finger_base_rect_w} ${finger_base_rect_l}"/>
+      </geometry>
+    </collision>
     <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -133,7 +190,12 @@
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--FIXME: Add collision-->
+    <collision>
+      <origin rpy="0 0 0" xyz="0 ${-finger_rect_w/2} 0"/>
+      <geometry>
+        <box size="${finger_rect_h} ${finger_rect_w} ${finger_rect_l}"/>
+      </geometry>
+    </collision>
     <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -151,7 +213,12 @@
         <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <!--FIXME: Add collision-->
+    <collision>
+      <origin rpy="0 0 0" xyz="0 ${finger_rect_w/2} 0"/>
+      <geometry>
+        <box size="${finger_rect_h} ${finger_rect_w} ${finger_rect_l}"/>
+      </geometry>
+    </collision>
     <!--FIXME: Adjust inertia-->
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
