@@ -30,16 +30,16 @@ class CalibRequiredJointController(JointPositionController):
             self.__set_speed_wheel(-self.joint_speed)
         rate = rospy.Rate(10)
         while not rospy.is_shutdown():
+            init_pos = self.__get_feedback()['position']
             if abs(self.__get_feedback()['load']) > self.detect_limit_load:
                 break
             rate.sleep()
         # Change to previous mode
         self.__set_angle_limits(prev_limits['min'], prev_limits['max'])
         self.set_speed(self.joint_speed)
-        rospy.sleep(1.0)
 
         # Remember initial joint position
-        diff = self.__get_feedback()['position'] - self.initial_position_raw
+        diff = init_pos - self.initial_position_raw
         self.initial_position_raw += diff
         rospy.set_param(self.controller_namespace + '/motor/init',
                         self.initial_position_raw)
