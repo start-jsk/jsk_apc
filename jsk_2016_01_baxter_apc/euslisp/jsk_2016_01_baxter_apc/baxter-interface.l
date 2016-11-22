@@ -1101,16 +1101,10 @@
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-order-bin -> view-hand-pose" arm)
       (send self :gripper-servo-on arm)
-      (send *ri* :angle-vector (send *baxter* :rotate-gripper arm 90 :relative nil))
+      (pushback (send *baxter* arm :move-end-pos #f(0 0 150) :world) avs->view)
       (if (eq arm :larm)
-        (progn
-          (send *baxter* :place-object-pose arm)
-          (pushback (send *baxter* arm :move-end-pos #f(0 50 150) :world) avs->view)
-          (pushback (send *baxter* :view-hand-pose arm :g) avs->view))
-        (progn
-          (send *baxter* :place-object-pose arm)
-          (pushback (send *baxter* arm :move-end-pos #f(0 -50 150) :world) avs->view)
-          (pushback (send *baxter* :view-hand-pose arm :i) avs->view)))
+        (pushback (send *baxter* :view-hand-pose arm :j) avs->view)
+        (pushback (send *baxter* :view-hand-pose arm :l) avs->view))
       (send *ri* :angle-vector-sequence avs->view :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       graspingp))
@@ -1145,14 +1139,18 @@
       (setq obj-pos (send obj-coords :pos))
       (dolist (i (list 0 1))
         (cond ((> (elt (elt movable-region i) 0) (aref obj-pos i))
+               (ros::ros-info "[:try-to-pick-in-order-bin] object is out of movable region. ~a > ~a < ~a"
+                              (elt (elt movable-region i) 1)
+                              (elt (send obj-coords :pos) i)
+                              (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 0)))
               ((> (aref obj-pos i) (elt (elt movable-region i) 1))
+               (ros::ros-info "[:try-to-pick-in-order-bin] object is out of movable region. ~a < ~a > ~a"
+                              (elt (elt movable-region i) 1)
+                              (elt (send obj-coords :pos) i)
+                              (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 1)))
-              (t nil))
-        (ros::ros-info "[:try-to-pick-in-order-bin] object is out of movable region. ~a > ~a > ~a"
-                        (elt (elt movable-region i) 1)
-                        (elt (send obj-coords :pos) i)
-                        (elt (elt movable-region i) 0)))
+              (t nil)))
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos offset)
@@ -1317,11 +1315,11 @@
       (send self :angle-vector-sequence avs :fast nil 0 :scale scale)
       ))
   (:move-arm-body->bin-with-support-arm
-    (arm bin &key (scale 3.0))
+    (arm bin distance &key (scale 3.0))
     (let (avs support-arm)
          (send *baxter* :avoid-shelf-pose arm bin)
          (send *baxter* (send self :opposite-arm arm) :inverse-kinematics
-               (send *baxter* :get-support-arm-coords arm :dz -150)
+               (send *baxter* :get-support-arm-coords arm :dz (- distance))
                :use-gripper t
                :rotation-axis :z
                :revert-if-fail nil)
@@ -1330,7 +1328,7 @@
                :offset (float-vector
                          -150 0 (gethash :offset-avoid-bin-top _hard-coded-variables)))
          (send *baxter* (send self :opposite-arm arm) :inverse-kinematics
-               (send *baxter* :get-support-arm-coords arm :dz -150)
+               (send *baxter* :get-support-arm-coords arm :dz (- distance))
                :use-gripper t
                :rotation-axis :z
                :revert-if-fail nil)
@@ -1447,9 +1445,7 @@
                     :use-gripper t
                     :rotation-axis :z
                     :revert-if-fail nil)))
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)
-      (send self :wait-interpolation-until-grasp arm)
-      (send *baxter* :angle-vector (send self :state :potentio-vector))))
+      (send self :angle-vector-sequence avs :fast nil 0 :scale 5.0)))
   (:place-object
     (arm)
     (send self :move-arm-body->order-bin arm)

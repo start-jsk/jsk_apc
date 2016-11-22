@@ -1,0 +1,209 @@
+<launch>
+    <arg name="collect_data" default="true" />
+    <arg name="right_main" default="true" />
+    <arg name="left_first" default="true" />
+
+    <arg name="hand" value="right" if="$(arg right_main)"/>
+    <arg name="opposite_hand" value="left" if="$(arg right_main)"/>
+    <arg name="hand" value="left" unless="$(arg right_main)"/>
+    <arg name="opposite_hand" value="right" unless="$(arg right_main)"/>
+
+    <arg name="manager" value="data_collection_manager" />
+    <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager"/>
+
+    <node name="in_hand_clipper_rgb"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/AttentionClipper $(arg manager)">
+      <remap from="~input/points" to="/$(arg opposite_hand)_hand_camera/depth_registered/points" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+        dimension_x: 0.3
+        dimension_y: 0.3
+        dimension_z: 0.5
+        initial_pos: [0.0, 0.0, 0.0]
+        initial_rot: [0, 0, 0]
+        frame_id: $(arg hand)_gripper_vacuum_pad
+      </rosparam>
+    </node>
+
+    <node name="pi_to_mask_rgb"
+        type="nodelet" pkg="nodelet"
+        args="load jsk_pcl/PointIndicesToMaskImage $(arg manager)">
+      <remap from="~input" to="/in_hand_clipper_rgb/output/point_indices" />
+      <remap from="~input/image" to="/$(arg opposite_hand)_hand_camera/rgb/image_raw" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 1000
+      </rosparam>
+    </node>
+
+    <node name="closing_mask_rgb"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/Closing $(arg manager)">
+      <remap from="~input" to="/pi_to_mask_rgb/output" />
+      <rosparam>
+        size: 8
+        iterations: 4
+      </rosparam>
+    </node>
+
+    <node name="apply_mask_rgb"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ApplyMaskImage $(arg manager)">
+      <remap from="~input" to="/$(arg opposite_hand)_hand_camera/rgb/image_raw" />
+      <remap from="~input/mask" to="/closing_mask_rgb/output" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 1000
+      </rosparam>
+    </node>
+
+    <node name="in_hand_clipper_depth"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/AttentionClipper $(arg manager)">
+      <remap from="~input/points" to="/$(arg opposite_hand)_hand_camera/depth/points" />
+      <rosparam subst_value="true">
+        dimension_x: 0.3
+        dimension_y: 0.3
+        dimension_z: 0.2
+        initial_pos: [0.0, 0.0, 0.15]
+        initial_rot: [0, 0, 0]
+        frame_id: $(arg hand)_gripper_vacuum_pad
+      </rosparam>
+    </node>
+
+    <node name="pi_to_mask_depth"
+        type="nodelet" pkg="nodelet"
+        args="load jsk_pcl/PointIndicesToMaskImage $(arg manager)">
+      <remap from="~input" to="/in_hand_clipper_depth/output/point_indices" />
+      <remap from="~input/image" to="/$(arg opposite_hand)_hand_camera/depth/image_raw" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 1000
+      </rosparam>
+    </node>
+
+    <node name="closing_mask_depth"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/Closing $(arg manager)">
+      <remap from="~input" to="/pi_to_mask_depth/output" />
+      <rosparam>
+        size: 8
+        iterations: 4
+      </rosparam>
+    </node>
+
+    <node name="apply_mask_depth"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ApplyMaskImage $(arg manager)">
+      <remap from="~input" to="/$(arg opposite_hand)_hand_camera/depth/image_raw" />
+      <remap from="~input/mask" to="/closing_mask_depth/output" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 1000
+      </rosparam>
+    </node>
+
+    <!-- for gripper transform -->
+    <node name="gripper_transform_publisher"
+        pkg="jsk_topic_tools" type="tf_to_transform.py">
+        <rosparam subst_value="true">
+          duration: 1.0
+          parent_frame_id: /base
+          child_frame_id: /$(arg hand)_gripper_vacuum_pad
+        </rosparam>
+    </node>
+
+    <!-- for camera transform -->
+    <node name="camera_transform_publisher"
+        pkg="jsk_topic_tools" type="tf_to_transform.py">
+        <rosparam subst_value="true">
+          duration: 1.0
+          parent_frame_id: /base
+          child_frame_id: /$(arg opposite_hand)_hand_camera_rgb_optical_frame
+        </rosparam>
+    </node>
+
+    <node name="before_stow_data_collection"
+        pkg="jsk_data" type="data_collection_server.py"
+        output="screen" if="$(arg collect_data)">
+      <rosparam subst_value="true">
+        save_dir: ~/.ros/bimanual_stow/before_stow
+        slop: 1.0
+        topics:
+          - name: /$(arg opposite_hand)_hand_camera/rgb/image_raw
+            msg_class: sensor_msgs/Image
+            fname: image_raw.png
+            savetype: ColorImage
+          - name: /$(arg opposite_hand)_hand_camera/depth/image_raw
+            msg_class: sensor_msgs/Image
+            fname: depth_raw.pkl
+            savetype: DepthImage
+          - name: /$(arg opposite_hand)_hand_camera/rgb/image_rect_color
+            msg_class: sensor_msgs/Image
+            fname: image_rect_color.png
+            savetype: ColorImage
+          - name: /closing_mask_rgb/output
+            msg_class: sensor_msgs/Image
+            fname: clipped_mask_rgb.png
+            savetype: ColorImage
+          - name: /apply_mask_rgb/output
+            msg_class: sensor_msgs/Image
+            fname: clipped_rgb_raw.png
+            savetype: ColorImage
+          - name: /closing_mask_depth/output
+            msg_class: sensor_msgs/Image
+            fname: clipped_mask_depth.png
+            savetype: ColorImage
+          - name: /apply_mask_depth/output
+            msg_class: sensor_msgs/Image
+            fname: clipped_depth_raw.pkl
+            savetype: DepthImage
+          - name: /camera_transform_publisher/output
+            msg_class: geometry_msgs/TransformStamped
+            fname: camera_transform.yaml
+            savetype: YAML
+          - name: /gripper_transform_publisher/output
+            msg_class: geometry_msgs/TransformStamped
+            fname: gripper_transform.yaml
+            savetype: YAML
+          - name: /gripper_front/limb/$(arg hand)/pressure/state
+            msg_class: std_msgs/Float64
+            fname: pressure.yaml
+            savetype: YAML
+        params:
+          - key: /$(arg hand)_hand/target_object
+            fname: target.txt
+            savetype: Text
+      </rosparam>
+    </node>
+
+    <node name="after_stow_data_collection"
+        pkg="jsk_data" type="data_collection_server.py"
+        output="screen" if="$(arg collect_data)">
+      <rosparam subst_value="true">
+        save_dir: ~/.ros/bimanual_stow/after_stow
+        slop: 1.0
+        topics:
+          - name: /$(arg hand)_hand_camera/rgb/image_raw
+            msg_class: sensor_msgs/Image
+            fname: astra_camera_image.png
+            savetype: ColorImage
+          - name: /cameras/$(arg hand)_hand_camera/image
+            msg_class: sensor_msgs/Image
+            fname: default_camera_image.png
+            savetype: ColorImage
+          - name: /gripper_front/limb/$(arg hand)/pressure/state
+            msg_class: std_msgs/Float64
+            fname: pressure.yaml
+            savetype: YAML
+        params:
+          - key: /$(arg hand)_hand/dropped
+            fname: dropped.txt
+            savetype: Text
+          - key: /$(arg hand)_hand/is_bimanual
+            fname: is_bimanual.txt
+            savetype: Text
+      </rosparam>
+    </node>
+</launch>
