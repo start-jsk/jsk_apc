@@ -276,7 +276,7 @@
     (arm)
     (case arm
       (:larm (subseq (send *ri* :state :potentio-vector) 1 9))
-      (:rarm (subseq (send *ri* :state :potentio-vector) 9 17))
+      (:rarm (subseq (send *ri* :state :potentio-vector) 9 18))
       (t nil)
       )
     )
