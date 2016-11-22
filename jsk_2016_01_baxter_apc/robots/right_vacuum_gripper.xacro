@@ -286,7 +286,7 @@
     </joint>
     <actuator name="right_gripper_prismatic_joint_motor">
       <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>0.024</mechanicalReduction>
+      <mechanicalReduction>41.66666667</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="right_gripper_vacuum_pad_trans">
