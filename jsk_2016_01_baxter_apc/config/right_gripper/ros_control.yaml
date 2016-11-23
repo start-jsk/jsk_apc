@@ -15,7 +15,7 @@ controller_names:
   - finger_tendon_controller
 mechanical_reduction:
   - 41.66666667
-  - 1.46484375
-  - 1.5
+  - 1.3346354
+  - 1.45
   - 1.0
 control_rate: 20

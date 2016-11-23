@@ -296,7 +296,7 @@
     </joint>
     <actuator name="right_gripper_vacuum_pad_tendon_winder">
       <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1.46484375</mechanicalReduction>
+      <mechanicalReduction>1.3346354</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="right_gripper_finger_yaw_trans">
@@ -306,7 +306,7 @@
     </joint>
     <actuator name="right_gripper_finger_yaw_joint_motor">
       <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1.5</mechanicalReduction>
+      <mechanicalReduction>1.45</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="right_gripper_finger_roll_trans">
