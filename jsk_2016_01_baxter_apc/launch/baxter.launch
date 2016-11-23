@@ -21,6 +21,8 @@
         pkg="jsk_2016_01_baxter_apc" type="gripper_joint_states_publisher" />
   <node name="gripper_trajectory_server"
         pkg="jsk_2016_01_baxter_apc" type="gripper_trajectory_server" output="screen" />
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/gripper_dxl_controller.launch" />
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/gripper_ros_control.launch" />
 
 
   <!-- baxter startup -->
