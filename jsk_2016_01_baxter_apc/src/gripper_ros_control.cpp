@@ -195,6 +195,7 @@ int main(int argc, char** argv)
     gripper.read();
     cm.update(now, elapsed_time);
     gripper.write();
+    prev_time = now;
 
     rate.sleep();
   }
