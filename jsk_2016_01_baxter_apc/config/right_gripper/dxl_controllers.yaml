@@ -22,9 +22,9 @@ vacuum_pad_tendon_controller:
   #joint_torque_limit: 0.2
   motor:
     id: 4
-    init: 490
-    min: 940
-    max: 40
+    init: 500
+    min: 910
+    max: 90
 finger_yaw_joint_controller:
   controller:
     package: dynamixel_controllers
@@ -35,9 +35,9 @@ finger_yaw_joint_controller:
   #joint_torque_limit: 0.2
   motor:
     id: 2
-    init: 330
-    min: 330
-    max: 750
+    init: 285
+    min: 285
+    max: 725
 finger_tendon_controller:
   controller:
     package: dynamixel_controllers
@@ -48,6 +48,6 @@ finger_tendon_controller:
   #joint_torque_limit: 0.2
   motor:
     id: 3
-    init: 3500
-    min: 3500
-    max: 2000
+    init: 3100
+    min: 3100
+    max: 1560
