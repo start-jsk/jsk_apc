@@ -114,10 +114,10 @@
   (:rgripper-controller ()
    (list
     (list
-     (cons :controller-action "/gripper_front/limb/right/follow_joint_trajectory")
-     (cons :controller-state "/gripper_front/limb/right/state")
+     (cons :controller-action "/gripper_front/limb/right/vacuum_gripper/follow_joint_trajectory")
+     (cons :controller-state "/gripper_front/limb/right/vacuum_gripper/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "right_gripper_vacuum_pad_joint")))))
+     (cons :joint-names (list "right_gripper_prismatic_joint" "right_gripper_vacuum_pad_joint")))))
   (:lgripper-controller ()
    (list
     (list
@@ -276,7 +276,7 @@
     (arm)
     (case arm
       (:larm (subseq (send *ri* :state :potentio-vector) 1 9))
-      (:rarm (subseq (send *ri* :state :potentio-vector) 9 17))
+      (:rarm (subseq (send *ri* :state :potentio-vector) 9 18))
       (t nil)
       )
     )
