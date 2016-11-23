@@ -33,7 +33,7 @@
   (:init
     (&rest args)
     ;; initialize controllers
-    (send-super* :init :joint-states-queue-size 2
+    (send-super* :init :joint-states-queue-size 3
                  :moveit-environment nil
                  :moveit-robot nil args)
     (send self :add-controller :rgripper-controller)
