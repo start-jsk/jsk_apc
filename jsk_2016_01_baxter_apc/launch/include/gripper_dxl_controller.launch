@@ -6,8 +6,7 @@
         namespace: dxl_manager
         serial_ports:
           port:
-            <!-- FIXME: Port shouldn't be ttyUSB*. Replace this to symlink -->
-            port_name: "/dev/ttyUSB0"
+            port_name: "/dev/r_dxhub"
             baud_rate: 1000000
             min_motor_id: 1
             max_motor_id: 25
