@@ -37,7 +37,7 @@
            ((:moveit-robot mvit-rb) (instance jsk_2016_01_baxter_apc::baxter-robot :init))
            &allow-other-keys)
     ;; initialize controllers
-    (send-super* :init :joint-states-queue-size 2
+    (send-super* :init :joint-states-queue-size 3
                  :moveit-environment nil
                  :moveit-robot nil args)
     (send self :add-controller :no-gripper-controller)
