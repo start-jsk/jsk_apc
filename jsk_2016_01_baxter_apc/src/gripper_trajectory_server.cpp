@@ -158,7 +158,7 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "gripper_joint_trajectory_action_server");
-  GripperAction right_server("gripper_front/limb/", "right/");
+  //GripperAction right_server("gripper_front/limb/", "right/");
   GripperAction left_server("gripper_front/limb/", "left/");
   ros::spin();
   return 0;
