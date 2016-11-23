@@ -86,6 +86,12 @@ Write below in `/etc/udev/rules.d/90-rosserial.rules`:
 SUBSYSTEM=="tty", MODE="0666"
 ```
 
+**Setup DXHUB + gripper-v5(and later)**
+
+```bash
+$ rosrun jsk_2016_01_baxter_apc create_udev_rules
+```
+
 **Setup SSH**
 
 Write below in `~/.ssh/config`:
