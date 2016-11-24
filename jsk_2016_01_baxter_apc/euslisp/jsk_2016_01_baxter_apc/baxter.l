@@ -78,6 +78,10 @@
     (send self arm :gripper-p :joint-angle angle :relative relative)
     (send self :angle-vector)
     )
+  (:slide-gripper
+    (arm pos &key (relative t))
+    (send self arm :gripper-x :joint-angle pos :relative relative)
+    (send self :angle-vector))
   (:hand
     (arm &rest args)
     (unless args (return-from :hand nil))
