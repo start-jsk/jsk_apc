@@ -26,6 +26,7 @@
    _order-bin-box
    _objects-in-order-bin-boxes
    _objects-in-order-bin-coords
+   _right-hand-action
    )
   )
 
@@ -94,7 +95,21 @@
       )
     (ros::advertise "/gripper_front/limb/left/servo/torque" std_msgs::Bool)
     (ros::advertise "/gripper_front/limb/right/servo/torque" std_msgs::Bool)
-    (ros::advertise "/gripper_front/limb/right/hand/command" trajectory_msgs::JointTrajectory 1)
+    ;; initialize hand action
+    (setq _right-hand-action
+          (instance ros::simple-action-client :init
+                    "/gripper_front/limb/right/hand/follow_joint_trajectory"
+                    control_msgs::FollowJointTrajectoryAction
+                    :groupname groupname))
+    ;; check if hand action is respond (based on :add-controller in robot-interface)
+    (unless controller-timeout
+      (ros::ros-warn
+        "Waiting for actionlib interface forever because controler-timeout is nil"))
+    (unless
+      (and joint-action-enable (send _right-hand-action :wait-for-server controller-timeout))
+      (ros::ros-warn
+        "~A is not respond, ~A-interface is disabled" _right-hand-action (send robot :name))
+      (setq joint-action-enable nil))
     (if mvit-rb (setq moveit-robot mvit-rb))
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot)))
     )
@@ -133,24 +148,31 @@
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "left_gripper_vacuum_pad_joint")))))
 
-  ;; based on naoqi-interface
+  ;; based on naoqi-interface and fetch-interface
   (:move-hand
-    (arm av tm)
-    (if (and (eq arm :rarm) (= (length av) 2))
-      (let (av-list (goal (instance trajectory_msgs::JointTrajectory :init)))
-        (dotimes (i (length av)) (pushback (elt av i) av-list))
-        (send goal :header :seq 1)
-        (send goal :header :stamp (ros::time-now))
-        (send goal :joint_names
-              (list "right_gripper_finger_yaw_joint" "right_gripper_finger_roll_joint"))
-        (send goal :points
-              (list (instance trajectory_msgs::JointTrajectoryPoint
-                              :init
-                              :positions (mapcar #'deg2rad av-list)
-                              :time_from_start (ros::time (/ tm 1000)))))
-        (ros::publish "/gripper_front/limb/right/hand/command" goal)
-        )
-      (return-from :move-hand nil))
+    (arm av tm &key (wait t))
+    (if (and (= (length av) 2) (not (send self :simulation-modep)))
+      (if (eq arm :rarm)
+        (let (av-list (goal (instance control_msgs::FollowJointTrajectoryActionGoal :init))
+                      (traj (instance trajectory_msgs::JointTrajectory :init)))
+          (dotimes (i (length av)) (pushback (elt av i) av-list))
+          (send traj :header :seq 1)
+          (send traj :header :stamp (ros::time-now))
+          (send traj :joint_names
+                (list "right_gripper_finger_yaw_joint" "right_gripper_finger_roll_joint"))
+          (send traj :points
+                (list (instance trajectory_msgs::JointTrajectoryPoint
+                                :init
+                                :positions (mapcar #'deg2rad av-list)
+                                :time_from_start (ros::time (/ tm 1000)))))
+          (send goal :goal :trajectory traj)
+          (send _right-hand-action :send-goal goal)
+          (when wait
+            (send _right-hand-action :wait-for-result))
+          (send _right-hand-action :get-result)
+          )
+        nil)
+      nil)
     )
 
   (:start-grasp
