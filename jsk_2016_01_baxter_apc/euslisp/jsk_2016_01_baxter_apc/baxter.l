@@ -8,7 +8,7 @@
 
 (defclass jsk_2016_01_baxter_apc::baxter-robot
   :super baxter-robot
-  :slots (_view-hand-pos _ik-prepared-poses))
+  :slots (_view-hand-pos _ik-prepared-poses _hand-joints))
 (defmethod jsk_2016_01_baxter_apc::baxter-robot
   (:init
     (&rest args)
@@ -38,6 +38,14 @@
     ;; pos of :c, :f, :i, :l is not symmetrical to :a, :d, :g, :j because torso can't see
     ;; initialize _ik-prepared-poses
     (setq _ik-prepared-poses (list :untuck-pose))
+    ;; initialize _hand-joints
+    (setq _hand-joints (make-hash-table))
+    (sethash :rarm _hand-joints
+             (list :right_gripper_finger_yaw_joint
+                   :right_gripper_finger_roll_joint
+                   ;; We have to move mimic joints, too
+                   :right_gripper_r_finger_yaw_joint
+                   :right_gripper_r_finger_roll_joint))
     )
   (:set-ik-prepared-poses
     (poses)
@@ -70,6 +78,21 @@
     (send self arm :gripper-p :joint-angle angle :relative relative)
     (send self :angle-vector)
     )
+  (:hand
+    (arm &rest args)
+    (unless args (return-from :hand nil))
+    (case (car args)
+      ((:angle-vector)
+       (let ((av (cadr args)) (joints (gethash arm _hand-joints)))
+         (when av
+           (dotimes (i (length av))
+             (send self (elt joints i) :joint-angle (elt av i))
+             (send self (elt joints (+ i (length av))) :joint-angle (elt av i))))
+         (mapcar
+           #'(lambda (j) (send self j :joint-angle))
+           (subseq joints 0 (/ (length joints) 2)))
+         )
+       )))
   (:avoid-shelf-pose
     (arm bin)
     (case bin
