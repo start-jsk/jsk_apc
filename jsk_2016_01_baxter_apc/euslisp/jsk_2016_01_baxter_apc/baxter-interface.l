@@ -97,6 +97,7 @@
       )
     (ros::advertise "/gripper_front/limb/left/servo/torque" std_msgs::Bool)
     (ros::advertise "/gripper_front/limb/right/servo/torque" std_msgs::Bool)
+    (ros::advertise "/gripper_front/limb/right/hand/command" trajectory_msgs::JointTrajectory 1)
     (if mvit-rb (setq moveit-robot mvit-rb))
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot)))
     )
@@ -144,6 +145,26 @@
      (cons :controller-state "/gripper_front/limb/left/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "left_gripper_vacuum_pad_joint")))))
+
+  ;; based on naoqi-interface
+  (:move-hand
+    (arm av tm)
+    (if (and (eq arm :rarm) (= (length av) 2))
+      (let (av-list (goal (instance trajectory_msgs::JointTrajectory :init)))
+        (dotimes (i (length av)) (pushback (elt av i) av-list))
+        (send goal :header :seq 1)
+        (send goal :header :stamp (ros::time-now))
+        (send goal :joint_names
+              (list "right_gripper_finger_yaw_joint" "right_gripper_finger_roll_joint"))
+        (send goal :points
+              (list (instance trajectory_msgs::JointTrajectoryPoint
+                              :init
+                              :positions (mapcar #'deg2rad av-list)
+                              :time_from_start (ros::time (/ tm 1000)))))
+        (ros::publish "/gripper_front/limb/right/hand/command" goal)
+        )
+      (return-from :move-hand nil))
+    )
 
   (:start-grasp
     (&optional (arm :arms))
