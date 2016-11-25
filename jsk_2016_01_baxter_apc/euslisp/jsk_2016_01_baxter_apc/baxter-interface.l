@@ -101,15 +101,11 @@
                     "/gripper_front/limb/right/hand/follow_joint_trajectory"
                     control_msgs::FollowJointTrajectoryAction
                     :groupname groupname))
-    ;; check if hand action is respond (based on :add-controller in robot-interface)
-    (unless controller-timeout
-      (ros::ros-warn
-        "Waiting for actionlib interface forever because controler-timeout is nil"))
+    ;; check if hand action is respond (based on baxter-interface)
     (unless
-      (and joint-action-enable (send _right-hand-action :wait-for-server controller-timeout))
-      (ros::ros-warn
-        "~A is not respond, ~A-interface is disabled" _right-hand-action (send robot :name))
-      (setq joint-action-enable nil))
+      (and joint-action-enable (send _right-hand-action :wait-for-server 3))
+      (ros::ros-warn "~A is not respond" _right-hand-action)
+      (ros::ros-info "*** if you do not have hand, you can ignore this message ***"))
     (if mvit-rb (setq moveit-robot mvit-rb))
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot)))
     )
