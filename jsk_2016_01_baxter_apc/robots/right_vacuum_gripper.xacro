@@ -306,7 +306,7 @@
     </joint>
     <actuator name="right_gripper_finger_yaw_joint_motor">
       <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1.45</mechanicalReduction>
+      <mechanicalReduction>1.3</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="right_gripper_finger_roll_trans">
