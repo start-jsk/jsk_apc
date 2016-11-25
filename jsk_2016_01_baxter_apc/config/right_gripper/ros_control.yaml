@@ -16,6 +16,6 @@ controller_names:
 mechanical_reduction:
   - 41.66666667
   - 1.3346354
-  - 1.45
+  - 1.3
   - 1.0
 control_rate: 20
