@@ -35,9 +35,9 @@ finger_yaw_joint_controller:
   #joint_torque_limit: 0.2
   motor:
     id: 2
-    init: 285
-    min: 285
-    max: 725
+    init: 250
+    min: 250
+    max: 650
 finger_tendon_controller:
   controller:
     package: dynamixel_controllers
@@ -48,6 +48,6 @@ finger_tendon_controller:
   #joint_torque_limit: 0.2
   motor:
     id: 3
-    init: 3100
-    min: 3100
-    max: 1560
+    init: 2850
+    min: 2850
+    max: 1310
