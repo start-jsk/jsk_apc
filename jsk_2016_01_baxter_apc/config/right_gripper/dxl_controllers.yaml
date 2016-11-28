@@ -4,8 +4,9 @@ prismatic_joint_controller:
     module: calib_required_joint_controller
     type: CalibRequiredJointController
   joint_name: right_gripper_prismatic_joint_motor
-  joint_speed: 1.0
+  joint_speed: 2.0
   joint_torque_limit: 0.4
+  calib_speed: 1.0
   detect_limit_load: 0.18
   motor:
     id: 1
