@@ -18,4 +18,9 @@ mechanical_reduction:
   - 1.3346354
   - 1.3
   - 1.0
+error_limits:
+  - 0.2
+  - 0.2
+  - 0.2
+  - 0.2
 control_rate: 20
