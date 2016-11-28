@@ -6,7 +6,7 @@ prismatic_joint_controller:
   joint_name: right_gripper_prismatic_joint_motor
   joint_speed: 1.0
   joint_torque_limit: 0.4
-  detect_limit_load: 0.2
+  detect_limit_load: 0.18
   motor:
     id: 1
     init: 0
