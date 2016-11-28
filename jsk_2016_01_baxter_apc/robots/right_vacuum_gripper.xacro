@@ -238,7 +238,7 @@
     <parent link="right_gripper_base"/>
     <child link="right_gripper_tube"/>
     <axis xyz="0 0 1"/>
-    <limit lower="0" upper="0.124" effort="0" velocity="0.024"/>
+    <limit lower="0" upper="0.124" effort="0" velocity="0.048"/>
   </joint>
   <joint name="right_gripper_vacuum_pad_joint" type="revolute">
     <origin rpy="0 0 0" xyz="${pad_joint_offset_x} ${pad_joint_offset_y} ${pad_joint_offset_z}"/>
