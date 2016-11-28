@@ -26,11 +26,13 @@ private:
   const std::vector<std::string> actr_names_;
   const std::vector<std::string> jnt_names_;
   const std::vector<std::string> controller_names_;
+  const std::vector<double> err_limits_;
 
   // Actuator raw data
   std::map<std::string, double> actr_curr_pos_;
   std::map<std::string, double> actr_curr_vel_;
   std::map<std::string, double> actr_curr_eff_;
+  std::map<std::string, double> actr_goal_pos_;
   std::map<std::string, double> actr_cmd_pos_;
 
   // Joint raw data
@@ -62,10 +64,12 @@ private:
 
 public:
   GripperRosControl(const std::vector<std::string>& actr_names, const std::vector<std::string>& jnt_names,
-                    const std::vector<std::string>& controller_names, const std::vector<double>& reducers)
+                    const std::vector<std::string>& controller_names, const std::vector<double>& reducers,
+                    const std::vector<double>& err_limits)
     : actr_names_(actr_names)
     , jnt_names_(jnt_names)
     , controller_names_(controller_names)
+    , err_limits_(err_limits)
   {
     for (int i = 0; i < jnt_names_.size(); i++)
     {
@@ -132,6 +136,7 @@ public:
     {
       actr_curr_pos_[actr_names_[i]] = received_actr_states_[actr_names_[i]].current_pos;
       actr_curr_vel_[actr_names_[i]] = received_actr_states_[actr_names_[i]].velocity;
+      actr_goal_pos_[actr_names_[i]] = received_actr_states_[actr_names_[i]].goal_pos;
     }
 
     // Propagate current actuator state to joints
@@ -146,8 +151,14 @@ public:
     // Publish command to actuator
     for (int i = 0; i < actr_names_.size(); i++)
     {
+      double cmd = actr_cmd_pos_[actr_names_[i]];
+      double goal = actr_goal_pos_[actr_names_[i]];
+      double err = goal - actr_curr_pos_[actr_names_[i]];
+      // Limit command
+      if ((err < -err_limits_[i] && cmd < goal) || (err > err_limits_[i] && cmd > goal))
+        cmd = goal;
       std_msgs::Float64 msg;
-      msg.data = actr_cmd_pos_[actr_names_[i]];
+      msg.data = cmd;
       actr_cmd_pub_[actr_names_[i]].publish(msg);
     }
   }
@@ -166,17 +177,18 @@ int main(int argc, char** argv)
   std::vector<std::string> jnt_names;
   std::vector<std::string> controller_names;
   std::vector<double> reducers;
+  std::vector<double> err_limits;
   int rate_hz;
 
   if (!(ros::param::get("~actuator_names", actr_names) && ros::param::get("~joint_names", jnt_names) &&
         ros::param::get("~controller_names", controller_names) && ros::param::get("~mechanical_reduction", reducers) &&
-        ros::param::get("~control_rate", rate_hz)))
+        ros::param::get("~error_limits", err_limits) && ros::param::get("~control_rate", rate_hz)))
   {
     ROS_ERROR("Couldn't get necessary parameters");
     return 0;
   }
 
-  GripperRosControl gripper(actr_names, jnt_names, controller_names, reducers);
+  GripperRosControl gripper(actr_names, jnt_names, controller_names, reducers, err_limits);
   controller_manager::ControllerManager cm(&gripper);
 
   // For non-realtime spinner thread
