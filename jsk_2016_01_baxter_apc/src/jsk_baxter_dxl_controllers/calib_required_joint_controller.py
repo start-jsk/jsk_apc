@@ -9,6 +9,9 @@ class CalibRequiredJointController(JointPositionController):
         JointPositionController.__init__(self, dxl_io, controller_namespace,
                                          port_namespace)
 
+        self.calib_speed = rospy.get_param(
+                self.controller_namespace + '/calib_speed',
+                0.1)
         self.detect_limit_load = rospy.get_param(
                 self.controller_namespace + '/detect_limit_load',
                 0.15)
@@ -25,9 +28,9 @@ class CalibRequiredJointController(JointPositionController):
         # Change to wheel mode
         self.__set_angle_limits(0, 0)
         if self.flipped:
-            self.__set_speed_wheel(self.joint_speed)
+            self.__set_speed_wheel(self.calib_speed)
         else:
-            self.__set_speed_wheel(-self.joint_speed)
+            self.__set_speed_wheel(-self.calib_speed)
         rate = rospy.Rate(50)
         while not rospy.is_shutdown():
             init_pos = self.__get_feedback()['position']
