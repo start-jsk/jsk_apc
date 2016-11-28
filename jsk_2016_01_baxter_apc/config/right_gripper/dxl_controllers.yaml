@@ -48,6 +48,6 @@ finger_tendon_controller:
   #joint_torque_limit: 0.2
   motor:
     id: 3
-    init: 2850
-    min: 2850
-    max: 1310
+    init: 2510
+    min: 2510
+    max: 970
