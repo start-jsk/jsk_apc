@@ -28,7 +28,7 @@ class CalibRequiredJointController(JointPositionController):
             self.__set_speed_wheel(self.joint_speed)
         else:
             self.__set_speed_wheel(-self.joint_speed)
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(50)
         while not rospy.is_shutdown():
             init_pos = self.__get_feedback()['position']
             if abs(self.__get_feedback()['load']) > self.detect_limit_load:
