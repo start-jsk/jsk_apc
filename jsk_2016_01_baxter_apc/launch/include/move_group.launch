@@ -18,7 +18,7 @@
   <arg name="publish_monitored_planning_scene" default="true"/>
 
   <!-- Planning Functionality -->
-  <include ns="move_group" file="$(find baxter_moveit_config)/launch/ompl_planning_pipeline.launch" />
+  <include ns="move_group" file="$(find jsk_2016_01_baxter_apc)/launch/include/ompl_planning_pipeline.launch" />
 
   <!-- Trajectory Execution Functionality -->
   <include ns="move_group" file="$(find jsk_2016_01_baxter_apc)/launch/include/trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
