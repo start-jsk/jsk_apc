@@ -27,12 +27,16 @@ private:
   const std::vector<std::string> jnt_names_;
   const std::vector<std::string> controller_names_;
   const std::vector<double> err_limits_;
+  const std::vector<double> load_limits_;
+
+  std::map<std::string, bool> is_limited_;
+  std::map<std::string, double> limited_cmd_;
 
   // Actuator raw data
   std::map<std::string, double> actr_curr_pos_;
   std::map<std::string, double> actr_curr_vel_;
   std::map<std::string, double> actr_curr_eff_;
-  std::map<std::string, double> actr_goal_pos_;
+  std::map<std::string, double> actr_curr_load_;
   std::map<std::string, double> actr_cmd_pos_;
 
   // Joint raw data
@@ -65,16 +69,19 @@ private:
 public:
   GripperRosControl(const std::vector<std::string>& actr_names, const std::vector<std::string>& jnt_names,
                     const std::vector<std::string>& controller_names, const std::vector<double>& reducers,
-                    const std::vector<double>& err_limits)
+                    const std::vector<double>& err_limits, const std::vector<double>& load_limits)
     : actr_names_(actr_names)
     , jnt_names_(jnt_names)
     , controller_names_(controller_names)
     , err_limits_(err_limits)
+    , load_limits_(load_limits)
   {
     for (int i = 0; i < jnt_names_.size(); i++)
     {
       std::string actr = actr_names_[i];
       std::string jnt = jnt_names_[i];
+
+      is_limited_[actr] = false;
 
       // Get transmission
       boost::shared_ptr<transmission_interface::SimpleTransmission> t_ptr(
@@ -136,7 +143,7 @@ public:
     {
       actr_curr_pos_[actr_names_[i]] = received_actr_states_[actr_names_[i]].current_pos;
       actr_curr_vel_[actr_names_[i]] = received_actr_states_[actr_names_[i]].velocity;
-      actr_goal_pos_[actr_names_[i]] = received_actr_states_[actr_names_[i]].goal_pos;
+      actr_curr_load_[actr_names_[i]] = received_actr_states_[actr_names_[i]].load;
     }
 
     // Propagate current actuator state to joints
@@ -151,15 +158,36 @@ public:
     // Publish command to actuator
     for (int i = 0; i < actr_names_.size(); i++)
     {
-      double cmd = actr_cmd_pos_[actr_names_[i]];
-      double goal = actr_goal_pos_[actr_names_[i]];
-      double err = goal - actr_curr_pos_[actr_names_[i]];
+      std::string actr = actr_names_[i];
+      double cmd = actr_cmd_pos_[actr];
+      double curr_pos = actr_curr_pos_[actr];
+      double load = actr_curr_load_[actr];
+      double err = cmd - curr_pos;
       // Limit command
-      if ((err < -err_limits_[i] && cmd < goal) || (err > err_limits_[i] && cmd > goal))
-        cmd = goal;
+      if (fabs(err) > err_limits_[i] && fabs(load) >= load_limits_[i])
+      {
+        ROS_WARN("On %s: Error between commanded position(%lf) and current position(%lf) is big, but motor is "
+                 "overloaded(load: %lf%). So apply current position instead of commanded position",
+                 actr.c_str(), cmd, curr_pos, load * 100);
+        cmd = curr_pos;
+        is_limited_[actr] = true;
+        limited_cmd_[actr] = cmd;
+      }
+      else if (is_limited_[actr])
+      {
+        if (fabs(err) > err_limits_[i])
+          cmd = limited_cmd_[actr];
+        else
+        {
+          ROS_WARN("On %s: Error between commanded position(%lf) and current position(%lf) becomes small, so restart "
+                   "applying commanded position",
+                   actr.c_str(), cmd, curr_pos);
+          is_limited_[actr] = false;
+        }
+      }
       std_msgs::Float64 msg;
       msg.data = cmd;
-      actr_cmd_pub_[actr_names_[i]].publish(msg);
+      actr_cmd_pub_[actr].publish(msg);
     }
   }
 
@@ -178,17 +206,19 @@ int main(int argc, char** argv)
   std::vector<std::string> controller_names;
   std::vector<double> reducers;
   std::vector<double> err_limits;
+  std::vector<double> load_limits;
   int rate_hz;
 
   if (!(ros::param::get("~actuator_names", actr_names) && ros::param::get("~joint_names", jnt_names) &&
         ros::param::get("~controller_names", controller_names) && ros::param::get("~mechanical_reduction", reducers) &&
-        ros::param::get("~error_limits", err_limits) && ros::param::get("~control_rate", rate_hz)))
+        ros::param::get("~error_limits", err_limits) && ros::param::get("~load_limits", load_limits) &&
+        ros::param::get("~control_rate", rate_hz)))
   {
     ROS_ERROR("Couldn't get necessary parameters");
     return 0;
   }
 
-  GripperRosControl gripper(actr_names, jnt_names, controller_names, reducers, err_limits);
+  GripperRosControl gripper(actr_names, jnt_names, controller_names, reducers, err_limits, load_limits);
   controller_manager::ControllerManager cm(&gripper);
 
   // For non-realtime spinner thread
