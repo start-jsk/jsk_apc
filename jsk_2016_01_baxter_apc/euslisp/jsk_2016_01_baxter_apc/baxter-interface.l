@@ -1404,7 +1404,7 @@
         (pushback (send *baxter* :rotate-wrist arm 20) avs)
         (pushback (send *baxter* :rotate-wrist arm -10) avs)
         )
-      (send self :angle-vector-sequence avs)
+      (send self :angle-vector-sequence-raw avs)
       ))
   (:move-arm-body->head-view-point
     (arm)
