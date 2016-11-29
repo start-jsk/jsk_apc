@@ -245,14 +245,14 @@
     <parent link="right_gripper_tube"/>
     <child link="right_gripper_pad_with_base"/>
     <axis xyz="0 1 0"/>
-    <limit lower="-1.58" upper="1.58" effort="0" velocity="0.68"/>
+    <limit lower="-1.58" upper="1.58" effort="0" velocity="2.24"/>
   </joint>
   <joint name="right_gripper_finger_yaw_joint" type="revolute">
     <origin rpy="0 0 0" xyz="${finger_base_offset_x} ${l_finger_base_offset_y} ${finger_base_offset_z}"/>
     <parent link="right_gripper_base"/>
     <child link="right_gripper_l_finger_base"/>
     <axis xyz="0 0 1"/>
-    <limit lower="0" upper="1.58" effort="0" velocity="0.66"/>
+    <limit lower="0" upper="1.58" effort="0" velocity="0.76"/>
   </joint>
   <joint name="right_gripper_r_finger_yaw_joint" type="revolute">
     <origin rpy="0 0 0" xyz="${finger_base_offset_x} ${r_finger_base_offset_y} ${finger_base_offset_z}"/>
@@ -260,14 +260,14 @@
     <child link="right_gripper_r_finger_base"/>
     <mimic joint="right_gripper_finger_yaw_joint" multiplier="1"/>
     <axis xyz="0 0 -1"/>
-    <limit lower="0" upper="1.58" effort="0" velocity="0.66"/>
+    <limit lower="0" upper="1.58" effort="0" velocity="0.76"/>
   </joint>
   <joint name="right_gripper_finger_roll_joint" type="revolute">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="right_gripper_l_finger_base"/>
     <child link="right_gripper_l_finger"/>
     <axis xyz="1 0 0"/>
-    <limit lower="0" upper="3.14" effort="0" velocity="1.0"/>
+    <limit lower="0" upper="3.14" effort="0" velocity="3.0"/>
   </joint>
   <joint name="right_gripper_r_finger_roll_joint" type="revolute">
     <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -275,7 +275,7 @@
     <child link="right_gripper_r_finger"/>
     <mimic joint="right_gripper_finger_roll_joint" multiplier="1"/>
     <axis xyz="-1 0 0"/>
-    <limit lower="0" upper="3.14" effort="0" velocity="1.0"/>
+    <limit lower="0" upper="3.14" effort="0" velocity="3.0"/>
   </joint>
 
   <!--Transmission-->

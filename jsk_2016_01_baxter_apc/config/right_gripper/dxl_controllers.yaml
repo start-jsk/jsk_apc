@@ -19,7 +19,7 @@ vacuum_pad_tendon_controller:
     module: joint_position_controller
     type: JointPositionController
   joint_name: right_gripper_vacuum_pad_tendon_winder
-  joint_speed: 1.0
+  joint_speed: 3.0
   #joint_torque_limit: 0.2
   motor:
     id: 4
@@ -45,7 +45,7 @@ finger_tendon_controller:
     module: joint_position_controller
     type: JointPositionController
   joint_name: right_gripper_finger_tendon_winder
-  joint_speed: 1.0
+  joint_speed: 3.0
   #joint_torque_limit: 0.2
   motor:
     id: 3
