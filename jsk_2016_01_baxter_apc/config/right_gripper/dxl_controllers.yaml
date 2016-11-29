@@ -5,9 +5,9 @@ prismatic_joint_controller:
     type: CalibRequiredJointController
   joint_name: right_gripper_prismatic_joint_motor
   joint_speed: 2.0
-  joint_torque_limit: 0.4
+  joint_torque_limit: 0.3
   calib_speed: 1.0
-  detect_limit_load: 0.18
+  detect_limit_load: 0.17
   motor:
     id: 1
     init: 0
@@ -23,9 +23,9 @@ vacuum_pad_tendon_controller:
   #joint_torque_limit: 0.2
   motor:
     id: 4
-    init: 500
-    min: 910
-    max: 90
+    init: 620
+    min: 1024  # 1030 is better, but it's bigger than servo max
+    max: 210
 finger_yaw_joint_controller:
   controller:
     package: dynamixel_controllers
