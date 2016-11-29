@@ -1570,7 +1570,17 @@
                (cons :group-name "left_arm")
                (cons :target-link
                      (send self :search-link-from-name "left_gripper_vacuum_pad"))
-               (cons :joint-list (send robot :larm :joint-list))))))
+               (cons :joint-list (send robot :larm :joint-list)))
+         (list :arms
+               ;; can not use inverse-kinematics
+               ;; currently only supports angle-vector
+               (cons :group-name "both_arms")
+               (cons :target-link
+                     (list
+                       (send self :search-link-from-name "left_gripper_vacuum_pad")
+                       (send self :search-link-from-name "right_gripper_vacuum_pad")))
+               (cons :joint-list (append (send robot :larm :joint-list)
+                                         (send robot :rarm :joint-list)))))))
 
 (defun jsk_2016_01_baxter_apc::baxter-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
