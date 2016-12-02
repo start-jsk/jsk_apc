@@ -26,14 +26,13 @@ private:
   const std::vector<std::string> actr_names_;
   const std::vector<std::string> jnt_names_;
   const std::vector<std::string> controller_names_;
-  const std::vector<double> err_limits_;
   const std::vector<double> load_limits_;
 
-  std::map<std::string, bool> is_limited_;
-  std::map<std::string, double> limited_cmd_;
+  std::map<std::string, int> overload_status_;
 
   // Actuator raw data
   std::map<std::string, double> actr_curr_pos_;
+  std::map<std::string, double> actr_curr_goal_pos_;
   std::map<std::string, double> actr_curr_vel_;
   std::map<std::string, double> actr_curr_eff_;
   std::map<std::string, double> actr_curr_load_;
@@ -66,22 +65,27 @@ private:
   boost::shared_ptr<ros::AsyncSpinner> subscriber_spinner_;
   ros::CallbackQueue subscriber_queue_;
 
+  // For command limitation
+  const double DELTA_POS_;
+  const double STABLE_LOAD_RANGE_;
+
 public:
   GripperRosControl(const std::vector<std::string>& actr_names, const std::vector<std::string>& jnt_names,
                     const std::vector<std::string>& controller_names, const std::vector<double>& reducers,
-                    const std::vector<double>& err_limits, const std::vector<double>& load_limits)
+                    const std::vector<double>& load_limits)
     : actr_names_(actr_names)
     , jnt_names_(jnt_names)
     , controller_names_(controller_names)
-    , err_limits_(err_limits)
     , load_limits_(load_limits)
+    , DELTA_POS_(0.01)
+    , STABLE_LOAD_RANGE_(0.1)
   {
     for (int i = 0; i < jnt_names_.size(); i++)
     {
       std::string actr = actr_names_[i];
       std::string jnt = jnt_names_[i];
 
-      is_limited_[actr] = false;
+      overload_status_[actr] = 0;
 
       // Get transmission
       boost::shared_ptr<transmission_interface::SimpleTransmission> t_ptr(
@@ -95,6 +99,7 @@ public:
       jnt_curr_data_[jnt].position.push_back(&jnt_curr_pos_[jnt]);
       jnt_curr_data_[jnt].velocity.push_back(&jnt_curr_vel_[jnt]);
       jnt_curr_data_[jnt].effort.push_back(&jnt_curr_eff_[jnt]);
+      actr_curr_goal_pos_[actr] = actr_curr_pos_[actr];
 
       // Initialize and wrap raw command data
       actr_cmd_data_[actr].position.push_back(&actr_cmd_pos_[actr]);
@@ -142,6 +147,7 @@ public:
     for (int i = 0; i < actr_names_.size(); i++)
     {
       actr_curr_pos_[actr_names_[i]] = received_actr_states_[actr_names_[i]].current_pos;
+      actr_curr_goal_pos_[actr_names_[i]] = received_actr_states_[actr_names_[i]].goal_pos;
       actr_curr_vel_[actr_names_[i]] = received_actr_states_[actr_names_[i]].velocity;
       actr_curr_load_[actr_names_[i]] = received_actr_states_[actr_names_[i]].load;
     }
@@ -161,29 +167,33 @@ public:
       std::string actr = actr_names_[i];
       double cmd = actr_cmd_pos_[actr];
       double curr_pos = actr_curr_pos_[actr];
+      double goal_pos = actr_curr_goal_pos_[actr];
       double load = actr_curr_load_[actr];
-      double err = cmd - curr_pos;
       // Limit command
-      if (fabs(err) > err_limits_[i] && fabs(load) >= load_limits_[i])
+      if (fabs(load) >= load_limits_[i])
       {
-        ROS_WARN("On %s: Error between commanded position(%lf) and current position(%lf) is big, but motor is "
-                 "overloaded(load: %lf%). So apply current position instead of commanded position",
-                 actr.c_str(), cmd, curr_pos, load * 100);
-        cmd = curr_pos;
-        is_limited_[actr] = true;
-        limited_cmd_[actr] = cmd;
-      }
-      else if (is_limited_[actr])
-      {
-        if (fabs(err) > err_limits_[i])
-          cmd = limited_cmd_[actr];
+        if (goal_pos > curr_pos)
+          cmd = goal_pos - DELTA_POS_;
         else
+          cmd = goal_pos + DELTA_POS_;
+        ROS_WARN("On %s: Motor is overloaded(load: %lf%). So change commanded position from %lf to %lf",
+                 actr.c_str(), load * 100, actr_cmd_pos_[actr], cmd);
+        overload_status_[actr] = 1;
+      }
+      else if (fabs(load) >= (load_limits_[i] - STABLE_LOAD_RANGE_) && fabs(load) < load_limits_[i] &&
+               ((cmd < goal_pos && goal_pos < curr_pos) || (cmd > goal_pos && goal_pos > curr_pos)))
+      {
+        cmd = goal_pos;
+        if (overload_status_[actr] == 1)
         {
-          ROS_WARN("On %s: Error between commanded position(%lf) and current position(%lf) becomes small, so restart "
-                   "applying commanded position",
-                   actr.c_str(), cmd, curr_pos);
-          is_limited_[actr] = false;
+          ROS_WARN("On %s: Motor load(%lf%) comes to stable range", actr.c_str(), load * 100);
+          overload_status_[actr] = 2;
         }
+      }
+      else if (overload_status_[actr] == 1 || overload_status_[actr] == 2)
+      {
+        ROS_WARN("On %s: Motor is unloaded", actr.c_str());
+        overload_status_[actr] = 0;
       }
       std_msgs::Float64 msg;
       msg.data = cmd;
@@ -205,20 +215,18 @@ int main(int argc, char** argv)
   std::vector<std::string> jnt_names;
   std::vector<std::string> controller_names;
   std::vector<double> reducers;
-  std::vector<double> err_limits;
   std::vector<double> load_limits;
   int rate_hz;
 
   if (!(ros::param::get("~actuator_names", actr_names) && ros::param::get("~joint_names", jnt_names) &&
         ros::param::get("~controller_names", controller_names) && ros::param::get("~mechanical_reduction", reducers) &&
-        ros::param::get("~error_limits", err_limits) && ros::param::get("~load_limits", load_limits) &&
-        ros::param::get("~control_rate", rate_hz)))
+        ros::param::get("~load_limits", load_limits) && ros::param::get("~control_rate", rate_hz)))
   {
     ROS_ERROR("Couldn't get necessary parameters");
     return 0;
   }
 
-  GripperRosControl gripper(actr_names, jnt_names, controller_names, reducers, err_limits, load_limits);
+  GripperRosControl gripper(actr_names, jnt_names, controller_names, reducers, load_limits);
   controller_manager::ControllerManager cm(&gripper);
 
   // For non-realtime spinner thread
