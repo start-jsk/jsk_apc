@@ -1329,6 +1329,8 @@
       ;; apply rotation
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
       (send bin-coords :rotate (deg2rad (- gripper-angle 90)) :y :world)
+      (if (< gripper-angle -1)
+        (send bin-coords :rotate (deg2rad 180) :x :world))
       ;; apply offset
       (send bin-coords :translate offset :world)
       (send bin-coords :rotate overlook-angle :y :world)
