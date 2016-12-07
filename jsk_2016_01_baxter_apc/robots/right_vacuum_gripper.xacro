@@ -4,12 +4,15 @@
   <!-- Gazebo Tags -->
   <gazebo reference="right_gripper_base">
     <selfCollide>true</selfCollide>
+    <material>Gazebo/White</material>
   </gazebo>
   <gazebo reference="right_gripper_vacuum_pad_base">
     <selfCollide>true</selfCollide>
+    <material>Gazebo/Grey</material>
   </gazebo>
   <gazebo reference="right_gripper_vacuum_pad">
     <selfCollide>true</selfCollide>
+    <material>Gazebo/Green</material>
   </gazebo>
   <gazebo reference="right_gripper_vacuum_pad_joint">
     <implicitSpringDamper>false</implicitSpringDamper>
