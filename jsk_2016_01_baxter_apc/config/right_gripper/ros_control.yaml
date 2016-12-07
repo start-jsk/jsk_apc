@@ -15,7 +15,7 @@ controller_names:
   - finger_tendon_controller
 mechanical_reduction:
   - 41.66666667
-  - 1.3346354
+  - 1.637369792
   - 1.3
   - 1.0
 load_limits:
