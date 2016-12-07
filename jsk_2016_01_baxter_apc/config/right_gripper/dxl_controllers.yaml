@@ -23,9 +23,9 @@ vacuum_pad_tendon_controller:
   #joint_torque_limit: 0.2
   motor:
     id: 4
-    init: 620
-    min: 1024  # 1030 is better, but it's bigger than servo max
-    max: 210
+    init: 520  # Reduction is calculated from init and min
+    min: 1023
+    max: 120
 finger_yaw_joint_controller:
   controller:
     package: dynamixel_controllers
