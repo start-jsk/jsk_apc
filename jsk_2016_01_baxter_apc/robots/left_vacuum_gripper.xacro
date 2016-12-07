@@ -4,12 +4,15 @@
   <!-- Gazebo Tags -->
   <gazebo reference="left_gripper_base">
     <selfCollide>true</selfCollide>
+    <material>Gazebo/White</material>
   </gazebo>
   <gazebo reference="left_gripper_vacuum_pad_base">
     <selfCollide>true</selfCollide>
+    <material>Gazebo/Grey</material>
   </gazebo>
   <gazebo reference="left_gripper_vacuum_pad">
     <selfCollide>true</selfCollide>
+    <material>Gazebo/Green</material>
   </gazebo>
   <gazebo reference="left_gripper_vacuum_pad_joint">
     <implicitSpringDamper>false</implicitSpringDamper>
@@ -69,6 +72,11 @@
         <cylinder radius="${connection_r}" length="${connection_l}"/>
       </geometry>
     </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
   </link>
   <link name="left_gripper_vacuum_pad_base">
     <visual>
@@ -86,6 +94,11 @@
         <box size="${pad_base_h} ${pad_base_w} ${pad_base_d}"/>
       </geometry>
     </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
   </link>
   <link name="left_gripper_vacuum_pad">
     <visual>
@@ -103,6 +116,11 @@
         <cylinder radius="${pad_r}" length="${pad_l}"/>
       </geometry>
     </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
   </link>
 
   <joint name="left_gripper_base_fixed" type="fixed">
