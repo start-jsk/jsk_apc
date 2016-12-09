@@ -55,6 +55,7 @@
   (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
   (send *ri* :move-hand *arm*
         (send *baxter* :hand *arm* :angle-vector) 1500)
+  (unix::sleep 3)
   (send *ri* :move-arm-body->bin *arm* *bin*)
   (send *ri* :wait-interpolation)
 
@@ -136,6 +137,7 @@
   (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
   (send *ri* :move-hand *arm*
         (send *baxter* :hand *arm* :angle-vector) 1500)
+  (unix::sleep 3)
   (send *ri* :move-arm-body->bin *arm* *bin*)
   (send *ri* :wait-interpolation)
 
@@ -148,7 +150,7 @@
                     :offset (float-vector -30 0 20)
                     :gripper-angle 0) avs)
     (pushback (send *ri* :ik->bin-entrance *arm* *bin*
-                    :offset (float-vector -20 70 -40)
+                    :offset (float-vector -20 70 -30)
                     :gripper-angle 0) avs)
     (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 5.0)
     (setq avs nil)
@@ -166,7 +168,7 @@
     (pushback (send *baxter* :angle-vector) avs)
     (send *baxter* :slide-gripper *arm* 0 :relative nil)
     (pushback (send *baxter* :angle-vector) avs)
-    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 2.0)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 3.0)
     (setq avs nil)
     (send *ri* :wait-interpolation)
     (unix::sleep 1)
@@ -182,6 +184,12 @@
     ;; draw out object
     (pushback (send *baxter* *arm* :move-end-pos #f(0 0 50) :world) avs)
     (pushback (send *baxter* *arm* :move-end-pos #f(0 0 10) :world) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 6.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    (setq ec (send *baxter* *arm* :end-coords :copy-worldcoords))
+    (send ec :rotate 0.2 :y :world)
+    (pushback (send *baxter* *arm* :inverse-kinematics ec) avs)
     (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
     (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
     (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
@@ -198,4 +206,168 @@
     )
 
   (place-object 0 0 :pinch)
+  )
+
+(defun drag-out-narrow-object ()
+  (ros::set-param
+    (format nil "~a_hand/target_bin"
+            (send *ri* :arm-symbol2str *arm*))
+    (symbol2str *bin*))
+
+  (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
+  (send *ri* :move-hand *arm*
+        (send *baxter* :hand *arm* :angle-vector) 1500)
+  (unix::sleep 3)
+  (send *ri* :move-arm-body->bin *arm* *bin*)
+  (send *ri* :wait-interpolation)
+
+  (let (avs ec)
+    ;; move arm to bin entrance
+    (pushback (send *ri* :ik->bin-entrance *arm* *bin*
+                    :offset (float-vector -150 0 20)
+                    :gripper-angle 90) avs)
+    (pushback (send *ri* :ik->bin-entrance *arm* *bin*
+                    :offset (float-vector -30 0 20)
+                    :gripper-angle 0) avs)
+    (pushback (send *ri* :ik->bin-entrance *arm* *bin*
+                    :offset (float-vector -20 110 -40)
+                    :gripper-angle 0) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    (pushback (send *baxter* :slide-gripper *arm* 60 :relative nil) avs)
+    (pushback (send *baxter* :slide-gripper *arm* 124 :relative nil) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 2.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    ;; start grasp
+    (send *ri* :start-grasp *arm*)
+    (unix::sleep 3)
+    ;; approach and drag object by sliding gripper
+    (pushback (send *baxter* *arm* :move-end-pos #f(0 0 30) :world) avs)
+    (send *baxter* :slide-gripper *arm* 60 :relative nil)
+    (pushback (send *baxter* :angle-vector) avs)
+    (send *baxter* :slide-gripper *arm* 0 :relative nil)
+    (pushback (send *baxter* :angle-vector) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 3.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    (unix::sleep 1)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-20 0 0) :world) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 6.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    ;; grasp object by hand
+    (send *baxter* :hand-grasp-pose *arm* :pinch)
+    (send *ri* :move-hand *arm*
+          (send *baxter* :hand *arm* :angle-vector) 1500)
+    ;; draw out object
+    (pushback (send *baxter* *arm* :move-end-pos #f(0 0 50) :world) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(0 0 10) :world) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 6.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    (setq ec (send *baxter* *arm* :end-coords :copy-worldcoords))
+    (send ec :rotate 0.2 :y :world)
+    (pushback (send *baxter* *arm* :inverse-kinematics ec) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
+    (send *baxter* :avoid-shelf-pose *arm* *bin*)
+    (pushback (progn
+                (send *baxter* *arm* :move-end-pos #f(-150 0 0) :world)
+                (send *baxter* :rotate-gripper *arm* 0 :relative nil)) avs)
+    (pushback (progn
+                (send *baxter* :fold-to-keep-object *arm*)
+                (send *baxter* :rotate-gripper *arm* 0 :relative nil)) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+    (send *ri* :wait-interpolation)
+    )
+
+  (place-object 0 0 :pinch)
+  )
+
+(defun drag-out-pencil-case()
+  (ros::set-param
+    (format nil "~a_hand/target_bin"
+            (send *ri* :arm-symbol2str *arm*))
+    (symbol2str *bin*))
+
+  (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
+  (send *ri* :move-hand *arm*
+        (send *baxter* :hand *arm* :angle-vector) 1500)
+  (unix::sleep 3)
+  (send *ri* :move-arm-body->bin *arm* *bin*)
+  (send *ri* :wait-interpolation)
+
+  (let (avs ec)
+    ;; move arm to bin entrance
+    (pushback (send *ri* :ik->bin-entrance *arm* *bin*
+                    :offset (float-vector -150 0 20)
+                    :gripper-angle 90) avs)
+    (pushback (send *ri* :ik->bin-entrance *arm* *bin*
+                    :offset (float-vector -30 0 20)
+                    :gripper-angle 0) avs)
+    (pushback (send *ri* :ik->bin-entrance *arm* *bin*
+                    :offset (float-vector -20 0 10)
+                    :gripper-angle 0) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    (setq ec (send *baxter* *arm* :end-coords :copy-worldcoords))
+    (send ec :rotate -1.57 :x :world)
+    (pushback (send *baxter* *arm* :inverse-kinematics ec) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(50 0 0) :world) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    (pushback (send *baxter* :slide-gripper *arm* 60 :relative nil) avs)
+    (pushback (send *baxter* :slide-gripper *arm* 124 :relative nil) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 2.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    ;; prepare fingers
+    (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical)
+    (send *ri* :move-hand *arm*
+          (send *baxter* :hand *arm* :angle-vector) 1500)
+    (unix::sleep 3)
+    ;; approach and drag object by sliding gripper
+    (pushback (send *baxter* *arm* :move-end-pos #f(0 40 0) :world) avs)
+    (pushback (send *baxter* :rotate-gripper *arm* -45 :relative nil) avs)
+    (send *baxter* :slide-gripper *arm* 80 :relative nil)
+    (pushback (send *baxter* :angle-vector) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 3.0)
+    (setq avs nil)
+    (send *ri* :wait-interpolation)
+    ;; grasp object by hand
+    (send *baxter* :hand-grasp-pose *arm* :cylindrical)
+    (send *ri* :move-hand *arm*
+          (send *baxter* :hand *arm* :angle-vector) 1500)
+    (unix::sleep 3)
+    ;; draw out object
+    ;(pushback (send *baxter* *arm* :move-end-pos #f(0 0 50) :world) avs)
+    ;(pushback (send *baxter* *arm* :move-end-pos #f(0 0 10) :world) avs)
+    ;(send *ri* :angle-vector-sequence avs :fast nil 0 :scale 6.0)
+    ;(setq avs nil)
+    ;(send *ri* :wait-interpolation)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-20 0 0) :world) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-30 0 0) :world) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
+    (pushback (send *baxter* *arm* :move-end-pos #f(-50 0 0) :world) avs)
+    (send *baxter* :avoid-shelf-pose *arm* *bin*)
+    (pushback (progn
+                (send *baxter* *arm* :move-end-pos #f(-150 0 0) :world)
+                (send *baxter* :rotate-gripper *arm* -45 :relative nil)
+                (send *baxter* :slide-gripper *arm* 80 :relative nil)) avs)
+    (pushback (progn
+                (send *baxter* :fold-to-keep-object *arm*)
+                (send *baxter* :rotate-gripper *arm* -45 :relative nil)
+                (send *baxter* :slide-gripper *arm* 80 :relative nil)) avs)
+    (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 5.0)
+    (send *ri* :wait-interpolation)
+    )
+
+  (place-object -45 80 :pinch)
   )
