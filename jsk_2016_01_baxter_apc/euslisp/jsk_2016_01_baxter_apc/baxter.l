@@ -100,7 +100,7 @@
   (:hand-grasp-pre-pose
     (arm style)
     (case style
-      (:pinch (send self :hand arm :angle-vector #f(0 0)))
+      (:opposed (send self :hand arm :angle-vector #f(0 0)))
       (:spherical (send self :hand arm :angle-vector #f(30 0)))
       (:cylindrical (send self :hand arm :angle-vector #f(90 0)))
       (t (error ":hand-grasp-pre-pose no such style ~A~%" style))
@@ -108,7 +108,7 @@
   (:hand-grasp-pose
     (arm style &key (angle 180))
     (case style
-      (:pinch (send self :hand arm :angle-vector (float-vector 0 angle)))
+      (:opposed (send self :hand arm :angle-vector (float-vector 0 angle)))
       (:spherical (send self :hand arm :angle-vector (float-vector 30 angle)))
       (:cylindrical (send self :hand arm :angle-vector (float-vector 90 angle)))
       (t (error ":hand-grasp-pose no such style ~A~%" style))
