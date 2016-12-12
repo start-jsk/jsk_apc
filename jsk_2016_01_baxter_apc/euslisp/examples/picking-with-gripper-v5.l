@@ -40,7 +40,7 @@
   (send *baxter* :fold-pose-back *arm*)
   (send *ri* :send-av)
   (send *ri* :wait-interpolation)
-  (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
+  (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
         (send *baxter* :hand *arm* :angle-vector) 1500)
   )
@@ -52,7 +52,7 @@
             (send *ri* :arm-symbol2str *arm*))
     (symbol2str *bin*))
 
-  (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
+  (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
         (send *baxter* :hand *arm* :angle-vector) 1500)
   (unix::sleep 3)
@@ -134,7 +134,7 @@
             (send *ri* :arm-symbol2str *arm*))
     (symbol2str *bin*))
 
-  (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
+  (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
         (send *baxter* :hand *arm* :angle-vector) 1500)
   (unix::sleep 3)
@@ -178,7 +178,7 @@
     (setq avs nil)
     (send *ri* :wait-interpolation)
     ;; grasp object by hand
-    (send *baxter* :hand-grasp-pose *arm* :pinch)
+    (send *baxter* :hand-grasp-pose *arm* :opposed)
     (send *ri* :move-hand *arm*
           (send *baxter* :hand *arm* :angle-vector) 1500)
     ;; draw out object
@@ -205,7 +205,7 @@
     (send *ri* :wait-interpolation)
     )
 
-  (place-object 0 0 :pinch)
+  (place-object 0 0 :opposed)
   )
 
 (defun drag-out-narrow-object ()
@@ -214,7 +214,7 @@
             (send *ri* :arm-symbol2str *arm*))
     (symbol2str *bin*))
 
-  (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
+  (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
         (send *baxter* :hand *arm* :angle-vector) 1500)
   (unix::sleep 3)
@@ -258,7 +258,7 @@
     (setq avs nil)
     (send *ri* :wait-interpolation)
     ;; grasp object by hand
-    (send *baxter* :hand-grasp-pose *arm* :pinch)
+    (send *baxter* :hand-grasp-pose *arm* :opposed)
     (send *ri* :move-hand *arm*
           (send *baxter* :hand *arm* :angle-vector) 1500)
     ;; draw out object
@@ -285,7 +285,7 @@
     (send *ri* :wait-interpolation)
     )
 
-  (place-object 0 0 :pinch)
+  (place-object 0 0 :opposed)
   )
 
 (defun drag-out-pencil-case()
@@ -294,7 +294,7 @@
             (send *ri* :arm-symbol2str *arm*))
     (symbol2str *bin*))
 
-  (send *baxter* :hand-grasp-pre-pose *arm* :pinch)
+  (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
         (send *baxter* :hand *arm* :angle-vector) 1500)
   (unix::sleep 3)
@@ -369,5 +369,5 @@
     (send *ri* :wait-interpolation)
     )
 
-  (place-object -45 80 :pinch)
+  (place-object -45 80 :opposed)
   )
