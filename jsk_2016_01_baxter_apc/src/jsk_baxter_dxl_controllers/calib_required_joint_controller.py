@@ -12,6 +12,9 @@ class CalibRequiredJointController(JointPositionController):
         self.calib_speed = rospy.get_param(
                 self.controller_namespace + '/calib_speed',
                 0.1)
+        self.calib_torque_limit = rospy.get_param(
+                self.controller_namespace + '/calib_torque_limit',
+                0.3)
         self.detect_limit_load = rospy.get_param(
                 self.controller_namespace + '/detect_limit_load',
                 0.15)
@@ -27,6 +30,7 @@ class CalibRequiredJointController(JointPositionController):
         prev_limits = self.__get_angle_limits()
         # Change to wheel mode
         self.__set_angle_limits(0, 0)
+        self.set_torque_limit(self.calib_torque_limit)
         if self.flipped:
             self.__set_speed_wheel(self.calib_speed)
         else:
@@ -37,9 +41,12 @@ class CalibRequiredJointController(JointPositionController):
             if abs(self.__get_feedback()['load']) > self.detect_limit_load:
                 break
             rate.sleep()
+        self.__set_speed_wheel(0.0)
         # Change to previous mode
         self.__set_angle_limits(prev_limits['min'], prev_limits['max'])
         self.set_speed(self.joint_speed)
+        if self.torque_limit is not None:
+            self.set_torque_limit(self.torque_limit)
 
         # Remember initial joint position
         diff = init_pos - self.initial_position_raw
