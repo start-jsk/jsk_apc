@@ -1192,8 +1192,8 @@
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a graspingp: ~a" arm graspingp)
     graspingp))
   (:send-av
-    (&optional (tm 3000))
-    (send self :angle-vector (send *baxter* :angle-vector) tm))
+    (&optional (tm 3000) (ctype nil))
+    (send self :angle-vector (send *baxter* :angle-vector) tm ctype))
   (:force-to-reach-goal (&key (arm :arms) (threshold 5) (stop 10))
     (let ((times 0) arms)
       (case arm
