@@ -1476,6 +1476,16 @@
       (dotimes (i (- (length orders) 1))
         (when (string= (send (elt orders i) :bin) (send current-order :bin))
           (return-from :get-next-work-order (elt orders (+ i 1)))))))
+  (:get-certain-work-order
+    (arm bin)
+    (let ((orders (send self :get-work-orders arm)))
+      (when (eq (length orders) 0)
+        (ros::ros-error "[:get-certain-work-order] There is no order")
+        (return-from :get-certain-work-order nil))
+      (when (null bin) (return-from :get-certain-work-order (elt orders 0)))
+      (dotimes (i (length orders))
+        (when (string= (send (elt orders i) :bin) (symbol2str bin))
+          (return-from :get-certain-work-order (elt orders i))))))
   (:check-bin-exist
     (bin)
     (if (gethash bin _bin-boxes) t nil))
