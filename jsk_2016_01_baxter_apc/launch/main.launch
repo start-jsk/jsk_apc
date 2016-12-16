@@ -20,7 +20,7 @@
     <rosparam subst_value="true">
       json: $(arg json)
       is_apc2016: true
-      gripper: gripper2016
+      gripper: gripper_v5
     </rosparam>
   </node>
 
