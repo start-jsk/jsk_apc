@@ -1374,11 +1374,11 @@
       (send self :wait-interpolation)
       ))
   (:move-arm-body->order-bin
-    (arm)
+    (arm &optional (ctype nil))
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :place-object-pose arm) avs)
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
+      (send self :angle-vector-sequence avs :fast ctype 0 :scale 4.0)
       ))
   (:move-arm-body->order-bin-overlook-pose
     (arm)
