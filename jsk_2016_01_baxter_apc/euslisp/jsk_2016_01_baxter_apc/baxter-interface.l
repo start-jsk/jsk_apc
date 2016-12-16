@@ -40,6 +40,9 @@
     (send-super* :init :joint-states-queue-size 2
                  :moveit-environment nil
                  :moveit-robot nil args)
+    (send self :add-controller :no-gripper-controller)
+    (send self :add-controller :rarm-no-gripper-controller)
+    (send self :add-controller :larm-no-gripper-controller)
     (send self :add-controller :rgripper-controller)
     (send self :add-controller :lgripper-controller)
     ;; hack for https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/227
@@ -117,6 +120,16 @@
       (send self :rarm-controller)
       ;;(send self :head-controller)
       ))
+  ;; Rename super class's :rarm-controller to :rarm-no-gripper-controller
+  (:rarm-no-gripper-controller ()
+   (send-super :rarm-controller))
+  ;; Rename super class's :larm-controller to :larm-no-gripper-controller
+  (:larm-no-gripper-controller ()
+   (send-super :larm-controller))
+  (:no-gripper-controller ()
+   (append
+    (send self :rarm-no-gripper-controller)
+    (send self :larm-no-gripper-controller)))
   (:rgripper-controller ()
    (list
     (list
