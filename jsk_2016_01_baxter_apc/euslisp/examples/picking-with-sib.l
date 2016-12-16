@@ -18,7 +18,7 @@
 
 
 (defun place-object ()
-  (send *ri* :move-arm-body->order-bin *arm*)
+  (send *ri* :move-arm-body->order-bin *arm* :no-gripper-controller)
   (send *ri* :gripper-servo-off *arm*)  ;; power off gripper servo not to overload it
   (send *ri* :wait-interpolation)
   (send *ri* :stop-grasp *arm*)
@@ -57,11 +57,11 @@
   (send *ri* :pick-object *arm* *bin* :n-trial 1 :n-trial-same-pos 1)
 
   (send *baxter* :avoid-shelf-pose *arm* *bin*)
-  (send *ri* :send-av 3000)
+  (send *ri* :send-av 3000 :no-gripper-controller)
   (send *ri* :wait-interpolation)
 
   (send *baxter* :fold-to-keep-object *arm*)
-  (send *ri* :send-av 3000)
+  (send *ri* :send-av 3000 :no-gripper-controller)
   (send *ri* :wait-interpolation)
 
   (place-object)
