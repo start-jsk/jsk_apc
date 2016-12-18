@@ -40,6 +40,9 @@
     (send-super* :init :joint-states-queue-size 2
                  :moveit-environment nil
                  :moveit-robot nil args)
+    (send self :add-controller :no-gripper-controller)
+    (send self :add-controller :rarm-no-gripper-controller)
+    (send self :add-controller :larm-no-gripper-controller)
     (send self :add-controller :rgripper-controller)
     (send self :add-controller :lgripper-controller)
     ;; hack for https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/227
@@ -117,6 +120,16 @@
       (send self :rarm-controller)
       ;;(send self :head-controller)
       ))
+  ;; Rename super class's :rarm-controller to :rarm-no-gripper-controller
+  (:rarm-no-gripper-controller ()
+   (send-super :rarm-controller))
+  ;; Rename super class's :larm-controller to :larm-no-gripper-controller
+  (:larm-no-gripper-controller ()
+   (send-super :larm-controller))
+  (:no-gripper-controller ()
+   (append
+    (send self :rarm-no-gripper-controller)
+    (send self :larm-no-gripper-controller)))
   (:rgripper-controller ()
    (list
     (list
@@ -1192,8 +1205,8 @@
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a graspingp: ~a" arm graspingp)
     graspingp))
   (:send-av
-    (&optional (tm 3000))
-    (send self :angle-vector (send *baxter* :angle-vector) tm))
+    (&optional (tm 3000) (ctype nil))
+    (send self :angle-vector (send *baxter* :angle-vector) tm ctype))
   (:force-to-reach-goal (&key (arm :arms) (threshold 5) (stop 10))
     (let ((times 0) arms)
       (case arm
@@ -1374,11 +1387,11 @@
       (send self :wait-interpolation)
       ))
   (:move-arm-body->order-bin
-    (arm)
+    (arm &optional (ctype nil))
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :place-object-pose arm) avs)
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
+      (send self :angle-vector-sequence avs :fast ctype 0 :scale 4.0)
       ))
   (:move-arm-body->order-bin-overlook-pose
     (arm)
