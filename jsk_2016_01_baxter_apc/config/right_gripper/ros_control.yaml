@@ -21,6 +21,6 @@ mechanical_reduction:
 load_limits:
   - 0.4
   - 0.4
-  - 0.4
+  - 0.15
   - 0.4
 control_rate: 20
