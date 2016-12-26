@@ -8,7 +8,7 @@
 
 (defclass jsk_2016_01_baxter_apc::baxter-robot
   :super baxter-robot
-  :slots (_view-hand-pos))
+  :slots (_view-hand-pos _ik-prepared-poses))
 (defmethod jsk_2016_01_baxter_apc::baxter-robot
   (:init
     (&rest args)
@@ -36,7 +36,15 @@
     (sethash :k (gethash :rarm _view-hand-pos) #f(780.791 -15.733 137.103))
     (sethash :l (gethash :rarm _view-hand-pos) #f(811.875 -180 156.184))
     ;; pos of :c, :f, :i, :l is not symmetrical to :a, :d, :g, :j because torso can't see
+    ;; initialize _ik-prepared-poses
+    (setq _ik-prepared-poses (list :untuck-pose))
     )
+  (:set-ik-prepared-poses
+    (poses)
+    (if (listp poses)
+      (setq _ik-prepared-poses poses))
+    )
+  (:ik-prepared-poses () _ik-prepared-poses)
   (:inverse-kinematics
     (target-coords
       &rest args
