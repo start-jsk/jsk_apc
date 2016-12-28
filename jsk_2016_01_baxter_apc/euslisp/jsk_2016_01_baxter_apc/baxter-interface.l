@@ -1123,7 +1123,7 @@
       graspingp))
   (:try-to-pick-object-in-order-bin
     (arm &key (offset #f(0 0 0)) (object-index 0))
-    (let (avs obj-box graspingp order-bin-box movable-region obj-pos)
+    (let (avs obj-box graspingp order-bin-box movable-region obj-pos obj-box-z-length)
       ;; validate
       (unless
         (setq obj-box (elt (gethash arm _objects-in-order-bin-boxes) object-index))
@@ -1149,7 +1149,7 @@
       (ros::ros-info "[:try-to-pick-object-in-order-bin] arm:~a approach to the object" arm)
       ;; gripper is straight
       (send self :gripper-servo-on arm)
-      (setq obj-pos (send obj-coords :pos))
+      (setq obj-pos (send obj-coords :worldpos))
       (dolist (i (list 0 1))
         (cond ((> (elt (elt movable-region i) 0) (aref obj-pos i))
                (ros::ros-info "[:try-to-pick-in-order-bin] object is out of movable region. ~a > ~a < ~a"
@@ -1164,6 +1164,8 @@
                               (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 1)))
               (t nil)))
+      (setq obj-box-z-length (z-of-cube (send self :bbox->cube obj-box)))
+      (setq obj-pos (v+ obj-pos (float-vector 0 0 (/ obj-box-z-length 2))))
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos offset)
