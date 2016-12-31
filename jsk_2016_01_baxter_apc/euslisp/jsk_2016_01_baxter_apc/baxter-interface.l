@@ -1234,7 +1234,8 @@
     (arm target-coords pose-candidates &rest args)
     (if (null pose-candidates)
       (setq pose-candidates (list (send *baxter* :angle-vector))))
-    (let (current-angle-vector ik-solvable-poses chosen-pose)
+    (let (opposite-av current-angle-vector ik-solvable-poses chosen-pose)
+      (setq opposite-av (send *baxter* (send self :opposite-arm arm) :angle-vector))
       (setq current-angle-vector (send *baxter* arm :angle-vector))
       ;; exclude poses which IK fail from
       (dolist (pose pose-candidates)
@@ -1243,6 +1244,8 @@
           (pushback pose ik-solvable-poses)))
       (unless ik-solvable-poses
         (ros::ros-error "[:ik->nearest-pose] Cannot solve IK from poses")
+        (send *baxter* (send self :opposite-arm arm) :angle-vector opposite-av)
+        (send *baxter* arm :angle-vector current-angle-vector)
         (return-from :ik->nearest-pose nil)
         )
       (setq chosen-pose
@@ -1257,6 +1260,7 @@
                                  (send *baxter* arm :angle-vector))))))))
       (format t "[:ik->nearest-pose] arm:~a midpose: ~a~%" arm chosen-pose)
       (send *baxter* :angle-vector chosen-pose)
+      (send *baxter* (send self :opposite-arm arm) :angle-vector opposite-av)
       (send* *baxter* arm :inverse-kinematics target-coords args)
       )
     )
