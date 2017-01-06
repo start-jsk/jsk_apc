@@ -1,7 +1,7 @@
 #!/usr/bin/env roseus
 (require :unittest "lib/llib/unittest.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/test/data/bin-cubes.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/test/data/bin-cubes-alist.l")
 
 (init-unit-test)
 
@@ -30,7 +30,7 @@
     (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *bin-keys*))
       (setq limit (car cube-data))
       (setq key (cadr cube-data))
-      (setq cube (gethash key *bin-cubes*))
+      (setq cube (cdr (assoc key *bin-cubes-alist*)))
       (setq x (elt (send (send cube :worldcoords) :pos) 0))
       (setq y (elt (send (send cube :worldcoords) :pos) 1))
       (setq z (elt (send (send cube :worldcoords) :pos) 2))
