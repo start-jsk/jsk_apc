@@ -52,14 +52,16 @@
           (send *baxter* :reset-pose)
           (if (send *baxter* :larm :inverse-kinematics
                     (make-cascoords :pos pos)
-                    :rotation-axis t
+                    :use-gripper t
+                    :rotation-axis :z
                     :debug-view :no-message)
             (format t "success to solve ik in left arm~%")
             (setq larm-bool nil))
           (send *baxter* :reset-pose)
           (if (send *baxter* :rarm :inverse-kinematics
                     (make-cascoords :pos pos)
-                    :rotation-axis t
+                    :use-gripper t
+                    :rotation-axis :z
                     :debug-view :no-message)
             (format t "success to solve ik in right arm~%")
             (setq rarm-bool nil))
