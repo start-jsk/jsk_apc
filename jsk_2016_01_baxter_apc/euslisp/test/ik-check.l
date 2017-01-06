@@ -17,14 +17,14 @@
   (setq *rarm-able* nil)
   (setq *disable* nil)
   (setq *pos-bin-list* nil)
-  (objects (append (list *baxter*) *cubes*))
+  (objects (list *baxter* *cubes*))
   )
 
 (defun dump-range ()
   (dump-loadable-structure "ik-range.l" *baxter* *able* *larm-able* *rarm-able* *disable*))
 
 (defun visualize ()
-  (objects (pushback *baxter* (append *able* *disable*))))
+  (objects (list *baxter* *able* *disable*)))
 
 (defun check-baxter-ik-all-bin (&optional (step-dist 100))
   (check-init)
@@ -52,14 +52,16 @@
           (send *baxter* :reset-pose)
           (if (send *baxter* :larm :inverse-kinematics
                     (make-cascoords :pos pos)
-                    :rotation-axis t
+                    :use-gripper t
+                    :rotation-axis :z
                     :debug-view :no-message)
             (format t "success to solve ik in left arm~%")
             (setq larm-bool nil))
           (send *baxter* :reset-pose)
           (if (send *baxter* :rarm :inverse-kinematics
                     (make-cascoords :pos pos)
-                    :rotation-axis t
+                    :use-gripper t
+                    :rotation-axis :z
                     :debug-view :no-message)
             (format t "success to solve ik in right arm~%")
             (setq rarm-bool nil))
