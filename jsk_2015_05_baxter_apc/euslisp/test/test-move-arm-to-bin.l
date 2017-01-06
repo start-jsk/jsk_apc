@@ -5,8 +5,8 @@
 (require :baxter "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter.l")
 (require :util "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 
-;; load *bin-cubes*
-(require :bin-cubes "package://jsk_2015_05_baxter_apc/euslisp/test/data/bin-cubes.l")
+;; load *bin-cubes-alist*
+(require :bin-cubes-alist "package://jsk_2015_05_baxter_apc/euslisp/test/data/bin-cubes-alist.l")
 
 
 (init-unit-test)
@@ -23,7 +23,7 @@
       ((:a :b :d :e :g :h :j :k) (setq arm :larm))
       ((:c :f :i :l) (setq arm :rarm))
       )
-    (let ((cube (gethash bin *bin-cubes*)))
+    (let ((cube (cdr (assoc bin *bin-cubes-alist*))))
       (dolist (offset (list #f(-150 0 0) #f(-50 0 0) #f(0 0 0) #f(0 0 -80)))
         (let ((goal (send cube :copy-worldcoords)))
           (send goal :translate offset :world)
