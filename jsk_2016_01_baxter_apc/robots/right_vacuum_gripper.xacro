@@ -63,10 +63,19 @@
     <visual>
       <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_base.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_base_main.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="lightgrey">
         <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_palm_pad.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="lightbrown">
+        <color rgba="0.6 0.5 0.2 1"/>
       </material>
     </visual>
     <collision>
@@ -92,10 +101,28 @@
     <visual>
       <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_tube.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_tube_connectors.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="lightgrey">
         <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_tube_main.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="white">
+        <color rgba="0.7 0.7 0.7 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_tube_gear.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0.24 0.82 1"/>
       </material>
     </visual>
     <collision>
@@ -115,10 +142,19 @@
     <visual>
       <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="${pad_with_base_offset_x} ${pad_with_base_offset_y} ${pad_with_base_offset_z}"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_pad_with_base.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_vacuum_pad_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="lightgrey">
         <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin rpy="${M_PI/2} 0 ${M_PI/2}" xyz="${pad_with_base_offset_x} ${pad_with_base_offset_y} ${pad_with_base_offset_z}"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/right_gripper_vacuum_pad.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
       </material>
     </visual>
     <collision>
@@ -184,10 +220,19 @@
     <visual>
       <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger_main.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="lightgrey">
         <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger_pad.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="lightbrown">
+        <color rgba="0.6 0.5 0.2 1"/>
       </material>
     </visual>
     <collision>
@@ -207,10 +252,19 @@
     <visual>
       <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger_main.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="lightgrey">
         <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/visual/finger_pad.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="lightbrown">
+        <color rgba="0.6 0.5 0.2 1"/>
       </material>
     </visual>
     <collision>
