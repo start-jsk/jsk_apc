@@ -69,7 +69,7 @@
 
 (defun spherical-without-suction ()
   (go-initial)
-  (send *baxter* :slide-gripper *arm* 0 :relative nil)
+  (send *baxter* :slide-gripper *arm* 60 :relative nil)
   (send *baxter* :rotate-gripper *arm* -45 :relative nil)
   (send *ri* :angle-vector (send *baxter* :angle-vector) 1500)
   (send *ri* :move-hand *arm* (send *baxter* :hand-grasp-pre-pose *arm* :spherical) 1500)
