@@ -52,7 +52,10 @@
   (if on-floor
     (send object-cube :locate
           (float-vector
-            0 0 (- (/ (z-of-cube object-cube) 2) (/ (z-of-cube bin-cube-base) 2) (elt object-offset 2)))
+            0 0
+            (- (/ (z-of-cube object-cube) 2)
+               (/ (z-of-cube bin-cube-base) 2)
+               (elt object-offset 2)))
           :local)
     )
   (send *irtviewer* :draw-objects)
