@@ -1,0 +1,16 @@
+<launch>
+
+  <param name="use_sim_time" value="true" />
+
+  <!-- Please run the download script: rosrun jsk_2016_01_baxter_apc download_sample_data.py -->
+  <node name="rosbag_play"
+        pkg="rosbag" type="play"
+        args="$(optenv HOME)/.ros/jsk_2016_01_baxter_apc/sample_eus_visualize_objs_2017-01-30-10-49-18.bag --clock --loop">
+  </node>
+
+  <node name="sample_eus_visualize_objs"
+        pkg="jsk_2016_01_baxter_apc" type="sample_eus_visualize_objs.l"
+        launch-prefix="xterm -e">
+  </node>
+
+</launch>
