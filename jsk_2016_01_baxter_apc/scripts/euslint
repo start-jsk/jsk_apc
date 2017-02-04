@@ -27,14 +27,16 @@ def parse(source_code, max_line_length):
         is_line_comment = False
         is_inline_comment = False
         has_quote = False
+        in_quote = False
         whitespace = 0
         for char in line:
             if char == ';':
-                if is_beginning:
-                    is_line_comment = True
-                else:
-                    is_inline_comment = True
-                break
+                if in_quote is False:
+                    if is_beginning:
+                        is_line_comment = True
+                    else:
+                        is_inline_comment = True
+                    break
             if char == ' ':
                 if is_beginning is not True:
                     whitespace += 1
@@ -46,6 +48,7 @@ def parse(source_code, max_line_length):
             if char == ')':
                 result['parenthesis_close'] += 1
             if char == '"':
+                in_quote = not in_quote
                 has_quote = True
             if char == '\t':
                 result['tab'].append(line_num)
