@@ -13,15 +13,15 @@
 (setq *irtviewer* (make-irtviewer))
 (send *irtviewer* :change-background #f(0.8 0.8 0.8))
 
-(setq right_gripper_bodies nil)
+(setq right-gripper-bodies nil)
 (setq all_bodies (send *baxter* :bodies))
 (setq keep (list 23 24 25 30 31))
 (dotimes (i (length all_bodies))
   (when (find i keep)
-    (pushback (elt all_bodies i) right_gripper_bodies)
+    (pushback (elt all_bodies i) right-gripper-bodies)
     )
   )
-(objects right_gripper_bodies)
+(objects right-gripper-bodies)
 
 (setq bin_box_msg
       (one-shot-subscribe "/bbox_array_to_bbox/output" jsk_recognition_msgs::BoundingBox))
@@ -41,7 +41,7 @@
 
 (setq bin_viz (send *ri* :visualize-bins))
 (setq obj_viz (send *ri* :visualize-objects))
-(objects (append right_gripper_bodies bin_viz obj_viz))
+(objects (append right-gripper-bodies bin_viz obj_viz))
 
 (warn ";; Please hit ctrl-c to stop~%")
 (send *ri* :try-to-pick-object :rarm :f)
