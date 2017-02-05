@@ -16,7 +16,7 @@ def main():
     download_data(
         pkg_name=PKG,
         path='trained_data/vgg16_rotation_translation_brightness_372000.chainermodel',
-        url='https://drive.google.com/uc?id=0B9P1L--7Wd2veHZKRkFwZjRiZDQ',
+        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vamZrczFqb3JoVnM',
         md5='58a0e819ba141a34b1d68cc5e972615b',
     )
 
