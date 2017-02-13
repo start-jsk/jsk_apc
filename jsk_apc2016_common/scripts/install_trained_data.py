@@ -26,6 +26,12 @@ def main():
         url='https://drive.google.com/uc?id=0B9P1L--7Wd2vd0JUMFZKeVQxaG8',
         md5='d063161d18129946f6c2878afb5f9067',
     )
+    download_data(
+        pkg_name=PKG,
+        path='trained_data/fcn32s_v2_148000.chainermodel',
+        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vWHRGSnd4Q0ljTHc',
+        md5='550182bacf34398b9bd72ab2939f06fd',
+    )
 
 
 if __name__ == '__main__':
