@@ -5,6 +5,7 @@
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="vacuum_gripper">
     <xacro:macro name="vacuum_gripper" params="side">
+    <disable_collisions link1="${side}_gripper_base" link2="head" reason="Never" />
     <disable_collisions link1="${side}_gripper_base" link2="pedestal" reason="Never" />
     <disable_collisions link1="${side}_gripper_vacuum_pad" link2="head" reason="Never" />
     <disable_collisions link1="${side}_gripper_vacuum_pad" link2="pedestal" reason="Never" />
