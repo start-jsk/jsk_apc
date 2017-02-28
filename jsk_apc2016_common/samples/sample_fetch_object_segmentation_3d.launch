@@ -1,0 +1,41 @@
+<launch>
+
+  <arg name="gui" default="true" />
+
+  <include file="$(find jsk_apc2016_common)/samples/fetch_openni_local.launch" />
+
+  <arg name="INPUT_IMAGE" value="/head_camera_local/rgb/image_rect_color" />
+  <arg name="INPUT_CLOUD" value="/head_camera_local/depth_registered/points" />
+
+  <!-- visualization -->
+  <node name="label_image_decomposer"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" /> 
+    <remap from="~input/label" to="fcn_object_segmentation/output" /> 
+    <remap from="~label_names" to="label_names" />
+    <rosparam>
+      queue_size: 100
+    </rosparam>
+  </node>
+
+  <arg name="NODELET_MANAGER" value="sample_manager" />
+  <node name="$(arg NODELET_MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" /> 
+  <param name="label_to_mask/label_value" value="37" />
+  <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)" />
+    <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+    <arg name="FIXED_FRAME" value="base_link" />
+  </include>
+
+  <group if="$(arg gui)">
+    <node name="rviz"
+          pkg="rviz" type="rviz"
+          args="-d $(find jsk_apc2016_common)/samples/config/sample_object_segmentation_3d.rviz">
+      <remap from="/head_camera/rgb/image_rect_color" to="/head_camera_local/rgb/image_rect_color" />
+      <remap from="/head_camera/depth_registered/points" to="/head_camera_local/depth_registered/points" />
+    </node>
+  </group>
+
+</launch>
