@@ -170,6 +170,8 @@ target_link_libraries(cloud_to_spatial_features ${catkin_LIBRARIES} ${Eigen_LIBR
 
 # trained data
 add_custom_target(install_trained_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_trained_data.py)
+# sample data
+add_custom_target(install_sample_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_sample_data.py)
 
 #############
 ## Install ##
