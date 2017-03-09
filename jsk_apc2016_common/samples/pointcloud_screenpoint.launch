@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="jsk_pcl_ros" type="pointcloud_screenpoint"
+  	name="pointcloud_screenpoint" >
+	<remap from="~points" to="/head_camera/depth/points" />
+  </node>
+</launch>
