@@ -1,0 +1,11 @@
+{
+    "name": "flashlight", 
+    "dimensions": [
+        0.025, 
+        0.085, 
+        0.03
+    ], 
+    "weight": 0.052, 
+    "type": "cylinder", 
+    "description": "Aluminum-body blue Amazon Robotics branded LED flashlight. Takes 3 AAA batteries. Convenient wrist strap, sturdy construction."
+}

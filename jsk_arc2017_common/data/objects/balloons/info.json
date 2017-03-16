@@ -1,0 +1,11 @@
+{
+    "name": "balloons", 
+    "dimensions": [
+        0.142, 
+        0.187, 
+        0.03
+    ], 
+    "weight": 0.054, 
+    "type": "deformable", 
+    "description": "This pack contains 15 red latex balloons. WARNING: choking hazard - children under 8 can choke or suffocate on uninflated or broken balloons. Adult supervision required. Helium not included."
+}
