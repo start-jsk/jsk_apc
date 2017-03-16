@@ -1406,7 +1406,7 @@
       )
     )
   (:move-arm-body->bin-overlook-pose
-    (arm bin)
+    (arm bin &key (scale 4.0))
     (let (avs)
       (pushback (send *baxter* :fold-to-keep-object arm) avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
@@ -1415,7 +1415,7 @@
                                 -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
                       ) avs)
       (pushback (send self :bin-overlook-pose arm bin) avs)
-      (send self :angle-vector-sequence avs :fast nil 0 :scale 4.0)
+      (send self :angle-vector-sequence avs :fast nil 0 :scale scale)
       (send self :wait-interpolation)
       ))
   (:move-arm-body->order-bin
