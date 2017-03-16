@@ -1,0 +1,77 @@
+<launch>
+
+  <arg name="UPPER_SHELF" value="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml"/>
+  <arg name="LOWER_SHELF" value="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml"/>
+
+  <group ns="/left_hand_camera/depth_registered/hw_registered">
+    <node name="colorize_float_image"
+          pkg="jsk_perception" type="colorize_float_image">
+      <remap from="~input" to="image_rect_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/depth_registered/hw_registered">
+    <node name="colorize_float_image"
+          pkg="jsk_perception" type="colorize_float_image">
+      <remap from="~input" to="image_rect_raw" />
+    </node>
+  </group>
+
+  <!-- data collection server -->
+  <node name="data_collection_server_left"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true" output="screen">
+    <rosparam subst_value="true">
+      save_dir: ~/.ros/jsk_arc2017_baxter/collect_data_in_bin
+      topics:
+        - name: /left_hand_camera/rgb/image_rect_color
+          msg_class: sensor_msgs/Image
+          fname: image.png
+          savetype: ColorImage
+        - name: /left_hand_camera/depth_registered/hw_registered/image_rect_raw
+          msg_class: sensor_msgs/Image
+          fname: depth.pkl
+          savetype: DepthImage
+        - name: /left_hand_camera/depth_registered/hw_registered/colorize_float_image/output
+          msg_class: sensor_msgs/Image
+          fname: depth_viz.png
+          savetype: ColorImage
+    </rosparam>
+  </node>
+  <node name="data_collection_server_right"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true" output="screen">
+    <rosparam subst_value="true">
+      save_dir: ~/.ros/jsk_arc2017_baxter/collect_data_in_bin
+      topics:
+        - name: /right_hand_camera/rgb/image_rect_color
+          msg_class: sensor_msgs/Image
+          fname: image.png
+          savetype: ColorImage
+        - name: /right_hand_camera/depth_registered/hw_registered/image_rect_raw
+          msg_class: sensor_msgs/Image
+          fname: depth.pkl
+          savetype: DepthImage
+        - name: /right_hand_camera/depth_registered/hw_registered/colorize_float_image/output
+          msg_class: sensor_msgs/Image
+          fname: depth_viz.png
+          savetype: ColorImage
+    </rosparam>
+  </node>
+
+  <!-- main -->
+  <node name="collect_data_in_bin_main"
+        pkg="jsk_2016_01_baxter_apc" type="in-bin-data-collection-main.l"
+        output="screen"
+        required="true">
+  </node>
+
+  <!-- gui -->
+  <node name="rqt_yn_btn"
+        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+  </node>
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find jsk_arc2017_baxter)/rvizconfig/collect_data_in_bin.rviz">
+  </node>
+
+</launch>
