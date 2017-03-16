@@ -11,11 +11,10 @@ import numpy as np
 import skimage.io
 import skimage.transform
 
+import rospkg
 
-def _get_data_dir():
-    this_dir = osp.realpath(__file__)
-    data_dir = osp.join(osp.dirname(this_dir), '../data')
-    return osp.realpath(data_dir)
+
+PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
 
 def _patch_json_content(content):
@@ -41,7 +40,7 @@ def main():
     objects = []
     grasp_types = []
 
-    data_dir = _get_data_dir()
+    data_dir = osp.join(PKG_DIR, 'data')
     dataset_dir = osp.join(data_dir, 'datasets/AR_20170224')
     if not osp.exists(dataset_dir):
         url = 'https://drive.google.com/open?id=0B9P1L--7Wd2vMmJjZXF4cUh5bW8'
