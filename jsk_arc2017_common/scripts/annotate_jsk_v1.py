@@ -62,7 +62,7 @@ def main():
 
     objlist_file = osp.join(PKG_DIR, 'data/others/object_list_5x8.jpg')
     objlist = cv2.imread(objlist_file)
-    scale = 1200. / max(objlist.shape[:2])
+    scale = 1000. / max(objlist.shape[:2])
     objlist = cv2.resize(objlist, dsize=None, fx=scale, fy=scale)
 
     cmap = labelme.utils.labelcolormap(41)
