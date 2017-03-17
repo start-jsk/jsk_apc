@@ -21,7 +21,7 @@
         pkg="jsk_data" type="data_collection_server.py"
         clear_params="true" output="screen">
     <rosparam subst_value="true">
-      save_dir: ~/.ros/jsk_arc2017_baxter/collect_data_in_bin
+      save_dir: ~/.ros/jsk_arc2017_baxter/dataset_jsk_v1
       topics:
         - name: /left_hand_camera/rgb/image_rect_color
           msg_class: sensor_msgs/Image
@@ -41,7 +41,7 @@
         pkg="jsk_data" type="data_collection_server.py"
         clear_params="true" output="screen">
     <rosparam subst_value="true">
-      save_dir: ~/.ros/jsk_arc2017_baxter/collect_data_in_bin
+      save_dir: ~/.ros/jsk_arc2017_baxter/dataset_jsk_v1
       topics:
         - name: /right_hand_camera/rgb/image_rect_color
           msg_class: sensor_msgs/Image
