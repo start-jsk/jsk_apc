@@ -73,7 +73,8 @@ def main():
             continue
         json_file = osp.join(stamp_dir, 'label.json')
         img_file = osp.join(stamp_dir, 'image.png')
-        lbl_file = osp.join(stamp_dir, 'label.png')
+        lbl_file = osp.join(stamp_dir, 'label.npz')
+        lbl_viz_file = osp.join(stamp_dir, 'label_viz.png')
 
         if not osp.exists(json_file):
             print('==> Annotating: %s' % stamp_dir)
@@ -96,13 +97,13 @@ def main():
                 output.kill()
                 break
 
-        if not osp.exists(lbl_file):
+        if not (osp.exists(lbl_file) and osp.exists(lbl_viz_file)):
             img = skimage.io.imread(img_file)
             lbl = json_to_label(json_file)
             lbl_viz = skimage.color.label2rgb(
                 lbl, img, bg_label=0, colors=cmap[1:])
-            PIL.Image.fromarray(lbl).save(lbl_file)
-            skimage.io.imsave(osp.join(stamp_dir, 'label_viz.png'), lbl_viz)
+            np.savez_compressed(lbl_file, lbl)
+            skimage.io.imsave(lbl_viz_file, lbl_viz)
 
 
 if __name__ == '__main__':
