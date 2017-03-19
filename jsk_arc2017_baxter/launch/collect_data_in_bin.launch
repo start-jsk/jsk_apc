@@ -23,6 +23,10 @@
     <rosparam subst_value="true">
       save_dir: ~/.ros/jsk_arc2017_baxter/dataset_jsk_v1
       topics:
+        - name: /left_hand_camera/rgb/camera_info
+          msg_class: sensor_msgs/CameraInfo
+          fname: camera_info.yaml
+          savetype: YAML
         - name: /left_hand_camera/rgb/image_rect_color
           msg_class: sensor_msgs/Image
           fname: image.jpg
@@ -37,10 +41,10 @@
           savetype: ColorImage
         - name: /tf_to_transform_left_arm/output
           msg_class: geometry_msgs/TransformStamped
-          fname: tf_camera_rgb.yaml
+          fname: tf_camera_rgb_from_base.yaml
           savetype: YAML
       params:
-        - key: /tf_bbox_to_mask_~a_hand/target_bin_name
+        - key: /tf_bbox_to_mask_left_hand/target_bin_name
           fname: shelf_bin.txt
           savetype: Text
     </rosparam>
@@ -51,6 +55,10 @@
     <rosparam subst_value="true">
       save_dir: ~/.ros/jsk_arc2017_baxter/dataset_jsk_v1
       topics:
+        - name: /right_hand_camera/rgb/camera_info
+          msg_class: sensor_msgs/CameraInfo
+          fname: camera_info.yaml
+          savetype: YAML
         - name: /right_hand_camera/rgb/image_rect_color
           msg_class: sensor_msgs/Image
           fname: image.jpg
@@ -65,22 +73,32 @@
           savetype: ColorImage
         - name: /tf_to_transform_right_arm/output
           msg_class: geometry_msgs/TransformStamped
-          fname: tf_camera_rgb.yaml
+          fname: tf_camera_rgb_from_base.yaml
           savetype: YAML
       params:
-        - key: /tf_bbox_to_mask_~a_hand/target_bin_name
+        - key: /tf_bbox_to_mask_right_hand/target_bin_name
           fname: shelf_bin.txt
           savetype: Text
     </rosparam>
   </node>
 
   <node name="tf_to_transform_left_arm"
-        pkg="jsk_topic_tools" type="tf_to_transform.py"
-        args="base left_hand_camera_rgb_optical_frame --duration 1">
+        pkg="jsk_topic_tools" type="tf_to_transform.py">
+    <rosparam>
+      parent_frame_id: base
+      child_frame_id: left_hand_camera_rgb_optical_frame
+      duration: 0.1
+      rate: 30
+    </rosparam>
   </node>
   <node name="tf_to_transform_right_arm"
-        pkg="jsk_topic_tools" type="tf_to_transform.py"
-        args="base right_hand_camera_rgb_optical_frame --duration 1">
+        pkg="jsk_topic_tools" type="tf_to_transform.py">
+    <rosparam>
+      parent_frame_id: base
+      child_frame_id: right_hand_camera_rgb_optical_frame
+      duration: 1
+      rate: 30
+    </rosparam>
   </node>
 
   <!-- main -->
