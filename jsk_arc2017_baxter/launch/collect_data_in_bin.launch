@@ -35,6 +35,14 @@
           msg_class: sensor_msgs/Image
           fname: depth_viz.jpg
           savetype: ColorImage
+        - name: /tf_to_transform_left_arm/output
+          msg_class: geometry_msgs/TransformStamped
+          fname: tf_camera_rgb.yaml
+          savetype: YAML
+      params:
+        - key: /tf_bbox_to_mask_~a_hand/target_bin_name
+          fname: shelf_bin.txt
+          savetype: Text
     </rosparam>
   </node>
   <node name="data_collection_server_right"
@@ -55,7 +63,24 @@
           msg_class: sensor_msgs/Image
           fname: depth_viz.jpg
           savetype: ColorImage
+        - name: /tf_to_transform_right_arm/output
+          msg_class: geometry_msgs/TransformStamped
+          fname: tf_camera_rgb.yaml
+          savetype: YAML
+      params:
+        - key: /tf_bbox_to_mask_~a_hand/target_bin_name
+          fname: shelf_bin.txt
+          savetype: Text
     </rosparam>
+  </node>
+
+  <node name="tf_to_transform_left_arm"
+        pkg="jsk_topic_tools" type="tf_to_transform.py"
+        args="base left_hand_camera_rgb_optical_frame --duration 1">
+  </node>
+  <node name="tf_to_transform_right_arm"
+        pkg="jsk_topic_tools" type="tf_to_transform.py"
+        args="base right_hand_camera_rgb_optical_frame --duration 1">
   </node>
 
   <!-- main -->
