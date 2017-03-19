@@ -25,15 +25,15 @@
       topics:
         - name: /left_hand_camera/rgb/image_rect_color
           msg_class: sensor_msgs/Image
-          fname: image.png
+          fname: image.jpg
           savetype: ColorImage
         - name: /left_hand_camera/depth_registered/hw_registered/image_rect_raw
           msg_class: sensor_msgs/Image
-          fname: depth.pkl
+          fname: depth.npz
           savetype: DepthImage
         - name: /left_hand_camera/depth_registered/hw_registered/colorize_float_image/output
           msg_class: sensor_msgs/Image
-          fname: depth_viz.png
+          fname: depth_viz.jpg
           savetype: ColorImage
     </rosparam>
   </node>
@@ -45,15 +45,15 @@
       topics:
         - name: /right_hand_camera/rgb/image_rect_color
           msg_class: sensor_msgs/Image
-          fname: image.png
+          fname: image.jpg
           savetype: ColorImage
         - name: /right_hand_camera/depth_registered/hw_registered/image_rect_raw
           msg_class: sensor_msgs/Image
-          fname: depth.pkl
+          fname: depth.npz
           savetype: DepthImage
         - name: /right_hand_camera/depth_registered/hw_registered/colorize_float_image/output
           msg_class: sensor_msgs/Image
-          fname: depth_viz.png
+          fname: depth_viz.jpg
           savetype: ColorImage
     </rosparam>
   </node>

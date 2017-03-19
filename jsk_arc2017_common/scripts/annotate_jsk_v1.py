@@ -72,9 +72,9 @@ def main():
         if not osp.isdir(stamp_dir):
             continue
         json_file = osp.join(stamp_dir, 'label.json')
-        img_file = osp.join(stamp_dir, 'image.png')
+        img_file = osp.join(stamp_dir, 'image.jpg')
         lbl_file = osp.join(stamp_dir, 'label.npz')
-        lbl_viz_file = osp.join(stamp_dir, 'label_viz.png')
+        lbl_viz_file = osp.join(stamp_dir, 'label_viz.jpg')
 
         if not osp.exists(json_file):
             print('==> Annotating: %s' % stamp_dir)
