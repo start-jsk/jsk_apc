@@ -53,7 +53,8 @@
     )
   (:mainloop
     ()
-    (dolist (bin (list :a :b :c :d :e :f :g :h :i :j :k :l))
+    ;; :b is not ik solvable, so we skip it.
+    (dolist (bin (list :a :c :d :e :f :g :h :i :j :k :l))
       (setq arm_ (send self :get-arm-for-bin bin))
       (ros::ros-info "[~a] Moving ~a to bin ~a" (ros::get-name) arm_ (symbol2str bin))
       (ros::set-param
