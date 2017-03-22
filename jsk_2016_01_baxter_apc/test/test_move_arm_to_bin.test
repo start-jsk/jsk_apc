@@ -11,13 +11,14 @@
 
   <!-- publish shelf bin boxes -->
   <node name="publish_bin_boxes"
-        pkg="jsk_apc2016_common" type="publish_bin_boxes.py">
+        pkg="jsk_apc2016_common" type="publish_bin_bbox.py">
+    <remap from="~boxes" to="~output" />
     <rosparam command="load" file="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml" ns="upper_shelf" />
     <rosparam command="load" file="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml" ns="lower_shelf" />
   </node>
 
   <test test-name="test_move_arm_to_bin"
         name="test_move_arm_to_bin"
-        pkg="jsk_2016_01_baxter_apc" type="test-move-arm-to-bin.l" />
+        pkg="jsk_2016_01_baxter_apc" type="test-move-arm-to-bin.l" time-limit="10000"/>
 
 </launch>
