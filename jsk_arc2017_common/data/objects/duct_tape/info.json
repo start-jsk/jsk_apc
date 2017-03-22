@@ -1,0 +1,11 @@
+{
+    "name": "duct_tape", 
+    "dimensions": [
+        0.097, 
+        0.096, 
+        0.049
+    ], 
+    "weight": 0.144, 
+    "type": "cylinder", 
+    "description": "Scotch(R) Cloth Tape is a general purpose cloth tape. It is intended for bundling, sealing, and holding applications. Great in the home and office. General purpose duct tape. For bundling. For sealing. For holding applications in the home and office."
+}

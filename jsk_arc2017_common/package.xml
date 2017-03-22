@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_arc2017_common</name>
+  <version>2.0.0</version>
+  <description>Common package for Amazon Robotics Challenge 2017 at JSK Lab.</description>
+
+  <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+
+  <license>BSD</license>
+
+  <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>
