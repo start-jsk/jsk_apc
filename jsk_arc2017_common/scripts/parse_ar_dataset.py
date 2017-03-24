@@ -41,9 +41,9 @@ def main():
     grasp_types = []
 
     data_dir = osp.join(PKG_DIR, 'data')
-    dataset_dir = osp.join(data_dir, 'datasets/AR_20170224')
+    dataset_dir = osp.join(data_dir, 'datasets/AR_20170320')
     if not osp.exists(dataset_dir):
-        url = 'https://drive.google.com/open?id=0B9P1L--7Wd2vMmJjZXF4cUh5bW8'
+        url = 'https://drive.google.com/open?id=0B9P1L--7Wd2vUkFZZnFKTUdmNms'
         print('Please download dataset from %s,\nand extract it to %s.' %
               (url, dataset_dir))
         quit(1)
