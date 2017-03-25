@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import argparse
 import datetime
 import os
 import os.path as osp
@@ -60,7 +59,7 @@ def main(config_file):
     # 2. model
 
     n_class = len(DatasetV1.class_names)
-    model = torchfcn.models.FCN32s(n_class=42, deconv=False)
+    model = torchfcn.models.FCN32s(n_class=n_class, deconv=False)
     start_epoch = 0
     if config.get('resume'):
         checkpoint = torch.load(config['resume'])

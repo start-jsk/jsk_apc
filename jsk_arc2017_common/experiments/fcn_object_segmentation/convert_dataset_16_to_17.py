@@ -7,8 +7,8 @@ import numpy as np
 import PIL.Image
 import skimage.color
 
-import jsk_recognition_utils
 import jsk_apc2016_common
+import jsk_recognition_utils
 import rospkg
 
 from dataset import get_object_names
