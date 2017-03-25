@@ -34,9 +34,9 @@ def colorize_depth(depth, min_value=None, max_value=None):
 
 
 def main():
-    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSK_V1')
+    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSKV1')
     if not osp.exists(dataset_dir):
-        print('Please install JSK_V1 dataset to: %s' % dataset_dir)
+        print('Please install JSKV1 dataset to: %s' % dataset_dir)
         quit(1)
 
     label_files = []

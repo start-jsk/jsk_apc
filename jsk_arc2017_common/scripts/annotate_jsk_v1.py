@@ -55,9 +55,9 @@ def json_to_label(json_file):
 
 
 def main():
-    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSK_V1')
+    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSKV1')
     if not osp.exists(dataset_dir):
-        print('Please install JSK_V1 dataset to: %s' % dataset_dir)
+        print('Please install JSKV1 dataset to: %s' % dataset_dir)
         quit(1)
 
     objlist_file = osp.join(PKG_DIR, 'data/others/object_list_5x8.jpg')

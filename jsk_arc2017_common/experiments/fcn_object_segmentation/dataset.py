@@ -60,7 +60,7 @@ class JSKV1(ARC2017Base):
 
     def __init__(self, transform=True):
         self._transform = transform
-        dataset_dir = osp.join(PKG_PATH, 'data/datasets/JSK_V1')
+        dataset_dir = osp.join(PKG_PATH, 'data/datasets/JSKV1')
         self._ids = []
         for scene_dir in os.listdir(dataset_dir):
             scene_dir = osp.join(dataset_dir, scene_dir)
