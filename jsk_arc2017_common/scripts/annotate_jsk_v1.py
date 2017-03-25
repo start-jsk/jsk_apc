@@ -76,7 +76,10 @@ def main():
         lbl_file = osp.join(stamp_dir, 'label.npz')
         lbl_viz_file = osp.join(stamp_dir, 'label_viz.jpg')
 
-        if not osp.exists(json_file):
+        lock_file = osp.join(stamp_dir, 'annotation.lock')
+        if not osp.exists(json_file) and not osp.exists(lock_file):
+            open(lock_file, 'w')
+
             print('==> Annotating: %s' % stamp_dir)
             cmd = 'labelme %s -O %s' % (img_file, json_file)
             output = subprocess.Popen(shlex.split(cmd))
@@ -92,6 +95,8 @@ def main():
                     break
                 cv2.imshow('object list', objlist)
                 cv2.waitKey(50)
+
+            os.remove(lock_file)
 
             if returncode != 0:
                 output.kill()
