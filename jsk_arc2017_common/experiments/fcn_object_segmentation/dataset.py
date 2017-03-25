@@ -51,9 +51,10 @@ class ARC2017Base(torch.utils.data.Dataset):
     def visualize(self, img, lbl):
         lbl = lbl.copy()
         lbl[lbl == -1] = 0
-        viz = fcn.utils.draw_label(
+        lbl_viz = fcn.utils.draw_label(
             lbl, img, n_class=len(self.object_names),
             label_titles=dict(enumerate(self.object_names)))
+        viz = fcn.utils.get_tile_image([img, lbl_viz], tile_shape=(1, 2))
         return viz
 
 
@@ -86,15 +87,42 @@ class JSKV1(ARC2017Base):
             return img, lbl
 
 
-def main():
-    dataset = JSKV1(transform=False)
-    dataset_valid = JSKV1(split='valid')
-    print('Size: train: %d, valid: %d' % (len(dataset), len(dataset_valid)))
+class JSKARC2017From16(JSKV1):
+
+    def __init__(self, split='train', transform=True):
+        self.split = split
+        self._transform = transform
+        dataset_dir = osp.join(PKG_PATH, 'data/datasets/JSKARC2017From16')
+        ids = []
+        for scene_dir in os.listdir(dataset_dir):
+            if scene_dir == '1466804951244465112':
+                # Wrong annotation
+                continue
+            scene_dir = osp.join(dataset_dir, scene_dir)
+            ids.append(scene_dir)
+        self._ids = {}
+        self._ids['train'], self._ids['valid'] = \
+            train_test_split(ids, test_size=0.25, random_state=1)
+
+
+@click.command()
+@click.option('-d', '--dataset', default='JSKV1',
+              type=click.Choice(['JSKV1', 'JSKARC2017From16']),
+              show_default=True)
+def main(**args):
+    if args['dataset'] == 'JSKV1':
+        dataset = JSKV1(transform=False)
+        dataset_valid = JSKV1(split='valid')
+    else:
+        dataset = JSKARC2017From16(transform=False)
+        dataset_valid = JSKARC2017From16(split='valid')
+    print('Size of %s: train: %d, valid: %d' %
+          (args['dataset'], len(dataset), len(dataset_valid)))
     del dataset_valid
     for i in xrange(len(dataset)):
         img, lbl = dataset[i]
         viz = dataset.visualize(img, lbl)
-        cv2.imshow('JSKV1', viz)
+        cv2.imshow(args['dataset'], viz[:, :, ::-1])
         if cv2.waitKey(0) == ord('q'):
             break
 
