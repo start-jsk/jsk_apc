@@ -67,7 +67,7 @@ def main():
 
     cmap = labelme.utils.labelcolormap(41)
 
-    for stamp in os.listdir(dataset_dir):
+    for stamp in sorted(os.listdir(dataset_dir)):
         stamp_dir = osp.join(dataset_dir, stamp)
         if not osp.isdir(stamp_dir):
             continue
