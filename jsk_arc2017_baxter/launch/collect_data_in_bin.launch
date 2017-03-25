@@ -87,7 +87,7 @@
     <rosparam>
       parent_frame_id: base
       child_frame_id: left_hand_camera_rgb_optical_frame
-      duration: 0.1
+      duration: 1
       rate: 30
     </rosparam>
   </node>
