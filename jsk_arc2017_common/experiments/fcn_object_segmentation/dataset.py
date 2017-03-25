@@ -8,6 +8,7 @@ import cv2
 import fcn
 import numpy as np
 import skimage.io
+from sklearn.model_selection import train_test_split
 import torch.utils.data
 
 import rospkg
@@ -58,19 +59,23 @@ class ARC2017Base(torch.utils.data.Dataset):
 
 class JSKV1(ARC2017Base):
 
-    def __init__(self, transform=True):
+    def __init__(self, split='train', transform=True):
+        self.split = split
         self._transform = transform
         dataset_dir = osp.join(PKG_PATH, 'data/datasets/JSKV1')
-        self._ids = []
+        ids = []
         for scene_dir in os.listdir(dataset_dir):
             scene_dir = osp.join(dataset_dir, scene_dir)
-            self._ids.append(scene_dir)
+            ids.append(scene_dir)
+        self._ids = {}
+        self._ids['train'], self._ids['valid'] = \
+            train_test_split(ids, test_size=0.25, random_state=1)
 
     def __len__(self):
-        return len(self._ids)
+        return len(self._ids[self.split])
 
     def __getitem__(self, i):
-        scene_dir = self._ids[i]
+        scene_dir = self._ids[self.split][i]
         img_file = osp.join(scene_dir, 'image.jpg')
         img = skimage.io.imread(img_file)
         lbl_file = osp.join(scene_dir, 'label.npz')
@@ -83,6 +88,9 @@ class JSKV1(ARC2017Base):
 
 def main():
     dataset = JSKV1(transform=False)
+    dataset_valid = JSKV1(split='valid')
+    print('Size: train: %d, valid: %d' % (len(dataset), len(dataset_valid)))
+    del dataset_valid
     for i in xrange(len(dataset)):
         img, lbl = dataset[i]
         viz = dataset.visualize(img, lbl)
