@@ -1,0 +1,10 @@
+click
+fcn
+numpy
+Pillow
+pytz
+PyYaml
+scikit-image
+torch
+torchfcn
+torchvision
