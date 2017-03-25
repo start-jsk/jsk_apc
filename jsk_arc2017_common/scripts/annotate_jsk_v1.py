@@ -77,7 +77,10 @@ def main():
         lbl_viz_file = osp.join(stamp_dir, 'label_viz.jpg')
 
         lock_file = osp.join(stamp_dir, 'annotation.lock')
-        if not osp.exists(json_file) and not osp.exists(lock_file):
+        if osp.exists(lock_file):
+            continue
+
+        if not osp.exists(json_file):
             open(lock_file, 'w')
 
             print('==> Annotating: %s' % stamp_dir)
