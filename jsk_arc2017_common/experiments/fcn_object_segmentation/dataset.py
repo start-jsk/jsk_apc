@@ -27,7 +27,7 @@ def get_object_names():
 
 class ARC2017Base(torch.utils.data.Dataset):
 
-    object_names = np.array(get_object_names())
+    class_names = np.array(get_object_names())
     mean_bgr = np.array([104.00698793, 116.66876762, 122.67891434])
 
     def transform(self, img, lbl):
@@ -105,12 +105,46 @@ class JSKARC2017From16(JSKV1):
             train_test_split(ids, test_size=0.25, random_state=1)
 
 
+class DatasetV1(ARC2017Base):
+
+    def __init__(self, split='train', transform=True):
+        self.datasets = [
+            JSKV1(split, transform),
+            JSKARC2017From16(split, transform),
+        ]
+
+    def __len__(self):
+        return sum(len(d) for d in self.datasets)
+
+    @property
+    def split(self):
+        split = self.datasets[0].split
+        assert all(d.split == split for d in self.datasets)
+        return split
+
+    @split.setter
+    def split(self, value):
+        for d in self.datasets:
+            d.split = value
+
+    def __getitem__(self, index):
+        skipped = 0
+        for dataset in self.datasets:
+            current_index = index - skipped
+            if current_index < len(dataset):
+                return dataset[current_index]
+            skipped += len(dataset)
+
+
 @click.command()
-@click.option('-d', '--dataset', default='JSKV1',
-              type=click.Choice(['JSKV1', 'JSKARC2017From16']),
+@click.option('-d', '--dataset', default='V1',
+              type=click.Choice(['V1', 'JSKV1', 'JSKARC2017From16']),
               show_default=True)
 def main(**args):
-    if args['dataset'] == 'JSKV1':
+    if args['dataset'] == 'V1':
+        dataset = DatasetV1(transform=False)
+        dataset_valid = DatasetV1(split='valid')
+    elif args['dataset'] == 'JSKV1':
         dataset = JSKV1(transform=False)
         dataset_valid = JSKV1(split='valid')
     else:
