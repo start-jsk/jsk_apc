@@ -6,6 +6,7 @@ import os.path as osp
 import click
 import cv2
 import fcn
+import imgaug.augmenters as iaa
 import numpy as np
 import skimage.io
 from sklearn.model_selection import train_test_split
@@ -81,6 +82,30 @@ class JSKV1(ARC2017Base):
         img = skimage.io.imread(img_file)
         lbl_file = osp.join(scene_dir, 'label.npz')
         lbl = np.load(lbl_file)['arr_0']
+        if self.split == 'train':
+            aug_hsv = iaa.Sequential([
+                iaa.ChangeColorspace(to_colorspace='HSV', alpha=1,
+                                     from_colorspace='RGB'),
+                iaa.Add(value=[-40, 40], per_channel=True, channels=[2]),  # V
+                iaa.Add(value=[-10, 10], per_channel=True, channels=[1]),  # S
+                iaa.ChangeColorspace(to_colorspace='RGB', alpha=1,
+                                     from_colorspace='HSV'),
+                iaa.GaussianBlur(sigma=[0.0, 2.0]),
+            ], random_order=False)
+            affine_params = dict(
+                scale={'x': (0.9, 1.1), 'y': (0.9, 1.1)},
+                translate_px={'x': (-16, 16), 'y': (-16, 16)},
+                rotate=(-10, 10),
+                shear=(-16, 16),
+                mode='constant',
+                deterministic=True,
+                random_state=1,
+            )
+            aug_tf_img = iaa.Affine(order=1, cval=0, **affine_params)
+            aug_tf_lbl = iaa.Affine(order=0, cval=-1, **affine_params)
+            img = aug_hsv.augment_image(img)
+            img = aug_tf_img.augment_image(img)
+            lbl = aug_tf_lbl.augment_image(lbl)
         if self._transform:
             return self.transform(img, lbl)
         else:

@@ -1,5 +1,6 @@
 click
 fcn
+git+http://github.com/wkentaro/imgaug.git@affine_non_uint8
 numpy
 Pillow
 pytz
