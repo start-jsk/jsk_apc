@@ -59,6 +59,7 @@ def main():
     print('==> Press q to quit, and any other keys to go next.')
     for stamp_dir in os.listdir(dataset_dir):
         stamp_dir = osp.join(dataset_dir, stamp_dir)
+        print(stamp_dir)
 
         img_file = osp.join(stamp_dir, 'image.jpg')
         img = cv2.imread(img_file)
