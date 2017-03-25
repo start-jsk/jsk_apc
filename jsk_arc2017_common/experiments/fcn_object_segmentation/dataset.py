@@ -52,8 +52,8 @@ class ARC2017Base(torch.utils.data.Dataset):
         lbl = lbl.copy()
         lbl[lbl == -1] = 0
         lbl_viz = fcn.utils.draw_label(
-            lbl, img, n_class=len(self.object_names),
-            label_titles=dict(enumerate(self.object_names)))
+            lbl, img, n_class=len(self.class_names),
+            label_titles=dict(enumerate(self.class_names)))
         viz = fcn.utils.get_tile_image([img, lbl_viz], tile_shape=(1, 2))
         return viz
 
