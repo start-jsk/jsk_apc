@@ -68,7 +68,8 @@ class JSKV1(ARC2017Base):
         ids = []
         for scene_dir in os.listdir(dataset_dir):
             scene_dir = osp.join(dataset_dir, scene_dir)
-            ids.append(scene_dir)
+            if osp.exists(osp.join(scene_dir, 'label.npz')):
+                ids.append(scene_dir)
         self._ids = {}
         self._ids['train'], self._ids['valid'] = \
             train_test_split(ids, test_size=0.25, random_state=1)
