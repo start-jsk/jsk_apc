@@ -1,0 +1,4 @@
+max_iteration: 100000
+optimizer: Adam
+lr: 2.0e-2
+weight_decay: 0.0005

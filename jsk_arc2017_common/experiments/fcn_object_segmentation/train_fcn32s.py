@@ -51,7 +51,7 @@ def main(config_file):
     kwargs = {'num_workers': 4, 'pin_memory': True} if cuda else {}
     train_loader = torch.utils.data.DataLoader(
         DatasetV1(split='train', transform=True),
-        batch_size=1, shuffle=True, **kwargs)
+        batch_size=config.get('batch_size', 1), shuffle=True, **kwargs)
     valid_loader = torch.utils.data.DataLoader(
         DatasetV1(split='valid', transform=True),
         batch_size=1, shuffle=False, **kwargs)
@@ -69,8 +69,10 @@ def main(config_file):
         pth_file = osp.expanduser('~/data/models/torch/vgg16-00b39a1b.pth')
         vgg16 = torchvision.models.vgg16()
         vgg16.load_state_dict(torch.load(pth_file))
-        torchfcn.utils.copy_params_vgg16_to_fcn32s(vgg16, model,
-                                                   init_upscore=False)
+        torchfcn.utils.copy_params_vgg16_to_fcn32s(
+            vgg16, model,
+            copy_fc8=config.get('copy_fc8', True),
+            init_upscore=False)
     if cuda:
         model = model.cuda()
 
