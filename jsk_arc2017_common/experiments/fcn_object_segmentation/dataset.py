@@ -15,9 +15,12 @@ import torch.utils.data
 import rospkg
 
 
+this_dir = osp.dirname(osp.realpath(__file__))
+
+
 def get_object_names():
     object_names = ['__background__']
-    with open(osp.join(PKG_PATH, 'data/names/objects.txt')) as f:
+    with open(osp.join(this_dir, '../../data/names/objects.txt')) as f:
         object_names += [x.strip() for x in f]
     object_names.append('__shelf__')
     return object_names
@@ -61,7 +64,7 @@ class JSKV1(ARC2017Base):
     def __init__(self, split='train', transform=True):
         self.split = split
         self._transform = transform
-        dataset_dir = osp.expanduser('~/data/datasets/JSKV1')
+        dataset_dir = osp.expanduser('~/data/projects/arc2017/Data/JSKV1')
         ids = []
         for scene_dir in os.listdir(dataset_dir):
             scene_dir = osp.join(dataset_dir, scene_dir)
@@ -115,7 +118,8 @@ class JSKARC2017From16(JSKV1):
     def __init__(self, split='train', transform=True):
         self.split = split
         self._transform = transform
-        dataset_dir = osp.expanduser('~/data/datasets/JSKARC2017From16')
+        dataset_dir = osp.join(
+            this_dir, '../../data/datasets/JSKARC2017From16')
         ids = []
         for scene_dir in os.listdir(dataset_dir):
             if scene_dir == '1466804951244465112':
