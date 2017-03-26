@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import os
 import os.path as osp
 import warnings
@@ -8,6 +9,7 @@ import cv2
 import fcn
 import matplotlib.cm
 import numpy as np
+import skimage.io
 
 import jsk_recognition_utils
 import rospkg
@@ -56,13 +58,16 @@ def main():
     object_names.append('__shelf__')
     object_names.append('__unlabeled__')
 
-    print('==> Press q to quit, and any other keys to go next.')
-    for stamp_dir in os.listdir(dataset_dir):
-        stamp_dir = osp.join(dataset_dir, stamp_dir)
-        print(stamp_dir)
+    print('==> Press keys: [q] to quit, [n] to go next, [p] to go previous')
+    stamp_dirs = list(sorted(os.listdir(dataset_dir)))
+    i = 0
+    while True:
+        stamp = datetime.datetime.fromtimestamp(int(stamp_dirs[i]) / 1e9)
+        stamp_dir = osp.join(dataset_dir, stamp_dirs[i])
+        print('%s: %s' % (stamp.isoformat(), stamp_dir))
 
         img_file = osp.join(stamp_dir, 'image.jpg')
-        img = cv2.imread(img_file)
+        img = skimage.io.imread(img_file)
 
         depth_file = osp.join(stamp_dir, 'depth.npz')
         depth = np.load(depth_file)['arr_0']
@@ -84,9 +89,17 @@ def main():
 
         viz = jsk_recognition_utils.get_tile_image([img, depth_viz, label_viz])
 
-        cv2.imshow('view_jsk_v1', viz)
-        if cv2.waitKey(0) == ord('q'):
+        cv2.imshow('view_jsk_v1', viz[:, :, ::-1])
+        key = cv2.waitKey(0)
+        if key == ord('q'):
             break
+        elif key == ord('n'):
+            i += 1
+        elif key == ord('p'):
+            i -= 1
+        else:
+            continue
+
 
 if __name__ == '__main__':
     main()
