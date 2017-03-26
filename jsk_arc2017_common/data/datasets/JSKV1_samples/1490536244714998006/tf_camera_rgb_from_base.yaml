@@ -1,0 +1,17 @@
+header: 
+  seq: 7855
+  stamp: 
+    secs: 1490536244
+    nsecs: 679358959
+  frame_id: base
+child_frame_id: right_hand_camera_rgb_optical_frame
+transform: 
+  translation: 
+    x: 0.668197209777
+    y: -0.320986173966
+    z: 0.395534505364
+  rotation: 
+    x: 0.652558835115
+    y: -0.639446136785
+    z: 0.274029081796
+    w: -0.300305955976
