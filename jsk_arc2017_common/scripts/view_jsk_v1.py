@@ -5,7 +5,9 @@ import os
 import os.path as osp
 import warnings
 
+import click
 import cv2
+import dateutil.parser
 import fcn
 import matplotlib.cm
 import numpy as np
@@ -35,7 +37,9 @@ def colorize_depth(depth, min_value=None, max_value=None):
     return colorized
 
 
-def main():
+@click.command()
+@click.option('-s', '--start')
+def main(start):
     dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSKV1')
     if not osp.exists(dataset_dir):
         print('Please install JSKV1 dataset to: %s' % dataset_dir)
@@ -63,6 +67,11 @@ def main():
     i = 0
     while True:
         stamp = datetime.datetime.fromtimestamp(int(stamp_dirs[i]) / 1e9)
+        if start and stamp < dateutil.parser.parse(start):
+            i += 1
+            continue
+        start = None
+
         stamp_dir = osp.join(dataset_dir, stamp_dirs[i])
         print('%s: %s' % (stamp.isoformat(), stamp_dir))
 
@@ -87,7 +96,7 @@ def main():
         else:
             label_viz = np.zeros_like(img)
 
-        viz = jsk_recognition_utils.get_tile_image([img, depth_viz, label_viz])
+        viz = jsk_recognition_utils.get_tile_image([img, label_viz, depth_viz])
 
         cv2.imshow('view_jsk_v1', viz[:, :, ::-1])
         key = cv2.waitKey(0)
