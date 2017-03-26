@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import json
 import os
 import os.path as osp
@@ -67,8 +68,9 @@ def main():
 
     cmap = labelme.utils.labelcolormap(41)
 
-    for stamp in sorted(os.listdir(dataset_dir)):
-        stamp_dir = osp.join(dataset_dir, stamp)
+    for stamp_dir in sorted(os.listdir(dataset_dir)):
+        stamp = datetime.datetime.fromtimestamp(int(stamp_dir) / 1e9)
+        stamp_dir = osp.join(dataset_dir, stamp_dir)
         if not osp.isdir(stamp_dir):
             continue
         json_file = osp.join(stamp_dir, 'label.json')
@@ -83,7 +85,7 @@ def main():
         if not osp.exists(json_file):
             open(lock_file, 'w')
 
-            print('==> Annotating: %s' % stamp_dir)
+            print('%s: %s' % (stamp.isoformat(), stamp_dir))
             cmd = 'labelme %s -O %s' % (img_file, json_file)
             output = subprocess.Popen(shlex.split(cmd))
 
