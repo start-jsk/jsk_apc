@@ -55,15 +55,18 @@ def callback(ply_arr_msg):
         pose = PoseStamped()
         pose.header.frame_id = src_frame
         pose.header.stamp = stamp
-        x, y, z = np.mean(points, axis=0)
+        x_max, y_max, z_max = np.max(points, axis=0)
+        x_min, y_min, z_min = np.min(points, axis=0)
+        x = (x_max + x_min) / 2.0
+        y = (y_max + y_min) / 2.0
+        z = (z_max + z_min) / 2.0
+        ###x, y, z = np.mean(points, axis=0)
         pose.pose.position.x = x
         pose.pose.position.y = y
         pose.pose.position.z = z
         pose.pose.orientation.w = 1
 
         # fit polygon with box
-        x_max, y_max, z_max = np.max(points, axis=0)
-        x_min, y_min, z_min = np.min(points, axis=0)
         size = (x_max - x_min, y_max - y_min, z_max - z_min)
 
         rospy.loginfo('Adding polygon_%04d' % i)
