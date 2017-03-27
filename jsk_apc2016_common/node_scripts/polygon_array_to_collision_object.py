@@ -59,7 +59,8 @@ def callback(ply_arr_msg):
         x_min, y_min, z_min = np.min(points, axis=0)
         x = (x_max + x_min) / 2.0
         y = (y_max + y_min) / 2.0
-        z = (z_max + z_min) / 2.0
+        z = z_max / 2.0
+        ###z = (z_max + z_min) / 2.0
         ###x, y, z = np.mean(points, axis=0)
         pose.pose.position.x = x
         pose.pose.position.y = y
@@ -67,7 +68,8 @@ def callback(ply_arr_msg):
         pose.pose.orientation.w = 1
 
         # fit polygon with box
-        size = (x_max - x_min, y_max - y_min, z_max - z_min)
+        ###size = (x_max - x_min, y_max - y_min, z_max - z_min)
+        size = (x_max - x_min, y_max - y_min, z_max)
 
         rospy.loginfo('Adding polygon_%04d' % i)
         scene.add_box(

@@ -1,0 +1,10 @@
+<launch>
+  <!-- <include file="$(find jsk_apc2016_common)/samples/pointcloud_screenpoint.launch" /> -->
+  <!-- <include file="$(find jsk_apc2016_common)/samples/hsi_color_filter_fetch.launch" /> -->
+  <!-- <include file="$(find jsk_apc2016_common)/samples/sample_fetch_object_segmentation_3d.launch" /> -->
+  <include file="$(find jsk_apc2016_common)/samples/sample_object_segmentation_3d_removing_table.launch" />
+  <include file="$(find jsk_apc2016_common)/samples/fetch_organized_multi_plane_segmentation.launch" />
+  <node pkg="jsk_apc2016_common" name="polygon_array_to_collision_object" type="polygon_array_to_collision_object.py">
+    <remap from="~input" to="/multi_plane_estimate/output_polygon" />
+  </node>
+</launch>

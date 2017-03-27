@@ -14,12 +14,12 @@
   <arg name="FILTER_NAME_SUFFIX" default=""/>
   <arg name="OUTPUT" default="hsi_output$(arg FILTER_NAME_SUFFIX)"/>
 
-  <arg name="h_max" default="-52" />
-  <arg name="h_min" default="-128" />
-  <arg name="s_max" default="255" />
-  <arg name="s_min" default="55" />
-  <arg name="i_max" default="255" />
-  <arg name="i_min" default="55" />
+  <arg name="h_max" default="50" />
+  <arg name="h_min" default="-5" />
+  <arg name="s_max" default="15" />
+  <arg name="s_min" default="0" />
+  <arg name="i_max" default="230" />
+  <arg name="i_min" default="140" />
   <!-- <arg name="h_max" default="127" /> -->
   <!-- <arg name="h_min" default="-128" /> -->
   <!-- <arg name="s_max" default="255" /> -->
@@ -56,7 +56,7 @@
       <rosparam>
         tolerance: 0.02
         min_size: 500
-	max_size: 50000
+        max_size: 50000
       </rosparam>
     </node>
 
