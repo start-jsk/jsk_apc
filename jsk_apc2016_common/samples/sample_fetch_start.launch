@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find jsk_apc2016_common)/samples/sample_fetch_object_segmentation_3d.launch" />
+  <node pkg="jsk_apc2016_common" name="polygon_array_to_collision_object" type="polygon_array_to_collision_object.py">
+    <remap from="~input" to="/multi_plane_estimate/output_polygon" />
+  </node>
+</launch>
