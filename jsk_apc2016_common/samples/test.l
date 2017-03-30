@@ -6,6 +6,10 @@
 (ros::load-ros-manifest "std_msgs")
 (ros::load-ros-manifest "roseus")
 
+(ros::advertise "stop_moveit" std_msgs::string 100)
+(setq msg (instance std_msgs::string :init))
+(send msg :data "stop moveit")
+
 (require "package://fetcheus/fetch-interface.l")
 
 (setq *co* (instance collision-object-publisher :init))
@@ -286,9 +290,9 @@
       (progn
 	;;extend torso in order to expand view
 	(send *fetch* :torso :waist-z :joint-angle 300)
-	(send *ri* :angle-vector (send *fetch* :angle-vector) 5000)
-	(send *ri* :wait-interpolation)
+	(move 3000)
 	(look-at)
+	(ros::publish "stop_moveit" msg)
 	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 200) y z)) :debug-view t)
 	(move 10000)
 	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y z)) :debug-view t)
@@ -299,10 +303,11 @@
   ;;stow object
   (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y (+ z 100))))
   (move 1000)
-  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 200) y (+ z 100))))
+  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 300) y (+ z 100))))
+  (move 2000)
   (send *fetch* :inverse-kinematics (make-coords :pos (float-vector 350 600 (+ z 100))) :debug-view t)
   (move 5000)
-  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector 350 600 500)) :debug-view t)
+  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector 350 600 100)) :debug-view t)
   (move 5000)
   (send *ri* :stop-grasp)
   (init))

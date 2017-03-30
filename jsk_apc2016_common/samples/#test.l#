@@ -6,13 +6,11 @@
 (ros::load-ros-manifest "std_msgs")
 (ros::load-ros-manifest "roseus")
 
-(require "package://fetcheus/fetch-interface.l")
-
-(ros::advertise "stop_moveit" std_msgs::string 100)
+(ros::advertise "stop_moveit" std_msgs::string 1)
 (setq msg (instance std_msgs::string :init))
-(send msg :data "stop")
+(send msg :data "stop moveit")
 
-
+(require "package://fetcheus/fetch-interface.l")
 
 (setq *co* (instance collision-object-publisher :init))
 (fetch-init t)
@@ -110,8 +108,7 @@
  (setq head-z (aref (send (send *fetch* :head-end-coords) :worldpos) 2))
  (send *fetch* :head :neck-y :joint-angle (rad2deg (atan (/ (- y head-y) x))))
  (send *fetch* :head :neck-p :joint-angle (rad2deg (atan (/ (- head-z z) x))))
- (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000 :head-controller)
- (send *ri* :wait-interpolation :head-controller))
+ (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000 :head-controller))
 
 
 ;; make a virtual table in front of fetch.
@@ -183,31 +180,36 @@
 ;; search for a target object by swinging his head.
 (defun search-for-object()
   (recon-target)
+  (format t "111~%")
   (if box
-      (progn (look-at) (format t "111~%"))
+      (look-at)
     (progn (send *fetch* :head :neck-y :joint-angle 30) ;; see left
 	   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000 :head-controller)))
 
   (recon-target)
+  (format t "222~%")
   (if box
-      (progn (look-at) (format t "222~%"))
+      (look-at)
     (progn (send *fetch* :head :neck-y :joint-angle -30) ;; see right 
 	   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000 :head-controller)))
 
   (recon-target)
+  (format t "333~%")
   (if box
-      (progn (look-at) (format t "333~%"))
+      (look-at)
     (progn (send *fetch* :head :neck-p :joint-angle -30)
 	   (send *fetch* :head :neck-y :joint-angle 0) ;; see up
 	   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000 :head-controller)))
   
   (recon-target)
+  (format t "444~%")
   (if box
-      (progn (look-at) (format t "444~%"))
+      (look-at)
     (progn (send *fetch* :head :neck-p :joint-angle 30) ;; see down
 	   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000 :head-controller)))
 
   (recon-target)
+  (format t "555~%")
   (if box
       (progn (look-at) (format t "find object!~%") t)
     (progn (format t "cannot find object!~%")
@@ -217,10 +219,9 @@
 
 
 ;; order the real fetch robot to follow the joint angle of the model robot
-(defun move (time &optional (trial-number 100))
-  (let ((test nil) (i 0))
-    (while (and (null test) (< i trial-number))
-      (setq i (+ i 1))
+(defun move (time)
+  (let ((test nil))
+    (while (null test)
       (setq test (send *ri* :angle-vector (send *fetch* :angle-vector) time)))
     (send *ri* :wait-interpolation)))
 
@@ -288,33 +289,28 @@
   (if (search-for-object)
       (progn
 	;;extend torso in order to expand view
-	;(send *fetch* :torso :waist-z :joint-angle 300)
-	;(move 3000)
-	;(look-at)
+	(send *fetch* :torso :waist-z :joint-angle 300)
+	(move 3000)
+	(look-at)
 	(ros::publish "stop_moveit" msg)
-	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 200) y (+ z 200))) :debug-view t)
+	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 200) y z)) :debug-view t)
 	(move 10000)
-	(let ((flag nil) (i 0))
-	  (while (null flag)
-	    (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y (+ z i))))
-	    (setq flag (move 5000 1))
-	    (setq i (+ i 5))))
-	(send *ri* :wait-interpolation)
-	
-	(try-grasp)
-	
-	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 200) y (+ z 200))))
-	(move 1000)
-	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 300) y (+ z 100))))
-	(move 2000)
-	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector 350 600 (+ z 100))) :debug-view t)
-	(move 5000)
-	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector 350 600 100)) :debug-view t :rotation-axis nil)
-	(move 5000)
-	(send *ri* :stop-grasp)
-	(init))
+	(send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y z)) :debug-view t)
+	(move 3000))
     (format t "trial canceled.~%"))
-  )
+  (try-grasp)
+
+  ;;stow object
+  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y (+ z 100))))
+  (move 1000)
+  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 300) y (+ z 100))))
+  (move 2000)
+  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector 350 600 (+ z 100))) :debug-view t)
+  (move 5000)
+  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector 350 600 100)) :debug-view t)
+  (move 5000)
+  (send *ri* :stop-grasp)
+  (init))
 
 ;;TODO: avoid table!!
 ;;move to put x in range (700 ~ 850 ?)
