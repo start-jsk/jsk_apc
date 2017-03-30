@@ -45,6 +45,7 @@
   <run_depend>tf2_ros</run_depend>
   <run_depend>tf2_eigen</run_depend>
   <run_depend>pcl_ros</run_depend>
+  <run_depend>moveit_commander</run_depend>
 
   <test_depend>roslint</test_depend>
 
