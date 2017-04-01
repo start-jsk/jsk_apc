@@ -10,6 +10,8 @@ from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import TransformStamped
 from geometry_msgs.msg import Vector3
 from jsk_recognition_msgs.msg import PolygonArray
+from jsk_recognition_msgs.msg import BoundingBox
+from jsk_recognition_msgs.msg import BoundingBoxArray
 import moveit_commander
 import rospy
 import tf2_geometry_msgs.tf2_geometry_msgs as tf_utils
@@ -35,11 +37,6 @@ class StopMoveitTransport(ConnectionBasedTransport):
 
 def callback(ply_arr_msg):
     if stop_moveit_sub.flag == 1:
-        rospy.loginfo('flag = %d', stop_moveit_sub.flag)
-        for name in scene.get_known_object_names():
-            if name.startswith('polygon_'):
-                scene.remove_world_object(name)
-
         dst_frame = ply_arr_msg.header.frame_id
         stamp = ply_arr_msg.header.stamp
         try:
@@ -60,6 +57,7 @@ def callback(ply_arr_msg):
         transform.transform.translation = Vector3(*dst_pose[0])
         transform.transform.rotation = Quaternion(*dst_pose[1])
 
+        box_array = []
         for ply_msg in ply_arr_msg.polygons:
             # polygon -> points
             points = np.zeros((len(ply_msg.polygon.points), 3),
@@ -71,35 +69,36 @@ def callback(ply_arr_msg):
                 points[i, 1] = pt.y
                 points[i, 2] = pt.z
 
+            # make bounding box
+            box = BoundingBox()
             # polygon center
-            pose = PoseStamped()
-            pose.header.frame_id = src_frame
-            pose.header.stamp = stamp
             x_max, y_max, z_max = np.max(points, axis=0)
             x_min, y_min, z_min = np.min(points, axis=0)
             x = (x_max + x_min) / 2.0
             y = (y_max + y_min) / 2.0
             z = z_max / 2.0
-            pose.pose.position.x = x
-            pose.pose.position.y = y
-            pose.pose.position.z = z
-            pose.pose.orientation.w = 1
+            box.pose.position.x = x
+            box.pose.position.y = y
+            box.pose.position.z = z
+            box.pose.orientation.w = 1
+            # polygon size
+            box.dimensions.x = x_max - x_min
+            box.dimensions.y = y_max - y_min
+            box.dimensions.z = z_max
+            
+            box_array = box_array + [box]
 
-            # fit polygon with box
-            size = (x_max - x_min, y_max - y_min, z_max)
-
-            rospy.loginfo('Adding polygon_%04d' % i)
-            scene.add_box(
-                name='polygon_%04d' % i,
-                pose=pose,
-                size=size,
-            )
+        bounding_box_array = BoundingBoxArray()
+        bounding_box_array.header.stamp = stamp
+        bounding_box_array.header.frame_id = 'base_link'
+        bounding_box_array.boxes = box_array
+        pub = rospy.Publisher('~output', BoundingBoxArray, queue_size=10)
+        pub.publish(bounding_box_array)
 
 
 if __name__ == '__main__':
-    rospy.init_node('polygon_array_to_collision_object')
+    rospy.init_node('polygon_array_to_box_array_on_ground')
 
-    scene = moveit_commander.PlanningSceneInterface()
     time.sleep(1)
 
     listener = tf.listener.TransformListener()
