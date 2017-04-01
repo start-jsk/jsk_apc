@@ -1,6 +1,11 @@
 <launch>
+  <arg name="RELAY_TOPIC" default="bounding_box_array_including_table" />
   <include file="$(find jsk_apc2016_common)/samples/sample_fetch_object_segmentation_3d.launch" />
-  <node pkg="jsk_apc2016_common" name="polygon_array_to_collision_object" type="polygon_array_to_collision_object.py">
+  <node pkg="jsk_apc2016_common" name="polygon_array_to_box_array_on_ground" type="polygon_array_to_box_array_on_ground.py">
     <remap from="~input" to="/multi_plane_estimate/output_polygon" />
+    <remap from="~output" to="$(arg RELAY_TOPIC)" />
   </node>
+  <node pkg="jsk_apc2016_common" name="bounding_box_array_to_collision_object" type="bounding_box_array_to_collision_object.py">
+    <remap from="~input" to="$(arg RELAY_TOPIC)" />
+  </node>  
 </launch>
