@@ -27,12 +27,19 @@ def main(config_file):
     assert 'lr' in config
     assert 'weight_decay' in config
 
-    name = osp.splitext(osp.basename(config_file))[0]
+    out = osp.splitext(osp.basename(config_file))[0]
+    for key, value in sorted(config.items()):
+        if key == 'name':
+            continue
+        if isinstance(value, basestring):
+            value = value.replace('/', 'SLASH')
+            value = value.replace(':', 'COLON')
+        out += '_{key}-{value}'.format(key=key.upper(), value=value)
+    config['out'] = osp.join(this_dir, 'logs', config['name'], out)
+
     config['config_file'] = osp.realpath(config_file)
     config['timestamp'] = datetime.datetime.now(
         pytz.timezone('Asia/Tokyo')).isoformat()
-    config['out'] = osp.join(this_dir, 'logs',
-                             '%s_%s' % (name, config['timestamp']))
     if not osp.exists(config['out']):
         os.makedirs(config['out'])
     with open(osp.join(config['out'], 'params.yaml'), 'w') as f:

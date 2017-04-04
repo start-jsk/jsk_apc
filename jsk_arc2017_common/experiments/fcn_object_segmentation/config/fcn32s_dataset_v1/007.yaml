@@ -1,3 +1,4 @@
+name: fcn32s_dataset_v1
 batch_size: 4
 lr: 1.0e-5
 max_iteration: 100000
