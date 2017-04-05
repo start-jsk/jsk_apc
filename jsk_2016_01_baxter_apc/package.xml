@@ -13,6 +13,7 @@
 
 
   <license>BSD</license>
+  <url>http://wiki.ros.org/jsk_2016_01_baxter_apc</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 

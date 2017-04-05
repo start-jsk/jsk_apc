@@ -7,6 +7,7 @@
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
   <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
   <license>BSD</license>
+  <url>http://wiki.ros.org/jsk_apc2015_common</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 
