@@ -87,20 +87,19 @@ class JSKV1(ARC2017Base):
             aug_hsv = iaa.Sequential([
                 iaa.ChangeColorspace(to_colorspace='HSV', alpha=1,
                                      from_colorspace='RGB'),
-                iaa.Add(value=[-40, 40], per_channel=True, channels=[2]),  # V
-                iaa.Add(value=[-10, 10], per_channel=True, channels=[1]),  # S
+                iaa.WithChannels(2, iaa.Add(value=[-40, 40])),
+                iaa.WithChannels(1, iaa.Add(value=[-40, 40])),
                 iaa.ChangeColorspace(to_colorspace='RGB', alpha=1,
                                      from_colorspace='HSV'),
                 iaa.GaussianBlur(sigma=[0.0, 2.0]),
             ], random_order=False)
             affine_params = dict(
-                scale={'x': (0.9, 1.1), 'y': (0.9, 1.1)},
+                scale={'x': (0.8, 1.2), 'y': (0.8, 1.2)},
                 translate_px={'x': (-16, 16), 'y': (-16, 16)},
-                rotate=(-10, 10),
-                shear=(-16, 16),
+                rotate=(-45, 45),
+                shear=(-15, 15),
                 mode='constant',
-                deterministic=True,
-                random_state=1,
+                random_state=np.random.randint(0, 9999),
             )
             aug_tf_img = iaa.Affine(order=1, cval=0, **affine_params)
             aug_tf_lbl = iaa.Affine(order=0, cval=-1, **affine_params)
