@@ -85,7 +85,7 @@ def callback(ply_arr_msg):
             box.dimensions.x = x_max - x_min
             box.dimensions.y = y_max - y_min
             box.dimensions.z = z_max
-            
+
             box_array = box_array + [box]
 
         bounding_box_array = BoundingBoxArray()

@@ -35,9 +35,9 @@ def callback(box_arr_msg):
         size = (box_msg.dimensions.x, box_msg.dimensions.y, box_msg.dimensions.z)
         rospy.loginfo('Adding polygon_%04d' % i)
         scene.add_box(
-            name = 'polygon_%04d' % i,
-            pose = pose,
-            size = size,
+            name='polygon_%04d' % i,
+            pose=pose,
+            size=size,
         )
 
 
