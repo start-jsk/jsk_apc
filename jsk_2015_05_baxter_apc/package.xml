@@ -9,6 +9,7 @@
   <author email="inagaki@jsk.imi.i.u-tokyo.ac.jp">Yuto Inagaki</author>
   <author email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</author>
   <license>BSD</license>
+  <url>http://wiki.ros.org/jsk_2015_05_baxter_apc</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 
