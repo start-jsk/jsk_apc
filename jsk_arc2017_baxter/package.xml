@@ -13,6 +13,12 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>jsk_2016_01_baxter_apc</run_depend>
+  <run_depend>jsk_data</run_depend>
+  <run_depend>jsk_perception</run_depend>
+  <run_depend>jsk_rqt_plugins</run_depend>
+  <run_depend>jsk_topic_tools</run_depend>
+
   <export>
   </export>
 </package>
