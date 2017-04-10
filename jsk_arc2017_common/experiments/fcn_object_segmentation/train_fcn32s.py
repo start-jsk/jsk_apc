@@ -66,7 +66,7 @@ def main(config_file):
     # 2. model
 
     n_class = len(DatasetV1.class_names)
-    model = torchfcn.models.FCN32s(n_class=n_class, deconv=False)
+    model = torchfcn.models.FCN32s(n_class=n_class, nodeconv=True)
     start_epoch = 0
     if config.get('resume'):
         checkpoint = torch.load(config['resume'])
@@ -76,10 +76,8 @@ def main(config_file):
         pth_file = osp.expanduser('~/data/models/torch/vgg16-00b39a1b.pth')
         vgg16 = torchvision.models.vgg16()
         vgg16.load_state_dict(torch.load(pth_file))
-        torchfcn.utils.copy_params_vgg16_to_fcn32s(
-            vgg16, model,
-            copy_fc8=config.get('copy_fc8', True),
-            init_upscore=False)
+        model.copy_params_from_vgg16(
+            vgg16, copy_fc8=config.get('copy_fc8', True), init_upscore=False)
     if cuda:
         model = model.cuda()
 
