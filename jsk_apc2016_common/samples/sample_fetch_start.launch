@@ -7,5 +7,5 @@
   </node>
   <node pkg="jsk_apc2016_common" name="bounding_box_array_to_collision_object" type="bounding_box_array_to_collision_object.py">
     <remap from="~input" to="$(arg RELAY_TOPIC)" />
-  </node>  
+  </node>
 </launch>
