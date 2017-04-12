@@ -1,0 +1,46 @@
+shelf_bin:
+  bin_A:
+    frame_id: shelf_base
+    position:
+      x: 0
+      y: -0.15
+      z: 0 
+    orientation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+    dimensions:
+      x: 0.6
+      y: 0.3
+      z: 0.26 
+  bin_B:
+    frame_id: shelf_base
+    position:
+      x: 0.15
+      y: 0.15
+      z: 0 
+    orientation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+    dimensions:
+      x: 0.3
+      y: 0.3
+      z: 0.26 
+  bin_C:
+    frame_id: shelf_base
+    position:
+      x: -0.15
+      y: 0.15
+      z: 0 
+    orientation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+    dimensions:
+      x: 0.3
+      y: 0.3
+      z: 0.26 
