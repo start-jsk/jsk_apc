@@ -1,6 +1,7 @@
 click
 fcn
-imgaug>=0.2.1
+git+https://github.com/aleju/imgaug.git
+git+https://github.com/wkentaro/lblaug.git
 numpy
 Pillow
 pytz

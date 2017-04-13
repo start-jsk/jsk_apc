@@ -20,12 +20,14 @@ this_dir = osp.dirname(osp.realpath(__file__))
 
 @click.command()
 @click.argument('config_file', type=click.Path(exists=True))
-def main(config_file):
+@click.option('--resume', type=click.Path(exists=True))
+def main(config_file, resume):
     config = yaml.load(open(config_file))
     assert 'max_iteration' in config
     assert 'optimizer' in config
     assert 'lr' in config
     assert 'weight_decay' in config
+    assert 'aug' in config
 
     out = osp.splitext(osp.basename(config_file))[0]
     for key, value in sorted(config.items()):
@@ -57,10 +59,10 @@ def main(config_file):
 
     kwargs = {'num_workers': 4, 'pin_memory': True} if cuda else {}
     train_loader = torch.utils.data.DataLoader(
-        DatasetV1(split='train', transform=True),
+        DatasetV1(split='train', transform=True, aug=config['aug']),
         batch_size=config.get('batch_size', 1), shuffle=True, **kwargs)
     valid_loader = torch.utils.data.DataLoader(
-        DatasetV1(split='valid', transform=True),
+        DatasetV1(split='valid', transform=True, aug=config['aug']),
         batch_size=1, shuffle=False, **kwargs)
 
     # 2. model
@@ -68,8 +70,8 @@ def main(config_file):
     n_class = len(DatasetV1.class_names)
     model = torchfcn.models.FCN32s(n_class=n_class, nodeconv=True)
     start_epoch = 0
-    if config.get('resume'):
-        checkpoint = torch.load(config['resume'])
+    if resume:
+        checkpoint = torch.load(resume)
         model.load_state_dict(checkpoint['model_state_dict'])
         start_epoch = checkpoint['epoch']
     else:
@@ -86,7 +88,7 @@ def main(config_file):
     optim = getattr(torch.optim, config['optimizer'])
     optim = optim(model.parameters(), lr=config['lr'],
                   weight_decay=config['weight_decay'])
-    if config.get('resume'):
+    if resume:
         optim.load_state_dict(checkpoint['optim_state_dict'])
 
     trainer = torchfcn.Trainer(

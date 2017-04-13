@@ -4,4 +4,4 @@ max_iteration: 50000
 optimizer: Adam
 weight_decay: 0.0005
 copy_fc8: false
-aug: standard
+aug: stack

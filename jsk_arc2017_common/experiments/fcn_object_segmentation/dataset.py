@@ -7,12 +7,11 @@ import click
 import cv2
 import fcn
 import imgaug.augmenters as iaa
+import lblaug
 import numpy as np
 import skimage.io
 from sklearn.model_selection import train_test_split
 import torch.utils.data
-
-import rospkg
 
 
 this_dir = osp.dirname(osp.realpath(__file__))
@@ -61,9 +60,12 @@ class ARC2017Base(torch.utils.data.Dataset):
 
 class JSKV1(ARC2017Base):
 
-    def __init__(self, split='train', transform=True):
+    aug = lblaug.LabelAugmentation(object_labels=range(1, 41), region_label=41)
+
+    def __init__(self, split='train', transform=True, aug='standard'):
         self.split = split
         self._transform = transform
+        self.aug_method = aug
         dataset_dir = osp.expanduser('~/data/projects/arc2017/Data/JSKV1')
         ids = []
         for scene_dir in os.listdir(dataset_dir):
@@ -77,35 +79,28 @@ class JSKV1(ARC2017Base):
     def __len__(self):
         return len(self._ids[self.split])
 
-    def __getitem__(self, i):
+    def __getitem__(self, i, aug='train'):
         scene_dir = self._ids[self.split][i]
         img_file = osp.join(scene_dir, 'image.jpg')
         img = skimage.io.imread(img_file)
         lbl_file = osp.join(scene_dir, 'label.npz')
         lbl = np.load(lbl_file)['arr_0']
-        if self.split == 'train':
-            aug_hsv = iaa.Sequential([
-                iaa.ChangeColorspace(to_colorspace='HSV', alpha=1,
-                                     from_colorspace='RGB'),
-                iaa.WithChannels(2, iaa.Add(value=[-40, 40])),
-                iaa.WithChannels(1, iaa.Add(value=[-40, 40])),
-                iaa.ChangeColorspace(to_colorspace='RGB', alpha=1,
-                                     from_colorspace='HSV'),
-                iaa.GaussianBlur(sigma=[0.0, 2.0]),
-            ], random_order=False)
-            affine_params = dict(
-                scale={'x': (0.8, 1.2), 'y': (0.8, 1.2)},
-                translate_px={'x': (-16, 16), 'y': (-16, 16)},
-                rotate=(-45, 45),
-                shear=(-15, 15),
-                mode='constant',
-                random_state=np.random.randint(0, 9999),
-            )
-            aug_tf_img = iaa.Affine(order=1, cval=0, **affine_params)
-            aug_tf_lbl = iaa.Affine(order=0, cval=-1, **affine_params)
-            img = aug_hsv.augment_image(img)
-            img = aug_tf_img.augment_image(img)
-            lbl = aug_tf_lbl.augment_image(lbl)
+        if aug == self.split:
+            if self.aug_method == 'standard':
+                img, lbl = self.aug.augment_labeled_image(img, lbl)
+            elif self.aug_method == 'stack':
+                transform = self._transform
+                self._transform = False
+                imgs, lbls = [], []
+                for j in np.random.randint(0, len(self), 10):
+                    img_j, lbl_j = self.__getitem__(j, aug=None)
+                    imgs.append(img_j)
+                    lbls.append(lbl_j)
+                self._transform = transform
+                img, lbl = self.aug.stack_labeled_images(img, lbl, imgs, lbls)
+                img, lbl = self.aug.augment_labeled_image(img, lbl)
+            else:
+                raise ValueError
         if self._transform:
             return self.transform(img, lbl)
         else:
@@ -114,9 +109,10 @@ class JSKV1(ARC2017Base):
 
 class JSKARC2017From16(JSKV1):
 
-    def __init__(self, split='train', transform=True):
+    def __init__(self, split='train', transform=True, aug='standard'):
         self.split = split
         self._transform = transform
+        self.aug_method = aug
         dataset_dir = osp.join(
             this_dir, '../../data/datasets/JSKARC2017From16')
         ids = []
@@ -133,10 +129,10 @@ class JSKARC2017From16(JSKV1):
 
 class DatasetV1(ARC2017Base):
 
-    def __init__(self, split='train', transform=True):
+    def __init__(self, split='train', transform=True, aug='standard'):
         self.datasets = [
-            JSKV1(split, transform),
-            JSKARC2017From16(split, transform),
+            JSKV1(split, transform, aug),
+            JSKARC2017From16(split, transform, aug),
         ]
 
     def __len__(self):
@@ -166,15 +162,17 @@ class DatasetV1(ARC2017Base):
 @click.option('-d', '--dataset', default='V1',
               type=click.Choice(['V1', 'JSKV1', 'JSKARC2017From16']),
               show_default=True)
+@click.option('--aug', default='standard',
+              type=click.Choice(['standard', 'stack']), show_default=True)
 def main(**args):
     if args['dataset'] == 'V1':
-        dataset = DatasetV1(transform=False)
+        dataset = DatasetV1(transform=False, aug=args['aug'])
         dataset_valid = DatasetV1(split='valid')
     elif args['dataset'] == 'JSKV1':
-        dataset = JSKV1(transform=False)
+        dataset = JSKV1(transform=False, aug=args['aug'])
         dataset_valid = JSKV1(split='valid')
     else:
-        dataset = JSKARC2017From16(transform=False)
+        dataset = JSKARC2017From16(transform=False, aug=args['aug'])
         dataset_valid = JSKARC2017From16(split='valid')
     print('Size of %s: train: %d, valid: %d' %
           (args['dataset'], len(dataset), len(dataset_valid)))
