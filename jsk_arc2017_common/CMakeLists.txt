@@ -1,13 +1,27 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_arc2017_common)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+    roscpp
+    rospy
+    std_msgs
+    message_generation
+)
 
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
 
-# XXX
+add_message_files(
+    FILES
+    WorkOrder.msg
+    WorkOrderArray.msg
+)
+
+generate_messages(
+    DEPENDENCIES
+    std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
