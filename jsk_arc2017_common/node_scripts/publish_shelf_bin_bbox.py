@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from jsk_recognition_msgs.msg import BoundingBoxArray
 from jsk_recognition_msgs.msg import BoundingBox
+from jsk_recognition_msgs.msg import BoundingBoxArray
 import rospy
 
 
@@ -11,8 +11,8 @@ class ShelfBinBboxPublisher(object):
         self.shelf_bin = rospy.get_param('~shelf_bin')
         self.duration = rospy.get_param('~duration', 1.0)
         self.bbox_dict = {}
-        for bin_name in 'abc':
-            bin_dict = self.shelf_bin['bin_' + bin_name.upper()]
+        for bin_name in 'ABC':
+            bin_dict = self.shelf_bin[bin_name]
             bbox = BoundingBox()
             bbox.header.frame_id = bin_dict['frame_id']
             bbox.pose.position.x = bin_dict['position']['x']
@@ -34,7 +34,7 @@ class ShelfBinBboxPublisher(object):
     def bbox_array_publish(self, event):
         bbox_list = []
         stamp = rospy.Time.now()
-        for bin_name in 'abc':
+        for bin_name in 'ABC':
             bbox = self.bbox_dict[bin_name]
             bbox.header.stamp = stamp
             bbox_list.append(bbox)

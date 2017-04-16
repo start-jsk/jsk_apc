@@ -1,5 +1,5 @@
 shelf_bin:
-  bin_A:
+  A:
     frame_id: shelf_base
     position:
       x: 0
@@ -14,7 +14,7 @@ shelf_bin:
       x: 0.6
       y: 0.3
       z: 0.26 
-  bin_B:
+  B:
     frame_id: shelf_base
     position:
       x: 0.15
@@ -29,7 +29,7 @@ shelf_bin:
       x: 0.3
       y: 0.3
       z: 0.26 
-  bin_C:
+  C:
     frame_id: shelf_base
     position:
       x: -0.15
