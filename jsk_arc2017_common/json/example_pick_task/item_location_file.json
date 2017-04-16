@@ -1,0 +1,107 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "ice_cube_tray",
+                "composition_book",
+                "laugh_out_loud_jokes",
+                "fiskars_scissors"
+            ]
+        },
+        {
+            "bin_id": "B",
+            "contents": [
+                "hanes_socks",
+                "tennis_ball_container",
+                "robots_everywhere",
+                "pie_plates"
+            ]
+        },
+        {
+            "bin_id": "C",
+            "contents": [
+                "reynolds_wrap",
+                "irish_spring_soap",
+                "crayons"
+            ]
+        },
+        {
+            "bin_id": "D",
+            "contents": [
+                "balloons",
+                "plastic_wine_glass",
+                "bath_sponge"
+            ]
+        },
+        {
+            "bin_id": "E",
+            "contents": [
+                "ticonderoga_penils",
+                "mesh_cup",
+                "windex"
+            ]
+        },
+        {
+            "bin_id": "F",
+            "contents": [
+                "speed_stick",
+                "flashlight",
+                "scotch_sponges"
+            ]
+        },
+        {
+            "bin_id": "G",
+            "contents": [
+                "colgate_toothbrush_4pk",
+                "hand_weight",
+                "epsom_salts"
+            ]
+        },
+        {
+            "bin_id": "H",
+            "contents": [
+                "mouse_traps",
+                "band_aid_tape",
+                "duct_tape"
+            ]
+        },
+        {
+            "bin_id": "I",
+            "contents": [
+                "marbles",
+                "hinged_ruled_index_cards",
+                "tissue_box"
+            ]
+        },
+        {
+            "bin_id": "J",
+            "contents": [
+                "black_fashion_gloves",
+                "measuring_spoons",
+                "glue_sticks"
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "A1",
+            "contents": [
+            ]
+        },
+        {
+            "size_id": "1A5",
+            "contents": [
+            ]
+        },
+        {
+            "size_id": "1B2",
+            "contents": [
+            ]
+        }
+    ],
+    "tote": {
+        "contents": [
+        ]
+    }
+}
