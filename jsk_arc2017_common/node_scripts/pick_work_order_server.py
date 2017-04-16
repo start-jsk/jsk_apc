@@ -3,56 +3,59 @@
 from jsk_arc2017_common.msg import WorkOrder
 from jsk_arc2017_common.msg import WorkOrderArray
 import json
+import os.path as osp
 import rospy
 
 
 class WorkOrderServer(object):
 
     def __init__(self):
-        self.json_file = rospy.get_param('~json', None)
+        json_dir = rospy.get_param('~json_dir', None)
         self.rate = rospy.get_param('~rate', 1.0)
-        if self.json_file is None:
-            rospy.logerr('must set json file path to ~json')
+        if json_dir is None:
+            rospy.logerr('must set json dir path to ~json_dir')
             return
-        with open(self.json_file) as f:
-            data = json.load(f)
-        self.bin_contents = data['bin_contents']
-        self.target_items = data['target_items']
-        larm_box_list = ['box_A']
-        rarm_box_list = ['box_B', 'box_C']
-        self.larm_msg = self._generate_msg(larm_box_list)
-        self.rarm_msg = self._generate_msg(rarm_box_list)
+        location_path = osp.join(json_dir, 'item_location_file.json')
+        with open(location_path) as location_f:
+            bins = json.load(location_f)['bins']
+        order_path = osp.join(json_dir, 'order_file.json')
+        with open(order_path) as order_f:
+            orders = json.load(order_f)['orders']
+
+        self.item_location = {}
+        for bin_ in bins:
+            bin_id = bin_['bin_id']
+            for item_name in bin_['contents']:
+                self.item_location[item_name] = bin_id
+
+        larm_orders = orders[2:3]
+        rarm_orders = orders[:2]
+        self.larm_msg = self._generate_msg(larm_orders)
+        self.rarm_msg = self._generate_msg(rarm_orders)
         self.larm_pub = rospy.Publisher(
             '~left_hand', WorkOrderArray, queue_size=1)
         self.rarm_pub = rospy.Publisher(
             '~right_hand', WorkOrderArray, queue_size=1)
         rospy.Timer(rospy.Duration(1.0 / self.rate), self._publish_msg)
 
-    def _generate_msg(self, box_list):
-        orders = []
-        for box in box_list:
-            for target_item in self.target_items[box]:
-                order = WorkOrder()
-                order.bin = self._get_target_bin(target_item)
-                order.item = target_item
-                order.box = box
-                orders.append(order)
-        msg = WorkOrderArray()
-        msg.orders = orders
-        return msg
-
-    def _get_target_bin(self, target_item):
-        for key, values in self.bin_contents.items():
-            if target_item in values:
-                target_bin = key
-                break
-        return target_bin
+    def _generate_msg(self, orders):
+        order_msgs = []
+        for order in orders:
+            for target_item in order['contents']:
+                order_msg = WorkOrder()
+                order_msg.bin = self.item_location[target_item]
+                order_msg.item = target_item
+                order_msg.box = order['size_id']
+                order_msgs.append(order_msg)
+        order_array_msg = WorkOrderArray()
+        order_array_msg.orders = order_msgs
+        return order_array_msg
 
     def _publish_msg(self, event):
         self.larm_pub.publish(self.larm_msg)
         self.rarm_pub.publish(self.rarm_msg)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     rospy.init_node('work_order_server')
     work_order_server = WorkOrderServer()
     rospy.spin()
