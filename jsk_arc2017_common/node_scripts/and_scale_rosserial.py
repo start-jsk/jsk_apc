@@ -44,7 +44,7 @@ class ANDScaleRosserial(object):
             self.pub.publish(msg)
         elif header == 'QT':
             # number mode
-            rospy.loger('Unsupported mode: %s', header)
+            rospy.logerr('Unsupported mode: %s', header)
             return
         elif header == 'US':
             # unstable
