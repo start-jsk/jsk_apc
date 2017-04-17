@@ -5,6 +5,7 @@
   <description>Baxter-specific programs for Amazon Robotics Challenge 2017 at JSK Lab.</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+  <maintainer email="shingogo@hotmail.co.jp">Shingo Kitagawa</maintainer>
 
   <license>BSD</license>
   <url>http://wiki.ros.org/jsk_arc2017_baxter</url>
