@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_arc2017_common)
 
-find_package(catkin REQUIRED COMPONENTS
-    roscpp
+find_package(catkin REQUIRED
     rospy
+    roseus
     std_msgs
     message_generation
 )
@@ -33,7 +33,11 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 
-catkin_package()
+catkin_package(
+    CATKIN_DEPENDS
+    std_msgs
+    message_runtime
+)
 
 ###########
 ## Build ##
