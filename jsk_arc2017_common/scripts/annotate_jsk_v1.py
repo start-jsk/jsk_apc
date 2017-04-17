@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import json
 import os
 import os.path as osp
@@ -55,9 +56,9 @@ def json_to_label(json_file):
 
 
 def main():
-    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSK_V1')
+    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSKV1')
     if not osp.exists(dataset_dir):
-        print('Please install JSK_V1 dataset to: %s' % dataset_dir)
+        print('Please install JSKV1 dataset to: %s' % dataset_dir)
         quit(1)
 
     objlist_file = osp.join(PKG_DIR, 'data/others/object_list_5x8.jpg')
@@ -67,8 +68,9 @@ def main():
 
     cmap = labelme.utils.labelcolormap(41)
 
-    for stamp in os.listdir(dataset_dir):
-        stamp_dir = osp.join(dataset_dir, stamp)
+    for stamp_dir in sorted(os.listdir(dataset_dir)):
+        stamp = datetime.datetime.fromtimestamp(int(stamp_dir) / 1e9)
+        stamp_dir = osp.join(dataset_dir, stamp_dir)
         if not osp.isdir(stamp_dir):
             continue
         json_file = osp.join(stamp_dir, 'label.json')
@@ -76,8 +78,14 @@ def main():
         lbl_file = osp.join(stamp_dir, 'label.npz')
         lbl_viz_file = osp.join(stamp_dir, 'label_viz.jpg')
 
+        lock_file = osp.join(stamp_dir, 'annotation.lock')
+        if osp.exists(lock_file):
+            continue
+
         if not osp.exists(json_file):
-            print('==> Annotating: %s' % stamp_dir)
+            open(lock_file, 'w')
+
+            print('%s: %s' % (stamp.isoformat(), stamp_dir))
             cmd = 'labelme %s -O %s' % (img_file, json_file)
             output = subprocess.Popen(shlex.split(cmd))
 
@@ -92,6 +100,8 @@ def main():
                     break
                 cv2.imshow('object list', objlist)
                 cv2.waitKey(50)
+
+            os.remove(lock_file)
 
             if returncode != 0:
                 output.kill()

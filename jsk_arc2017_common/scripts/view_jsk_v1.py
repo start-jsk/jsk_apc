@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 
+import datetime
 import os
 import os.path as osp
 import warnings
 
+import click
 import cv2
+import dateutil.parser
 import fcn
 import matplotlib.cm
 import numpy as np
+import skimage.io
 
 import jsk_recognition_utils
 import rospkg
@@ -33,10 +37,12 @@ def colorize_depth(depth, min_value=None, max_value=None):
     return colorized
 
 
-def main():
-    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSK_V1')
+@click.command()
+@click.option('-s', '--start')
+def main(start):
+    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSKV1')
     if not osp.exists(dataset_dir):
-        print('Please install JSK_V1 dataset to: %s' % dataset_dir)
+        print('Please install JSKV1 dataset to: %s' % dataset_dir)
         quit(1)
 
     label_files = []
@@ -56,12 +62,21 @@ def main():
     object_names.append('__shelf__')
     object_names.append('__unlabeled__')
 
-    print('==> Press q to quit, and any other keys to go next.')
-    for stamp_dir in os.listdir(dataset_dir):
-        stamp_dir = osp.join(dataset_dir, stamp_dir)
+    print('==> Press keys: [q] to quit, [n] to go next, [p] to go previous')
+    stamp_dirs = list(sorted(os.listdir(dataset_dir)))
+    i = 0
+    while True:
+        stamp = datetime.datetime.fromtimestamp(int(stamp_dirs[i]) / 1e9)
+        if start and stamp < dateutil.parser.parse(start):
+            i += 1
+            continue
+        start = None
+
+        stamp_dir = osp.join(dataset_dir, stamp_dirs[i])
+        print('%s: %s' % (stamp.isoformat(), stamp_dir))
 
         img_file = osp.join(stamp_dir, 'image.jpg')
-        img = cv2.imread(img_file)
+        img = skimage.io.imread(img_file)
 
         depth_file = osp.join(stamp_dir, 'depth.npz')
         depth = np.load(depth_file)['arr_0']
@@ -81,11 +96,19 @@ def main():
         else:
             label_viz = np.zeros_like(img)
 
-        viz = jsk_recognition_utils.get_tile_image([img, depth_viz, label_viz])
+        viz = jsk_recognition_utils.get_tile_image([img, label_viz, depth_viz])
 
-        cv2.imshow('view_jsk_v1', viz)
-        if cv2.waitKey(0) == ord('q'):
+        cv2.imshow('view_jsk_v1', viz[:, :, ::-1])
+        key = cv2.waitKey(0)
+        if key == ord('q'):
             break
+        elif key == ord('n'):
+            i += 1
+        elif key == ord('p'):
+            i -= 1
+        else:
+            continue
+
 
 if __name__ == '__main__':
     main()

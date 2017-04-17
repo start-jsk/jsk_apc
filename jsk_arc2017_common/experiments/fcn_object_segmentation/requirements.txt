@@ -1,0 +1,12 @@
+click
+fcn
+git+https://github.com/aleju/imgaug.git
+git+https://github.com/wkentaro/lblaug.git
+numpy
+Pillow
+pytz
+PyYaml
+scikit-image
+torch
+torchfcn
+torchvision

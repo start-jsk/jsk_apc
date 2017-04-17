@@ -25,7 +25,7 @@ catkin_package()
 ## Build ##
 ###########
 
-# XXX
+add_custom_target(install_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_data.py)
 
 #############
 ## Install ##
