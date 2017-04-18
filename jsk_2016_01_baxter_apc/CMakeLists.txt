@@ -107,6 +107,7 @@ catkin_package(
   CATKIN_DEPENDS control_msgs roscpp std_msgs baxter_core_msgs
 #  DEPENDS system_lib
 )
+catkin_add_env_hooks(99.dotfile SHELLS bash zsh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
 
 ###########
 ## Build ##
