@@ -28,6 +28,17 @@ class WorkOrderServer(object):
             for item_name in bin_['contents']:
                 self.item_location[item_name] = bin_id
 
+        self.cardboard_ids = {}
+        for order in orders:
+            size_id = order['size_id']
+            num_contents = len(order['contents'])
+            if num_contents == 2:
+                self.cardboard_ids[size_id] = 'A'
+            elif num_contents == 3:
+                self.cardboard_ids[size_id] = 'B'
+            else:
+                self.cardboard_ids[size_id] = 'C'
+
         larm_orders = orders[2:3]
         rarm_orders = orders[:2]
         self.larm_msg = self._generate_msg(larm_orders)
@@ -41,11 +52,12 @@ class WorkOrderServer(object):
     def _generate_msg(self, orders):
         order_msgs = []
         for order in orders:
+            size_id = order['size_id']
             for target_item in order['contents']:
                 order_msg = WorkOrder()
                 order_msg.bin = self.item_location[target_item]
                 order_msg.item = target_item
-                order_msg.box = order['size_id']
+                order_msg.box = self.cardboard_ids[size_id]
                 order_msgs.append(order_msg)
         order_array_msg = WorkOrderArray()
         order_array_msg.orders = order_msgs
