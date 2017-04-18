@@ -158,6 +158,31 @@ else()
   message(WARNING "urdf_to_collada requries collada-dom >= 2.4.4, installed version is ${COLLADA_VERSION}")
 endif()
 
+## -------------------
+## baxter-2015.l generation
+## -------------------
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter-2015.l
+  COMMAND rosrun euscollada collada2eus baxter_2015.dae baxter_2015.yaml baxter-2015.l
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS robots/baxter_2015.dae robots/baxter_2015.yaml)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter_2015.dae
+  COMMAND rosrun collada_urdf urdf_to_collada baxter_2015.urdf baxter_2015.dae
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS robots/baxter_2015.urdf)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter_2015.urdf
+  COMMAND rosrun xacro xacro baxter_2015.xacro > baxter_2015.urdf
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS robots/baxter_2015.xacro)
+# get collada-dom version
+find_package(PkgConfig)
+pkg_check_modules(COLLADA collada-dom>=2.4.4 )
+if ( ${COLLADA_FOUND} )
+  add_custom_target(generate_baxter_2015_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter-2015.l)
+else()
+  pkg_check_modules(COLLADA collada-dom)
+  message(WARNING "urdf_to_collada requries collada-dom >= 2.4.4, installed version is ${COLLADA_VERSION}")
+endif()
+
 ## Declare a C++ executable
 add_executable(gripper_joint_states_publisher src/gripper_joint_states_publisher.cpp)
 add_executable(gripper_trajectory_server src/gripper_trajectory_server.cpp)

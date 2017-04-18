@@ -1,0 +1,176 @@
+<launch>
+  <arg name="launch_main" default="true" />
+  <arg name="json" />
+
+  <!-- bin contents data -->
+  <node pkg="jsk_2015_05_baxter_apc" type="bin_contents.py" name="bin_contents" respawn="true">
+    <param name="json" value="$(arg json)" />
+  </node>
+
+  <!-- work order data -->
+  <node pkg="jsk_2016_01_baxter_apc" type="work_order.py" name="work_order" respawn="true">
+    <param name="json" value="$(arg json)" />
+  </node>
+
+  <!-- parameter -->
+  <param name="/left_hand/state" value="" />
+  <param name="/left_hand/target_bin" value="" />
+  <param name="/right_hand/state" value="" />
+  <param name="/right_hand/target_bin" value="" />
+
+  <node pkg="jsk_rqt_plugins" type="rqt_yn_btn" name="rqt_yn_btn" />
+
+  <!-- object verification -->
+  <group ns="left_hand">
+    <node name="object_verification"
+          pkg="jsk_2015_05_baxter_apc" type="object_verification.py"
+          respawn="true">
+      <param name="json" value="$(arg json)" />
+      <param name="weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
+      <remap from="~input/bof" to="bof_object_matcher/output" />
+      <remap from="~input/color_hist" to="color_object_matcher/output" />
+    </node>
+  </group>
+  <group ns="right_hand">
+    <node name="object_verification"
+          pkg="jsk_2015_05_baxter_apc" type="object_verification.py"
+          respawn="true">
+      <param name="json" value="$(arg json)" />
+      <param name="weight" value="$(find jsk_2015_05_baxter_apc)/data/classifier_weight.yml" />
+      <remap from="~input/bof" to="bof_object_matcher/output" />
+      <remap from="~input/color_hist" to="color_object_matcher/output" />
+    </node>
+  </group>
+
+  <!-- robot main -->
+  <node if="$(arg launch_main)" pkg="jsk_2016_01_baxter_apc" type="main-2015.l" name="left_hand"
+    args="&quot;(progn (apc-init :larm-controller) (apc-mainloop :larm))&quot;"
+    respawn="true" output="screen">
+    <env name="DISPLAY" value="" />
+  </node>
+  <node if="$(arg launch_main)" pkg="jsk_2016_01_baxter_apc" type="main-2015.l" name="right_hand"
+    args="&quot;(progn (apc-init :rarm-controller) (apc-mainloop :rarm))&quot;"
+    respawn="true" output="screen">
+    <env name="DISPLAY" value="" />
+  </node>
+
+  <!-- visualization -->
+  <node name="visualize_json"
+        pkg="jsk_apc2015_common" type="visualize_json.py"
+        args="$(arg json)" />
+  <node name="visualize_on_rviz"
+        pkg="jsk_2015_05_baxter_apc" type="visualize_on_rviz.py">
+    <param name="json" value="$(arg json)" />
+  </node>
+
+  <!-- segmentation in bin -->
+  <node name="bin_a_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_a_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_a_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_b_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_b_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_b_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_c_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_c_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_c_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_d_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_d_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_d_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_e_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_e_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_e_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_f_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_f_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_f_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_g_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_g_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_g_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_h_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_h_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_h_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_i_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_i_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_i_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_j_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_j_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_j_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_k_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_k_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_k_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+  <node name="bin_l_euclid_k_clustering"
+        pkg="jsk_2015_05_baxter_apc" type="euclid_k_clustering.py">
+    <remap from="~k_cluster" to="bin_contents/bin_l_n_object" />
+    <rosparam subst_value="true">
+      reconfig_eps: 0.1
+      node: bin_l_euclid_clustering
+      default_tolerance: 0.02
+    </rosparam>
+  </node>
+
+</launch>
