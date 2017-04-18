@@ -3,7 +3,7 @@ shelf_bin:
     frame_id: shelf_base
     position:
       x: 0
-      y: -0.15
+      y: 0.15
       z: 0 
     orientation:
       x: 0
@@ -18,7 +18,7 @@ shelf_bin:
     frame_id: shelf_base
     position:
       x: 0.15
-      y: 0.15
+      y: -0.15
       z: 0 
     orientation:
       x: 0
@@ -33,7 +33,7 @@ shelf_bin:
     frame_id: shelf_base
     position:
       x: -0.15
-      y: 0.15
+      y: -0.15
       z: 0 
     orientation:
       x: 0
