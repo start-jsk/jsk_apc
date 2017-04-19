@@ -8,7 +8,7 @@
         pkg="jsk_arc2017_common" type="set_location_in_rosparam.py">
     <remap from="~param" to="/bin_contents" />
     <rosparam subst_value="true">
-      location: bin 
+      location: bins
       json_dir: $(arg json_dir)
     </rosparam>
   </node>
