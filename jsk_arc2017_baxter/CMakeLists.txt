@@ -40,4 +40,12 @@ catkin_package()
 ## Testing ##
 #############
 
-# XXX
+if(CATKIN_ENABLE_TESTING)
+  find_package(jsk_tools REQUIRED)
+  if(${jsk_tools_VERSION} VERSION_GREATER 2.0.13)
+    file(GLOB_RECURSE _eus_files euslisp/*.l)
+    foreach(_eus_file IN LISTS _eus_files)
+      jsk_tools_add_shell_test(COMMAND "rosrun jsk_2016_01_baxter_apc euslint ${_eus_file}")
+    endforeach()
+  endif()
+endif()

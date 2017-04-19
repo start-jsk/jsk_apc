@@ -30,6 +30,8 @@
   <run_depend>jsk_rviz_plugins</run_depend>
   <run_depend>jsk_topic_tools</run_depend>
 
+  <test_depend>jsk_tools</test_depend>
+
   <export>
   </export>
 </package>
