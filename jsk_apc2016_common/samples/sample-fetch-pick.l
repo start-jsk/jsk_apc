@@ -2,7 +2,8 @@
 
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "geometry_msgs")
-(ros::load-ros-manifest "jsk_pcl_ros")
+(ros::load-ros-manifest "sensor_msgs")
+;(ros::load-ros-manifest "jsk_pcl_ros")
 (ros::load-ros-manifest "std_msgs")
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-package "force_proximity_ros")
@@ -117,6 +118,142 @@
   (send *ri* :go-grasp :effort 60))
 
 
+(defun grope-from-front()
+  ;before use this function, do below
+  ;(send *ri* :angle-vector (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector (- x 100) y  table-height) (float-vector 0 width-sum i)))))
+
+  ;;proximity1 and proximity2 are for width.
+  ;;proximity0 is for depth.
+  
+  (echo-proximity)
+  (let ((proximity0-init-value) (proximity1-init-value) (proximity2-init-value)
+	(proximity0-raw) (proximity1-raw) (proximity2-raw)
+	(proximity0 0) (proximity1 0) (proximity2 0)
+	(i 0) (width-sum 0))
+    
+    (ros::spin-once)
+    ;;sensor calibration (far away from the target)
+    (setq proximity0-init-value (send proximity0-obj :average))
+    (setq proximity1-init-value (send proximity1-obj :average))
+    (setq proximity2-init-value (send proximity2-obj :average))
+    
+    (setq grasp-flag-front nil)
+    (while (null grasp-flag-front)
+      (setq proximity0-raw (send proximity0-obj :average))
+      (setq proximity1-raw (send proximity1-obj :average))
+      (setq proximity2-raw (send proximity2-obj :average))
+      
+      (setq proximity0 (- proximity0-raw proximity0-init-value))
+      (setq proximity1 (- proximity1-raw proximity1-init-value))
+      (setq proximity2 (- proximity2-raw proximity2-init-value))
+      
+      (format t "i : ~A~%" i)
+      (format t "proximity0 : ~A~%" proximity0)
+      (format t "proximity1 : ~A~%" proximity1)
+      (format t "proximity2 : ~A~%" proximity2)
+      
+      (setq width-sum (+ width-sum (/ (- proximity2 proximity1) 100)))
+      (setq i (+ i 10))
+      
+      (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector (- x 100) y table-height) (float-vector i width-sum 0))))
+      (move 1000)
+      
+      (ros::spin-once)))
+  
+  (try-grasp))
+
+
+(defun cb-proximity0 (proximity-msg)
+  (setq proximity0-obj proximity-msg)
+  ;(format t "mode : ~A~%" (send proximity-msg :mode))
+    (if (equal "T" (send proximity-msg :mode))
+	(setq grasp-flag-front t)))
+(defun cb-proximity1 (proximity-msg)
+  (setq proximity1-obj proximity-msg))
+(defun cb-proximity2 (proximity-msg)
+  (setq proximity2-obj proximity-msg))
+(defun cb-proximity3 (proximity-msg)
+  (setq proximity3-obj proximity-msg)
+  ;(format t "mode : ~A~%" (send proximity-msg :mode))
+    (if (equal "T" (send proximity-msg :mode))
+	(setq grasp-flag-top t)))
+(defun cb-proximity4 (proximity-msg)
+  (setq proximity4-obj proximity-msg)
+  ;(format t "mode : ~A~%" (send proximity-msg :mode))
+    (if (equal "T" (send proximity-msg :mode))
+	(setq grasp-flag-top t)))
+
+
+(defun echo-proximity()
+    (ros::subscribe
+     "/proximity_sensor0"
+     force_proximity_ros::proximity #'cb-proximity0 1000)
+    (ros::subscribe
+     "/proximity_sensor1"
+     force_proximity_ros::proximity #'cb-proximity1 100)
+    (ros::subscribe
+     "/proximity_sensor2"
+     force_proximity_ros::proximity #'cb-proximity2 100)
+    (ros::subscribe
+     "/proximity_sensor3"
+     force_proximity_ros::proximity #'cb-proximity3 1000)
+    (ros::subscribe
+     "/proximity_sensor4"
+     force_proximity_ros::proximity #'cb-proximity4 1000))
+
+
+(defun grope-from-top()
+  ;before use this function, do below   
+  ;(send *ri* :angle-vector (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y (+ table-height 30)) :rpy #f(0 1.57 0))))
+
+  ;;proximity1 and proximity2 are for width.
+  ;;proximity0 is for depth.
+  
+  (echo-proximity)
+  (let ((proximity0-init-value) (proximity1-init-value) (proximity2-init-value)
+	(proximity0-raw) (proximity1-raw) (proximity2-raw)
+	(proximity0 0) (proximity1 0) (proximity2 0)
+	(i 0) (width-sum 0))
+    
+    (ros::spin-once)
+    ;;sensor calibration (far away from the target)
+    (setq proximity0-init-value (send proximity0-obj :average))
+    (setq proximity1-init-value (send proximity1-obj :average))
+    (setq proximity2-init-value (send proximity2-obj :average))
+    
+    (setq grasp-flag-top nil)
+    (while (null grasp-flag-top)
+      (setq proximity0-raw (send proximity0-obj :average))
+      (setq proximity1-raw (send proximity1-obj :average))
+      (setq proximity2-raw (send proximity2-obj :average))
+      
+      (setq proximity0 (- proximity0-raw proximity0-init-value))
+      (setq proximity1 (- proximity1-raw proximity1-init-value))
+      (setq proximity2 (- proximity2-raw proximity2-init-value))
+      
+      (format t "i : ~A~%" i)
+      (format t "proximity0 : ~A~%" proximity0)
+      (format t "proximity1 : ~A~%" proximity1)
+      (format t "proximity2 : ~A~%" proximity2)
+
+
+      (setq width-sum (+ width-sum (/ (- proximity2 proximity1) 100)))
+      (setq i (- i 1))
+      
+      (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y (+ table-height 30)) (float-vector 0 width-sum i)) :rpy #f(0 1.57 0)))
+      (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000)
+
+      (ros::spin-once))
+    
+    (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y (+ table-height 30)) (float-vector 0 width-sum (+ i 20))) :rpy #f(0 1.57 0)))
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000)
+    (send *ri* :wait-interpolation)
+    (try-grasp)
+    
+    (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y (+ table-height 30)) :rpy #f(0 1.57 0)))
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000)))
+
+
 ;;try to pick object.
 (defun pick()
   (send *ri* :angle-vector (send *fetch* :reset-pose))
@@ -136,41 +273,41 @@
 	(let ((flag nil) (i 0))
 	  (while (null flag)
 	    ;(send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y (+ z i))))
-	    (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y z) (float-vector 0 0 i))))
+	    (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y z) (float-vector -100 0 i))))
 	    (setq flag (move 5000 1))
-	    (setq i (+ i 5))))
+	    (setq i (+ i 5)))
+	  (setq table-height (- i 5))
 	(send *ri* :wait-interpolation)
 
+	(grope-from-front)
 	;; grope for the target by using proximity sensor(s) on fetch's hand
-	(let ((proximity0 0) (threshold0 13000) (proximity-msg0)
-	      (proximity1 0) (threshold1 13000) (proximity-msg1)
-	      (j 0) (rend-y) (lend-y))
-	  (while (< proximity0 threshold0)
-	    (setq proximity-msg0
-		  (one-shot-subscribe
-		   "/proximity_sensor0"
-		   force_proximity_ros::proximity))
-	    (setq proximity0 (send proximity-msg0 :average))
-	    (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y z) (float-vector 0 j 0))))
-	    (move 1000)
-	    (setq j (+ j 5)))
-	  (setq rend-y (+ y j))
+	;; (let ((proximity0 0) (threshold0 13000) (proximity-msg0)
+	;;       (proximity1 0) (threshold1 13000) (proximity-msg1)
+	;;       (j 0) (rend-y) (lend-y))
+	;;   (while (< proximity0 threshold0)
+	;;     (setq proximity-msg0
+	;; 	  (one-shot-subscribe
+	;; 	   "/proximity_sensor0"
+	;; 	   force_proximity_ros::proximity))
+	;;     (setq proximity0 (send proximity-msg0 :average))
+	;;     (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y z) (float-vector 0 j 0))))
+	;;     (move 1000)
+	;;     (setq j (+ j 5)))
+	;;   (setq rend-y (+ y j))
 
-	  (setq j 0)
-	  (while (< proximity1 threshold1)
-	    (setq proximity-msg1
-		  (one-shot-subscribe
-		   "/proximity_sensor1"
-		   force_proximity_ros::proximity))
-	    (setq proximity1 (send proximity-msg1 :average))
-	    (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y z) (float-vector 0 j 0))))
-	    (move 1000)
-	    (setq j (- j 5)))
-	  (setq lend-y (+ y j))
-	  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x (/ (+ rend-y lend-y) 2) z)))
-	  (move 3000))
-
-	(try-grasp)
+	;;   (setq j 0)
+	;;   (while (< proximity1 threshold1)
+	;;     (setq proximity-msg1
+	;; 	  (one-shot-subscribe
+	;; 	   "/proximity_sensor1"
+	;; 	   force_proximity_ros::proximity))
+	;;     (setq proximity1 (send proximity-msg1 :average))
+	;;     (send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y z) (float-vector 0 j 0))))
+	;;     (move 1000)
+	;;     (setq j (- j 5)))
+	;;   (setq lend-y (+ y j))
+	;;   (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x (/ (+ rend-y lend-y) 2) z)))
+	;;   (move 3000))
 
 	;(send *fetch* :inverse-kinematics (make-coords :pos (float-vector (- x 200) y (+ z 200))))
 	(send *fetch* :inverse-kinematics (make-coords :pos (v+ (float-vector x y z) #f(-200 0 200))) :debug-view t)
