@@ -12,22 +12,18 @@
 
 (defclass jsk_2016_01_baxter_apc::baxter-interface
   :super baxter-interface
-  :slots
-  (
-   _tfl
-   _bin-boxes
-   _objects-in-bin-boxes
-   _objects-in-bin-coms
-   _objects-sib-boxes
-   _objects-sib-coords
-   _bin-coords-list
-   _hard-coded-variables
-   _last-av-before-approach
-   _order-bin-box
-   _objects-in-order-bin-boxes
-   _objects-in-order-bin-coords
-   )
-  )
+  :slots (tfl-
+          bin-boxes-
+          objects-in-bin-boxes-
+          objects-in-bin-coms-
+          objects-sib-boxes-
+          objects-sib-coords-
+          bin-coords-list-
+          hard-coded-variables-
+          last-av-before-approach-
+          order-bin-box-
+          objects-in-order-bin-boxes-
+          objects-in-order-bin-coords-))
 
 (defmethod jsk_2016_01_baxter_apc::baxter-interface
   (:init
@@ -55,39 +51,39 @@
         (let ((tmp-actions (gethash :larm-controller controller-table)))
           (setf (gethash :larm-controller controller-table) (reverse tmp-actions))))
     ;; initialize slots
-    (setq _tfl (instance ros::transform-listener :init))
-    (setq _bin-boxes (make-hash-table))
-    (setq _objects-in-bin-boxes (make-hash-table))
-    (setq _objects-in-bin-coms (make-hash-table))
-    (setq _objects-sib-boxes (make-hash-table))
-    (setq _objects-sib-coords (make-hash-table))
+    (setq tfl- (instance ros::transform-listener :init))
+    (setq bin-boxes- (make-hash-table))
+    (setq objects-in-bin-boxes- (make-hash-table))
+    (setq objects-in-bin-coms- (make-hash-table))
+    (setq objects-sib-boxes- (make-hash-table))
+    (setq objects-sib-coords- (make-hash-table))
     ;; set hard-coded variables
-    (setq _hard-coded-variables (make-hash-table))
-    (sethash :r-pressure-threshold _hard-coded-variables 1000)
-    (sethash :l-pressure-threshold _hard-coded-variables 1000)
-    (sethash :offset-avoid-bin-top _hard-coded-variables -20)
-    (sethash :pad-link-l _hard-coded-variables 85)
-    (sethash :gripper-tube-t _hard-coded-variables 40)
-    (sethash :offset-object-h _hard-coded-variables -10)
-    (sethash :offset-object-w _hard-coded-variables 20)
-    (sethash :offset-gripper-bin-top _hard-coded-variables 10)
-    (sethash :offset-gripper-bin-side _hard-coded-variables 40)
-    (sethash :draw-out-from-bin-l _hard-coded-variables 100)
-    (sethash :default-overlook-angle _hard-coded-variables (/ pi 4.5))
-    (sethash :default-overlook-offset _hard-coded-variables (make-hash-table))
+    (setq hard-coded-variables- (make-hash-table))
+    (sethash :r-pressure-threshold hard-coded-variables- 1000)
+    (sethash :l-pressure-threshold hard-coded-variables- 1000)
+    (sethash :offset-avoid-bin-top hard-coded-variables- -20)
+    (sethash :pad-link-l hard-coded-variables- 85)
+    (sethash :gripper-tube-t hard-coded-variables- 40)
+    (sethash :offset-object-h hard-coded-variables- -10)
+    (sethash :offset-object-w hard-coded-variables- 20)
+    (sethash :offset-gripper-bin-top hard-coded-variables- 10)
+    (sethash :offset-gripper-bin-side hard-coded-variables- 40)
+    (sethash :draw-out-from-bin-l hard-coded-variables- 100)
+    (sethash :default-overlook-angle hard-coded-variables- (/ pi 4.5))
+    (sethash :default-overlook-offset hard-coded-variables- (make-hash-table))
     (dolist (bin (list :a :b :c :d :e :f :g :h :i :j :k :l))
-      (sethash bin (gethash :default-overlook-offset _hard-coded-variables)
+      (sethash bin (gethash :default-overlook-offset hard-coded-variables-)
                (if (find bin (list :b :i :k))
                  (float-vector -280 0 -60)
                  (float-vector -280 0 -10)
                  )
                )
       )
-    (sethash :bin-reachable-depth-gripper-90 _hard-coded-variables 200)
-    (setq _order-bin-box (make-hash-table))
+    (sethash :bin-reachable-depth-gripper-90 hard-coded-variables- 200)
+    (setq order-bin-box- (make-hash-table))
     (setq _movable-region (make-hash-table))
-    (setq _objects-in-order-bin-boxes (make-hash-table))
-    (setq _objects-in-order-bin-coords (make-hash-table))
+    (setq objects-in-order-bin-boxes- (make-hash-table))
+    (setq objects-in-order-bin-coords- (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool)
@@ -193,9 +189,9 @@
           (< (send (one-shot-subscribe topic std_msgs::Float64) :data)
              (cond
                ((eq arm :rarm)
-                (gethash :r-pressure-threshold _hard-coded-variables))
+                (gethash :r-pressure-threshold hard-coded-variables-))
                ((eq arm :larm)
-                (gethash :l-pressure-threshold _hard-coded-variables))
+                (gethash :l-pressure-threshold hard-coded-variables-))
                )
              )
           )
@@ -235,8 +231,8 @@
     )
   (:bin-reachable-depth
     (gripper-angle)
-    (+ (gethash :bin-reachable-depth-gripper-90 _hard-coded-variables)
-       (* (gethash :pad-link-l _hard-coded-variables) (cos (deg2rad gripper-angle))))
+    (+ (gethash :bin-reachable-depth-gripper-90 hard-coded-variables-)
+       (* (gethash :pad-link-l hard-coded-variables-) (cos (deg2rad gripper-angle))))
     )
   (:set-object-segmentation-candidates
     (&key arm candidates)
@@ -300,7 +296,7 @@
     (frame_id pose)
     (let (coords)
       (setq coords (ros::tf-pose->coords pose))
-      (send (send _tfl :lookup-transform "base" frame_id (ros::time 0)) :transform coords)
+      (send (send tfl- :lookup-transform "base" frame_id (ros::time 0)) :transform coords)
       ))
   (:fold-pose-back
     (&optional (arm :arms))
@@ -311,7 +307,7 @@
     (target-object bin)
     (let (obj-sizes box-sizes obj-idx box-idx box-size box-sizes-back
                     (candidates (send self :get-bin-contents bin))
-                    (boxes (gethash bin _objects-in-bin-boxes)))
+                    (boxes (gethash bin objects-in-bin-boxes-)))
       (dolist (obj candidates) (pushback (get-object-size obj) obj-sizes))
       (dolist (box boxes) (pushback (send (send self :bbox->cube box) :volume) box-sizes))
       (setq box-sizes-bak (copy-seq box-sizes))
@@ -338,7 +334,7 @@
           (setq box-list (send box-msg :boxes))
           (setq bin-list (list :a :b :c :d :e :f :g :h :i :j :k :l))
           (dolist (bin bin-list)
-            (setf (gethash bin _bin-boxes) (car box-list))
+            (setf (gethash bin bin-boxes-) (car box-list))
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:recognize-order-bin-box
@@ -354,7 +350,7 @@
         (progn
           (ros::ros-info "[:recognize-order-bin-box] arm: ~a Recognize order bin box" (arm2str arm))
           (setq bbox (car (send box-msg :boxes)))
-          (sethash arm _order-bin-box bbox))
+          (sethash arm order-bin-box- bbox))
         (ros::ros-fatal "[:recognize-order-bin-box] arm: ~a Cannot find order bin" (arm2str arm)))))
   (:bbox->cube
     (bbox)
@@ -415,9 +411,9 @@
   (:get-movable-region-for-tote
     (arm &key (offset (list 0 0 0)))
     (let (cube)
-      (if (gethash arm _order-bin-box)
+      (if (gethash arm order-bin-box-)
         (progn
-          (setq cube (send self :bbox->cube (gethash arm _order-bin-box)))
+          (setq cube (send self :bbox->cube (gethash arm order-bin-box-)))
           (sethash arm _movable-region (send self :cube->movable-region cube :offset offset)))
         (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (arm2str arm)))))
   (:cube->movable-region
@@ -434,7 +430,7 @@
   (:visualize-bins
     ()
     (let (bins)
-      (dolist (b (send _bin-boxes :list-values))
+      (dolist (b (send bin-boxes- :list-values))
         (let ((bin-inside (send self :bbox->cube b))
               (bin-outside (make-cube (+ (m->mm (send b :dimensions :x)))
                                       (+ (m->mm (send b :dimensions :y)) 30)
@@ -449,7 +445,7 @@
       bins))
   (:visualize-objects
     (&key (sib t))
-    (let ((boxes-in-bin (if sib _objects-sib-boxes _objects-in-bin-boxes))
+    (let ((boxes-in-bin (if sib objects-sib-boxes- objects-in-bin-boxes-))
           (objs))
       (dolist (boxes (send boxes-in-bin :list-values))
         (dolist (b boxes)
@@ -473,7 +469,7 @@
       (dolist (pose-msg (send msg :poses))
         (pushback (send self :tf-pose->coords (send msg :header :frame_id) pose-msg) coords-list)
         )
-      (setq _bin-coords-list coords-list)
+      (setq bin-coords-list- coords-list)
       )
     )
   (:recognize-objects-in-bin
@@ -497,8 +493,8 @@
              (ros::spin-once))
       (ros::unsubscribe box-topic)
       (ros::unsubscribe com-topic)
-      (sethash bin _objects-in-bin-boxes (send box-msg :boxes))
-      (sethash bin _objects-in-bin-coms com-msg)))
+      (sethash bin objects-in-bin-boxes- (send box-msg :boxes))
+      (sethash bin objects-in-bin-coms- com-msg)))
   (:recognize-objects-segmentation-in-bin
     (arm bin &key (stamp (ros::time-now)) (timeout 5))
     (let ((box-topic
@@ -534,12 +530,12 @@
                            (send self :tf-pose->coords
                                  (send com-msg :header :frame_id) obj-pose))
                        (send com-msg :poses)))
-         (sethash bin _objects-sib-boxes obj-box)
-         (sethash bin _objects-sib-coords obj-coords))
+         (sethash bin objects-sib-boxes- obj-box)
+         (sethash bin objects-sib-coords- obj-coords))
         (t
          (ros::ros-error "[:recognize-objects-segmentation-in-bin] arm: ~a failed to get sib msg" arm)
-         (sethash bin _objects-sib-boxes nil)
-         (sethash bin _objects-sib-coords nil)))))
+         (sethash bin objects-sib-boxes- nil)
+         (sethash bin objects-sib-coords- nil)))))
   (:recognize-objects-in-order-bin
     (&key arm (stamp (ros::time-now)) (timeout 10))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_target/boxes" (arm2str arm)))
@@ -571,8 +567,8 @@
                            (send self :tf-pose->coords
                                  (send com-msg :header :frame_id) obj-pose))
                        (send com-msg :poses)))
-         (sethash arm _objects-in-order-bin-boxes obj-box)
-         (sethash arm _objects-in-order-bin-coords obj-coords))
+         (sethash arm objects-in-order-bin-boxes- obj-box)
+         (sethash arm objects-in-order-bin-coords- obj-coords))
         (t
          (ros::ros-error "[:recognize-objects-in-order-bin] arm: ~a failed to get cpi msg" arm)))))
   (:recognize-objects-in-bin-loop
@@ -587,7 +583,7 @@
                (unix::sleep 2)
                )
              (ros::ros-info "[recognize-objects-in-bin-loop] Segmentating objects in bin ~a" bin)
-             (setq offset (gethash bin (gethash :default-overlook-offset _hard-coded-variables)))
+             (setq offset (gethash bin (gethash :default-overlook-offset hard-coded-variables-)))
              (send self :angle-vector (send self :bin-overlook-pose arm bin :offset offset) 3000)
              (if (send *ri* :recognize-objects-segmentation-in-bin
                            arm bin :stamp (ros::time-now))
@@ -660,7 +656,7 @@
       ))
   (:try-to-pick-in-bin
     (arm bin)
-    (let* ((bin-box (gethash bin _bin-boxes))
+    (let* ((bin-box (gethash bin bin-boxes-))
            (dim-x (m->mm (send bin-box :dimensions :x)))
            (dim-y (m->mm (send bin-box :dimensions :y)))
            (dim-z (m->mm (send bin-box :dimensions :z)))
@@ -687,10 +683,10 @@
   (:try-to-pick-object-solidity
     (arm bin &key (offset #f(0 0 0)))
     (let (pos-list centroid)
-      (unless _bin-coords-list
+      (unless bin-coords-list-
         (ros::ros-error "no solidity coords-list is found")
         (return-from :try-to-pick-object-solidity))
-      (dolist (c _bin-coords-list)
+      (dolist (c bin-coords-list-)
         (pushback (send c :worldpos) pos-list))
       (setq centroid
             (make-coords :pos (vec-list-max pos-list :axis 2)
@@ -709,25 +705,25 @@
       ;; validate
       (cond (use-sib
               (unless
-                (setq obj-box (elt (gethash bin _objects-sib-boxes) object-index))
+                (setq obj-box (elt (gethash bin objects-sib-boxes-) object-index))
                 (ros::ros-warn "[SIB] No bbox  is found: ~a, ~a" arm bin)
                 (return-from :try-to-pick-object nil))
               ;; with Center of Mass
               (unless
-                (setq obj-coords (elt (gethash bin _objects-sib-coords) object-index))
+                (setq obj-coords (elt (gethash bin objects-sib-coords-) object-index))
                 (ros::ros-warn "[SIB] No com is found: ~a, ~a" arm bin)
                 (return-from :try-to-pick-object nil))
               )
             (t
               (unless
-                (setq obj-boxes (gethash bin _objects-in-bin-boxes))
+                (setq obj-boxes (gethash bin objects-in-bin-boxes-))
                 (ros::ros-warn "No object is found: ~a, ~a" arm bin)
                 (return-from :try-to-pick-object nil))
               (unless
                 (setq obj-box (elt obj-boxes object-index))
                 (ros::ros-warn "The object is not found: ~a ~a ~a" arm bin object-index)
                 (return-from :try-to-pick-object nil))
-              (setq obj-coms-msg (gethash bin _objects-in-bin-coms))
+              (setq obj-coms-msg (gethash bin objects-in-bin-coms-))
               (setq obj-com (elt (send obj-coms-msg :poses) object-index))
               ;; ik to obj a bit distant
               ;; with Center of Mass
@@ -736,10 +732,10 @@
               )
             )
       ;; set requisite length for gripper to enter bin
-      (setq gripper-req-l (+ (gethash :pad-link-l _hard-coded-variables)
-                             (/ (gethash :gripper-tube-t _hard-coded-variables) 2)))
+      (setq gripper-req-l (+ (gethash :pad-link-l hard-coded-variables-)
+                             (/ (gethash :gripper-tube-t hard-coded-variables-) 2)))
       (unless
-        (setq bin-box (gethash bin _bin-boxes))
+        (setq bin-box (gethash bin bin-boxes-))
         (ros::ros-error "[:try-to-pick-object] No data about bin-box ~a." bin)
         (ros::ros-error "[:try-to-pick-object] Call :recognize-bin-boxes first.")
         (return-from :try-to-pick-object nil))
@@ -756,13 +752,13 @@
         (if (> (+ (elt (send obj-cube-base :pos) 2) (/ (z-of-cube obj-cube-base) 2))
                (- (+ (elt (send bin-cube-base :pos) 2) (/ (z-of-cube bin-cube-base) 2))
                   gripper-req-l
-                  (gethash :offset-object-h _hard-coded-variables))
+                  (gethash :offset-object-h hard-coded-variables-))
                )
           (cond ((< gripper-req-l
                     ;; if space gripper can enter exists on right
                     (- (- (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2))
                        (- (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2))
-                       (gethash :offset-object-w _hard-coded-variables))
+                       (gethash :offset-object-w hard-coded-variables-))
                     )
                  (setq sign 1)
                  (setq sign_y 0))
@@ -770,7 +766,7 @@
                     ;; if space gripper can enter exists on left
                     (- (+ (elt (send bin-cube-base :pos) 1) (/ (y-of-cube bin-cube-base) 2))
                        (+ (elt (send obj-cube-base :pos) 1) (/ (y-of-cube obj-cube-base) 2))
-                       (gethash :offset-object-w _hard-coded-variables))
+                       (gethash :offset-object-w hard-coded-variables-))
                     )
                  (setq sign -1)
                  (setq sign_y 0))
@@ -826,10 +822,10 @@
           (setq offset-from-entrance (float-vector -30 0 0))  ;; when gripper goes straight
           (setq offset-from-entrance
                 (float-vector
-                  (if (= sign 0) -30 (- (gethash :draw-out-from-bin-l _hard-coded-variables)))
+                  (if (= sign 0) -30 (- (gethash :draw-out-from-bin-l hard-coded-variables-)))
                   0
                   (- (/ bin-z-l 2) gripper-req-l
-                     (gethash :offset-gripper-bin-top _hard-coded-variables))
+                     (gethash :offset-gripper-bin-top hard-coded-variables-))
                   )
                 )
           )
@@ -846,9 +842,9 @@
           (setq bin-dim-x (m->mm (send (send bin-box :dimensions) :x)))
           (send end-coords :translate
                 (float-vector
-                  (- (+ (/ bin-dim-x 2) (gethash :draw-out-from-bin-l _hard-coded-variables)))
+                  (- (+ (/ bin-dim-x 2) (gethash :draw-out-from-bin-l hard-coded-variables-)))
                   (* sign (- gripper-req-l (/ bin-y-l 2)
-                             (- (gethash :offset-gripper-bin-side _hard-coded-variables))))
+                             (- (gethash :offset-gripper-bin-side hard-coded-variables-))))
                   0)
                 :world)
           (send end-coords :rotate (* sign pi/2) :x :local)
@@ -861,7 +857,7 @@
           (pushback
             (send *baxter* arm :move-end-pos
                   (float-vector
-                    (gethash :draw-out-from-bin-l _hard-coded-variables)
+                    (gethash :draw-out-from-bin-l hard-coded-variables-)
                     0 0)
                   :world)
             avs-before-approach)
@@ -869,7 +865,7 @@
             (send *baxter* arm :move-end-pos
                   (float-vector
                     0 0
-                    (+ (gethash :offset-gripper-bin-side _hard-coded-variables) 10)
+                    (+ (gethash :offset-gripper-bin-side hard-coded-variables-) 10)
                     )
                   :local)
             ;; press back of gripper against bin wall
@@ -891,7 +887,7 @@
             (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -20) :local) 2000)
             (send self :wait-interpolation)
             )
-          (setq _last-av-before-approach (send *baxter* :angle-vector))
+          (setq last-av-before-approach- (send *baxter* :angle-vector))
           ;; grasp object
           (ros::ros-info "[:try-to-pick-object] arm:~a approach to the object" arm)
           (if (< sign_y 0)
@@ -999,7 +995,7 @@
         (progn
           (ros::ros-warn "[:try-to-pick-object] arm:~a cannot approach closer without offset" arm)
           (ros::ros-warn "[:try-to-pick-object] arm:~a abort picking" arm)
-          (send *baxter* :angle-vector _last-av-before-approach)  ;; revert *baxter*
+          (send *baxter* :angle-vector last-av-before-approach-)  ;; revert *baxter*
           )
         )
       (setq graspingp (send self :graspingp arm))
@@ -1012,27 +1008,27 @@
           (list (send self :ik->bin-entrance arm bin
                       :offset (float-vector
                                 -150 0
-                                (gethash :offset-avoid-bin-top _hard-coded-variables)
+                                (gethash :offset-avoid-bin-top hard-coded-variables-)
                                 )
                       ))
           :fast nil 0 :scale 5.0)
     (send *ri* :wait-interpolation)
-    ;; initialize _last-av-before-approach
-    (setq _last-av-before-approach (send *baxter* :angle-vector))
+    ;; initialize last-av-before-approach-
+    (setq last-av-before-approach- (send *baxter* :angle-vector))
     (let (bin-box graspingp avs)
       ;; abort when no objects found
       (if use-sib
         (if
           (or
-            (eq (length (gethash bin _objects-sib-boxes)) 0)
-            (eq (length (gethash bin _objects-sib-coords)) 0))
+            (eq (length (gethash bin objects-sib-boxes-)) 0)
+            (eq (length (gethash bin objects-sib-coords-)) 0))
           (return-from :pick-object nil) t)
         (if
-          (eq (length (gethash bin _objects-in-bin-boxes)) 0)
+          (eq (length (gethash bin objects-in-bin-boxes-)) 0)
           (return-from :pick-object nil) t)
         )
       ;; move arm bin-entrance -> pos above object to z direction
-      (setq bin-box (gethash bin _bin-boxes))
+      (setq bin-box (gethash bin bin-boxes-))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
@@ -1066,7 +1062,7 @@
       (unless graspingp
         (send *baxter* :rotate-gripper arm 0 :relative nil)
         (send self :angle-vector (send *baxter* :angle-vector) 1000))
-      (send *baxter* :angle-vector _last-av-before-approach)
+      (send *baxter* :angle-vector last-av-before-approach-)
       (unless graspingp
         (send *baxter* :rotate-gripper arm 0 :relative nil))
       (send self :angle-vector-sequence
@@ -1074,7 +1070,7 @@
               (send *baxter* :angle-vector)
               (send *baxter* arm :move-end-pos
                            (float-vector
-                             (- (gethash :draw-out-from-bin-l _hard-coded-variables))
+                             (- (gethash :draw-out-from-bin-l hard-coded-variables-))
                              0 0)
                            :world
                            :rotation-axis :z
@@ -1083,11 +1079,11 @@
               (send *baxter* :rotate-gripper arm 90 :relative nil)
               (send self :ik->bin-entrance arm bin
                            :offset (float-vector
-                                     -100 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                                     -100 0 (gethash :offset-avoid-bin-top hard-coded-variables-))
                            )
               (send self :ik->bin-entrance arm bin
                            :offset (float-vector
-                                     -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                                     -200 0 (gethash :offset-avoid-bin-top hard-coded-variables-))
                            )
               )
             :fast nil 0 :scale 5.0)
@@ -1104,12 +1100,12 @@
     (arm &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
     (let (order-bin-box graspingp object-index avs avs->view)
       (if (or
-          (null (gethash arm _objects-in-order-bin-boxes))
-          (null (gethash arm _objects-in-order-bin-coords)))
+          (null (gethash arm objects-in-order-bin-boxes-))
+          (null (gethash arm objects-in-order-bin-coords-)))
         (return-from :pick-object-in-order-bin nil) t)
       ;; (send self :fold-pose-back arm)
       ;; (send self :wait-interpolation)
-      (setq object-index (random (length (gethash arm _objects-in-order-bin-boxes))))
+      (setq object-index (random (length (gethash arm objects-in-order-bin-boxes-))))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
@@ -1135,16 +1131,16 @@
     (let (avs obj-box graspingp order-bin-box movable-region obj-pos obj-box-z-length)
       ;; validate
       (unless
-        (setq obj-box (elt (gethash arm _objects-in-order-bin-boxes) object-index))
+        (setq obj-box (elt (gethash arm objects-in-order-bin-boxes-) object-index))
         (ros::ros-warn "[:try-to-pick-object-in-order-bin] No bbox  is found: ~a, ~a" arm bin)
         (return-from :try-to-pick-object-in-order-bin nil))
       ;; with Center of Mass
       (unless
-        (setq obj-coords (elt (gethash arm _objects-in-order-bin-coords) object-index))
+        (setq obj-coords (elt (gethash arm objects-in-order-bin-coords-) object-index))
         (ros::ros-warn "[:try-to-pick-in-order-bin] No com is found: ~a, ~a" arm bin)
         (return-from :try-to-pick-object-in-order-bin nil))
       (unless
-        (setq order-bin-box (gethash arm _order-bin-box))
+        (setq order-bin-box (gethash arm order-bin-box-))
         (ros::ros-error "[:try-to-pick-object] No data about order bin box. Call :recognize-order-bin-box first.")
         (return-from :try-to-pick-object-in-order-bin nil))
       (unless
@@ -1285,7 +1281,7 @@
               (send *baxter* :fold-pose-middle arm)
               (send *baxter* :fold-pose-lower arm)
               (send *baxter* :avoid-shelf-pose arm bin))))
-      (setq bin-box (gethash bin _bin-boxes))
+      (setq bin-box (gethash bin bin-boxes-))
       (unless bin-box
         (ros::ros-error "[:ik->bin-entrance] No data about bin-box ~a." bin)
         (ros::ros-error "[:ik->bin-entrance] Call :recognize-bin-boxes first.")
@@ -1351,7 +1347,7 @@
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
       (pushback (send self :ik->bin-entrance arm bin
                       :offset (float-vector
-                                -150 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                                -150 0 (gethash :offset-avoid-bin-top hard-coded-variables-))
                       )
                 avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale scale)
@@ -1368,7 +1364,7 @@
          (pushback (send *baxter* :angle-vector) avs)
          (send self :ik->bin-entrance arm bin
                :offset (float-vector
-                         -150 0 (gethash :offset-avoid-bin-top _hard-coded-variables)))
+                         -150 0 (gethash :offset-avoid-bin-top hard-coded-variables-)))
          (send *baxter* (send self :opposite-arm arm) :inverse-kinematics
                (send *baxter* :get-support-arm-coords arm :dz (- distance))
                :use-gripper t
@@ -1379,9 +1375,9 @@
   (:bin-overlook-pose
     (arm bin &key offset angle)
     (if (not offset)
-      (setq offset (gethash bin (gethash :default-overlook-offset _hard-coded-variables))))
+      (setq offset (gethash bin (gethash :default-overlook-offset hard-coded-variables-))))
     (if (not angle)
-      (setq angle (gethash :default-overlook-angle _hard-coded-variables)))
+      (setq angle (gethash :default-overlook-angle hard-coded-variables-)))
     (let (av)
       (setq av
             (send self :ik->bin-entrance arm bin
@@ -1409,7 +1405,7 @@
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)
       (pushback (send self :ik->bin-entrance arm bin
                       :offset (float-vector
-                                -200 0 (gethash :offset-avoid-bin-top _hard-coded-variables))
+                                -200 0 (gethash :offset-avoid-bin-top hard-coded-variables-))
                       ) avs)
       (pushback (send self :bin-overlook-pose arm bin) avs)
       (send self :angle-vector-sequence avs :fast nil 0 :scale scale)
@@ -1530,7 +1526,7 @@
           (return-from :get-certain-work-order (elt orders i))))))
   (:check-bin-exist
     (bin)
-    (if (gethash bin _bin-boxes) t nil))
+    (if (gethash bin bin-boxes-) t nil))
   (:get-bin-contents
     (bin)
     (ros::get-param
@@ -1575,13 +1571,13 @@
             )
           (unix::sleep 1)
           )
-        (sethash hashkey _hard-coded-variables (- min-pressure 20))
+        (sethash hashkey hard-coded-variables- (- min-pressure 20))
         )
       )
     (send self :stop-grasp arm)
     (ros::ros-info "[:calib-pressure-threshold] Threshold r:~a l:~a"
-                   (gethash :r-pressure-threshold _hard-coded-variables)
-                   (gethash :l-pressure-threshold _hard-coded-variables)))
+                   (gethash :r-pressure-threshold hard-coded-variables-)
+                   (gethash :l-pressure-threshold hard-coded-variables-)))
  ;; defmethod :select-stow-target-bin
  ;; randomly choose bin for stow task
   (:select-stow-target-bin
