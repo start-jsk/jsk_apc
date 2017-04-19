@@ -19,7 +19,7 @@ ros::Publisher pub_;
 void callback(const ImageConstPtr& color_msg, const ImageConstPtr& dist_msg, const ImageConstPtr& height_msg, const ImageConstPtr& mask_msg)
 {
     jsk_apc2016_common::SegmentationInBinSync sync_msg;
-    sync_msg.header = color_msg->header;
+    sync_msg.header = dist_msg->header;
     sync_msg.color_msg = *color_msg;
     sync_msg.dist_msg = *dist_msg;
     sync_msg.height_msg = *height_msg;
