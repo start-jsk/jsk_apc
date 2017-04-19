@@ -25,8 +25,8 @@
   <run_depend>std_msgs</run_depend>
 
   <run_depend>jsk_perception</run_depend>
-  <run_depend>jsk_pcl</run_depend>
-  <run_depend>jsk_pcl_utils</run_depend>
+  <run_depend>jsk_pcl_ros</run_depend>
+  <run_depend>jsk_pcl_ros_utils</run_depend>
   <run_depend>jsk_apc2016_common</run_depend>
 
   <test_depend>rostest</test_depend>
