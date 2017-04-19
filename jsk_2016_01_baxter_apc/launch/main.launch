@@ -152,4 +152,13 @@
         args="/visualize_json/output">
   </node>
 
+  <!-- collecting data for sib -->
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/collect_sib_data.launch">
+    <arg name="hand" value="right"/>
+    <arg name="json" value="$(arg json)"/>
+  </include>
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/collect_sib_data.launch">
+    <arg name="hand" value="left"/>
+    <arg name="json" value="$(arg json)"/>
+  </include>
 </launch>
