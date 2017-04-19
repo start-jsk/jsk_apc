@@ -148,11 +148,32 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.urdf
           ${PROJECT_SOURCE_DIR}/robots/right_vacuum_gripper.xacro
           ${PROJECT_SOURCE_DIR}/robots/left_vacuum_gripper.xacro
           ${PROJECT_SOURCE_DIR}/robots/softkinetic_camera/senz3d.urdf.xacro)
+## -------------------
+## baxterrgv5.l generation
+## -------------------
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxterrgv5.l
+  COMMAND rosrun euscollada collada2eus baxterrgv5.dae baxterrgv5.yaml baxterrgv5.l
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxterrgv5.dae ${PROJECT_SOURCE_DIR}/robots/baxterrgv5.yaml)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxterrgv5.dae
+  COMMAND rosrun collada_urdf urdf_to_collada baxterrgv5.urdf baxterrgv5.dae
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxterrgv5.urdf)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxterrgv5.urdf
+  COMMAND ROS_PACKAGE_PATH=${PROJECT_SOURCE_DIR}:$ENV{ROS_PACKAGE_PATH} rosrun xacro xacro baxterrgv5.xacro > baxterrgv5.urdf
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxterrgv5.xacro
+          ${PROJECT_SOURCE_DIR}/robots/right_arm_camera.xacro
+          ${PROJECT_SOURCE_DIR}/robots/left_arm_camera.xacro
+          ${PROJECT_SOURCE_DIR}/robots/right_vacuum_gripper_v5.xacro
+          ${PROJECT_SOURCE_DIR}/robots/left_vacuum_gripper.xacro
+          ${PROJECT_SOURCE_DIR}/robots/softkinetic_camera/senz3d.urdf.xacro)
 # get collada-dom version
 find_package(PkgConfig)
 pkg_check_modules(COLLADA collada-dom>=2.4.4)
 if(${COLLADA_FOUND})
   add_custom_target(generate_baxter_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.l)
+  add_custom_target(generate_baxterrgv5_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxterrgv5.l)
 else()
   pkg_check_modules(COLLADA collada-dom)
   message(WARNING "urdf_to_collada requries collada-dom >= 2.4.4, installed version is ${COLLADA_VERSION}")
