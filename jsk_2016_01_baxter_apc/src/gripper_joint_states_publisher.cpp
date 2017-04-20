@@ -32,14 +32,27 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "gripper_joint_states_publisher");
   ros::NodeHandle n;
   ros::Publisher servo_angle_pub = n.advertise<sensor_msgs::JointState>("robot/joint_states", 100);
-  ros::Subscriber right_servo_angle_sub = n.subscribe<std_msgs::Float32>("gripper_front/limb/right/servo/angle/state",
-                                                                         10, boost::bind(&angle_stateCb, _1, "right"));
-  ros::Subscriber left_servo_angle_sub = n.subscribe<std_msgs::Float32>("gripper_front/limb/left/servo/angle/state", 10,
-                                                                        boost::bind(&angle_stateCb, _1, "left"));
   ros::Subscriber joint_states_sub = n.subscribe("robot/joint_states", 10, joint_statesCb);
 
-  g_side_to_jt["right"] = "right_gripper_vacuum_pad_joint";
-  g_side_to_jt["left"] = "left_gripper_vacuum_pad_joint";
+  std::vector<std::string> limb;
+  if (!ros::param::get("~limb", limb))
+  {
+    // Set default value
+    limb.push_back("right");
+    limb.push_back("left");
+    ros::param::set("~limb", limb);
+  }
+  std::vector<ros::Subscriber> servo_angle_subs;
+  for (std::vector<std::string>::iterator l = limb.begin(); l != limb.end(); ++l)
+  {
+    if (*l == "right" || *l == "left")
+    {
+      servo_angle_subs.push_back(n.subscribe<std_msgs::Float32>("gripper_front/limb/" + *l + "/servo/angle/state", 10,
+                                                                boost::bind(&angle_stateCb, _1, *l)));
+      g_side_to_jt[*l] = *l + "_gripper_vacuum_pad_joint";
+    }
+  }
+
   ros::Rate r(30);
   while (ros::ok())
   {
