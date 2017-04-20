@@ -31,6 +31,10 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>xacro</build_depend>
   <build_depend>jsk_data</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>transmission_interface</build_depend>
+  <build_depend>controller_manager</build_depend>
+  <build_depend>dynamixel_msgs</build_depend>
 
   <run_depend>baxter_core_msgs</run_depend>
   <run_depend>baxter_gazebo</run_depend>
@@ -47,6 +51,11 @@
   <run_depend>rosserial_python</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>jsk_data</run_depend>
+  <run_depend>dynamixel_controllers</run_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>transmission_interface</run_depend>
+  <run_depend>controller_manager</run_depend>
+  <run_depend>dynamixel_msgs</run_depend>
 
   <test_depend>python-gdown</test_depend>
   <test_depend>rostest</test_depend>
