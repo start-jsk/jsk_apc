@@ -97,6 +97,7 @@
   ;; Overwrite super class's :rarm-controller
   (:rarm-controller ()
    (append
+    (send-super :head-controller)
     (send-super :rarm-controller)
     (send self :rgripper-controller)))
   ;; Overwrite super class's :larm-controller
