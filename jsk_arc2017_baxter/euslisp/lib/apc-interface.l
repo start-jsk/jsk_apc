@@ -361,7 +361,7 @@
                 :use-gripper nil)
           3000 (get-arm-controller arm) 0)))
 
-(defun jsk_arc2017_baxter::baxter-init (&key (ctype :default-controller) (moveit nil))
+(defun jsk_arc2017_baxter::apc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
     (when moveit
       (setq mvit-env (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))

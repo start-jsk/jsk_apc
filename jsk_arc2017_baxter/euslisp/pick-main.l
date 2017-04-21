@@ -2,10 +2,10 @@
 
 (ros::roseus "robot_main")
 
-(require "package://jsk_arc2017_baxter/euslisp/lib/baxter-interface.l")
+(require "package://jsk_arc2017_baxter/euslisp/lib/apc-interface.l")
 
 (defun pick-init (&optional (ctype :default-controller) (calib-pressure t))
-  (jsk_arc2017_baxter::baxter-init :ctype ctype)
+  (jsk_arc2017_baxter::apc-init :ctype ctype)
   (send *ri* :gripper-servo-on)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
