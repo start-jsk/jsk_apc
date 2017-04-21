@@ -65,23 +65,23 @@
     (&key (offset (list 0 0 0)))
     (let (cube)
         (progn
-          (for (bin (list :a :b :c))
-               (setq cube (send self :bbox->cube (gethash bin bin-boxes)))
+          (dolist (bin (list :a :b :c))
+               (setq cube (send self :bbox->cube (gethash bin bin-boxes-)))
                (sethash bin bin-movable-regions-
-                        (send self :cube->movable-region cube :offset offset))))
-        (ros::ros-error "[:get-movable-region-for-bin] bin: ~a No order bin found. Do :recognize-bin-boxes first." (symbol2str bin))))
+                        (send self :cube->movable-region cube :offset offset))))))
   (:need-to-wait-opposite-arm
-    (arm)
+    (arm state)
     (let (opposite-state opposite-target)
       (setq opposite-state
             (str2symbol (ros::get-param
                           (format nil "~a_hand/state"
                                   (send self :arm-symbol2str (opposite-arm arm))))))
-      (setq opposite-target
-            (str2symbol (ros::get-param
-                          (format nil "~a_hand/target_bin"
-                                  (send self :arm-symbol2str (opposite-arm arm))))))
-      (and (eq opposite-state :pick_object) (find opposite-target (list :b :e :h :k)))))
+      (if (eq state :wait_for_opposite_arm_start_picking)
+        (null (eq opposite-state :pick_object))
+        (or (eq opposite-state :recognize_objects_in_bin)
+            (eq opposite-state :pick_object)
+            (eq opposite-state :verify_object)
+            (eq opposite-state :return_object)))))
   (:get-work-orders
     (arm)
     (setq msg
@@ -110,7 +110,7 @@
         (when (string= (send (elt orders i) :bin)
                        (string-upcase (symbol2str bin)))
           (return-from :get-certain-work-order (elt orders i))))))
-  (:check-bin-exist (bin) (if (gethash bin bin-boxes) t nil))
+  (:check-bin-exist (bin) (if (gethash bin bin-boxes-) t nil))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
     (let ((box-topic (format nil "publish_bin_boxes/output"))
@@ -125,12 +125,12 @@
           (setq box-list (send box-msg :boxes))
           (setq bin-list (list :a :b :c))
           (dolist (bin bin-list)
-            (setf (gethash bin bin-boxes) (car box-list))
+            (setf (gethash bin bin-boxes-) (car box-list))
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:visualize-bins ()
     (let (bins)
-      (dolist (b (send bin-boxes :list-values))
+      (dolist (b (send bin-boxes- :list-values))
         (let ((bin-inside (send self :bbox->cube b))
               (bin-outside (make-cube (+ (m->mm (send b :dimensions :x)))
                                       (+ (m->mm (send b :dimensions :y)) 30)
@@ -143,12 +143,12 @@
           (pushback bin-model bins)))
       bins))
   (:recognize-objects-in-bin
-    (&key (stamp (ros::time-now)) (timeout 10))
+    (arm &key (stamp (ros::time-now)) (timeout 10))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_target/boxes" (arm2str arm)))
           box-msg
           (com-topic (format nil "~a_hand_camera/cluster_indices_decomposer_target/centroid_pose_array"
                         (arm2str arm)))
-          com-msg obj-box obj-coords)
+          com-msg obj-box obj-coords is-recognized)
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
                           (let ((st (send msg :header :stamp)))
@@ -166,47 +166,62 @@
       (ros::unsubscribe com-topic)
       (cond
         ((and box-msg com-msg)
-         (ros::ros-info "[:recognize-objects-in-tote] arm: ~a get cpi msg" arm)
+         (ros::ros-info "[:recognize-objects-in-bin] arm: ~a get cpi msg" arm)
          (setq obj-box (send box-msg :boxes))
          (setq obj-coords
                (mapcar #'(lambda (obj-pose)
                            (send tfl- :tf-pose->coords
                                  (send com-msg :header :frame_id) obj-pose))
                        (send com-msg :poses)))
-         (sethash arm object-boxes-in-bin- obj-box)
-         (sethash arm object-coords-in-bin- obj-coords))
+         (if (and (> (length obj-box) 0) (> (length obj-coords) 0))
+           (progn
+             (sethash arm object-boxes-in-bin- obj-box)
+             (sethash arm object-coords-in-bin- obj-coords)
+             (setq is-recognized t))
+           (progn
+             (ros::ros-error "[:recognize-objects-in-bin] arm: ~a obj-box length ~a" arm (length obj-box))
+             (ros::ros-error "[:recognize-objects-in-bin] arm: ~a obj-coords length ~a" arm (length obj-coords))
+             (setq is-recognized nil))))
         (t
-         (ros::ros-error "[:recognize-objects-in-tote] arm: ~a failed to get cpi msg" arm)))))
+         (ros::ros-error "[:recognize-objects-in-bin] arm: ~a failed to get cpi msg" arm)
+         (setq is-recognized nil)))
+      is-recognized))
   (:pick-object-in-bin
-    (arm &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
-    (let (bin-box graspingp object-index avs avs->view)
+    (arm bin &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
+    (let (bin-box graspingp object-index obj-pos avs avs->view)
       (if (or
           (null (gethash arm object-boxes-in-bin-))
           (null (gethash arm object-coords-in-bin-)))
         (return-from :pick-object-in-bin nil) t)
       (setq object-index (random (length (gethash arm object-boxes-in-bin-))))
+      (setq obj-pos (send self :get-object-position arm bin :object-index object-index))
+      (send self :angle-vector
+            (send *baxter* arm :inverse-kinematics
+                  (make-coords :pos (v+ obj-pos #f(0 0 150))
+                               :rpy #f(0 0 0))
+                  :use-gripper t
+                  :rotation-axis :z)
+            3000 (get-arm-controller arm) 0)
+      (send self :wait-interpolation)
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
             (setq graspingp
-                  (send self :try-to-pick-object-in-bin arm
-                        :offset (float-vector 0 0 (- (* i -50) 30))
-                        :object-index object-index))
+                  (send self :try-to-pick-object-in-bin arm obj-pos
+                        :offset (float-vector 0 0 (- (* i -50) 30))))
             (pushback (send *baxter* :angle-vector) avs))))
       (when do-stop-grasp (unless graspingp (send self :stop-grasp arm)))
-      (send self :angle-vector-sequence (reverse avs) :fast nil 0 :scale 5.0)
+      (send self :angle-vector-sequence (reverse avs)
+            :fast (get-arm-controller arm) 0 :scale 5.0)
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-bin -> view-hand-pose" arm)
       (send self :gripper-servo-on arm)
-      (pushback (send *baxter* arm :move-end-pos #f(0 0 150) :world) avs->view)
-      (if (eq arm :larm)
-        (pushback (send *baxter* :view-hand-pose arm :j) avs->view)
-        (pushback (send *baxter* :view-hand-pose arm :l) avs->view))
-      (send self :angle-vector-sequence avs->view :fast nil 0 :scale 5.0)
+      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world)
+            3000 (get-arm-controller arm) 0)
       (send self :wait-interpolation)
       graspingp))
-  (:try-to-pick-object-in-bin
-    (arm bin &key (offset #f(0 0 0)) (object-index 0))
+  (:get-object-position
+    (arm bin &key (object-index 0))
     (let (avs obj-box graspingp bin-box movable-region obj-pos obj-box-z-length)
       ;; validate
       (unless
@@ -219,16 +234,13 @@
         (ros::ros-warn "[:try-to-pick-in-bin] No com is found: ~a, ~a" arm bin)
         (return-from :try-to-pick-object-in-bin nil))
       (unless
-        (setq bin-box (gethash bin bin-boxes))
+        (setq bin-box (gethash bin bin-boxes-))
         (ros::ros-error "[:try-to-pick-object] No data about order bin box. Call :recognize-bin-box first.")
         (return-from :try-to-pick-object-in-bin nil))
       (unless
         (setq movable-region (gethash bin bin-movable-regions-))
         (ros::ros-error "[:try-to-pick-object] No data about movable region for order bin box. Call :get-movable-region-for-bin first.")
         (return-from :try-to-pick-object-in-bin nil))
-      (setq sign 0)
-      (setq sign_y -1)
-      (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a sign: ~a sign_y: ~a" arm sign sign_y)
       ;; grasp object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a approach to the object" arm)
       ;; gripper is straight
@@ -250,13 +262,17 @@
               (t nil)))
       (setq obj-box-z-length (z-of-cube (send self :bbox->cube obj-box)))
       (setq obj-pos (v+ obj-pos (float-vector 0 0 (/ obj-box-z-length 2))))
+      obj-pos))
+  (:try-to-pick-object-in-bin
+    (arm obj-pos &key (offset #f(0 0 0)))
+    (let (graspingp)
       (send self :angle-vector
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos offset)
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            3000)
+            3000 (get-arm-controller arm) 0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper after approaching to the object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a start vacuum gripper" arm)
@@ -268,7 +284,7 @@
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            3000)
+            3000 (get-arm-controller arm) 0)
       (send self :wait-interpolation)
       (setq graspingp (send self :graspingp arm))
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a graspingp: ~a" arm graspingp)
@@ -277,23 +293,41 @@
         (let ((temp-av (send *baxter* :angle-vector)))
           ;; only if robot can solve IK
           (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
-            (send self :angle-vector (send *baxter* :angle-vector) 3000))
+            (send self :angle-vector (send *baxter* :angle-vector)
+                  3000 (get-arm-controller arm) 0))
           (send self :wait-interpolation)
-          (send self :angle-vector (send *baxter* :angle-vector temp-av) 3000)  ;; revert baxter
+          (send self :angle-vector (send *baxter* :angle-vector temp-av)
+                  3000 (get-arm-controller arm) 0) ;; revert baxter
           (send self :wait-interpolation)))
       ;; lift object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a lift the object" arm)
       (send self :gripper-servo-off arm)
-      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world) 3000)
+      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world)
+            3000 (get-arm-controller arm) 0)
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send self :graspingp arm))
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a graspingp: ~a" arm graspingp)
     graspingp))
-  (:ik->bin-entrance
-    (arm bin &key (offset #f(0 0 0)) (gripper-angle 90))
+  (:ik->bin-center
+    (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
     (let (av bin-box bin-coords)
-      (setq bin-box (gethash bin bin-boxes))
+      (setq bin-box (gethash bin bin-boxes-))
+      (setq bin-coords (send tfl- :tf-pose->coords
+                             (send (send bin-box :header) :frame_id)
+                             (send bin-box :pose)))
+      (send bin-coords :translate
+            (v+ (float-vector
+                  0.0 0.0 (/ (m->mm (send bin-box :dimensions :z)) 2.0))
+                 offset) :world)
+      (send bin-coords :rotate (* pi (/ coords-pitch 180)) :y)
+      (send *baxter* arm :inverse-kinematics bin-coords
+            :rotation-axis rotation-axis
+            :use-gripper use-gripper)))
+  (:ik->bin-entrance
+    (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
+    (let (av bin-box bin-coords)
+      (setq bin-box (gethash bin bin-boxes-))
       (setq bin-coords (send tfl- :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
@@ -302,10 +336,12 @@
                   (- (/ (m->mm (send bin-box :dimensions :x)) 2.0))
                   0.0 (/ (m->mm (send bin-box :dimensions :z)) 2.0))
                 offset) :world)
-      (send bin-coords :rotate (* pi (/ gripper-angle 180)) :y)
-      (send *baxter* arm :inverse-kinematics bin-coords :rotation-axis :y)))
+      (send bin-coords :rotate (* pi (/ coords-pitch 180)) :y)
+      (send *baxter* arm :inverse-kinematics bin-coords
+            :rotation-axis rotation-axis
+            :use-gripper use-gripper)))
   (:ik->cardboard-entrance
-    (arm cardboard &key (offset #f(0 0 0)))
+    (arm cardboard &key (offset #f(0 0 0)) (rotation-axis t) (use-gripper nil))
     (send *baxter* arm :inverse-kinematics
           (make-coords
             :pos (v+ offset
@@ -313,14 +349,17 @@
                            ((eq cardboard :b) (float-vector 650 -500 0))
                            (t (float-vector 800 500 0))))
             :rpy (float-vector 0 0 0))
-          :rotation-axis :z
-          :use-gripper t))
+          :rotation-axis rotation-axis
+          :use-gripper use-gripper))
   (:move-arm-body->bin-overlook-pose
     (arm bin &key (gripper-angle 90))
     (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
     (send self :angle-vector
           (send self :ik->bin-entrance arm bin
-                :offset #f(-100 0 300) :gripper-angle gripper-angle) 3000)))
+                :offset #f(-100 0 300) :coords-pitch gripper-angle
+                :rotation-axis :y
+                :use-gripper nil)
+          3000 (get-arm-controller arm) 0)))
 
 (defun jsk_arc2017_baxter::baxter-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)

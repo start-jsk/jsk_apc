@@ -29,3 +29,10 @@
               (arm2str arm))
       req)))
 
+(defun set-arm-state-param (arm state)
+  (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state)))
+
+(defun get-arm-controller (arm)
+  (cond ((eq arm :rarm) :rarm-controller)
+        ((eq arm :larm) :larm-controller)
+        (t nil)))
