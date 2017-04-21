@@ -21,7 +21,7 @@
   <arg name="NODELET_MANAGER" value="sample_manager" />
   <node name="$(arg NODELET_MANAGER)"
         pkg="nodelet" type="nodelet" args="manager" /> 
-  <param name="label_to_mask/label_value" value="37" />
+  <param name="label_to_mask/label_value" value="14" />
 
   <node name="multi_plane_estimate" pkg="nodelet" type="nodelet"
         args="load jsk_pcl/OrganizedMultiPlaneSegmentation $(arg NODELET_MANAGER)"
@@ -32,9 +32,11 @@
       estimate_normal: true
     </rosparam>
   </node>
+
+
   <node name="cluster_indices_decomposer_table"
         pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+        args="standalone jsk_pcl/ClusterPointIndicesDecomposer">
     <remap from="~input" to="$(arg INPUT_CLOUD)" />
     <remap from="~target" to="multi_plane_estimate/output" />
     <rosparam subst_value="true">
@@ -42,6 +44,8 @@
       queue_size: 1000
     </rosparam>
   </node>
+
+
   <node name="extract_indices_table"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/ExtractIndices $(arg NODELET_MANAGER)">
@@ -54,12 +58,15 @@
     </rosparam>
   </node>
 
-   <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
+
+   <!-- <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch"> -->
+   <include file="$(find jsk_arc2017_common)/launch/object_segmentation_3d.launch">
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
     <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)" />
     <arg name="INPUT_CLOUD" value="extract_indices_table/output" />
     <arg name="FIXED_FRAME" value="base_link" />
   </include>
+
 
   <group if="$(arg gui)">
     <node name="rviz"

@@ -15,7 +15,7 @@
       backend: torch
       gpu: $(arg GPU)
       model_name: fcn32s_bilinear
-      model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_dataset_v1_20170326_005.pth
+      model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_dataset_v1_20170417.pth
     </rosparam>
     <remap from="~target_names" to="label_names" />
   </node>
