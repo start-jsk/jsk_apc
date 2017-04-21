@@ -9,6 +9,11 @@ import rospy
 
 class WorkOrderServer(object):
 
+    abandon_items = [
+        'measuring_spoons',
+        'mesh_cup'
+        ]
+
     def __init__(self):
         json_dir = rospy.get_param('~json_dir', None)
         self.rate = rospy.get_param('~rate', 1.0)
@@ -54,6 +59,8 @@ class WorkOrderServer(object):
         for order in orders:
             size_id = order['size_id']
             for target_item in order['contents']:
+                if target_item in self.abandon_items:
+                    continue
                 order_msg = WorkOrder()
                 order_msg.bin = self.item_location[target_item]
                 order_msg.item = target_item
