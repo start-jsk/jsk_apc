@@ -107,24 +107,13 @@
           (set-arm-state-param arm state))
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
-          ;; run motion
-          (send *ri* :angle-vector
-                (send *ri* :ik->bin-center arm target-bin
-                      :offset #f(0 0 100) :coords-pitch 0
-                      :rotation-axis :z
-                      :use-gripper t)
-                3000 (get-arm-controller arm) 0)
-          (send *ri* :wait-interpolation)
           (send *ri* :pick-object-in-bin arm target-bin
                 :n-trial 2
                 :n-trial-same-pos 1
                 :do-stop-grasp nil)
           (send *ri* :angle-vector
-                (send *ri* :ik->bin-center arm target-bin
-                      :offset #f(0 0 200) :coords-pitch 0
-                      :rotation-axis :z
-                      :use-gripper t)
-                3000 (get-arm-controller arm) 0)
+                (send *baxter* arm :move-end-pos #f(0 0 150) :world)
+                :fast (get-arm-controller arm) 0 :scale 3.0)
           (setq graspingp (send *ri* :graspingp arm))
           (setq state :verify_object)
           (set-arm-state-param arm state))
