@@ -353,13 +353,17 @@
           :use-gripper use-gripper))
   (:move-arm-body->bin-overlook-pose
     (arm bin &key (gripper-angle 90))
-    (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
-    (send self :angle-vector
-          (send self :ik->bin-entrance arm bin
-                :offset #f(-100 0 300) :coords-pitch gripper-angle
-                :rotation-axis :y
-                :use-gripper nil)
-          3000 (get-arm-controller arm) 0)))
+    (let (avs)
+      (setq avs (send *baxter* :reset-pose arm))
+      (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
+      (setq avs
+            (pushback
+              (send self :ik->bin-entrance arm bin
+                    :offset #f(-100 0 300) :coords-pitch gripper-angle
+                    :rotation-axis :y
+                    :use-gripper nil) avs))
+      (send self :angle-vector-sequence avs
+            :fast (get-arm-controller arm) 0 :scale 3.0))))
 
 (defun jsk_arc2017_baxter::apc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
