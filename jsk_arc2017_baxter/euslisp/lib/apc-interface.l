@@ -201,7 +201,7 @@
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            3000 (get-arm-controller arm) 0)
+            :fast (get-arm-controller arm) 0 :scale 5.0)
       (send self :wait-interpolation)
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
@@ -217,7 +217,7 @@
       (ros::ros-info "[:pick-object] arm:~a in-bin -> view-hand-pose" arm)
       (send self :gripper-servo-on arm)
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world)
-            3000 (get-arm-controller arm) 0)
+            :fast (get-arm-controller arm) 0 :scale 3.0)
       (send self :wait-interpolation)
       graspingp))
   (:get-object-position
@@ -272,7 +272,7 @@
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            3000 (get-arm-controller arm) 0)
+            :fast (get-arm-controller arm) 0 :scale 3.0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper after approaching to the object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a start vacuum gripper" arm)
@@ -284,7 +284,7 @@
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            3000 (get-arm-controller arm) 0)
+            :fast (get-arm-controller arm) 0 :scale 3.0)
       (send self :wait-interpolation)
       (setq graspingp (send self :graspingp arm))
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a graspingp: ~a" arm graspingp)
@@ -294,16 +294,16 @@
           ;; only if robot can solve IK
           (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
             (send self :angle-vector (send *baxter* :angle-vector)
-                  3000 (get-arm-controller arm) 0))
+                  :fast (get-arm-controller arm) 0 :scale 3.0))
           (send self :wait-interpolation)
           (send self :angle-vector (send *baxter* :angle-vector temp-av)
-                  3000 (get-arm-controller arm) 0) ;; revert baxter
+                  :fast (get-arm-controller arm) 0 :scale 3.0) ;; revert baxter
           (send self :wait-interpolation)))
       ;; lift object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a lift the object" arm)
       (send self :gripper-servo-off arm)
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world)
-            3000 (get-arm-controller arm) 0)
+            :fast (get-arm-controller arm) 0 :scale 3.0)
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send self :graspingp arm))

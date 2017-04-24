@@ -178,7 +178,7 @@
                       :offset #f(0 0 0) :coords-pitch 0
                       :rotation-axis :z
                       :use-gripper t)
-                3000 (get-arm-controller arm) 0)
+                :fast (get-arm-controller arm) 0 :scale 3.0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm)
           (send *ri* :spin-off-by-wrist 5)
@@ -195,7 +195,7 @@
           (send *ri* :angle-vector
                 (send *ri* :ik->cardboard-entrance arm target-cardboard
                       :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
-                3000 (get-arm-controller arm) 0)
+                :fast (get-arm-controller arm) 0 :scale 3.0)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -100) :world)
                 1000 (get-arm-controller arm) 0)
