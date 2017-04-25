@@ -1,24 +1,36 @@
 <launch>
-  <arg name="bagfile" />
+  <arg name="bagfile" value="fetch_grope_demo.bag"/>
   <node name="rosbag_record"
         pkg="rosbag" type="record"
         args="-O $(arg bagfile)
               -b 0
 	      
+	      /proximity_sensor0
+	      /proximity_sensor1
+	      /proximity_sensor2
+	      /proximity_sensor3
+	      /proximity_sensor4
+	      /head_camera/rgb/image_rect_color
 	      /tf
 	      /joint_states
 	      /base_link
-	      /cluster_indices_decomposer_target/debug_output
-	      /head_camera/rgb/camera_info
-	      /head_camera/rgb/image_raw
-	      /head_camera/depth_registered/camera_info
-	      /head_camera/depth_registered/points
-	      /head_camera/depth_registered/image_raw
-	      /cluster_indices_decomposer_target/centroid_pose_array
-	      /cluster_indices_decomposer_target/boxes
 	      /move_group/monitored_planning_scene
 	      /multi_plane_estimate/output_polygon
+	      /arrow_marker0
+	      /arrow_marker1
+	      /arrow_marker2
+	      /arrow_marker3
+	      /arrow_marker4
 	      "
         output="screen">
   </node>
 </launch>
+
+	      <!-- /cluster_indices_decomposer_target/debug_output -->
+	      <!-- /head_camera/rgb/camera_info -->
+	      <!-- /head_camera/rgb/image_raw -->
+	      <!-- /head_camera/depth_registered/camera_info -->
+	      <!-- /head_camera/depth_registered/points -->
+	      <!-- /head_camera/depth_registered/image_raw -->
+	      <!-- /cluster_indices_decomposer_target/centroid_pose_array -->
+	      <!-- /cluster_indices_decomposer_target/boxes -->

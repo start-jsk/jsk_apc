@@ -37,6 +37,6 @@ Play
 
 ```
 $ rossetlocal
-$ roslaunch jsk_apc2016_common play.launch bagfile:=`pwd`/fetch_demo.bag  ### defined in record.launch
+$ roslaunch jsk_apc2016_common play.launch bagfile:=`pwd`/.ros/fetch_demo.bag  ### defined in record.launch
 $ rviz -d $(rospack find jsk_apc2016_common)/samples/config/sample_object_segmentation_3d.rviz
 ```
