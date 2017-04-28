@@ -1,0 +1,28 @@
+<launch>
+  <arg name="launch_main" default="true" />
+  <arg name="json" />
+  <arg name="collect_data" default="false" />
+  <arg name="rviz" default="true" />
+  <arg name="rvizconfig" default="$(find jsk_2016_01_baxter_apc)/rvizconfig/pick_rgv5.rviz" />
+  <arg name="gripper" default="gripper_v5" />
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/main.launch">
+    <arg name="launch_main" value="false" />
+    <arg name="json" value="$(arg json)" />
+    <arg name="collect_data" value="$(arg collect_data)" />
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="rvizconfig" value="$(arg rvizconfig)" />
+    <arg name="gripper" value="$(arg gripper)" />
+  </include>
+
+  <!-- robot main -->
+  <node if="$(arg launch_main)" pkg="jsk_2016_01_baxter_apc" type="main-rgv5.l" name="right_hand"
+    args="&quot;(progn (apc-init :rarm-controller) (apc-mainloop :rarm))&quot;"
+    respawn="true" output="screen">
+    <env name="DISPLAY" value="" />
+    <rosparam subst_value="true">
+      collect_data: $(arg collect_data)
+    </rosparam>
+  </node>
+
+</launch>

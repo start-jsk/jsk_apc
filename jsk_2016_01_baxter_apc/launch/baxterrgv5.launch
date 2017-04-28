@@ -1,0 +1,76 @@
+<launch>
+
+  <arg name="moveit" default="false" />
+  <arg name="gripper_v4_limb" default="['left']" />
+
+  <!-- custom baxter params -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_2016_01_baxter_apc)/robots/baxterrgv5.xacro" />
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="joint_states" to="/robot/joint_states"/>
+  </node>
+  <rosparam param="/baxter_joint_trajectory"
+            file="$(find jsk_2015_05_baxter_apc)/config/baxter_joint_trajectory.yaml"/>
+
+
+  <!-- vacuum gripper -->
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/vacuum_gripper.launch" />
+  <node name="enable_gripper"
+        pkg="jsk_2016_01_baxter_apc" type="enable_gripper" output="screen" />
+  <node name="gripper_joint_state_publisher"
+        pkg="jsk_2016_01_baxter_apc" type="gripper_joint_states_publisher">
+    <rosparam param="limb" subst_value="True">$(arg gripper_v4_limb)</rosparam>
+  </node>
+  <node name="gripper_trajectory_server"
+        pkg="jsk_2016_01_baxter_apc" type="gripper_trajectory_server" output="screen">
+    <rosparam param="limb" subst_value="True">$(arg gripper_v4_limb)</rosparam>
+  </node>
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/gripper_v5_dxl_controller.launch" />
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/gripper_v5_ros_control.launch" />
+
+
+  <!-- baxter startup -->
+  <include file="$(find jsk_baxter_startup)/baxter.launch">
+    <arg name="launch_servo" value="true"/>
+    <arg name="launch_joint_trajectory" value="true"/>
+    <arg name="launch_gripper_action" value="false"/>
+    <arg name="launch_openni" value="false"/>
+    <arg name="launch_kinect2" value="false"/>
+    <arg name="launch_voice_echo" value="true"/>
+    <arg name="launch_moveit" value="false"/>
+    <arg name="launch_teleop" value="false"/>
+    <arg name="launch_tweet" value="false"/>
+    <arg name="launch_mongodb" value="false"/>
+    <arg name="launch_wrench" value="false"/>
+    <arg name="launch_time_signal" value="false"/>
+    <arg name="start_openni" value="false"/>
+    <arg name="USER_NAME" value="false"/>
+  </include>
+
+
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kiva_pod_state.launch" />
+  <node name="interactive_adjust_kiva_pod"
+        pkg="jsk_interactive_marker" type="marker_6dof">
+    <rosparam command="load" file="$(find jsk_2015_05_baxter_apc)/config/kiva_pod_interactive_marker.yaml" />
+  </node>
+  <node name="publish_bin_boxes"
+        pkg="jsk_apc2016_common" type="publish_bin_bbox.py">
+    <remap from="~boxes" to="~output" />
+    <rosparam file="$(find jsk_apc2016_common)/config/bin_upper_shelf.yaml" command="load" ns="upper_shelf"/>
+    <rosparam file="$(find jsk_apc2016_common)/config/bin_lower_shelf.yaml" command="load" ns="lower_shelf"/>
+  </node>
+
+  <node name="desktop_bg_publisher"
+        pkg="jsk_perception" type="image_publisher.py">
+    <rosparam subst_value="true">
+      file_name: $(find jsk_apc2016_common)/resource/wallpapers/wallpaper_black.png
+    </rosparam>
+  </node>
+  <node name="team_k_desktop_xdisplay"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/desktop_bg_publisher/output" />
+
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/baxter_moveit.launch" if="$(arg moveit)" />
+
+</launch>

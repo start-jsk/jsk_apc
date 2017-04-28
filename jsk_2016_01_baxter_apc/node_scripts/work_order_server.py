@@ -76,20 +76,27 @@ class WorkOrderServer(object):
         if self.max_weight == -1:
             self.max_weight = np.inf
         msg = dict(left=WorkOrderArray(), right=WorkOrderArray())
-        abandon_target_objects = [
-            'genuine_joe_plastic_stir_sticks',
-            'cheezit_big_original',
-            'rolodex_jumbo_pencil_cup',
-            'champion_copper_plus_spark_plug',
-            'oreo_mega_stuf',
-        ]
-        abandon_bin_objects = [
-            'rolodex_jumbo_pencil_cup',
-            'oreo_mega_stuf'
-        ]
+        if self.gripper == 'gripper_v5':
+            abandon_target_objects = []
+            abandon_bin_objects = []
+        else:
+            abandon_target_objects = [
+                'genuine_joe_plastic_stir_sticks',
+                'cheezit_big_original',
+                'rolodex_jumbo_pencil_cup',
+                'champion_copper_plus_spark_plug',
+                'oreo_mega_stuf',
+            ]
+            abandon_bin_objects = [
+                'rolodex_jumbo_pencil_cup',
+                'oreo_mega_stuf'
+            ]
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         # TODO: PLEASE FILL ABANDON BINS
-        abandon_bins = ''
+        if self.gripper == 'gripper_v5':
+            abandon_bins = ['h', 'i']
+        else:
+            abandon_bins = ''
         # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         for bin_, target_object in work_order:
             if bin_ in abandon_bins:

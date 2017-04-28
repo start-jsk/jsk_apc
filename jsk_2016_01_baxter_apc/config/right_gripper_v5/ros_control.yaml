@@ -1,0 +1,21 @@
+actuator_names:
+  - right_gripper_prismatic_joint_motor
+  - right_gripper_vacuum_pad_tendon_winder
+  - right_gripper_finger_yaw_joint_motor
+  - right_gripper_finger_tendon_winder
+joint_names:
+  - right_gripper_prismatic_joint
+  - right_gripper_vacuum_pad_joint
+  - right_gripper_finger_yaw_joint
+  - right_gripper_finger_roll_joint
+controller_names:
+  - prismatic_joint_controller
+  - vacuum_pad_tendon_controller
+  - finger_yaw_joint_controller
+  - finger_tendon_controller
+mechanical_reduction:
+  - 41.66666667
+  - 1.637369792
+  - 1.3
+  - 1.0
+control_rate: 20

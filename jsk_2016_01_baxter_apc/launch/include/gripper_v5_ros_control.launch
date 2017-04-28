@@ -1,0 +1,29 @@
+<launch>
+  <arg name="gripper_only" default="False"/>
+
+  <!-- For testing gripper only -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_2016_01_baxter_apc)/robots/baxterrgv5.xacro"
+         if="$(arg gripper_only)"/>
+
+  <group ns="gripper_front/limb/right">
+    <!-- Start the ros_control node -->
+    <node name="ros_control_node" pkg="jsk_2016_01_baxter_apc" type="gripper_v5_ros_control_node" output="screen">
+      <rosparam file="$(find jsk_2016_01_baxter_apc)/config/right_gripper_v5/ros_control.yaml" command="load"/>
+      <remap from="joint_states" to="/robot/joint_states"/>
+    </node>
+
+    <!-- Start the joint state controller -->
+    <rosparam file="$(find jsk_2016_01_baxter_apc)/config/right_gripper_v5/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller">
+    </node>
+
+    <!-- Start the joint trajectory controller -->
+    <rosparam file="$(find jsk_2016_01_baxter_apc)/config/right_gripper_v5/joint_trajectory_controller.yaml" command="load"/>
+    <node name="joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="vacuum_gripper
+                hand" />
+
+  </group>
+</launch>

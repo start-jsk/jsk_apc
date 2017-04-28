@@ -3,6 +3,7 @@
 #include <actionlib/server/simple_action_server.h>
 #include <std_msgs/Float32.h>
 #include "minjerk.h"
+#include <boost/shared_ptr.hpp>
 
 class GripperAction
 {
@@ -158,8 +159,22 @@ void GripperAction::executeCB(const control_msgs::FollowJointTrajectoryGoalConst
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "gripper_joint_trajectory_action_server");
-  GripperAction right_server("gripper_front/limb/", "right/");
-  GripperAction left_server("gripper_front/limb/", "left/");
+  std::vector<std::string> limb;
+  if (!ros::param::get("~limb", limb))
+  {
+    // Set default value
+    limb.push_back("right");
+    limb.push_back("left");
+    ros::param::set("~limb", limb);
+  }
+  std::vector<boost::shared_ptr<GripperAction> > servers;
+  for (std::vector<std::string>::iterator l = limb.begin(); l != limb.end(); ++l)
+  {
+    if (*l == "right" || *l == "left")
+    {
+      servers.push_back(boost::make_shared<GripperAction>("gripper_front/limb/", *l + "/"));
+    }
+  }
   ros::spin();
   return 0;
 }

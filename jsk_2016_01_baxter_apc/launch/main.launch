@@ -3,6 +3,8 @@
   <arg name="json" />
   <arg name="collect_data" default="false" />
   <arg name="rviz" default="true" />
+  <arg name="rvizconfig" default="$(find jsk_2016_01_baxter_apc)/rvizconfig/pick.rviz" />
+  <arg name="gripper" default="gripper2016" />
 
   <!-- set bin_contents rosparam -->
   <node name="set_bin_contents_param"
@@ -20,7 +22,7 @@
     <rosparam subst_value="true">
       json: $(arg json)
       is_apc2016: true
-      gripper: gripper2016
+      gripper: $(arg gripper)
     </rosparam>
   </node>
 
@@ -50,7 +52,7 @@
   <group if="$(arg rviz)">
     <node name="rviz"
           pkg="rviz" type="rviz"
-          args="-d $(find jsk_2016_01_baxter_apc)/rvizconfig/pick.rviz">
+          args="-d $(arg rvizconfig)">
     </node>
   </group>
 

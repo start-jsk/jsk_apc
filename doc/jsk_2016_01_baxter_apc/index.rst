@@ -9,6 +9,7 @@ jsk_2016_01_baxter_apc
    :glob:
 
    apc2016_pick_trial
+   apc2016_pick_trial_rgv5
    apc2016_stow_trial
 
 System

@@ -86,6 +86,16 @@ Write below in `/etc/udev/rules.d/90-rosserial.rules`:
 SUBSYSTEM=="tty", MODE="0666"
 ```
 
+**Setup DXHUB + gripper-v5(and later)**
+
+Write below in `/etc/udev/rules.d/80-dxhub.rules`:
+
+```
+# Create symlink /dev/r_dxhub
+# For now, connection to only one DXHUB is supported
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015" MODE:="0666", SYMLINK+="r_dxhub"
+```
+
 **Setup SSH**
 
 Write below in `~/.ssh/config`:

@@ -1,0 +1,29 @@
+<launch>
+  <group ns="gripper_front/limb/right/dxl">
+    <!-- Start the Dynamixel servo controller manager -->
+    <node name="controller_manager" pkg="dynamixel_controllers" type="controller_manager.py" required="true" output="screen">
+      <rosparam>
+        namespace: dxl_manager
+        serial_ports:
+          port:
+            port_name: "/dev/r_dxhub"
+            baud_rate: 57600
+            min_motor_id: 1
+            max_motor_id: 25
+            update_rate: 20
+      </rosparam>
+    </node>
+
+    <!-- Start the Dynamixel servo controllers -->
+    <rosparam file="$(find jsk_2016_01_baxter_apc)/config/right_gripper_v5/dxl_controllers.yaml" command="load"/>
+    <node name="controller_spawner" pkg="dynamixel_controllers" type="controller_spawner.py"
+          args="--manager=dxl_manager
+                --port port
+                prismatic_joint_controller
+                vacuum_pad_tendon_controller
+                finger_yaw_joint_controller
+                finger_tendon_controller"
+          output="screen"/>
+
+  </group>
+</launch>
