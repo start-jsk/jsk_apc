@@ -1,5 +1,6 @@
 #!/usr/bin/env roseus
 
+
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "geometry_msgs")
 (ros::load-ros-manifest "sensor_msgs")
@@ -7,6 +8,7 @@
 (ros::load-ros-manifest "std_msgs")
 (ros::load-ros-manifest "roseus")
 (ros::load-ros-package "force_proximity_ros")
+(ros::load-ros-package "ar_track_alvar_msgs")
 
 (require "package://fetcheus/fetch-interface.l")
 
@@ -54,16 +56,18 @@
 
 ;; look at the target object if fetch has already found it.
 (defun look-at()
- (setq head-x (aref (send (send *fetch* :head-end-coords) :worldpos) 0))
- (setq head-y (aref (send (send *fetch* :head-end-coords) :worldpos) 1))
- (setq head-z (aref (send (send *fetch* :head-end-coords) :worldpos) 2))
- (send *fetch* :head :neck-y :joint-angle (rad2deg (atan (/ (- y head-y) x))))
- (send *fetch* :head :neck-p :joint-angle (rad2deg (atan (/ (- head-z z) x))))
- (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000 :head-controller)
- (send *ri* :wait-interpolation :head-controller))
+  (let ((head-x) (head-y) (head-z))
+    (setq head-x (aref (send (send *fetch* :head-end-coords) :worldpos) 0))
+    (setq head-y (aref (send (send *fetch* :head-end-coords) :worldpos) 1))
+    (setq head-z (aref (send (send *fetch* :head-end-coords) :worldpos) 2))
+    (send *fetch* :head :neck-y :joint-angle (rad2deg (atan (/ (- y head-y) x))))
+    (send *fetch* :head :neck-p :joint-angle (rad2deg (atan (/ (- head-z z) x))))
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000 :head-controller)
+    (send *ri* :wait-interpolation :head-controller)))
 
 
 ;; search for a target object by swinging his head.
+;; use search-for-object or find-AR-marker in order to find object
 (defun search-for-object()
   (recog-target)
   (let ((flag t))
@@ -104,6 +108,27 @@
     (if (null flag)
 	(progn (format t "find object!~%") t)
       (progn (format t "cannot find object!~%") nil))))
+
+
+;; use search-for-object or find-AR-marker in order to find object
+(defun find-AR-marker()
+  "test documentation"
+  (let ((AR-marker-msg) (AR-marker-pose) (AR-marker-coords))
+    (setq AR-marker-msg
+	  (one-shot-subscribe
+	   "ar_pose_marker"
+	   ar_track_alvar_msgs::AlvarMarkers))
+    (if AR-marker-msg
+	(progn
+	  (setq AR-marker-pose (send (send (car (send AR-marker-msg :markers)) :pose) :pose))
+	  ;;(setq AR-marker-coords (ros::tf-pose->coords AR-marker-pose))
+	  (setq x (* 1000 (send AR-marker-pose :position :x)))
+	  (setq y (* 1000 (send AR-marker-pose :position :y)))
+	  (setq z (* 1000 (send AR-marker-pose :position :z)))
+	  (setq table-height z)
+	  (look-at))
+      (format t "cannot find AR marker!~%"))))
+
 
 
 ;; order the real fetch robot to follow the joint angle of the model robot
@@ -178,7 +203,7 @@
 
 
 (defun calc-arrow-size-in-rviz (proximity-msg init-value)
-  (- 10 (* 10 (expt (max (- (send proximity-msg :average) init-value) 1) (/ -1.0 5))))) 
+  (- 10 (* 10 (expt (max (- (send proximity-msg :average) init-value) 1) (/ -1.0 5)))))
 
 ;; TODO START ;;
 ;; load this file, echo-proximity, fa-i-calibration
@@ -232,6 +257,7 @@
     (ros::subscribe
      "/proximity_sensor4"
      force_proximity_ros::proximity #'cb-proximity4 10))
+
 
 
 (defun grope-from-top()
@@ -358,4 +384,3 @@
 
 ;; elmer's glue: centroid too deep
 ;; fetch mistakes his hand for collision object.
-
