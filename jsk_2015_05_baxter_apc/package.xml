@@ -38,7 +38,7 @@
   <run_depend>jsk_rqt_plugins</run_depend>
   <run_depend>message_runtime</run_depend>
   <run_depend>posedetection_msgs</run_depend>
-  <run_depend>python-gdown</run_depend>
+  <run_depend>python-gdown-pip</run_depend>
   <run_depend>python-numpy</run_depend>
   <run_depend>python-opencv</run_depend>
   <run_depend>python-progressbar</run_depend>
