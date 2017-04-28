@@ -22,6 +22,7 @@
           hard-coded-variables-
           last-av-before-approach-
           order-bin-box-
+          order-bin-movable-region-
           objects-in-order-bin-boxes-
           objects-in-order-bin-coords-))
 
@@ -81,7 +82,7 @@
       )
     (sethash :bin-reachable-depth-gripper-90 hard-coded-variables- 200)
     (setq order-bin-box- (make-hash-table))
-    (setq _movable-region (make-hash-table))
+    (setq order-bin-movable-region- (make-hash-table))
     (setq objects-in-order-bin-boxes- (make-hash-table))
     (setq objects-in-order-bin-coords- (make-hash-table))
     (unless (ros::get-param "/apc_on_gazebo" nil)
@@ -415,7 +416,7 @@
       (if (gethash arm order-bin-box-)
         (progn
           (setq cube (send self :bbox->cube (gethash arm order-bin-box-)))
-          (sethash arm _movable-region (send self :cube->movable-region cube :offset offset)))
+          (sethash arm order-bin-movable-region- (send self :cube->movable-region cube :offset offset)))
         (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (arm2str arm)))))
   (:cube->movable-region
     (cube &key (offset (list 0 0 0)))
@@ -1145,7 +1146,7 @@
         (ros::ros-error "[:try-to-pick-object] No data about order bin box. Call :recognize-order-bin-box first.")
         (return-from :try-to-pick-object-in-order-bin nil))
       (unless
-        (setq movable-region (gethash arm _movable-region))
+        (setq movable-region (gethash arm order-bin-movable-region-))
         (ros::ros-error "[:try-to-pick-object] No data about movable region for order bin box. Call :get-movable-region-for-tote first.")
         (return-from :try-to-pick-object-in-order-bin nil))
       (setq sign 0)
