@@ -268,7 +268,7 @@
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            :fast (get-arm-controller arm) 0 :scale 3.0)
+            3000 (get-arm-controller arm) 0)
       (send self :wait-interpolation)
       ;; start the vacuum gripper after approaching to the object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a start vacuum gripper" arm)
@@ -280,7 +280,7 @@
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            :fast (get-arm-controller arm) 0 :scale 3.0)
+            3000 (get-arm-controller arm) 0)
       (send self :wait-interpolation)
       (setq graspingp (send self :graspingp arm))
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a graspingp: ~a" arm graspingp)
@@ -290,16 +290,16 @@
           ;; only if robot can solve IK
           (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
             (send self :angle-vector (send *baxter* :angle-vector)
-                  :fast (get-arm-controller arm) 0 :scale 3.0))
+                  3000 (get-arm-controller arm) 0))
           (send self :wait-interpolation)
           (send self :angle-vector (send *baxter* :angle-vector temp-av)
-                  :fast (get-arm-controller arm) 0 :scale 3.0) ;; revert baxter
+                  3000 (get-arm-controller arm) 0) ;; revert baxter
           (send self :wait-interpolation)))
       ;; lift object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a lift the object" arm)
       (send self :gripper-servo-off arm)
       (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world)
-            :fast (get-arm-controller arm) 0 :scale 3.0)
+            3000 (get-arm-controller arm) 0)
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send self :graspingp arm))
@@ -350,16 +350,15 @@
   (:move-arm-body->bin-overlook-pose
     (arm bin &key (gripper-angle 90))
     (let (avs)
-      (setq avs (send *baxter* :reset-pose arm))
+      (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
+      (send *baxter* :reset-pose arm)
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
-      (setq avs
-            (pushback
-              (send self :ik->bin-entrance arm bin
-                    :offset #f(-100 0 300) :coords-pitch gripper-angle
-                    :rotation-axis :y
-                    :use-gripper nil) avs))
-      (send self :angle-vector-sequence avs
-            :fast (get-arm-controller arm) 0 :scale 3.0))))
+      (pushback
+        (send self :ik->bin-entrance arm bin
+              :offset #f(-100 0 300) :coords-pitch gripper-angle
+              :rotation-axis :y
+              :use-gripper nil) avs)
+      (send self :angle-vector-sequence avs :fast (get-arm-controller arm) 0 :scale 3.0))))
 
 (defun jsk_arc2017_baxter::apc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)

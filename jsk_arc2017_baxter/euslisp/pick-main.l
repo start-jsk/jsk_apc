@@ -121,8 +121,9 @@
                 :n-trial-same-pos 1
                 :do-stop-grasp nil)
           (send *ri* :angle-vector
-                (send *baxter* arm :move-end-pos #f(0 0 150) :world)
-                :fast (get-arm-controller arm) 0 :scale 3.0)
+                (send *ri* :ik->bin-center arm target-bin
+                      :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+                3000 (get-arm-controller arm) 0)
           (setq graspingp (send *ri* :graspingp arm))
           (setq state :verify_object)
           (set-arm-state-param arm state))
@@ -143,7 +144,10 @@
               (setq fail-count (incf fail-count))
               (send *ri* :stop-grasp arm)
               (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm fail-count)
-              (send *ri* :fold-pose-back arm)
+              (send *ri* :angle-vector-sequence
+                    (list (send *baxter* :fold-to-keep-object arm)
+                          (send *baxter* :fold-pose-back arm))
+                    :fast (get-arm-controller arm) 0 :scale 5.0)
               (send *ri* :wait-interpolation)
               (if (> fail-count 1)
                 (setq state :wait_for_opposite_arm_start_picking)
@@ -192,11 +196,11 @@
           (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
           (send *ri* :angle-vector
                 (send *ri* :ik->cardboard-entrance arm target-cardboard
-                      :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
-                :fast (get-arm-controller arm) 0 :scale 3.0)
+                      :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+                :fast (get-arm-controller arm) 0 :scale 5.0)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -100) :world)
-                1000 (get-arm-controller arm) 0)
+          (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
+                2000 (get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (setq dropped (not (send *ri* :graspingp arm)))
           (if (not dropped)
@@ -207,9 +211,9 @@
                     (send *ri* :arm-symbol2str arm)) target-obj)
           (ros::set-param (format nil "~a_hand/target_cardboard" (send *ri* :arm-symbol2str arm)) (symbol2str target-cardboard))
           (send *ri* :stop-grasp arm) ;; release object
-          (send *ri* :spin-off-by-wrist arm :times 5)
+          (send *ri* :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 100) :world)
+          (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 400) :world)
                 1000 (get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (setq state :return_from_cardboard)
