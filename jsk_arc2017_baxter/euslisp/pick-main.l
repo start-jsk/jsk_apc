@@ -26,7 +26,7 @@
   (let (state order target-obj target-cardboard
         fail-count dropped recognition-trial-time is-recognized)
     (setq state :wait_for_user_input)
-    (ros::set-param (format nil "~a_hand/state" (send *ri* :arm-symbol2str arm)) (symbol2str state))
+    (set-arm-state-param arm state)
     (setq fail-count 0)
     (while t
       (case state
@@ -211,7 +211,6 @@
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 100) :world)
                 1000 (get-arm-controller arm) 0)
-          (send *ri* :wait-interpolation)
           (send *ri* :wait-interpolation)
           (setq state :return_from_cardboard)
           (set-arm-state-param arm state))

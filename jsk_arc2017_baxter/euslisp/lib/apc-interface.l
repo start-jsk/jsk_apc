@@ -214,11 +214,7 @@
       (send self :angle-vector-sequence (reverse avs)
             :fast (get-arm-controller arm) 0 :scale 5.0)
       (send self :wait-interpolation)
-      (ros::ros-info "[:pick-object] arm:~a in-bin -> view-hand-pose" arm)
       (send self :gripper-servo-on arm)
-      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world)
-            :fast (get-arm-controller arm) 0 :scale 3.0)
-      (send self :wait-interpolation)
       graspingp))
   (:get-object-position
     (arm bin &key (object-index 0))
@@ -226,35 +222,35 @@
       ;; validate
       (unless
         (setq obj-box (elt (gethash arm object-boxes-in-bin-) object-index))
-        (ros::ros-warn "[:try-to-pick-object-in-bin] No bbox  is found: ~a, ~a" arm bin)
-        (return-from :try-to-pick-object-in-bin nil))
+        (ros::ros-warn "[:get-object-position] No bbox  is found: ~a, ~a" arm bin)
+        (return-from :get-object-position nil))
       ;; with Center of Mass
       (unless
         (setq obj-coords (elt (gethash arm object-coords-in-bin-) object-index))
-        (ros::ros-warn "[:try-to-pick-in-bin] No com is found: ~a, ~a" arm bin)
-        (return-from :try-to-pick-object-in-bin nil))
+        (ros::ros-warn "[:get-object-position] No com is found: ~a, ~a" arm bin)
+        (return-from :get-object-position nil))
       (unless
         (setq bin-box (gethash bin bin-boxes-))
-        (ros::ros-error "[:try-to-pick-object] No data about order bin box. Call :recognize-bin-box first.")
-        (return-from :try-to-pick-object-in-bin nil))
+        (ros::ros-error "[:get-object-position] No data about order bin box. Call :recognize-bin-box first.")
+        (return-from :get-object-position nil))
       (unless
         (setq movable-region (gethash bin bin-movable-regions-))
-        (ros::ros-error "[:try-to-pick-object] No data about movable region for order bin box. Call :get-movable-region-for-bin first.")
-        (return-from :try-to-pick-object-in-bin nil))
+        (ros::ros-error "[:get-object-position] No data about movable region for order bin box. Call :set-movable-region-for-bin first.")
+        (return-from :get-object-position nil))
       ;; grasp object
-      (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a approach to the object" arm)
+      (ros::ros-info "[:get-object-position] arm:~a approach to the object" arm)
       ;; gripper is straight
       (send self :gripper-servo-on arm)
       (setq obj-pos (send obj-coords :worldpos))
       (dolist (i (list 0 1))
         (cond ((> (elt (elt movable-region i) 0) (aref obj-pos i))
-               (ros::ros-info "[:try-to-pick-in-bin] object is out of movable region. ~a > ~a < ~a"
+               (ros::ros-info "[:get-object-position] object is out of movable region. ~a > ~a < ~a"
                               (elt (elt movable-region i) 1)
                               (elt (send obj-coords :pos) i)
                               (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 0)))
               ((> (aref obj-pos i) (elt (elt movable-region i) 1))
-               (ros::ros-info "[:try-to-pick-in-bin] object is out of movable region. ~a < ~a > ~a"
+               (ros::ros-info "[:get-object-position] object is out of movable region. ~a < ~a > ~a"
                               (elt (elt movable-region i) 1)
                               (elt (send obj-coords :pos) i)
                               (elt (elt movable-region i) 0))
