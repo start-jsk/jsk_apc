@@ -1573,7 +1573,7 @@
             )
           (unix::sleep 1)
           )
-        (sethash hashkey hard-coded-variables- (- min-pressure 20))
+        (sethash hashkey hard-coded-variables- (- min-pressure 10))
         )
       )
     (send self :stop-grasp arm)
