@@ -103,7 +103,16 @@
                 (setq is-recognized
                       (send *ri* :recognize-objects-in-bin arm :stamp (ros::time-now)))
                 (setq recognition-trial-time (incf recognition-trial-time)))
-              (setq state :pick_object)))
+              (if is-recognized
+                (setq state :pick_object)
+                (progn
+                  (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
+                  (send *ri* :angle-vector-sequence
+                        (list (send *baxter* :fold-to-keep-object arm)
+                              (send *baxter* :fold-pose-back arm))
+                        :fast (get-arm-controller arm) 0 :scale 5.0)
+                  (send *ri* :wait-interpolation)
+                  (setq state :wait_for_opposite_arm_start_picking)))))
           (set-arm-state-param arm state))
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
