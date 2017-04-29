@@ -61,7 +61,7 @@
                     (- (apply #'max vertex-values) (elt offset i)))
                   movable-region))
       movable-region))
-  (:get-movable-region-for-bin
+  (:set-movable-region-for-bin
     (&key (offset (list 0 0 0)))
     (let (cube)
         (progn
