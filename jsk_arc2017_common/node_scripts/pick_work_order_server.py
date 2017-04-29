@@ -44,8 +44,8 @@ class WorkOrderServer(object):
             else:
                 self.cardboard_ids[size_id] = 'C'
 
-        larm_orders = orders[2:3]
-        rarm_orders = orders[:2]
+        larm_orders = orders[:2]
+        rarm_orders = orders[2:3]
         self.larm_msg = self._generate_msg(larm_orders)
         self.rarm_msg = self._generate_msg(rarm_orders)
         self.larm_pub = rospy.Publisher(
