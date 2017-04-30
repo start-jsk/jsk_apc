@@ -416,7 +416,8 @@
       (if (gethash arm order-bin-box-)
         (progn
           (setq cube (send self :bbox->cube (gethash arm order-bin-box-)))
-          (sethash arm order-bin-movable-region- (send self :cube->movable-region cube :offset offset)))
+          (sethash arm order-bin-movable-region-
+                   (send self :cube->movable-region cube :offset offset)))
         (ros::ros-error "[:get-movable-region-for-tote] arm: ~a No order bin found. Do :recognize-order-bin-box first." (arm2str arm)))))
   (:cube->movable-region
     (cube &key (offset (list 0 0 0)))
