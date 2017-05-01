@@ -9,8 +9,8 @@
 
   <!-- Launch pipeline for 3D object segmentation. -->
   <!-- for left hand camera -->
-  <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
   <group ns="left_hand_camera">
+    <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_left)">
@@ -53,8 +53,8 @@
     </include>
   </group>
   <!-- for right hand camera -->
-  <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
   <group ns="right_hand_camera">
+    <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_right)">
