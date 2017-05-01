@@ -71,7 +71,7 @@
                         (send self :cube->movable-region cube :offset offset))))))
   (:need-to-wait-opposite-arm
     (arm state)
-    (let (opposite-state opposite-target)
+    (let (opposite-state)
       (setq opposite-state
             (str2symbol (ros::get-param
                           (format nil "~a_hand/state"
@@ -84,11 +84,12 @@
             (eq opposite-state :return_object)))))
   (:get-work-orders
     (arm)
-    (setq msg
-      (one-shot-subscribe
-        (format nil "/strategic_work_order/~a_hand" (arm2str arm))
-        jsk_arc2017_common::WorkOrderArray))
-    (send msg :orders))
+    (let (msg)
+      (setq msg
+        (one-shot-subscribe
+          (format nil "/strategic_work_order/~a_hand" (arm2str arm))
+          jsk_arc2017_common::WorkOrderArray))
+      (send msg :orders)))
   (:get-next-work-order
     (arm current-order)
     (let ((orders (send self :get-work-orders arm)))
@@ -188,7 +189,7 @@
       is-recognized))
   (:pick-object-in-bin
     (arm bin &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
-    (let (bin-box graspingp object-index obj-pos avs avs->view)
+    (let (graspingp object-index obj-pos avs)
       (if (or
           (null (gethash arm object-boxes-in-bin-))
           (null (gethash arm object-coords-in-bin-)))
@@ -218,7 +219,7 @@
       graspingp))
   (:get-object-position
     (arm bin &key (object-index 0))
-    (let (avs obj-box graspingp bin-box movable-region obj-pos obj-box-z-length)
+    (let (avs obj-box bin-box movable-region obj-coords obj-pos obj-box-z-length)
       ;; validate
       (unless
         (setq obj-box (elt (gethash arm object-boxes-in-bin-) object-index))
@@ -307,7 +308,7 @@
     graspingp))
   (:ik->bin-center
     (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
-    (let (av bin-box bin-coords)
+    (let (bin-box bin-coords)
       (setq bin-box (gethash bin bin-boxes-))
       (setq bin-coords (send tfl- :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
@@ -322,7 +323,7 @@
             :use-gripper use-gripper)))
   (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
-    (let (av bin-box bin-coords)
+    (let (bin-box bin-coords)
       (setq bin-box (gethash bin bin-boxes-))
       (setq bin-coords (send tfl- :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
