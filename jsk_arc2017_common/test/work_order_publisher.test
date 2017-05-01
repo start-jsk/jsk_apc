@@ -1,5 +1,5 @@
 <launch>
-  <node pkg="jsk_arc2017_common" type="pick_work_order_server.py" name="pick_work_order_0" respawn="true">
+  <node pkg="jsk_arc2017_common" type="work_order_publisher.py" name="pick_work_order_0" respawn="true">
     <rosparam subst_value="true">
       json_dir: $(find jsk_arc2017_common)/data/json/example_pick_task
     </rosparam>

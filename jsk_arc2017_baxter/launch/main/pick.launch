@@ -14,7 +14,7 @@
   </node>
 
   <!-- work order data -->
-  <node pkg="jsk_arc2017_common" type="pick_work_order_server.py" name="strategic_work_order" respawn="true">
+  <node pkg="jsk_arc2017_common" type="work_order_publisher.py" name="strategic_work_order" respawn="true">
     <rosparam subst_value="true">
       json_dir: $(arg json_dir)
     </rosparam>
