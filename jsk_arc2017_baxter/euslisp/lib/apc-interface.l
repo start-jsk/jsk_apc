@@ -75,7 +75,7 @@
       (setq opposite-state
             (str2symbol (ros::get-param
                           (format nil "~a_hand/state"
-                                  (send self :arm-symbol2str (opposite-arm arm))))))
+                                  (arm2str (opposite-arm arm))))))
       (if (eq state :wait_for_opposite_arm_start_picking)
         (null (eq opposite-state :pick_object))
         (or (eq opposite-state :recognize_objects_in_bin)
@@ -86,7 +86,7 @@
     (arm)
     (setq msg
       (one-shot-subscribe
-        (format nil "/strategic_work_order/~a_hand" (send self :arm-symbol2str arm))
+        (format nil "/strategic_work_order/~a_hand" (arm2str arm))
         jsk_arc2017_common::WorkOrderArray))
     (send msg :orders))
   (:get-next-work-order

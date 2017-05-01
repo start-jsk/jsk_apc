@@ -136,8 +136,7 @@
               (if target-obj
                   (progn
                     (ros::set-param
-                      (format nil "~a_hand/target_object"
-                              (send *ri* :arm-symbol2str arm)) target-obj)
+                      (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
                     (setq state :set_target_cardboard))
                   (setq state :return_object)))
             (progn
@@ -168,7 +167,7 @@
               (ros::ros-info "[main] blacklisted object, return to shelf")
               (setq state :return_object))
             (progn
-              (ros::set-param (format nil "~a_hand/target_box" (send *ri* :arm-symbol2str arm)) (symbol2str target-cardboard))
+              (ros::set-param (format nil "~a_hand/target_box" (arm2str arm)) (symbol2str target-cardboard))
               ;; logging
               (ros::ros-info "[main] target-cardboard: ~a" target-cardboard)
               (setq state :place_object)))
@@ -207,9 +206,8 @@
             (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
             (ros::ros-warn "[main] arm ~a: dropped object" arm))
           (ros::set-param
-            (format nil "~a_hand/target_object"
-                    (send *ri* :arm-symbol2str arm)) target-obj)
-          (ros::set-param (format nil "~a_hand/target_cardboard" (send *ri* :arm-symbol2str arm)) (symbol2str target-cardboard))
+            (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
+          (ros::set-param (format nil "~a_hand/target_cardboard" (arm2str arm)) (symbol2str target-cardboard))
           (send *ri* :stop-grasp arm) ;; release object
           (send *ri* :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
