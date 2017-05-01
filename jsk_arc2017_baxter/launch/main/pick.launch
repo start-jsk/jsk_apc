@@ -1,5 +1,5 @@
 <launch>
-  <arg name="launch_main" default="true" />
+  <arg name="main" default="true" />
   <arg name="json_dir" />
   <arg name="rviz" default="true" />
 
@@ -38,13 +38,13 @@
   </group>
 
   <!-- robot main -->
-  <node if="$(arg launch_main)" pkg="jsk_arc2017_baxter" type="pick-main.l" name="left_hand_main"
+  <node if="$(arg main)" pkg="jsk_arc2017_baxter" type="pick-main.l" name="left_hand_main"
         args="&quot;(progn (pick-init :larm-controller) (pick-mainloop :larm))&quot;"
         respawn="true" output="screen">
     <env name="DISPLAY" value="" />
   </node>
 
-  <node if="$(arg launch_main)" pkg="jsk_arc2017_baxter" type="pick-main.l" name="right_hand_main"
+  <node if="$(arg main)" pkg="jsk_arc2017_baxter" type="pick-main.l" name="right_hand_main"
     args="&quot;(progn (pick-init :rarm-controller) (pick-mainloop :rarm))&quot;"
     respawn="true" output="screen">
     <env name="DISPLAY" value="" />
