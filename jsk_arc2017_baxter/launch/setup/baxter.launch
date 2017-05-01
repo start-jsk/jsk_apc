@@ -50,8 +50,7 @@
     <rosparam command="load" file="$(find jsk_arc2017_common)/config/shelf_interactive_marker.yaml" />
   </node>
   <node name="publish_bin_boxes"
-        pkg="jsk_arc2017_common" type="publish_shelf_bin_bbox.py">
-    <remap from="~boxes" to="~output" />
+        pkg="jsk_recognition_utils" type="bounding_box_array_publisher.py">
     <rosparam file="$(find jsk_arc2017_common)/config/shelf_bin.yaml" command="load" />
   </node>
 

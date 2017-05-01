@@ -26,6 +26,7 @@
   <run_depend>jsk_data</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
   <run_depend>jsk_perception</run_depend>
+  <run_depend>jsk_recognition_utils</run_depend>
   <run_depend>jsk_rqt_plugins</run_depend>
   <run_depend>jsk_rviz_plugins</run_depend>
   <run_depend>jsk_topic_tools</run_depend>
