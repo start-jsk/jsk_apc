@@ -21,7 +21,7 @@ def load_label_list():
     return label_list
 
 
-def main(dirname):
+def generate_pick_json(dirname):
     label_list = load_label_list()
     box_id_list = ['A1', '1AD', '1A5', '1B2', 'K3']
     box_A_candidate = box_id_list[:2]   # box_A is for 2 items
@@ -118,10 +118,14 @@ def main(dirname):
         json.dump(order, f, sort_keys=True, indent=4, separators=separators)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--dir', default='sample_pick_task')
     args = parser.parse_args()
 
     dirname = args.dir
-    main(dirname)
+    generate_pick_json(dirname)
+
+
+if __name__ == '__main__':
+    main()
