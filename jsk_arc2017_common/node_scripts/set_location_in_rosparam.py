@@ -24,7 +24,7 @@ def main():
             box_contents[box['size_id']] = box['contents']
         rospy.set_param('~param', box_contents)
     else:  # tote contents
-        rospy.set_param('~param', data[location])
+        rospy.set_param('~param', data[location]['contents'])
 
 if __name__ == '__main__':
     rospy.init_node('set_location_in_rosparam')
