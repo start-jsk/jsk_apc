@@ -358,7 +358,25 @@
               :offset #f(-100 0 300) :coords-pitch gripper-angle
               :rotation-axis :y
               :use-gripper nil) avs)
-      (send self :angle-vector-sequence avs :fast (get-arm-controller arm) 0 :scale 3.0))))
+      (send self :angle-vector-sequence avs :fast (get-arm-controller arm) 0 :scale 3.0)))
+  (:wait-for-user-input-to-start (arm)
+    (let (can-start)
+      (ros::ros-info "[:wait-for-user-input-to-start] wait for user input to start: ~a" arm)
+      (ros::wait-for-service "/rviz/yes_no_button")
+      (while
+        (not can-start)
+        (setq can-start (send (ros::service-call
+                                "/rviz/yes_no_button" (instance jsk_gui_msgs::YesNoRequest)) :yes)))
+      (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~a" arm)))
+  (:set-object-segmentation-candidates (arm candidates)
+    (let ((req (instance jsk_recognition_msgs::SetLabelsRequest :init)))
+      (send req :labels candidates)
+      (ros::service-call
+        (format nil "/~a_hand_camera/apply_context_to_label_proba/update_candidates"
+                (arm2str arm))
+        req)))
+  (:set-arm-state-param (arm state)
+    (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))))
 
 (defun jsk_arc2017_baxter::apc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)

@@ -29,21 +29,21 @@
   (let (state order target-obj target-cardboard
         fail-count dropped recognition-trial-time is-recognized)
     (setq state :wait_for_user_input)
-    (set-arm-state-param arm state)
+    (send *ri* :set-arm-state-param arm state)
     (setq fail-count 0)
     (while t
       (case state
         (:wait_for_user_input
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; wait user input to start the task
-          (wait-for-user-input-to-start arm)
+          (send *ri* :wait-for-user-input-to-start arm)
           (setq state :initialize)
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:initialize
           (ros::ros-info "[main] ~a, ~a" arm state)
           (setq label-names (ros::get-param (format nil "/~a_hand_camera/label_names" (arm2str arm))))
           (setq state :set_target)
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:set_target
           ;; next order
           (setq order (send *ri* :get-next-work-order arm order))
@@ -64,7 +64,7 @@
               (ros::set-dynparam
                 (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
                 (cons "label_value" (position target-obj label-names :test #'string=)))
-              (set-object-segmentation-candidates arm
+              (send *ri* :set-object-segmentation-candidates arm
                 (mapcar #'(lambda (x) (position x label-names :test #'string=))
                         (append (list "__background__") bin-contents (list "__shelf__"))))
               (if (send *ri* :check-bin-exist target-bin)
@@ -78,14 +78,14 @@
                 (progn
                   (ros::ros-warn "[~a] [main] could not find bin box: ~a" (ros::get-name) target-bin)
                   (setq state :set_target)))))
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:wait_for_opposite_arm
           (ros::ros-info "[main] ~a, ~a" arm state)
           (while
             (send *ri* :need-to-wait-opposite-arm arm state)
             (unix::sleep 1))
           (setq state :recognize_objects_in_bin)
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:recognize_objects_in_bin
           (ros::ros-info "[main] ~a, ~a" arm state)
           ;; if necessary wait for opposite arm
@@ -116,7 +116,7 @@
                         :fast (get-arm-controller arm) 0 :scale 5.0)
                   (send *ri* :wait-interpolation)
                   (setq state :wait_for_opposite_arm_start_picking)))))
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :pick-object-in-bin arm target-bin
@@ -129,7 +129,7 @@
                 3000 (get-arm-controller arm) 0)
           (setq graspingp (send *ri* :graspingp arm))
           (setq state :verify_object)
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:verify_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
@@ -154,14 +154,14 @@
               (if (> fail-count 1)
                 (setq state :wait_for_opposite_arm_start_picking)
                 (setq state :wait_for_opposite_arm))))
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:wait_for_opposite_arm_start_picking
           (ros::ros-info "[main] ~a, ~a" arm state)
           (while
             (send *ri* :need-to-wait-opposite-arm arm state)
             (unix::sleep 1))
           (setq state :wait_for_opposite_arm)
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:set_target_cardboard
           (ros::ros-info "[main] ~a, ~a" arm state)
           (setq dropped nil)
@@ -174,7 +174,7 @@
               ;; logging
               (ros::ros-info "[main] target-cardboard: ~a" target-cardboard)
               (setq state :place_object)))
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:return_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :angle-vector
@@ -191,7 +191,7 @@
           (send *ri* :fold-pose-back arm)
           (send *ri* :wait-interpolation)
           (setq state :set_target)
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:place_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
@@ -218,13 +218,13 @@
                 1000 (get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (setq state :return_from_cardboard)
-          (set-arm-state-param arm state))
+          (send *ri* :set-arm-state-param arm state))
         (:return_from_cardboard
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *ri* :fold-pose-back arm)
           (send *ri* :wait-interpolation)
           (setq state :set_target)
-          (set-arm-state-param arm state))))))
+          (send *ri* :set-arm-state-param arm state))))))
 
 (warn "~% Commands ~%")
 (warn "(pick-init)     : initialize *ri*~%")
