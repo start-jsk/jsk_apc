@@ -11,6 +11,9 @@
 (unless (find-package "JSK_ARC2017_BAXTER")
   (make-package "JSK_ARC2017_BAXTER"))
 
+;; TODO: Do not inherit baxter-interface in apc-interface
+;; TODO: baxter-interface ---> apc-interface -> pick-interface
+;; TODO: baxter-robot     -^
 (defclass jsk_arc2017_baxter::apc-interface
   :super jsk_2016_01_baxter_apc::baxter-interface
   :slots (object-boxes-in-bin-

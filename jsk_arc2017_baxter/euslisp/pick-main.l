@@ -4,6 +4,9 @@
 
 (require "package://jsk_arc2017_baxter/euslisp/lib/apc-interface.l")
 
+;; TODO: make pick-interface class
+;; TODO: baxter-interface ---> apc-interface -> pick-interface
+;; TODO: baxter-robot     -^
 (defun pick-init (&optional (ctype :default-controller) (calib-pressure t))
   (jsk_arc2017_baxter::apc-init :ctype ctype)
   (send *ri* :gripper-servo-on)
