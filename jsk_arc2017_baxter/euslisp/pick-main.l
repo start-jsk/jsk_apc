@@ -7,6 +7,7 @@
 ;; TODO: make pick-interface class
 ;; TODO: baxter-interface ---> apc-interface -> pick-interface
 ;; TODO: baxter-robot     -^
+;; TODO: https://github.com/start-jsk/jsk_apc/issues/2068
 (defun pick-init (&optional (ctype :default-controller) (calib-pressure t))
   (jsk_arc2017_baxter::apc-init :ctype ctype)
   (send *ri* :gripper-servo-on)

@@ -14,6 +14,7 @@
 ;; TODO: Do not inherit baxter-interface in apc-interface
 ;; TODO: baxter-interface ---> apc-interface -> pick-interface
 ;; TODO: baxter-robot     -^
+;; TODO: https://github.com/start-jsk/jsk_apc/issues/2068
 (defclass jsk_arc2017_baxter::apc-interface
   :super jsk_2016_01_baxter_apc::baxter-interface
   :slots (object-boxes-in-bin-
