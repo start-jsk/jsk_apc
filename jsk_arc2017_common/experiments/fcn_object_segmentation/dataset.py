@@ -12,16 +12,15 @@ import numpy as np
 import skimage.io
 from sklearn.model_selection import train_test_split
 import torch.utils.data
+import yaml
 
 
-this_dir = osp.dirname(osp.realpath(__file__))
+PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
 
 def get_object_names():
-    object_names = ['__background__']
-    with open(osp.join(this_dir, '../../data/names/objects.txt')) as f:
-        object_names += [x.strip() for x in f]
-    object_names.append('__shelf__')
+    with open(osp.join(PKG_DIR, 'config/label_names.yaml')) as f:
+        object_names = yaml.load(f)['label_names']
     return object_names
 
 
