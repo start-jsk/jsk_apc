@@ -11,15 +11,6 @@
 (unless (find-package "JSK_ARC2017_BAXTER")
   (make-package "JSK_ARC2017_BAXTER"))
 
-(defclass jsk_arc2017_baxter::transform-listener
-  :super ros::transform-listener)
-
-(defmethod jsk_arc2017_baxter::transform-listener
-  (:tf-pose->coords
-    (frame_id pose)
-    (send (send self :lookup-transform "base" frame_id (ros::time 0))
-          :transform (ros::tf-pose->coords pose))))
-
 (defclass jsk_arc2017_baxter::apc-interface
   :super jsk_2016_01_baxter_apc::baxter-interface
   :slots (object-boxes-in-bin-
@@ -36,17 +27,22 @@
     (send-super* :init :moveit-environment mvit-env
                  :moveit-robot mvit-rb args)
     ;; initialize slots
-    (setq tfl- (instance jsk_arc2017_baxter::transform-listener :init))
+    (setq tfl- (instance ros::transform-listener :init))
     (setq object-boxes-in-bin- (make-hash-table))
     (setq bin-movable-regions- (make-hash-table))
     (setq object-boxes-in-bin- (make-hash-table))
     (setq object-coords-in-bin- (make-hash-table)))
+  (:tf-pose->coords
+    (frame_id pose)
+    (let (base-name (send (send (send self :robot) :base_lk) :name))
+      (send (send tfl- :lookup-transform base-name frame_id (ros::time 0))
+            :transform (ros::tf-pose->coords pose))))
   (:bbox->cube
     (bbox)
     (let* ((dims (ros::tf-point->pos (send bbox :dimensions)))
            (bx (make-cube (elt dims 0) (elt dims 1) (elt dims 2))))
       (send bx :newcoords
-            (send tfl- :tf-pose->coords
+            (send self :tf-pose->coords
                   (send bbox :header :frame_id)
                   (send bbox :pose)))
       bx))
@@ -171,7 +167,7 @@
          (setq obj-box (send box-msg :boxes))
          (setq obj-coords
                (mapcar #'(lambda (obj-pose)
-                           (send tfl- :tf-pose->coords
+                           (send self :tf-pose->coords
                                  (send com-msg :header :frame_id) obj-pose))
                        (send com-msg :poses)))
          (if (and (> (length obj-box) 0) (> (length obj-coords) 0))
@@ -310,7 +306,7 @@
     (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
     (let (bin-box bin-coords)
       (setq bin-box (gethash bin bin-boxes-))
-      (setq bin-coords (send tfl- :tf-pose->coords
+      (setq bin-coords (send self :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
       (send bin-coords :translate
@@ -325,7 +321,7 @@
     (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
     (let (bin-box bin-coords)
       (setq bin-box (gethash bin bin-boxes-))
-      (setq bin-coords (send tfl- :tf-pose->coords
+      (setq bin-coords (send self :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
       (send bin-coords :translate
