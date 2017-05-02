@@ -11,17 +11,17 @@
 (unless (find-package "JSK_ARC2017_BAXTER")
   (make-package "JSK_ARC2017_BAXTER"))
 
-;; TODO: Do not inherit baxter-interface in apc-interface
-;; TODO: baxter-interface ---> apc-interface -> pick-interface
+;; TODO: Do not inherit baxter-interface in arc-interface
+;; TODO: baxter-interface ---> arc-interface -> pick-interface
 ;; TODO: baxter-robot     -^
 ;; TODO: https://github.com/start-jsk/jsk_apc/issues/2068
-(defclass jsk_arc2017_baxter::apc-interface
+(defclass jsk_arc2017_baxter::arc-interface
   :super jsk_2016_01_baxter_apc::baxter-interface
   :slots (object-boxes-in-bin-
           object-coords-in-bin-
           bin-movable-regions-))
 
-(defmethod jsk_arc2017_baxter::apc-interface
+(defmethod jsk_arc2017_baxter::arc-interface
   (:init
     (&rest args &key
            ((:moveit-environment mvit-env)
@@ -379,13 +379,13 @@
   (:set-arm-state-param (arm state)
     (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))))
 
-(defun jsk_arc2017_baxter::apc-init (&key (ctype :default-controller) (moveit nil))
+(defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
     (when moveit
       (setq mvit-env (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
       (setq mvit-rb (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
     (unless (boundp '*ri*)
-      (setq *ri* (instance jsk_arc2017_baxter::apc-interface :init :type ctype
+      (setq *ri* (instance jsk_arc2017_baxter::arc-interface :init :type ctype
                            :moveit-environment mvit-env
                            :moveit-robot mvit-rb)))
     (unless (boundp '*baxter*)

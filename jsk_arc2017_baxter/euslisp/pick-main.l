@@ -2,14 +2,14 @@
 
 (ros::roseus "robot_main")
 
-(require "package://jsk_arc2017_baxter/euslisp/lib/apc-interface.l")
+(require "package://jsk_arc2017_baxter/euslisp/lib/arc-interface.l")
 
 ;; TODO: make pick-interface class
-;; TODO: baxter-interface ---> apc-interface -> pick-interface
+;; TODO: baxter-interface ---> arc-interface -> pick-interface
 ;; TODO: baxter-robot     -^
 ;; TODO: https://github.com/start-jsk/jsk_apc/issues/2068
 (defun pick-init (&optional (ctype :default-controller) (calib-pressure t))
-  (jsk_arc2017_baxter::apc-init :ctype ctype)
+  (jsk_arc2017_baxter::arc-init :ctype ctype)
   (send *ri* :gripper-servo-on)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
