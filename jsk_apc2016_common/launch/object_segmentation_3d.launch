@@ -4,11 +4,11 @@
   <arg name="INPUT_IMAGE" />
   <arg name="INPUT_CLOUD" />
   <arg name="FIXED_FRAME" />
-  <arg name="GPU" />
-  <arg name="BACKEND" />
-  <arg name="MODEL_NAME" />
-  <arg name="MODEL_FILE" />
-  <arg name="LABEL_YAML" />
+  <arg name="GPU" default="0" />
+  <arg name="BACKEND" default="chainer" />
+  <arg name="MODEL_NAME" default="fcn32s" />
+  <arg name="MODEL_FILE" default="$(find jsk_apc2016_common)/trained_data/fcn32s_v2_148000.chainermodel"/>
+  <arg name="LABEL_YAML" default="$(find jsk_apc2016_common)/config/label_names.yaml"/>
 
   <rosparam command="load" file="$(arg LABEL_YAML)" />
 
