@@ -15,13 +15,12 @@ import torch.utils.data
 import yaml
 
 
-PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
+this_dir = osp.dirname(osp.abspath(__file__))
 
 
 def get_object_names():
-    with open(osp.join(PKG_DIR, 'config/label_names.yaml')) as f:
-        object_names = yaml.load(f)['label_names']
-    return object_names
+    with open(osp.join(this_dir, '../../config/label_names.yaml')) as f:
+        return yaml.load(f)['label_names']
 
 
 class ARC2017Base(torch.utils.data.Dataset):
