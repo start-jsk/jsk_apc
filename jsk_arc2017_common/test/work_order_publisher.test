@@ -1,9 +1,5 @@
 <launch>
-  <node pkg="jsk_arc2017_common" type="work_order_publisher.py" name="pick_work_order_0" respawn="true">
-    <rosparam subst_value="true">
-      json_dir: $(find jsk_arc2017_common)/data/json/example_pick_task
-    </rosparam>
-  </node>
+  <include file="$(find jsk_arc2017_common)/samples/sample_work_order_publisher.launch" />
 
   <test test-name="work_order_published" pkg="jsk_tools"  type="test_topic_published.py" >
     <param name="~topic_0" value="/pick_work_order_0/left_hand" />
