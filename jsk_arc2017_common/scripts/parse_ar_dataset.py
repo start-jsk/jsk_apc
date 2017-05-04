@@ -10,6 +10,7 @@ import os.path as osp
 import numpy as np
 import skimage.io
 import skimage.transform
+import yaml
 
 import rospkg
 
@@ -54,7 +55,7 @@ def main():
         obj_name = obj_name_capital.lower()
         obj_dir = osp.join(dataset_dir, obj_dir)
 
-        out_dir = osp.join(data_dir, 'objects', obj_name)
+        out_dir = osp.join(PKG_DIR, 'config/objects', obj_name)
         if not osp.exists(out_dir):
             os.makedirs(out_dir)
         print('==> Writing to: %s' % out_dir)
@@ -79,7 +80,7 @@ def main():
         img_sqr[:img.shape[0], :img.shape[1]] = img
         skimage.io.imsave(osp.join(out_dir, 'top.jpg'), img_sqr)
 
-    out_dir = osp.join(data_dir, 'names')
+    out_dir = osp.join(PKG_DIR, 'config')
     print('==> Writing to: %s' % out_dir)
     if not osp.exists(out_dir):
         os.makedirs(out_dir)
@@ -89,9 +90,9 @@ def main():
     with open(osp.join(out_dir, 'classes.txt'), 'w') as f:
         pass
 
-    # objects.txt
-    with open(osp.join(out_dir, 'objects.txt'), 'w') as f:
-        f.write('\n'.join(objects))
+    # label_names.yaml
+    with open(osp.join(out_dir, 'objects.yaml'), 'w') as f:
+        yaml.dump({'label_names': objects}, f)
 
     # grasp_types.txt
     with open(osp.join(out_dir, 'grasp_types.txt'), 'w') as f:
