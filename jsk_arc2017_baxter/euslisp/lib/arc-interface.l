@@ -377,7 +377,11 @@
                 (arm2str arm))
         req)))
   (:set-arm-state-param (arm state)
-    (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state))))
+    (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state)))
+  (:get-bin-contents (bin)
+    (ros::get-param
+      (format nil "/bin_contents/~A" (string-upcase (symbol2str bin)))))
+  )
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)

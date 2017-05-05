@@ -58,7 +58,7 @@
               (setq target-bin (str2symbol (send order :bin)))
               (setq target-obj (send order :item))
               (setq target-cardboard (str2symbol (send order :box)))
-              (setq bin-contents (get-bin-contents target-bin))
+              (setq bin-contents (send *ri* :get-bin-contents target-bin))
               (ros::set-dynparam
                 (format nil "/~a_hand_camera/bbox_array_to_bbox" (arm2str arm))
                 (cons "index" (position target-bin bins)))
