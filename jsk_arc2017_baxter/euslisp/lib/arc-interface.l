@@ -75,7 +75,7 @@
       (setq opposite-state
             (str2symbol (ros::get-param
                           (format nil "~a_hand/state"
-                                  (arm2str (opposite-arm arm))))))
+                                  (arm2str (get-opposite-arm arm))))))
       (if (eq state :wait_for_opposite_arm_start_picking)
         (null (eq opposite-state :pick_object))
         (or (eq opposite-state :recognize_objects_in_bin)
