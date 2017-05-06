@@ -1,0 +1,12 @@
+<launch>
+  <include file="$(find jsk_arc2017_common)/samples/sample_work_order_publisher.launch" />
+
+  <test test-name="test_work_order_publisher"
+        name="test_work_order_publisher"
+        pkg="jsk_tools"  type="test_topic_published.py" >
+    <param name="~topic_0" value="/pick_work_order_0/left_hand" />
+    <param name="~timeout_0" value="10" />
+    <param name="~topic_1" value="/pick_work_order_0/right_hand" />
+    <param name="~timeout_1" value="10" />
+  </test>
+</launch>

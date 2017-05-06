@@ -6,6 +6,7 @@ import os.path as osp
 import cv2
 import jsk_recognition_utils
 import rospkg
+import yaml
 
 
 PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
@@ -19,11 +20,12 @@ def main():
 
     tile_shape = map(int, args.tile_shape.split('x'))
 
-    data_dir = osp.join(PKG_DIR, 'data')
-    with open(osp.join(data_dir, 'names/objects.txt')) as f:
-        obj_names = [obj.strip() for obj in f]
+    with open(osp.join(PKG_DIR, 'config/label_names.yaml')) as f:
+        obj_names = yaml.load(f)['label_names']
+        obj_names = obj_names[1:-1]
 
     imgs = []
+    data_dir = osp.join(PKG_DIR, 'data')
     for i, obj in enumerate(obj_names):
         obj_id = i + 1
         img_file = osp.join(data_dir, 'objects', obj, 'top.jpg')

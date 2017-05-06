@@ -2,9 +2,8 @@
 
 from __future__ import print_function
 import argparse
+import os
 import sys
-
-import yaml
 
 
 def parse(source_code, max_line_length):
@@ -62,78 +61,107 @@ def parse(source_code, max_line_length):
     return result
 
 
-def test_parenthesis(result):
+def test_parenthesis(result, filepath):
     if result['parenthesis_open'] != result['parenthesis_close']:
-        print("parenthesis: Number of open/close parenthesises don't much: {0} != {1}"
-              .format(result['parenthesis_open'], result['parenthesis_close']),
-              file=sys.stderr)
+        print(
+            '{0}: parenthesis: # of open/close parenthesises doesn\'t match: {1} != {2}'  # NOQA
+            .format(
+                filepath, result['parenthesis_open'],
+                result['parenthesis_close']),
+            file=sys.stderr)
         return 1
     return 0
 
 
-def test_tab(result):
+def test_tab(result, filepath):
     if len(result['tab']) != 0:
         for tab_result in result['tab']:
-            print('tab: There is tab at line {0}'.format(tab_result+1),
-                  file=sys.stderr)
+            print(
+                '{0}:{1}: tab: line contains tab'
+                .format(filepath, tab_result),
+                file=sys.stderr)
         return 1
     return 0
 
 
-def test_whitespace(result):
+def test_whitespace(result, filepath):
     if len(result['whitespace']) != 0:
-        for tab_result in result['whitespace']:
-            print('whitespace: Invalid white space usage at line {0}'.format(tab_result+1),
-                  file=sys.stderr)
+        for whitespace_result in result['whitespace']:
+            print(
+                '{0}:{1}: whitespace: line contains invalid whitespace'
+                .format(filepath, whitespace_result),
+                file=sys.stderr)
         return 1
     return 0
 
 
-def test_line_length(result, max_line_length):
+def test_line_length(result, max_line_length, filepath):
     if len(result['line_length']) != 0:
         for line_length_result in result['line_length']:
-            print('line_length: Line length exceeds {2} characters at line {0}: {1} > {2}'
-                  .format(line_length_result[0]+1, line_length_result[1], max_line_length),
-                          file=sys.stderr)
+            print(
+                '{0}:{1}: line_length: line too long ({2} > {3} characters)'
+                .format(
+                    filepath, line_length_result[0]+1,
+                    line_length_result[1], max_line_length),
+                file=sys.stderr)
         return 1
     return 0
 
 
-def lint(source_code, ignore_list, max_line_length):
+def lint(filepath, ignore_list, max_line_length):
+    source_code = open(filepath).read()
     result = parse(source_code, max_line_length)
 
-    result_display = yaml.safe_dump({'RESULT': result},
-                                    default_flow_style=False)
     test_list = []
-    if not 'parenthesis' in ignore_list:
-        test_list.append(test_parenthesis(result))
-    if not 'line_length' in ignore_list:
-        test_list.append(test_line_length(result, max_line_length))
-    if not 'tab' in ignore_list:
-        test_list.append(test_tab(result))
-    if not 'whitespace' in ignore_list:
-        test_list.append(test_whitespace(result))
+    if 'parenthesis' not in ignore_list:
+        test_list.append(test_parenthesis(result, filepath))
+    if 'line_length' not in ignore_list:
+        test_list.append(test_line_length(result, max_line_length, filepath))
+    if 'tab' not in ignore_list:
+        test_list.append(test_tab(result, filepath))
+    if 'whitespace' not in ignore_list:
+        test_list.append(test_whitespace(result, filepath))
 
     return sum(test_list)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', help='filename')
-    parser.add_argument('-l', '--line-length', type=int, help='maximum line length, defalut: 100')
-    parser.add_argument('-i', '--ignore', type=str, help='list of ignoring check ids.')
+    parser.add_argument('path', type=str, help='checking dir or file path')
+    parser.add_argument(
+        '-e', '--extension', type=str, help='file extension, defalut: l')
+    parser.add_argument(
+        '-l', '--max-line-length', type=int,
+        help='maximum line length, defalut: 100')
+    parser.add_argument(
+        '-i', '--ignore', type=str, help='list of ignoring check ids.')
     args = parser.parse_args()
 
-    filename = args.filename
-    max_line_length = args.line_length
+    path = args.path
+    if args.extension is None:
+        extension = 'l'
+    else:
+        extension = args.extension
+    extension = '.' + extension
+    max_line_length = args.max_line_length
     if max_line_length is None:
         max_line_length = 100
     if args.ignore is None:
         ignore_list = []
     else:
         ignore_list = args.ignore.split(',')
-    source_code = open(filename).read()
-    sys.exit(lint(source_code, ignore_list, max_line_length))
+    retcode = 0
+    if os.path.isfile(path):
+        if lint(path, ignore_list, max_line_length) > 0:
+            retcode = 1
+    else:
+        for root, dirs, files in os.walk(path):
+            for file_ in files:
+                filepath = os.path.join(root, file_)
+                if filepath.endswith(extension):
+                    if lint(filepath, ignore_list, max_line_length) > 0:
+                        retcode = 1
+    sys.exit(retcode)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,32 @@
+<launch>
+  <node name="sample_set_bin_contents"
+        pkg="jsk_arc2017_common" type="set_location_in_rosparam.py"
+        output="screen">
+    <remap from="~param" to="/bin_contents" />
+    <rosparam subst_value="true">
+      location: bins
+      json_dir: $(find jsk_arc2017_common)/data/json/sample_pick_task
+    </rosparam>
+  </node>
+
+  <node name="sample_set_box_contents"
+        pkg="jsk_arc2017_common" type="set_location_in_rosparam.py"
+        output="screen">
+    <remap from="~param" to="/box_contents" />
+    <rosparam subst_value="true">
+      location: boxes
+      json_dir: $(find jsk_arc2017_common)/data/json/sample_pick_task
+    </rosparam>
+  </node>
+
+  <node name="sample_set_tote_contents"
+        pkg="jsk_arc2017_common" type="set_location_in_rosparam.py"
+        output="screen">
+    <remap from="~param" to="/tote_contents" />
+    <rosparam subst_value="true">
+      location: tote
+      json_dir: $(find jsk_arc2017_common)/data/json/sample_pick_task
+    </rosparam>
+  </node>
+
+</launch>

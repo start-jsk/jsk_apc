@@ -15,6 +15,7 @@ import skimage.io
 
 import jsk_recognition_utils
 import rospkg
+import yaml
 
 
 PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
@@ -56,10 +57,8 @@ def main(start):
     print('==> Size of dataset: All: %d, Annotated: %d.' %
           (len(label_files), len(list(filter(None, label_files)))))
 
-    object_names = ['__background__']
-    with open(osp.join(PKG_DIR, 'data/names/objects.txt')) as f:
-        object_names += [x.strip() for x in f]
-    object_names.append('__shelf__')
+    with open(osp.join(PKG_DIR, 'config/label_names.yaml')) as f:
+        object_names = yaml.load(f)['label_names']
     object_names.append('__unlabeled__')
 
     print('==> Press keys: [q] to quit, [n] to go next, [p] to go previous')

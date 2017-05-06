@@ -10,10 +10,23 @@
   <url>http://wiki.ros.org/jsk_arc2017_common</url>
 
   <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
+  <author email="shingogo@hotmail.co.jp">Shingo Kitagawa</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>message_generation</build_depend>
+  <build_depend>roseus</build_depend>
+
+  <run_depend>jsk_apc2016_common</run_depend>
+  <run_depend>jsk_pcl_ros</run_depend>
+  <run_depend>jsk_pcl_ros_utils</run_depend>
+  <run_depend>jsk_perception</run_depend>
+  <run_depend>message_runtime</run_depend>
   <run_depend>python-serial</run_depend>
+  <run_depend>rospy</run_depend>
+
+  <test_depend>roslint</test_depend>
+  <test_depend>rostest</test_depend>
 
   <export>
   </export>

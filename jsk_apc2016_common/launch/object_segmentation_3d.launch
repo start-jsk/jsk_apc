@@ -4,16 +4,22 @@
   <arg name="INPUT_IMAGE" />
   <arg name="INPUT_CLOUD" />
   <arg name="FIXED_FRAME" />
+  <arg name="GPU" default="0" />
+  <arg name="BACKEND" default="chainer" />
+  <arg name="MODEL_NAME" default="fcn32s" />
+  <arg name="MODEL_FILE" default="$(find jsk_apc2016_common)/trained_data/fcn32s_v2_148000.chainermodel"/>
+  <arg name="LABEL_YAML" default="$(find jsk_apc2016_common)/config/label_names.yaml"/>
 
-  <rosparam command="load" file="$(find jsk_apc2016_common)/config/label_names.yaml" />
+  <rosparam command="load" file="$(arg LABEL_YAML)" />
 
   <node name="fcn_object_segmentation"
         pkg="jsk_perception" type="fcn_object_segmentation.py">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />  <!-- rgb timestamp -->
     <rosparam subst_value="true">
-      gpu: 0
-      model_name: fcn32s
-      model_h5: $(find jsk_apc2016_common)/trained_data/fcn32s_v2_148000.chainermodel
+      gpu: $(arg GPU)
+      backend: $(arg BACKEND)
+      model_name: $(arg MODEL_NAME)
+      model_file: $(arg MODEL_FILE)
     </rosparam>
     <remap from="~target_names" to="label_names" />
   </node>

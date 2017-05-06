@@ -1,0 +1,11 @@
+frame_id: shelf_base
+boxes:
+  # bin A
+  - position: [0, 0.15, 0] 
+    dimension: [0.6, 0.3, 0.26]
+  # bin B
+  - position: [0.15, -0.15, 0]
+    dimension: [0.3, 0.3, 0.26] 
+  # bin C
+  - position: [-0.15, -0.15, 0]
+    dimension: [0.3, 0.3, 0.26] 

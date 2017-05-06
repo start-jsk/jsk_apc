@@ -1,0 +1,29 @@
+{
+    "orders": [
+        {
+            "size_id": "A1",
+            "contents": [
+                "mouse_traps",
+                "irish_spring_soap"
+            ]
+        },
+        {
+            "size_id": "1A5",
+            "contents": [
+                "tennis_ball_container",
+                "mesh_cup",
+                "band_aid_tape"
+            ]
+        },
+        {
+            "size_id": "1B2",
+            "contents": [
+                "ticonderoga_pencils",
+                "hanes_socks",
+                "hand_weight",
+                "hinged_ruled_index_cards",
+                "marbles"
+            ]
+        }
+    ]
+}

@@ -10,14 +10,28 @@
   <url>http://wiki.ros.org/jsk_arc2017_baxter</url>
 
   <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
+  <author email="shingogo@hotmail.co.jp">Shingo Kitagawa</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <run_depend>jsk_2016_01_baxter_apc</run_depend>
+  <run_depend>jsk_apc2015_common</run_depend>
+  <run_depend>jsk_apc2016_common</run_depend>
+  <run_depend>jsk_arc2017_common</run_depend>
+  <run_depend>jsk_baxter_startup</run_depend>
   <run_depend>jsk_data</run_depend>
+  <run_depend>jsk_interactive_marker</run_depend>
   <run_depend>jsk_perception</run_depend>
+  <run_depend>jsk_recognition_utils</run_depend>
   <run_depend>jsk_rqt_plugins</run_depend>
+  <run_depend>jsk_rviz_plugins</run_depend>
   <run_depend>jsk_topic_tools</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>xacro</run_depend>
+
+  <test_depend>jsk_tools</test_depend>
 
   <export>
   </export>

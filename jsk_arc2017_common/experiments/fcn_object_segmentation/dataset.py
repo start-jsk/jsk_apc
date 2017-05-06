@@ -12,17 +12,15 @@ import numpy as np
 import skimage.io
 from sklearn.model_selection import train_test_split
 import torch.utils.data
+import yaml
 
 
-this_dir = osp.dirname(osp.realpath(__file__))
+this_dir = osp.dirname(osp.abspath(__file__))
 
 
 def get_object_names():
-    object_names = ['__background__']
-    with open(osp.join(this_dir, '../../data/names/objects.txt')) as f:
-        object_names += [x.strip() for x in f]
-    object_names.append('__shelf__')
-    return object_names
+    with open(osp.join(this_dir, '../../config/label_names.yaml')) as f:
+        return yaml.load(f)['label_names']
 
 
 class ARC2017Base(torch.utils.data.Dataset):

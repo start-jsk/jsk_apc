@@ -1,23 +1,22 @@
 <launch>
 
-  <arg name="launch_astra" default="true" />
   <arg name="left_first" default="true" />
 
   <!-- Launch hand mounted astra cameras. -->
-  <include if="$(arg launch_astra)" file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
     <arg name="left_first" value="$(arg left_first)" />
   </include>
 
   <!-- Launch pipeline for 3D object segmentation. -->
   <!-- for left hand camera -->
-  <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
   <group ns="left_hand_camera">
+    <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_left)">
       <remap from="~input" to="/publish_bin_boxes/output" />
       <rosparam>
-        index: 0
+        index: 2
       </rosparam>
     </node>
     <node name="attention_clipper_target_bin"
@@ -46,22 +45,22 @@
       <arg name="INPUT_IMAGE" value="/left_hand_camera/rgb/image_rect_color"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
       <arg name="FIXED_FRAME" value="base" />
+      <arg name="BACKEND" value="torch" />
       <arg name="GPU" value="0" />
-      <arg name="BACKEND" value="chainer" />
-      <arg name="MODEL_NAME" value="fcn32s" />
-      <arg name="MODEL_FILE" value="$(find jsk_apc2016_common)/trained_data/fcn32s_v2_148000.chainermodel" />
-      <arg name="LABEL_YAML" value="$(find jsk_apc2016_common)/config/label_names.yaml" />
+      <arg name="MODEL_NAME" value="fcn32s_bilinear" />
+      <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_dataset_v1_20170417.pth" />
+      <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
     </include>
   </group>
   <!-- for right hand camera -->
-  <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
   <group ns="right_hand_camera">
+    <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_right)">
       <remap from="~input" to="/publish_bin_boxes/output" />
       <rosparam>
-        index: 2
+        index: 0
       </rosparam>
     </node>
     <node name="attention_clipper_target_bin"
@@ -90,11 +89,11 @@
       <arg name="INPUT_IMAGE" value="/right_hand_camera/rgb/image_rect_color"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
       <arg name="FIXED_FRAME" value="base" />
+      <arg name="BACKEND" value="torch" />
       <arg name="GPU" value="0" />
-      <arg name="BACKEND" value="chainer" />
-      <arg name="MODEL_NAME" value="fcn32s" />
-      <arg name="MODEL_FILE" value="$(find jsk_apc2016_common)/trained_data/fcn32s_v2_148000.chainermodel" />
-      <arg name="LABEL_YAML" value="$(find jsk_apc2016_common)/config/label_names.yaml" />
+      <arg name="MODEL_NAME" value="fcn32s_bilinear" />
+      <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_dataset_v1_20170417.pth" />
+      <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
     </include>
   </group>
 
