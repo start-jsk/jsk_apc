@@ -16,6 +16,13 @@ Changelog for package jsk_apc2015_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada
 
+Forthcoming
+-----------
+* Add link to wiki
+* use better pod_lowres.stl model
+  original repos: https://github.com/mDibyo/apc
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 2.0.0 (2016-10-22)
 ------------------
 

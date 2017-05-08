@@ -406,6 +406,133 @@ Changelog for package jsk_2016_01_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
 
+Forthcoming
+-----------
+* fix syntax in euslint
+* improve euslint to accept path
+* fix too long line in baxter-interface
+* modify min-pressure threshold
+* rename movable-region\_ and set it in slots
+* add head-controller in rarm-controller
+* rename jsk_2016_01_baxter_apc slots name
+* modify object_segmentation_3d to accept args
+* Fix rosdep key for gdown: python-gdown-pip
+* Include astra_hand in astra_hand_rgv5
+* Add main launch for baxterrgv5
+* Add lisp main and examples for baxterrgv5
+* Add baxter-interface of baxterrgv5
+* Calibrate Astra for gripper-v5
+* Add launch for baxterrgv5
+* Add ros_control system for gripper-v5
+* Add launch for gripper-v5 dynamixel controllers
+* Add a dynamixel controller for gripper-v5
+* Add hose_connector_manager firmware
+* Add models of baxterrgv5 (baxter with right gripper-v5)
+* Add gripper-v5 meshes
+* merge baxter_sim.launch and include/baxter_sim.xml
+* Use rqt_yn_btn instead of rviz plugin
+  In order to avoid the blocking of topic update on rviz.
+* Add link to wiki
+* Merge pull request `#2030 <https://github.com/start-jsk/jsk_apc/issues/2030>`_ from pazeshun/fix-dup-def
+  Fix duplicate definition of variables
+* Enable test_move_arm_to_bin
+* Fix duplicate definition of variables
+* Skip bin_B for which ik is difficult to be solved
+* Faster scale for data collection
+* update CMakelists to simplify euslint test
+* fix typo in baxter_pick_sim and baxter_stow_sim
+* add baxter_sim launch
+* disable collision between head and gripper
+* disable collision between pedestal and gripper
+* disable collision between display and screen
+* remove unused rosinstall
+* Fix tf rate of camera 10 -> 100
+* Use - instead of _ to define variable further
+* Use - instead of _ to define variable
+* Use let instead of let* as much as possible
+* euslint escape ; in quotation
+* Visualize objects in bin on Euslisp
+* add left_first args to setup_for_stow
+* Merge pull request `#1994 <https://github.com/start-jsk/jsk_apc/issues/1994>`_ from pazeshun/add-rotate-wrist-ik
+  Add :rotate-wrist-ik
+* Add :rotate-wrist-ik
+* Fix long and bad variable name
+* Fix :ik->nearest-pose not to move arms unintendedly
+* Merge pull request `#1999 <https://github.com/start-jsk/jsk_apc/issues/1999>`_ from knorth55/ik-check-improve
+  fix ik-check to work proper with gripper-v2
+* fix codes in ik-check
+* use gripper and set rotation axis in ik-check
+* use alist to avoid segmentation fault (`#1997 <https://github.com/start-jsk/jsk_apc/issues/1997>`_)
+* consider object bounding box to pick from tote
+* Enable to set ik-prepared-poses
+* Merge pull request `#1985 <https://github.com/start-jsk/jsk_apc/issues/1985>`_ from pazeshun/not-move-gripper
+  Don't move gripper while carrying object in picking-with-sib
+* Don't move gripper while carrying object in picking-with-sib
+* Add no-gripper-controller
+* Enable move-arm-body->order-bin to set controller type
+* Enable send-av to set controller type
+* Adjust picking-with-sib to current object segmentation
+* Add method to get the work order of certain bin
+* add gazebo material tag for gripper
+* add inertia tag in both gripper.urdf.xacro
+* fix trajectory_execution namespace
+  see https://github.com/ros-planning/moveit/issues/61
+* mv LICENSE and add kiva_pod stl model
+* add ompl_planning and update param
+  longest_valid_segment_fraction: 0.05 -> 0.01
+  this solves moveit path simplification error.
+* specify to use av-seq-raw in spin-off-by-wrist
+* add moveit group "both_arms" as :arms
+* refine pick-object-in-order-bin motion
+* fix movable-region warning
+  current: this warning always shows up
+* remove wait-interpolation from :hold-opposite-hand-object
+* add dy key in :view-opposite-hand-pose
+* add distance :move-arm-body->bin-with-support-arm
+* remove place-object-pose when picking from tote
+* modify view-hand-pose because we don't use kinect2
+* add data_collection launch
+* add moveit-environment in baxter-interface
+  default key :moveit nil
+  if you want to enable moveit, you need to set key :moveit t.
+  (jsk_2016_01_baxter_apc::baxter-init :moveit t)
+* add baxter_moveit launch for moveit usage
+* add jskbaxter2 moveit_config
+* add gazebo tag in vacuum_gripper.xacro
+* set nil not to initialize default moveit config
+* add gripper_trajectory_server for simulator
+* update xacro wiki url
+* Fix position of arduino firmware
+* Add urdf checking launch
+* comment out vgg object verification node
+* Fix for not working :interpolatingp on simulation
+  - See :wait-interpolation on pr2eus/robot-interface.l also.
+* add :move-arm-body->bin-with-support-arm in baxter-interface
+* add :hold-opposite-hand-object in baxter-interface
+* add :approaching-from-downside-pose in baxter-robot
+* add :view-opposite-hand-pose in baxter-robot
+* Fix typo in tmuxinator config
+* add wait-interpolation-until-grasp method
+* add option in euslint and remove indent check
+* Add config for tmuxinator
+* Add missing run_depend
+* Adjust right hand mounted astra camera
+* Fix KeyError for bin without target object
+* Support no target in rqt_select_target
+* modify debug-view nil not to show debug log
+* comment out drawing irtviewer line
+* Move images under jsk_apc2016_common to use it in launch correctly
+* Remove check_baxter_pkg_version.sh that is not used
+  You can just run in shell:
+  ```
+  rospack list | awk '{print $1}' | grep baxter | xargs -t -n1 rosversion
+  ```
+* Remove old README from jsk_2016_01_baxter_apc
+  See https://github.com/start-jsk/jsk_apc#install
+* Move srv to common package to fix dependency graph
+  - dependency graph should be jsk_2016_01_baxter_apc -> jsk_apc2016_common
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa, pazeshun
+
 2.0.0 (2016-10-22)
 ------------------
 * fix error Unknown limb is passed: :arms

@@ -102,6 +102,33 @@ Changelog for package jsk_apc2016_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
 
+Forthcoming
+-----------
+* add arg default for object_segmentation_3d launch
+* modify object_segmentation_3d to accept args
+* Add json for pick task by baxterrgv5
+* Add main launch for baxterrgv5
+* Add link to wiki
+* Install sample data with a script
+* add table plane removal node
+* Use compressed images to get them in 30Hz
+* Add apc recognition samples with Fetch
+* Add script to list object names
+* FCN32s-V2: Update fcn32s trained model
+  - Trained with dataset v2 (JSK + MIT)
+  - 148000 iterations
+* Fix 404 of trained data vgg16_rotation_translation_brightness_372000...
+* Fix for migrated srv of UpdateTarget
+* Support no target in rqt_select_target
+* Merge pull request `#1910 <https://github.com/start-jsk/jsk_apc/issues/1910>`_ from start-jsk/mv-srv-to-common
+  Move srv to common package to fix dependency graph
+* Place yaml file for object data in right place
+* Move images under jsk_apc2016_common to use it in launch correctly
+* Place node script in right place
+* Move srv to common package to fix dependency graph
+  - dependency graph should be jsk_2016_01_baxter_apc -> jsk_apc2016_common
+* Contributors: Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa, Shun Hasegawa
+
 2.0.0 (2016-10-22)
 ------------------
 * rqt_select_target use service to update work_order

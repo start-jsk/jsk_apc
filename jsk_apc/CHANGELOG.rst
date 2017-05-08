@@ -13,6 +13,13 @@ Changelog for package jsk_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada
 
+Forthcoming
+-----------
+* add jsk_arc2017 package in jsk_apc
+* Update package.xml
+* Add link to wiki
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 2.0.0 (2016-10-22)
 ------------------
 
