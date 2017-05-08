@@ -16,14 +16,14 @@
 
 (defun recon()
   (setq boxes_msg
-	(one-shot-subscribe
-	 "/cluster_indices_decomposer_target/boxes"
-	 jsk_recognition_msgs::BoundingBoxArray))
+    (one-shot-subscribe
+    "/cluster_indices_decomposer_target/boxes"
+    jsk_recognition_msgs::BoundingBoxArray))
 
   (setq centroids
-	(one-shot-subscribe
-	 "/cluster_indices_decomposer_target/centroid_pose_array"
-	 geometry_msgs::PoseArray))
+    (one-shot-subscribe
+    "/cluster_indices_decomposer_target/centroid_pose_array"
+    geometry_msgs::PoseArray))
 
   (setq box (car (send boxes_msg :boxes)))
   (setq center (car (send centroids :poses)))
@@ -34,7 +34,10 @@
   t)
 
 (defun test(x y z)
-  (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y z) :rpy (float-vector 0 (/ pi 2) 0)) :debug-view t))
+  (send *fetch* :inverse-kinematics
+        (make-coords :pos (float-vector x y z)
+                     :rpy (float-vector 0 (/ pi 2) 0))
+        :debug-view t))
 
 (defun test2(x y z)
   (send *fetch* :inverse-kinematics (make-coords :pos (float-vector x y z)) :debug-view t))
@@ -53,11 +56,11 @@
   (move 6000)
   (test x y (+ z 150)) ; move end-coords x +300
   (move 3000)
-  (test x y (+ z 50)) 
+  (test x y (+ z 50))
   (move 3000)
   (try-grasp)
   )
-  
+
 ;;try grasping from front
 (defun trial2()
   (recon)
