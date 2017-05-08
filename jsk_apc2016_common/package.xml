@@ -46,6 +46,7 @@
   <run_depend>tf2_eigen</run_depend>
   <run_depend>pcl_ros</run_depend>
 
+  <test_depend>jsk_tools</test_depend>
   <test_depend>roslint</test_depend>
 
   <export>
