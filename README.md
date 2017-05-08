@@ -29,6 +29,24 @@ Usage
 See [jsk_2015_05_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2015_05_baxter_apc/index.html).
 
 
+Citations
+---------
+
+```
+# Our system at APC2015
+@article{wada2017pick,
+  title={Pick-and-verify: verification-based highly reliable picking system for various target objects in clutter},
+  author={Wada, Kentaro and Sugiura, Makoto and Yanokura, Iori and Inagaki, Yuto and Okada, Kei and Inaba, Masayuki},
+  journal={Advanced Robotics},
+  volume={31},
+  number={6},
+  pages={311--321},
+  year={2017},
+  publisher={Taylor \& Francis}
+}
+```
+
+
 Install
 -------
 
