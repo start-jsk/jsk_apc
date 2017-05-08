@@ -24,8 +24,8 @@ Changelog for package jsk_2015_05_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Yusuke Niitani
 
-Forthcoming
------------
+3.0.0 (2017-05-08)
+------------------
 * Fix rosdep key for gdown: python-gdown-pip
 * Add link to wiki
 * use alist to avoid segmentation fault (`#1997 <https://github.com/start-jsk/jsk_apc/issues/1997>`_)

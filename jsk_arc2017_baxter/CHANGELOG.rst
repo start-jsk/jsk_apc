@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.0 (2017-05-08)
+------------------
 * add TODO in util.l
 * rename opposite-arm -> get-opposite-arm
 * move get-bin-contents to arc-interface

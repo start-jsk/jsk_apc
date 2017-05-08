@@ -406,8 +406,8 @@ Changelog for package jsk_2016_01_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
 
-Forthcoming
------------
+3.0.0 (2017-05-08)
+------------------
 * fix syntax in euslint
 * improve euslint to accept path
 * fix too long line in baxter-interface

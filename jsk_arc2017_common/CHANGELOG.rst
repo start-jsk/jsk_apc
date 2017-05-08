@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.0 (2017-05-08)
+------------------
 * Fix style of nodes in roslaunch files
 * Add sample for work_order_publisher
 * Fix name of sample_set_location_in_rosparam

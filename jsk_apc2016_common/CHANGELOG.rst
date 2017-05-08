@@ -102,8 +102,8 @@ Changelog for package jsk_apc2016_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
 
-Forthcoming
------------
+3.0.0 (2017-05-08)
+------------------
 * add arg default for object_segmentation_3d launch
 * modify object_segmentation_3d to accept args
 * Add json for pick task by baxterrgv5
