@@ -38,7 +38,7 @@
     (setq object-coords-in-bin- (make-hash-table)))
   (:tf-pose->coords
     (frame_id pose)
-    (let (base-name (send (send (send self :robot) :base_lk) :name))
+    (let ((base-name (send (send (send self :robot) :base_lk) :name)))
       (send (send tfl- :lookup-transform base-name frame_id (ros::time 0))
             :transform (ros::tf-pose->coords pose))))
   (:bbox->cube
