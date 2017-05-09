@@ -112,8 +112,8 @@ generate_dynamic_reconfigure_options(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES gazebo_ros_vacuum_gripper
+#  INCLUDE_DIRS include
+#  LIBRARIES jsk_2015_05_baxter_apc
   CATKIN_DEPENDS geometry_msgs message_runtime rosserial_arduino rosserial_client std_msgs
 #  DEPENDS system_lib
 )
@@ -141,13 +141,12 @@ endif()
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include
-  ${catkin_INCLUDE_DIRS}
-  ${GAZEBO_INCLUDE_DIRS}
-)
+# include_directories(include)
 
-add_library(gazebo_ros_vacuum_gripper src/gazebo_ros_vacuum_gripper.cpp)
-target_link_libraries(gazebo_ros_vacuum_gripper ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+## Declare a cpp library
+# add_library(jsk_2015_05_baxter_apc
+#   src/${PROJECT_NAME}/jsk_2015_05_baxter_apc.cpp
+# )
 
 ## -------------------
 ## baxter.l generation
@@ -221,11 +220,11 @@ install(DIRECTORY
 )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-install(TARGETS
-  gazebo_ros_vacuum_gripper
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-)
+# install(FILES
+#   # myfile1
+#   # myfile2
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
 
 #############
 ## Testing ##
