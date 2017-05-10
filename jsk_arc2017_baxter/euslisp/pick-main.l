@@ -75,13 +75,14 @@
                     (symbol2str target-bin))
                   ;; logging
                   (ros::ros-info-blue "[~a] [main] state: ~a, target-bin: ~a, target-obj: ~a" (ros::get-name) state target-bin target-obj)
-                  (setq state :recognize_objects_in_bin))
+                  (setq state :wait_for_opposite_arm))
                 (progn
                   (ros::ros-warn "[~a] [main] could not find bin box: ~a" (ros::get-name) target-bin)
                   (setq state :set_target)))))
           (send *ri* :set-arm-state-param arm state))
         (:wait_for_opposite_arm
           (ros::ros-info "[main] ~a, ~a" arm state)
+          (ros::ros-info "[main] Need to wait for opposite arm: ~a" arm)
           (while
             (send *ri* :need-to-wait-opposite-arm arm state)
             (unix::sleep 1))
@@ -89,34 +90,28 @@
           (send *ri* :set-arm-state-param arm state))
         (:recognize_objects_in_bin
           (ros::ros-info "[main] ~a, ~a" arm state)
-          ;; if necessary wait for opposite arm
-          (if (send *ri* :need-to-wait-opposite-arm arm state)
+          (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
+          (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
+          (send *ri* :wait-interpolation)
+          (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
+          (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
+          (send *ri* :wait-interpolation)
+          (setq recognition-trial-time 1)
+          (setq is-recognized nil)
+          (while (null (or (> recognition-trial-time 10) is-recognized))
+            (setq is-recognized
+                  (send *ri* :recognize-objects-in-bin arm :stamp (ros::time-now)))
+            (setq recognition-trial-time (incf recognition-trial-time)))
+          (if is-recognized
+            (setq state :pick_object)
             (progn
-              (ros::ros-info "[main] Need to wait for opposite arm: ~a" arm)
-              (setq state :wait_for_opposite_arm))
-            (progn
-              (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
-              (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
+              (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
+              (send *ri* :angle-vector-sequence
+                    (list (send *baxter* :fold-to-keep-object arm)
+                          (send *baxter* :fold-pose-back arm))
+                    :fast (get-arm-controller arm) 0 :scale 5.0)
               (send *ri* :wait-interpolation)
-              (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
-              (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
-              (send *ri* :wait-interpolation)
-              (setq recognition-trial-time 1)
-              (setq is-recognized nil)
-              (while (null (or (> recognition-trial-time 10) is-recognized))
-                (setq is-recognized
-                      (send *ri* :recognize-objects-in-bin arm :stamp (ros::time-now)))
-                (setq recognition-trial-time (incf recognition-trial-time)))
-              (if is-recognized
-                (setq state :pick_object)
-                (progn
-                  (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
-                  (send *ri* :angle-vector-sequence
-                        (list (send *baxter* :fold-to-keep-object arm)
-                              (send *baxter* :fold-pose-back arm))
-                        :fast (get-arm-controller arm) 0 :scale 5.0)
-                  (send *ri* :wait-interpolation)
-                  (setq state :wait_for_opposite_arm_start_picking)))))
+              (setq state :wait_for_opposite_arm_start_picking)))
           (send *ri* :set-arm-state-param arm state))
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
@@ -158,6 +153,7 @@
           (send *ri* :set-arm-state-param arm state))
         (:wait_for_opposite_arm_start_picking
           (ros::ros-info "[main] ~a, ~a" arm state)
+          (ros::ros-info "[main] Waiting for opposite arm start picking: ~a" arm)
           (while
             (send *ri* :need-to-wait-opposite-arm arm state)
             (unix::sleep 1))
