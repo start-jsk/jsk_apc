@@ -77,10 +77,11 @@
                           (format nil "~a_hand/state"
                                   (arm2str (get-opposite-arm arm))))))
       (if (eq state :wait_for_opposite_arm_start_picking)
-        (null (eq opposite-state :pick_object))
+        (null (eq opposite-state :recognize_objects_in_bin))
         (or (eq opposite-state :recognize_objects_in_bin)
             (eq opposite-state :pick_object)
             (eq opposite-state :verify_object)
+            (eq opposite-state :set_target_cardboard)
             (eq opposite-state :return_object)))))
   (:get-work-orders
     (arm)
