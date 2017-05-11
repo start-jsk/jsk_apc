@@ -8,7 +8,7 @@ import os.path as osp
 import rospy
 
 
-class WorkOrderServer(object):
+class WorkOrderPublisher(object):
 
     abandon_items = [
         'measuring_spoons',
@@ -79,6 +79,6 @@ class WorkOrderServer(object):
         self.rarm_pub.publish(self.rarm_msg)
 
 if __name__ == '__main__':
-    rospy.init_node('work_order_server')
-    work_order_server = WorkOrderServer()
+    rospy.init_node('work_order_publisher')
+    work_order_publisher = WorkOrderPublisher()
     rospy.spin()
