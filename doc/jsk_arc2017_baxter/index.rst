@@ -9,6 +9,7 @@ jsk_arc2017_baxter
    :glob:
 
    arc2017_pick_trial
+   usage_of_baxter
 
 Testing
 -------
