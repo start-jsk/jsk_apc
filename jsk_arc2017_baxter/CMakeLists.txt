@@ -39,7 +39,7 @@ catkin_package()
 
 if(CATKIN_ENABLE_TESTING)
   find_package(jsk_tools REQUIRED)
-  find_package(jsk_2016_01_baxter_apc REQUIRED)
+  find_package(jsk_apc2016_common REQUIRED)
   if(${jsk_tools_VERSION} VERSION_GREATER 2.0.13)
     jsk_tools_add_shell_test(COMMAND "rosrun jsk_apc2016_common euslint ${PROJECT_SOURCE_DIR}")
   endif()
