@@ -1,10 +1,8 @@
 <launch>
 
-  <arg name="left_first" default="true" />
   <arg name="right_hand_camera_tranforms" default="-0.10 0.01 0.006 -1.52 0.00 -0.08" />
 
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
-    <arg name="left_first" value="$(arg left_first)" />
     <arg name="right_hand_camera_tranforms" value="$(arg right_hand_camera_tranforms)" />
   </include>
 

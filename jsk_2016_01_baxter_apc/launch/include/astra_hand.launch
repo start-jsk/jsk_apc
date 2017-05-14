@@ -1,6 +1,5 @@
 <launch>
 
-  <arg name="left_first" default="true" />
   <arg name="depth_registration" default="true" />
   <arg name="left_hand_camera_tranforms" default="-0.095 0.02 -0.01 -1.62 -0.04 -0.09" />
   <arg name="right_hand_camera_tranforms" default="-0.10 -0.008 0.015 -1.56 0.00 -0.08" />
@@ -11,8 +10,7 @@
     <arg name="camera" value="left_hand_camera" />
     <arg name="rgb_frame_id" value="left_hand_camera_rgb_optical_frame" />
     <arg name="depth_frame_id" value="left_hand_camera_depth_optical_frame" />
-    <arg name="device_id" value="#1" if="$(arg left_first)" />
-    <arg name="device_id" value="#2" unless="$(arg left_first)" />
+    <arg name="device_id" value="16042710236" />
     <arg name="publish_tf" value="false" />
     <arg name="depth_registration" value="$(arg depth_registration)" />
     <arg name="rgb_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/left_hand_rgb.yaml" />
@@ -31,8 +29,7 @@
     <arg name="camera" value="right_hand_camera" />
     <arg name="rgb_frame_id" value="right_hand_camera_rgb_optical_frame" />
     <arg name="depth_frame_id" value="right_hand_camera_depth_optical_frame" />
-    <arg name="device_id" value="#2" if="$(arg left_first)" />
-    <arg name="device_id" value="#1" unless="$(arg left_first)" />
+    <arg name="device_id" value="16042710220" />
     <arg name="publish_tf" value="false" />
     <arg name="depth_registration" value="$(arg depth_registration)" />
     <arg name="rgb_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/right_hand_rgb.yaml" />
