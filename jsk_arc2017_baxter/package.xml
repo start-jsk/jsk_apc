@@ -15,7 +15,6 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
-  <run_depend>jsk_2016_01_baxter_apc</run_depend>
   <run_depend>jsk_apc2015_common</run_depend>
   <run_depend>jsk_apc2016_common</run_depend>
   <run_depend>jsk_arc2017_common</run_depend>
@@ -31,6 +30,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>xacro</run_depend>
 
+  <test_depend>jsk_2016_01_baxter_apc</test_depend>
   <test_depend>jsk_tools</test_depend>
 
   <export>
