@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_arc2017_baxter)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS roseus)
 
 ################################################
 ## Declare ROS messages, services and actions ##
