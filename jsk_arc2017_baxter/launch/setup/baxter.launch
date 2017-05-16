@@ -42,6 +42,10 @@
   </include>
 
 
+  <!-- hand mounted camera -->
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" />
+
+
   <!-- TODO: add shelf xacro for rviz visualization-->
   <!-- <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kiva_pod_state.launch" /> -->
 
