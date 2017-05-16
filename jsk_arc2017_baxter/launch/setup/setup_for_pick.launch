@@ -1,11 +1,7 @@
 <launch>
 
-  <arg name="left_first" default="true" />
-
   <!-- Launch hand mounted astra cameras. -->
-  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
-    <arg name="left_first" value="$(arg left_first)" />
-  </include>
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" />
 
   <!-- Launch pipeline for 3D object segmentation. -->
   <!-- for left hand camera -->
