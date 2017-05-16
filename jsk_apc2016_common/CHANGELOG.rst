@@ -102,6 +102,15 @@ Changelog for package jsk_apc2016_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
 
+Forthcoming
+-----------
+* Merge pull request `#2077 <https://github.com/start-jsk/jsk_apc/issues/2077>`_ from knorth55/move-euslint-to-common
+  Check euslisp format for jsk_apc2016_common
+* fix format for euslint check
+* euslint check for samples euslisp file
+* mv euslint to jsk_apc2016_common package
+* Contributors: Kei Okada, Shingo Kitagawa
+
 3.0.0 (2017-05-08)
 ------------------
 * add arg default for object_segmentation_3d launch

@@ -2,6 +2,19 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Move astra_hand.launch from setup_for_pick.launch to baxter.launch
+* fix typo in CMakeLists
+* Fix for moved euslint to jsk_apc2016_common
+* Depends at test time on jsk_2016_01_baxter_apc
+* add wait condition for wait_for_user_input
+* got to wait_for_opposite_arm first
+* update waiting condition
+* fix typo in arc-interface
+* mv euslint to jsk_apc2016_common package
+* Contributors: Kentaro Wada, Shingo Kitagawa, YutoUchimi
+
 3.0.0 (2017-05-08)
 ------------------
 * add TODO in util.l

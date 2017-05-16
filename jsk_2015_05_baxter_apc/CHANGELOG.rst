@@ -24,6 +24,11 @@ Changelog for package jsk_2015_05_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Yusuke Niitani
 
+Forthcoming
+-----------
+* [jsk_2015_05_baxter_apc] remove gazebo_ros_vacuum_gripper plugin because it is already merged to upstream gazebo_plugins package.
+* Contributors: Masaki Murooka
+
 3.0.0 (2017-05-08)
 ------------------
 * Fix rosdep key for gdown: python-gdown-pip
