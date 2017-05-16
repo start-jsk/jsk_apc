@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.1 (2017-05-16)
+------------------
 * Move astra_hand.launch from setup_for_pick.launch to baxter.launch
 * fix typo in CMakeLists
 * Fix for moved euslint to jsk_apc2016_common

@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.1 (2017-05-16)
+------------------
 * Fix missing dependency on jsk_data
 * fix typo in WorkOrderPublisher
 * sort cardboard by box size and give ABC name

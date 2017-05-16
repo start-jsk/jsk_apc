@@ -102,8 +102,8 @@ Changelog for package jsk_apc2016_common
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kentaro Wada, Shingo Kitagawa, Yusuke Niitani
 
-Forthcoming
------------
+3.0.1 (2017-05-16)
+------------------
 * Merge pull request `#2077 <https://github.com/start-jsk/jsk_apc/issues/2077>`_ from knorth55/move-euslint-to-common
   Check euslisp format for jsk_apc2016_common
 * fix format for euslint check

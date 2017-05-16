@@ -406,8 +406,8 @@ Changelog for package jsk_2016_01_baxter_apc
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
 
-Forthcoming
------------
+3.0.1 (2017-05-16)
+------------------
 * Find automatically astra device_id
 * mv euslint to jsk_apc2016_common package
 * Contributors: Kentaro Wada, Shingo Kitagawa
