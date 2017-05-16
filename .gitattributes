@@ -1,1 +1,4 @@
 *.l linguist-language=Lisp
+
+# ignore archive/* in launguage stats
+archive/* linguist-generated=true
