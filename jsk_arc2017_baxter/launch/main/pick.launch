@@ -2,7 +2,7 @@
   <arg name="main" default="true" />
   <arg name="json_dir" />
   <arg name="rviz" default="true" />
-  <arg name="moveit" default="false" />
+  <arg name="moveit" default="true" />
 
   <!-- set bin_contents rosparam -->
   <node name="set_bin_contents"
