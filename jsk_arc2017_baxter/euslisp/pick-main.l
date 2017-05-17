@@ -143,7 +143,7 @@
               (send *ri* :stop-grasp arm)
               (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm fail-count)
               (send *ri* :angle-vector-sequence
-                    (list (send *baxter* :fold-to-keep-object arm)
+                    (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                           (send *baxter* :fold-pose-back arm))
                     :fast (get-arm-controller arm) 0 :scale 5.0)
               (send *ri* :wait-interpolation)
