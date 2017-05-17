@@ -19,7 +19,11 @@
   :super jsk_2016_01_baxter_apc::baxter-interface
   :slots (object-boxes-in-bin-
           object-coords-in-bin-
-          bin-movable-regions-))
+          bin-movable-regions-
+          bin-cubes-
+          larm-cardboard-cube-
+          rarm-cardboard-cube-
+          co-))
 
 (defmethod jsk_arc2017_baxter::arc-interface
   (:init
@@ -31,11 +35,19 @@
     (send-super* :init :moveit-environment mvit-env
                  :moveit-robot mvit-rb args)
     ;; initialize slots
+    (when (and mvit-env mvit-rb) (setq co- (instance collision-object-publisher :init)))
     (setq tfl- (instance ros::transform-listener :init))
     (setq object-boxes-in-bin- (make-hash-table))
     (setq bin-movable-regions- (make-hash-table))
+    (setq bin-cubes- (make-hash-table))
     (setq object-boxes-in-bin- (make-hash-table))
-    (setq object-coords-in-bin- (make-hash-table)))
+    (setq object-coords-in-bin- (make-hash-table))
+    (setq rarm-cardboard-cube- (make-cube 800 400 300))
+    (send rarm-cardboard-cube- :newcoords
+          (make-coords :pos (float-vector 800 -500 -100)))
+    (setq larm-cardboard-cube- (make-cube 800 400 300))
+    (send larm-cardboard-cube- :newcoords
+          (make-coords :pos (float-vector 800 500 -100))))
   (:tf-pose->coords
     (frame_id pose)
     (let ((base-name (send (send (send self :robot) :base_lk) :name)))
@@ -383,7 +395,34 @@
   (:get-bin-contents (bin)
     (ros::get-param
       (format nil "/bin_contents/~A" (string-upcase (symbol2str bin)))))
-  )
+  (:collision-object-publisher () co-)
+  (:add-bin-scene (bin)
+    (let ((cube (send self :bbox->cube (gethash bin bin-boxes-)))
+          (base-name (send (send (send self :robot) :base_lk) :name)))
+      (send co- :add-object cube :frame-id base-name
+            :relative-pose (send cube :copy-worldcoords)
+            :object-id (format nil "bin_~A" (string-upcase (symbol2str bin))))
+      (sethash bin bin-cubes- cube)))
+  (:delete-bin-scene (bin)
+    (send co- :delete-object (gethash bin bin-cubes-))
+    (setq bin-cubes- (make-hash-table)))
+  (:add-shelf-scene ()
+    (dolist (bin (list :a :b :c))
+      (send self :add-bin-scene bin)))
+  (:delete-shelf-scene ()
+    (dolist (bin (list :a :b :c))
+      (send self :delete-bin-scene bin)))
+  (:add-cardboard-scene (arm)
+    (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-))
+          (base-name (send (send (send self :robot) :base_lk) :name)))
+      (send co- :add-object cardboard-cube :frame-id base-name
+            :relative-pose (send cardboard-cube :copy-worldcoords)
+            :object-id (format nil "~a_cardboard" (arm2str arm)))))
+  (:delete-cardboard-scene (arm)
+    (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-)))
+      (send co- :delete-object cardboard-cube)))
+  (:wipe-all-scene ()
+    (send co- :wipe-all)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
