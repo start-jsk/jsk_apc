@@ -108,13 +108,13 @@
     (send-super :larm-controller)
     (send self :lgripper-controller)))
   ;; Overwrite super class's :default-controller
-  (:default-controller
-    () ;; larm-controller include head-controller
-    (append
-      (send self :larm-controller)
-      (send self :rarm-controller)
-      ;;(send self :head-controller)
-      ))
+  (:default-controller ()
+   (append
+    (send-super :head-controller)
+    (send-super :rarm-controller)
+    (send self :rgripper-controller)
+    (send-super :larm-controller)
+    (send self :lgripper-controller)))
   ;; Rename super class's :rarm-controller to :rarm-no-gripper-controller
   (:rarm-no-gripper-controller ()
    (send-super :rarm-controller))
