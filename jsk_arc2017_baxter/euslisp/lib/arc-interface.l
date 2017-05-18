@@ -335,8 +335,9 @@
       (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
+
   (:ik->bin-entrance
-    (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
+    (arm bin &key (offset #f(0 0 0)) (rpy #f(0 0 0)) (rotation-axis t) (use-gripper nil))
     (let (bin-box bin-coords)
       (setq bin-box (gethash bin bin-boxes-))
       (setq bin-coords (send self :tf-pose->coords
@@ -347,7 +348,9 @@
                   (- (/ (m->mm (send bin-box :dimensions :x)) 2.0))
                   0.0 (/ (m->mm (send bin-box :dimensions :z)) 2.0))
                 offset) :world)
-      (send bin-coords :rotate (* pi (/ coords-pitch 180)) :y)
+      (send bin-coords :rotate (deg2rad (aref rpy 1)) :y)
+      (send bin-coords :rotate (deg2rad (aref rpy 2)) :z)
+      (send bin-coords :rotate (deg2rad (aref rpy 0)) :x)
       (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
@@ -369,10 +372,20 @@
       (send *baxter* :reset-pose arm)
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
       (pushback
-        (send self :ik->bin-entrance arm bin
-              :offset #f(-100 0 300) :coords-pitch gripper-angle
-              :rotation-axis :y
-              :use-gripper nil) avs)
+        (cond ((eq bin :a)
+               (send self :ik->bin-entrance :larm :a
+                     :offset #f(200 180 250) :rpy #f(90 90 0)
+                     :use-gripper nil))
+              ((eq bin :b)
+               (send self :ik->bin-entrance :rarm :b
+                     :offset #f(0 -180 200) :rpy #f(-90 90 0)
+                     :use-gripper nil))
+              ((eq bin :c)
+               (send self :ik->bin-entrance :rarm :c
+                     :offset #f(0 -180 200) :rpy #f(-90 90 0)
+                     :use-gripper nil))
+              (t nil))
+        avs)
       (send self :angle-vector-sequence avs :fast (get-arm-controller arm) 0 :scale 3.0)))
   (:wait-for-user-input-to-start (arm)
     (let (can-start)
