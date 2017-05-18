@@ -14,6 +14,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>jsk_data</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>roseus</build_depend>
 
