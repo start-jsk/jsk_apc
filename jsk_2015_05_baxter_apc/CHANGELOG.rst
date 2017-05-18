@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.2 (2017-05-18)
+------------------
 * Put in order tags in CHANGELOG.rst
 * Contributors: Kentaro Wada
 

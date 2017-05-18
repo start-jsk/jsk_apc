@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.2 (2017-05-18)
+------------------
 * Put in order tags in CHANGELOG.rst
 * Fix torque limit of prismatic joint in gripper (`#2094 <https://github.com/start-jsk/jsk_apc/issues/2094>`_)
 * Move astra_hand_rgv5.launch into baxterrgv5.launch
