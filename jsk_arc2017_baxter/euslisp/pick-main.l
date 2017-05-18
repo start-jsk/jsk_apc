@@ -123,6 +123,7 @@
                 (send *ri* :ik->bin-center arm target-bin
                       :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
                 3000 (get-arm-controller arm) 0)
+          (send *ri* :wait-interpolation)
           (setq graspingp (send *ri* :graspingp arm))
           (setq state :verify_object)
           (send *ri* :set-arm-state-param arm state))
