@@ -96,8 +96,6 @@
           (send *ri* :add-cardboard-scene arm)
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
-          (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
-          (send *ri* :wait-interpolation)
           (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
           (setq avs-prev (send *ri* :move-arm-body->bin-overlook-pose arm target-bin))
           (send *ri* :wait-interpolation)
