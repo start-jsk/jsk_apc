@@ -2,6 +2,12 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add roseus as build_depend
+* update midpose to go back fold-pose-back (`#2093 <https://github.com/start-jsk/jsk_apc/issues/2093>`_)
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 3.0.2 (2017-05-18)
 ------------------
 

@@ -2,6 +2,9 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.0.2 (2017-05-18)
 ------------------
 * Put in order tags in CHANGELOG.rst

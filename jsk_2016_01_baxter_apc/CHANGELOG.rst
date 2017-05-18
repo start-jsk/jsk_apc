@@ -2,6 +2,12 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix default-controller not to set head twice (`#2097 <https://github.com/start-jsk/jsk_apc/issues/2097>`_)
+* add roseus_mongo as run_depend (`#2099 <https://github.com/start-jsk/jsk_apc/issues/2099>`_)
+* Contributors: Shingo Kitagawa
+
 3.0.2 (2017-05-18)
 ------------------
 * Put in order tags in CHANGELOG.rst
