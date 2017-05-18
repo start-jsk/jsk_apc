@@ -59,6 +59,8 @@
               (setq target-obj (send order :item))
               (setq target-cardboard (str2symbol (send order :box)))
               (setq bin-contents (send *ri* :get-bin-contents target-bin))
+              (ros::set-param
+                (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
               (ros::set-dynparam
                 (format nil "/~a_hand_camera/bbox_array_to_bbox" (arm2str arm))
                 (cons "index" (position target-bin bins)))
@@ -132,11 +134,11 @@
           (if graspingp
             (progn
               (setq fail-count 0)
+              ;; TODO: in-hand verification
+              ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
+              ;; TODO:   target-obj != in-hand object -> :return_object
               (if target-obj
-                  (progn
-                    (ros::set-param
-                      (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
-                    (setq state :set_target_cardboard))
+                  (setq state :set_target_cardboard)
                   (setq state :return_object)))
             (progn
               (setq fail-count (incf fail-count))
@@ -205,9 +207,6 @@
           (if (not dropped)
             (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
             (ros::ros-warn "[main] arm ~a: dropped object" arm))
-          (ros::set-param
-            (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
-          (ros::set-param (format nil "~a_hand/target_cardboard" (arm2str arm)) (symbol2str target-cardboard))
           (send *ri* :stop-grasp arm) ;; release object
           (send *ri* :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
