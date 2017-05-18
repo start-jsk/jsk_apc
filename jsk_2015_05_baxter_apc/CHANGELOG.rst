@@ -2,6 +2,11 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Put in order tags in CHANGELOG.rst
+* Contributors: Kentaro Wada
+
 3.0.1 (2017-05-16)
 ------------------
 * [jsk_2015_05_baxter_apc] remove gazebo_ros_vacuum_gripper plugin because it is already merged to upstream gazebo_plugins package.

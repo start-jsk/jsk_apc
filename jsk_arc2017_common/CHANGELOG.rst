@@ -2,6 +2,12 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix missing build depend on jsk_data
+  - because install_data.py is run in Cmake
+* Contributors: Kentaro Wada
+
 3.0.1 (2017-05-16)
 ------------------
 * Fix missing dependency on jsk_data

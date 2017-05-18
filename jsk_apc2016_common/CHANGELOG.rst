@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Put in order tags in CHANGELOG.rst
+* Contributors: Kentaro Wada
+
 3.0.1 (2017-05-16)
 ------------------
 * Merge pull request `#2077 <https://github.com/start-jsk/jsk_apc/issues/2077>`_ from knorth55/move-euslint-to-common

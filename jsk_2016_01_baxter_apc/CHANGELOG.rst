@@ -2,6 +2,13 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Put in order tags in CHANGELOG.rst
+* Fix torque limit of prismatic joint in gripper (`#2094 <https://github.com/start-jsk/jsk_apc/issues/2094>`_)
+* Move astra_hand_rgv5.launch into baxterrgv5.launch
+* Contributors: Kentaro Wada, Shun Hasegawa
+
 3.0.1 (2017-05-16)
 ------------------
 * Find automatically astra device_id

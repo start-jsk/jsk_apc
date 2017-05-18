@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Put in order tags in CHANGELOG.rst
+* Contributors: Kentaro Wada
+
 3.0.1 (2017-05-16)
 ------------------
 
