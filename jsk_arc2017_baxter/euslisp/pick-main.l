@@ -200,19 +200,22 @@
                       :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
                 :fast (get-arm-controller arm) 0 :scale 5.0)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
-                2000 (get-arm-controller arm) 0)
-          (send *ri* :wait-interpolation)
           (setq dropped (not (send *ri* :graspingp arm)))
-          (if (not dropped)
-            (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
-            (ros::ros-warn "[main] arm ~a: dropped object" arm))
-          (send *ri* :stop-grasp arm) ;; release object
-          (send *ri* :spin-off-by-wrist arm :times 10)
-          (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 400) :world)
-                1000 (get-arm-controller arm) 0)
-          (send *ri* :wait-interpolation)
+          (if dropped
+            (progn
+              (ros::ros-error "[main] arm ~a: dropped object" arm)
+              (send *ri* :stop-grasp arm))
+            (progn
+              (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
+              (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
+                    2000 (get-arm-controller arm) 0)
+              (send *ri* :wait-interpolation)
+              (send *ri* :stop-grasp arm) ;; release object
+              (send *ri* :spin-off-by-wrist arm :times 10)
+              (send *ri* :wait-interpolation)
+              (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 400) :world)
+                    1000 (get-arm-controller arm) 0)
+              (send *ri* :wait-interpolation)))
           (setq state :return_from_cardboard)
           (send *ri* :set-arm-state-param arm state))
         (:return_from_cardboard
