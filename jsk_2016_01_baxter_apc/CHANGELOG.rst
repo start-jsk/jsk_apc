@@ -2,410 +2,6 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.5.0 (2016-07-09)
-------------------
-* rotate gripper after picking object from tote
-* Fix bug in FCNMaskForLabelNames because of mask image value
-* fix typo in dropped detection
-* fix typo in dropped detection
-* json update msg improved
-* improve volume_first work order
-* rotate gripper in bin
-* Add apply mask to get reachable space image
-* Fix type to find contour with cv2
-* Draw contour to remove big object cleanly
-* Fix some bugs in fcn_mask_for_label_names.py
-* Fix launch files for removeing big object in tote
-* Fix typo in fcn_mask generation code
-* Fix typo
-* Launch fcn node in boa
-* Add feature to remove cloud of blacklist objects for stow task
-* clear params for blacklisted object
-* add info and warn for dropped while place in bin
-* listed out all blacklisted object
-* servo on when return from bin
-* servo on before view hand pose
-* detect dropped object in place_object andnot update json
-* modify json update duration
-* Skip target_bin is empty in ouptut_json_stow.py
-* Fix typo in main-stow.l
-* add offset in pick-object in -order bin
-* fix rotation of in tote clipper
-* add dr_browns_bottle_brush in blacklist
-* improve stow motion
-* add no_object in apply_tote_contents_hint
-* Fix typo in apply_tote_contents_hint.py
-* add blacklist in apply_tote_contents_hint
-* get smaller movable region
-* Enhance ros-info for recognized object in hand
-* Longer timeout for in-hand-object-recognition in main-stow.l
-* add need-to-wait condition
-* change motion of removing arm from order bin
-* modify in hand clipper size
-* fix bug in select target-bin
-* if theres is no proper target-bin, use random target-bin
-* increase object length
-* Visualize rosconsole of euslisp main script
-* Show node name in ros-info
-* increase volume limit
-* z offset modified to APC2016 real kiva
-* use object length view pose
-* add blacklist object returning back to tote
-* rename black_list to volume_first
-* adjust tote for APC2016
-* remove head controller for rarm
-* add head-controller
-* use fixed offset
-* not use euclid clustering
-* in hand clipper modified
-* rotate gripper when exiting from bin
-* avoid arm collision with head
-* remove no_object label in apply_tote_contents_hint
-* fix apply_tote_contents_hint
-* use work-order msg for :select-stow-target-bin
-* add stow_work_order_server node
-* recognize object in hand and verify
-* add no_object candidates in apply_tote_contents_hint
-* fix path in vgg16_object_recognition launch
-* add calib-pressure-threshold in stow main program
-* add node for output stow json
-* add in hand recognition for stow task launch
-* enable visualize stow json
-* remove self filter in recognition_in_hand_for_stow
-* fix bug in :cube->movable-region
-* fix random object-index to pick same object in pick-object-in-order-bin
-* blacklist bin :l for large object stow task
-* modify order-bin-overlook-pose
-* fix typo in need-to-wait-opposite-arm
-* if fail-count > 1, wait opposite arm start picking
-* add ros-info in return_from_bin in stow main
-* set boundary of tote for y axis
-* add wait condition for pick_object in stow task
-* modify order bin overlook pose
-* get into wait_for_opposite_arm_in_pick after pick fail
-* recognize object length after detecting graspingp
-* modify view hand pose for stow-task
-* stop-grasp if there is no object in view hand pose
-* trust pressure sensor in stow main program
-* set movable-region to avoid arm from moving tote
-* add recognize-order-bin-box
-* remove unused nodes from segmentation_each_object_in_tote
-* add more condition for need-to-wait-opposite-arm
-* wait opposite arm in place condition added
-* get graspingp after second approach
-* add gripper-servo-on before approaching to object
-* picking from tote n-trial 3 -> 2
-* Revert "bin :e blacklisted because of dangerous move"
-  This reverts commit b86f4374d3210823ef7801e4084c842a295de1f6.
-* pick object randomly from tote
-* add wait-opposite-arm when returning from bin
-* combine all wait-oppsite-arm-for-stow method to one
-* use satan for vgg16 in stow task
-* fix line length < 100 to pass run_tests
-* use different attention clipper for each arm
-* use astra for segmentation_in_tote
-* no more use for self filter
-* modify object length limit to 1.0 and take longer timeout
-* bin :e blacklisted because of dangerous move
-* fix clipper for gripper v3
-* rename set_bin_param -> publish_bin_info for stow main
-* use proper bin for entering large object
-* rotate gripper to 45 when entering large object
-* rotate gripper to 0 and use lower traj for exit
-* if object length > 0.2, use higher traj and put further
-* add publish_bin_bbox for stow task
-* use avoid-shelf-pose instead of move-arm-body->bin to avoid quick move
-* add scale key in move-arm-body->bin
-* add SupervoxelSegmentation for picking from tote
-* fix bug in object length method
-* add object length recognize method and use it in stow
-* use gripper v3 for in_hand_clipper
-* add wait opposite arm for place object and pick object
-* use gripper v3 for left arm in stow main program
-* add vgg16 node for stow task
-* add inside tote recognition launch and connect to main program
-* add euclid clustering in tote for stow task
-* add stow task main program and launch file
-* add stow method and slots in baxter-interface.l
-* Adjust astra_hand camera
-* Add fcn trained data to download
-* Contributors: Kentaro Wada, Shingo Kitagawa
-
-1.0.0 (2016-07-08)
-------------------
-* Fix for pep8
-* Fix for euslint
-* Revert "Enhance :view-hand-pose for each bin"
-  This reverts commit 4949769c068829e4a490f5cb007545578c17727e.
-* Revert "Revert view-hand-pose for bin :g :h :i"
-  This reverts commit 708196580f5bd1f2e54fe2ef99669f4df70d6434.
-* Add feature to skip verification in main.l
-* Show visualize json on xdisplay in main.launch
-* astra calibration
-* Fix pressure threshold
-* Fix return_object
-* Rotate gripper earlier in drawing out arm
-* Fix return_object to avoid collision between body and arm
-* Fix offset-gripper-bin-side
-* Fix offset of return_object
-* Lift object to world-z in side approaching
-* Fix offset of object width
-* Fix timing of rotating grippers
-* Change gripper-angle not to draw out objects
-* Change gripper-angle not to push target object
-* Lift object higher
-* Enhance main.l for logging
-* Avoid collision between gripper and bin side wall
-* Improve return_object not to drop
-* Enhance ros-info in main.l and baxter-interface.l
-* Fix typo for data collection in main.launch
-* Fix typo in data collection
-* Remove no need debug printing in baxter-interface.l
-* Add no_object label as candidate for picking
-* Enhance the logging in :verify-object with green color
-* Stop grasp when graspingp is nil in verify_object
-* Fix bug of deciding object depth
-* Fix offset of object height
-* change launch to handle debug output
-* change fcn launch file to use depth img
-* Show recognition result as green
-* Fix bug of ik->bin-entrance
-* Set queue_size=1 for apply_bin_contents_hint.py
-* Add tools for euslisp to log info with color
-* astra camera calib
-* Improve view-kiva-pose
-* Data collection program in hand while apc main loop
-* Gripper servo on after user input
-* Change initial pose to view-kiva-pose
-* Fix return_object not to drop
-* visualize rosinfo output of main.l on rviz
-* Set graspingp after avoid-shelf-pose
-* Decrease segmentation in bin timeout
-* Set rosparam at the top of state in main.l
-* Stop vacuum when e-stop is pressed
-* baxter-interface.l : remove head-controller from defaut-controller ( @pazeshun I think we should not change :rarm-contller instaed, we should use rarm-head-controller, or when there is :ctype :rarm-controller, then we add :head-controller
-* Remove abanding strategy for level3
-* Add avoid-shelf-pose for safety and skip verification if number of bin contents is 1
-* Feature to abandon work_order by user requests
-* Change bin reachable depth
-* Get deep object with shallow hand position
-* Add bin-reachable-depth method and use it
-* Make aborting by depth safe
-* Change object-found-p to local variable
-* Use keep-picking-p in main.l
-* Add keep-picking-p method
-* Change variable name is-object-found -> object-found-p
-* Add offset of object width to decide approach direction
-* Fix typo of offset
-* Revert view-hand-pose for bin :g :h :i
-* Enhance :place_object in order not to drop object
-* Fix offset
-* Remove checking grasps in :verify_object state
-* Enhance :view-hand-pose for each bin
-* Prevent collision between gripper camera and bin
-* Add script to check ik-bin-entrance
-* Change hardcoded pose in baxter-interface
-* Fix typo of main.l
-* Fix typo in baxter-interface
-* astra hand calib
-* Fix ik->bin-entrance not to fail when gripper-angle is 0
-* Apply offset to pick object's center
-* Change main.l to use recognize-objects-in-bin-loop
-* Add recognize-objects-in-bin-loop method
-* Add bin-overlook-pose method
-* Prevent IK fail when drawing out arm
-* Set rthre as 10 degree
-* Return object when graspingp nil
-* Use object_data in work_order.py
-* Adjust move-arm-body->bin-overlook-pose for APC final
-* Add script to test bin-overlook-pose
-* Skip objects whose graspability exceeds threshold 3
-* Fix :verify_object mode in main.l
-* Add fold-pose-back.l script
-* Adjust left astra hand camera
-* Update check_astra.rviz
-* Adjust right astra hand camera
-* Remove subscribing topic for visualization on rviz
-  For computational loss.
-* Merge pull request `#1838 <https://github.com/start-jsk/jsk_apc/issues/1838>`_ from wkentaro/set-dynparam-eus
-  Set dynamic reconfigure parameters in euslisp node
-* Use ros::set-dynparam in in-hand-data-collection.l
-* Set dynamic reconfigure parameters in euslisp node
-* Merge pull request `#1831 <https://github.com/start-jsk/jsk_apc/issues/1831>`_ from wkentaro/longer-verify
-  Longer timeout for vgg16 object recognition
-* Merge pull request `#1817 <https://github.com/start-jsk/jsk_apc/issues/1817>`_ from pazeshun/not-need-nil-list
-  Set nil instead of list when no object found
-* Remove no_object label in apply_bin_contents_hint.py to trust pressure
-* Longer timeout for vgg16 object recognition
-* Merge pull request `#1792 <https://github.com/start-jsk/jsk_apc/issues/1792>`_ from yuyu2172/stop-self-filter
-  stop using self filters
-* Change overlook pose by @yuyu2172
-* launch that visualizes fcn class label
-* wait longer before starting to subscribe to sib result
-* Set nil instead of list when no object found
-* Fix memory leak in apply_bin_contents_hint.py
-* add fcn launch file
-* segmentation_in_bin.launch does not launch sib node
-* Calibrate grasps in in-hand-data-collection-main.l
-* Merge pull request `#1807 <https://github.com/start-jsk/jsk_apc/issues/1807>`_ from pazeshun/fix-overlook-pose
-  Fix bin-overlook-pose
-* Erase previous SIB data when SIB fails
-* Fix bin-overlook-pose
-* changed do-stop-grasp t
-* Rolling gripper on closer point to robot
-* Make data collection in main.launch as optional
-* add collect sib data in main.launch
-* move collect sib to launch/include
-* collect sib data more modular
-* Add no_object label in apply_bin_contents
-* Fix bug of arm variable
-* fixed firmware to use toggle switch
-* Make :ik->nearest-pose method
-* Data collection program for segmentation in bin
-* Merge pull request `#1793 <https://github.com/start-jsk/jsk_apc/issues/1793>`_ from ban-masa/auto-pressure-calib
-  Auto calib pressure threshold
-* Use mask image to enhance object recognition result with vgg16 net
-* added calib-pressure-threshold
-* Prepare for logging
-* Use VGG16 net for APC2016 in recognition_in_hand.launch
-* Align bounding boxes to robot base frame
-* stop using self filter
-* Fix position of wait-interpolation-smooth
-* Remove :recognize-objects-in-bin in picking-with-sib.l
-* Merge pull request `#1784 <https://github.com/start-jsk/jsk_apc/issues/1784>`_ from pazeshun/abort-approach-ik-fail
-  Abort picking objects when IK to it fails
-* add use-current-pose in ik->bin-entrance
-* improve ik->bin-entrance to minimize norm
-* Abort picking objects when IK to it fails
-* Contributors: Bando Masahiro, Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, pazeshun
-
-0.8.1 (2016-06-24)
-------------------
-* add roslint to package.xml
-* update maintainers
-* changed pressure threshold 840 -> 810
-* Use wait-interpolation-smooth for objects not to run away from gripper
-* Check the grasp before saving data
-* Use stamped filename for video recording with axis camera
-* Save hand pose at each view hand pose
-* Change save directory at each time of picking
-* Add script to randomly change the view hand pose
-* Merge pull request `#1775 <https://github.com/start-jsk/jsk_apc/issues/1775>`_ from wkentaro/fix-grasp-log
-  Fix writing grasp success/fail log when file does not exist
-* Merge pull request `#1773 <https://github.com/start-jsk/jsk_apc/issues/1773>`_ from wkentaro/remove-fold-pose
-  Remove fold-to-keep pose at each time for viewing
-* Fix writing grasp success/fail log when file does not exist
-* Remove fold-to-keep pose at each time for viewing
-* update path for trained segmenter pkl
-* Use :to-nec to strify the rostime in roseus
-* Enable to get floating bounding box
-* Add cube->cube-parallel-to-coords method
-* Adjust depth frame of astra cameras on 2016-06-22 00:17:11
-* right left hand rgb/depth calib
-* changed vacuum_gripper.launch not to launch rosserial_node3
-* Add :visualize-path method to jsk_2016_01_baxter_apc::baxter-robot
-* collect sib data launch
-* added firmware of arduino which controls vacuum switch
-* Don't rotate objects in Bin
-* Trust pressure sensor again
-* Enable to use kinect in picking-with-sib.l
-* get graspingp after second approach
-* Write grasp success/fail log while data collection on table
-* sib kinect
-* Merge pull request `#1750 <https://github.com/start-jsk/jsk_apc/issues/1750>`_ from wkentaro/stop-grasp-in-data-collection
-  Stop grasp unless grasped object when picking
-* Stop grasp unless grasped object when picking
-* Retry when ik failed to place object on table
-* Look for view pose to detect table center
-* Control vacuum gripper with a script
-* removed image resizer from launch because astra does not need them
-* Fix motion to Bin k
-* Fix motion to Bin e
-* add local variable in :need-to-wait-opposite-arm
-* Fix typo
-* Enhance naming of method :place-object-on-plane -> :place-object-on-table
-* Fix typo
-* Enhance the order of sleep and gripper servo on
-* Add data collection program for in-hand object recognition
-* Add reset-pose script
-* Stop doing self_filter while recognizing object in hand
-* Merge pull request `#1727 <https://github.com/start-jsk/jsk_apc/issues/1727>`_ from wkentaro/respawn-astra-2
-  Respawn true for astra camera
-* Respawn true for astra camera
-* Fix typo in astra_hand.launch
-* Launch vgg16_object_recognition in satan
-* color frame fixed
-* add setup_astra launch file
-* Push gripper joint states back of other joint states
-* Adjust depth_frame of hand cameras
-* rename set_bin_param -> publish_bin_info
-* publish bin bbox node split from publish bin info
-* add astra check launch and rvizconfig
-* use astra camera instead of softkinetic
-* changed threshold of pressure
-* Detect grasps with pressure threshold 840 [hPa]
-  For `#1699 <https://github.com/start-jsk/jsk_apc/issues/1699>`_
-* Adjust baxter-interface to SPB2f
-* Adjust end-coords to SPB2f
-* Change collision link of vacuum pad to SPB2f
-* use publish_bin_info node for :recognize-bin-boxes
-* add pick task json output node
-* Avoid collision to Bin top
-* Collect hard-coded variables to slot
-* Add left gripper to gripper jta server
-* Add left gripper to gripper_joint_states_publisher.cpp
-* Add left gripper to enable_gripper.cpp
-* added offset for left gripper servo
-* added firmware of left gripper-v3 arduino
-* Add new arduino node to baxter.launch
-* Adjust left arm motion to right
-* Adjust angle-vector in test-again-approach to new robot
-* Rename test-ik -> test-again-approach-bin-l
-* Rotate left gripper servo in test-ik-in-bin
-* Fix :arm-potentio-vector to get proper vector
-* Fix :rotate-wrist not to depend on joint num
-* Add lgripper-controller to baxter-interface
-* Add left gripper joint to baxter.yaml and adjust left arm pose to right
-* Add gripper-v3 to left arm
-* Add gripper-v3 meshes
-* Add left gripper to in_hand_clipper
-* Add left gripper to self filter
-* Merge pull request `#1644 <https://github.com/start-jsk/jsk_apc/issues/1644>`_ from knorth55/servo-separate
-  split gripper-servo-off and gripper-servo-on from certain method
-* use local variable in :recognize-objects-segmentation-in-bin
-* split gripper-servo-on from :spin-off-by-wrist
-* Merge pull request `#1633 <https://github.com/start-jsk/jsk_apc/issues/1633>`_ from pazeshun/use-clustering
-  Enable to use clustering instead of SIB
-* split gripper-servo-off from :move-arm-body->order-bin
-* Output simple error message if unable to get param
-* Disable test_move_arm_to_bin
-* Add setup_head.launch to jsk_2016_01_baxter_apc
-* Adjust baxter-interface to new bin model
-* add option :use-gripper in :inverse-kinematics
-* Enable to use clustering instead of SIB
-* fixed sib_softkinetic_test to not publish errors
-* Fill time_from_start in feedback
-* Sleep until trajectory start time
-* Publish feedbacks continuously among command points
-* Fix extendability of gripper_trajectory_server.cpp
-* Fix indent of gripper_trajectory_server.cpp
-* modify gripper-angle to 90 in overlook pose
-* fix style in euslisp/*.l and test/*.l
-* euslint test only euslisp/*.l and test/*.l
-* add white space, line length and indent test in euslint and improve result output
-  indent test is diabled
-* euslint style fix
-* stop-grasp only one arm in return_object
-* update main.launch to call layout visualizer in 2016
-* add timeout in method :recognize-objects-segmentation-in-bin
-* edit download_test_data.py
-* test for sib_softkinetic
-* make sib_visualization modular & fix indent
-* visualize posterior overlaid with color
-* use jsk_recognition overlay_color_to_mono
-* Update CHANGELOG.rst for 0.8.0
-* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
-
 3.0.1 (2017-05-16)
 ------------------
 * Find automatically astra device_id
@@ -1012,6 +608,410 @@ Changelog for package jsk_2016_01_baxter_apc
 * use jsk_recognition overlay_color_to_mono
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Bando Masahiro, Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
+
+1.5.0 (2016-07-09)
+------------------
+* rotate gripper after picking object from tote
+* Fix bug in FCNMaskForLabelNames because of mask image value
+* fix typo in dropped detection
+* fix typo in dropped detection
+* json update msg improved
+* improve volume_first work order
+* rotate gripper in bin
+* Add apply mask to get reachable space image
+* Fix type to find contour with cv2
+* Draw contour to remove big object cleanly
+* Fix some bugs in fcn_mask_for_label_names.py
+* Fix launch files for removeing big object in tote
+* Fix typo in fcn_mask generation code
+* Fix typo
+* Launch fcn node in boa
+* Add feature to remove cloud of blacklist objects for stow task
+* clear params for blacklisted object
+* add info and warn for dropped while place in bin
+* listed out all blacklisted object
+* servo on when return from bin
+* servo on before view hand pose
+* detect dropped object in place_object andnot update json
+* modify json update duration
+* Skip target_bin is empty in ouptut_json_stow.py
+* Fix typo in main-stow.l
+* add offset in pick-object in -order bin
+* fix rotation of in tote clipper
+* add dr_browns_bottle_brush in blacklist
+* improve stow motion
+* add no_object in apply_tote_contents_hint
+* Fix typo in apply_tote_contents_hint.py
+* add blacklist in apply_tote_contents_hint
+* get smaller movable region
+* Enhance ros-info for recognized object in hand
+* Longer timeout for in-hand-object-recognition in main-stow.l
+* add need-to-wait condition
+* change motion of removing arm from order bin
+* modify in hand clipper size
+* fix bug in select target-bin
+* if theres is no proper target-bin, use random target-bin
+* increase object length
+* Visualize rosconsole of euslisp main script
+* Show node name in ros-info
+* increase volume limit
+* z offset modified to APC2016 real kiva
+* use object length view pose
+* add blacklist object returning back to tote
+* rename black_list to volume_first
+* adjust tote for APC2016
+* remove head controller for rarm
+* add head-controller
+* use fixed offset
+* not use euclid clustering
+* in hand clipper modified
+* rotate gripper when exiting from bin
+* avoid arm collision with head
+* remove no_object label in apply_tote_contents_hint
+* fix apply_tote_contents_hint
+* use work-order msg for :select-stow-target-bin
+* add stow_work_order_server node
+* recognize object in hand and verify
+* add no_object candidates in apply_tote_contents_hint
+* fix path in vgg16_object_recognition launch
+* add calib-pressure-threshold in stow main program
+* add node for output stow json
+* add in hand recognition for stow task launch
+* enable visualize stow json
+* remove self filter in recognition_in_hand_for_stow
+* fix bug in :cube->movable-region
+* fix random object-index to pick same object in pick-object-in-order-bin
+* blacklist bin :l for large object stow task
+* modify order-bin-overlook-pose
+* fix typo in need-to-wait-opposite-arm
+* if fail-count > 1, wait opposite arm start picking
+* add ros-info in return_from_bin in stow main
+* set boundary of tote for y axis
+* add wait condition for pick_object in stow task
+* modify order bin overlook pose
+* get into wait_for_opposite_arm_in_pick after pick fail
+* recognize object length after detecting graspingp
+* modify view hand pose for stow-task
+* stop-grasp if there is no object in view hand pose
+* trust pressure sensor in stow main program
+* set movable-region to avoid arm from moving tote
+* add recognize-order-bin-box
+* remove unused nodes from segmentation_each_object_in_tote
+* add more condition for need-to-wait-opposite-arm
+* wait opposite arm in place condition added
+* get graspingp after second approach
+* add gripper-servo-on before approaching to object
+* picking from tote n-trial 3 -> 2
+* Revert "bin :e blacklisted because of dangerous move"
+  This reverts commit b86f4374d3210823ef7801e4084c842a295de1f6.
+* pick object randomly from tote
+* add wait-opposite-arm when returning from bin
+* combine all wait-oppsite-arm-for-stow method to one
+* use satan for vgg16 in stow task
+* fix line length < 100 to pass run_tests
+* use different attention clipper for each arm
+* use astra for segmentation_in_tote
+* no more use for self filter
+* modify object length limit to 1.0 and take longer timeout
+* bin :e blacklisted because of dangerous move
+* fix clipper for gripper v3
+* rename set_bin_param -> publish_bin_info for stow main
+* use proper bin for entering large object
+* rotate gripper to 45 when entering large object
+* rotate gripper to 0 and use lower traj for exit
+* if object length > 0.2, use higher traj and put further
+* add publish_bin_bbox for stow task
+* use avoid-shelf-pose instead of move-arm-body->bin to avoid quick move
+* add scale key in move-arm-body->bin
+* add SupervoxelSegmentation for picking from tote
+* fix bug in object length method
+* add object length recognize method and use it in stow
+* use gripper v3 for in_hand_clipper
+* add wait opposite arm for place object and pick object
+* use gripper v3 for left arm in stow main program
+* add vgg16 node for stow task
+* add inside tote recognition launch and connect to main program
+* add euclid clustering in tote for stow task
+* add stow task main program and launch file
+* add stow method and slots in baxter-interface.l
+* Adjust astra_hand camera
+* Add fcn trained data to download
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
+1.0.0 (2016-07-08)
+------------------
+* Fix for pep8
+* Fix for euslint
+* Revert "Enhance :view-hand-pose for each bin"
+  This reverts commit 4949769c068829e4a490f5cb007545578c17727e.
+* Revert "Revert view-hand-pose for bin :g :h :i"
+  This reverts commit 708196580f5bd1f2e54fe2ef99669f4df70d6434.
+* Add feature to skip verification in main.l
+* Show visualize json on xdisplay in main.launch
+* astra calibration
+* Fix pressure threshold
+* Fix return_object
+* Rotate gripper earlier in drawing out arm
+* Fix return_object to avoid collision between body and arm
+* Fix offset-gripper-bin-side
+* Fix offset of return_object
+* Lift object to world-z in side approaching
+* Fix offset of object width
+* Fix timing of rotating grippers
+* Change gripper-angle not to draw out objects
+* Change gripper-angle not to push target object
+* Lift object higher
+* Enhance main.l for logging
+* Avoid collision between gripper and bin side wall
+* Improve return_object not to drop
+* Enhance ros-info in main.l and baxter-interface.l
+* Fix typo for data collection in main.launch
+* Fix typo in data collection
+* Remove no need debug printing in baxter-interface.l
+* Add no_object label as candidate for picking
+* Enhance the logging in :verify-object with green color
+* Stop grasp when graspingp is nil in verify_object
+* Fix bug of deciding object depth
+* Fix offset of object height
+* change launch to handle debug output
+* change fcn launch file to use depth img
+* Show recognition result as green
+* Fix bug of ik->bin-entrance
+* Set queue_size=1 for apply_bin_contents_hint.py
+* Add tools for euslisp to log info with color
+* astra camera calib
+* Improve view-kiva-pose
+* Data collection program in hand while apc main loop
+* Gripper servo on after user input
+* Change initial pose to view-kiva-pose
+* Fix return_object not to drop
+* visualize rosinfo output of main.l on rviz
+* Set graspingp after avoid-shelf-pose
+* Decrease segmentation in bin timeout
+* Set rosparam at the top of state in main.l
+* Stop vacuum when e-stop is pressed
+* baxter-interface.l : remove head-controller from defaut-controller ( @pazeshun I think we should not change :rarm-contller instaed, we should use rarm-head-controller, or when there is :ctype :rarm-controller, then we add :head-controller
+* Remove abanding strategy for level3
+* Add avoid-shelf-pose for safety and skip verification if number of bin contents is 1
+* Feature to abandon work_order by user requests
+* Change bin reachable depth
+* Get deep object with shallow hand position
+* Add bin-reachable-depth method and use it
+* Make aborting by depth safe
+* Change object-found-p to local variable
+* Use keep-picking-p in main.l
+* Add keep-picking-p method
+* Change variable name is-object-found -> object-found-p
+* Add offset of object width to decide approach direction
+* Fix typo of offset
+* Revert view-hand-pose for bin :g :h :i
+* Enhance :place_object in order not to drop object
+* Fix offset
+* Remove checking grasps in :verify_object state
+* Enhance :view-hand-pose for each bin
+* Prevent collision between gripper camera and bin
+* Add script to check ik-bin-entrance
+* Change hardcoded pose in baxter-interface
+* Fix typo of main.l
+* Fix typo in baxter-interface
+* astra hand calib
+* Fix ik->bin-entrance not to fail when gripper-angle is 0
+* Apply offset to pick object's center
+* Change main.l to use recognize-objects-in-bin-loop
+* Add recognize-objects-in-bin-loop method
+* Add bin-overlook-pose method
+* Prevent IK fail when drawing out arm
+* Set rthre as 10 degree
+* Return object when graspingp nil
+* Use object_data in work_order.py
+* Adjust move-arm-body->bin-overlook-pose for APC final
+* Add script to test bin-overlook-pose
+* Skip objects whose graspability exceeds threshold 3
+* Fix :verify_object mode in main.l
+* Add fold-pose-back.l script
+* Adjust left astra hand camera
+* Update check_astra.rviz
+* Adjust right astra hand camera
+* Remove subscribing topic for visualization on rviz
+  For computational loss.
+* Merge pull request `#1838 <https://github.com/start-jsk/jsk_apc/issues/1838>`_ from wkentaro/set-dynparam-eus
+  Set dynamic reconfigure parameters in euslisp node
+* Use ros::set-dynparam in in-hand-data-collection.l
+* Set dynamic reconfigure parameters in euslisp node
+* Merge pull request `#1831 <https://github.com/start-jsk/jsk_apc/issues/1831>`_ from wkentaro/longer-verify
+  Longer timeout for vgg16 object recognition
+* Merge pull request `#1817 <https://github.com/start-jsk/jsk_apc/issues/1817>`_ from pazeshun/not-need-nil-list
+  Set nil instead of list when no object found
+* Remove no_object label in apply_bin_contents_hint.py to trust pressure
+* Longer timeout for vgg16 object recognition
+* Merge pull request `#1792 <https://github.com/start-jsk/jsk_apc/issues/1792>`_ from yuyu2172/stop-self-filter
+  stop using self filters
+* Change overlook pose by @yuyu2172
+* launch that visualizes fcn class label
+* wait longer before starting to subscribe to sib result
+* Set nil instead of list when no object found
+* Fix memory leak in apply_bin_contents_hint.py
+* add fcn launch file
+* segmentation_in_bin.launch does not launch sib node
+* Calibrate grasps in in-hand-data-collection-main.l
+* Merge pull request `#1807 <https://github.com/start-jsk/jsk_apc/issues/1807>`_ from pazeshun/fix-overlook-pose
+  Fix bin-overlook-pose
+* Erase previous SIB data when SIB fails
+* Fix bin-overlook-pose
+* changed do-stop-grasp t
+* Rolling gripper on closer point to robot
+* Make data collection in main.launch as optional
+* add collect sib data in main.launch
+* move collect sib to launch/include
+* collect sib data more modular
+* Add no_object label in apply_bin_contents
+* Fix bug of arm variable
+* fixed firmware to use toggle switch
+* Make :ik->nearest-pose method
+* Data collection program for segmentation in bin
+* Merge pull request `#1793 <https://github.com/start-jsk/jsk_apc/issues/1793>`_ from ban-masa/auto-pressure-calib
+  Auto calib pressure threshold
+* Use mask image to enhance object recognition result with vgg16 net
+* added calib-pressure-threshold
+* Prepare for logging
+* Use VGG16 net for APC2016 in recognition_in_hand.launch
+* Align bounding boxes to robot base frame
+* stop using self filter
+* Fix position of wait-interpolation-smooth
+* Remove :recognize-objects-in-bin in picking-with-sib.l
+* Merge pull request `#1784 <https://github.com/start-jsk/jsk_apc/issues/1784>`_ from pazeshun/abort-approach-ik-fail
+  Abort picking objects when IK to it fails
+* add use-current-pose in ik->bin-entrance
+* improve ik->bin-entrance to minimize norm
+* Abort picking objects when IK to it fails
+* Contributors: Bando Masahiro, Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, pazeshun
+
+0.8.1 (2016-06-24)
+------------------
+* add roslint to package.xml
+* update maintainers
+* changed pressure threshold 840 -> 810
+* Use wait-interpolation-smooth for objects not to run away from gripper
+* Check the grasp before saving data
+* Use stamped filename for video recording with axis camera
+* Save hand pose at each view hand pose
+* Change save directory at each time of picking
+* Add script to randomly change the view hand pose
+* Merge pull request `#1775 <https://github.com/start-jsk/jsk_apc/issues/1775>`_ from wkentaro/fix-grasp-log
+  Fix writing grasp success/fail log when file does not exist
+* Merge pull request `#1773 <https://github.com/start-jsk/jsk_apc/issues/1773>`_ from wkentaro/remove-fold-pose
+  Remove fold-to-keep pose at each time for viewing
+* Fix writing grasp success/fail log when file does not exist
+* Remove fold-to-keep pose at each time for viewing
+* update path for trained segmenter pkl
+* Use :to-nec to strify the rostime in roseus
+* Enable to get floating bounding box
+* Add cube->cube-parallel-to-coords method
+* Adjust depth frame of astra cameras on 2016-06-22 00:17:11
+* right left hand rgb/depth calib
+* changed vacuum_gripper.launch not to launch rosserial_node3
+* Add :visualize-path method to jsk_2016_01_baxter_apc::baxter-robot
+* collect sib data launch
+* added firmware of arduino which controls vacuum switch
+* Don't rotate objects in Bin
+* Trust pressure sensor again
+* Enable to use kinect in picking-with-sib.l
+* get graspingp after second approach
+* Write grasp success/fail log while data collection on table
+* sib kinect
+* Merge pull request `#1750 <https://github.com/start-jsk/jsk_apc/issues/1750>`_ from wkentaro/stop-grasp-in-data-collection
+  Stop grasp unless grasped object when picking
+* Stop grasp unless grasped object when picking
+* Retry when ik failed to place object on table
+* Look for view pose to detect table center
+* Control vacuum gripper with a script
+* removed image resizer from launch because astra does not need them
+* Fix motion to Bin k
+* Fix motion to Bin e
+* add local variable in :need-to-wait-opposite-arm
+* Fix typo
+* Enhance naming of method :place-object-on-plane -> :place-object-on-table
+* Fix typo
+* Enhance the order of sleep and gripper servo on
+* Add data collection program for in-hand object recognition
+* Add reset-pose script
+* Stop doing self_filter while recognizing object in hand
+* Merge pull request `#1727 <https://github.com/start-jsk/jsk_apc/issues/1727>`_ from wkentaro/respawn-astra-2
+  Respawn true for astra camera
+* Respawn true for astra camera
+* Fix typo in astra_hand.launch
+* Launch vgg16_object_recognition in satan
+* color frame fixed
+* add setup_astra launch file
+* Push gripper joint states back of other joint states
+* Adjust depth_frame of hand cameras
+* rename set_bin_param -> publish_bin_info
+* publish bin bbox node split from publish bin info
+* add astra check launch and rvizconfig
+* use astra camera instead of softkinetic
+* changed threshold of pressure
+* Detect grasps with pressure threshold 840 [hPa]
+  For `#1699 <https://github.com/start-jsk/jsk_apc/issues/1699>`_
+* Adjust baxter-interface to SPB2f
+* Adjust end-coords to SPB2f
+* Change collision link of vacuum pad to SPB2f
+* use publish_bin_info node for :recognize-bin-boxes
+* add pick task json output node
+* Avoid collision to Bin top
+* Collect hard-coded variables to slot
+* Add left gripper to gripper jta server
+* Add left gripper to gripper_joint_states_publisher.cpp
+* Add left gripper to enable_gripper.cpp
+* added offset for left gripper servo
+* added firmware of left gripper-v3 arduino
+* Add new arduino node to baxter.launch
+* Adjust left arm motion to right
+* Adjust angle-vector in test-again-approach to new robot
+* Rename test-ik -> test-again-approach-bin-l
+* Rotate left gripper servo in test-ik-in-bin
+* Fix :arm-potentio-vector to get proper vector
+* Fix :rotate-wrist not to depend on joint num
+* Add lgripper-controller to baxter-interface
+* Add left gripper joint to baxter.yaml and adjust left arm pose to right
+* Add gripper-v3 to left arm
+* Add gripper-v3 meshes
+* Add left gripper to in_hand_clipper
+* Add left gripper to self filter
+* Merge pull request `#1644 <https://github.com/start-jsk/jsk_apc/issues/1644>`_ from knorth55/servo-separate
+  split gripper-servo-off and gripper-servo-on from certain method
+* use local variable in :recognize-objects-segmentation-in-bin
+* split gripper-servo-on from :spin-off-by-wrist
+* Merge pull request `#1633 <https://github.com/start-jsk/jsk_apc/issues/1633>`_ from pazeshun/use-clustering
+  Enable to use clustering instead of SIB
+* split gripper-servo-off from :move-arm-body->order-bin
+* Output simple error message if unable to get param
+* Disable test_move_arm_to_bin
+* Add setup_head.launch to jsk_2016_01_baxter_apc
+* Adjust baxter-interface to new bin model
+* add option :use-gripper in :inverse-kinematics
+* Enable to use clustering instead of SIB
+* fixed sib_softkinetic_test to not publish errors
+* Fill time_from_start in feedback
+* Sleep until trajectory start time
+* Publish feedbacks continuously among command points
+* Fix extendability of gripper_trajectory_server.cpp
+* Fix indent of gripper_trajectory_server.cpp
+* modify gripper-angle to 90 in overlook pose
+* fix style in euslisp/*.l and test/*.l
+* euslint test only euslisp/*.l and test/*.l
+* add white space, line length and indent test in euslint and improve result output
+  indent test is diabled
+* euslint style fix
+* stop-grasp only one arm in return_object
+* update main.launch to call layout visualizer in 2016
+* add timeout in method :recognize-objects-segmentation-in-bin
+* edit download_test_data.py
+* test for sib_softkinetic
+* make sib_visualization modular & fix indent
+* visualize posterior overlaid with color
+* use jsk_recognition overlay_color_to_mono
+* Update CHANGELOG.rst for 0.8.0
+* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Yusuke Niitani, ban-masa, banmasa, pazeshun
 
 0.8.0 (2016-05-31)
 ------------------

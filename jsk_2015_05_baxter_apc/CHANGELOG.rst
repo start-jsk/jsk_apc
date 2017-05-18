@@ -2,28 +2,6 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.5.0 (2016-07-09)
-------------------
-
-1.0.0 (2016-07-08)
-------------------
-* kiva pod interactive marker
-* Adjust base -> kiva_pod_base
-* Adjust tf base -> kiva_pod_base
-* Adjust tf base -> kiva_pod_base
-* Adjust tf base -> kiva_pod_base again
-* Adjust tf base -> kiva_pod_base
-* Contributors: Kentaro Wada, Yusuke Niitani
-
-0.8.1 (2016-06-24)
-------------------
-* adjust kiva pod base
-* Use standalone_complexed_nodelet for Kinect2 in jsk_apc
-* Put Kinect2 calib data on jsk_apc
-* Adjust kinect2_torso tf and add rvizconfig for that
-* Update CHANGELOG.rst for 0.8.0
-* Contributors: Kentaro Wada, Yusuke Niitani
-
 3.0.1 (2017-05-16)
 ------------------
 * [jsk_2015_05_baxter_apc] remove gazebo_ros_vacuum_gripper plugin because it is already merged to upstream gazebo_plugins package.
@@ -63,6 +41,28 @@ Changelog for package jsk_2015_05_baxter_apc
 * Adjust kinect2_torso tf and add rvizconfig for that
 * Update CHANGELOG.rst for 0.8.0
 * Contributors: Kei Okada, Kentaro Wada, Yusuke Niitani
+
+1.5.0 (2016-07-09)
+------------------
+
+1.0.0 (2016-07-08)
+------------------
+* kiva pod interactive marker
+* Adjust base -> kiva_pod_base
+* Adjust tf base -> kiva_pod_base
+* Adjust tf base -> kiva_pod_base
+* Adjust tf base -> kiva_pod_base again
+* Adjust tf base -> kiva_pod_base
+* Contributors: Kentaro Wada, Yusuke Niitani
+
+0.8.1 (2016-06-24)
+------------------
+* adjust kiva pod base
+* Use standalone_complexed_nodelet for Kinect2 in jsk_apc
+* Put Kinect2 calib data on jsk_apc
+* Adjust kinect2_torso tf and add rvizconfig for that
+* Update CHANGELOG.rst for 0.8.0
+* Contributors: Kentaro Wada, Yusuke Niitani
 
 0.8.0 (2016-05-31)
 ------------------
