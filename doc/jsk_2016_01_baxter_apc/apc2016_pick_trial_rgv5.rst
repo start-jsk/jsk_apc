@@ -13,7 +13,7 @@ Pick task trial on real world with right gripper-v5 for APC2016 can be done on `
   baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc baxterrgv5.launch
 
   # Launch nodes in recognition pipeline for pick task.
-  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc setup_for_pick_rgv5.launch
+  baxter@sheeta $ roslaunch jsk_2016_01_baxter_apc setup_for_pick.launch
 
   # optional: Check sanity.
   baxter@sheeta $ rosrun jsk_2016_01_baxter_apc check_sanity_setup_for_pick
