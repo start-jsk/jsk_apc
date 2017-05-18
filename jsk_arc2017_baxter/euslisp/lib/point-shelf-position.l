@@ -2,9 +2,9 @@
 
 (require "package://jsk_arc2017_baxter/euslisp/lib/arc-interface.l")
 
-(ros::roseus "detect_bin_position")
+(ros::roseus "point_shelf_position")
 
-(defun detect-bin-position ()
+(defun point-shelf-position ()
   (let
       ((coords-left (make-coords :pos (v+ #f(790 0 -185) #f(300 300 200))))
        (coords-right (make-coords :pos (v+ #f(790 0 -185) #f(-300 -300 200)))))
@@ -16,4 +16,4 @@
 (warn "~% Commands ~%")
 (warn "First, you need to initialize *ri* and *baxter*, if you haven't done yet.~%")
 (warn "(jsk_arc2017_baxter::arc-init) : initialize *ri* and *baxter*~%")
-(warn "(detect-bin-position) : detect bin position~%")
+(warn "(point-shelf-position) : Baxter moves and points shelf position.~%")
