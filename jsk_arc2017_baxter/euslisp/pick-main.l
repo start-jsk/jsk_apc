@@ -14,8 +14,9 @@
   (send *ri* :gripper-servo-on)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
-  (if calib-pressure
-    (send *ri* :calib-pressure-threshold) nil)
+  (when calib-pressure
+    (send *ri* :calib-pressure-threshold :rarm)
+    (send *ri* :calib-pressure-threshold :larm))
   (objects (list *baxter*))
   t)
 
