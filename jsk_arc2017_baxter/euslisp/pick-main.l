@@ -206,7 +206,7 @@
           (send *ri* :angle-vector
                 (send *ri* :ik->cardboard-entrance arm target-cardboard
                       :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
-                :fast (get-arm-controller arm) 0 :scale 5.0)
+                4000 (get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (setq dropped (not (send *ri* :graspingp arm)))
           (if dropped
@@ -222,7 +222,7 @@
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 10)
               (send *ri* :wait-interpolation)
-              (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 400) :world)
+              (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
                     1000 (get-arm-controller arm) 0)
               (send *ri* :wait-interpolation)
               (send *ri* :add-cardboard-scene arm)))
