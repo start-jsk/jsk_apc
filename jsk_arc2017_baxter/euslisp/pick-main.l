@@ -8,7 +8,7 @@
 ;; TODO: baxter-interface ---> arc-interface -> pick-interface
 ;; TODO: baxter-robot     -^
 ;; TODO: https://github.com/start-jsk/jsk_apc/issues/2068
-(defun pick-init (&optional (ctype :default-controller) (calib-pressure t) (moveit nil))
+(defun pick-init (&key (ctype :default-controller) (calib-pressure t) (moveit nil))
   (jsk_arc2017_baxter::arc-init :ctype ctype :moveit moveit)
   (send *ri* :wipe-all-scene)
   (send *ri* :gripper-servo-on)
