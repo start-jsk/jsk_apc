@@ -24,7 +24,7 @@
   (ros::ros-info "[main] recognizing shelf bin boxes")
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
   (ros::ros-info "[main] recognizing cardboard boxes")
-  (send *ri* :set-movable-region-for-bin :offset (list 60 120 0))
+  (send *ri* :set-movable-region-for-bin :offset (list 80 120 0))
 
   (setq label-names (ros::get-param (format nil "/~a_hand_camera/label_names" (arm2str arm))))
   (setq bins (list :a :b :c))
