@@ -8,8 +8,9 @@
 ;; TODO: baxter-interface ---> arc-interface -> pick-interface
 ;; TODO: baxter-robot     -^
 ;; TODO: https://github.com/start-jsk/jsk_apc/issues/2068
-(defun pick-init (&optional (ctype :default-controller) (calib-pressure t))
-  (jsk_arc2017_baxter::arc-init :ctype ctype)
+(defun pick-init (&key (ctype :default-controller) (calib-pressure t) (moveit nil))
+  (jsk_arc2017_baxter::arc-init :ctype ctype :moveit moveit)
+  (send *ri* :wipe-all-scene)
   (send *ri* :gripper-servo-on)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
@@ -91,6 +92,8 @@
           (setq state :recognize_objects_in_bin)
           (send *ri* :set-arm-state-param arm state))
         (:recognize_objects_in_bin
+          (send *ri* :add-shelf-scene)
+          (send *ri* :add-cardboard-scene arm)
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
           (send *ri* :angle-vector (send *baxter* :angle-vector) 3000)
@@ -113,10 +116,13 @@
                           (send *baxter* :fold-pose-back arm))
                     :fast (get-arm-controller arm) 0 :scale 5.0)
               (send *ri* :wait-interpolation)
+              (send *ri* :delete-shelf-scene)
+              (send *ri* :delete-cardboard-scene arm)
               (setq state :wait_for_opposite_arm_start_picking)))
           (send *ri* :set-arm-state-param arm state))
         (:pick_object
           (ros::ros-info "[main] ~a, ~a" arm state)
+          (send *ri* :delete-shelf-scene)
           (send *ri* :pick-object-in-bin arm target-bin
                 :n-trial 2
                 :n-trial-same-pos 1
@@ -188,6 +194,7 @@
           (send *ri* :spin-off-by-wrist 5)
           (send *ri* :wait-interpolation)
           (ros::ros-info "[main] ~a, return object in shelf" arm)
+          (send *ri* :add-shelf-scene)
           (send *ri* :fold-pose-back arm)
           (send *ri* :wait-interpolation)
           (setq state :set_target)
@@ -195,6 +202,7 @@
         (:place_object
           (ros::ros-info "[main] ~a, ~a" arm state)
           (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
+          (send *ri* :add-shelf-scene)
           (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
           (send *ri* :angle-vector
                 (send *ri* :ik->cardboard-entrance arm target-cardboard
@@ -208,15 +216,17 @@
               (send *ri* :stop-grasp arm))
             (progn
               (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
-              (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
+              (send *ri* :delete-cardboard-scene arm)
+              (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
                     2000 (get-arm-controller arm) 0)
               (send *ri* :wait-interpolation)
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 10)
               (send *ri* :wait-interpolation)
-              (send *ri* :angle-vector (send *baxter* arm :move-end-pos #f(0 0 400) :world)
+              (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 400) :world)
                     1000 (get-arm-controller arm) 0)
-              (send *ri* :wait-interpolation)))
+              (send *ri* :wait-interpolation)
+              (send *ri* :add-cardboard-scene arm)))
           (setq state :return_from_cardboard)
           (send *ri* :set-arm-state-param arm state))
         (:return_from_cardboard

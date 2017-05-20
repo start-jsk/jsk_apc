@@ -19,7 +19,11 @@
   :super jsk_2016_01_baxter_apc::baxter-interface
   :slots (object-boxes-in-bin-
           object-coords-in-bin-
-          bin-movable-regions-))
+          bin-movable-regions-
+          bin-cubes-
+          larm-cardboard-cube-
+          rarm-cardboard-cube-
+          co-))
 
 (defmethod jsk_arc2017_baxter::arc-interface
   (:init
@@ -31,11 +35,19 @@
     (send-super* :init :moveit-environment mvit-env
                  :moveit-robot mvit-rb args)
     ;; initialize slots
+    (when (and mvit-env mvit-rb) (setq co- (instance collision-object-publisher :init)))
     (setq tfl- (instance ros::transform-listener :init))
     (setq object-boxes-in-bin- (make-hash-table))
     (setq bin-movable-regions- (make-hash-table))
+    (setq bin-cubes- (make-hash-table))
     (setq object-boxes-in-bin- (make-hash-table))
-    (setq object-coords-in-bin- (make-hash-table)))
+    (setq object-coords-in-bin- (make-hash-table))
+    (setq rarm-cardboard-cube- (make-cube 800 400 300))
+    (send rarm-cardboard-cube- :newcoords
+          (make-coords :pos (float-vector 800 -500 -100)))
+    (setq larm-cardboard-cube- (make-cube 800 400 300))
+    (send larm-cardboard-cube- :newcoords
+          (make-coords :pos (float-vector 800 500 -100))))
   (:tf-pose->coords
     (frame_id pose)
     (let ((base-name (send (send (send self :robot) :base_lk) :name)))
@@ -265,7 +277,7 @@
   (:try-to-pick-object-in-bin
     (arm obj-pos &key (offset #f(0 0 0)))
     (let (graspingp)
-      (send self :angle-vector
+      (send self :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos offset)
                                :rpy #f(0 0 0))
@@ -277,7 +289,7 @@
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a start vacuum gripper" arm)
       (send self :start-grasp arm)
       (unix::sleep 1)
-      (send self :angle-vector
+      (send self :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
                                :rpy #f(0 0 0))
@@ -292,16 +304,16 @@
         (let ((temp-av (send *baxter* :angle-vector)))
           ;; only if robot can solve IK
           (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
-            (send self :angle-vector (send *baxter* :angle-vector)
+            (send self :angle-vector-raw (send *baxter* :angle-vector)
                   3000 (get-arm-controller arm) 0))
           (send self :wait-interpolation)
-          (send self :angle-vector (send *baxter* :angle-vector temp-av)
+          (send self :angle-vector-raw (send *baxter* :angle-vector temp-av)
                   3000 (get-arm-controller arm) 0) ;; revert baxter
           (send self :wait-interpolation)))
       ;; lift object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a lift the object" arm)
       (send self :gripper-servo-off arm)
-      (send self :angle-vector (send *baxter* arm :move-end-pos #f(0 0 200) :world)
+      (send self :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 200) :world)
             3000 (get-arm-controller arm) 0)
       (send self :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
@@ -383,7 +395,35 @@
   (:get-bin-contents (bin)
     (ros::get-param
       (format nil "/bin_contents/~A" (string-upcase (symbol2str bin)))))
-  )
+  (:collision-object-publisher () co-)
+  (:add-bin-scene (bin)
+    (let ((cube (send self :bbox->cube (gethash bin bin-boxes-)))
+          (base-name (send (send (send self :robot) :base_lk) :name)))
+      (send co- :add-object cube :frame-id base-name
+            :relative-pose (send cube :copy-worldcoords)
+            :object-id (format nil "bin_~A" (string-upcase (symbol2str bin))))
+      (sethash bin bin-cubes- cube)))
+  (:delete-bin-scene (bin)
+    (send co- :delete-object (gethash bin bin-cubes-))
+    (sethash bin bin-cubes- nil))
+  (:add-shelf-scene ()
+    (dolist (bin (list :a :b :c))
+      (send self :add-bin-scene bin)))
+  (:delete-shelf-scene ()
+    (dolist (bin (list :a :b :c))
+      (send self :delete-bin-scene bin))
+    (setq bin-cubes- (make-hash-table)))
+  (:add-cardboard-scene (arm)
+    (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-))
+          (base-name (send (send (send self :robot) :base_lk) :name)))
+      (send co- :add-object cardboard-cube :frame-id base-name
+            :relative-pose (send cardboard-cube :copy-worldcoords)
+            :object-id (format nil "~a_cardboard" (arm2str arm)))))
+  (:delete-cardboard-scene (arm)
+    (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-)))
+      (send co- :delete-object cardboard-cube)))
+  (:wipe-all-scene ()
+    (send co- :wipe-all)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)

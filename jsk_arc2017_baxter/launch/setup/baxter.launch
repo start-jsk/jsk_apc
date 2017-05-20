@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="moveit" default="false" />
+  <arg name="moveit" default="true" />
 
   <!-- custom baxter params -->
   <param name="/robot_description"
