@@ -336,9 +336,9 @@
                   (- (/ (m->mm (send bin-box :dimensions :x)) 2.0))
                   0.0 (/ (m->mm (send bin-box :dimensions :z)) 2.0))
                 offset) :world)
-      (send bin-coords :rotate (deg2rad (aref rpy 1)) :y)
-      (send bin-coords :rotate (deg2rad (aref rpy 2)) :z)
-      (send bin-coords :rotate (deg2rad (aref rpy 0)) :x)
+      (send bin-coords :rotate (aref rpy 0) :z)
+      (send bin-coords :rotate (aref rpy 1) :y)
+      (send bin-coords :rotate (aref rpy 2) :x)
       (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
@@ -362,15 +362,15 @@
       (pushback
         (cond ((eq bin :a)
                (send self :ik->bin-entrance :larm :a
-                     :offset #f(200 180 250) :rpy #f(90 90 0)
+                     :offset #f(200 180 250) :rpy (float-vector 0 pi/2 pi/2)
                      :use-gripper nil))
               ((eq bin :b)
                (send self :ik->bin-entrance :rarm :b
-                     :offset #f(0 -180 200) :rpy #f(-90 90 0)
+                     :offset #f(0 -180 200) :rpy (float-vector 0 pi/2 -pi/2)
                      :use-gripper nil))
               ((eq bin :c)
                (send self :ik->bin-entrance :rarm :c
-                     :offset #f(0 -180 200) :rpy #f(-90 90 0)
+                     :offset #f(0 -180 200) :rpy (float-vector 0 p/2 -pi/2)
                      :use-gripper nil))
               (t nil))
         avs)
