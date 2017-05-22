@@ -367,24 +367,20 @@
           :use-gripper use-gripper))
   (:move-arm-body->bin-overlook-pose
     (arm bin &key (gripper-angle 90))
-    (let (avs)
+    (let (avs offset rpy
+              (offset-y (if (eq arm :larm) 180 -180)))
       (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
       (send *baxter* :reset-pose arm)
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
+      (setq offset
+            (cond ((eq bin :a) (float-vector 200 offset-y 250))
+                  ((eq bin :b) (float-vector -50 offset-y 200))
+                  ((eq bin :c) (float-vector 0 offset-y 200))))
+      (setq rpy
+            (float-vector 0 pi/2 (if (eq arm :larm) pi/2 -pi/2)))
       (pushback
-        (cond ((eq bin :a)
-               (send self :ik->bin-entrance :larm :a
-                     :offset #f(200 180 250) :rpy (float-vector 0 pi/2 pi/2)
-                     :use-gripper nil))
-              ((eq bin :b)
-               (send self :ik->bin-entrance :rarm :b
-                     :offset #f(0 -180 200) :rpy (float-vector 0 pi/2 -pi/2)
-                     :use-gripper nil))
-              ((eq bin :c)
-               (send self :ik->bin-entrance :rarm :c
-                     :offset #f(0 -180 200) :rpy (float-vector 0 p/2 -pi/2)
-                     :use-gripper nil))
-              (t nil))
+        (send self :ik->bin-entrance arm bin
+              :offset offset :rpy rpy :use-gripper nil)
         avs)
       (send self :angle-vector-sequence avs :fast (get-arm-controller arm) 0 :scale 3.0)))
   (:wait-for-user-input-to-start (arm)
