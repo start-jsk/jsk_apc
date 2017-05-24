@@ -97,7 +97,7 @@
           (ros::ros-info "[main] ~a, ~a" arm state)
           (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
           (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
-          (setq avs-prev (send *ri* :move-arm-body->bin-overlook-pose arm target-bin))
+          (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
           (send *ri* :wait-interpolation)
           (setq recognition-trial-time 1)
           (setq is-recognized nil)
@@ -106,13 +106,7 @@
                   (send *ri* :recognize-objects-in-bin arm :stamp (ros::time-now)))
             (setq recognition-trial-time (incf recognition-trial-time)))
           (if is-recognized
-            (progn
-              (setq state :pick_object)
-              (send *ri* :angle-vector-sequence (reverse avs-prev)
-                    :fast (get-arm-controller arm) 0 :scale 5.0)
-              (send *ri* :wait-interpolation)
-              (send *ri* :move-arm-body->bin-overlook-pose arm target-bin)
-              (send *ri* :wait-interpolation))
+            (setq state :pick_object)
             (progn
               (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
               (send *ri* :angle-vector-sequence
