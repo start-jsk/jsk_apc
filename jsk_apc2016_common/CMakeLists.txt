@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
     message_generation
     std_msgs
     jsk_data
+    jsk_gui_msgs
     jsk_recognition_msgs
     sensor_msgs
     message_filters
@@ -80,6 +81,7 @@ add_service_files(
 generate_messages(
   DEPENDENCIES
   std_msgs  # Or other packages containing msgs
+  jsk_gui_msgs # jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l and jsk_arc2017_baxter/euslisp/lib/arc-interface.l
   jsk_recognition_msgs
   geometry_msgs
   sensor_msgs
