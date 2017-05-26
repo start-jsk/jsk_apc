@@ -1,7 +1,5 @@
-name: fcn32s_dataset_v1
 lr: 1.0e-5
 max_iteration: 50000
 optimizer: Adam
 weight_decay: 0.0005
-copy_fc8: false
 aug: stack
