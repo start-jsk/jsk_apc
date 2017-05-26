@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
-import datetime
 import os
 import os.path as osp
 import sys
 
 import click
-import pytz
 import torch
 import torchfcn
-import torchvision
 import yaml
 
 from dataset import DatasetV1
@@ -18,10 +15,18 @@ from dataset import DatasetV1
 this_dir = osp.dirname(osp.realpath(__file__))
 
 
-@click.command()
-@click.argument('config_file', type=click.Path(exists=True))
-@click.option('--resume', type=click.Path(exists=True))
-def main(config_file, resume):
+def git_hash():
+    import shlex
+    import subprocess
+    cmd = 'git log -n 1 --pretty="%h"'
+    hash = subprocess.check_output(shlex.split(cmd)).strip()
+    return hash
+
+
+def load_config(config_file):
+    import datetime
+    import pytz
+
     config = yaml.load(open(config_file))
     assert 'max_iteration' in config
     assert 'optimizer' in config
@@ -29,15 +34,19 @@ def main(config_file, resume):
     assert 'weight_decay' in config
     assert 'aug' in config
 
+    now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
+    now = now.replace(tzinfo=None)
+
     out = osp.splitext(osp.basename(config_file))[0]
+    setting = osp.basename(osp.dirname(osp.abspath(config_file)))
     for key, value in sorted(config.items()):
-        if key == 'name':
-            continue
         if isinstance(value, basestring):
             value = value.replace('/', 'SLASH')
             value = value.replace(':', 'COLON')
         out += '_{key}-{value}'.format(key=key.upper(), value=value)
-    config['out'] = osp.join(this_dir, 'logs', config['name'], out)
+    out += '_VCS-%s' % git_hash()
+    out += '_TIME-%s' % now.strftime('%Y%m%d-%H%M%S')
+    config['out'] = osp.join(this_dir, 'logs', setting, out)
 
     config['config_file'] = osp.realpath(config_file)
     config['timestamp'] = datetime.datetime.now(
@@ -46,6 +55,15 @@ def main(config_file, resume):
         os.makedirs(config['out'])
     with open(osp.join(config['out'], 'params.yaml'), 'w') as f:
         yaml.safe_dump(config, f, default_flow_style=False)
+
+    return config
+
+
+@click.command()
+@click.argument('config_file', type=click.Path(exists=True))
+@click.option('--resume', type=click.Path(exists=True))
+def main(config_file, resume):
+    config = load_config(config_file)
     yaml.safe_dump(config, sys.stderr, default_flow_style=False)
 
     cuda = torch.cuda.is_available()
@@ -75,11 +93,8 @@ def main(config_file, resume):
         model.load_state_dict(checkpoint['model_state_dict'])
         start_epoch = checkpoint['epoch']
     else:
-        pth_file = osp.expanduser('~/data/models/torch/vgg16-00b39a1b.pth')
-        vgg16 = torchvision.models.vgg16()
-        vgg16.load_state_dict(torch.load(pth_file))
-        model.copy_params_from_vgg16(
-            vgg16, copy_fc8=config.get('copy_fc8', True), init_upscore=False)
+        vgg16 = torchfcn.models.VGG16(pretrained=True)
+        model.copy_params_from_vgg16(vgg16, copy_fc8=False, init_upscore=False)
     if cuda:
         model = model.cuda()
 
