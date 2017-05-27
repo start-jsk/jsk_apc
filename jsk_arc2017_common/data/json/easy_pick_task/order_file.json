@@ -1,0 +1,23 @@
+{
+    "orders": [
+        {
+            "contents": [
+                "hanes_socks"
+            ],
+            "size_id": "1AD"
+        },
+        {
+            "contents": [
+                "crayons"
+            ],
+            "size_id": "1A5"
+        },
+        {
+            "contents": [
+                "laugh_out_loud_jokes",
+                "hinged_ruled_index_cards"
+            ],
+            "size_id": "K3"
+        }
+    ]
+}

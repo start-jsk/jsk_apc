@@ -1,0 +1,49 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "hanes_socks",
+                "crayons",
+		"composition_book",
+		"marbles",
+		"irish_spring_soap"
+            ]
+        },
+        {
+            "bin_id": "B",
+            "contents": [
+                "hinged_ruled_index_cards",
+                "ticonderoga_pencils",
+		"fiskars_scissors",
+		"duct_tape"
+            ]
+        },
+        {
+            "bin_id": "C",
+            "contents": [
+                "laugh_out_loud_jokes",
+                "tissue_box",
+		"colgate_toothbrush_4pk",
+		"expo_eraser"
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "contents": [],
+            "size_id": "1AD"
+        },
+        {
+            "contents": [],
+            "size_id": "1A5"
+        },
+        {
+            "contents": [],
+            "size_id": "K3"
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}

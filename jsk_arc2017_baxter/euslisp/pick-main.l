@@ -14,8 +14,9 @@
   (send *ri* :gripper-servo-on)
   (send *ri* :angle-vector (send *baxter* :fold-pose-back))
   (send *ri* :wait-interpolation)
-  (if calib-pressure
-    (send *ri* :calib-pressure-threshold) nil)
+  (when calib-pressure
+    (send *ri* :calib-pressure-threshold :rarm)
+    (send *ri* :calib-pressure-threshold :larm))
   (objects (list *baxter*))
   t)
 
@@ -23,7 +24,7 @@
   (ros::ros-info "[main] recognizing shelf bin boxes")
   (send *ri* :recognize-bin-boxes :stamp (ros::time-now))
   (ros::ros-info "[main] recognizing cardboard boxes")
-  (send *ri* :set-movable-region-for-bin :offset (list 60 120 0))
+  (send *ri* :set-movable-region-for-bin :offset (list 80 120 0))
 
   (setq label-names (ros::get-param (format nil "/~a_hand_camera/label_names" (arm2str arm))))
   (setq bins (list :a :b :c))
@@ -205,7 +206,7 @@
           (send *ri* :angle-vector
                 (send *ri* :ik->cardboard-entrance arm target-cardboard
                       :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
-                :fast (get-arm-controller arm) 0 :scale 5.0)
+                4000 (get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (setq dropped (not (send *ri* :graspingp arm)))
           (if dropped
@@ -221,7 +222,7 @@
               (send *ri* :stop-grasp arm) ;; release object
               (send *ri* :spin-off-by-wrist arm :times 10)
               (send *ri* :wait-interpolation)
-              (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 400) :world)
+              (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
                     1000 (get-arm-controller arm) 0)
               (send *ri* :wait-interpolation)
               (send *ri* :add-cardboard-scene arm)))
