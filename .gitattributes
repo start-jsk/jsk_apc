@@ -1,4 +1,6 @@
 *.l linguist-language=Lisp
+*.launch linguist-language=XML
+*.test linguist-language=XML
 
 # ignore archives/* in language stats
 archives/* linguist-generated=true
