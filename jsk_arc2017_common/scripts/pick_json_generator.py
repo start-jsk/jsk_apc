@@ -15,8 +15,7 @@ PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
 def load_label_list():
     with open(osp.join(PKG_DIR, 'config', 'label_names.yaml')) as f:
-        label_names = yaml.load(f)
-    label_list = label_names['label_names']
+        label_list = yaml.load(f)
     label_list = label_list[1:-1]
     return label_list
 

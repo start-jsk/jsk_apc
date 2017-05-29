@@ -10,7 +10,7 @@
   <arg name="MODEL_FILE" default="$(find jsk_apc2016_common)/trained_data/fcn32s_v2_148000.chainermodel"/>
   <arg name="LABEL_YAML" default="$(find jsk_apc2016_common)/config/label_names.yaml"/>
 
-  <rosparam command="load" file="$(arg LABEL_YAML)" />
+  <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
 
   <node name="fcn_object_segmentation"
         pkg="jsk_perception" type="fcn_object_segmentation.py">

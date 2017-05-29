@@ -21,7 +21,7 @@ def main():
     tile_shape = map(int, args.tile_shape.split('x'))
 
     with open(osp.join(PKG_DIR, 'config/label_names.yaml')) as f:
-        obj_names = yaml.load(f)['label_names']
+        obj_names = yaml.load(f)
         obj_names = obj_names[1:-1]
 
     imgs = []
