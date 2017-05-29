@@ -91,8 +91,9 @@ def main():
         pass
 
     # label_names.yaml
-    with open(osp.join(out_dir, 'objects.yaml'), 'w') as f:
-        yaml.dump({'label_names': objects}, f)
+    with open(osp.join(PKG_DIR, 'config/label_names.yaml'), 'w') as f:
+        label_names = ['__background_'] + objects + ['__shelf__']
+        yaml.dump(label_names, f)
 
     # grasp_types.txt
     with open(osp.join(out_dir, 'grasp_types.txt'), 'w') as f:

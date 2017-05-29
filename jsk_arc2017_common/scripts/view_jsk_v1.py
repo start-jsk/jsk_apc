@@ -58,7 +58,7 @@ def main(start):
           (len(label_files), len(list(filter(None, label_files)))))
 
     with open(osp.join(PKG_DIR, 'config/label_names.yaml')) as f:
-        object_names = yaml.load(f)['label_names']
+        object_names = yaml.load(f)
     object_names.append('__unlabeled__')
 
     print('==> Press keys: [q] to quit, [n] to go next, [p] to go previous')
