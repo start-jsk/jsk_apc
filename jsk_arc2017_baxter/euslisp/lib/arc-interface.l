@@ -11,10 +11,7 @@
   (make-package "JSK_ARC2017_BAXTER"))
 
 (defclass jsk_arc2017_baxter::arc-interface
-  :slots (robot-
-          ri-
-          co-
-          bin-boxes-
+  :slots (bin-boxes-
           object-boxes-in-bin-
           object-coords-in-bin-
           bin-movable-regions-
@@ -24,18 +21,7 @@
           ))
 
 (defmethod jsk_arc2017_baxter::arc-interface
-  (:init
-    (&rest args &key
-           ((:robot robot)
-            (instance jsk_2016_01_baxter_apc::baxter-robot :init))
-           ((:robot-interface robot-interface)
-            (instance jsk_arc2017_baxter::baxter-interface :init))
-           ((:collision-object-publisher collision-object-publisher)
-            (instance collision-object-publisher :init))
-           &allow-other-keys)
-    (setq ri- robot-interface)
-    (setq robot- robot)
-    (setq co- collision-object-publisher)
+  (:init ()
     ;; initialize slots
     (setq bin-boxes- (make-hash-table))
     (setq object-boxes-in-bin- (make-hash-table))
@@ -54,7 +40,7 @@
     (let* ((dims (ros::tf-point->pos (send bbox :dimensions)))
            (bx (make-cube (elt dims 0) (elt dims 1) (elt dims 2))))
       (send bx :newcoords
-            (send ri- :tf-pose->coords
+            (send *ri* :tf-pose->coords
                   (send bbox :header :frame_id)
                   (send bbox :pose)))
       bx))
@@ -181,7 +167,7 @@
          (setq obj-box (send box-msg :boxes))
          (setq obj-coords
                (mapcar #'(lambda (obj-pose)
-                           (send ri- :tf-pose->coords
+                           (send *ri* :tf-pose->coords
                                  (send com-msg :header :frame_id) obj-pose))
                        (send com-msg :poses)))
          (if (and (> (length obj-box) 0) (> (length obj-coords) 0))
@@ -206,26 +192,26 @@
         (return-from :pick-object-in-bin nil) t)
       (setq object-index (random (length (gethash arm object-boxes-in-bin-))))
       (setq obj-pos (send self :get-object-position arm bin :object-index object-index))
-      (send ri- :angle-vector
-            (send robot- arm :inverse-kinematics
+      (send *ri* :angle-vector
+            (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos #f(0 0 150))
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            :fast (send ri- :get-arm-controller arm) 0 :scale 5.0)
-      (send ri- :wait-interpolation)
+            :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+      (send *ri* :wait-interpolation)
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
             (setq graspingp
                   (send self :try-to-pick-object-in-bin arm obj-pos
                         :offset (float-vector 0 0 (- (* i -50) 30))))
-            (pushback (send robot- :angle-vector) avs))))
-      (when do-stop-grasp (unless graspingp (send ri- :stop-grasp arm)))
-      (send ri- :angle-vector-sequence (reverse avs)
-            :fast (send ri- :get-arm-controller arm) 0 :scale 5.0)
-      (send ri- :wait-interpolation)
-      (send ri- :gripper-servo-on arm)
+            (pushback (send *baxter* :angle-vector) avs))))
+      (when do-stop-grasp (unless graspingp (send *ri* :stop-grasp arm)))
+      (send *ri* :angle-vector-sequence (reverse avs)
+            :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+      (send *ri* :wait-interpolation)
+      (send *ri* :gripper-servo-on arm)
       graspingp))
   (:get-object-position
     (arm bin &key (object-index 0))
@@ -251,7 +237,7 @@
       ;; grasp object
       (ros::ros-info "[:get-object-position] arm:~a approach to the object" arm)
       ;; gripper is straight
-      (send ri- :gripper-servo-on arm)
+      (send *ri* :gripper-servo-on arm)
       (setq obj-pos (send obj-coords :worldpos))
       (dolist (i (list 0 1))
         (cond ((> (elt (elt movable-region i) 0) (aref obj-pos i))
@@ -273,54 +259,54 @@
   (:try-to-pick-object-in-bin
     (arm obj-pos &key (offset #f(0 0 0)))
     (let (graspingp)
-      (send ri- :angle-vector-raw
-            (send robot- arm :inverse-kinematics
+      (send *ri* :angle-vector-raw
+            (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos offset)
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            3000 (send ri- :get-arm-controller arm) 0)
-      (send ri- :wait-interpolation)
+            3000 (send *ri* :get-arm-controller arm) 0)
+      (send *ri* :wait-interpolation)
       ;; start the vacuum gripper after approaching to the object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a start vacuum gripper" arm)
-      (send ri- :start-grasp arm)
+      (send *ri* :start-grasp arm)
       (unix::sleep 1)
-      (send ri- :angle-vector-raw
-            (send robot- arm :inverse-kinematics
+      (send *ri* :angle-vector-raw
+            (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
                                :rpy #f(0 0 0))
                   :use-gripper t
                   :rotation-axis :z)
-            3000 (send ri- :get-arm-controller arm) 0)
-      (send ri- :wait-interpolation)
-      (setq graspingp (send ri- :graspingp arm))
+            3000 (send *ri* :get-arm-controller arm) 0)
+      (send *ri* :wait-interpolation)
+      (setq graspingp (send *ri* :graspingp arm))
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
         (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a again approach to the object" arm)
-        (let ((temp-av (send robot- :angle-vector)))
+        (let ((temp-av (send *baxter* :angle-vector)))
           ;; only if robot can solve IK
-          (if (send robot- arm :move-end-pos #f(0 0 -50) :local)
-            (send ri- :angle-vector-raw (send robot- :angle-vector)
-                  3000 (send ri- :get-arm-controller arm) 0))
-          (send ri- :wait-interpolation)
-          (send ri- :angle-vector-raw (send robot- :angle-vector temp-av)
-                  3000 (send ri- :get-arm-controller arm) 0) ;; revert baxter
-          (send ri- :wait-interpolation)))
+          (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
+            (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
+                  3000 (send *ri* :get-arm-controller arm) 0))
+          (send *ri* :wait-interpolation)
+          (send *ri* :angle-vector-raw (send *baxter* :angle-vector temp-av)
+                  3000 (send *ri* :get-arm-controller arm) 0) ;; revert baxter
+          (send *ri* :wait-interpolation)))
       ;; lift object
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a lift the object" arm)
-      (send ri- :gripper-servo-off arm)
-      (send ri- :angle-vector-raw (send robot- arm :move-end-pos #f(0 0 200) :world)
-            3000 (send ri- :get-arm-controller arm) 0)
-      (send ri- :wait-interpolation)
+      (send *ri* :gripper-servo-off arm)
+      (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 200) :world)
+            3000 (send *ri* :get-arm-controller arm) 0)
+      (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
-      (setq graspingp (send ri- :graspingp arm))
+      (setq graspingp (send *ri* :graspingp arm))
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a graspingp: ~a" arm graspingp)
     graspingp))
   (:ik->bin-center
     (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
     (let (bin-box bin-coords)
       (setq bin-box (gethash bin bin-boxes-))
-      (setq bin-coords (send ri- :tf-pose->coords
+      (setq bin-coords (send *ri* :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
       (send bin-coords :translate
@@ -328,7 +314,7 @@
                   0.0 0.0 (/ (m->mm (send bin-box :dimensions :z)) 2.0))
                  offset) :world)
       (send bin-coords :rotate (* pi (/ coords-pitch 180)) :y)
-      (send robot- arm :inverse-kinematics bin-coords
+      (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
 
@@ -336,7 +322,7 @@
     (arm bin &key (offset #f(0 0 0)) (rpy #f(0 0 0)) (rotation-axis t) (use-gripper nil))
     (let (bin-box bin-coords)
       (setq bin-box (gethash bin bin-boxes-))
-      (setq bin-coords (send ri- :tf-pose->coords
+      (setq bin-coords (send *ri* :tf-pose->coords
                              (send (send bin-box :header) :frame_id)
                              (send bin-box :pose)))
       (send bin-coords :translate
@@ -347,12 +333,12 @@
       (send bin-coords :rotate (aref rpy 0) :z)
       (send bin-coords :rotate (aref rpy 1) :y)
       (send bin-coords :rotate (aref rpy 2) :x)
-      (send robot- arm :inverse-kinematics bin-coords
+      (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
   (:ik->cardboard-entrance
     (arm cardboard &key (offset #f(0 0 0)) (rotation-axis t) (use-gripper nil))
-    (send robot- arm :inverse-kinematics
+    (send *baxter* arm :inverse-kinematics
           (make-coords
             :pos (v+ offset
                      (cond ((eq cardboard :a) (float-vector 950 500 0))
@@ -365,9 +351,9 @@
     (arm bin &key (gripper-angle 90))
     (let (avs offset rpy
               (offset-y (if (eq arm :larm) 180 -180)))
-      (setq avs (list (send robot- :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
-      (send robot- :reset-pose arm)
-      (send robot- :rotate-gripper arm gripper-angle :relative nil)
+      (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
+      (send *baxter* :reset-pose arm)
+      (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
       (setq offset
             (cond ((eq bin :a) (float-vector 200 offset-y 250))
                   ((eq bin :b) (float-vector -50 offset-y 200))
@@ -378,7 +364,8 @@
         (send self :ik->bin-entrance arm bin
               :offset offset :rpy rpy :use-gripper nil)
         avs)
-      (send ri- :angle-vector-sequence avs :fast (send ri- :get-arm-controller arm) 0 :scale 3.0)))
+      (send *ri* :angle-vector-sequence avs :fast
+            (send *ri* :get-arm-controller arm) 0 :scale 3.0)))
   (:wait-for-user-input-to-start (arm)
     (let (can-start)
       (ros::ros-info "[:wait-for-user-input-to-start] wait for user input to start: ~a" arm)
@@ -400,16 +387,15 @@
   (:get-bin-contents (bin)
     (ros::get-param
       (format nil "/bin_contents/~A" (string-upcase (symbol2str bin)))))
-  (:collision-object-publisher () co-)
   (:add-bin-scene (bin)
     (let ((cube (send self :bbox->cube (gethash bin bin-boxes-)))
-          (base-name (send (send robot- :base_lk) :name)))
-      (send co- :add-object cube :frame-id base-name
+          (base-name (send (send *baxter* :base_lk) :name)))
+      (send *co* :add-object cube :frame-id base-name
             :relative-pose (send cube :copy-worldcoords)
             :object-id (format nil "bin_~A" (string-upcase (symbol2str bin))))
       (sethash bin bin-cubes- cube)))
   (:delete-bin-scene (bin)
-    (send co- :delete-object (gethash bin bin-cubes-))
+    (send *co* :delete-object (gethash bin bin-cubes-))
     (sethash bin bin-cubes- nil))
   (:add-shelf-scene ()
     (dolist (bin (list :a :b :c))
@@ -420,15 +406,15 @@
     (setq bin-cubes- (make-hash-table)))
   (:add-cardboard-scene (arm)
     (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-))
-          (base-name (send (send robot- :base_lk) :name)))
-      (send co- :add-object cardboard-cube :frame-id base-name
+          (base-name (send (send *baxter* :base_lk) :name)))
+      (send *co* :add-object cardboard-cube :frame-id base-name
             :relative-pose (send cardboard-cube :copy-worldcoords)
             :object-id (format nil "~a_cardboard" (arm2str arm)))))
   (:delete-cardboard-scene (arm)
     (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-)))
-      (send co- :delete-object cardboard-cube)))
+      (send *co* :delete-object cardboard-cube)))
   (:wipe-all-scene ()
-    (send co- :wipe-all)))
+    (send *co* :wipe-all)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
@@ -444,8 +430,6 @@
     (unless (boundp '*co*)
       (setq *co* (when moveit (instance collision-object-publisher :init))))
     (unless (boundp '*ti*)
-      (setq *ti* (instance jsk_arc2017_baxter::arc-interface :init
-                            :robot *baxter* :robot-interface *ri*
-                            :collision-object-publisher *co*)))
+      (setq *ti* (instance jsk_arc2017_baxter::arc-interface :init)))
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (send *ri* :calib-grasp :arms)))
