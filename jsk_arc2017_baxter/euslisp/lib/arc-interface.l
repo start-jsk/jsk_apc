@@ -443,8 +443,8 @@
       (setq *baxter* (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
     (unless (boundp '*co*)
       (setq *co* (when moveit (instance collision-object-publisher :init))))
-    (unless (boundp '*arc*)
-      (setq *arc* (instance jsk_arc2017_baxter::arc-interface :init
+    (unless (boundp '*ti*)
+      (setq *ti* (instance jsk_arc2017_baxter::arc-interface :init
                             :robot *baxter* :robot-interface *ri*
                             :collision-object-publisher *co*)))
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
