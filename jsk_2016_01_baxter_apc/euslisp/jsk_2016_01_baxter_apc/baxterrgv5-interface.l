@@ -1812,40 +1812,6 @@
           )
         ))
     )
-  (:ik->nearest-pose
-    (arm target-coords pose-candidates &rest args)
-    (if (null pose-candidates)
-      (setq pose-candidates (list (send *baxter* :angle-vector))))
-    (let (current-opposite-av current-av ik-solvable-poses chosen-pose)
-      (setq current-opposite-av (send *baxter* (send self :opposite-arm arm) :angle-vector))
-      (setq current-av (send *baxter* arm :angle-vector))
-      ;; exclude poses which IK fail from
-      (dolist (pose pose-candidates)
-        (send *baxter* :angle-vector pose)
-        (if (send* *baxter* arm :inverse-kinematics target-coords args)
-          (pushback pose ik-solvable-poses)))
-      (unless ik-solvable-poses
-        (ros::ros-error "[:ik->nearest-pose] Cannot solve IK from poses")
-        (send *baxter* (send self :opposite-arm arm) :angle-vector current-opposite-av)
-        (send *baxter* arm :angle-vector current-av)
-        (return-from :ik->nearest-pose nil)
-        )
-      (setq chosen-pose
-            (car (sort ik-solvable-poses #'<
-                       #'(lambda (pose)
-                           (norm
-                             (v-
-                               current-av
-                               (progn
-                                 (send *baxter* :angle-vector pose)
-                                 (send* *baxter* arm :inverse-kinematics target-coords args)
-                                 (send *baxter* arm :angle-vector))))))))
-      (format t "[:ik->nearest-pose] arm:~a midpose: ~a~%" arm chosen-pose)
-      (send *baxter* :angle-vector chosen-pose)
-      (send *baxter* (send self :opposite-arm arm) :angle-vector current-opposite-av)
-      (send* *baxter* arm :inverse-kinematics target-coords args)
-      )
-    )
   (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)) (gripper-angle 90)
          (rotation-axis :z) (overlook-angle 0) (revert-if-fail nil) (use-current-pose nil))
@@ -1870,7 +1836,7 @@
       (send bin-coords :translate (float-vector (- (/ bin-dim-x 2)) 0 0) :world)
       (if (not use-current-pose)
         (send *baxter* :avoid-shelf-pose arm bin))
-      (send self :ik->nearest-pose arm bin-coords nearest-pose-candidates :rotation-axis t)
+      (send *baxter* :ik->nearest-pose arm bin-coords nearest-pose-candidates :rotation-axis t)
       ;; apply rotation
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
       (send bin-coords :rotate (deg2rad (- gripper-angle 90)) :y :world)
@@ -1881,7 +1847,7 @@
       (send bin-coords :rotate overlook-angle :y :world)
       (ros::ros-info "gripper-angle: ~a" gripper-angle)
       (cond ((< gripper-angle 89)
-             (send self :ik->nearest-pose arm bin-coords
+             (send *baxter* :ik->nearest-pose arm bin-coords
                    nil
                    :rotation-axis t
                    ;; if this is :z when gripper is straight, wrist sometimes rotates overly
@@ -1889,7 +1855,7 @@
                    :revert-if-fail revert-if-fail)
              )
             ((eq bin :h)
-             (send self :ik->nearest-pose arm bin-coords
+             (send *baxter* :ik->nearest-pose arm bin-coords
                    nearest-pose-candidates
                    :rotation-axis t
                    ;; if this is :z when gripper is straight, wrist sometimes rotates overly
@@ -1897,7 +1863,7 @@
                    :revert-if-fail revert-if-fail)
              )
             (t
-              (send self :ik->nearest-pose arm bin-coords
+              (send *baxter* :ik->nearest-pose arm bin-coords
                     nearest-pose-candidates
                     :rotation-axis rotation-axis
                     :revert-if-fail revert-if-fail)
@@ -1916,7 +1882,7 @@
       (dolist (p '(0 0.25 0.5 0.75 1))
         (pushback (midpoint p min-av max-av) pose-candidates))
       (send *baxter* :angle-vector (car pose-candidates))
-      (send* self :ik->nearest-pose arm target-coords pose-candidates args)
+      (send* *baxter* :ik->nearest-pose arm target-coords pose-candidates args)
       )
     )
   (:move-arm-body->bin
