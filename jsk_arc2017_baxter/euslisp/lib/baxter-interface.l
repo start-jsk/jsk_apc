@@ -14,8 +14,7 @@
 
 (defclass jsk_arc2017_baxter::baxter-interface
   :super baxter-interface
-  :slots (tfl-
-          rarm-pressure-threshold-
+  :slots (rarm-pressure-threshold-
           larm-pressure-threshold-))
 
 (defmethod jsk_arc2017_baxter::baxter-interface
@@ -45,7 +44,6 @@
         (let ((tmp-actions (gethash :larm-controller controller-table)))
           (setf (gethash :larm-controller controller-table) (reverse tmp-actions))))
     ;; initialize slots
-    (setq tfl- (instance ros::transform-listener :init))
     (unless (ros::get-param "/apc_on_gazebo" nil)
       (ros::advertise "/vacuum_gripper/limb/left" std_msgs::Bool)
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool))
@@ -156,7 +154,7 @@
   (:tf-pose->coords
     (frame_id pose)
     (let ((base-name (send (send robot :base_lk) :name)))
-      (send (send tfl- :lookup-transform base-name frame_id (ros::time 0))
+      (send (send *tfl* :lookup-transform base-name frame_id (ros::time 0))
             :transform (ros::tf-pose->coords pose))))
   (:fold-pose-back
     (&optional (arm :arms))
