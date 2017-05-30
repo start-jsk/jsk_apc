@@ -11,6 +11,7 @@
   (make-package "JSK_ARC2017_BAXTER"))
 
 (defclass jsk_arc2017_baxter::arc-interface
+  :super propertied-object
   :slots (bin-boxes-
           object-boxes-in-bin-
           object-coords-in-bin-
