@@ -164,10 +164,6 @@
     (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
       (send robot :fold-pose-back tmp-arm))
     (send self :angle-vector (send robot :angle-vector)))
-  (:send-av
-    (&optional (tm 3000) (ctype nil))
-    (send self :state)
-    (send self :angle-vector (send robot :angle-vector) tm ctype))
   (:wait-interpolation-until-grasp
     (arm)
     (when (send self :simulation-modep)
