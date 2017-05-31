@@ -420,7 +420,10 @@
     (arm &key (times 10))
     (send *ri* :angle-vector-sequence-raw
           (send *baxter* :spin-off-by-wrist arm :times times)
-          :fast (send *ri* :get-arm-controller arm) 0)))
+          :fast (send *ri* :get-arm-controller arm) 0))
+  (:send-av
+    (&optional (tm 3000) (ctype nil))
+    (send *ri* :angle-vector (send *baxter* :angle-vector) tm ctype)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
