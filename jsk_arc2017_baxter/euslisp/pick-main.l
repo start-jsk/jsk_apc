@@ -186,7 +186,7 @@
                 :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm)
-          (send *ri* :spin-off-by-wrist 5)
+          (send *ti* :spin-off-by-wrist arm :times 5)
           (send *ri* :wait-interpolation)
           (ros::ros-info "[main] ~a, return object in shelf" arm)
           (send *ti* :add-shelf-scene)
@@ -216,7 +216,7 @@
                     2000 (send *ri* :get-arm-controller arm) 0)
               (send *ri* :wait-interpolation)
               (send *ri* :stop-grasp arm) ;; release object
-              (send *ri* :spin-off-by-wrist arm :times 10)
+              (send *ti* :spin-off-by-wrist arm :times 10)
               (send *ri* :wait-interpolation)
               (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
                     1000 (send *ri* :get-arm-controller arm) 0)
