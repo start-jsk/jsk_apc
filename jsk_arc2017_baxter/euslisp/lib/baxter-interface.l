@@ -26,7 +26,9 @@
            &allow-other-keys)
     ;; initialize controllers
     (send-super* :init :joint-states-queue-size 2
-                 :robot jsk_2016_01_baxter_apc::baxter-robot
+                 ;; FIXME: :robot jsk_arc2017_baxter::baxter-robot
+                 ;; FIXME: :end-coords-interpolation does not work.
+                 :robot baxter-robot
                  :moveit-environment nil
                  :moveit-robot nil args)
     (send self :add-controller :no-gripper-controller)
