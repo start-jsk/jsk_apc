@@ -192,16 +192,4 @@
                (setq rarm-pressure-threshold- (- min-pressure 10))))))
     (send self :stop-grasp arm)
     (ros::ros-info "[:calib-pressure-threshold] Threshold r: ~a l: ~a"
-                   rarm-pressure-threshold- larm-pressure-threshold-))
-  (:spin-off-by-wrist
-    (arm &key (times 10))
-    (let (avs robot)
-      (send self :state)
-      (pushback (send robot :angle-vector) avs)
-      (dotimes (i times)
-        (pushback (send robot :rotate-wrist arm 10) avs)
-        (pushback (send robot :rotate-wrist arm -20) avs)
-        (pushback (send robot :rotate-wrist arm 20) avs)
-        (pushback (send robot :rotate-wrist arm -10) avs))
-      (send self :angle-vector-sequence-raw avs)))
-  )
+                   rarm-pressure-threshold- larm-pressure-threshold-)))
