@@ -1,0 +1,20 @@
+image_width: 640
+image_height: 480
+camera_name: "rgb_Orbbec_Orbbec    "
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [515.2779431971828, 0, 313.1284516595866, 0, 516.0985906552197, 236.3705227793179, 0, 0, 1]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.0001522949360992799, -0.03636138059758278, -0.001578538205365751, -0.0008164863632851162, 0]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1, 0, 0, 0, 1, 0, 0, 0, 1]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [511.5435485839844, 0, 311.970072032751, 0, 0, 514.069091796875, 235.319581222313, 0, 0, 0, 1, 0]
