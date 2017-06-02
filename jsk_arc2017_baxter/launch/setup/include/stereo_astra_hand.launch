@@ -3,6 +3,11 @@
   <arg name="depth_registration" default="true" />
   <arg name="right_hand_camera_tranforms" default="-0.06 -0.10 0.01 1.63 -0.05 0.00" />
 
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
+    <arg name="launch_left" value="false" />
+    <arg name="launch_right" value="false" />
+  </include>
+
   <arg name="NODELET_MANAGER" default="/right_hand_right_camera/right_hand_right_camera_nodelet_manager" />
 
   <!-- ASTRA MINI S 2017/04/11  7/10 : serial=16112210196 -->
@@ -19,8 +24,8 @@
     <arg name="device_id" value="16112210193" />
     <arg name="publish_tf" value="false" />
     <arg name="depth_registration" value="$(arg depth_registration)" />
-    <arg name="rgb_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/stereo_left_astra_mini_8_rgb.yaml" />
-    <arg name="depth_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/depth_16112210193.yaml" />
+    <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_left_astra_mini_8_rgb.yaml" />
+    <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_16112210193.yaml" />
   </include>
   <node name="right_hand_left_camera_rgb_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
@@ -38,8 +43,8 @@
     <arg name="device_id" value="16112210224" />
     <arg name="publish_tf" value="false" />
     <arg name="depth_registration" value="$(arg depth_registration)" />
-    <arg name="rgb_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/stereo_right_astra_mini_10_rgb.yaml" />
-    <arg name="depth_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/depth_16112210224.yaml" />
+    <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_right_astra_mini_10_rgb.yaml" />
+    <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_16112210224.yaml" />
   </include>
   <node name="right_hand_right_camera_rgb_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
@@ -114,6 +119,8 @@
           pkg="nodelet" type="nodelet"
           args="load depth_image_proc/point_cloud_xyzrgb $(arg NODELET_MANAGER)">
       <remap from="rgb/camera_info" to="rgb/camera_info" />
+      <!-- TODO(wkentaro): Do fusion to get clean rgb image.
+                           Currently we just use image from a single camera sensor. -->
       <remap from="rgb/image_rect_color" to="rgb/image_rect_color" />
       <remap from="depth_registered/image_rect" to="/merge_depth_images/output" />
       <remap from="depth_registered/points" to="depth_registered/points_merged" />
@@ -124,6 +131,7 @@
     </node>
   </group>
 
+  <!--
   <node name="concatenate_pointcloud_right_hand"
         pkg="nodelet" type="nodelet"
         args="load pcl/PointCloudConcatenateDataSynchronizer $(arg NODELET_MANAGER)"
@@ -138,5 +146,6 @@
       queue_size: 20
     </rosparam>
   </node>
+  -->
 
 </launch>
