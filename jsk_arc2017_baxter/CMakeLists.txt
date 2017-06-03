@@ -1,13 +1,26 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_arc2017_baxter)
 
-find_package(catkin REQUIRED COMPONENTS roseus)
+find_package(catkin REQUIRED COMPONENTS
+    message_generation
+    roseus
+)
 
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
 
-# XXX
+add_service_files(
+    FILES
+    UpdateState.srv
+    GetState.srv
+    CheckCanStart.srv
+)
+
+generate_messages(
+    DEPENDENCIES
+    std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -19,7 +32,10 @@ find_package(catkin REQUIRED COMPONENTS roseus)
 ## catkin specific configuration ##
 ###################################
 
-catkin_package()
+catkin_package(
+    CATKIN_DEPENDS
+    message_runtime
+)
 
 ###########
 ## Build ##

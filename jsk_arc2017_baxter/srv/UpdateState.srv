@@ -1,0 +1,4 @@
+string state
+---
+bool updated
+bool can_start

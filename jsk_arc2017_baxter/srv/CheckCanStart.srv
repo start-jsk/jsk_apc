@@ -1,0 +1,4 @@
+string start_state
+string wait_state
+---
+bool can_start
