@@ -64,21 +64,6 @@
                (setq cube (send self :bbox->cube (gethash bin bin-boxes-)))
                (sethash bin bin-movable-regions-
                         (send self :cube->movable-region cube :offset offset))))))
-  (:need-to-wait-opposite-arm
-    (arm state)
-    (let (opposite-state)
-      (setq opposite-state
-            (str2symbol (ros::get-param
-                          (format nil "~a_hand/state"
-                                  (arm2str (opposite-arm arm))))))
-      (if (eq state :wait_for_opposite_arm_start_picking)
-        (null (or (eq opposite-state :recognize_objects_in_bin)
-                  (eq opposite-state :wait_for_user_input)))
-        (or (eq opposite-state :recognize_objects_in_bin)
-            (eq opposite-state :pick_object)
-            (eq opposite-state :verify_object)
-            (eq opposite-state :set_target_cardboard)
-            (eq opposite-state :return_object)))))
   (:get-work-orders
     (arm)
     (let (msg)
@@ -423,7 +408,27 @@
           :fast (send *ri* :get-arm-controller arm) 0))
   (:send-av
     (&optional (tm 3000) (ctype nil))
-    (send *ri* :angle-vector (send *baxter* :angle-vector) tm ctype)))
+    (send *ri* :angle-vector (send *baxter* :angle-vector) tm ctype))
+  (:check-can-start (arm start-state wait-state)
+    (let ((service-name
+           (format nil "/state_server/~a_hand/check_can_start" (arm2str arm)))
+          req can-start)
+      (ros::wait-for-service service-name)
+      (setq req (instance jsk_arc2017_baxter::CheckCanStartRequest :init))
+      (send req :start_state (symbol2str start-state))
+      (send req :wait_state (symbol2str wait-state))
+      (setq can-start
+            (send (ros::service-call service-name req) :can_start))
+      can-start))
+  (:update-state (arm state)
+    (let ((service-name
+           (format nil "/state_server/~a_hand/update_state" (arm2str arm)))
+          req updated)
+      (ros::wait-for-service service-name)
+      (setq req (instance jsk_arc2017_baxter::UpdateStateRequest :init))
+      (send req :state (symbol2str state))
+      (setq updated (send (ros::service-call service-name req) :updated))
+      updated)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
