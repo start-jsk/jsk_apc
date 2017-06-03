@@ -24,6 +24,10 @@
   <!-- state_server -->
   <node pkg="jsk_arc2017_baxter" type="state_server.py" name="state_server" />
 
+  <!-- smach viewer -->
+  <!-- FIXME: Segmentation Fault occurs on sheeta -->
+  <!-- <node pkg="smach_viewer" type="smach_viewer.py" name="smach_viewer" /> -->
+
   <!-- parameter -->
   <param name="/left_hand/target_bin" value="" />
   <param name="/right_hand/target_bin" value="" />
