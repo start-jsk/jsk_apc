@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8.3)
 project(jsk_arc2017_baxter)
 
 find_package(catkin REQUIRED COMPONENTS
-  force_proximity_ros
-  message_generation
-  roseus
+    force_proximity_ros
+    message_generation
+    roseus
 )
 
 ################################################
@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
 ################################################
 
 add_message_files(FILES
-  GripperSensorStates.msg
+    GripperSensorStates.msg
 )
 
 add_service_files(
@@ -39,9 +39,9 @@ generate_messages(
 ###################################
 
 catkin_package(
-  CATKIN_DEPENDS
-  message_runtime
-  force_proximity_ros
+    CATKIN_DEPENDS
+    message_runtime
+    force_proximity_ros
 )
 
 ###########
