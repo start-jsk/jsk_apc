@@ -123,14 +123,3 @@ Host baxter
   HostName baxter.jsk.imi.i.u-tokyo.ac.jp
   User ruser  # password: rethink
 ```
-
-**Setup Softkinetic Camera**
-
-See [here](http://jsk-recognition.readthedocs.org/en/latest/install_softkinetic_camera.html) for almost all install process,
-but for installing ROS package please do like below:
-
-```bash
-git clone https://github.com/knorth55/softkinetic.git -b jsk_apc
-cd softkinetic/softkinetic_camera
-catkin bt -iv
-```
