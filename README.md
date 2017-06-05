@@ -26,7 +26,11 @@ Build Status
 Usage
 -----
 
-See [jsk_2015_05_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2015_05_baxter_apc/index.html).
+| Competition | Documentation                                                                                             |
+|:------------|:----------------------------------------------------------------------------------------------------------|
+| APC2015     | See [jsk_2015_05_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2015_05_baxter_apc/index.html). |
+| APC2016     | See [jsk_2016_01_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2016_01_baxter_apc/index.html). |
+| ARC2017     | See [jsk_arc2017_baxter](http://jsk-apc.readthedocs.org/en/latest/jsk_arc2017_baxter/index.html).         | 
 
 
 Citations
