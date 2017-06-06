@@ -9,7 +9,6 @@ import shlex
 import cv2
 import labelme
 import numpy as np
-import PIL.Image
 import skimage.io
 import subprocess32 as subprocess
 
