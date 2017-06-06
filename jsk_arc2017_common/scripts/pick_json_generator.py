@@ -7,21 +7,15 @@ import os.path as osp
 import random
 import rospkg
 import shutil
-import yaml
+
+import jsk_arc2017_common
 
 
 PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
 
-def load_label_list():
-    with open(osp.join(PKG_DIR, 'config', 'label_names.yaml')) as f:
-        label_list = yaml.load(f)
-    label_list = label_list[1:-1]
-    return label_list
-
-
 def generate_pick_json(dirname):
-    label_list = load_label_list()
+    label_list = jsk_arc2017_common.get_object_names()
     box_id_list = ['A1', '1AD', '1A5', '1B2', 'K3']
     box_A_candidate = box_id_list[:2]   # box_A is for 2 items
     box_B_candidate = box_id_list[2:4]  # box_B is for 3 items

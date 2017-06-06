@@ -5,6 +5,8 @@ find_package(catkin REQUIRED
     message_generation
 )
 
+catkin_python_setup()
+
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
