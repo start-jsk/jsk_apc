@@ -1,0 +1,7 @@
+<launch>
+  <env name="DISPLAY" value="" />
+  <node name="state_server" pkg="jsk_arc2017_baxter" type="state_server.py" />
+  <test test-name="test_state_server"
+      name="test_state_server" pkg="jsk_arc2017_baxter"
+      type="test-state-server.l" time-limit="10000" />
+</launch>
