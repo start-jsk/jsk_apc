@@ -428,7 +428,15 @@
       (setq req (instance jsk_arc2017_baxter::UpdateStateRequest :init))
       (send req :state (symbol2str state))
       (setq updated (send (ros::service-call service-name req) :updated))
-      updated)))
+      updated))
+  (:get-state (arm)
+    (let ((service-name
+           (format nil "/state_server/~a_hand/get_state" (arm2str arm)))
+          req state)
+      (ros::wait-for-service service-name)
+      (setq req (instance jsk_arc2017_baxter::GetStateRequest :init))
+      (setq state (send (ros::service-call service-name req) :state))
+      state)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
