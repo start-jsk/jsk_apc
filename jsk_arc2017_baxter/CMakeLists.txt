@@ -54,6 +54,8 @@ catkin_package(
 #############
 
 if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest(test/test_state_server.test)
   find_package(jsk_tools REQUIRED)
   find_package(jsk_apc2016_common REQUIRED)
   if(${jsk_tools_VERSION} VERSION_GREATER 2.0.13)
