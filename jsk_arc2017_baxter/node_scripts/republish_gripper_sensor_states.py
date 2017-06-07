@@ -9,21 +9,26 @@ from std_msgs.msg import Float64
 from jsk_topic_tools import ConnectionBasedTransport
 
 
-class GripperStatesTransport(ConnectionBasedTransport):
+class RepublishGripperSensorStates(ConnectionBasedTransport):
 
     def __init__(self):
-        super(GripperStatesTransport, self).__init__()
+        super(RepublishGripperSensorStates, self).__init__()
         self.pub_prox = self.advertise(
-	    'gripper_front/limb/right/proximity_array', ProximityArray, queue_size=10)
+            'gripper_front/limb/right/proximity_array', ProximityArray,
+            queue_size=1)
         self.pub_pressure = self.advertise(
-            'gripper_front/limb/right/pressure/state', Float64, queue_size=10)
+            'gripper_front/limb/right/pressure/state', Float64,
+            queue_size=1)
         self.pub_r_finger_flex = self.advertise(
-            'gripper_front/limb/right/r_finger_flex/state', UInt16, queue_size=10)
+            'gripper_front/limb/right/r_finger_flex/state', UInt16,
+            queue_size=1)
         self.pub_l_finger_flex = self.advertise(
-            'gripper_front/limb/right/l_finger_flex/state', UInt16, queue_size=10)
+            'gripper_front/limb/right/l_finger_flex/state', UInt16,
+            queue_size=1)
 
     def subscribe(self):
-        self.sub = rospy.Subscriber('rgripper_sensors', GripperSensorStates, self._cb)
+        self.sub = rospy.Subscriber('rgripper_sensors', GripperSensorStates,
+                                    self._cb)
 
     def unsubscribe(self):
         self.sub.unregister()
@@ -48,6 +53,6 @@ class GripperStatesTransport(ConnectionBasedTransport):
 
 
 if __name__ == '__main__':
-    rospy.init_node('republish_GripperSensorStates')
-    app = GripperStatesTransport()
+    rospy.init_node('republish_gripper_sensor_states')
+    app = RepublishGripperSensorStates()
     rospy.spin()
