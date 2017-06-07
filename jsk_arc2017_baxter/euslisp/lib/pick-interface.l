@@ -16,7 +16,7 @@
   :slots (bin-contents
           bins
           dropped
-          fail-count
+          picking-fail-count
           graspingp
           label-names
           order
@@ -27,7 +27,7 @@
 (defmethod jsk_arc2017_baxter::pick-interface
   (:init ()
     (send-super :init)
-    (setq fail-count 0)
+    (setq picking-fail-count 0)
     (setq bins (list :a :b :c)))
   (:recognize-bin-boxes ()
     (ros::ros-info "[main] recognizing shelf bin boxes")
@@ -123,15 +123,15 @@
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
     (send *ri* :wait-interpolation))
   (:verify-object (arm)
-    (setq fail-count 0)
+    (setq picking-fail-count 0)
     ;; TODO: in-hand verification
     ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
     ;; TODO:   target-obj != in-hand object -> :return_object
     target-obj)
-  (:check-fail-count (arm)
-    (setq fail-count (incf fail-count))
-    (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm fail-count)
-    (> fail-count 1))
+  (:check-picking-fail-count (arm)
+    (setq picking-fail-count (incf picking-fail-count))
+    (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
+    (> picking-fail-count 1))
   (:set-target-cardboard (arm)
     (if (eq target-cardboard :shelf)
       (progn

@@ -24,9 +24,9 @@
             (:return-from-recognize-object -> :wait-for-opposite-arm-start-picking)
             (:pick-object -> :verify-object)
             (:pick-object !-> :return-from-pick-object)
-            (:return-from-pick-object -> :check-fail-count)
-            (:check-fail-count -> :wait-for-opposite-arm-start-picking)
-            (:check-fail-count !-> :wait-for-opposite-arm)
+            (:return-from-pick-object -> :check-picking-fail-count)
+            (:check-picking-fail-count -> :wait-for-opposite-arm-start-picking)
+            (:check-picking-fail-count !-> :wait-for-opposite-arm)
             (:verify-object -> :set-target-cardboard)
             (:verify-object !-> :return-object)
             (:return-object -> :wait-for-opposite-arm)
@@ -81,10 +81,10 @@
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :verify-object)
                  (send *ti* :verify-object *arm*)))
-            (:check-fail-count
+            (:check-picking-fail-count
               '(lambda (userdata)
-                 (send *ti* :update-state *arm* :check-fail-count)
-                 (send *ti* :check-fail-count *arm*)))
+                 (send *ti* :update-state *arm* :check-picking-fail-count)
+                 (send *ti* :check-picking-fail-count *arm*)))
             (:set-target-cardboard
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :set-target-cardboard)
