@@ -1,0 +1,15 @@
+<launch>
+  <group ns="/right_hand_tilt_laser">
+    <node name="depth_image_creator"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_pcl/DepthImageCreator"
+          output="screen"> 
+      <remap from="~input" to="/assemble_scans_client/output" />
+      <remap from="~info" to="/right_hand_left_camera/rgb/camera_info" />
+      <rosparam>
+        use_approximate: true
+        max_queue_size: 1000 
+      </rosparam>
+    </node>
+  </group>
+</launch>

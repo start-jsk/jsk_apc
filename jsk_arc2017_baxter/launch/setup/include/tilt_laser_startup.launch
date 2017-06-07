@@ -1,0 +1,37 @@
+<launch>
+  <arg name="RUN_DRIVER" default="true" />
+  <param name="robot_description" textfile="$(find jsk_tilt_laser)/config/tilt_laser.urdf" />
+  <node name="tilt_robot_state_publisher" pkg="robot_state_publisher"
+        type="state_publisher"/>
+  <group if="$(arg RUN_DRIVER)">
+    <include file="$(find jsk_tilt_laser)/launch/dynamixel.launch" />
+    <include file="$(find jsk_tilt_laser)/launch/start_urg.launch" />
+  </group>
+  <include file="$(find jsk_tilt_laser)/launch/laser_pipeline.launch" />
+
+  <node name="tilt_laser_controller"
+        pkg="jsk_tilt_laser" type="tilt_laser_assembler.py" />
+
+  <node name="laser_scan_assembler"
+        pkg="laser_assembler" type="laser_scan_assembler" >
+    <remap from="scan" to="scan" />
+    <rosparam>
+      fixed_frame: base_link
+      tf_cache_time_secs: 10.0
+      max_scans: 1200
+      ignore_laser_skew: true
+    </rosparam>
+  </node>
+
+  <node name="assemble_scans_client"
+        pkg="laser_scan_3d" type="assemble_scans2.py" >
+    <remap from="scan" to="scan" />
+    <rosparam>
+      assemble_interval: 30.0
+      queue_size: 10
+    </rosparam>
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find jsk_arc2017_baxter)/rvizconfig/test_stereo_and_laser.rviz" />
+</launch>
