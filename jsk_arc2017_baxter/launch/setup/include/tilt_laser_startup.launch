@@ -23,8 +23,8 @@
     </rosparam>
   </node>
 
-  <node name="assemble_scans_client"
-        pkg="laser_scan_3d" type="assemble_scans2.py" >
+  <node name="assemble_laser_scans"
+        pkg="jsk_arc2017_baxter" type="assemble_laser_scans.py" >
     <remap from="scan" to="scan" />
     <rosparam>
       assemble_interval: 30.0

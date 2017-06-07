@@ -86,6 +86,7 @@
     </rosparam>
   </node>
 
+  <!--
   <group ns="/right_hand_left_camera">
     <node name="depth_image_creator"
           pkg="nodelet" type="nodelet"
@@ -99,6 +100,7 @@
       </rosparam>
     </node>
   </group>
+  -->
 
   <group ns="/right_hand_right_camera">
     <node name="depth_image_creator"
@@ -137,9 +139,9 @@
       averaging: false
       queue_size: 50
       input_topics:
-        - /right_hand_left_camera/depth_image_creator/output_image
         - /right_hand_right_camera/depth_image_creator/output_image
         - /right_hand_stereo/depth_image_creator/output_image
+        - /right_hand_left_camera/rgb/image_rect_color
     </rosparam>
   </node>
 
@@ -152,9 +154,9 @@
       averaging: true
       queue_size: 50
       input_topics:
-        - /right_hand_left_camera/depth_registered/hw_registered/image_rect_raw
         - /right_hand_right_camera/depth_image_creator/output
         - /right_hand_stereo/depth_image_creator/output
+        - /right_hand_left_camera/depth_registered/hw_registered/image_rect_raw
         - /right_hand_tilt_laser/depth_image_creator/output
     </rosparam>
   </node>
@@ -175,21 +177,19 @@
     </node>
   </group>
 
-<!--
   <group ns="/right_hand_tilt_laser">
     <node name="depth_image_creator"
           pkg="nodelet" type="nodelet"
           args="standalone jsk_pcl/DepthImageCreator /$(arg NODELET_MANAGER)"
           output="screen" respawn="true" >
-      <remap from="~input" to="/assemble_scans_client/output" />
+      <remap from="~input" to="/assemble_laser_scans/output" />
       <remap from="~info" to="/right_hand_left_camera/rgb/camera_info" />
       <rosparam>
         use_approximate: true
-        max_queue_size: 6000 
+        max_queue_size: 50
       </rosparam>
     </node>
   </group>
--->
 
   <node name="fuse_depth_images_view"
         pkg="image_view" type="image_view">
