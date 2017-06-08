@@ -92,7 +92,7 @@
               (send self :recognize-objects-in-bin arm :stamp (ros::time-now)))
         (setq recognition-count (incf recognition-count)))
       is-recognized))
-  (:return-from-recognize-objects (arm)
+  (:return-from-recognize-object (arm)
     (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
     (send *ri* :angle-vector-sequence
           (list (send *baxter* :fold-to-keep-object arm)
