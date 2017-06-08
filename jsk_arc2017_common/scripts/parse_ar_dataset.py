@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from collections import OrderedDict
 import codecs
+from collections import OrderedDict
 import json
 import os
 import os.path as osp
@@ -36,7 +36,7 @@ def _patch_img_fname(img_fname):
 
 
 def main():
-    # TODO
+    # TODO(unknown)
     # classes = []
     objects = []
     grasp_types = []
@@ -85,7 +85,7 @@ def main():
     if not osp.exists(out_dir):
         os.makedirs(out_dir)
 
-    # TODO
+    # TODO(unknown)
     # classes.txt
     with open(osp.join(out_dir, 'classes.txt'), 'w') as f:
         pass
