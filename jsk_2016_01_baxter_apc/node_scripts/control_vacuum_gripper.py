@@ -12,13 +12,30 @@ from std_msgs.msg import Bool
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', type=str, choices=['start', 'stop'])
-    limbs = ['left', 'right']
-    parser.add_argument('limb', type=str, choices=limbs, nargs='?')
+    parser.add_argument('-l', '--left', action='store_true',
+                        help='Control left gripper')
+    parser.add_argument('-r', '--right', action='store_true',
+                        help='Control right gripper')
+    parser.add_argument('-t', '--start', action='store_true',
+                        help='Start vacuum gripper')
+    parser.add_argument('-p', '--stop', action='store_true',
+                        help='Stop vacuum gripper')
     args = parser.parse_args()
 
-    action = args.action
-    limbs = ['left', 'right'] if args.limb is None else [args.limb]
+    if args.start and not args.stop:
+        action = 'start'
+    elif args.stop:
+        action = 'stop'
+    else:
+        print('Please specify one of start or stop action.')
+        parser.print_help()
+        quit(1)
+    if args.left and not args.right:
+        limbs = ['left']
+    elif args.right:
+        limbs = ['right']
+    else:
+        limbs = ['left', 'right']
 
     rospy.init_node('control_vacuum_gripper')
 
