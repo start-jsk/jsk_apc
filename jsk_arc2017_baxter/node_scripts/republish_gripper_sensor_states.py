@@ -20,10 +20,10 @@ class RepublishGripperSensorStates(ConnectionBasedTransport):
             'gripper_front/limb/right/pressure/state', Float64,
             queue_size=1)
         self.pub_r_finger_flex = self.advertise(
-            'gripper_front/limb/right/r_finger_flex/state', UInt16,
+            'gripper_front/limb/right/flex/right/state', UInt16,
             queue_size=1)
         self.pub_l_finger_flex = self.advertise(
-            'gripper_front/limb/right/l_finger_flex/state', UInt16,
+            'gripper_front/limb/right/flex/left/state', UInt16,
             queue_size=1)
 
     def subscribe(self):
