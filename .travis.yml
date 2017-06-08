@@ -1,33 +1,31 @@
-# sudo: false  # jenkins
-sudo: required  # travis
+sudo: required
 
-dist: trusty  # travis
+dist: trusty
 
 language: generic
 
-cache:  # travis
-  directories:  # travis
-    - $HOME/.ccache  # travis
-    - $HOME/.cache/pip  # travis
-    - $HOME/.ros/test_data  # travis
+cache:
+  directories:
+    - /home/travis/.ccache
+    - /home/travis/.cache/pip
+    - /home/travis/.ros/data
 
 env:
   global:
-    - USE_TRAVIS=true  # travis
-    - BUILDER=catkin
-    # - NO_SUDO=true  # jenkins
-    - NOT_TEST_INSTALL=true
-    - USE_DEB=false
-    # - ROS_PARALLEL_JOBS="-j8"  # jenkins
-    - ROS_PARALLEL_JOBS="-j2"  # travis
-    - ROSWS=wstool
-    # - ROSDEP_ADDITIONAL_OPTIONS="-q -n --ignore-src"
+    - ADDITIONAL_DEBS='build-essential python-catkin-tools python-pip'
+    - DOCKER_IMAGE=ros:indigo-ros-core
+    - DOCKER_RUN_OPTS='-v /home/travis:/root'
+    - ROSINSTALL_FILENAME=.travis.rosinstall
+    - UPSTREAM_WORKSPACE=file
+    - ROSDEP_INSTALL_OPTS='-q --ignore-src -r'
   matrix:
     - ROS_DISTRO=indigo
 
+install:
+  - git clone https://github.com/wkentaro/industrial_ci.git .ci_config -b rosdep_install_opts
 script:
   # build & test ROS packages
-  - source .travis/travis.sh
+  - .ci_config/travis.sh
   # build doc
   - cd $TRAVIS_BUILD_DIR/doc
   - unset PYTHONPATH  # cleanup for virtualenv
