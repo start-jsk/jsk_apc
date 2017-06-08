@@ -23,6 +23,10 @@
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
     version: master
 - git:
+    local-name: FOR_LATEST_BAXTEREUS/jsk_pr2eus
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: master
+- git:
     local-name: FOR_PCL1.8/octomap_mapping
     uri: https://github.com/OctoMap/octomap_mapping.git
     version: indigo-devel
