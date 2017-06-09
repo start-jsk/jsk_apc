@@ -1,20 +1,17 @@
 <launch>
 
   <arg name="depth_registration" default="true" />
-  <arg name="right_hand_camera_tranforms" default="-0.06 -0.10 0.01 1.63 -0.05 0.00" />
+  <arg name="right_hand_left_camera_transform" default="-0.06 -0.10 0.01 1.63 -0.05 0.00" />
+  <arg name="right_hand_tilt_laser_transform" default=" 0.00 -0.17 0.03 1.63 -1.52 1.57" />
 
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
     <arg name="launch_left" value="false" />
     <arg name="launch_right" value="false" />
   </include>
 
-  <!-- <arg name="NODELET_MANAGER" default="/right_hand_right_camera/right_hand_right_camera_nodelet_manager" /> -->
-
   <arg name="NODELET_MANAGER" default="fuse_images_manager" />
   <node name="$(arg NODELET_MANAGER)"
-        pkg="nodelet" type="nodelet" args="manager" >
-    <param name="num_worker_threads" value="8" />
-  </node>
+        pkg="nodelet" type="nodelet" args="manager" />
 
   <!-- ASTRA MINI S 2017/04/11  7/10 : serial=16112210196 -->
   <!-- ASTRA MINI S 2017/04/11  8/10 : serial=16112210193 -->
@@ -26,11 +23,14 @@
   <arg name="serial_9"  value="16111911511" />
   <arg name="serial_10" value="16112210224" />
 
-  <arg name="r_hand_l_camera_device_id" value="$(arg serial_8)" />
-  <arg name="r_hand_r_camera_device_id" value="$(arg serial_10)" />
+  <arg name="r_hand_l_camera_device_id" value="$(arg serial_10)" />
+  <arg name="r_hand_r_camera_device_id" value="$(arg serial_8)" />
   <arg name="r_hand_stereo_devices" value="8_10" />
 
-  <!-- launch right hand left camera -->
+  <!-- ************************************************************************************* -->
+  <!-- launch right hand left camera                                                         -->
+  <!-- ************************************************************************************* -->
+
   <include file="$(find openni2_launch)/launch/openni2.launch">
     <arg name="respawn" value="true" />
     <arg name="camera" value="right_hand_left_camera" />
@@ -47,12 +47,15 @@
         args="0.025 0 0 0 0 0 right_hand_left_camera_depth_optical_frame right_hand_left_camera_rgb_optical_frame 20" />
   <node name="right_hand_left_camera_depth_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
-        args="$(arg right_hand_camera_tranforms) right_hand right_hand_left_camera_depth_optical_frame 20" />
+        args="$(arg right_hand_left_camera_transform) right_hand right_hand_left_camera_depth_optical_frame 20" />
   <node name="right_hand_static_tf_publisher"
         pkg="tf" type="static_transform_publisher"
         args="0 0 0 3.14 -1.57 0 base_link right_hand 20" />
 
-  <!-- launch right hand right camera -->
+  <!-- ************************************************************************************* -->
+  <!-- launch right hand right camera                                                        -->
+  <!-- ************************************************************************************* -->
+
   <include file="$(find openni2_launch)/launch/openni2.launch">
     <arg name="respawn" value="true" />
     <arg name="camera" value="right_hand_right_camera" />
@@ -71,8 +74,18 @@
         pkg="tf" type="static_transform_publisher"
         args="0.085 0 0 0 0 0 right_hand_left_camera_depth_optical_frame right_hand_right_camera_depth_optical_frame 20" />
 
-  <!-- launch right hand tilt laser -->
+  <!-- ************************************************************************************* -->
+  <!-- launch right hand tilt laser                                                          -->
+  <!-- ************************************************************************************* -->
+
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/tilt_laser_startup.launch" />
+  <node name="right_hand_tilt_laser_static_tf_publisher"
+        pkg="tf" type="static_transform_publisher"
+        args="$(arg right_hand_tilt_laser_transform) right_hand laser_base_link 20" />
+
+  <!-- ************************************************************************************* -->
+  <!-- sensor fusion of left depth, right depth, stereo and laser                            -->
+  <!-- ************************************************************************************* -->
 
   <node name="stereo_image_proc_right_hand"
         pkg="stereo_image_proc" type="stereo_image_proc" >
@@ -85,22 +98,6 @@
       approximate_sync: true
     </rosparam>
   </node>
-
-  <!--
-  <group ns="/right_hand_left_camera">
-    <node name="depth_image_creator"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/DepthImageCreator /$(arg NODELET_MANAGER)"
-          output="screen" >
-      <remap from="~input" to="depth_registered/points" />
-      <remap from="~info" to="rgb/camera_info" />
-      <rosparam>
-        use_approximate: true
-        max_queue_size: 10
-      </rosparam>
-    </node>
-  </group>
-  -->
 
   <group ns="/right_hand_right_camera">
     <node name="depth_image_creator"
@@ -130,6 +127,20 @@
     </node>
   </group>
 
+  <!-- <group ns="/right_hand_tilt_laser"> -->
+  <!--   <node name="depth_image_creator" -->
+  <!--         pkg="nodelet" type="nodelet" -->
+  <!--         args="standalone jsk_pcl/DepthImageCreator" -->
+  <!--         output="screen" > -->
+  <!--     <remap from="~input" to="/assemble_laser_scans/output" /> -->
+  <!--     <remap from="~info" to="/right_hand_left_camera/rgb/camera_info" /> -->
+  <!--     <rosparam> -->
+  <!--       use_approximate: true -->
+  <!--       max_queue_size: 1000 -->
+  <!--     </rosparam> -->
+  <!--   </node> -->
+  <!-- </group> -->
+
   <node name="fuse_rgb_images"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/FuseRGBImages $(arg NODELET_MANAGER)"
@@ -157,7 +168,7 @@
         - /right_hand_right_camera/depth_image_creator/output
         - /right_hand_stereo/depth_image_creator/output
         - /right_hand_left_camera/depth_registered/hw_registered/image_rect_raw
-        - /right_hand_tilt_laser/depth_image_creator/output
+        <!-- - /right_hand_tilt_laser/depth_image_creator/output -->
     </rosparam>
   </node>
 
@@ -177,19 +188,42 @@
     </node>
   </group>
 
-  <group ns="/right_hand_tilt_laser">
-    <node name="depth_image_creator"
-          pkg="nodelet" type="nodelet"
-          args="standalone jsk_pcl/DepthImageCreator /$(arg NODELET_MANAGER)"
-          output="screen" respawn="true" >
-      <remap from="~input" to="/assemble_laser_scans/output" />
-      <remap from="~info" to="/right_hand_left_camera/rgb/camera_info" />
-      <rosparam>
-        use_approximate: true
-        max_queue_size: 50
-      </rosparam>
-    </node>
-  </group>
+  <!-- ************************************************************************************* -->
+  <!-- visualization                                                                         -->
+  <!-- ************************************************************************************* -->
+
+  <node name="left_depth_image_view"
+        pkg="image_view" type="image_view">
+    <remap from="image" to="right_hand_left_camera/depth_registered/hw_registered/image_rect_raw" />
+    <rosparam>
+      gui: false
+      min_image_value: 0.4
+      max_image_value: 2.0
+      colormap: 2
+    </rosparam>
+  </node>
+
+  <node name="right_depth_image_view"
+        pkg="image_view" type="image_view">
+    <remap from="image" to="right_hand_right_camera/depth_registered/hw_registered/image_rect_raw" />
+    <rosparam>
+      gui: false
+      min_image_value: 0.4
+      max_image_value: 2.0
+      colormap: 2
+    </rosparam>
+  </node>
+
+  <node name="laser_depth_image_view"
+        pkg="image_view" type="image_view">
+    <remap from="image" to="right_hand_tilt_laser/depth_image_creator/output" />
+    <rosparam>
+      gui: false
+      min_image_value: 0.4
+      max_image_value: 2.0
+      colormap: 2
+    </rosparam>
+  </node>
 
   <node name="fuse_depth_images_view"
         pkg="image_view" type="image_view">
@@ -197,10 +231,17 @@
     <rosparam>
       gui: false
       min_image_value: 0.4
-      max_image_value: 3.0
+      max_image_value: 2.0
       colormap: 2
     </rosparam>
   </node>
+
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find jsk_arc2017_baxter)/rvizconfig/test_stereo_and_laser.rviz" />
+
+  <!-- ************************************************************************************* -->
+  <!-- benchmark                                                                             -->
+  <!-- ************************************************************************************* -->
 
   <!-- <node name="concatenate_pointcloud_right_hand" -->
   <!--       pkg="nodelet" type="nodelet" -->
