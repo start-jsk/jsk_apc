@@ -32,6 +32,7 @@
     </rosparam>
   </node>
 
-  <node name="rviz" pkg="rviz" type="rviz"
-        args="-d $(find jsk_arc2017_baxter)/rvizconfig/test_stereo_and_laser.rviz" />
+  <node name="rviz" pkg="rviz"
+        type="rviz"
+        args="-d $(find jsk_arc2017_baxter)/rvizconfig/stereo_astra_and_tilt_laser.rviz" />
 </launch>
