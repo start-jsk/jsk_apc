@@ -409,7 +409,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /left_depth_image_view/output
+      Image Topic: /right_hand_left_camera/depth_registered/image_view/output
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -421,7 +421,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /right_depth_image_view/output
+      Image Topic: /right_hand_right_camera/depth_image_creator/output_view/output
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -433,7 +433,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /stereo_depth_image_view/output
+      Image Topic: /right_hand_stereo/depth_image_creator/output_view/output
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -547,7 +547,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /fuse_depth_images_view/output
+      Image Topic: /fuse_depth_images/output_view/output
       Max Value: 1
       Median window: 5
       Min Value: 0
