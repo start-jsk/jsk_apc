@@ -6,7 +6,9 @@
 
 (setq *arm* :rarm)
 
-(jsk_arc2017_baxter::arc-init)
+(jsk_arc2017_baxter::arc-init :ctype :rarm-controller :moveit t)
+(send *ti* :add-cardboard-scene *arm*)
+
 (send *baxter* :fold-pose-back *arm*)
 (send *ti* :send-av)
 
@@ -16,11 +18,15 @@
 (while (send *ti* :wait-for-user-input-to-start *arm*)
   (dolist (bin (list :b :c))
     (ros::set-param "/right_hand/target_bin_name" (symbol2str bin))
+    (send *ti* :add-bin-scene :b)
+    (send *ti* :add-bin-scene :c)
     (send *ti* :move-arm-body->bin-overlook-pose *arm* bin)
     (send *baxter* *arm* :move-end-pos #f(0 0 100) :world)
     (send *ti* :send-av)
     (send *irtviewer* :redraw)
     (send *ri* :wait-interpolation)
+    (send *ti* :delete-bin-scene :b)
+    (send *ti* :delete-bin-scene :c)
 
     (unix::sleep 1)
     (setq res
