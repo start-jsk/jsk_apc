@@ -1,0 +1,183 @@
+#!/usr/bin/env roseus
+
+(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
+(require "package://jsk_arc2017_baxter/euslisp/lib/baxter.l")
+(require "package://jsk_arc2017_baxter/euslisp/lib/baxter-interface.l")
+(require "package://jsk_arc2017_baxter/euslisp/lib/arc-interface.l")
+
+(ros::load-ros-manifest "jsk_arc2017_baxter")
+
+(unless (find-package "JSK_ARC2017_BAXTER")
+  (make-package "JSK_ARC2017_BAXTER"))
+
+(defclass jsk_arc2017_baxter::stow-interface
+  :super jsk_arc2017_baxter::arc-interface
+  :slots (graspingp
+          picking-fail-count
+          recognize-fail-count
+          target-bin
+          target-obj
+          tote-contents))
+
+(defmethod jsk_arc2017_baxter::stow-interface
+  (:init ()
+    (send-super :init)
+    (setq picking-fail-count 0)
+    (setq recognize-fail-count 0))
+  (:recognize-bboxes (arm)
+    (ros::ros-info "[main] recognizing bin boxes")
+    (send self :recognize-bin-boxes :stamp (ros::time-now))
+    (ros::ros-info "[main] recognizing tote")
+    (send self :recognize-tote-boxes arm :stamp (ros::time-now))
+    (send self :set-movable-region-for-tote arm :offset (list 100 80 0)))
+  (:wait-for-user-input (arm)
+    (let (can-start)
+      (ros::ros-info "[:wait-for-user-input] wait for user input to start: ~a" arm)
+      (ros::wait-for-service "/rviz/yes_no_button")
+      (setq can-start
+            (send (ros::service-call "/rviz/yes_no_button"
+                                     (instance jsk_gui_msgs::YesNoRequest))
+                  :yes))
+      (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
+      can-start))
+  (:recognize-object (arm &key (trial-times 10))
+    (let (is-recognized recognition-count)
+      (send self :add-shelf-scene)
+      (send self :add-tote-scene arm)
+      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
+      (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
+      (send *ri* :wait-interpolation)
+      (ros::ros-info "[main] Recognizing objects in tote")
+      ;; TODO: :move-arm-body->tote-overlook-pose
+      (send self :move-arm-body->tote-overlook-pose arm)
+      (send *ri* :wait-interpolation)
+      (setq recognition-count 1)
+      (while (null (or (> recognition-count trial-times) is-recognized))
+        (setq is-recognized
+              (send self :recognize-target-object arm :stamp (ros::time-now)))
+        (setq recognition-count (incf recognition-count)))
+      is-recognized))
+  (:return-from-recognize-object (arm)
+    (ros::ros-info "[main] arm: ~a, failed to recognize object in tote" arm)
+    (send *ri* :angle-vector-sequence
+          (list (send *baxter* :fold-to-keep-object arm)
+                (send *baxter* :fold-pose-back arm))
+          :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+    (send *ri* :wait-interpolation)
+    (send self :delete-shelf-scene)
+    (send self :delete-tote-scene arm))
+  (:check-recognize-fail-count (arm)
+    (incf recognize-fail-count)
+    (ros::ros-info "[main] arm: ~a, recognize fail count: ~a" arm recognize-fail-count)
+    (> recognize-fail-count 1))
+  (:pick-object (arm)
+    (setq recognize-fail-count 0)
+    (send self :delete-tote-scene arm)
+    (send self :pick-object-in-tote arm
+          :n-trial 2
+          :n-trial-same-pos 1
+          :do-stop-grasp nil)
+    (send *ri* :angle-vector
+          (send self :ik->tote-center arm
+                :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+          3000 (send *ri* :get-arm-controller arm) 0)
+    (send *ri* :wait-interpolation)
+    (setq graspingp (send *ri* :graspingp arm))
+    (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
+    graspingp)
+  (:return-from-pick-object (arm)
+    (send *ri* :stop-grasp arm)
+    (ros::ros-info "[main] arm: ~a return from pick-object to fold-pose-back" arm)
+    (send *ri* :angle-vector-sequence
+          (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
+                (send *baxter* :fold-pose-back arm))
+          :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+    (send *ri* :wait-interpolation))
+  (:verify-object (arm)
+    (setq picking-fail-count 0)
+    ;; TODO: in-hand verification
+    ;; TODO: (setq target-obj (send *ti* :recognize-object-in-hand arm))
+    ;; TODO: (return-from :verify-objec target-obj)
+    (setq target-obj t)
+    target-obj)
+  (:check-picking-fail-count (arm)
+    (incf picking-fail-count)
+    (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
+    (> picking-fail-count 1))
+  (:set-target-bin (arm)
+    ;; TODO: when we select target-bin, we should consider target-obj size.
+    ;; TODO: (setq target-bin (send *ti* :get-target-bin arm target-obj))
+    (setq target-bin
+          (if (eq arm :larm) :a (elt (list :b :c) (random 2))))
+    (if (eq target-bin :tote)
+      (progn
+        (ros::ros-info "[main] unable to recognize, return to tote")
+        nil)
+      (progn
+        (ros::set-param (format nil "~a_hand/target_bin" (arm2str arm)) (symbol2str target-bin))
+        (ros::ros-info "[main] target-bin: ~a" target-bin)
+        t)))
+  (:return-object (arm)
+    (send *ri* :angle-vector
+          (send self :ik->tote-center arm :offset #f(0 0 0)
+                :rotation-axis :z :use-gripper t)
+          :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
+    (send *ri* :wait-interpolation)
+    (send *ri* :stop-grasp arm)
+    (send self :spin-off-by-wrist 5)
+    (send *ri* :wait-interpolation)
+    (ros::ros-info "[main] ~a, return object in tote" arm)
+    (send self :add-tote-scene arm)
+    (send *ri* :fold-pose-back arm)
+    (send *ri* :wait-interpolation))
+  (:place-object (arm)
+    (let (dropped)
+      (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
+      (send self :add-tote-scene arm)
+      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
+      (send *ri* :angle-vector
+            (send self :ik->bin-center arm target-bin
+                  :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+            4000 (send *ri* :get-arm-controller arm) 0)
+      (send *ri* :wait-interpolation)
+      (setq dropped (not (send *ri* :graspingp arm)))
+      (if dropped
+        (progn
+          (ros::ros-error "[main] arm ~a: dropped object" arm)
+          (send *ri* :stop-grasp arm))
+        (progn
+          (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a" arm target-obj target-bin)
+          (send self :delete-bin-scene target-bin)
+          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
+                2000 (send *ri* :get-arm-controller arm) 0)
+          (send *ri* :wait-interpolation)
+          (send *ri* :stop-grasp arm) ;; release object
+          (send self :spin-off-by-wrist arm :times 10)
+          (send *ri* :wait-interpolation)
+          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
+                1000 (send *ri* :get-arm-controller arm) 0)
+          (send *ri* :wait-interpolation)
+          (send self :add-bin-scene target-bin)))))
+  (:return-from-place-object (arm)
+    (send *ri* :fold-pose-back arm)
+    (send *ri* :wait-interpolation)))
+
+
+(defun jsk_arc2017_baxter::stow-init (&key (ctype :default-controller) (moveit nil))
+  (let (mvit-env mvit-rb)
+    (when moveit
+      (setq mvit-env (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
+      (setq mvit-rb (instance jsk_arc2017_baxter::baxter-robot :init)))
+    (unless (boundp '*ri*)
+      (setq *ri* (instance jsk_arc2017_baxter::baxter-interface :init :type ctype
+                           :moveit-environment mvit-env
+                           :moveit-robot mvit-rb)))
+    (unless (boundp '*baxter*)
+      (setq *baxter* (instance jsk_arc2017_baxter::baxter-robot :init)))
+    (unless (boundp '*co*)
+      (setq *co* (when moveit (instance collision-object-publisher :init))))
+    (unless (boundp '*ti*)
+      (setq *ti* (instance jsk_arc2017_baxter::stow-interface :init)))
+    (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+    (send *ri* :calib-grasp :arms)))
