@@ -22,7 +22,12 @@
   </node>
 
   <!-- state_server -->
-  <node pkg="jsk_arc2017_baxter" type="state_server.py" name="state_server" />
+  <node pkg="jsk_arc2017_baxter" type="state_server.py" name="state_server">
+    <rosparam>
+      is_pick: true
+    </rosparam>
+  </node>
+
 
   <!-- smach viewer -->
   <!-- FIXME: Segmentation Fault occurs on sheeta -->

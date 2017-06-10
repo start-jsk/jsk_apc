@@ -13,7 +13,7 @@ import threading
 
 class StateServer(object):
     def __init__(self):
-        super(StateServer, self).__init__()
+        self.is_pick = rospy.get_param('~is_pick', True)
         self.state = {
             'right': 'init',
             'left': 'init'
@@ -77,31 +77,54 @@ class StateServer(object):
         state = self.state[hand]
         opposite_state = self.state[opposite_hand]
 
-        # wait condition
-        if state == 'wait-for-opposite-arm-start-picking':
-            if opposite_state == 'recognize-object' \
-                    or opposite_state == 'wait-for-user-input':
-                can_start = True
-            else:
-                can_start = False
-        elif state == 'wait-for-opposite-arm':
-            if opposite_state == 'set-target' \
-                    or opposite_state == 'recognize-object' \
-                    or opposite_state == 'pick-object' \
-                    or opposite_state == 'verify-object' \
-                    or opposite_state == 'set-target-cardboard' \
-                    or opposite_state == 'return-object':
-                can_start = False
-            else:
-                can_start = True
-        else:
-            can_start = True
-
+        can_start = self._get_can_start(state, opposite_state)
         if can_start:
             self.state[hand] = start_state
         else:
             self.state[hand] = wait_state
         self.lock.release()
+        return can_start
+
+    def _get_can_start(self, state, opposite_state):
+        if self.is_pick:
+            # pick task: wait condition
+            if state == 'wait-for-opposite-arm-start-picking':
+                if opposite_state == 'set-target' \
+                        or opposite_state == 'wait-for-user-input':
+                    can_start = True
+                else:
+                    can_start = False
+            elif state == 'wait-for-opposite-arm':
+                if opposite_state == 'set-target' \
+                        or opposite_state == 'recognize-object' \
+                        or opposite_state == 'pick-object' \
+                        or opposite_state == 'verify-object' \
+                        or opposite_state == 'set-target-cardboard' \
+                        or opposite_state == 'return-object':
+                    can_start = False
+                else:
+                    can_start = True
+            else:
+                can_start = True
+        else:
+            # pick task: wait condition
+            if state == 'wait-for-opposite-arm-start-picking':
+                if opposite_state == 'recognize-object' \
+                        or opposite_state == 'wait-for-user-input':
+                    can_start = True
+                else:
+                    can_start = False
+            elif state == 'wait-for-opposite-arm':
+                if opposite_state == 'recognize-object' \
+                        or opposite_state == 'pick-object' \
+                        or opposite_state == 'verify-object' \
+                        or opposite_state == 'set-target-bin' \
+                        or opposite_state == 'return-object':
+                    can_start = False
+                else:
+                    can_start = True
+            else:
+                can_start = True
         return can_start
 
     def _update_left_state(self, req):
