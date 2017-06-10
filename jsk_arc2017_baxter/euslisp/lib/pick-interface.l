@@ -43,6 +43,7 @@
                                      (instance jsk_gui_msgs::YesNoRequest))
                   :yes))
       (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
+      (setq order nil)
       can-start))
   (:set-target (arm)
     (setq label-names
