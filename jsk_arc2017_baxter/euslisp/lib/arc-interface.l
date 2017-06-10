@@ -12,11 +12,10 @@
 
 (defclass jsk_arc2017_baxter::arc-interface
   :super propertied-object
-  :slots (bin-boxes-
+  :slots (bin-cubes-
+          bin-movable-regions-
           object-boxes-in-bin-
           object-coords-in-bin-
-          bin-movable-regions-
-          bin-cubes-
           larm-cardboard-cube-
           rarm-cardboard-cube-
           ))
@@ -24,10 +23,8 @@
 (defmethod jsk_arc2017_baxter::arc-interface
   (:init ()
     ;; initialize slots
-    (setq bin-boxes- (make-hash-table))
-    (setq object-boxes-in-bin- (make-hash-table))
-    (setq bin-movable-regions- (make-hash-table))
     (setq bin-cubes- (make-hash-table))
+    (setq bin-movable-regions- (make-hash-table))
     (setq object-boxes-in-bin- (make-hash-table))
     (setq object-coords-in-bin- (make-hash-table))
     (setq rarm-cardboard-cube- (make-cube 800 400 300))
@@ -66,7 +63,7 @@
     (let (cube)
         (progn
           (dolist (bin (list :a :b :c))
-               (setq cube (send self :bbox->cube (gethash bin bin-boxes-)))
+               (setq cube (gethash bin bin-cubes-))
                (sethash bin bin-movable-regions-
                         (send self :cube->movable-region cube :offset offset))))))
   (:get-work-orders
@@ -98,7 +95,7 @@
         (when (string= (send (elt orders i) :bin)
                        (string-upcase (symbol2str bin)))
           (return-from :get-certain-work-order (elt orders i))))))
-  (:check-bin-exist (bin) (if (gethash bin bin-boxes-) t nil))
+  (:check-bin-exist (bin) (if (gethash bin bin-cubes-) t nil))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
     (let ((box-topic (format nil "publish_bin_boxes/output"))
@@ -113,19 +110,18 @@
           (setq box-list (send box-msg :boxes))
           (setq bin-list (list :a :b :c))
           (dolist (bin bin-list)
-            (setf (gethash bin bin-boxes-) (car box-list))
+            (sethash bin bin-cubes- (send self :bbox->cube (car box-list)))
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:visualize-bins ()
     (let (bins)
-      (dolist (b (send bin-boxes- :list-values))
-        (let ((bin-inside (send self :bbox->cube b))
-              (bin-outside (make-cube (+ (m->mm (send b :dimensions :x)))
-                                      (+ (m->mm (send b :dimensions :y)) 30)
-                                      (+ (m->mm (send b :dimensions :z)) 30)))
+      (dolist (box-inside (send bin-cubes- :list-values))
+        (let ((bin-outside (make-cube (+ (x-of-cube box-inside) 30)
+                                      (+ (y-of-cube box-inside) 30)
+                                      (z-of-cube box-inside)))
               (bin-model))
           (send bin-outside :newcoords (send bin-inside :copy-worldcoords))
-          (send bin-outside :translate (float-vector 15 0 0) :world)
+          (send bin-outside :translate (float-vector 0 0 15) :world)
           (setq bin-model (body- bin-outside bin-inside))
           (send bin-model :set-color :blue 0.5)
           (pushback bin-model bins)))
@@ -295,21 +291,20 @@
       (ros::ros-info "[:try-to-pick-object-in-bin] arm:~a graspingp: ~a" arm graspingp)
     graspingp))
   (:ik->bin-center
-    (arm bin &key (offset #f(0 0 0)) (coords-pitch 0) (rotation-axis t) (use-gripper nil))
-    (let (bin-box bin-coords)
-      (setq bin-box (gethash bin bin-boxes-))
-      (setq bin-coords (send *ri* :tf-pose->coords
-                             (send (send bin-box :header) :frame_id)
-                             (send bin-box :pose)))
+    (arm bin &key (offset #f(0 0 0)) (rpy #f(0 0 0)) (rotation-axis t) (use-gripper nil))
+    (let (bin-cube bin-coords)
+      (setq bin-cube (gethash bin bin-cubes-))
+      (setq bin-coords (send bin-cube :copy-worldcoords))
+      (send bin-coords :rotate (aref rpy 0) :z)
+      (send bin-coords :rotate (aref rpy 1) :y)
+      (send bin-coords :rotate (aref rpy 2) :x)
       (send bin-coords :translate
             (v+ (float-vector
-                  0.0 0.0 (/ (m->mm (send bin-box :dimensions :z)) 2.0))
+                  0.0 0.0 (/ (z-of-cube bin-cube) 2.0))
                  offset) :world)
-      (send bin-coords :rotate (* pi (/ coords-pitch 180)) :y)
       (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
-
   (:ik->bin-entrance
     (arm bin &key (offset #f(0 0 0)) (rpy #f(0 0 0)) (rotation-axis t) (use-gripper nil))
     (let (bin-box bin-coords)
@@ -380,22 +375,19 @@
     (ros::get-param
       (format nil "/bin_contents/~A" (string-upcase (symbol2str bin)))))
   (:add-bin-scene (bin)
-    (let ((cube (send self :bbox->cube (gethash bin bin-boxes-)))
+    (let ((cube (gethash bin bin-cubes-))
           (base-name (send (send *baxter* :base_lk) :name)))
       (send *co* :add-object cube :frame-id base-name
             :relative-pose (send cube :copy-worldcoords)
-            :object-id (format nil "bin_~A" (string-upcase (symbol2str bin))))
-      (sethash bin bin-cubes- cube)))
+            :object-id (format nil "bin_~A" (string-upcase (symbol2str bin))))))
   (:delete-bin-scene (bin)
-    (send *co* :delete-object (gethash bin bin-cubes-))
-    (sethash bin bin-cubes- nil))
+    (send *co* :delete-object (gethash bin bin-cubes-)))
   (:add-shelf-scene ()
     (dolist (bin (list :a :b :c))
       (send self :add-bin-scene bin)))
   (:delete-shelf-scene ()
     (dolist (bin (list :a :b :c))
-      (send self :delete-bin-scene bin))
-    (setq bin-cubes- (make-hash-table)))
+      (send self :delete-bin-scene bin)))
   (:add-cardboard-scene (arm)
     (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-))
           (base-name (send (send *baxter* :base_lk) :name)))

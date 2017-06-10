@@ -146,9 +146,7 @@
   (:return-object (arm)
     (send *ri* :angle-vector
           (send self :ik->bin-center arm target-bin
-                :offset #f(0 0 0) :coords-pitch 0
-                :rotation-axis :z
-                :use-gripper t)
+                :offset #f(0 0 0) :rotation-axis :z :use-gripper t)
           :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp arm)
