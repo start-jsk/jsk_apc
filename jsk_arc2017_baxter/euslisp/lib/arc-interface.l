@@ -130,7 +130,7 @@
           (send bin-model :set-color :blue 0.5)
           (pushback bin-model bins)))
       bins))
-  (:recognize-objects-in-bin
+  (:recognize-target-object
     (arm &key (stamp (ros::time-now)) (timeout 10))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_target/boxes" (arm2str arm)))
           box-msg
@@ -147,14 +147,15 @@
                           (let ((st (send msg :header :stamp)))
                             (when (> (send st :to-sec) (send stamp :to-sec))
                               (setq com-msg msg)))))
-      (while (not (and box-msg com-msg))
+      (while (and (not (and box-msg com-msg))
+                  (> (+ (send stamp :to-sec) timeout) (send (ros::time-now) :to-sec)))
              (unix::usleep (* 50 1000))
              (ros::spin-once))
       (ros::unsubscribe box-topic)
       (ros::unsubscribe com-topic)
       (cond
         ((and box-msg com-msg)
-         (ros::ros-info "[:recognize-objects-in-bin] arm: ~a get cpi msg" arm)
+         (ros::ros-info "[:recognize-target-object] arm: ~a get cpi msg" arm)
          (setq obj-box (send box-msg :boxes))
          (setq obj-coords
                (mapcar #'(lambda (obj-pose)

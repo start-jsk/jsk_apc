@@ -89,7 +89,7 @@
       (setq recognition-count 1)
       (while (null (or (> recognition-count trial-times) is-recognized))
         (setq is-recognized
-              (send self :recognize-objects-in-bin arm :stamp (ros::time-now)))
+              (send self :recognize-target-object arm :stamp (ros::time-now)))
         (setq recognition-count (incf recognition-count)))
       is-recognized))
   (:return-from-recognize-object (arm)
