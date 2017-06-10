@@ -305,7 +305,7 @@
       (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
-  (:ik->cardboard-entrance
+  (:ik->cardboard-center
     (arm cardboard &key (offset #f(0 0 0)) (rotation-axis t) (use-gripper nil))
     (send *baxter* arm :inverse-kinematics
           (make-coords

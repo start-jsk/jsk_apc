@@ -162,7 +162,7 @@
       (send self :add-shelf-scene)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
       (send *ri* :angle-vector
-            (send self :ik->cardboard-entrance arm target-cardboard
+            (send self :ik->cardboard-center arm target-cardboard
                   :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
             4000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
