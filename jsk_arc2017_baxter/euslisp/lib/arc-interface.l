@@ -18,6 +18,8 @@
           object-coords-in-bin-
           larm-cardboard-cube-
           rarm-cardboard-cube-
+          tote-cubes-
+          tote-movable-regions-
           ))
 
 (defmethod jsk_arc2017_baxter::arc-interface
@@ -32,7 +34,9 @@
           (make-coords :pos (float-vector 800 -500 -100)))
     (setq larm-cardboard-cube- (make-cube 800 400 300))
     (send larm-cardboard-cube- :newcoords
-          (make-coords :pos (float-vector 800 500 -100))))
+          (make-coords :pos (float-vector 800 500 -100)))
+    (setq tote-cubes- (make-hash-table))
+    (setq tote-movable-regions- (make-hash-table)))
   (:fold-pose-back
     (&optional (arm :arms) &rest args)
     (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
@@ -66,6 +70,11 @@
                (setq cube (gethash bin bin-cubes-))
                (sethash bin bin-movable-regions-
                         (send self :cube->movable-region cube :offset offset))))))
+  (:set-movable-region-for-tote
+    (arm &key (offset (list 0 0 0)))
+    (let (cube)
+      (setq cube (gethash arm tote-cubes-))
+      (sethash arm tote-movable-regions- (send self :cube->movable-region cube :offset offset))))
   (:get-work-orders
     (arm)
     (let (msg)
@@ -113,6 +122,21 @@
             (sethash bin bin-cubes- (send self :bbox->cube (car box-list)))
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
+  (:recognize-tote-boxes
+    (arm &key (stamp (ros::time-now)))
+    (let ((box-topic (format nil "~a_hand_camera/attention_clipper_tote/output/box_array"
+                             (arm2str arm)))
+                     box-msg bbox)
+      (setq box-msg (one-shot-subscribe box-topic
+                                        jsk_recognition_msgs::BoundingBoxArray
+                                        :timeout 10000
+                                        :after-stamp stamp))
+      (if box-msg
+        (progn
+          (ros::ros-info "[:recognize-tote-boxes] arm: ~a Recognize tote bbox" (arm2str arm))
+          (setq bbox (car (send box-msg :boxes)))
+          (sethash arm tote-cubes- (send self :bbox->cube bbox)))
+        (ros::ros-fatal "[:recognize-tote-boxes] arm: ~a Cannot find tote bbox" (arm2str arm)))))
   (:visualize-bins ()
     (let (bins)
       (dolist (box-inside (send bin-cubes- :list-values))
@@ -316,6 +340,21 @@
             :rpy (float-vector 0 0 0))
           :rotation-axis rotation-axis
           :use-gripper use-gripper))
+  (:ik->tote-center
+    (arm &key (offset #f(0 0 0)) (rpy #f(0 0 0)) (rotation-axis t) (use-gripper nil))
+    (let (tote-cube tote-coords)
+      (setq tote-cube (gethash arm tote-cubes-))
+      (setq tote-coords (send tote-cube :copy-worldcoords))
+      (send tote-coords :rotate (aref rpy 0) :z)
+      (send tote-coords :rotate (aref rpy 1) :y)
+      (send tote-coords :rotate (aref rpy 2) :x)
+      (send tote-coords :translate
+            (v+ (float-vector
+                  0.0 0.0 (/ (z-of-cube tote-cube) 2.0))
+                 offset) :world)
+      (send *baxter* arm :inverse-kinematics tote-coords
+            :rotation-axis rotation-axis
+            :use-gripper use-gripper)))
   (:move-arm-body->bin-overlook-pose
     (arm bin &key (gripper-angle 90))
     (let (avs offset rpy
@@ -331,6 +370,21 @@
             (float-vector 0 pi/2 (if (eq arm :larm) pi/2 -pi/2)))
       (pushback
         (send self :ik->bin-center arm bin
+              :offset offset :rpy rpy :use-gripper nil)
+        avs)
+      (send *ri* :angle-vector-sequence avs :fast
+            (send *ri* :get-arm-controller arm) 0 :scale 3.0)))
+  (:move-arm-body->tote-overlook-pose
+    (arm &key (gripper-angle 90))
+    (let (avs offset rpy
+              (offset-y (if (eq arm :larm) 180 -180)))
+      (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
+      (send *baxter* :reset-pose arm)
+      (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
+      (setq offset (float-vector 0 offset-y 250))
+      (setq rpy (float-vector 0 pi/2 (if (eq arm :larm) pi/2 -pi/2)))
+      (pushback
+        (send self :ik->tote-center arm
               :offset offset :rpy rpy :use-gripper nil)
         avs)
       (send *ri* :angle-vector-sequence avs :fast
@@ -379,6 +433,14 @@
   (:delete-cardboard-scene (arm)
     (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-)))
       (send *co* :delete-object cardboard-cube)))
+  (:add-tote-scene (arm)
+    (let ((cube (gethash arm tote-cubes-))
+          (base-name (send (send *baxter* :base_lk) :name)))
+      (send *co* :add-object cube :frame-id base-name
+            :relative-pose (send cube :copy-worldcoords)
+            :object-id (format nil "~A_tote" (arm2str arm)))))
+  (:delete-tote-scene (arm)
+    (send *co* :delete-object (gethash arm tote-cubes-)))
   (:wipe-all-scene ()
     (send *co* :wipe-all))
   (:spin-off-by-wrist
