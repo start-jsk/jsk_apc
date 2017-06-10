@@ -1,6 +1,7 @@
 <launch>
 
   <arg name="moveit" default="true" />
+  <arg name="pick" default="true" />
 
   <!-- custom baxter params -->
   <param name="/robot_description"
@@ -45,14 +46,12 @@
   <!-- hand mounted camera -->
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" />
 
-
-  <!-- TODO: add shelf xacro for rviz visualization-->
-  <!-- <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kiva_pod_state.launch" /> -->
-
   <node name="interactive_adjust_shelf"
         pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" file="$(find jsk_arc2017_common)/config/shelf_interactive_marker.yaml" />
+    <rosparam command="load" if="$(arg pick)" file="$(find jsk_arc2017_common)/config/pick_task/shelf_marker.yaml"/>
+    <rosparam command="load" unless="$(arg pick)" file="$(find jsk_arc2017_common)/config/stow_task/shelf_marker.yaml"/>
   </node>
+
   <node name="publish_bin_boxes"
         pkg="jsk_recognition_utils" type="bounding_box_array_publisher.py">
     <rosparam file="$(find jsk_arc2017_common)/config/shelf_bin.yaml" command="load" />
