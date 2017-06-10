@@ -305,24 +305,6 @@
       (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
-  (:ik->bin-entrance
-    (arm bin &key (offset #f(0 0 0)) (rpy #f(0 0 0)) (rotation-axis t) (use-gripper nil))
-    (let (bin-box bin-coords)
-      (setq bin-box (gethash bin bin-boxes-))
-      (setq bin-coords (send *ri* :tf-pose->coords
-                             (send (send bin-box :header) :frame_id)
-                             (send bin-box :pose)))
-      (send bin-coords :translate
-            (v+ (float-vector
-                  (- (/ (m->mm (send bin-box :dimensions :x)) 2.0))
-                  0.0 (/ (m->mm (send bin-box :dimensions :z)) 2.0))
-                offset) :world)
-      (send bin-coords :rotate (aref rpy 0) :z)
-      (send bin-coords :rotate (aref rpy 1) :y)
-      (send bin-coords :rotate (aref rpy 2) :x)
-      (send *baxter* arm :inverse-kinematics bin-coords
-            :rotation-axis rotation-axis
-            :use-gripper use-gripper)))
   (:ik->cardboard-entrance
     (arm cardboard &key (offset #f(0 0 0)) (rotation-axis t) (use-gripper nil))
     (send *baxter* arm :inverse-kinematics
@@ -342,13 +324,13 @@
       (send *baxter* :reset-pose arm)
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
       (setq offset
-            (cond ((eq bin :a) (float-vector 200 offset-y 250))
-                  ((eq bin :b) (float-vector -50 offset-y 200))
+            (cond ((eq bin :a) (float-vector 0 offset-y 250))
+                  ((eq bin :b) (float-vector 0 offset-y 200))
                   ((eq bin :c) (float-vector 0 offset-y 200))))
       (setq rpy
             (float-vector 0 pi/2 (if (eq arm :larm) pi/2 -pi/2)))
       (pushback
-        (send self :ik->bin-entrance arm bin
+        (send self :ik->bin-center arm bin
               :offset offset :rpy rpy :use-gripper nil)
         avs)
       (send *ri* :angle-vector-sequence avs :fast
