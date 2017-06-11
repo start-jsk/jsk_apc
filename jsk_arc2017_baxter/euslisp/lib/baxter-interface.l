@@ -158,12 +158,6 @@
     (let ((base-name (send (send robot :base_lk) :name)))
       (send (send *tfl* :lookup-transform base-name frame_id (ros::time 0))
             :transform (ros::tf-pose->coords pose))))
-  (:fold-pose-back
-    (&optional (arm :arms))
-    (send self :state)
-    (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
-      (send robot :fold-pose-back tmp-arm))
-    (send self :angle-vector (send robot :angle-vector)))
   (:wait-interpolation-until-grasp
     (arm)
     (when (send self :simulation-modep)
