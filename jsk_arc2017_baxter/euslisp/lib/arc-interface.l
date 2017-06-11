@@ -220,7 +220,7 @@
       (setq object-index (random (length (gethash arm object-boxes-))))
       (setq obj-pos
             (send self :get-object-position arm movable-region :object-index object-index))
-      (ros::ros-info "[:pick-object-with-obj-pos] arm:~a approach to the object" arm)
+      (ros::ros-info "[:pick-object-with-movable-region] arm:~a approach to the object" arm)
       (send *ri* :gripper-servo-on arm)
       (send *ri* :angle-vector
             (send *baxter* arm :inverse-kinematics
