@@ -37,10 +37,10 @@
     (send larm-cardboard-cube- :newcoords
           (make-coords :pos (float-vector 800 500 -100))))
   (:fold-pose-back
-    (&optional (arm :arms))
+    (&optional (arm :arms) &rest args)
     (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
       (send *baxter* :fold-pose-back tmp-arm))
-    (send *ri* :angle-vector (send *baxter* :angle-vector)))
+    (send* *ri* :angle-vector (send *baxter* :angle-vector) args))
   (:bbox->cube
     (bbox)
     (let* ((dims (ros::tf-point->pos (send bbox :dimensions)))
