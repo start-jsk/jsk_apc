@@ -323,7 +323,7 @@
       (send bin-coords :translate
             (v+ (float-vector
                   0.0 0.0 (/ (z-of-cube bin-cube) 2.0))
-                 offset) :world)
+                offset) :local)
       (send *baxter* arm :inverse-kinematics bin-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
@@ -349,7 +349,7 @@
       (send tote-coords :translate
             (v+ (float-vector
                   0.0 0.0 (/ (z-of-cube tote-cube) 2.0))
-                 offset) :world)
+                offset) :local)
       (send *baxter* arm :inverse-kinematics tote-coords
             :rotation-axis rotation-axis
             :use-gripper use-gripper)))
