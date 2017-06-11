@@ -50,8 +50,8 @@
     </node>
 
     <node unless="$(arg moveit)" pkg="jsk_arc2017_baxter" type="stow-main.l" name="right_hand_main"
-      args="&quot;(progn (stow-init :ctype :rarm-controller :moveit nil) (stow-mainloop :rarm))&quot;"
-      respawn="true" output="screen">
+          args="&quot;(progn (stow-init :ctype :rarm-controller :moveit nil) (stow-mainloop :rarm))&quot;"
+          respawn="true" output="screen">
       <env name="DISPLAY" value="" />
     </node>
 
@@ -62,8 +62,8 @@
     </node>
 
     <node if="$(arg moveit)" pkg="jsk_arc2017_baxter" type="stow-main.l" name="right_hand_main"
-      args="&quot;(progn (stow-init :ctype :rarm-controller :moveit t) (stow-mainloop :rarm))&quot;"
-      respawn="true" output="screen">
+          args="&quot;(progn (stow-init :ctype :rarm-controller :moveit t) (stow-mainloop :rarm))&quot;"
+          respawn="true" output="screen">
       <env name="DISPLAY" value="" />
     </node>
   </group>

@@ -57,8 +57,8 @@
     </node>
 
     <node unless="$(arg moveit)" pkg="jsk_arc2017_baxter" type="pick-main.l" name="right_hand_main"
-      args="&quot;(progn (pick-init :ctype :rarm-controller :moveit nil) (pick-mainloop :rarm))&quot;"
-      respawn="true" output="screen">
+          args="&quot;(progn (pick-init :ctype :rarm-controller :moveit nil) (pick-mainloop :rarm))&quot;"
+          respawn="true" output="screen">
       <env name="DISPLAY" value="" />
     </node>
 
@@ -69,8 +69,8 @@
     </node>
 
     <node if="$(arg moveit)" pkg="jsk_arc2017_baxter" type="pick-main.l" name="right_hand_main"
-      args="&quot;(progn (pick-init :ctype :rarm-controller :moveit t) (pick-mainloop :rarm))&quot;"
-      respawn="true" output="screen">
+          args="&quot;(progn (pick-init :ctype :rarm-controller :moveit t) (pick-mainloop :rarm))&quot;"
+          respawn="true" output="screen">
       <env name="DISPLAY" value="" />
     </node>
   </group>
@@ -83,7 +83,7 @@
     args="$(arg json)" />
   -->
     <node name="rosconsole_overlay_text"
-        pkg="jsk_rviz_plugins" type="rosconsole_overlay_text.py">
+          pkg="jsk_rviz_plugins" type="rosconsole_overlay_text.py">
     <rosparam>
       nodes:
         - /left_hand
