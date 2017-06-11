@@ -5,7 +5,7 @@
   <node name="image_publisher"
         pkg="jsk_perception" type="image_publisher.py">
     <rosparam subst_value="true">
-      file_name: $(find jsk_arc2017_common)/data/datasets/JSKV1_samples/1490536244714998006/image.jpg
+      file_name: $(find jsk_arc2017_common)/samples/data/right_astra_hand_pick_shelfv1.jpg
       encoding: rgb8
       publish_info: false
       rate: 30
@@ -14,60 +14,16 @@
 
   <arg name="INPUT_IMAGE" value="image_publisher/output" />
 
-  <rosparam>
-    object_names:
-      - __background__
-      - avery_binder
-      - balloons
-      - band_aid_tape
-      - bath_sponge
-      - black_fashion_gloves
-      - burts_bees_baby_wipes
-      - colgate_toothbrush_4pk
-      - composition_book
-      - crayons
-      - duct_tape
-      - epsom_salts
-      - expo_eraser
-      - fiskars_scissors
-      - flashlight
-      - glue_sticks
-      - hand_weight
-      - hanes_socks
-      - hinged_ruled_index_cards
-      - ice_cube_tray
-      - irish_spring_soap
-      - laugh_out_loud_jokes
-      - marbles
-      - measuring_spoons
-      - mesh_cup
-      - mouse_traps
-      - pie_plates
-      - plastic_wine_glass
-      - poland_spring_water
-      - reynolds_wrap
-      - robots_dvd
-      - robots_everywhere
-      - scotch_sponges
-      - speed_stick
-      - table_cloth
-      - tennis_ball_container
-      - ticonderoga_pencils
-      - tissue_box
-      - toilet_brush
-      - white_facecloth
-      - windex
-      - __shelf__
-  </rosparam>
+  <rosparam ns="object_names" command="load" file="$(find jsk_arc2017_common)/config/label_names.yaml" />
 
   <node name="fcn_object_segmentation"
         pkg="jsk_perception" type="fcn_object_segmentation.py">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <rosparam subst_value="true">
-      backend: torch
       gpu: $(arg GPU)
-      model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_dataset_v1_20170417.pth
-      model_name: fcn32s_bilinear
+      backend: chainer
+      model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz
+      model_name: fcn32s
     </rosparam>
     <remap from="~target_names" to="object_names" />
   </node>
@@ -75,15 +31,28 @@
         pkg="jsk_perception" type="apply_context_to_label_probability">
     <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
     <rosparam>
-      candidates:
-        - 0
-        - 32
-        - 39
-        - 41
+      candidates: []
     </rosparam>
   </node>
 
-  <node name="label_image_decomposer"
+  <node name="label_image_decomposer1"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="apply_context_to_label_proba/output/label" />
+    <remap from="~input/label" to="apply_context_to_label_proba/output/label" />
+    <rosparam>
+      queue_size: 50
+    </rosparam>
+  </node>
+  <node name="label_image_decomposer2"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="apply_context_to_label_proba/output/label" />
+    <remap from="~input/label" to="apply_context_to_label_proba/output/label" />
+    <remap from="~label_names" to="object_names" />
+    <rosparam>
+      queue_size: 50
+    </rosparam>
+  </node>
+  <node name="label_image_decomposer3"
         pkg="jsk_perception" type="label_image_decomposer.py">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <remap from="~input/label" to="apply_context_to_label_proba/output/label" />
@@ -93,51 +62,14 @@
     </rosparam>
   </node>
 
-  <node name="extract_channel32"
-        pkg="jsk_perception" type="extract_image_channel.py">
-    <remap from="~input" to="apply_context_to_label_proba/output" />
-    <rosparam>
-      channel: 32
-    </rosparam>
-  </node>
-  <node name="colorize_channel32"
-        pkg="nodelet" type="nodelet"
-        args="standalone jsk_perception/ColorizeFloatImage">
-    <remap from="~input" to="extract_channel32/output" />
-  </node>
-  <node name="overlay_image_color_on_mono32"
-        pkg="nodelet" type="nodelet"
-        args="standalone jsk_perception/OverlayImageColorOnMono">
-    <remap from="~input/color" to="colorize_channel32/output" />
-    <remap from="~input/mono" to="$(arg INPUT_IMAGE)" />
-  </node>
-  <node name="extract_channel39"
-        pkg="jsk_perception" type="extract_image_channel.py">
-    <remap from="~input" to="apply_context_to_label_proba/output" />
-    <rosparam>
-      channel: 39
-    </rosparam>
-  </node>
-  <node name="colorize_channel39"
-        pkg="nodelet" type="nodelet"
-        args="standalone jsk_perception/ColorizeFloatImage">
-    <remap from="~input" to="extract_channel39/output" />
-  </node>
-  <node name="overlay_image_color_on_mono39"
-        pkg="nodelet" type="nodelet"
-        args="standalone jsk_perception/OverlayImageColorOnMono">
-    <remap from="~input/color" to="colorize_channel39/output" />
-    <remap from="~input/mono" to="$(arg INPUT_IMAGE)" />
-  </node>
-
   <node name="tile_image"
         pkg="jsk_perception" type="tile_image.py">
     <rosparam subst_value="true">
       input_topics:
         - $(arg INPUT_IMAGE)
-        - /label_image_decomposer/output/label_viz
-        - /overlay_image_color_on_mono32/output
-        - /overlay_image_color_on_mono39/output
+        - /label_image_decomposer1/output/label_viz
+        - /label_image_decomposer2/output/label_viz
+        - /label_image_decomposer3/output/label_viz
     </rosparam>
   </node>
   <node name="image_view"
