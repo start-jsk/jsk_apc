@@ -102,7 +102,7 @@
       (when (null bin) (return-from :get-certain-work-order (elt orders 0)))
       (dotimes (i (length orders))
         (when (string= (send (elt orders i) :bin)
-                       (string-upcase (symbol2str bin)))
+                       (symbol-string bin))
           (return-from :get-certain-work-order (elt orders i))))))
   (:check-bin-exist (bin) (if (gethash bin bin-cubes-) t nil))
   (:recognize-bin-boxes
@@ -407,13 +407,13 @@
     (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state)))
   (:get-bin-contents (bin)
     (ros::get-param
-      (format nil "/bin_contents/~A" (string-upcase (symbol2str bin)))))
+      (format nil "/bin_contents/~A" (symbol-string bin))))
   (:add-bin-scene (bin)
     (let ((cube (gethash bin bin-cubes-))
           (base-name (send (send *baxter* :base_lk) :name)))
       (send *co* :add-object cube :frame-id base-name
             :relative-pose (send cube :copy-worldcoords)
-            :object-id (format nil "bin_~A" (string-upcase (symbol2str bin))))))
+            :object-id (format nil "bin_~A" (symbol-string bin)))))
   (:delete-bin-scene (bin)
     (send *co* :delete-object (gethash bin bin-cubes-)))
   (:add-shelf-scene ()
