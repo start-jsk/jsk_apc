@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="baxter">
+  <xacro:arg name="gazebo" default="false"/>
+  <xacro:include filename="$(find baxter_description)/urdf/baxter_base/baxter_base.urdf.xacro">
+    <xacro:arg name="gazebo" value="${gazebo}" />
+  </xacro:include>
+  <xacro:include filename="$(find baxter_description)/urdf/pedestal/pedestal.xacro">
+    <xacro:arg name="gazebo" value="${gazebo}" />
+  </xacro:include>
+
+  <!-- Vacuum Gripper -->
+  <xacro:include filename="$(find jsk_arc2017_baxter)/robots/right_vacuum_gripper.xacro"/>
+  <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/left_vacuum_gripper.xacro"/>
+
+</robot>
