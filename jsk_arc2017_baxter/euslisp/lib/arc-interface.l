@@ -481,7 +481,7 @@
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
     (when moveit
-      (setq mvit-env (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
+      (setq mvit-env (instance jsk_arc2017_baxter::baxter-moveit-environment))
       (setq mvit-rb (instance jsk_arc2017_baxter::baxter-robot :init)))
     (unless (boundp '*ri*)
       (setq *ri* (instance jsk_arc2017_baxter::baxter-interface :init :type ctype
