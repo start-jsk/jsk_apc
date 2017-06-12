@@ -41,7 +41,7 @@
 - git:
     local-name: FOR_GRIPPER_V5/dynamixel_motor
     uri: https://github.com/pazeshun/dynamixel_motor.git
-    version: gripper-v5-devel
+    version: gripper-v6-devel
 - git:
     local-name: FA-I-sensor/force_proximity_ros
     uri: https://github.com/knorth55/FA-I-sensor.git
