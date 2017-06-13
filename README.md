@@ -101,11 +101,46 @@ however, maybe you have error with the master branch. In that case, please use
 
 **Setup rosserial + vacuum gripper**
 
-Write below in `/etc/udev/rules.d/90-rosserial.rules`:
+Write below in `/usr/local/sbin/unique-num`:
 
 ```
-# ATTR{product}=="rosserial"
-SUBSYSTEM=="tty", MODE="0666"
+#!/bin/bash
+
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 location prefix var-name" >&2
+    exit 1
+fi
+
+location="$1"
+prefix="$2"
+key="$3"
+
+needindex=1
+index=0
+
+while [ $needindex -eq 1 ]
+do
+        if [ ! -e $location/$prefix$index ]; then
+                needindex=0
+                echo "$key=$index"
+        else
+                (( index++ ))
+        fi
+done
+```
+
+Please make it executable:
+
+```
+$ sudo chmod +x /usr/local/sbin/unique-num
+```
+
+Then write below in `/etc/udev/rules.d/90-rosserial.rules`:
+
+```
+# Create symlink /dev/arduino*
+IMPORT{program}="/usr/local/sbin/unique-num /dev arduino ARDUINO_NUM"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", SYMLINK+="arduino%E{ARDUINO_NUM}"
 ```
 
 **Setup DXHUB + gripper-v5(and later)**
