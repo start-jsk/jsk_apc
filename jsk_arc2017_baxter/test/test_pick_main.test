@@ -1,0 +1,7 @@
+<launch>
+  <env name="DISPLAY" value="" />
+
+  <test test-name="test_pick_main"
+        name="test_pick_main" pkg="jsk_arc2017_baxter"
+        type="test-pick-main.l" time-limit="10000" />
+</launch>

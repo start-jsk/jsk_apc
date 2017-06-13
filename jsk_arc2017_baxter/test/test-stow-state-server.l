@@ -1,12 +1,12 @@
 #!/usr/bin/env roseus
 
 (require :unittest "lib/llib/unittest.l")
-(require "package://jsk_arc2017_baxter/euslisp/lib/arc-interface.l")
+(require "package://jsk_arc2017_baxter/euslisp/lib/stow-interface.l")
 
 (init-unit-test)
 
-(deftest test-state-server
-  (jsk_arc2017_baxter::arc-init :moveit nil)
+(deftest test-stow-state-server
+  (jsk_arc2017_baxter::stow-init :moveit nil)
   (assert
     (send *ti* :update-state :rarm :wait-for-opposite-arm)
     "failed to update-state :rarm")

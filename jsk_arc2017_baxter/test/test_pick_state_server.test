@@ -1,0 +1,13 @@
+<launch>
+  <env name="DISPLAY" value="" />
+
+  <node name="state_server" pkg="jsk_arc2017_baxter" type="state_server.py">
+    <rosparam>
+      is_pick: true
+    </rosparam>
+  </node>
+
+  <test test-name="test_pick_state_server"
+        name="test_pick_state_server" pkg="jsk_arc2017_baxter"
+        type="test-pick-state-server.l" time-limit="10000" />
+</launch>

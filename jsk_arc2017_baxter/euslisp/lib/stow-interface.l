@@ -11,29 +11,26 @@
 (unless (find-package "JSK_ARC2017_BAXTER")
   (make-package "JSK_ARC2017_BAXTER"))
 
-(defclass jsk_arc2017_baxter::pick-interface
+(defclass jsk_arc2017_baxter::stow-interface
   :super jsk_arc2017_baxter::arc-interface
-  :slots (bin-contents
-          bins
-          dropped
+  :slots (graspingp
           picking-fail-count
-          graspingp
-          label-names
-          order
+          recognize-fail-count
           target-bin
-          target-cardboard
-          target-obj))
+          target-obj
+          tote-contents))
 
-(defmethod jsk_arc2017_baxter::pick-interface
+(defmethod jsk_arc2017_baxter::stow-interface
   (:init ()
     (send-super :init)
     (setq picking-fail-count 0)
-    (setq bins (list :a :b :c)))
-  (:recognize-bin-boxes ()
-    (ros::ros-info "[main] recognizing shelf bin boxes")
-    (send-super :recognize-bin-boxes :stamp (ros::time-now))
-    (ros::ros-info "[main] recognizing cardboard boxes")
-    (send self :set-movable-region-for-bin :offset (list 80 120 0)))
+    (setq recognize-fail-count 0))
+  (:recognize-bboxes (arm)
+    (ros::ros-info "[main] recognizing bin boxes")
+    (send self :recognize-bin-boxes :stamp (ros::time-now))
+    (ros::ros-info "[main] recognizing tote")
+    (send self :recognize-tote-boxes arm :stamp (ros::time-now))
+    (send self :set-movable-region-for-tote arm :offset (list 100 80 0)))
   (:wait-for-user-input (arm)
     (let (can-start)
       (ros::ros-info "[:wait-for-user-input] wait for user input to start: ~a" arm)
@@ -43,49 +40,17 @@
                                      (instance jsk_gui_msgs::YesNoRequest))
                   :yes))
       (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
-      (setq order nil)
       can-start))
-  (:set-target (arm)
-    (setq label-names
-          (ros::get-param (format nil "/~a_hand_camera/label_names"
-                                  (arm2str arm))))
-    (setq order (send self :get-next-work-order arm order))
-    (unless order (return-from :set-target nil))
-    (ros::ros-warn "next-work-order: ~a" (send order :item))
-    ;; get target param
-    (setq target-bin (str2symbol (send order :bin)))
-    (setq target-obj (send order :item))
-    (setq target-cardboard (str2symbol (send order :box)))
-    (setq bin-contents (send self :get-bin-contents target-bin))
-    (unless (send self :check-bin-exist target-bin)
-      (ros::ros-warn "[~a] [main] could not find bin box: ~a" (ros::get-name) target-bin)
-      (return-from :set-target nil))
-    (ros::set-param
-      (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
-    (ros::set-dynparam
-      (format nil "/~a_hand_camera/bbox_array_to_bbox" (arm2str arm))
-      (cons "index" (position target-bin bins)))
-    (ros::set-dynparam
-      (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
-      (cons "label_value" (position target-obj label-names :test #'string=)))
-    (send self :set-object-segmentation-candidates arm
-      (mapcar #'(lambda (x) (position x label-names :test #'string=))
-              (append (list "__background__") bin-contents (list "__shelf__"))))
-    (ros::set-param
-      (format nil "~a_hand/target_bin" (arm2str arm))
-      (symbol2str target-bin))
-    ;; logging
-    (ros::ros-info-blue "[~a] [main] :set-target, target-bin: ~a, target-obj: ~a" (ros::get-name) target-bin target-obj)
-    t)
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
       (send self :add-shelf-scene)
-      (send self :add-cardboard-scene arm)
+      (send self :add-tote-scene arm)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
-      (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
-      (send self :move-arm-body->bin-overlook-pose arm target-bin)
+      (ros::ros-info "[main] Recognizing objects in tote")
+      ;; TODO: :move-arm-body->tote-overlook-pose
+      (send self :move-arm-body->tote-overlook-pose arm)
       (send *ri* :wait-interpolation)
       (setq recognition-count 1)
       (while (null (or (> recognition-count trial-times) is-recognized))
@@ -94,22 +59,27 @@
         (setq recognition-count (incf recognition-count)))
       is-recognized))
   (:return-from-recognize-object (arm)
-    (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
+    (ros::ros-info "[main] arm: ~a, failed to recognize object in tote" arm)
     (send *ri* :angle-vector-sequence
           (list (send *baxter* :fold-to-keep-object arm)
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
     (send *ri* :wait-interpolation)
     (send self :delete-shelf-scene)
-    (send self :delete-cardboard-scene arm))
+    (send self :delete-tote-scene arm))
+  (:check-recognize-fail-count (arm)
+    (incf recognize-fail-count)
+    (ros::ros-info "[main] arm: ~a, recognize fail count: ~a" arm recognize-fail-count)
+    (> recognize-fail-count 1))
   (:pick-object (arm)
-    (send self :delete-shelf-scene)
-    (send self :pick-object-in-bin arm target-bin
+    (setq recognize-fail-count 0)
+    (send self :delete-tote-scene arm)
+    (send self :pick-object-in-tote arm
           :n-trial 2
           :n-trial-same-pos 1
           :do-stop-grasp nil)
     (send *ri* :angle-vector
-          (send self :ik->bin-center arm target-bin
+          (send self :ik->tote-center arm
                 :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
           3000 (send *ri* :get-arm-controller arm) 0)
     (send *ri* :wait-interpolation)
@@ -118,6 +88,7 @@
     graspingp)
   (:return-from-pick-object (arm)
     (send *ri* :stop-grasp arm)
+    (ros::ros-info "[main] arm: ~a return from pick-object to fold-pose-back" arm)
     (send *ri* :angle-vector-sequence
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
@@ -126,43 +97,47 @@
   (:verify-object (arm)
     (setq picking-fail-count 0)
     ;; TODO: in-hand verification
-    ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
-    ;; TODO:   target-obj != in-hand object -> :return_object
+    ;; TODO: (setq target-obj (send *ti* :recognize-object-in-hand arm))
+    ;; TODO: (return-from :verify-objec target-obj)
+    (setq target-obj t)
     target-obj)
   (:check-picking-fail-count (arm)
-    (setq picking-fail-count (incf picking-fail-count))
+    (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
     (> picking-fail-count 1))
-  (:set-target-cardboard (arm)
-    (if (eq target-cardboard :shelf)
+  (:set-target-bin (arm)
+    ;; TODO: when we select target-bin, we should consider target-obj size.
+    ;; TODO: (setq target-bin (send *ti* :get-target-bin arm target-obj))
+    (setq target-bin
+          (if (eq arm :larm) :a (elt (list :b :c) (random 2))))
+    (if (eq target-bin :tote)
       (progn
-        (ros::ros-info "[main] blacklisted object, return to shelf")
+        (ros::ros-info "[main] unable to recognize, return to tote")
         nil)
       (progn
-        (ros::set-param (format nil "~a_hand/target_box" (arm2str arm)) (symbol2str target-cardboard))
-        ;; logging
-        (ros::ros-info "[main] target-cardboard: ~a" target-cardboard)
+        (ros::set-param (format nil "~a_hand/target_bin" (arm2str arm)) (symbol2str target-bin))
+        (ros::ros-info "[main] target-bin: ~a" target-bin)
         t)))
   (:return-object (arm)
     (send *ri* :angle-vector
-          (send self :ik->bin-center arm target-bin
-                :offset #f(0 0 0) :rotation-axis :z :use-gripper t)
+          (send self :ik->tote-center arm :offset #f(0 0 0)
+                :rotation-axis :z :use-gripper t)
           :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp arm)
     (send self :spin-off-by-wrist 5)
     (send *ri* :wait-interpolation)
-    (ros::ros-info "[main] ~a, return object in shelf" arm)
-    (send self :add-shelf-scene)
+    (ros::ros-info "[main] ~a, return object in tote" arm)
+    (send self :add-tote-scene arm)
     (send *ri* :fold-pose-back arm)
     (send *ri* :wait-interpolation))
   (:place-object (arm)
     (let (dropped)
-      (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
-      (send self :add-shelf-scene)
+      (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
+      (send self :add-tote-scene arm)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
       (send *ri* :angle-vector
-            (send self :ik->cardboard-center arm target-cardboard
+            (send self :ik->bin-center arm target-bin
                   :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
             4000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
@@ -172,8 +147,8 @@
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm))
         (progn
-          (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
-          (send self :delete-cardboard-scene arm)
+          (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a" arm target-obj target-bin)
+          (send self :delete-bin-scene target-bin)
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
@@ -183,13 +158,13 @@
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
-          (send self :add-cardboard-scene arm)))))
+          (send self :add-bin-scene target-bin)))))
   (:return-from-place-object (arm)
     (send *ri* :fold-pose-back arm)
     (send *ri* :wait-interpolation)))
 
 
-(defun jsk_arc2017_baxter::pick-init (&key (ctype :default-controller) (moveit nil))
+(defun jsk_arc2017_baxter::stow-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
     (when moveit
       (setq mvit-env (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
@@ -203,6 +178,6 @@
     (unless (boundp '*co*)
       (setq *co* (when moveit (instance collision-object-publisher :init))))
     (unless (boundp '*ti*)
-      (setq *ti* (instance jsk_arc2017_baxter::pick-interface :init)))
+      (setq *ti* (instance jsk_arc2017_baxter::stow-interface :init)))
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (send *ri* :calib-grasp :arms)))

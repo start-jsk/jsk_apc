@@ -93,7 +93,7 @@ def generate_pick_json(dirname):
 
     separators = (',', ': ')
     original_box_sizes_path = osp.join(PKG_DIR, 'config', 'box_sizes.json')
-    output_dir = osp.join(PKG_DIR, 'json', dirname)
+    output_dir = osp.join(PKG_DIR, 'data', 'json', dirname)
     if not osp.exists(output_dir):
         os.mkdir(output_dir)
     else:

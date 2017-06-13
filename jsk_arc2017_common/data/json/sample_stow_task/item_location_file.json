@@ -1,0 +1,41 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": []
+        },
+        {
+            "bin_id": "B",
+            "contents": []
+        },
+        {
+            "bin_id": "C",
+            "contents": []
+        }
+    ],
+    "boxes": [],
+    "tote": {
+        "contents": [
+            "speed_stick",
+            "toilet_brush",
+            "hand_weight",
+            "ice_cube_tray",
+            "flashlight",
+            "colgate_toothbrush_4pk",
+            "measuring_spoons",
+            "epsom_salts",
+            "tennis_ball_container",
+            "hinged_ruled_index_cards",
+            "tissue_box",
+            "mouse_traps",
+            "composition_book",
+            "balloons",
+            "scotch_sponges",
+            "black_fashion_gloves",
+            "robots_everywhere",
+            "poland_spring_water",
+            "reynolds_wrap",
+            "crayons"
+        ]
+    }
+}
