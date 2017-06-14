@@ -19,16 +19,18 @@
           picking-fail-count
           graspingp
           label-names
+          moveit-p
           order
           target-bin
           target-cardboard
           target-obj))
 
 (defmethod jsk_arc2017_baxter::pick-interface
-  (:init ()
+  (:init (&key (moveit nil))
     (send-super :init)
     (setq picking-fail-count 0)
-    (setq bins (list :a :b :c)))
+    (setq bins (list :a :b :c))
+    (setq moveit-p moveit))
   (:recognize-bin-boxes ()
     (ros::ros-info "[main] recognizing shelf bin boxes")
     (send-super :recognize-bin-boxes :stamp (ros::time-now))
@@ -79,8 +81,8 @@
     t)
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
-      (send self :add-shelf-scene)
-      (send self :add-cardboard-scene arm)
+      (when moveit-p (send self :add-shelf-scene))
+      (when moveit-p (send self :add-cardboard-scene arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
@@ -100,10 +102,10 @@
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
     (send *ri* :wait-interpolation)
-    (send self :delete-shelf-scene)
-    (send self :delete-cardboard-scene arm))
+    (when moveit-p (send self :delete-shelf-scene))
+    (when moveit-p (send self :delete-cardboard-scene arm)))
   (:pick-object (arm)
-    (send self :delete-shelf-scene)
+    (when moveit-p (send self :delete-shelf-scene))
     (send self :pick-object-in-bin arm target-bin
           :n-trial 2
           :n-trial-same-pos 1
@@ -153,13 +155,13 @@
     (send self :spin-off-by-wrist 5)
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in shelf" arm)
-    (send self :add-shelf-scene)
+    (when moveit-p (send self :add-shelf-scene))
     (send *ri* :fold-pose-back arm)
     (send *ri* :wait-interpolation))
   (:place-object (arm)
     (let (dropped)
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
-      (send self :add-shelf-scene)
+      (when moveit-p (send self :add-shelf-scene))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
       (send *ri* :angle-vector
             (send self :ik->cardboard-center arm target-cardboard
@@ -173,7 +175,7 @@
           (send *ri* :stop-grasp arm))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
-          (send self :delete-cardboard-scene arm)
+          (when moveit-p (send self :delete-cardboard-scene arm))
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
@@ -183,7 +185,7 @@
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
-          (send self :add-cardboard-scene arm)))))
+          (when moveit-p (send self :add-cardboard-scene arm))))))
   (:return-from-place-object (arm)
     (send *ri* :fold-pose-back arm)
     (send *ri* :wait-interpolation)))
@@ -203,6 +205,6 @@
     (unless (boundp '*co*)
       (setq *co* (when moveit (instance collision-object-publisher :init))))
     (unless (boundp '*ti*)
-      (setq *ti* (instance jsk_arc2017_baxter::pick-interface :init)))
+      (setq *ti* (instance jsk_arc2017_baxter::pick-interface :init :moveit moveit)))
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (send *ri* :calib-grasp :arms)))
