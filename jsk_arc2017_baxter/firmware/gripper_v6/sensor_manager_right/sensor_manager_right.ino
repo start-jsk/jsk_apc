@@ -9,8 +9,6 @@
 #define NSENSORS 5
 #define PCA9547D_RESET 32
 #define VCNL4010_ADDRESS 0x13
-#define COMMAND_0 0x80  // starts measurements, relays data ready info
-#define PRODUCT_ID 0x81  // product ID/revision ID, should read 0x21
 #define IR_CURRENT 0x83  // sets IR current in steps of 10mA 0-200mA
 #define IR_CURRENT_VALUE 8  // range = [0, 20]. current = value * 10 mA
 #define AMBIENT_PARAMETER 0x84  // Configures ambient light measures
@@ -56,7 +54,7 @@ byte readByte(byte address)
   WIRE.beginTransmission(VCNL4010_ADDRESS);
   WIRE.write(address);
 
-  debug_endTransmission(WIRE.endTransmission());
+  WIRE.endTransmission();
   WIRE.requestFrom(VCNL4010_ADDRESS, 1);
 
   while (!WIRE.available());
@@ -70,19 +68,7 @@ byte writeByte(byte address, byte data)
   WIRE.beginTransmission(VCNL4010_ADDRESS);
   WIRE.write(address);
   WIRE.write(data);
-  return debug_endTransmission(WIRE.endTransmission());
-}
-
-unsigned int readAmbient()
-{
-  byte temp = readByte(0x80);
-  writeByte(0x80, temp | 0x10);  // command the sensor to perform ambient measure
-
-  while (!(readByte(0x80) & 0x40)); // wait for the proximity data ready bit to be set
-  unsigned int data = readByte(0x85) << 8;
-  data |= readByte(0x86);
-
-  return data;
+  return WIRE.endTransmission();
 }
 
 unsigned int readProximity()
@@ -97,31 +83,6 @@ unsigned int readProximity()
 
   return data;
 }
-
-byte debug_endTransmission(int errcode)
-{
-  switch (errcode)
-  {
-      // https://www.arduino.cc/en/Reference/WireEndTransmission
-    case 0:
-      //Serial.println("CAVOK");
-      break;
-    case 1:
-      //Serial.println("data too long to fit in transmit buffer ");
-      break;
-    case 2:
-      //Serial.println("received NACK on transmit of address ");
-      break;
-    case 3:
-      //Serial.println("received NACK on transmit of data");
-      break;
-    case 4:
-      //Serial.println("other error");
-      break;
-  }
-  return errcode;
-}
-
 
 void measure_proximity()
 {
