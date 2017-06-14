@@ -101,8 +101,7 @@
     ;; TODO: in-hand verification
     ;; TODO: (setq target-obj (send *ti* :recognize-object-in-hand arm))
     ;; TODO: (return-from :verify-objec target-obj)
-    (setq target-obj t)
-    target-obj)
+    t)
   (:check-picking-fail-count (arm)
     (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)

@@ -130,8 +130,7 @@
     ;; TODO: in-hand verification
     ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
     ;; TODO:   target-obj != in-hand object -> :return_object
-    (setq target-obj t)
-    target-obj)
+    t)
   (:check-picking-fail-count (arm)
     (setq picking-fail-count (incf picking-fail-count))
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
