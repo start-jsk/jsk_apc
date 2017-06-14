@@ -137,6 +137,9 @@
           (setq bbox (car (send box-msg :boxes)))
           (sethash arm tote-cubes- (send self :bbox->cube bbox)))
         (ros::ros-fatal "[:recognize-tote-boxes] arm: ~a Cannot find tote bbox" (arm2str arm)))))
+  (:visualize-bins ()
+    (ros::ros-warn ":visualize-bins was deprecated. Please use :visualize-boxes.")
+    (send self :visualize-boxes :box-type :bin))
   (:visualize-boxes (&key (box-type :bin))
     "Visualize boxes
      Arguments
