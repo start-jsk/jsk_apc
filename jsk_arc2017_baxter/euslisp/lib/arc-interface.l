@@ -196,7 +196,7 @@
          (setq is-recognized nil)))
       is-recognized))
   (:pick-object-in-bin
-    (arm &rest args)
+    (arm bin &rest args)
     (let (graspingp movable-region)
       (setq movable-region (gethash bin bin-movable-regions-))
       (unless movable-region
