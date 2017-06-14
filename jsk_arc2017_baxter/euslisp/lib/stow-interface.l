@@ -131,7 +131,7 @@
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in tote" arm)
     (when moveit-p (send self :add-tote-scene arm))
-    (send *ri* :fold-pose-back arm)
+    (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation))
   (:place-object (arm)
     (let (dropped)
@@ -162,7 +162,7 @@
           (send *ri* :wait-interpolation)
           (when moveit-p (send self :add-bin-scene target-bin))))))
   (:return-from-place-object (arm)
-    (send *ri* :fold-pose-back arm)
+    (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation)))
 
 
