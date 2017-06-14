@@ -1,5 +1,7 @@
 <launch>
-  <env name="DISPLAY" value="" />
+
+  <arg name="gui" default="false" />
+  <env name="DISPLAY" value="" unless="$(arg gui)" />
 
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml">
     <arg name="pick" value="true" />

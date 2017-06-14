@@ -1,4 +1,9 @@
 <launch>
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml">
+    <arg name="pick" value="false" />
+  </include>
+
   <group ns="left_hand_camera">
     <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
     <node name="attention_clipper_tote"
