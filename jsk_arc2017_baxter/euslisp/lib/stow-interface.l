@@ -14,6 +14,7 @@
 (defclass jsk_arc2017_baxter::stow-interface
   :super jsk_arc2017_baxter::arc-interface
   :slots (graspingp
+           moveit-p
           picking-fail-count
           recognize-fail-count
           target-bin
@@ -21,10 +22,11 @@
           tote-contents))
 
 (defmethod jsk_arc2017_baxter::stow-interface
-  (:init ()
+  (:init (&key (moveit nil))
     (send-super :init)
     (setq picking-fail-count 0)
-    (setq recognize-fail-count 0))
+    (setq recognize-fail-count 0)
+    (setq moveit-p moveit))
   (:recognize-bboxes (arm)
     (ros::ros-info "[main] recognizing bin boxes")
     (send self :recognize-bin-boxes :stamp (ros::time-now))
@@ -43,8 +45,8 @@
       can-start))
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
-      (send self :add-shelf-scene)
-      (send self :add-tote-scene arm)
+      (when moveit-p (send self :add-shelf-scene))
+      (when moveit-p (send self :add-tote-scene arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
@@ -65,15 +67,15 @@
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
     (send *ri* :wait-interpolation)
-    (send self :delete-shelf-scene)
-    (send self :delete-tote-scene arm))
+    (when moveit-p (send self :delete-shelf-scene))
+    (when moveit-p (send self :delete-tote-scene arm)))
   (:check-recognize-fail-count (arm)
     (incf recognize-fail-count)
     (ros::ros-info "[main] arm: ~a, recognize fail count: ~a" arm recognize-fail-count)
     (> recognize-fail-count 1))
   (:pick-object (arm)
     (setq recognize-fail-count 0)
-    (send self :delete-tote-scene arm)
+    (when moveit-p (send self :delete-tote-scene arm))
     (send self :pick-object-in-tote arm
           :n-trial 2
           :n-trial-same-pos 1
@@ -128,13 +130,13 @@
     (send self :spin-off-by-wrist 5)
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in tote" arm)
-    (send self :add-tote-scene arm)
+    (when moveit-p (send self :add-tote-scene arm))
     (send *ri* :fold-pose-back arm)
     (send *ri* :wait-interpolation))
   (:place-object (arm)
     (let (dropped)
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
-      (send self :add-tote-scene arm)
+      (when moveit-p (send self :add-tote-scene arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
       (send *ri* :angle-vector
             (send self :ik->bin-center arm target-bin
@@ -148,7 +150,7 @@
           (send *ri* :stop-grasp arm))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a" arm target-obj target-bin)
-          (send self :delete-bin-scene target-bin)
+          (when moveit-p (send self :delete-bin-scene target-bin))
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
@@ -158,7 +160,7 @@
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
-          (send self :add-bin-scene target-bin)))))
+          (when moveit-p (send self :add-bin-scene target-bin))))))
   (:return-from-place-object (arm)
     (send *ri* :fold-pose-back arm)
     (send *ri* :wait-interpolation)))
@@ -178,6 +180,6 @@
     (unless (boundp '*co*)
       (setq *co* (when moveit (instance collision-object-publisher :init))))
     (unless (boundp '*ti*)
-      (setq *ti* (instance jsk_arc2017_baxter::stow-interface :init)))
+      (setq *ti* (instance jsk_arc2017_baxter::stow-interface :init :moveit moveit)))
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (send *ri* :calib-grasp :arms)))
