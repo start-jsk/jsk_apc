@@ -7,6 +7,10 @@
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
     version: master
 - git:
+    local-name: jsk-ros-pkg/jsk_roseus
+    uri: https://github.com/jsk-ros-pkg/jsk_roseus.git
+    version: master
+- git:
     local-name: FOR_ASTRA/openni2_camera
     uri: https://github.com/ros-drivers/openni2_camera.git
     version: indigo-devel
