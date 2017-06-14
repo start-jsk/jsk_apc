@@ -9,25 +9,17 @@
 #define NSENSORS 5
 #define PCA9547D_RESET 32
 #define VCNL4010_ADDRESS 0x13
-#define COMMAND_0 0x80  // starts measurements, relays data ready info
-#define PRODUCT_ID 0x81  // product ID/revision ID, should read 0x21
 #define IR_CURRENT 0x83  // sets IR current in steps of 10mA 0-200mA
-#define IR_CURRENT_VALUE 8  // range = [0, 20]. current = value * 10 mA電流
+#define IR_CURRENT_VALUE 8  // range = [0, 20]. current = value * 10 mA
 #define AMBIENT_PARAMETER 0x84  // Configures ambient light measures
 #define PROXIMITY_MOD 0x8F  // proximity modulator timing
 #define LOOP_TIME 50  // loop duration in ms
-#define EA 0.3  // exponential average weight parameter / cut-off frequency for high-pass filter
-#define sensitivity 1000  // Sensitivity of touch/release detection, values closer to zero increase sensitivity
-
-/***** GLOBAL VARIABLES *****/
-unsigned int average_value[NSENSORS];   // low-pass filtered proximity reading
-signed int fa2[NSENSORS];              // FA-II value;
 
 /***** ROS *****/
 ros::NodeHandle  nh;
 jsk_arc2017_baxter::GripperSensorStates gripper_sensor_msg;
 ros::Publisher gripper_sensor_pub("rgripper_sensors", &gripper_sensor_msg);
-force_proximity_ros::Proximity proximities[NSENSORS];
+uint32_t proximities[NSENSORS];
 
 
 uint16_t dig_T1;
@@ -62,7 +54,7 @@ byte readByte(byte address)
   WIRE.beginTransmission(VCNL4010_ADDRESS);
   WIRE.write(address);
 
-  debug_endTransmission(WIRE.endTransmission());
+  WIRE.endTransmission();
   WIRE.requestFrom(VCNL4010_ADDRESS, 1);
 
   while (!WIRE.available());
@@ -76,19 +68,7 @@ byte writeByte(byte address, byte data)
   WIRE.beginTransmission(VCNL4010_ADDRESS);
   WIRE.write(address);
   WIRE.write(data);
-  return debug_endTransmission(WIRE.endTransmission());
-}
-
-unsigned int readAmbient()
-{
-  byte temp = readByte(0x80);
-  writeByte(0x80, temp | 0x10);  // command the sensor to perform ambient measure
-
-  while (!(readByte(0x80) & 0x40)); // wait for the proximity data ready bit to be set
-  unsigned int data = readByte(0x85) << 8;
-  data |= readByte(0x86);
-
-  return data;
+  return WIRE.endTransmission();
 }
 
 unsigned int readProximity()
@@ -104,60 +84,18 @@ unsigned int readProximity()
   return data;
 }
 
-byte debug_endTransmission(int errcode)
-{
-  switch (errcode)
-  {
-      // https://www.arduino.cc/en/Reference/WireEndTransmission
-    case 0:
-      //Serial.println("CAVOK");
-      break;
-    case 1:
-      //Serial.println("data too long to fit in transmit buffer ");
-      break;
-    case 2:
-      //Serial.println("received NACK on transmit of address ");
-      break;
-    case 3:
-      //Serial.println("received NACK on transmit of data");
-      break;
-    case 4:
-      //Serial.println("other error");
-      break;
-  }
-  return errcode;
-}
-
-
 void measure_proximity()
 {
   int i;
   for(i=0;i<NSENSORS;i++)
   {
-
     ChgI2CMultiplexer(0x70, i);
-
-    unsigned int proximity_value = readProximity();
-    signed int fa2derivative = (signed int) average_value[i] - proximity_value - fa2[i];
-    fa2[i] = (signed int) average_value[i] - proximity_value;
-
-    proximities[i].proximity = proximity_value;
-    proximities[i].average = average_value[i];
-    proximities[i].fa2 = fa2[i];
-    proximities[i].fa2derivative = fa2derivative;
-    if (fa2[i] < -sensitivity) proximities[i].mode = "T";
-    else if (fa2[i] > sensitivity) proximities[i].mode = "R";
-    else proximities[i].mode = "0";
-
-    average_value[i] = EA * proximity_value + (1 - EA) * average_value[i];
-
+    proximities[i] = readProximity();
     delay(1);
-
   }
 
   gripper_sensor_msg.proximities = proximities;
   gripper_sensor_msg.proximities_length = NSENSORS;
-
 }
 
 void measure_pressure_and_flex()
@@ -172,7 +110,6 @@ void measure_pressure_and_flex()
 
   gripper_sensor_msg.r_finger_flex = analogRead(A0);
   gripper_sensor_msg.l_finger_flex = analogRead(A1);
-
 }
 
 
@@ -184,7 +121,7 @@ void setup()
 
   pinMode(PCA9547D_RESET, OUTPUT);
   digitalWrite(PCA9547D_RESET, HIGH);
-  Wire.begin() ;
+  Wire.begin();
 
   int i;
   for(i=0;i<NSENSORS;i++)
@@ -193,8 +130,6 @@ void setup()
     writeByte(AMBIENT_PARAMETER, 0x7F);
     writeByte(IR_CURRENT, IR_CURRENT_VALUE);
     writeByte(PROXIMITY_MOD, 1); // 1 recommended by Vishay
-    average_value[i] = readProximity();
-    fa2[i] = 0;
   }
 
   pinMode(SS,OUTPUT);
