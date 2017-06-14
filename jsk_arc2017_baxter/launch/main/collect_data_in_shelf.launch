@@ -48,6 +48,9 @@
           - key: /right_hand/target_bin_name
             fname: shelf_bin.txt
             savetype: Text
+          - key: /right_hand/view_frame
+            fname: view_frame.txt
+            savetype: Text
       </rosparam>
     </node>
 
