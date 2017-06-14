@@ -156,7 +156,7 @@
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in shelf" arm)
     (when moveit-p (send self :add-shelf-scene))
-    (send *ri* :fold-pose-back arm)
+    (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation))
   (:place-object (arm)
     (let (dropped)
@@ -187,7 +187,7 @@
           (send *ri* :wait-interpolation)
           (when moveit-p (send self :add-cardboard-scene arm))))))
   (:return-from-place-object (arm)
-    (send *ri* :fold-pose-back arm)
+    (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation)))
 
 
