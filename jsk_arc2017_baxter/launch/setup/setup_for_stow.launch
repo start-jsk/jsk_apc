@@ -49,12 +49,12 @@
     </node>
   </group>
  
+  <arg name="manager_right" value="/right_hand_left_camera/right_hand_left_camera_nodelet_manager" />
   <group ns="right_hand_camera">
-    <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
     <node name="attention_clipper_tote"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/AttentionClipper $(arg manager_right)">
-      <remap from="~input/points" to="/right_hand_camera/depth_registered/points" />
+      <remap from="~input/points" to="/right_hand_left_camera/depth_registered/points" />
       <rosparam>
         use_multiple_attention: false
         initial_pos: [0.6, -0.12, -0.25]
@@ -68,7 +68,7 @@
     <node name="extract_indices_tote"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/ExtractIndices $(arg manager_right)">
-      <remap from="~input" to="/right_hand_camera/depth_registered/points" />
+      <remap from="~input" to="/right_hand_left_camera/depth_registered/points" />
       <remap from="~indices" to="attention_clipper_tote/output/point_indices" />
       <rosparam>
         keep_organized: true
