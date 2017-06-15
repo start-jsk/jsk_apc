@@ -46,8 +46,8 @@
     </include>
   </group>
   <!-- for right hand camera -->
+  <arg name="manager_right" value="/right_hand_left_camera/right_hand_left_camera_nodelet_manager" />
   <group ns="right_hand_camera">
-    <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_right)">
@@ -59,8 +59,8 @@
     <node name="attention_clipper_target_bin"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/AttentionClipper $(arg manager_right)">
-      <remap from="~input" to="/right_hand_camera/depth_registered/camera_info" />
-      <remap from="~input/points" to="/right_hand_camera/depth_registered/points" />
+      <remap from="~input" to="/right_hand_left_camera/depth_registered/camera_info" />
+      <remap from="~input/points" to="/right_hand_left_camera/depth_registered/points" />
       <remap from="~input/box" to="bbox_array_to_bbox/output" />
       <rosparam subst_value="true">
         use_multiple_attention: false
@@ -69,7 +69,7 @@
     <node name="extract_indices_target_bin"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/ExtractIndices $(arg manager_right)">
-      <remap from="~input" to="/right_hand_camera/depth_registered/points" />
+      <remap from="~input" to="/right_hand_left_camera/depth_registered/points" />
       <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
       <rosparam>
         keep_organized: true
@@ -79,7 +79,7 @@
     </node>
     <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
       <arg name="NODELET_MANAGER" value="$(arg manager_right)" />
-      <arg name="INPUT_IMAGE" value="/right_hand_camera/rgb/image_rect_color"/>
+      <arg name="INPUT_IMAGE" value="/right_hand_left_camera/rgb/image_rect_color"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
       <arg name="FIXED_FRAME" value="base" />
       <arg name="BACKEND" value="torch" />
