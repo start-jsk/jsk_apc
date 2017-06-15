@@ -1,5 +1,6 @@
 <launch>
 
+  <!-- Arduino -->
   <node name="rosserial_node_0"
         pkg="rosserial_python" type="serial_node.py"
         respawn="true">
@@ -20,5 +21,8 @@
     <param name="port" type="string" value="/dev/arduino2" />
     <param name="baud" value="115200" />
   </node>
+
+  <!-- Republish gripper sensor states -->
+  <node name="rgripper_sensors_republisher" pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py" />
 
 </launch>

@@ -18,6 +18,12 @@
   <build_depend>jsk_apc2016_common</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>roseus</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>baxter_core_msgs</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>transmission_interface</build_depend>
+  <build_depend>controller_manager</build_depend>
+  <build_depend>dynamixel_msgs</build_depend>
 
   <run_depend>force_proximity_ros</run_depend>
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
@@ -39,6 +45,12 @@
   <run_depend>rospy</run_depend>
   <run_depend>rosserial_python</run_depend>
   <run_depend>xacro</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>baxter_core_msgs</run_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>transmission_interface</run_depend>
+  <run_depend>controller_manager</run_depend>
+  <run_depend>dynamixel_msgs</run_depend>
 
   <test_depend>jsk_tools</test_depend>
 
