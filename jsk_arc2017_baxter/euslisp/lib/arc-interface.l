@@ -240,8 +240,12 @@
                                    :rpy #f(0 0 0))
                       :use-gripper t
                       :rotation-axis :z
-                      :additional-check #'(lambda ()
-                                            (< (send *baxter* arm :gripper-x :joint-angle) 110))))
+                      :stop 200
+                      :additional-check
+                      #'(lambda ()
+                          (and
+                            (< (send *baxter* arm :gripper-x :joint-angle) 110)
+                            (< -30 (send *baxter* arm :gripper-p :joint-angle) 30)))))
           (setq gripper-x (send *baxter* arm :gripper-x :joint-angle))
           (send *baxter* :angle-vector prev-av)
           ;; First, move prismatic joint to target position
@@ -329,8 +333,12 @@
                                    :rpy #f(0 0 0))
                       :use-gripper t
                       :rotation-axis :z
-                      :additional-check #'(lambda ()
-                                            (< (send *baxter* arm :gripper-x :joint-angle) 110)))
+                      :stop 200
+                      :additional-check
+                      #'(lambda ()
+                          (and
+                            (< (send *baxter* arm :gripper-x :joint-angle) 110)
+                            (< -30 (send *baxter* arm :gripper-p :joint-angle) 30))))
                 3000 (send *ri* :get-arm-controller arm) 0)
           ;; Wait until grasp to prevent tooth flying
           (send *ri* :wait-interpolation-until-grasp arm)))
