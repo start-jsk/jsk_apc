@@ -205,13 +205,14 @@
   (:wait-interpolation-until-grasp
     (arm)
     (when (send self :simulation-modep)
-      (return-from :wait-interpolation-until-grasp (send self :wait-interpolation))
-      )
+      (return-from :wait-interpolation-until-grasp (send self :wait-interpolation)))
+    ;; wait for :interpolatingp
+    (unix::usleep 1000)
     (while (send self :interpolatingp)
-           (if (send self :graspingp arm)
-             (progn
-               (ros::ros-info "[:wait-interpolation-until-grasp] Grasping detected. Cancel angle vector: ~a" arm)
-               (send self :cancel-angle-vector)))))
+      (if (send self :graspingp arm)
+        (progn
+          (ros::ros-info "[:wait-interpolation-until-grasp] Grasping detected. Cancel angle vector: ~a" arm)
+          (send self :cancel-angle-vector)))))
   (:calib-pressure-threshold
     (&optional (arm :arms))
     (send self :start-grasp arm)
