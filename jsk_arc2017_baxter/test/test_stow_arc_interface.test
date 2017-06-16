@@ -3,24 +3,9 @@
   <arg name="gui" default="false" />
   <env name="DISPLAY" value="" unless="$(arg gui)" />
 
-  <!-- TODO: we should use rosbag that is collected while real task -->
-  <include file="$(find jsk_pcl_ros)/sample/include/play_rosbag_stereo.xml" />
-  <remap from="/left_hand_camera/rgb/camera_info" to="/right_hand_left_camera/rgb/camera_info" />
-  <remap from="/left_hand_camera/rgb/image_rect_color" to="/right_hand_left_camera/rgb/image_rect_color" />
-  <remap from="/left_hand_camera/depth_registered/points" to="/right_hand_left_camera/depth_registered/points" />
-  <remap from="/right_hand_camera/rgb/camera_info" to="/right_hand_right_camera/rgb/camera_info" />
-  <remap from="/right_hand_camera/rgb/image_rect_color" to="/right_hand_right_camera/rgb/image_rect_color" />
-  <remap from="/right_hand_camera/depth_registered/points" to="/right_hand_right_camera/depth_registered/points" />
-
-  <group ns="left_hand_camera">
-    <node name="left_hand_camera_nodelet_manager"
-          pkg="nodelet" type="nodelet" args="manager" />
-  </group>
-  <group ns="right_hand_camera">
-    <node name="right_hand_camera_nodelet_manager"
-          pkg="nodelet" type="nodelet" args="manager" />
-  </group>
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/setup_for_stow.launch" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml">
+    <arg name="pick" value="false" />
+  </include>
 
   <test test-name="test_stow_arc_interface"
         name="test_stow_arc_interface" pkg="jsk_arc2017_baxter"
