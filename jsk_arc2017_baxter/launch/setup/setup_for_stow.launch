@@ -6,10 +6,19 @@
 
   <group ns="left_hand_camera">
     <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_left)">
+      <remap from="~input" to="/publish_tote_boxes/output" />
+      <rosparam>
+        index: 0
+      </rosparam>
+    </node>
     <node name="attention_clipper_tote"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/AttentionClipper $(arg manager_left)">
       <remap from="~input/points" to="/left_hand_camera/depth_registered/points" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
       <rosparam>
         use_multiple_attention: false
         initial_pos: [0.6, 0.12, -0.25]
@@ -56,10 +65,19 @@
  
   <group ns="right_hand_camera">
     <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_right)">
+      <remap from="~input" to="/publish_tote_boxes/output" />
+      <rosparam>
+        index: 1
+      </rosparam>
+    </node>
     <node name="attention_clipper_tote"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/AttentionClipper $(arg manager_right)">
       <remap from="~input/points" to="/right_hand_camera/depth_registered/points" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
       <rosparam>
         use_multiple_attention: false
         initial_pos: [0.6, -0.12, -0.25]

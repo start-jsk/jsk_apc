@@ -123,20 +123,20 @@
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:recognize-tote-boxes
-    (arm &key (stamp (ros::time-now)))
-    (let ((box-topic (format nil "~a_hand_camera/attention_clipper_tote/output/box_array"
-                             (arm2str arm)))
-                     box-msg bbox)
+    (&key (stamp (ros::time-now)))
+    (let ((box-topic (format nil "publish_tote_boxes/output"))
+                     box-msg box-list)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
                                         :timeout 10000
                                         :after-stamp stamp))
       (if box-msg
         (progn
-          (ros::ros-info "[:recognize-tote-boxes] arm: ~a Recognize tote bbox" (arm2str arm))
-          (setq bbox (car (send box-msg :boxes)))
-          (sethash arm tote-cubes- (send self :bbox->cube bbox)))
-        (ros::ros-fatal "[:recognize-tote-boxes] arm: ~a Cannot find tote bbox" (arm2str arm)))))
+          (ros::ros-info "[~a] [:recognize-tote-boxes] recognize tote bbox" (ros::get-name))
+          (setq bbox-list (send box-msg :boxes))
+          (dolist (arm '(:larm :rarm))
+            (sethash arm tote-cubes- (send self :bbox->cube (pop bbox-list)))))
+        (ros::ros-fatal "[:recognize-tote-boxes] cannot recognize tote bbox"))))
   (:visualize-bins ()
     (ros::ros-warn ":visualize-bins was deprecated. Please use :visualize-boxes.")
     (send self :visualize-boxes :box-type :bin))

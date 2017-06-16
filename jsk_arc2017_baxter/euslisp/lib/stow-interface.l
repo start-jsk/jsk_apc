@@ -31,7 +31,7 @@
     (ros::ros-info "[main] recognizing bin boxes")
     (send self :recognize-bin-boxes :stamp (ros::time-now))
     (ros::ros-info "[main] recognizing tote")
-    (send self :recognize-tote-boxes arm :stamp (ros::time-now))
+    (send self :recognize-tote-boxes :stamp (ros::time-now))
     (send self :set-movable-region-for-tote arm :offset (list 100 80 0)))
   (:wait-for-user-input (arm)
     (let (can-start)

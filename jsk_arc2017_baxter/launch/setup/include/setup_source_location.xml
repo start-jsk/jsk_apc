@@ -17,4 +17,15 @@
     </node>
   </group>
 
+  <group unless="$(arg pick)">
+    <node name="interactive_adjust_tote"
+          pkg="jsk_interactive_marker" type="marker_6dof">
+      <rosparam command="load" file="$(find jsk_arc2017_common)/config/tote_marker.yaml"/>
+    </node>
+    <node name="publish_tote_boxes"
+          pkg="jsk_recognition_utils" type="bounding_box_array_publisher.py">
+      <rosparam file="$(find jsk_arc2017_common)/config/tote.yaml" command="load" />
+    </node>
+  </group>
+
 </launch>
