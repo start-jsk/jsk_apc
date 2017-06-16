@@ -10,7 +10,6 @@
 (deftest test-stow-arc-interface
   ;; :recognize-tote-boxes
   (send *ti* :recognize-tote-boxes)
-  (send *ti* :recognize-tote-boxes)
 
   ;; visualize-bins
   (let ((bins-vis (send *ti* :visualize-boxes :box-type :tote)))
