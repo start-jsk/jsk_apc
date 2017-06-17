@@ -266,9 +266,10 @@
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
-            ;; Fold fingers again
-            (send *ri* :move-hand arm
-                  (send *baxter* :hand-grasp-pose arm :cylindrical :angle 100) 1000)
+            (when (eq arm :rarm)
+              ;; Fold fingers again
+              (send *ri* :move-hand arm
+                    (send *baxter* :hand-grasp-pose arm :cylindrical :angle 100) 1000))
             (setq graspingp
                   (send self :try-to-pick-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -50) 30))))
