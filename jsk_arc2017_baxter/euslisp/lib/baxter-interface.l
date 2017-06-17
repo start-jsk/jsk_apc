@@ -110,6 +110,8 @@
      (cons :controller-state "/gripper_front/limb/left/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "left_gripper_vacuum_pad_joint")))))
+
+  ;; Hand interface
   ;; based on naoqi-interface and fetch-interface
   (:move-hand
     (arm av tm &key (wait t))
@@ -138,8 +140,7 @@
                               (send res :error_code) (send res :error_string)))
           res)
         nil)
-      nil)
-    )
+      nil))
 
   (:get-arm-controller (arm)
     (cond ((eq arm :rarm) :rarm-controller)
