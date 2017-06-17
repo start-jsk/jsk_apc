@@ -57,7 +57,7 @@
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch" />
   </group>
   <group unless="$(arg stereo)">
-    <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" />
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/astra_hand.launch" />
   </group>
 
   <node name="interactive_adjust_shelf"
