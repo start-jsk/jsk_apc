@@ -16,6 +16,11 @@
   <rosparam param="/baxter_joint_trajectory"
             file="$(find jsk_2015_05_baxter_apc)/config/baxter_joint_trajectory.yaml"/>
 
+  <!-- adjust gravity compensation for gripper-v6 -->
+  <node pkg="rostopic" type="rostopic" name="adjust_compensation"
+        args="pub -1 /robot/end_effector/right_gripper/command baxter_core_msgs/EndEffectorCommand
+              -f $(find jsk_arc2017_baxter)/config/right_gripper_v6/gripper_mass.yaml"
+        output="screen"/>
 
   <!-- vacuum gripper -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_arduinos.launch" />
