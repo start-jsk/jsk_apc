@@ -139,6 +139,22 @@
           res)
         nil)
       nil))
+  (:get-finger-flex (arm side)
+    (send (one-shot-subscribe
+            (format nil "/gripper_front/limb/~a/flex/~a/state"
+                    (arm2str arm) (symbol2str side))
+            std_msgs::UInt16)
+          :data))
+  (:get-finger-load (arm)
+    (send (one-shot-subscribe
+            (format nil "/gripper_front/limb/~a/dxl/finger_tendon_controller/state"
+                    (arm2str arm))
+            dynamixel_msgs::JointState)
+          :load))
+  (:get-real-finger-roll-angle (arm)
+    (send self :update-robot-state :wait-until-update t)
+    (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
+          :joint-angle))
 
   (:get-arm-controller (arm)
     (cond ((eq arm :rarm) :rarm-controller)
