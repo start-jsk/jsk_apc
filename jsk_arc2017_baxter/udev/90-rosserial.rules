@@ -1,0 +1,3 @@
+# Create symlink /dev/arduino*
+IMPORT{program}="/usr/local/sbin/unique-num /dev arduino ARDUINO_NUM"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", SYMLINK+="arduino%E{ARDUINO_NUM}"

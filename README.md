@@ -99,59 +99,13 @@ Please follow [Instructions at code-iai/iai\_kinect2](https://github.com/code-ia
 however, maybe you have error with the master branch. In that case, please use
 [this rosinstall](https://github.com/start-jsk/jsk_apc/blob/master/kinect2.rosinstall).
 
-**Setup rosserial + vacuum gripper**
+**Setup Arduino and DXHUB**
 
-Write below in `/usr/local/sbin/unique-num`:
-
+Create udev rules:
 ```
-#!/bin/bash
-
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 location prefix var-name" >&2
-    exit 1
-fi
-
-location="$1"
-prefix="$2"
-key="$3"
-
-needindex=1
-index=0
-
-while [ $needindex -eq 1 ]
-do
-        if [ ! -e $location/$prefix$index ]; then
-                needindex=0
-                echo "$key=$index"
-        else
-                (( index++ ))
-        fi
-done
+$ rosrun jsk_arc2017_baxter create_udev_rules
 ```
-
-Please make it executable:
-
-```
-$ sudo chmod +x /usr/local/sbin/unique-num
-```
-
-Then write below in `/etc/udev/rules.d/90-rosserial.rules`:
-
-```
-# Create symlink /dev/arduino*
-IMPORT{program}="/usr/local/sbin/unique-num /dev arduino ARDUINO_NUM"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", SYMLINK+="arduino%E{ARDUINO_NUM}"
-```
-
-**Setup DXHUB + gripper-v5(and later)**
-
-Write below in `/etc/udev/rules.d/80-dxhub.rules`:
-
-```
-# Create symlink /dev/r_dxhub
-# For now, connection to only one DXHUB is supported
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015" MODE:="0666", SYMLINK+="r_dxhub"
-```
+so that Arduinos can appear on `/dev/arduino*` and DXHUB can appear on `/dev/r_dxhub`
 
 **Setup SSH**
 

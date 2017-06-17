@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo ""
+echo "This script copies udev rules for grippers and their dependencies"
+echo "to /etc/udev/rules.d and /usr/local/sbin"
+echo ""
+
+sudo cp `rospack find jsk_arc2017_baxter`/udev/80-dxhub.rules /etc/udev/rules.d
+sudo cp `rospack find jsk_arc2017_baxter`/udev/90-rosserial.rules /etc/udev/rules.d
+sudo cp `rospack find jsk_arc2017_baxter`/udev/unique-num /usr/local/sbin
+
+echo ""
+echo "Restarting udev"
+echo ""
+sudo service udev reload
+sudo service udev restart
