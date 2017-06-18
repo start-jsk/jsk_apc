@@ -270,7 +270,7 @@
               (send *ri* :move-hand arm
                     (send *baxter* :hand-grasp-pose arm :cylindrical :angle 100) 1000))
             (setq graspingp
-                  (send self :try-to-pick-object arm obj-pos
+                  (send self :try-to-suction-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -50) 30))))
             (pushback (send *baxter* :angle-vector) avs))))
       (when do-stop-grasp (unless graspingp (send *ri* :stop-grasp arm)))
@@ -306,7 +306,7 @@
       (setq obj-box-z-length (z-of-cube (send self :bbox->cube obj-box)))
       (setq obj-pos (v+ obj-pos (float-vector 0 0 (/ obj-box-z-length 2))))
       obj-pos))
-  (:try-to-pick-object
+  (:try-to-suction-object
     (arm obj-pos &key (offset #f(0 0 0)))
     (let (graspingp)
       (if (eq arm :larm)
@@ -320,12 +320,12 @@
                 3000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           ;; start the vacuum gripper after approaching to the object
-          (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
+          (ros::ros-info "[:try-to-suction-object] arm:~a start vacuum gripper" arm)
           (send *ri* :start-grasp arm)
           (unix::sleep 1))
         (progn
           ;; start the vacuum gripper before approaching to the object
-          (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
+          (ros::ros-info "[:try-to-suction-object] arm:~a start vacuum gripper" arm)
           (send *ri* :start-grasp arm)
           (send *ri* :angle-vector-raw
                 (send *baxter* arm :inverse-kinematics
@@ -351,9 +351,9 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until-grasp arm)
       (setq graspingp (send *ri* :graspingp arm))
-      (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
+      (ros::ros-info "[:try-to-suction-object] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
-        (ros::ros-info "[:try-to-pick-object] arm:~a again approach to the object" arm)
+        (ros::ros-info "[:try-to-suction-object] arm:~a again approach to the object" arm)
         (let ((temp-av (send *baxter* :angle-vector)))
           ;; only if robot can solve IK
           (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
@@ -368,14 +368,14 @@
         (send *ri* :move-hand arm
               (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000))
       ;; lift object
-      (ros::ros-info "[:try-to-pick-object] arm:~a lift the object" arm)
+      (ros::ros-info "[:try-to-suction-object] arm:~a lift the object" arm)
       (send *ri* :gripper-servo-off arm)
       (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 200) :world)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send *ri* :graspingp arm))
-      (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
+      (ros::ros-info "[:try-to-suction-object] arm:~a graspingp: ~a" arm graspingp)
     graspingp))
   (:ik->bin-center
     (arm bin &key (offset #f(0 0 0)) (rpy #f(0 0 0)) (rotation-axis t) (use-gripper nil))
