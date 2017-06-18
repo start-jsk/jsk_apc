@@ -78,16 +78,25 @@
           :n-trial 2
           :n-trial-same-pos 1
           :do-stop-grasp nil)
-    (send *ri* :angle-vector
-          (send self :ik->tote-center arm
-                :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
-          3000 (send *ri* :get-arm-controller arm) 0)
+    (if (send *ri* :finger-closep arm)
+      (send *ri* :angle-vector
+            (send self :ik->tote-center arm
+                  :offset #f(0 0 300) :rotation-axis :z :move-palm-end t)
+            3000 (send *ri* :get-arm-controller arm :gripper nil) 0)
+      (send *ri* :angle-vector
+            (send self :ik->tote-center arm
+                  :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+            3000 (send *ri* :get-arm-controller arm) 0))
     (send *ri* :wait-interpolation)
     (setq graspingp (send *ri* :graspingp arm))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
   (:return-from-pick-object (arm)
-    (send *ri* :stop-grasp arm)
+    (send *ri* :stop-grasp arm :suction)
+    (when (eq arm :rarm)
+      (send *ri* :stop-grasp arm :hand)
+      (send *ri* :move-hand arm
+            (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
     (ros::ros-info "[main] arm: ~a return from pick-object to fold-pose-back" arm)
     (send *ri* :angle-vector-sequence
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
@@ -135,28 +144,50 @@
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
       (when moveit-p (send self :add-tote-scene arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
-      (send *ri* :angle-vector
-            (send self :ik->bin-center arm target-bin
-                  :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
-            4000 (send *ri* :get-arm-controller arm) 0)
+      (if (send *ri* :finger-closep arm)
+        (send *ri* :angle-vector
+              (send self :ik->bin-center arm target-bin
+                    :offset #f(0 0 300) :rotation-axis nil :move-palm-end t)
+              4000 (send *ri* :get-arm-controller arm :gripper nil) 0)
+        (progn
+          (if (eq arm :rarm)
+            (send *ri* :move-hand arm
+                  (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
+          (send *ri* :angle-vector
+                (send self :ik->bin-center arm target-bin
+                      :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+                4000 (send *ri* :get-arm-controller arm) 0)))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm)))
       (if dropped
         (progn
           (ros::ros-error "[main] arm ~a: dropped object" arm)
-          (send *ri* :stop-grasp arm))
+          (send *ri* :stop-grasp arm :suction)
+          (when (eq arm :rarm)
+            (send *ri* :stop-grasp arm :hand)
+            (send *ri* :move-hand arm
+                  (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a" arm target-obj target-bin)
           (when moveit-p (send self :delete-bin-scene target-bin))
-          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
+          (send *ri* :angle-vector-raw
+                (send *baxter* arm :move-end-pos #f(0 0 -300) :world
+                      :rotation-axis (not (send *ri* :finger-closep arm)))
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
-          (send *ri* :stop-grasp arm) ;; release object
+          (send *ri* :stop-grasp arm :suction) ;; release object
+          (if (eq arm :rarm)
+            (send *ri* :stop-grasp arm :hand)) ;; release object
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
+          (send *ri* :angle-vector-raw
+                (send *baxter* arm :move-end-pos #f(0 0 300) :world
+                      :rotation-axis (not (send *ri* :finger-closep arm)))
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
+          (if (eq arm :rarm)
+            (send *ri* :move-hand arm
+                  (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
           (when moveit-p (send self :add-bin-scene target-bin))))))
   (:return-from-place-object (arm)
     (send self :fold-pose-back arm)
