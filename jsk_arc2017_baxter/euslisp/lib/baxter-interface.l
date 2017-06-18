@@ -15,7 +15,10 @@
   :super baxter-interface
   :slots (rarm-pressure-threshold-
           larm-pressure-threshold-
-          right-hand-action-))
+          right-hand-action-
+          pressure-
+          finger-flex-
+          finger-load-))
 
 (defmethod jsk_arc2017_baxter::baxter-interface
   (:init
@@ -62,6 +65,27 @@
       (and joint-action-enable (send right-hand-action- :wait-for-server 3))
       (ros::ros-warn "~A is not respond" right-hand-action-)
       (ros::ros-info "*** if you do not have hand, you can ignore this message ***"))
+    ;; gripper sensors
+    (setq pressure- (make-hash-table))
+    (setq finger-load- (make-hash-table))
+    (setq finger-flex- (make-hash-table))
+    (dolist (arm (list :rarm :larm))
+      (ros::subscribe (format nil "/gripper_front/limb/~a/pressure/state" (arm2str arm))
+                      std_msgs::Float64
+                      #'send self :set-pressure arm
+                      :groupname groupname)
+      (ros::subscribe (format nil "/gripper_front/limb/~a/dxl/finger_tendon_controller/state"
+                              (arm2str arm))
+                      dynamixel_msgs::JointState
+                      #'send self :set-finger-load arm
+                      :groupname groupname)
+      (sethash arm finger-flex- (make-hash-table))
+      (dolist (side (list :right :left))
+        (ros::subscribe (format nil "/gripper_front/limb/~a/flex/~a/state"
+                                (arm2str arm) (symbol2str side))
+                        std_msgs::UInt16
+                        #'send self :set-finger-flex arm side
+                        :groupname groupname)))
     (if mvit-rb (setq moveit-robot mvit-rb))
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot))))
   ;; Overwrite super class's :rarm-controller
@@ -108,6 +132,15 @@
      (cons :controller-state "/gripper_front/limb/left/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "left_gripper_vacuum_pad_joint")))))
+  (:set-pressure
+    (arm msg)
+    (sethash arm pressure- (send msg :data)))
+  (:set-finger-load
+    (arm msg)
+    (sethash arm finger-load- (send msg :load)))
+  (:set-finger-flex
+    (arm side msg)
+    (sethash side (gethash arm finger-flex-) (send msg :data)))
 
   ;; Hand interface
   ;; based on naoqi-interface and fetch-interface
@@ -140,17 +173,11 @@
         nil)
       nil))
   (:get-finger-flex (arm side)
-    (send (one-shot-subscribe
-            (format nil "/gripper_front/limb/~a/flex/~a/state"
-                    (arm2str arm) (symbol2str side))
-            std_msgs::UInt16)
-          :data))
+    (send self :spin-once)
+    (gethash side (gethash arm finger-flex-)))
   (:get-finger-load (arm)
-    (send (one-shot-subscribe
-            (format nil "/gripper_front/limb/~a/dxl/finger_tendon_controller/state"
-                    (arm2str arm))
-            dynamixel_msgs::JointState)
-          :load))
+    (send self :spin-once)
+    (gethash arm finger-load-))
   (:get-real-finger-roll-angle (arm)
     (send self :update-robot-state :wait-until-update t)
     (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
@@ -201,8 +228,8 @@
           (send (one-shot-subscribe topic std_msgs::Bool) :data)
           )
         (progn
-          (setq topic (format nil "gripper_front/limb/~a/pressure/state" (arm-to-str arm)))
-          (< (send (one-shot-subscribe topic std_msgs::Float64) :data)
+          (send self :spin-once)
+          (< (gethash arm pressure-)
              (cond
                ((eq arm :rarm) rarm-pressure-threshold-)
                ((eq arm :larm) larm-pressure-threshold-)))))))
@@ -276,11 +303,11 @@
     (&optional (arm :arms))
     (send self :start-grasp arm)
     (dolist (l/r (if (eq arm :arms) (list :rarm :larm) (list arm)))
-      (let ((min-pressure)
-            (topic (format nil "/gripper_front/limb/~a/pressure/state" (arm-to-str l/r))))
+      (let (min-pressure)
         (dotimes (i 7)
-          (let ((pressure (send (one-shot-subscribe topic std_msgs::Float64) :data)))
-            (when (or (null min-pressure) (< pressure min-pressure)) (setq min-pressure pressure)))
+          (send self :spin-once)
+          (when (or (null min-pressure) (< (gethash l/r pressure-) min-pressure))
+            (setq min-pressure (gethash l/r pressure-)))
           (unix::sleep 1))
         (cond ((eq l/r :larm)
                (setq larm-pressure-threshold- (- min-pressure 5)))
