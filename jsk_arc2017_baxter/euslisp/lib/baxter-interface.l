@@ -18,7 +18,8 @@
           right-hand-action-
           pressure-
           finger-flex-
-          finger-load-))
+          finger-load-
+          prismatic-load-))
 
 (defmethod jsk_arc2017_baxter::baxter-interface
   (:init
@@ -69,6 +70,7 @@
     (setq pressure- (make-hash-table))
     (setq finger-load- (make-hash-table))
     (setq finger-flex- (make-hash-table))
+    (setq prismatic-load- (make-hash-table))
     (dolist (arm (list :rarm :larm))
       (ros::subscribe (format nil "/gripper_front/limb/~a/pressure/state" (arm2str arm))
                       std_msgs::Float64
@@ -78,6 +80,11 @@
                               (arm2str arm))
                       dynamixel_msgs::JointState
                       #'send self :set-finger-load arm
+                      :groupname groupname)
+      (ros::subscribe (format nil "/gripper_front/limb/~a/dxl/prismatic_joint_controller/state"
+                              (arm2str arm))
+                      dynamixel_msgs::JointState
+                      #'send self :set-prismatic-load arm
                       :groupname groupname)
       (sethash arm finger-flex- (make-hash-table))
       (dolist (side (list :right :left))
@@ -138,6 +145,9 @@
   (:set-finger-load
     (arm msg)
     (sethash arm finger-load- (send msg :load)))
+  (:set-prismatic-load
+    (arm msg)
+    (sethash arm prismatic-load- (send msg :load)))
   (:set-finger-flex
     (arm side msg)
     (sethash side (gethash arm finger-flex-) (send msg :data)))
@@ -178,10 +188,16 @@
   (:get-finger-load (arm)
     (send self :spin-once)
     (gethash arm finger-load-))
-  (:get-real-finger-roll-angle (arm)
+  (:get-prismatic-load (arm)
+    (send self :spin-once)
+    (gethash arm prismatic-load-))
+  (:get-real-finger-av (arm)
     (send self :update-robot-state :wait-until-update t)
-    (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
-          :joint-angle))
+    (float-vector
+      (send robot (str2symbol (format nil "~a_gripper_finger_yaw_joint" (arm2str arm)))
+            :joint-angle)
+      (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
+            :joint-angle)))
 
   (:get-arm-controller (arm)
     (cond ((eq arm :rarm) :rarm-controller)
@@ -220,19 +236,30 @@
         (format nil "/gripper_front/limb/~a/servo/torque" l/r)
         (instance std_msgs::Bool :init :data nil))))
   (:graspingp
-    (arm)
-    (let (topic)
+    (arm &optional type)
+    (let (topic finger-av fingerp)
       (if (ros::get-param "/apc_on_gazebo" nil)
         (progn
           (setq topic (format nil "/robot/~a_vacuum_gripper/grasping" (arm-to-str arm)))
           (send (one-shot-subscribe topic std_msgs::Bool) :data)
           )
         (progn
+          (when (eq arm :rarm)
+            (setq finger-av (send self :get-real-finger-av arm))
+            (setq fingerp
+                  (and (or
+                         (and (< (aref finger-av 0) 45) (< (aref finger-av 1) 80))
+                         (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 115))
+                         (> (send self :get-prismatic-load arm) 0.25))
+                       (> (send self :get-finger-load arm) 0.55))))
           (send self :spin-once)
-          (< (gethash arm pressure-)
-             (cond
-               ((eq arm :rarm) rarm-pressure-threshold-)
-               ((eq arm :larm) larm-pressure-threshold-)))))))
+          (or (if (not (eq type :suction)) fingerp nil)
+              (if (not (eq type :hand))
+                (< (gethash arm pressure-)
+                   (cond
+                     ((eq arm :rarm) rarm-pressure-threshold-)
+                     ((eq arm :larm) larm-pressure-threshold-)))
+                nil))))))
   (:arm-potentio-vector
     (arm)
     (case arm
