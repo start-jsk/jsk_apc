@@ -1,14 +1,13 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 78
+    Help Height: 0
     Name: Displays
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /RobotModel1/Links1
         - /TF1/Frames1
-      Splitter Ratio: 0.544444
-    Tree Height: 544
+      Splitter Ratio: 0.519774
+    Tree Height: 567
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -54,7 +53,7 @@ Visualization Manager:
       Collision Enabled: false
       Enabled: true
       Links:
-        All Links Enabled: false
+        All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
@@ -67,17 +66,17 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         collision_head_link_2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         display:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         dummyhead1:
           Alpha: 1
           Show Axes: false
@@ -86,7 +85,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         head_camera:
           Alpha: 1
           Show Axes: false
@@ -103,32 +102,32 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_gripper_vacuum_pad:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_gripper_vacuum_pad_base:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_hand:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_hand_accelerometer:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_hand_camera:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_hand_camera_axis:
           Alpha: 1
           Show Axes: false
@@ -137,22 +136,22 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_lower_elbow:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_lower_forearm:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_lower_shoulder:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_torso_itb:
           Alpha: 1
           Show Axes: false
@@ -161,37 +160,37 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_upper_elbow_visual:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_upper_forearm:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_upper_forearm_visual:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_upper_shoulder:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         left_wrist:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         pedestal:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         right_arm_itb:
           Alpha: 1
           Show Axes: false
@@ -292,17 +291,17 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         sonar_ring:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         torso:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -385,7 +384,7 @@ Visualization Manager:
       Value: false
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /right_hand_left_camera/rgb/image_rect_color
+      Image Topic: /right_hand_camera/left/rgb/image_rect_color
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -397,7 +396,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /right_hand_right_camera/depth_image_creator/output_image
+      Image Topic: /right_hand_camera/right_registered/rgb/image_rect_color
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -409,7 +408,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /right_hand_left_camera/depth_registered/image_view/output
+      Image Topic: /right_hand_camera/left/depth_registered/image_rect_raw_view
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -421,7 +420,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /right_hand_right_camera/depth_image_creator/output_view/output
+      Image Topic: /right_hand_camera/right_registered/depth_registered/image_rect_view
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -433,7 +432,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /right_hand_stereo/depth_image_creator/output_view/output
+      Image Topic: /right_hand_camera/stereo/depth_registered/image_rect_view
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -468,7 +467,7 @@ Visualization Manager:
       Size (Pixels): 2
       Size (m): 0.003
       Style: Points
-      Topic: /right_hand_left_camera/depth_registered/points
+      Topic: /right_hand_camera/left/depth_registered/points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -498,7 +497,7 @@ Visualization Manager:
       Size (Pixels): 2
       Size (m): 0.003
       Style: Points
-      Topic: /right_hand_right_camera/depth_registered/points
+      Topic: /right_hand_camera/right/depth_registered/points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -528,14 +527,14 @@ Visualization Manager:
       Size (Pixels): 2
       Size (m): 0.003
       Style: Points
-      Topic: /right_hand_stereo/points
+      Topic: /right_hand_camera/stereo/depth_registered/points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: false
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /fuse_rgb_images/output
+      Image Topic: /right_hand_camera/fused/rgb/image_rect_color
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -547,7 +546,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /fuse_depth_images/output_view/output
+      Image Topic: /right_hand_camera/fused/depth_registered/image_rect_view
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -582,7 +581,7 @@ Visualization Manager:
       Size (Pixels): 2
       Size (m): 0.01
       Style: Points
-      Topic: /right_hand_left_camera/depth_registered/points_fused
+      Topic: /right_hand_camera/fused/depth_registered/points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -630,7 +629,7 @@ Visualization Manager:
       show polygons: false
       use image: false
     - Class: moveit_rviz_plugin/PlanningScene
-      Enabled: true
+      Enabled: false
       Move Group Namespace: ""
       Name: PlanningScene
       Planning Scene Topic: move_group/monitored_planning_scene
@@ -650,260 +649,16 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          base:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          collision_head_link_1:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          collision_head_link_2:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          display:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          dummyhead1:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          head:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          head_camera:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          left_arm_itb:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          left_arm_mount:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          left_gripper_base:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_gripper_vacuum_pad:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_gripper_vacuum_pad_base:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_hand:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_hand_accelerometer:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_hand_camera:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_hand_camera_axis:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          left_hand_range:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_lower_elbow:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_lower_forearm:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_lower_shoulder:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_torso_itb:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          left_upper_elbow:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_upper_elbow_visual:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_upper_forearm:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_upper_forearm_visual:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_upper_shoulder:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          left_wrist:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          pedestal:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_arm_itb:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          right_arm_mount:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          right_gripper_base:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_gripper_vacuum_pad:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_gripper_vacuum_pad_base:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_hand:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_hand_accelerometer:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_hand_camera:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_hand_camera_axis:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          right_hand_range:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_lower_elbow:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_lower_forearm:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_lower_shoulder:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_torso_itb:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          right_upper_elbow:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_upper_elbow_visual:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_upper_forearm:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_upper_forearm_visual:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_upper_shoulder:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          right_wrist:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          screen:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          sonar_ring:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          torso:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
-      Value: true
+      Value: false
     - Class: jsk_rviz_plugin/BoundingBoxArray
-      Enabled: true
+      Enabled: false
       Name: BoundingBoxArray
       Topic: /publish_bin_boxes/output
       Unreliable: false
-      Value: true
+      Value: false
       alpha: 0.8
       color: 25; 255; 0
       coloring: Auto
@@ -934,22 +689,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.46597
+      Distance: 2.45265
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.489885
-        Y: 0.0518694
-        Z: 0.00481771
+        X: 0.63546
+        Y: 0.142017
+        Z: -0.00890667
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.2248
+      Pitch: 1.2598
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.307171
+      Yaw: 4.89034
     Saved: ~
 Window Geometry:
   Displays:
@@ -958,10 +713,10 @@ Window Geometry:
     collapsed: false
   FusedRGB:
     collapsed: false
-  Height: 1028
+  Height: 1027
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000016a000002affc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c00610079007301000000f3000002af000000dd00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000001a9000002affc0200000006fb000000100046007500730065006400520047004201000000f3000001480000001600fffffffb0000001400460075007300650064004400650070007400680100000241000001610000001600fffffffb0000000e0052005f004c00610073006500720000000306000000b80000001600fffffffb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007300000000d7000002e7000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b2000000000000000000000002000004df000000edfc0100000006fb0000000e0052005f004c002f0052004700420100000000000000f00000006e00fffffffb0000000e0052005f0052002f00520047004201000000f6000001000000006f00fffffffb000000120052005f004c002f0044006500700074006801000001fc000000ff0000007b00fffffffb000000120052005f0052002f004400650070007400680100000301000000f30000007c00fffffffb000000120052005f0053002f0044006500700074006801000003fa000000e50000007b00fffffffb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004df0000003efc0100000002fb0000000800540069006d00650100000000000004df000002f600fffffffb0000000800540069006d00650100000000000004500000000000000000000001c0000002af00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730000000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000016600000274fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005300fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000013100000274000000b700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000001a900000274fc0200000006fb000000100046007500730065006400520047004201000001310000012c0000001600fffffffb0000001400460075007300650064004400650070007400680100000263000001420000001600fffffffb0000000e0052005f004c00610073006500720000000306000000b80000001600fffffffb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007300000000d7000002e70000009b00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000000000020000064c00000117fc0100000006fb0000000e0052005f004c002f0052004700420100000000000001360000006700fffffffb0000000e0052005f0052002f005200470042010000013c0000014d0000006900fffffffb000000120052005f004c002f00440065007000740068010000028f0000014c0000007100fffffffb000000120052005f0052002f0044006500700074006801000003e10000013b0000007300fffffffb000000120052005f0053002f0044006500700074006801000005220000012a0000007200fffffffb0000000a00560069006500770073030000004e00000080000002e100000197000000030000064c0000003efc0100000002fb0000000800540069006d006501000000000000064c0000024600fffffffb0000000800540069006d00650100000000000004500000000000000000000003310000027400000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730000000000ffffffff0000000000000000
   R_L/Depth:
     collapsed: false
   R_L/RGB:
@@ -982,6 +737,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1247
-  X: 1302
+  Width: 1612
+  X: 619
   Y: 14
