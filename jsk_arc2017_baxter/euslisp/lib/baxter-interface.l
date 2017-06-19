@@ -1,10 +1,7 @@
 ;; -*- mode: lisp;-*-
 
-;; FIXME: Please add moveit
-
 (require "package://baxtereus/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
 (require "package://jsk_arc2017_baxter/euslisp/lib/baxter.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
 
@@ -24,8 +21,8 @@
   (:init
     (&rest args &key
            ((:moveit-environment mvit-env)
-            (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
-           ((:moveit-robot mvit-rb) (instance jsk_2016_01_baxter_apc::baxter-robot :init))
+            (instance jsk_arc2017_baxter::baxter-moveit-environment))
+           ((:moveit-robot mvit-rb) (instance jsk_arc2017_baxter::baxter-robot :init))
            &allow-other-keys)
     ;; initialize controllers
     (send-super* :init :joint-states-queue-size 3
@@ -232,3 +229,30 @@
     (send self :stop-grasp arm)
     (ros::ros-info "[:calib-pressure-threshold] Threshold r: ~a l: ~a"
                    rarm-pressure-threshold- larm-pressure-threshold-)))
+
+
+(defclass jsk_arc2017_baxter::baxter-moveit-environment
+  :super moveit-environment)
+(defmethod jsk_arc2017_baxter::baxter-moveit-environment
+  (:init (&key ((:robot rb) (instance jsk_arc2017_baxter::baxter-robot :init)) &rest args)
+         (send-super* :init :robot rb :frame-id "world" args))
+  (:default-configuration ()
+   (list (list :rarm
+               (cons :group-name "right_arm")
+               (cons :target-link
+                     (send self :search-link-from-name "right_gripper_pad_with_base"))
+               (cons :joint-list (send robot :rarm :joint-list))
+               )
+         (list :larm
+               (cons :group-name "left_arm")
+               (cons :target-link
+                     (send self :search-link-from-name "left_gripper_vacuum_pad"))
+               (cons :joint-list (send robot :larm :joint-list)))
+         (list :arms
+               (cons :group-name "both_arms")
+               (cons :target-link
+                     (list
+                       (send self :search-link-from-name "left_gripper_vacuum_pad")
+                       (send self :search-link-from-name "right_gripper_pad_with_base")))
+               (cons :joint-list (append (send robot :larm :joint-list)
+                                         (send robot :rarm :joint-list)))))))
