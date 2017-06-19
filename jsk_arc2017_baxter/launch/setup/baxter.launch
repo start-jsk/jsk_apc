@@ -85,6 +85,6 @@
         pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
         args="/desktop_bg_publisher/output" />
 
-  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/baxter_moveit.launch" if="$(arg moveit)" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter_moveit.launch" if="$(arg moveit)" />
 
 </launch>
