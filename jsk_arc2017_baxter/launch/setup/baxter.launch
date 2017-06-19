@@ -55,7 +55,7 @@
 
   <node name="interactive_adjust_shelf"
         pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" file="$(find jsk_arc2017_common)/config/$(arg task)/shelf_marker.yaml"/>
+    <rosparam command="load" file="$(find jsk_arc2017_baxter)/config/$(arg task)/shelf_marker.yaml"/>
   </node>
 
   <node name="publish_bin_boxes"
