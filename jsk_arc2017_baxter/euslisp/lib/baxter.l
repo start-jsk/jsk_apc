@@ -51,6 +51,8 @@
                    ;; We have to move mimic joints, too
                    :right_gripper_r_finger_yaw_joint
                    :right_gripper_r_finger_roll_joint))
+    ;; translate palm end for good cylindrical grasp
+    (send self :rarm-palm-endpoint :translate #f(30 0 0) :local)
     )
   (:rarm-palm-endpoint
     (&rest args)
