@@ -1,6 +1,5 @@
 <launch>
 
-  <arg name="depth_registration" default="true" />
   <arg name="right_hand_tilt_laser_transform" default=" 0.00 -0.17 0.03 1.63 -1.52 1.57" />
 
   <!-- ************************************************************************************* -->
@@ -32,7 +31,7 @@
           args="standalone jsk_pcl/DepthImageCreator"
           output="screen" >
       <remap from="~input" to="/assemble_laser_scans/output" />
-      <remap from="~info" to="/right_hand_left_camera/rgb/camera_info" />
+      <remap from="~info" to="/right_hand_camera/left/rgb/camera_info" />
       <rosparam>
         use_approximate: true
         max_queue_size: 1000
@@ -52,57 +51,59 @@
     </group>
   </group>
 
-  <node name="fuse_rgb_images"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/FuseRGBImages $(arg NODELET_MANAGER)"
-        output="screen" >
-    <rosparam>
-      approximate_sync: true
-      averaging: false
-      queue_size: 50
-      input_topics:
-        - /right_hand_right_camera/depth_image_creator/output_image
-        - /right_hand_left_camera/rgb/image_rect_color
-    </rosparam>
-  </node>
-
-  <node name="fuse_depth_images"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl/FuseDepthImages $(arg NODELET_MANAGER)"
-        output="screen" >
-    <rosparam>
-      approximate_sync: true
-      averaging: true
-      queue_size: 50
-      input_topics:
-        - /right_hand_right_camera/depth_image_creator/output
-        - /right_hand_stereo/depth_image_creator/output
-        - /right_hand_left_camera/depth_registered/hw_registered/image_rect_raw
-        - /right_hand_tilt_laser/depth_image_creator/output
-    </rosparam>
-  </node>
-  <group ns="fuse_depth_images">
-    <node name="output_view"
-          pkg="image_view" type="image_view">
-      <remap from="image" to="output" />
+  <group ns="fused">
+    <node name="relay_rgb_camera_info"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_topic_tools/Relay /$(arg NODELET_MANAGER)">
+      <remap from="~input" to="/right_hand_camera/left/rgb/camera_info" />
+      <remap from="~output" to="rgb/camera_info" />
+    </node>
+    <node name="fuse_rgb_images"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/FuseRGBImages /$(arg NODELET_MANAGER)"
+          output="screen" >
+      <remap from="~output" to="rgb/image_rect_color" />
       <rosparam>
-        gui: false
-        min_image_value: 0.5
-        max_image_value: 1.0
-        colormap: 2
+        approximate_sync: true
+        averaging: false
+        queue_size: 50
+        input_topics:
+          - /right_hand_camera/right/depth_image_creator/output_image
+          - /right_hand_camera/left/rgb/image_rect_color
       </rosparam>
     </node>
-  </group>
-
-  <group ns="/right_hand_left_camera">
+    <node name="fuse_depth_images"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/FuseDepthImages /$(arg NODELET_MANAGER)"
+          output="screen" >
+      <remap from="~output" to="depth_registered/image_rect" />
+      <rosparam>
+        approximate_sync: true
+        averaging: true
+        queue_size: 50
+        input_topics:
+          - /right_hand_camera/right/depth_image_creator/output
+          - /right_hand_stereo/stereo/depth_registered/image_rect
+          - /right_hand_camera/left/depth_registered/hw_registered/image_rect_raw
+          - /right_hand_tilt_laser/depth_image_creator/output
+      </rosparam>
+    </node>
+    <group ns="depth_registered">
+      <node name="image_rect_view"
+            pkg="image_view" type="image_view">
+        <remap from="image" to="image_rect" />
+        <rosparam>
+          gui: false
+          min_image_value: 0.5
+          max_image_value: 1.0
+          colormap: 2
+        </rosparam>
+      </node>
+    </group>
     <node name="point_cloud_xyzrgb"
           pkg="nodelet" type="nodelet"
           args="load depth_image_proc/point_cloud_xyzrgb /$(arg NODELET_MANAGER)"
           output="screen" >
-      <remap from="rgb/camera_info" to="rgb/camera_info" />
-      <remap from="rgb/image_rect_color" to="/fuse_rgb_images/output" />
-      <remap from="depth_registered/image_rect" to="/fuse_depth_images/output" />
-      <remap from="depth_registered/points" to="depth_registered/points_fused" />
       <rosparam>
         queue_size: 50
         approximate_sync: true
