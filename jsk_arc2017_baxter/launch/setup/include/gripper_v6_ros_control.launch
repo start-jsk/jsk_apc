@@ -1,5 +1,6 @@
 <launch>
   <arg name="gripper_only" default="false"/>
+  <arg name="gazebo" default="false" />
 
   <!-- For testing gripper only -->
   <param name="/robot_description"
@@ -21,8 +22,8 @@
     </node>
 
     <!-- Start the joint trajectory controller -->
-    <rosparam file="$(find jsk_2016_01_baxter_apc)/config/right_gripper_v5/joint_trajectory_controller.yaml" command="load"/>
-    <node name="joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+    <rosparam file="$(find jsk_2016_01_baxter_apc)/config/right_gripper_v5/joint_trajectory_controller.yaml" command="load" unless="$(arg gazebo)" />
+    <node name="joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" unless="$(arg gazebo)"
           args="vacuum_gripper
                 hand" />
 

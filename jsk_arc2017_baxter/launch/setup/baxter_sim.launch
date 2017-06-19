@@ -1,0 +1,94 @@
+<launch>
+  <arg name="world_name" default="$(find baxter_gazebo)/worlds/baxter.world"/>
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="shelf_model_path" default="$(find jsk_apc2015_common)"/>
+  <arg name="gripper_v4_limb" default="['left']" />
+
+  <param name="/apc_on_gazebo" type="bool" value="true" />
+
+  <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)" />
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <env name="GAZEBO_MODEL_PATH" value="$(arg shelf_model_path)" />
+  </include>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro.py --inorder $(find jsk_arc2017_baxter)/robots/baxter.xacro gazebo:=true" />
+
+  <!-- Load the software version into the ROS Parameter Server -->
+  <param name="rethink/software_version" value="1.2.0" />
+
+  <!-- Publish a static transform between the world and the base of the robot -->
+  <node pkg="tf" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 world base 100" />
+
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-param robot_description -urdf -z 0.93 -model baxter
+    -J baxter::right_s0 -0.272659
+    -J baxter::right_s1 1.04701
+    -J baxter::right_e0 -0.00123203
+    -J baxter::right_e1 0.49262
+    -J baxter::right_w0 -0.0806423
+    -J baxter::right_w1 -0.0620532
+    -J baxter::right_w2 0.0265941
+    -J baxter::left_s0 0.192483
+    -J baxter::left_s1 1.047
+    -J baxter::left_e0 0.000806359
+    -J baxter::left_e1 0.491094
+    -J baxter::left_w0 -0.178079
+    -J baxter::left_w1 -0.0610333
+    -J baxter::left_w2 -0.0124707" />
+
+  <!-- baxter startup -->
+  <include file="$(find jsk_baxter_startup)/baxter.launch">
+    <arg name="launch_servo" value="false"/>
+    <arg name="launch_joint_trajectory" value="false"/>
+    <arg name="launch_gripper_action" value="false"/>
+    <arg name="launch_openni" value="false"/>
+    <arg name="launch_kinect2" value="false"/>
+    <arg name="launch_voice_echo" value="false"/>
+    <arg name="launch_moveit" value="false"/>
+    <arg name="launch_teleop" value="false"/>
+    <arg name="launch_tweet" value="false"/>
+    <arg name="launch_mongodb" value="false"/>
+    <arg name="launch_wrench" value="false"/>
+    <arg name="launch_time_signal" value="false"/>
+    <arg name="start_openni" value="false"/>
+    <arg name="USER_NAME" value="false"/>
+  </include>
+
+  <!-- ros_control baxter launch file -->
+  <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch">
+    <arg name="right_electric_gripper" value="false"/>
+    <arg name="left_electric_gripper" value="false"/>
+    <arg name="grav_right_name" value="right_gripper_base" />
+    <arg name="grav_left_name" value="left_gripper_base" />
+    <arg name="right_tip_name" value="right_gripper_base" />
+    <arg name="left_tip_name" value="left_gripper_base" />
+  </include>
+
+  <node name="gripper_trajectory_server"
+        pkg="jsk_2016_01_baxter_apc" type="gripper_trajectory_server" output="screen">
+    <rosparam param="limb" subst_value="True">$(arg gripper_v4_limb)</rosparam>
+  </node>
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_ros_control.launch">
+    <arg name="gazebo" value="false" />
+  </include>
+
+  <!-- initialize baxter gazebo -->
+  <node name="initialize_baxter"
+        pkg="jsk_2015_05_baxter_apc" type="initialize_baxter.py"
+        output="screen" />
+
+</launch>
