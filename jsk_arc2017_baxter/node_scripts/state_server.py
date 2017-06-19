@@ -11,18 +11,16 @@ import rospy
 import threading
 
 
-class StateServer(object):
+class StateServer(threading.Thread):
     def __init__(self):
+        super(StateServer, self).__init__(target=self._run_services)
         self.is_pick = rospy.get_param('~is_pick', True)
         self.state = {
             'right': 'init',
             'left': 'init'
         }
         self.lock = threading.Lock()
-        self.thread = threading.Thread(target=self._run_services)
-
-    def run(self):
-        self.thread.start()
+        self.daemon = True
 
     def _run_services(self):
         self.services = []
@@ -56,7 +54,6 @@ class StateServer(object):
                 '~right_hand/check_can_start',
                 CheckCanStart,
                 self._check_right_can_start))
-        rospy.spin()
 
     def _check_left_can_start(self, req):
         can_start = self._check_can_start(
@@ -161,4 +158,5 @@ class StateServer(object):
 if __name__ == "__main__":
     rospy.init_node('state_server')
     state_server = StateServer()
-    state_server.run()
+    state_server.start()
+    rospy.spin()
