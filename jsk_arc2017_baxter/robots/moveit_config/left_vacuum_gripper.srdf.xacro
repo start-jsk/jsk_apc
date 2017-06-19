@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="vacuum_gripper">
+    <xacro:macro name="vacuum_gripper" params="side">
+    <disable_collisions link1="${side}_gripper_base" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="pedestal" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="pedestal" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="pedestal" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_vacuum_pad" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_vacuum_pad_base" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_hand" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_hand_camera" reason="Default" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_wrist" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_gripper_vacuum_pad_base" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_lower_shoulder" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad" link2="${side}_wrist" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_vacuum_pad_base" link2="${side}_wrist" reason="Never" />
+    </xacro:macro>
+</robot>
