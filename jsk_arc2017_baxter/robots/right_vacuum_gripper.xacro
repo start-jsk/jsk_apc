@@ -4,17 +4,36 @@
   <!-- Gazebo Tags -->
   <gazebo reference="right_gripper_base">
     <selfCollide>true</selfCollide>
-    <material>Gazebo/White</material>
+    <material>Gazebo/Black</material>
   </gazebo>
-  <gazebo reference="right_gripper_vacuum_pad_base">
+  <gazebo reference="right_gripper_tube">
     <selfCollide>true</selfCollide>
     <material>Gazebo/Grey</material>
   </gazebo>
-  <gazebo reference="right_gripper_vacuum_pad">
+  <gazebo reference="right_gripper_pad_with_base">
     <selfCollide>true</selfCollide>
     <material>Gazebo/Green</material>
   </gazebo>
+  <gazebo reference="right_gripper_l_finger_base">
+    <selfCollide>true</selfCollide>
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="right_gripper_r_finger_base">
+    <selfCollide>true</selfCollide>
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="right_gripper_l_finger">
+    <selfCollide>true</selfCollide>
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="right_gripper_r_finger">
+    <selfCollide>true</selfCollide>
+    <material>Gazebo/Black</material>
+  </gazebo>
   <gazebo reference="right_gripper_vacuum_pad_joint">
+    <implicitSpringDamper>false</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="right_gripper_prismatic_joint">
     <implicitSpringDamper>false</implicitSpringDamper>
   </gazebo>
   <!--Link bodies-->
@@ -296,6 +315,7 @@
     <child link="right_gripper_tube"/>
     <axis xyz="0 0 1"/>
     <limit lower="0" upper="0.124" effort="0" velocity="0.132"/>
+    <dynamics damping="0.7"/>
   </joint>
   <joint name="right_gripper_vacuum_pad_joint" type="revolute">
     <origin rpy="0 0 0" xyz="${pad_joint_offset_x} ${pad_joint_offset_y} ${pad_joint_offset_z}"/>
