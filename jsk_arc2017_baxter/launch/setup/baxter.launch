@@ -1,10 +1,9 @@
 <launch>
 
   <arg name="moveit" default="true" />
-  <arg name="pick" default="false" />
-  <arg name="stow" default="false" />
-  <arg name="collect_data" default="false" />
   <arg name="stereo" default="false" />
+  <!-- task : "pick_task", "stow_task" or "collect_data" -->
+  <arg name="task" default="pick_task" />
 
   <!-- custom baxter params -->
   <param name="/robot_description"
@@ -56,9 +55,7 @@
 
   <node name="interactive_adjust_shelf"
         pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" if="$(arg pick)" file="$(find jsk_arc2017_common)/config/pick_task/shelf_marker.yaml"/>
-    <rosparam command="load" if="$(arg stow)" file="$(find jsk_arc2017_common)/config/stow_task/shelf_marker.yaml"/>
-    <rosparam command="load" if="$(arg collect_data)" file="$(find jsk_arc2017_common)/config/collect_data/shelf_marker.yaml"/>
+    <rosparam command="load" file="$(find jsk_arc2017_common)/config/$(arg task)/shelf_marker.yaml"/>
   </node>
 
   <node name="publish_bin_boxes"
