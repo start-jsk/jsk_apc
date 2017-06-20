@@ -5,5 +5,4 @@ boxes:
     dimension: [0.3, 0.32, 0.15] 
   # bbox for right arm
   - position: [0, -0.12, 0]
-    dimension: [0.3, 0.32, 0.15] 
-
+    dimension: [0.3, 0.32, 0.15]
