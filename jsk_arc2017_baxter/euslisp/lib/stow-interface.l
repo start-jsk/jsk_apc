@@ -12,19 +12,21 @@
 (defclass jsk_arc2017_baxter::stow-interface
   :super jsk_arc2017_baxter::arc-interface
   :slots (graspingp
-           moveit-p
+          moveit-p
           picking-fail-count
           recognize-fail-count
           target-bin
           target-obj
-          tote-contents))
+          tote-contents
+          grasp-style))
 
 (defmethod jsk_arc2017_baxter::stow-interface
   (:init (&key (moveit nil))
     (send-super :init)
     (setq picking-fail-count 0)
     (setq recognize-fail-count 0)
-    (setq moveit-p moveit))
+    (setq moveit-p moveit)
+    (setq grasp-style nil))
   (:recognize-bboxes (arm)
     (ros::ros-info "[main] recognizing bin boxes")
     (send self :recognize-bin-boxes :stamp (ros::time-now))
@@ -71,14 +73,18 @@
     (incf recognize-fail-count)
     (ros::ros-info "[main] arm: ~a, recognize fail count: ~a" arm recognize-fail-count)
     (> recognize-fail-count 1))
+  (:set-grasp-style (arm)
+    (if (and (eq grasp-style :suction) (eq arm :rarm))
+      (setq grasp-style :pinch) (setq grasp-style :suction)))
   (:pick-object (arm)
     (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-tote-scene arm))
     (send self :pick-object-in-tote arm
-          :n-trial 2
+          :n-trial 1
           :n-trial-same-pos 1
-          :do-stop-grasp nil)
-    (if (send *ri* :finger-closep arm)
+          :do-stop-grasp nil
+          :grasp-style grasp-style)
+    (if (eq grasp-style :pinch)
       (send *ri* :angle-vector
             (send self :ik->tote-center arm
                   :offset #f(0 0 300) :rotation-axis :z :move-palm-end t)
@@ -144,7 +150,7 @@
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
       (when moveit-p (send self :add-tote-scene arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
-      (if (send *ri* :finger-closep arm)
+      (if (eq grasp-style :pinch)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
                     :offset #f(0 0 300) :rotation-axis nil :move-palm-end t)
@@ -172,7 +178,7 @@
           (when moveit-p (send self :delete-bin-scene target-bin))
           (send *ri* :angle-vector-raw
                 (send *baxter* arm :move-end-pos #f(0 0 -300) :world
-                      :rotation-axis (not (send *ri* :finger-closep arm)))
+                      :rotation-axis (eq grasp-style :suction))
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm :suction) ;; release object
@@ -182,13 +188,14 @@
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-raw
                 (send *baxter* arm :move-end-pos #f(0 0 300) :world
-                      :rotation-axis (not (send *ri* :finger-closep arm)))
+                      :rotation-axis (eq grasp-style :suction))
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (if (eq arm :rarm)
             (send *ri* :move-hand arm
                   (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
-          (when moveit-p (send self :add-bin-scene target-bin))))))
+          (when moveit-p (send self :add-bin-scene target-bin))))
+      (setq grasp-style nil)))
   (:return-from-place-object (arm)
     (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation)))
