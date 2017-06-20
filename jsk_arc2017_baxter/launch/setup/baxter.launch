@@ -2,8 +2,7 @@
 
   <arg name="moveit" default="true" />
   <arg name="stereo" default="false" />
-  <!-- task : "pick_task", "stow_task" or "collect_data" -->
-  <arg name="task" default="pick_task" />
+  <arg name="pick" default="true" doc="pick_task: true, stow_task: false" />
   <arg name="gripper_v4_limb" default="['left']" />
 
   <!-- custom baxter params -->
@@ -65,15 +64,10 @@
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/astra_hand.launch" />
   </group>
 
-  <node name="interactive_adjust_shelf"
-        pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" file="$(find jsk_arc2017_baxter)/config/$(arg task)/shelf_marker.yaml"/>
-  </node>
-
-  <node name="publish_bin_boxes"
-        pkg="jsk_recognition_utils" type="bounding_box_array_publisher.py">
-    <rosparam file="$(find jsk_arc2017_common)/config/shelf_bin.yaml" command="load" />
-  </node>
+  <!-- picking source location: shelf/tote -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/incude/setup_source_location.xml">
+    <arg name="pick" value="$(arg pick)" />
+  </include>
 
   <node name="desktop_bg_publisher"
         pkg="jsk_perception" type="image_publisher.py">

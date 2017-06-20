@@ -122,33 +122,47 @@
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:recognize-tote-boxes
-    (arm &key (stamp (ros::time-now)))
-    (let ((box-topic (format nil "~a_hand_camera/attention_clipper_tote/output/box_array"
-                             (arm2str arm)))
-                     box-msg bbox)
+    (&key (stamp (ros::time-now)))
+    (let ((box-topic (format nil "publish_tote_boxes/output"))
+                     box-msg box-list)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
                                         :timeout 10000
                                         :after-stamp stamp))
       (if box-msg
         (progn
-          (ros::ros-info "[:recognize-tote-boxes] arm: ~a Recognize tote bbox" (arm2str arm))
-          (setq bbox (car (send box-msg :boxes)))
-          (sethash arm tote-cubes- (send self :bbox->cube bbox)))
-        (ros::ros-fatal "[:recognize-tote-boxes] arm: ~a Cannot find tote bbox" (arm2str arm)))))
+          (ros::ros-info "[~a] [:recognize-tote-boxes] recognize tote bbox" (ros::get-name))
+          (setq bbox-list (send box-msg :boxes))
+          (dolist (arm '(:larm :rarm))
+            (sethash arm tote-cubes- (send self :bbox->cube (pop bbox-list)))))
+        (ros::ros-fatal "[:recognize-tote-boxes] cannot recognize tote bbox"))))
   (:visualize-bins ()
-    (let (bins)
-      (dolist (box-inside (send bin-cubes- :list-values))
-        (let ((bin-outside (make-cube (+ (x-of-cube box-inside) 30)
+    (ros::ros-warn ":visualize-bins was deprecated. Please use :visualize-boxes.")
+    (send self :visualize-boxes :box-type :bin))
+  (:visualize-boxes (&key (box-type :bin))
+    "Visualize boxes
+     Arguments
+     ---------
+     box-type: symbol
+       :bin, :tote or :cardboard"
+    (let (boxes box-color box-cubes)
+      (cond
+        ((eq box-type :bin) (setq box-cubes bin-cubes- box-color :blue))
+        ((eq box-type :tote) (setq box-cubes tote-cubes- box-color :red))
+        ((eq box-type :cardboard) (ros::ros-error "Not implemented box-type: :cardboard"))
+        (t (ros::ros-error "Unsupported box-type ~a" box-type))
+        )
+      (dolist (box-inside (send box-cubes :list-values))
+        (let ((box-outside (make-cube (+ (x-of-cube box-inside) 30)
                                       (+ (y-of-cube box-inside) 30)
                                       (z-of-cube box-inside)))
-              (bin-model))
-          (send bin-outside :newcoords (send bin-inside :copy-worldcoords))
-          (send bin-outside :translate (float-vector 0 0 15) :world)
-          (setq bin-model (body- bin-outside bin-inside))
-          (send bin-model :set-color :blue 0.5)
-          (pushback bin-model bins)))
-      bins))
+              (box-model))
+          (send box-outside :newcoords (send box-inside :copy-worldcoords))
+          (send box-outside :translate (float-vector 0 0 15) :world)
+          (setq box-model (body- box-outside box-inside))
+          (send box-model :set-color box-color 0.5)
+          (pushback box-model boxes)))
+      boxes))
   (:recognize-target-object
     (arm &key (stamp (ros::time-now)) (timeout 10))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_target/boxes" (arm2str arm)))
