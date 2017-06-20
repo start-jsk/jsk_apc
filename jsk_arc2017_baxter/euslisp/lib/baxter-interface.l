@@ -4,6 +4,7 @@
 
 (require "package://baxtereus/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
 (require "package://jsk_arc2017_baxter/euslisp/lib/baxter.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
 
@@ -23,8 +24,8 @@
   (:init
     (&rest args &key
            ((:moveit-environment mvit-env)
-            (instance jsk_arc2017_baxter::baxter-moveit-environment))
-           ((:moveit-robot mvit-rb) (instance jsk_arc2017_baxter::baxter-robot :init))
+            (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
+           ((:moveit-robot mvit-rb) (instance jsk_2016_01_baxter_apc::baxter-robot :init))
            &allow-other-keys)
     ;; initialize controllers
     (send-super* :init :joint-states-queue-size 3
