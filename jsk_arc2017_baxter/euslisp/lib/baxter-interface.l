@@ -71,6 +71,7 @@
     (setq finger-load- (make-hash-table))
     (setq finger-flex- (make-hash-table))
     (setq prismatic-load- (make-hash-table))
+    (setq prismatic-vel- (make-hash-table))
     (dolist (arm (list :rarm :larm))
       (ros::subscribe (format nil "/gripper_front/limb/~a/pressure/state" (arm2str arm))
                       std_msgs::Float64
@@ -84,7 +85,7 @@
       (ros::subscribe (format nil "/gripper_front/limb/~a/dxl/prismatic_joint_controller/state"
                               (arm2str arm))
                       dynamixel_msgs::JointState
-                      #'send self :set-prismatic-load arm
+                      #'send self :set-prismatic-state arm
                       :groupname groupname)
       (sethash arm finger-flex- (make-hash-table))
       (dolist (side (list :right :left))
@@ -145,9 +146,10 @@
   (:set-finger-load
     (arm msg)
     (sethash arm finger-load- (send msg :load)))
-  (:set-prismatic-load
+  (:set-prismatic-state
     (arm msg)
-    (sethash arm prismatic-load- (send msg :load)))
+    (sethash arm prismatic-load- (send msg :load))
+    (sethash arm prismatic-vel- (send msg :velocity)))
   (:set-finger-flex
     (arm side msg)
     (sethash side (gethash arm finger-flex-) (send msg :data)))
@@ -191,6 +193,9 @@
   (:get-prismatic-load (arm)
     (send self :spin-once)
     (gethash arm prismatic-load-))
+  (:get-prismatic-vel (arm)
+    (send self :spin-once)
+    (gethash arm prismatic-vel-))
   (:get-real-finger-av (arm)
     (send self :update-robot-state :wait-until-update t)
     (float-vector
@@ -354,6 +359,12 @@
         (ros::ros-info "[:wait-interpolation-until] Prepare for finger unloaded")
         (pushback
           #'(lambda () (< (send self :get-finger-load arm) (- init-load 0.01)))
+          conds))
+      (when (member :prismatic-loaded args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for prismatic joint loaded")
+        (pushback
+          #'(lambda () (and (< (send self :get-prismatic-load arm) -0.07)
+                            (< (send self :get-prismatic-vel arm) 0.01)))
           conds))
       ;; wait for :interpolatingp
       (unix::usleep 1000)
