@@ -350,8 +350,8 @@
           (send *ri* :start-grasp arm)
           (send *ri* :angle-vector-raw (send *baxter* :angle-vector target-av)
                 3000 (send *ri* :get-arm-controller arm) 0)
-          ;; Wait until grasp to prevent tooth flying
-          (send *ri* :wait-interpolation-until-grasp arm)))
+          ;; Wait until grasp or push object to prevent tooth flying
+          (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)))
       (send *ri* :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
@@ -359,7 +359,9 @@
                   :use-gripper t
                   :rotation-axis :z)
             3000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :wait-interpolation-until-grasp arm)
+      (if (eq arm :larm)
+        (send *ri* :wait-interpolation-until-grasp arm)
+        (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded))
       (setq graspingp (send *ri* :graspingp arm))
       (ros::ros-info "[:try-to-suction-object] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
@@ -369,10 +371,14 @@
           (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
             (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
                   3000 (send *ri* :get-arm-controller arm) 0))
-          (send *ri* :wait-interpolation-until-grasp arm)
+          (if (eq arm :larm)
+            (send *ri* :wait-interpolation-until-grasp arm)
+            (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded))
           (send *ri* :angle-vector-raw (send *baxter* :angle-vector temp-av)
                   3000 (send *ri* :get-arm-controller arm) 0) ;; revert baxter
-          (send *ri* :wait-interpolation-until-grasp arm)))
+          (if (eq arm :larm)
+            (send *ri* :wait-interpolation-until-grasp arm)
+            (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded))))
       (when (eq arm :rarm)
         ;; Open fingers in bin
         (send *ri* :move-hand arm
@@ -415,7 +421,8 @@
                   :rotation-axis t)
             3000 (send *ri* :get-arm-controller arm) 0)
       ;; Wait until grasp or finger touch
-      (send *ri* :wait-interpolation-until arm :grasp :finger-flexion :finger-loaded)
+      (send *ri* :wait-interpolation-until arm
+            :grasp :finger-flexion :finger-loaded :prismatic-loaded)
       (send *ri* :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
@@ -423,12 +430,13 @@
                   :move-palm-end t
                   :rotation-axis t)
             3000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :wait-interpolation-until arm :grasp :finger-flexion :finger-loaded)
+      (send *ri* :wait-interpolation-until arm
+            :grasp :finger-flexion :finger-loaded :prismatic-loaded)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (send *ri* :angle-vector-raw
             (send *baxter* :slide-gripper :rarm 120 :relative nil)
             3000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :wait-interpolation-until arm :grasp)
+      (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (send *ri* :start-grasp arm :hand)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
