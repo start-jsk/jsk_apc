@@ -30,6 +30,10 @@
     local-name: FOR_PCL1.8/octomap_mapping
     uri: https://github.com/OctoMap/octomap_mapping.git
     version: indigo-devel
+- tar:
+    local-name: FOR_PCL1.8/pcl_conversions
+    uri: https://github.com/ros-gbp/pcl_conversions-release/archive/release/indigo/pcl_conversions/0.2.1-0.tar.gz
+    version: pcl_conversions-release-release-indigo-pcl_conversions-0.2.1-0
 - git:
     local-name: FOR_PCL1.8/perception_pcl
     uri: https://github.com/ros-perception/perception_pcl.git
