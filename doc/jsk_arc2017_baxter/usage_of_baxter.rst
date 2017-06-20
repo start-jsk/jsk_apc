@@ -39,7 +39,23 @@ arc-interface function APIs
 
   .. code-block:: lisp
 
-    (send *baxter* :rotate-gripper :larm 90)
+    (send *baxter* :rotate-gripper :larm 90 :relative nil)
+
+
+- slide right gripper
+
+  .. code-block:: lisp
+
+    (send *baxter* :slide-gripper :rarm 50 :relative nil)
+
+
+- move fingers in right gripper
+
+  .. code-block:: lisp
+
+    (send *baxter* :hand :rarm :angle-vector #f(90 90))
+    (send *baxter* :hand-grasp-pre-pose :rarm :opposed)
+    (send *baxter* :hand-grasp-pose :rarm :cylindrical)
 
 
 - send initial pose for arc2017
@@ -53,4 +69,13 @@ arc-interface function APIs
 
   .. code-block:: lisp
 
-    (send *ri* :send-av)
+    (send *ti* :send-av)
+
+
+- send current hand joint angles of robot model to real robot
+
+  .. code-block:: lisp
+
+    (send *ri* :move-hand :rarm (send *baxter* :hand :rarm :angle-vector) 1000)
+
+

@@ -2,8 +2,6 @@
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
-(require "package://jsk_arc2017_baxter/euslisp/lib/baxter.l")
-(require "package://jsk_arc2017_baxter/euslisp/lib/baxter-interface.l")
 (require "package://jsk_arc2017_baxter/euslisp/lib/arc-interface.l")
 
 (ros::load-ros-manifest "jsk_arc2017_baxter")
@@ -169,7 +167,7 @@
   (let (mvit-env mvit-rb)
     (when moveit
       (setq mvit-env (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
-      (setq mvit-rb (instance jsk_arc2017_baxter::baxter-robot :init)))
+      (setq mvit-rb (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
     (unless (boundp '*ri*)
       (setq *ri* (instance jsk_arc2017_baxter::baxter-interface :init :type ctype
                            :moveit-environment mvit-env

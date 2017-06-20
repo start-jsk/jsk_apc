@@ -2,7 +2,6 @@
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
-(require "package://jsk_arc2017_baxter/euslisp/lib/baxter.l")
 (require "package://jsk_arc2017_baxter/euslisp/lib/baxter-interface.l")
 
 (ros::load-ros-manifest "jsk_arc2017_baxter")
@@ -236,17 +235,54 @@
             (send self :get-object-position arm movable-region :object-index object-index))
       (ros::ros-info "[:pick-object-with-movable-region] arm:~a approach to the object" arm)
       (send *ri* :gripper-servo-on arm)
-      (send *ri* :angle-vector
-            (send *baxter* arm :inverse-kinematics
-                  (make-coords :pos (v+ obj-pos #f(0 0 150))
-                               :rpy #f(0 0 0))
-                  :use-gripper t
-                  :rotation-axis :z)
-            :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
-      (send *ri* :wait-interpolation)
+      (if (eq arm :larm)
+        (progn
+          (send *ri* :angle-vector
+                (send *baxter* arm :inverse-kinematics
+                      (make-coords :pos (v+ obj-pos #f(0 0 150))
+                                   :rpy #f(0 0 0))
+                      :use-gripper t
+                      :rotation-axis :z)
+                :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+          (send *ri* :wait-interpolation))
+        (let (prev-av next-av gripper-x)
+          (setq prev-av (send *baxter* :angle-vector))
+          (setq next-av
+                (send *baxter* arm :inverse-kinematics
+                      (make-coords :pos (v+ obj-pos #f(0 0 150))
+                                   :rpy #f(0 0 0))
+                      :use-gripper t
+                      :rotation-axis :z
+                      :stop 200
+                      :additional-check
+                      #'(lambda ()
+                          (and
+                            (< (send *baxter* arm :gripper-x :joint-angle) 110)
+                            (< -30 (send *baxter* arm :gripper-p :joint-angle) 30)))))
+          (setq gripper-x (send *baxter* arm :gripper-x :joint-angle))
+          (send *baxter* :angle-vector prev-av)
+          ;; First, move prismatic joint to target position
+          (send *ri* :angle-vector
+                (send *baxter* :slide-gripper arm gripper-x :relative nil)
+                :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+          (send *ri* :wait-interpolation)
+          ;; Fold fingers to avoid collision
+          (send *ri* :move-hand arm
+                (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000)
+          (send *ri* :move-hand arm
+                (send *baxter* :hand-grasp-pose arm :cylindrical :angle 100) 1000)
+          ;; Move whole arm to target pose
+          (send *ri* :angle-vector
+                (send *baxter* :angle-vector next-av)
+                :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+          (send *ri* :wait-interpolation)))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
+            (when (eq arm :rarm)
+              ;; Fold fingers again
+              (send *ri* :move-hand arm
+                    (send *baxter* :hand-grasp-pose arm :cylindrical :angle 100) 1000))
             (setq graspingp
                   (send self :try-to-pick-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -50) 30))))
@@ -255,6 +291,10 @@
       (send *ri* :angle-vector-sequence (reverse avs)
             :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
       (send *ri* :wait-interpolation)
+      (when (eq arm :rarm)
+        ;; Move fingers to initial pose
+        (send *ri* :move-hand arm
+              (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
       (send *ri* :gripper-servo-on arm)
       graspingp))
   (:get-object-position
@@ -283,18 +323,39 @@
   (:try-to-pick-object
     (arm obj-pos &key (offset #f(0 0 0)))
     (let (graspingp)
-      (send *ri* :angle-vector-raw
-            (send *baxter* arm :inverse-kinematics
-                  (make-coords :pos (v+ obj-pos offset)
-                               :rpy #f(0 0 0))
-                  :use-gripper t
-                  :rotation-axis :z)
-            3000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :wait-interpolation)
-      ;; start the vacuum gripper after approaching to the object
-      (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
-      (send *ri* :start-grasp arm)
-      (unix::sleep 1)
+      (if (eq arm :larm)
+        (progn
+          (send *ri* :angle-vector-raw
+                (send *baxter* arm :inverse-kinematics
+                      (make-coords :pos (v+ obj-pos offset)
+                                   :rpy #f(0 0 0))
+                      :use-gripper t
+                      :rotation-axis :z)
+                3000 (send *ri* :get-arm-controller arm) 0)
+          (send *ri* :wait-interpolation)
+          ;; start the vacuum gripper after approaching to the object
+          (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
+          (send *ri* :start-grasp arm)
+          (unix::sleep 1))
+        (progn
+          ;; start the vacuum gripper before approaching to the object
+          (ros::ros-info "[:try-to-pick-object] arm:~a start vacuum gripper" arm)
+          (send *ri* :start-grasp arm)
+          (send *ri* :angle-vector-raw
+                (send *baxter* arm :inverse-kinematics
+                      (make-coords :pos (v+ obj-pos offset)
+                                   :rpy #f(0 0 0))
+                      :use-gripper t
+                      :rotation-axis :z
+                      :stop 200
+                      :additional-check
+                      #'(lambda ()
+                          (and
+                            (< (send *baxter* arm :gripper-x :joint-angle) 110)
+                            (< -30 (send *baxter* arm :gripper-p :joint-angle) 30))))
+                3000 (send *ri* :get-arm-controller arm) 0)
+          ;; Wait until grasp to prevent tooth flying
+          (send *ri* :wait-interpolation-until-grasp arm)))
       (send *ri* :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
@@ -302,7 +363,7 @@
                   :use-gripper t
                   :rotation-axis :z)
             3000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :wait-interpolation)
+      (send *ri* :wait-interpolation-until-grasp arm)
       (setq graspingp (send *ri* :graspingp arm))
       (ros::ros-info "[:try-to-pick-object] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
@@ -312,10 +373,14 @@
           (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
             (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
                   3000 (send *ri* :get-arm-controller arm) 0))
-          (send *ri* :wait-interpolation)
+          (send *ri* :wait-interpolation-until-grasp arm)
           (send *ri* :angle-vector-raw (send *baxter* :angle-vector temp-av)
                   3000 (send *ri* :get-arm-controller arm) 0) ;; revert baxter
-          (send *ri* :wait-interpolation)))
+          (send *ri* :wait-interpolation-until-grasp arm)))
+      (when (eq arm :rarm)
+        ;; Open fingers in bin
+        (send *ri* :move-hand arm
+              (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000))
       ;; lift object
       (ros::ros-info "[:try-to-pick-object] arm:~a lift the object" arm)
       (send *ri* :gripper-servo-off arm)
@@ -496,7 +561,7 @@
   (let (mvit-env mvit-rb)
     (when moveit
       (setq mvit-env (instance jsk_2016_01_baxter_apc::baxter-moveit-environment))
-      (setq mvit-rb (instance jsk_arc2017_baxter::baxter-robot :init)))
+      (setq mvit-rb (instance jsk_2016_01_baxter_apc::baxter-robot :init)))
     (unless (boundp '*ri*)
       (setq *ri* (instance jsk_arc2017_baxter::baxter-interface :init :type ctype
                            :moveit-environment mvit-env

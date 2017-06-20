@@ -58,7 +58,7 @@
       </rosparam>
     </node>
   </group>
- 
+
   <group ns="right_hand_camera">
     <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
     <node name="bbox_array_to_bbox"
