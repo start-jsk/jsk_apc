@@ -15,8 +15,10 @@
             (:recognize-bin-boxes -> :wait-for-user-input)
             (:wait-for-user-input -> :wait-for-opposite-arm)
             (:wait-for-user-input !-> :finish)
-            (:wait-for-opposite-arm -> :set-target)
+            (:wait-for-opposite-arm -> :check-grasp-style)
             (:wait-for-opposite-arm !-> :wait-for-opposite-arm)
+            (:check-grasp-style -> :set-target)
+            (:check-grasp-style !-> :recognize-object)
             (:set-target -> :recognize-object)
             (:set-target !-> :wait-for-user-input)
             (:recognize-object -> :set-grasp-style)
@@ -56,6 +58,10 @@
                  (send *ti* :update-state *arm* :wait-for-opposite-arm)
                  (send *ti* :check-can-start *arm* :set-target
                        :wait-for-opposite-arm)))
+            (:check-grasp-style
+              '(lambda (userdata)
+                 (send *ti* :update-state *arm* :check-grasp-style)
+                 (send *ti* :check-grasp-style *arm*)))
             (:set-target
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :set-target)

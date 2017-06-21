@@ -47,8 +47,9 @@
       (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
       (setq order nil)
       can-start))
+  (:check-grasp-style (arm)
+    (if (eq grasp-style :suction) nil t))
   (:set-target (arm)
-    (if (oddp picking-fail-count) (return-from :set-target t))
     (setq label-names
           (ros::get-param (format nil "/~a_hand_camera/label_names"
                                   (arm2str arm))))

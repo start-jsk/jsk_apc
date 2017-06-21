@@ -86,13 +86,14 @@ class StateServer(threading.Thread):
         if self.is_pick:
             # pick task: wait condition
             if state == 'wait-for-opposite-arm-start-picking':
-                if opposite_state == 'set-target' \
+                if opposite_state == 'check-grasp-style' \
                         or opposite_state == 'wait-for-user-input':
                     can_start = True
                 else:
                     can_start = False
             elif state == 'wait-for-opposite-arm':
-                if opposite_state == 'set-target' \
+                if opposite_state == 'check-grasp-style' \
+                        or opposite_state == 'set-target' \
                         or opposite_state == 'recognize-object' \
                         or opposite_state == 'set-grasp-style' \
                         or opposite_state == 'pick-object' \
