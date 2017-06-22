@@ -443,10 +443,7 @@
       (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
       (send *baxter* :reset-pose arm)
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
-      (setq offset
-            (cond ((eq bin :a) (float-vector -100 offset-y 250))
-                  ((eq bin :b) (float-vector -200 offset-y 200))
-                  ((eq bin :c) (float-vector -150 offset-y 200))))
+      (setq offset (float-vector -100 offset-y 250))
       (setq rpy
             (float-vector 0 pi/2 (if (eq arm :larm) pi/2 -pi/2)))
       (pushback

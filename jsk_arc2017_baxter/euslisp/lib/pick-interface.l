@@ -163,7 +163,7 @@
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
       (send *ri* :angle-vector
             (send self :ik->cardboard-center arm target-cardboard
-                  :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+                  :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
             4000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm)))
@@ -174,13 +174,13 @@
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
           (when moveit-p (send self :delete-cardboard-scene))
-          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
+          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -200) :world)
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm) ;; release object
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 300) :world)
+          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 200) :world)
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (when moveit-p (send self :add-cardboard-scene))))))
