@@ -215,9 +215,10 @@
   (:pick-object-with-movable-region
     (arm movable-region &key (n-trial 1) (n-trial-same-pos 1)
          (do-stop-grasp nil) (grasp-style :suction))
-    (let (graspingp avs object-index)
+    (let (graspingp avs object-index obj-pos obj-cube)
       ;; TODO: object-index is set randomly
       (setq object-index (random (length (gethash arm object-boxes-))))
+      (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) object-index)))
       (setq obj-pos
             (send self :get-object-position arm movable-region :object-index object-index))
       (ros::ros-info "[:pick-object-with-movable-region] arm:~a approach to the object" arm)
@@ -253,7 +254,8 @@
               (setq next-av
                     (send *baxter* arm :inverse-kinematics
                           (make-coords :pos (v+ obj-pos #f(0 0 200))
-                                       :rpy (float-vector pi/2 0 0))
+                                       :rpy (if (> (x-of-cube obj-cube) (y-of-cube obj-cube))
+                                              (float-vector pi/2 0 0) (float-vector 0 0 0)))
                           :move-palm-end t
                           :rotation-axis t))))
           (setq gripper-x (send *baxter* arm :gripper-x :joint-angle))
@@ -280,7 +282,7 @@
                   (if (eq grasp-style :suction)
                     (send self :try-to-suction-object arm obj-pos
                           :offset (float-vector 0 0 (- (* i -50) 30)))
-                    (send self :try-to-pinch-object arm obj-pos
+                    (send self :try-to-pinch-object arm obj-pos obj-cube
                           :offset (float-vector 0 0 (- (* i -50) 30))))))))
       (when do-stop-grasp (unless graspingp (send *ri* :stop-grasp arm)))
       (send *ri* :wait-interpolation)
@@ -398,7 +400,7 @@
       (ros::ros-info "[:try-to-suction-object] arm:~a graspingp: ~a" arm graspingp)
     graspingp))
   (:try-to-pinch-object
-    (arm obj-pos &key (offset #f(0 0 0)))
+    (arm obj-pos obj-cube &key (offset #f(0 0 0)))
     (let (graspingp)
       ;; Initialize finger
       (send *ri* :move-hand arm
@@ -409,7 +411,8 @@
       (send *ri* :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos offset)
-                               :rpy (float-vector pi/2 0 0))
+                               :rpy (if (> (x-of-cube obj-cube) (y-of-cube obj-cube))
+                                      (float-vector pi/2 0 0) (float-vector 0 0 0)))
                   :move-palm-end t
                   :rotation-axis t)
             3000 (send *ri* :get-arm-controller arm) 0)
@@ -419,7 +422,8 @@
       (send *ri* :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
-                               :rpy (float-vector pi/2 0 0))
+                               :rpy (if (> (x-of-cube obj-cube) (y-of-cube obj-cube))
+                                      (float-vector pi/2 0 0) (float-vector 0 0 0)))
                   :move-palm-end t
                   :rotation-axis t)
             3000 (send *ri* :get-arm-controller arm) 0)
