@@ -184,6 +184,8 @@
           res)
         nil)
       nil))
+  (:cancel-move-hand()
+    (send right-hand-action- :cancel-goal))
   (:get-finger-flex (arm side)
     (send self :spin-once)
     (gethash side (gethash arm finger-flex-)))
