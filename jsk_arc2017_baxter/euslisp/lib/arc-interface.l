@@ -411,10 +411,10 @@
     (send *baxter* arm :inverse-kinematics
           (make-coords
             :pos (v+ offset
-                     (cond ((eq cardboard :a) (float-vector 950 500 0))
-                           ((eq cardboard :b) (float-vector 650 500 0))
-                           (t (float-vector 800 -500 0))))
-            :rpy (float-vector 0 0 0))
+                     (cond ((eq cardboard :a) (float-vector 1200 100 550))
+                           ((eq cardboard :b) (float-vector 1200 -200 550))
+                           (t (float-vector 1200 0 165))))
+            :rpy (float-vector 0 (/ -pi/2 2) 0))
           :rotation-axis rotation-axis
           :use-gripper use-gripper))
   (:ik->tote-center
