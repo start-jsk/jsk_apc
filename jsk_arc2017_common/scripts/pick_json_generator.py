@@ -30,9 +30,9 @@ def generate_pick_json(dirname):
     bin_contents = random.sample(label_list, 32)
     target_items = random.sample(bin_contents, 10)
     random.shuffle(bin_contents)
-    bin_A_contents = bin_contents[:16]
-    bin_B_contents = bin_contents[16:24]
-    bin_C_contents = bin_contents[24:32]
+    bin_A_contents = bin_contents[:10]
+    bin_B_contents = bin_contents[10:22]
+    bin_C_contents = bin_contents[22:32]
     random.shuffle(target_items)
     box_A_contents = target_items[:2]
     box_B_contents = target_items[2:5]
