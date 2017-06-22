@@ -435,7 +435,7 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
-      (send *ri* :start-grasp arm :hand)
+      (send *ri* :start-grasp arm :pinch)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (setq graspingp (send *ri* :graspingp arm))
       (ros::ros-info "[:try-to-pinch-object] arm:~a graspingp: ~a" arm graspingp)

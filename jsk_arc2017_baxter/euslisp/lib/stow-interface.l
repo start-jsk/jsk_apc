@@ -100,7 +100,7 @@
   (:return-from-pick-object (arm)
     (send *ri* :stop-grasp arm :suction)
     (when (eq arm :rarm)
-      (send *ri* :stop-grasp arm :hand)
+      (send *ri* :stop-grasp arm :pinch)
       (send *ri* :move-hand arm
             (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
     (ros::ros-info "[main] arm: ~a return from pick-object to fold-pose-back" arm)
@@ -170,7 +170,7 @@
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm :suction)
           (when (eq arm :rarm)
-            (send *ri* :stop-grasp arm :hand)
+            (send *ri* :stop-grasp arm :pinch)
             (send *ri* :move-hand arm
                   (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)))
         (progn
@@ -183,7 +183,7 @@
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm :suction) ;; release object
           (if (eq arm :rarm)
-            (send *ri* :stop-grasp arm :hand)) ;; release object
+            (send *ri* :stop-grasp arm :pinch)) ;; release object
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-raw

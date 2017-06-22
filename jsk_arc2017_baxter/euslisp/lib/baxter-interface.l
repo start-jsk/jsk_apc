@@ -222,7 +222,7 @@
                (ros::publish
                  (format nil "/vacuum_gripper/limb/~a" (arm2str l/r))
                  (instance std_msgs::Bool :init :data t))))
-            ((eq type :hand)
+            ((eq type :pinch)
              (send self :update-robot-state :wait-until-update t)
              (let ((finger-av (send self :get-real-finger-av l/r))
                    (prev-av (send robot :angle-vector)) avs)
@@ -248,7 +248,7 @@
                (ros::publish
                  (format nil "/vacuum_gripper/limb/~a" (arm2str l/r))
                  (instance std_msgs::Bool :init :data nil))))
-            ((eq type :hand)
+            ((eq type :pinch)
              (send self :update-robot-state :wait-until-update t)
              (let ((finger-av (send self :get-real-finger-av l/r))
                    (prev-av (send robot :angle-vector)) avs)
@@ -294,7 +294,7 @@
                        (> (send self :get-finger-load arm) 0.55))))
           (send self :spin-once)
           (or (if (not (eq type :suction)) fingerp nil)
-              (if (not (eq type :hand))
+              (if (not (eq type :pinch))
                 (< (gethash arm pressure-)
                    (cond
                      ((eq arm :rarm) rarm-pressure-threshold-)
