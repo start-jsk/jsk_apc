@@ -131,15 +131,15 @@
     graspingp)
   (:return-from-pick-object (arm)
     (send *ri* :stop-grasp arm :suction)
-    (when (eq arm :rarm)
-      (send *ri* :stop-grasp arm :pinch)
-      (send *ri* :move-hand arm
-            (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
     (send *ri* :angle-vector-sequence
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
-    (send *ri* :wait-interpolation))
+    (send *ri* :wait-interpolation)
+    (when (eq arm :rarm)
+      (send *ri* :stop-grasp arm :pinch)
+      (send *ri* :move-hand arm
+            (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)))
   (:verify-object (arm)
     (setq picking-fail-count 0)
     ;; TODO: in-hand verification
