@@ -15,8 +15,7 @@
           bin-movable-regions-
           object-boxes-
           object-coords-
-          larm-cardboard-cube-
-          rarm-cardboard-cube-
+          cardboard-cubes-
           tote-cubes-
           tote-movable-regions-
           ))
@@ -28,12 +27,17 @@
     (setq bin-movable-regions- (make-hash-table))
     (setq object-boxes- (make-hash-table))
     (setq object-coords- (make-hash-table))
-    (setq rarm-cardboard-cube- (make-cube 800 400 300))
-    (send rarm-cardboard-cube- :newcoords
-          (make-coords :pos (float-vector 800 -500 -100)))
-    (setq larm-cardboard-cube- (make-cube 800 400 300))
-    (send larm-cardboard-cube- :newcoords
-          (make-coords :pos (float-vector 800 500 -100)))
+    (setq cardboard-cubes- (make-hash-table))
+    (setq upper-cardboard-cube (make-cube 400 800 200))
+    (send upper-cardboard-cube :newcoords
+          (make-coords :pos (float-vector 1200 0 550)
+                       :rpy (float-vector 0 (/ -pi/2 2) 0)))
+    (setq lower-cardboard-cube (make-cube 400 800 200))
+    (send lower-cardboard-cube :newcoords
+          (make-coords :pos (float-vector 1200 0 165)
+                       :rpy (float-vector 0 (/ -pi/2 2) 0)))
+    (sethash :upper cardboard-cubes- upper-cardboard-cube)
+    (sethash :lower cardboard-cubes- lower-cardboard-cube)
     (setq tote-cubes- (make-hash-table))
     (setq tote-movable-regions- (make-hash-table)))
   (:fold-pose-back
@@ -501,15 +505,18 @@
   (:delete-shelf-scene ()
     (dolist (bin (list :a :b :c))
       (send self :delete-bin-scene bin)))
-  (:add-cardboard-scene (arm)
-    (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-))
-          (base-name (send (send *baxter* :base_lk) :name)))
-      (send *co* :add-object cardboard-cube :frame-id base-name
-            :relative-pose (send cardboard-cube :copy-worldcoords)
-            :object-id (format nil "~a_cardboard" (arm2str arm)))))
-  (:delete-cardboard-scene (arm)
-    (let ((cardboard-cube (if (eq arm :larm) larm-cardboard-cube- rarm-cardboard-cube-)))
-      (send *co* :delete-object cardboard-cube)))
+  (:add-cardboard-scene ()
+    (let (cardboard-cube (base-name (send (send *baxter* :base_lk) :name)))
+      (dolist (key (list :upper :lower))
+        (setq cardboard-cube (gethash key cardboard-cubes-))
+        (send *co* :add-object cardboard-cube :frame-id base-name
+              :relative-pose (send cardboard-cube :copy-worldcoords)
+              :object-id (format nil "~a_cardboard" (symbol2str key))))))
+  (:delete-cardboard-scene ()
+    (let (cardboard-cube)
+      (dolist (key (list :upper :lower))
+        (setq cardboard-cube (gethash key cardboard-cubes-))
+        (send *co* :delete-object cardboard-cube))))
   (:add-tote-scene (arm)
     (let ((cube (gethash arm tote-cubes-))
           (base-name (send (send *baxter* :base_lk) :name)))
