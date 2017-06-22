@@ -2,26 +2,26 @@
     "orders": [
         {
             "contents": [
-                "tissue_box",
-                "expo_eraser"
+                "ticonderoga_pencils",
+                "balloons"
             ],
             "size_id": "1AD"
         },
         {
             "contents": [
-                "marbles",
-                "windex",
-                "hinged_ruled_index_cards"
+                "hanes_socks",
+                "toilet_brush",
+                "plastic_wine_glass"
             ],
             "size_id": "1A5"
         },
         {
             "contents": [
-                "measuring_spoons",
-                "glue_sticks",
-                "tennis_ball_container",
-                "robots_dvd",
-                "table_cloth"
+                "duct_tape",
+                "pie_plates",
+                "marbles",
+                "tissue_box",
+                "poland_spring_water"
             ],
             "size_id": "K3"
         }
