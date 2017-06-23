@@ -157,14 +157,27 @@
     (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation))
   (:place-object (arm)
-    (let (dropped)
+    (let (dropped end-coords-name orientation path-constraints orientation-constraint)
+      ;; moveit path constraints
+      (setq end-coords-name
+            (if (eq arm :larm) "left_gripper_vacuum_pad" "right_gripper_pad_with_base"))
+      (setq orientation (instance geometry_msgs::Quaternion :init :x 0 :y 0 :z 0 :w 1))
+      (setq orientation-constraint
+            (instance moveit_msgs::OrientationConstraint :init
+                      :link_name end-coords-name
+                      :orientation orientation))
+      (send orientation-constraint :header :frame_id end-coords-name)
+      (setq path-constraints (instance moveit_msgs::Constraints :init
+                                       :orientation_constraints (list orientation-constraint)))
+
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
       (when moveit-p (send self :add-shelf-scene))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
       (send *ri* :angle-vector
             (send self :ik->cardboard-center arm target-cardboard
                   :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
-            4000 (send *ri* :get-arm-controller arm) 0)
+            4000 (send *ri* :get-arm-controller arm) 0
+            :path-constraints path-constraints)
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm)))
       (if dropped
