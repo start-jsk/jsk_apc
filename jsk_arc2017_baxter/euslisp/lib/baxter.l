@@ -51,7 +51,12 @@
                    ;; We have to move mimic joints, too
                    :right_gripper_r_finger_yaw_joint
                    :right_gripper_r_finger_roll_joint))
+    ;; translate palm end for good cylindrical grasp
+    (send self :rarm-palm-endpoint :translate #f(30 0 0) :local)
     )
+  (:rarm-palm-endpoint
+    (&rest args)
+    (send* self :right_gripper_palm_endpoint_lk args))
   (:set-ik-prepared-poses
     (poses)
     (if (listp poses)
@@ -66,8 +71,15 @@
         (if (atom move-target)
           (send self :link-list (send move-target :parent))
           (mapcar #'(lambda (mt) (send self :link-list (send mt :parent))) move-target)))
-      (use-gripper nil) (rthre (deg2rad 10))
+      (use-gripper nil) (move-palm-end nil) (rthre (deg2rad 10))
       &allow-other-keys)
+    ;; currently works only if move-target is not list
+    ;; set endpoint of palm as move-target
+    (if move-palm-end
+      (dolist (limb (list :rarm))
+        (when (eq move-target (send self limb :end-coords))
+          (setq move-target (send self limb :palm-endpoint))
+          (setq link-list (send self :link-list (send move-target :parent))))))
     ;; if the last link of link-list is in gripper, remove gripper links
     (if (null use-gripper)
       (cond ((equal (send (car (last link-list)) :name) "right_gripper_pad_with_base")

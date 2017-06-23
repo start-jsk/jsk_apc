@@ -15,13 +15,16 @@
             (:recognize-bin-boxes -> :wait-for-user-input)
             (:wait-for-user-input -> :wait-for-opposite-arm)
             (:wait-for-user-input !-> :finish)
-            (:wait-for-opposite-arm -> :set-target)
+            (:wait-for-opposite-arm -> :check-grasp-style)
             (:wait-for-opposite-arm !-> :wait-for-opposite-arm)
+            (:check-grasp-style -> :set-target)
+            (:check-grasp-style !-> :recognize-object)
             (:set-target -> :recognize-object)
             (:set-target !-> :wait-for-user-input)
-            (:recognize-object -> :pick-object)
+            (:recognize-object -> :set-grasp-style)
             (:recognize-object !-> :return-from-recognize-object)
             (:return-from-recognize-object -> :wait-for-opposite-arm-start-picking)
+            (:set-grasp-style -> :pick-object)
             (:pick-object -> :verify-object)
             (:pick-object !-> :return-from-pick-object)
             (:return-from-pick-object -> :check-picking-fail-count)
@@ -55,6 +58,10 @@
                  (send *ti* :update-state *arm* :wait-for-opposite-arm)
                  (send *ti* :check-can-start *arm* :set-target
                        :wait-for-opposite-arm)))
+            (:check-grasp-style
+              '(lambda (userdata)
+                 (send *ti* :update-state *arm* :check-grasp-style)
+                 (send *ti* :check-grasp-style *arm*)))
             (:set-target
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :set-target)
@@ -67,6 +74,11 @@
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :return-from-recognize-object)
                  (send *ti* :return-from-recognize-object *arm*)
+                 t))
+            (:set-grasp-style
+              '(lambda (userdata)
+                 (send *ti* :update-state *arm* :set-grasp-style)
+                 (send *ti* :set-grasp-style *arm*)
                  t))
             (:pick-object
               '(lambda (userdata)
