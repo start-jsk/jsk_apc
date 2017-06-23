@@ -6,15 +6,15 @@ import rospy
 from std_msgs.msg import Float32
 
 
-class ANDScaleRosserial(object):
+class EkEwIDriver(object):
 
-    """Read data from AND scale.
+    """Read data from EK-i/EW-i scale.
 
     Data Sheet: https://www.aandd.co.jp/adhome/pdf/manual/balance/ekew-i.pdf
     """
 
     def __init__(self):
-        super(ANDScaleRosserial, self).__init__()
+        super(EkEwIDriver, self).__init__()
         port = rospy.get_param('~port', '/dev/ttyUSB0')
         rospy.loginfo('port=%s', port)
         # EK-i/EW-i series default settings
@@ -56,6 +56,6 @@ class ANDScaleRosserial(object):
 
 
 if __name__ == '__main__':
-    rospy.init_node('and_scale_rosserial')
-    ANDScaleRosserial()
+    rospy.init_node('ekew_i_driver')
+    EkEwIDriver()
     rospy.spin()
