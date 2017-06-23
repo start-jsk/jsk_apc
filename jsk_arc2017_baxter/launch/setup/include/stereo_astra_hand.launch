@@ -2,7 +2,8 @@
 
   <arg name="rviz" default="false" />
   <arg name="fuse" default="true" />
-  <arg name="right_hand_stereo_left_transform" default="-0.06 -0.10 0.01 1.63 -0.05 0.00" />
+  <arg name="bilateral_filter" default="false" />
+  <arg name="right_hand_stereo_left_transform" default="-0.045 -0.09 0.00 1.63 -0.01 0.03" />
 
   <!-- TODO(YutoUchimi): make launch_right:=true -->
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
@@ -102,11 +103,34 @@
           approximate_sync: true
         </rosparam>
       </node>
+      <node name="stereo_dynamic_reconfigure"
+            pkg="dynamic_reconfigure" type="dynparam"
+            args="set_from_parameters stereo_image_proc" >
+        <rosparam>
+          prefilter_size: 9
+          prefilter_cap: 31
+          correlation_window_size: 21
+          min_disparity: 0
+          disparity_range: 96
+          uniqueness_ratio: 19.0
+          texture_threshold: 10
+          speckle_size: 100
+          speckle_range: 3
+        </rosparam>
+      </node>
+      <node name="bilateral_filter"
+            pkg="nodelet" type="nodelet" if="$(arg bilateral_filter)"
+            args="load jsk_pcl/BilateralFilter /$(arg NODELET_MANAGER)"
+            output="screen" >
+        <remap from="~input" to="depth_registered/points" />
+        <remap from="~output" to="depth_registered/filtered_points" />
+      </node>
       <node name="depth_image_creator"
             pkg="nodelet" type="nodelet"
             args="load jsk_pcl/DepthImageCreator /$(arg NODELET_MANAGER)"
             output="screen" >
-        <remap from="~input" to="depth_registered/points" />
+        <remap from="~input" to="depth_registered/filtered_points" if="$(arg bilateral_filter)" />
+        <remap from="~input" to="depth_registered/points" unless="$(arg bilateral_filter)" />
         <remap from="~info" to="/right_hand_camera/left/rgb/camera_info" />
         <remap from="~output" to="depth_registered/image_rect" />
         <remap from="~output_image" to="rgb/image_rect_color" />
