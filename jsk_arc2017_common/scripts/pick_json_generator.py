@@ -15,7 +15,7 @@ PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
 
 def generate_pick_json(dirname):
-    label_list = jsk_arc2017_common.get_object_names()
+    label_list = jsk_arc2017_common.get_object_names()[1:-1]
     box_id_list = ['A1', '1AD', '1A5', '1B2', 'K3']
     box_A_candidate = box_id_list[:2]   # box_A is for 2 items
     box_B_candidate = box_id_list[2:4]  # box_B is for 3 items

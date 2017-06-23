@@ -14,7 +14,7 @@ PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
 
 def generate_stow_json(dirname):
-    label_list = jsk_arc2017_common.get_object_names()
+    label_list = jsk_arc2017_common.get_object_names()[1:-1]
     tote_contents = random.sample(label_list, 20)
     location = {
         'bins': [
