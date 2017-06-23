@@ -133,7 +133,7 @@
   (setq *arm* arm)
   (when (not (boundp '*sm*))
     (make-picking-state-machine))
-  (exec-state-machine *sm* nil :root-name (format nil "SM_~a_ROOT" (string-upcase (arm2str arm)))))
+  (exec-state-machine *sm* nil :root-name (format nil "SM_~a_ROOT" (string-upcase (arm2str arm))) :hz 2.0))
 
 (warn "~% Commands ~%")
 (warn "(pick-init)           : initialize *ti*~%")
