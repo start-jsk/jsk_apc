@@ -2,7 +2,6 @@
 
   <arg name="rviz" default="false" />
   <arg name="fuse" default="true" />
-  <arg name="bilateral_filter" default="false" />
   <arg name="right_hand_stereo_left_transform" default="-0.045 -0.09 0.00 1.63 -0.01 0.03" />
 
   <!-- TODO(YutoUchimi): make launch_right:=true -->
@@ -118,19 +117,11 @@
           speckle_range: 3
         </rosparam>
       </node>
-      <node name="bilateral_filter"
-            pkg="nodelet" type="nodelet" if="$(arg bilateral_filter)"
-            args="load jsk_pcl/BilateralFilter /$(arg NODELET_MANAGER)"
-            output="screen" >
-        <remap from="~input" to="depth_registered/points" />
-        <remap from="~output" to="depth_registered/filtered_points" />
-      </node>
       <node name="depth_image_creator"
             pkg="nodelet" type="nodelet"
             args="load jsk_pcl/DepthImageCreator /$(arg NODELET_MANAGER)"
             output="screen" >
-        <remap from="~input" to="depth_registered/filtered_points" if="$(arg bilateral_filter)" />
-        <remap from="~input" to="depth_registered/points" unless="$(arg bilateral_filter)" />
+        <remap from="~input" to="depth_registered/points" />
         <remap from="~info" to="/right_hand_camera/left/rgb/camera_info" />
         <remap from="~output" to="depth_registered/image_rect" />
         <remap from="~output_image" to="rgb/image_rect_color" />
