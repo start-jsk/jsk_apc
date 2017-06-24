@@ -15,6 +15,7 @@ add_message_files(
     FILES
     WorkOrder.msg
     WorkOrderArray.msg
+    ObjectCandidates.msg
 )
 
 generate_messages(
