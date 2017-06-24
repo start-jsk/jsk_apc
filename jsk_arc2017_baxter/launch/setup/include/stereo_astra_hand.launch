@@ -100,12 +100,6 @@
         <remap from="points2" to="depth_registered/points" />
         <rosparam>
           approximate_sync: true
-        </rosparam>
-      </node>
-      <node name="stereo_dynamic_reconfigure"
-            pkg="dynamic_reconfigure" type="dynparam"
-            args="set_from_parameters stereo_image_proc" >
-        <rosparam>
           prefilter_size: 9
           prefilter_cap: 31
           correlation_window_size: 21
