@@ -6,6 +6,7 @@ import rospy
 from std_msgs.msg import Float32
 from std_srvs.srv import Empty
 from std_srvs.srv import EmptyResponse
+import threading
 
 class EstimateObjectByScale(ConnectionBasedTransport):
 
@@ -24,6 +25,7 @@ class EstimateObjectByScale(ConnectionBasedTransport):
             '~stowed_object_candidates', ObjectCandidates, queue_size=1)
         self.init_srv = rospy.Service(
             '~initialize', Empty, self._initialize)
+        self.lock = threading.Lock()
 
     def subscribe(self):
         self.scale_subs = []
@@ -37,6 +39,7 @@ class EstimateObjectByScale(ConnectionBasedTransport):
         self.scale_subs.unregister()
 
     def _scale_cb(self, value, index):
+        self.lock.acquire()
         self.scale_values[index] = value.data
         weight_sum = sum(self.scale_values)
         weight_diff = weight_sum - self.init_sum
@@ -51,9 +54,12 @@ class EstimateObjectByScale(ConnectionBasedTransport):
         self.weight_sum_pub.publish(Float32(weight_sum))
         self.picked_pub.publish(picked_object)
         self.stowed_pub.publish(stowed_object)
+        self.lock.release()
 
     def _initialize(self, req):
+        self.lock.acquire()
         self.init_sum = sum(self.scale_values)
+        self.lock.release()
         return EmptyResponse()
 
 if __name__ == '__main__':
