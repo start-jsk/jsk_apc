@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-import rospy
-from std_msgs.msg import Empty
-from std_msgs.msg import Float32
 from jsk_arc2017_common.msg import ObjectCandidates
 from jsk_topic_tools import ConnectionBasedTransport
+import rospy
+from std_msgs.msg import Float32
+from std_srvs.srv import Empty
+from std_srvs.srv import EmptyResponse
 
 class EstimateObjectByScale(ConnectionBasedTransport):
 
@@ -15,19 +16,25 @@ class EstimateObjectByScale(ConnectionBasedTransport):
         self.error = rospy.get_param('~error', 1.0)
         self.scale_values = [0.0] * len(self.scale_inputs)
         self.init_sum = 0.0
-        self.weight_sum_pub = self.advertise('~weight_sum', Float32, queue_size=1)
-        self.picked_pub = self.advertise('~picked_object_candidates', ObjectCandidates, queue_size=1)
-        self.stowed_pub = self.advertise('~stowed_object_candidates', ObjectCandidates, queue_size=1)
+        self.weight_sum_pub = self.advertise(
+            '~weight_sum', Float32, queue_size=1)
+        self.picked_pub = self.advertise(
+            '~picked_object_candidates', ObjectCandidates, queue_size=1)
+        self.stowed_pub = self.advertise(
+            '~stowed_object_candidates', ObjectCandidates, queue_size=1)
+        self.init_srv = rospy.Service(
+            '~initialize', Empty, self._initialize)
 
     def subscribe(self):
         self.scale_subs = []
         for i, scale_input in enumerate(self.scale_inputs):
-            self.scale_subs.append(rospy.Subscriber(scale_input, Float32, self._scale_cb, callback_args=i))
-        self.init_sub = rospy.Subscriber('~initialize', Empty, self._initialize)
+            self.scale_subs.append(
+                rospy.Subscriber(scale_input, Float32,
+                    self._scale_cb, callback_args=i)
+                )
 
     def unsubscribe(self):
         self.scale_subs.unregister()
-        self.init_sub.unregister()
 
     def _scale_cb(self, value, index):
         self.scale_values[index] = value.data
@@ -45,8 +52,9 @@ class EstimateObjectByScale(ConnectionBasedTransport):
         self.picked_pub.publish(picked_object)
         self.stowed_pub.publish(stowed_object)
 
-    def _initialize(self, msg):
+    def _initialize(self, req):
         self.init_sum = sum(self.scale_values)
+        return EmptyResponse()
 
 if __name__ == '__main__':
     rospy.init_node('estimate_object_by_scale')
