@@ -1,0 +1,75 @@
+<launch>
+
+  <arg name="camera" value="left_hand_camera" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter_openni_local.xml">
+    <arg name="camera" value="$(arg camera)" />
+  </include>
+
+  <!-- detect location of capturing location -->
+  <!--
+  <include file="$(find jsk_arc2017_common)/launch/checkerboard_detector.launch" />
+  <node name="pose_to_tf"
+        pkg="jsk_topic_tools" type="pose_to_tf.py">
+    <remap from="~input" to="checkerboard_detector/objectdetection_pose" />
+    <rosparam>
+      frame_id: checkerboard
+      trust_last_pose: true
+    </rosparam>
+  </node>
+  <node name="static_tf_publisher"
+        pkg="tf" type="static_transform_publisher"
+        args="-0.15 0.1 -0.06 0 1.57 0 tote_base checkerboard 20">
+  </node>
+  <node name="bounding_box_array_publisher"
+        pkg="jsk_recognition_utils" type="bounding_box_array_publisher.py">
+    <rosparam>
+      rate: 30
+      frame_id: tote_base
+      boxes:
+        - position: [0, 0, 0.05]
+          dimension: [0.3, 0.4, 0.1]
+    </rosparam>
+  </node>
+  <node name="bounding_box_array_to_bounding_box"
+        pkg="jsk_pcl_ros_utils" type="bounding_box_array_to_bounding_box">
+    <remap from="~input" to="bounding_box_array_publisher/output" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  -->
+
+  <!-- kinfu for model generation -->
+  <arg name="INPUT_CAMERA_INFO" default="/$(arg camera)/depth_registered/camera_info" />
+  <arg name="INPUT_DEPTH" default="/$(arg camera)_local/depth_registered/hw_registered/image_rect_raw" />
+  <arg name="INPUT_COLOR" default="/$(arg camera)_local/rgb/image_rect_color" />
+  <node name="kinfu"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/Kinfu"
+        output="screen">
+    <remap from="~input/camera_info" to="$(arg INPUT_CAMERA_INFO)" />
+    <remap from="~input/depth" to="$(arg INPUT_DEPTH)" />
+    <remap from="~input/color" to="$(arg INPUT_COLOR)" />
+    <rosparam subst_value="true">
+      auto_reset: false
+      save_dir: $(optenv HOME)/.ros/jsk_arc2017_baxter/kinfu_model_generation_main
+      integrate_color: true
+      slam: false
+    </rosparam>
+  </node>
+
+  <node name="generate_object_model_main"
+        pkg="jsk_arc2017_baxter" type="generate-object-model-main.l"
+        args="&quot;(progn (setup) (main))&quot;" >
+  </node>
+
+  <node name="rqt_yn_btn"
+        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+    <remap from="~" to="/rviz/yes_no_button" />
+  </node>
+  <node name="$(anon rviz)"
+        pkg="rviz" type="rviz"
+        args="-d $(find jsk_arc2017_baxter)/rvizconfig/kinfu_model_generateion.rviz">
+  </node>
+
+</launch>
