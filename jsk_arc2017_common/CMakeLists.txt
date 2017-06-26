@@ -18,6 +18,12 @@ add_message_files(
     ObjectCandidates.msg
 )
 
+add_service_files(
+    FILES
+    UpdateJSON.srv
+    SaveJSON.srv
+)
+
 generate_messages(
     DEPENDENCIES
 )
