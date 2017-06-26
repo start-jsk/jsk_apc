@@ -8,6 +8,7 @@ from std_srvs.srv import Empty
 from std_srvs.srv import EmptyResponse
 import threading
 
+
 class EstimateObjectByScale(ConnectionBasedTransport):
 
     def __init__(self):
@@ -31,9 +32,8 @@ class EstimateObjectByScale(ConnectionBasedTransport):
         self.scale_subs = []
         for i, scale_input in enumerate(self.scale_inputs):
             self.scale_subs.append(
-                rospy.Subscriber(scale_input, Float32,
-                    self._scale_cb, callback_args=i)
-                )
+                rospy.Subscriber(
+                    scale_input, Float32, self._scale_cb, callback_args=i))
 
     def unsubscribe(self):
         self.scale_subs.unregister()
