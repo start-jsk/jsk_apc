@@ -38,10 +38,10 @@
       <arg name="INPUT_IMAGE" value="/left_hand_camera/rgb/image_rect_color"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
       <arg name="FIXED_FRAME" value="base" />
-      <arg name="BACKEND" value="torch" />
+      <arg name="BACKEND" value="chainer" />
       <arg name="GPU" value="0" />
-      <arg name="MODEL_NAME" value="fcn32s_bilinear" />
-      <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_dataset_v1_20170417.pth" />
+      <arg name="MODEL_NAME" value="fcn32s" />
+      <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz" />
       <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
     </include>
   </group>
@@ -82,10 +82,10 @@
       <arg name="INPUT_IMAGE" value="/right_hand_camera/rgb/image_rect_color"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
       <arg name="FIXED_FRAME" value="base" />
-      <arg name="BACKEND" value="torch" />
+      <arg name="BACKEND" value="chainer" />
       <arg name="GPU" value="0" />
-      <arg name="MODEL_NAME" value="fcn32s_bilinear" />
-      <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_dataset_v1_20170417.pth" />
+      <arg name="MODEL_NAME" value="fcn32s" />
+      <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz" />
       <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
     </include>
   </group>
