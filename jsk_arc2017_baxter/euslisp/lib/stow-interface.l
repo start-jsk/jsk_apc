@@ -12,7 +12,7 @@
 (defclass jsk_arc2017_baxter::stow-interface
   :super jsk_arc2017_baxter::arc-interface
   :slots (graspingp
-           moveit-p
+          moveit-p
           picking-fail-count
           label-names
           recognize-fail-count
