@@ -11,7 +11,8 @@
 
 (defclass jsk_arc2017_baxter::arc-interface
   :super propertied-object
-  :slots (bin-cubes-
+  :slots (bbox-volume-threshold-
+          bin-cubes-
           bin-movable-regions-
           object-boxes-
           object-coords-
@@ -23,6 +24,7 @@
 (defmethod jsk_arc2017_baxter::arc-interface
   (:init ()
     ;; initialize slots
+    (setq bbox-volume-threshold- 0.01) ;; [m^3]
     (setq bin-cubes- (make-hash-table))
     (setq bin-movable-regions- (make-hash-table))
     (setq object-boxes- (make-hash-table))
@@ -212,6 +214,22 @@
          (ros::ros-error "[:recognize-target-object] arm: ~a failed to get cpi msg" arm)
          (setq is-recognized nil)))
       is-recognized))
+  (:get-largest-object-index
+    (arm &key (stamp (ros::time-now)))
+    (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
+          box-msg)
+      (setq box-msg (one-shot-subscribe box-topic
+                                        jsk_recognition_msgs::BoundingBoxArray
+                                        :timeout 10000
+                                        :after-stamp stamp))
+      (dolist (box (send box-msg :boxes))
+        (let (volume)
+          (setq volume (* (send box :dimensions :x)
+                          (send box :dimensions :y)
+                          (send box :dimensions :z)))
+          (if (> bbox-volume-threshold- volume)
+            (return-from :get-largest-object-index
+                         (+ (send box :label) 1)))))))
   (:pick-object-in-bin
     (arm bin &rest args)
     (let (graspingp movable-region)
