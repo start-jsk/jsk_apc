@@ -2,6 +2,7 @@
 ;; vim: set ft=lisp:
 
 (require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
 
 (defun model2real (&key (wait? t) (scale 16.0))
   (send *ri* :angle-vector-sequence (list (send *baxter* :angle-vector)) :fast nil 0 :scale scale)
@@ -51,17 +52,24 @@
         )
       (pushback (send *baxter* :angle-vector) avs)
 
-      (send *baxter* :larm :angle-vector
-        #f(-45.1538 -40.3857 51.8994 67.1924 174.968 -76.7065 60.1392 0.0)
-        )
-      (pushback (send *baxter* :angle-vector) avs)
+      ; (send *baxter* :larm :angle-vector
+      ;   #f(-45.1538 -40.3857 51.8994 67.1924 174.968 -76.7065 60.1392 0.0)
+      ;   )
+      ; (pushback (send *baxter* :angle-vector) avs)
 
       (ros::service-call "/kinfu/reset" (instance std_srvs::EmptyRequest :init))
 
       (send *ri* :angle-vector-sequence avs :fast nil 0 :scale 8.0)
       (send *ri* :wait-interpolation)
 
-      (ros::service-call "/kinfu/save_mesh" (instance std_srvs::EmptyRequest :init))
+      (let ((req (instance jsk_gui_msgs::YesNoRequest :init)))
+        (ros::ros-info-green "Please select to send save mesh request or not.")
+        (setq res (ros::service-call "/rviz/yes_no_button" req))
+        (when (send res :yes)
+          (ros::ros-info-green "Requesting to save mesh.")
+          (ros::service-call "/save_mesh_server/request" (instance std_srvs::EmptyRequest :init))
+          ))
+
       (send *ri* :angle-vector-sequence (reverse avs) :fast nil 0 :scale 5.0)
       (send *ri* :wait-interpolation-smooth 2000)
     )
