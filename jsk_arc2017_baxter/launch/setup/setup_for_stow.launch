@@ -26,12 +26,6 @@
       <remap from="~input/box" to="bbox_array_to_bbox/output" />
       <rosparam>
         use_multiple_attention: false
-        initial_pos: [0.6, 0.12, -0.25]
-        initial_rot: [0, -0.03, 0]
-        dimension_x: 0.30
-        dimension_y: 0.32
-        dimension_z: 0.15
-        frame_id: base
       </rosparam>
     </node>
     <node name="extract_indices_tote"
@@ -85,12 +79,6 @@
       <remap from="~input/box" to="bbox_array_to_bbox/output" />
       <rosparam>
         use_multiple_attention: false
-        initial_pos: [0.6, -0.12, -0.25]
-        initial_rot: [0, -0.03, 0]
-        dimension_x: 0.30
-        dimension_y: 0.32
-        dimension_z: 0.15
-        frame_id: base
       </rosparam>
     </node>
     <node name="extract_indices_tote"
