@@ -21,7 +21,6 @@ add_message_files(
 add_service_files(
     FILES
     UpdateJSON.srv
-    SaveJSON.srv
 )
 
 generate_messages(

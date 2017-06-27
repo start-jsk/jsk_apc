@@ -1,4 +1,5 @@
 string item
-string bin
+string src
+string dst
 ---
 bool updated
