@@ -74,7 +74,17 @@
 
   <node name="generate_object_model_main"
         pkg="jsk_arc2017_baxter" type="generate-object-model-main.l"
-        args="&quot;(progn (setup) (main))&quot;" >
+        args="&quot;(progn (setup) (main))&quot;"
+        output="screen">
+  </node>
+
+  <node name="save_mesh_server"
+        pkg="jsk_recognition_msgs" type="save_mesh_server.py">
+    <remap from="~input/bbox" to="bounding_box_array_to_bounding_box/output" />
+    <remap from="~save_mesh" to="kinfu/save_mesh_with_context" />
+    <rosparam>
+      ground_frame_id: base
+    </rosparam>
   </node>
 
   <node name="rqt_yn_btn"
