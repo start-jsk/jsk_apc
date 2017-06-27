@@ -1,7 +1,6 @@
 <launch>
 
   <arg name="moveit" default="true" />
-  <arg name="stereo" default="false" />
   <arg name="pick" default="true" doc="pick_task: true, stow_task: false" />
   <arg name="gripper_v4_limb" default="['left']" />
 
@@ -55,14 +54,6 @@
     <arg name="USER_NAME" value="false"/>
   </include>
 
-
-  <!-- hand mounted camera -->
-  <group if="$(arg stereo)">
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch" />
-  </group>
-  <group unless="$(arg stereo)">
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/astra_hand.launch" />
-  </group>
 
   <!-- picking source location: shelf/tote -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml">
