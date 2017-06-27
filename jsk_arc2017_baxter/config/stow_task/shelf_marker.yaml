@@ -1,8 +1,8 @@
 frame_id: /base
 initial_orientation: [0.0, 0.0, 0.0, 1.0]
-initial_x: 1.072
+initial_x: 1.03
 initial_y: 0.0
-initial_z: -0.32
+initial_z: -0.41
 object_a: 0.2
 object_b: 0.2
 object_g: 0.0
