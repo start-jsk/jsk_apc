@@ -14,8 +14,10 @@
   :slots (graspingp
            moveit-p
           picking-fail-count
+          label-names
           recognize-fail-count
           target-bin
+          target-index
           target-obj
           tote-contents))
 
@@ -43,6 +45,10 @@
       can-start))
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
+      (setq label-names
+            (ros::get-param (format nil "/~a_hand_camera/label_names"
+                                    (arm2str arm))))
+      (setq tote-contents (ros::get-param "/tote_contents"))
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-tote-scene arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
@@ -54,6 +60,17 @@
       (send *ri* :wait-interpolation)
       (setq recognition-count 1)
       (while (null (or (> recognition-count trial-times) is-recognized))
+        (setq target-index (send self :get-largest-object-index arm :stamp (ros::time-now)))
+        (setq target-obj (elt label-names target-index))
+        (ros::set-dynparam
+          (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
+          (cons "label_value" target-index))
+        (send self :set-object-segmentation-candidates arm
+          (mapcar #'(lambda (x) (position x label-names :test #'string=))
+                  (append (list "__background__") tote-contents (list "__shelf__"))))
+        (ros::set-param
+          (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
+        (ros::ros-info-blue "[~a] [main] :recognize-object, target-obj: ~a" (ros::get-name) target-obj)
         (setq is-recognized
               (send self :recognize-target-object arm :stamp (ros::time-now)))
         (setq recognition-count (incf recognition-count)))

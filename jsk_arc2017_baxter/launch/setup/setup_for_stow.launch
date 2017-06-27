@@ -1,4 +1,5 @@
 <launch>
+  <arg name="use_fcn" default="true" />
   <arg name="stereo" default="false" />
 
   <!-- hand mounted camera -->
@@ -39,27 +40,43 @@
         max_queue_size: 100
       </rosparam>
     </node>
-    <node name="supervoxel_segmentation"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/SupervoxelSegmentation $(arg manager_left)">
-      <remap from="~input" to="/left_hand_camera/extract_indices_tote/output" />
-      <rosparam>
-        color_importance: 0.2
-        spatial_importance: 0.4
-        normal_importance: 1.0
-        voxel_resolution: 0.01
-        seed_resolution: 0.1
-      </rosparam>
-    </node>
-    <node name="cluster_indices_decomposer_target"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg manager_left)">
-      <remap from="~input" to="/left_hand_camera/supervoxel_segmentation/output/cloud" />
-      <remap from="~target" to="/left_hand_camera/supervoxel_segmentation/output/indices" />
-      <rosparam>
-        queue_size: 100
-      </rosparam>
-    </node>
+    <group if="$(arg use_fcn)">
+      <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
+        <arg name="NODELET_MANAGER" value="$(arg manager_left)" />
+        <arg name="INPUT_IMAGE" value="/left_hand_camera/rgb/image_rect_color"/>
+        <arg name="INPUT_CLOUD" value="extract_indices_tote/output"/>
+        <arg name="FIXED_FRAME" value="base" />
+        <arg name="BACKEND" value="chainer" />
+        <arg name="GPU" value="0" />
+        <arg name="MODEL_NAME" value="fcn32s" />
+        <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz" />
+        <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
+        <arg name="SELECT_LARGEST" value="true" />
+      </include>
+    </group>
+    <group unless="$(arg use_fcn)">
+      <node name="supervoxel_segmentation"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_pcl/SupervoxelSegmentation $(arg manager_left)">
+        <remap from="~input" to="/left_hand_camera/extract_indices_tote/output" />
+        <rosparam>
+          color_importance: 0.2
+          spatial_importance: 0.4
+          normal_importance: 1.0
+          voxel_resolution: 0.01
+          seed_resolution: 0.1
+        </rosparam>
+      </node>
+      <node name="cluster_indices_decomposer_target"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg manager_left)">
+        <remap from="~input" to="/left_hand_camera/supervoxel_segmentation/output/cloud" />
+        <remap from="~target" to="/left_hand_camera/supervoxel_segmentation/output/indices" />
+        <rosparam>
+          queue_size: 100
+        </rosparam>
+      </node>
+    </group>
   </group>
 
   <group ns="right_hand_camera">
@@ -92,27 +109,43 @@
         max_queue_size: 100
       </rosparam>
     </node>
-    <node name="supervoxel_segmentation"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/SupervoxelSegmentation $(arg manager_right)">
-      <remap from="~input" to="/right_hand_camera/extract_indices_tote/output" />
-      <rosparam>
-        color_importance: 0.2
-        spatial_importance: 0.4
-        normal_importance: 1.0
-        voxel_resolution: 0.01
-        seed_resolution: 0.1
-      </rosparam>
-    </node>
-    <node name="cluster_indices_decomposer_target"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg manager_right)">
-      <remap from="~input" to="/right_hand_camera/supervoxel_segmentation/output/cloud" />
-      <remap from="~target" to="/right_hand_camera/supervoxel_segmentation/output/indices" />
-      <rosparam>
-        queue_size: 100
-      </rosparam>
-    </node>
+    <group if="$(arg use_fcn)">
+      <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
+        <arg name="NODELET_MANAGER" value="$(arg manager_right)" />
+        <arg name="INPUT_IMAGE" value="/right_hand_camera/rgb/image_rect_color"/>
+        <arg name="INPUT_CLOUD" value="extract_indices_tote/output"/>
+        <arg name="FIXED_FRAME" value="base" />
+        <arg name="BACKEND" value="chainer" />
+        <arg name="GPU" value="0" />
+        <arg name="MODEL_NAME" value="fcn32s" />
+        <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz" />
+        <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
+        <arg name="SELECT_LARGEST" value="true" />
+      </include>
+    </group>
+    <group unless="$(arg use_fcn)">
+      <node name="supervoxel_segmentation"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_pcl/SupervoxelSegmentation $(arg manager_right)">
+        <remap from="~input" to="/right_hand_camera/extract_indices_tote/output" />
+        <rosparam>
+          color_importance: 0.2
+          spatial_importance: 0.4
+          normal_importance: 1.0
+          voxel_resolution: 0.01
+          seed_resolution: 0.1
+        </rosparam>
+      </node>
+      <node name="cluster_indices_decomposer_target"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg manager_right)">
+        <remap from="~input" to="/right_hand_camera/supervoxel_segmentation/output/cloud" />
+        <remap from="~target" to="/right_hand_camera/supervoxel_segmentation/output/indices" />
+        <rosparam>
+          queue_size: 100
+        </rosparam>
+      </node>
+    </group>
   </group>
 
  </launch>
