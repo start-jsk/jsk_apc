@@ -163,7 +163,7 @@
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm))
         (progn
-          (send self :update-json target-bin target-obj)
+          (send self :update-json target-obj :dst target-bin)
           (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a" arm target-obj target-bin)
           (when moveit-p (send self :delete-bin-scene target-bin))
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -300) :world)
