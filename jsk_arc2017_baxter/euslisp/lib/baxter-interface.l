@@ -216,8 +216,6 @@
     (gethash arm prismatic-vel-))
   (:get-proximity (arm side &key (raw nil))
     (send self :spin-once)
-    ;; TODO modify how to calc proximity
-
     (let ((rl (gethash :left (gethash arm proximity-init-values-)))
          (rr (gethash :right (gethash arm proximity-init-values-)))
          ;;(rm (gethash :middle (gethash arm proximity-init-values-)))
@@ -266,15 +264,12 @@
              (send self :update-robot-state :wait-until-update t)
              (let ((finger-av (send self :get-real-finger-av l/r)) prev-av av avs hand-interpolatingp)
                ;; rotate arm using proximity sensor
-               (setf (aref finger-av 1) 90) ;; TODO 90 -> 180
-               (send self :move-hand l/r finger-av 2000 :wait nil) ;; TODO 10000 -> 1000
+               (setf (aref finger-av 1) 90)
+               (send self :move-hand l/r finger-av 2000 :wait nil)
                (unix:usleep 10000)
                (while (and
                        (< (max (send self :get-proximity l/r :right) (send self :get-proximity l/r :left)) proximity-threshold-)
-                       (setq hand-interpolatingp (send self :hand-interpolatingp)))
-                 ;;(format t "left:~A right:~A~%" (send self :get-proximity :rarm :left) (send self :get-proximity :rarm :right))
-                 )
-               ;;(format t "left:~A right:~A~%" (send self :get-proximity :rarm :left) (send self :get-proximity :rarm :right))
+                       (setq hand-interpolatingp (send self :hand-interpolatingp))))
                (when hand-interpolatingp
                  (send self :cancel-move-hand)
                  (send self :update-robot-state :wait-until-update t)
@@ -284,31 +279,26 @@
                        (send robot l/r :wrist-r :joint-angle 45 :relative t)
                        (setq av (send robot :angle-vector))
                        (send robot :angle-vector prev-av)
-                       (send self :angle-vector-raw av 2000) ;; todo 10000 -> 1000
-		       (send self :move-hand l/r finger-av 5000) ;; TODO determine proper time !!
+                       (send self :angle-vector-raw av 2000)
+                       (send self :move-hand l/r finger-av 4000 :wait nil)
                        (unix::usleep 10000)
                        (while (and (< (send self :get-proximity l/r :right)
                                       (send self :get-proximity l/r :left))
-                                   (send self :interpolatingp))
-                         (format t "left:~A right:~A~%" (send self :get-proximity :rarm :left) (send self :get-proximity :rarm :right))
-                         ))
+                                   (send self :interpolatingp))))
                    (progn
                      (send robot l/r :wrist-r :joint-angle -45 :relative t)
                      (setq av (send robot :angle-vector))
                      (send robot :angle-vector prev-av)
-                     (send self :angle-vector-raw av 2000) ;; TODO 10000 -> 1000
-		     (send self :move-hand l/r finger-av 5000) ;; TODO determine proper time !!
+                     (send self :angle-vector-raw av 2000)
+                     (send self :move-hand l/r finger-av 4000 :wait nil)
                      (unix::usleep 10000)
                      (while (and (> (send self :get-proximity l/r :right)
                                     (send self :get-proximity l/r :left))
-                                 (send self :interpolatingp))
-                       (format t "left:~A right:~A~%" (send self :get-proximity :rarm :left) (send self :get-proximity :rarm :right))
-                       )))
-                 (format t "left:~A right:~A~%" (send self :get-proximity :rarm :left) (send self :get-proximity :rarm :right))
-		 (send self :cancel-move-hand)
+                                 (send self :interpolatingp)))))
+                 (send self :cancel-move-hand)
                  (send self :cancel-angle-vector)
                  (send self :update-robot-state :wait-until-update t)
-                 (send self :move-hand l/r finger-av 1000)) ;; TODO 10000 -> 1000
+                 (send self :move-hand l/r finger-av 1000))
                (setq prev-av (send robot :angle-vector))
                (when (> (aref finger-av 0) 45)
                  ;; if cylindrical and spherical grasp, move other gripper joints
