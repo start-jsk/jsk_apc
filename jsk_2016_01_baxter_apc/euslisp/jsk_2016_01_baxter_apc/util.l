@@ -15,7 +15,7 @@
   (let ((config (instance dynamic_reconfigure::Config :init))
         (req (instance dynamic_reconfigure::ReconfigureRequest :init)))
     (cond
-      ((not (listp params)) (warn "Unexpected type for params"))
+      ((not (consp params)) (setq params (list params)))
       ((<= (length params) 0) (return-from 'ros::set-dynparam t))
       ((not (listp (elt params 0))) (setq params (list params)))
       )
