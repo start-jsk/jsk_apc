@@ -143,7 +143,7 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 3
+      Size (Pixels): 5
       Size (m): 0.01
       Style: Points
       Topic: /kinfu/output/cloud
@@ -555,22 +555,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.17461
+      Distance: 0.977066
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.114129
-        Y: 1.11431
-        Z: -0.255436
+        X: 0.600692
+        Y: 0.273415
+        Z: -0.369722
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.095398
+      Pitch: 0.260398
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.38858
+      Yaw: 1.31358
     Saved: ~
 Window Geometry:
   Displays:
@@ -594,5 +594,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1638
-  X: 35
+  X: 5
   Y: 14

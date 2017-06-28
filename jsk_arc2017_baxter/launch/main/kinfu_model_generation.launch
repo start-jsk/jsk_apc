@@ -68,7 +68,7 @@
       save_dir: $(optenv HOME)/.ros/jsk_arc2017_baxter/kinfu_model_generation
       integrate_color: true
       slam: false
-      n_textures: 3
+      n_textures: 10
     </rosparam>
   </node>
 
