@@ -1,0 +1,102 @@
+#
+# Wavefront material file
+#
+newmtl material_0
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/0.jpg
+###
+newmtl material_1
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/1.jpg
+###
+newmtl material_2
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/2.jpg
+###
+newmtl material_3
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/3.jpg
+###
+newmtl material_4
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/4.jpg
+###
+newmtl material_5
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/5.jpg
+###
+newmtl material_6
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/6.jpg
+###
+newmtl material_7
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/7.jpg
+###
+newmtl material_8
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/8.jpg
+###
+newmtl material_9
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/9.jpg
+###
+newmtl material_10
+Ka 0.2 0.2 0.2
+Kd 0.8 0.8 0.8
+Ks 1 1 1
+d 1
+Ns 75
+illum 2
+map_Kd textures/occluded.jpg
+###
