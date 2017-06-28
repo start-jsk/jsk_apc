@@ -49,6 +49,9 @@
             (ros::get-param (format nil "/~a_hand_camera/label_names"
                                     (arm2str arm))))
       (setq tote-contents (ros::get-param "/tote_contents"))
+      (send self :set-object-segmentation-candidates arm
+        (mapcar #'(lambda (x) (position x label-names :test #'string=))
+                (append (list "__background__") tote-contents (list "__shelf__"))))
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-tote-scene arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
@@ -65,9 +68,6 @@
         (ros::set-dynparam
           (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
           (cons "label_value" target-index))
-        (send self :set-object-segmentation-candidates arm
-          (mapcar #'(lambda (x) (position x label-names :test #'string=))
-                  (append (list "__background__") tote-contents (list "__shelf__"))))
         (ros::set-param
           (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
         (ros::ros-info-blue "[~a] [main] :recognize-object, target-obj: ~a" (ros::get-name) target-obj)
