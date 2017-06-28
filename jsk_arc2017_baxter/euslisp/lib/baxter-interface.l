@@ -285,6 +285,7 @@
                        (setq av (send robot :angle-vector))
                        (send robot :angle-vector prev-av)
                        (send self :angle-vector-raw av 2000) ;; todo 10000 -> 1000
+		       (send self :move-hand l/r finger-av 5000) ;; TODO determine proper time !!
                        (unix::usleep 10000)
                        (while (and (< (send self :get-proximity l/r :right)
                                       (send self :get-proximity l/r :left))
@@ -296,6 +297,7 @@
                      (setq av (send robot :angle-vector))
                      (send robot :angle-vector prev-av)
                      (send self :angle-vector-raw av 2000) ;; TODO 10000 -> 1000
+		     (send self :move-hand l/r finger-av 5000) ;; TODO determine proper time !!
                      (unix::usleep 10000)
                      (while (and (> (send self :get-proximity l/r :right)
                                     (send self :get-proximity l/r :left))
@@ -303,6 +305,7 @@
                        (format t "left:~A right:~A~%" (send self :get-proximity :rarm :left) (send self :get-proximity :rarm :right))
                        )))
                  (format t "left:~A right:~A~%" (send self :get-proximity :rarm :left) (send self :get-proximity :rarm :right))
+		 (send self :cancel-move-hand)
                  (send self :cancel-angle-vector)
                  (send self :update-robot-state :wait-until-update t)
                  (send self :move-hand l/r finger-av 1000)) ;; TODO 10000 -> 1000
