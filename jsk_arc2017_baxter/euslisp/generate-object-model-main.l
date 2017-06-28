@@ -56,23 +56,27 @@
 
 (defun motion-on-supporting-system ()
   (let (avs)
-    (send *baxter* :larm :angle-vector #f(86.1987 -7.84424 -1.93359 85.0342 -18.3691 74.8608 174.595 0.0))
+    (send *baxter* :larm :angle-vector
+          #f(86.1987 -7.84424 -1.93359 85.0342 -18.3691 74.8608 174.595 0.0))
     (model2real :scale 8.0)
 
     ;; (send *baxter* :larm :angle-vector #f(-0.966797 -2.26318 31.6626 62.666 -64.7534 96.8994 171.541 0.0))
     ;; (pushback (send *baxter* :angle-vector) avs)
 
-    (send *baxter* :larm :angle-vector #f(30.0366 11.7334 40.2319 16.9849 -77.2119 113.115 151.633 0.0))
+    (send *baxter* :larm :angle-vector
+          #f(30.0366 11.7334 40.2319 16.9849 -77.2119 113.115 151.633 0.0))
     (pushback (send *baxter* :angle-vector) avs)
 
-    (send *baxter* :larm :angle-vector #f(-32.3877 -31.8384 56.1841 35.7275 -52.4268 119.971 132.979 0.0))
+    (send *baxter* :larm :angle-vector
+          #f(-32.3877 -31.8384 56.1841 35.7275 -52.4268 119.971 132.979 0.0))
     (pushback (send *baxter* :angle-vector) avs)
 
-
-    (send *baxter* :larm :angle-vector #f(-53.3716 -36.2769 6.1084 42.5171 -6.21826 101.052 -17.9077 0.0))
+    (send *baxter* :larm :angle-vector
+          #f(-53.3716 -36.2769 6.1084 42.5171 -6.21826 101.052 -17.9077 0.0))
     (pushback (send *baxter* :angle-vector) avs)
 
-    (send *baxter* :larm :angle-vector #f(-92.0654 -21.1377 8.6792 36.5845 15.4248 113.73 34.4092 0.0))
+    (send *baxter* :larm :angle-vector
+          #f(-92.0654 -21.1377 8.6792 36.5845 15.4248 113.73 34.4092 0.0))
     (pushback (send *baxter* :angle-vector) avs)
     avs)
   )
