@@ -109,22 +109,15 @@
   </node>
 
   <!-- Visualization -->
-  <node name="overlay_target_label"
-        pkg="jsk_apc2016_common" type="overlay_target_label"
-        respawn="true">
+  <node name="label_image_decomposer"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/label" to="apply_context_to_label_proba/output/label" />
     <remap from="~label_names" to="label_names" />
-    <remap from="~target_label" to="label_to_mask/label_value" />
-  </node>
-  <node name="colorize_labels"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_perception/ColorizeLabels $(arg NODELET_MANAGER)">
-    <remap from="~input" to="apply_context_to_label_proba/output/label" />  <!-- rgb timestamp -->
-  </node>
-  <node name="overlay_image_color_on_mono"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_perception/OverlayImageColorOnMono $(arg NODELET_MANAGER)">
-    <remap from="~input/color" to="colorize_labels/output" />
-    <remap from="~input/mono" to="$(arg INPUT_IMAGE)" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 100
+    </rosparam>
   </node>
 
 </launch>
