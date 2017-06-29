@@ -2,6 +2,15 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* update visulization methods
+* use fcn in stow task recognition pipeline
+* Make label_names.yml as just a name list
+* add jsk_gui_msgs to jsk_apc_common
+* Pass chainermodel name to correct param
+* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Shun Hasegawa
+
 3.0.3 (2017-05-18)
 ------------------
 
