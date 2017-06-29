@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2017-06-30)
+------------------
 * Add mesh models for 36 objects
 * update UpdateJSON and replace SaveJSON by Trigger
 * add json_saver.py

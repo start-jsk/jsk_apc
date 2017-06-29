@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2017-06-30)
+------------------
 * update visulization methods
 * use fcn in stow task recognition pipeline
 * Make label_names.yml as just a name list

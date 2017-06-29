@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2017-06-30)
+------------------
 * Fix for euslint
 * Update data collection motion
 * Change save_dir in dynamic
