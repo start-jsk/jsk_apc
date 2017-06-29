@@ -12,7 +12,6 @@ cache:
 
 env:
   global:
-    - BUILD_PKGS="jsk_apc"
     - CATKIN_TOOLS_CONFIG_OPTIONS="--blacklist jsk_perception jsk_pcl_ros_utils jsk_pcl_ros resized_image_transport"
     - NOT_TEST_INSTALL=true
     - ROS_PARALLEL_JOBS="-j2"
