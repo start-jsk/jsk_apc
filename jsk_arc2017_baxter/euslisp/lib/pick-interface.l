@@ -186,6 +186,8 @@
           (send *ri* :stop-grasp arm))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
+          (send self :update-json target-obj
+                :src (cons :bin target-bin) :dst (cons :cardboard target-cardboard))
           (when moveit-p (send self :delete-cardboard-scene))
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -200) :world)
                 2000 (send *ri* :get-arm-controller arm) 0)
