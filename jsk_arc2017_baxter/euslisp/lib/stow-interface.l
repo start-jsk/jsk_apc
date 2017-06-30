@@ -77,7 +77,7 @@
       is-recognized))
   (:return-from-recognize-object (arm)
     (ros::ros-info "[main] arm: ~a, failed to recognize object in tote" arm)
-    (send *ri* :angle-vector-sequence
+    (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :fold-to-keep-object arm)
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
@@ -106,7 +106,7 @@
   (:return-from-pick-object (arm)
     (send *ri* :stop-grasp arm)
     (ros::ros-info "[main] arm: ~a return from pick-object to fold-pose-back" arm)
-    (send *ri* :angle-vector-sequence
+    (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
@@ -135,7 +135,7 @@
         (ros::ros-info "[main] target-bin: ~a" target-bin)
         t)))
   (:return-object (arm)
-    (send *ri* :angle-vector
+    (send *ri* :angle-vector-raw
           (send self :ik->tote-center arm :offset #f(0 0 0)
                 :rotation-axis :z :use-gripper t)
           :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
