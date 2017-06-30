@@ -66,7 +66,7 @@
       file_name: $(find jsk_apc2016_common)/resource/wallpapers/wallpaper_black.png
     </rosparam>
   </node>
-  <node name="team_k_desktop_xdisplay"
+  <node name="xdisplay_image_topic"
         pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
         args="/desktop_bg_publisher/output" />
 
