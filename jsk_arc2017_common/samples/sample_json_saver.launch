@@ -1,0 +1,13 @@
+<launch>
+
+  <arg name="json_dir" default="$(find jsk_arc2017_common)/data/json/sample_pick_task" />
+
+  <node name="json_saver"
+        pkg="jsk_arc2017_common" type="json_saver.py">
+    <rosparam subst_value="true">
+      json_dir: $(arg json_dir)
+      output_dir: /tmp/sample_json_saver
+    </rosparam>
+  </node>
+
+</launch>

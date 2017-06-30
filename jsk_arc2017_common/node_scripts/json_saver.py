@@ -10,6 +10,7 @@ import os
 import os.path as osp
 import rospy
 import shutil
+from std_msgs.msg import String
 from std_srvs.srv import Trigger
 from std_srvs.srv import TriggerResponse
 import threading
@@ -81,8 +82,16 @@ class JSONSaver(threading.Thread):
             output_order_path = osp.join(output_dir, 'order_file.json')
             shutil.copy(order_path, output_order_path)
 
+        # publish stamped json_dir
+        self.pub = rospy.Publisher('~output/json_dir', String, queue_size=1)
+        rate = rospy.get_param('~rate', 1)
+        self.timer_pub = rospy.Timer(rospy.Duration(1. / rate), self._cb_pub)
+
         self.lock = threading.Lock()
         self.daemon = True
+
+    def _cb_pub(self, event):
+        self.pub.publish(String(data=osp.dirname(self.output_json_path)))
 
     def _run_services(self):
         self.services = []
