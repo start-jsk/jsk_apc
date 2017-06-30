@@ -9,6 +9,7 @@ import operator
 import os
 import os.path as osp
 import rospy
+import shutil
 from std_srvs.srv import Trigger
 from std_srvs.srv import TriggerResponse
 import threading
@@ -34,8 +35,13 @@ class JSONSaver(threading.Thread):
         location_path = osp.join(json_dir, 'item_location_file.json')
         self.output_json_path = osp.join(
             output_dir, 'item_location_file.json')
-        with open(location_path) as location_f:
-            data = json.load(location_f)
+        if osp.exists(location_path):
+            shutil.copy(location_path, self.output_json_path)
+            with open(location_path) as location_f:
+                data = json.load(location_f)
+        else:
+            rospy.logerr(
+                'item_location_file.json does not exists in {}', location_path)
         self.bin_contents = {}
         for bin_ in data['bins']:
             self.bin_contents[bin_['bin_id']] = bin_['contents']
@@ -69,6 +75,11 @@ class JSONSaver(threading.Thread):
             for key in 'ABC':
                 size_id = self.cardboard_ids[key]
                 self.cardboard_contents[key] = cardboard_contents[size_id]
+
+        order_path = osp.join(json_dir, 'order_file.json')
+        if osp.exists(order_path):
+            output_order_path = osp.join(output_dir, 'order_file.json')
+            shutil.copy(order_path, output_order_path)
 
         self.lock = threading.Lock()
         self.daemon = True
