@@ -29,6 +29,18 @@
       output_dir: $(find jsk_arc2017_baxter)/output/stow_task
     </rosparam>
   </node>
+  <node name="visualize_json"
+        pkg="jsk_arc2017_common" type="visualize_json.py">
+    <remap from="~input/json_dir" to="json_saver/output/json_dir" />
+    <rosparam>
+      types:
+        - item_location
+        - order
+    </rosparam>
+  </node>
+  <node name="xdisplay_image_topic"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/visualize_json/output/item_location_viz" />
 
   <!-- smach viewer -->
   <!-- FIXME: Segmentation Fault occurs on sheeta -->
