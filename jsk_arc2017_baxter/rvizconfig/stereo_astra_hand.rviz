@@ -1,0 +1,679 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 0
+    Name: Displays
+    Property Tree Widget:
+      Expanded: ~
+      Splitter Ratio: 0.463889
+    Tree Height: 341
+  - Class: rviz/Selection
+    Name: Selection
+  - Class: rviz/Tool Properties
+    Expanded:
+      - /2D Pose Estimate1
+      - /2D Nav Goal1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.588679
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Time
+    Experimental: false
+    Name: Time
+    SyncMode: 0
+    SyncSource: L/L/RGB
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.03
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        collision_head_link_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        collision_head_link_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        display:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dummyhead1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        head:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        head_camera:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        left_arm_itb:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        left_arm_mount:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        left_gripper_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_gripper_vacuum_pad:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_gripper_vacuum_pad_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_accelerometer:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_camera:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_hand_camera_axis:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        left_hand_range:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_lower_elbow:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_lower_forearm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_lower_shoulder:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_torso_itb:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        left_upper_elbow:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_upper_elbow_visual:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_upper_forearm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_upper_forearm_visual:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_upper_shoulder:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_wrist:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        pedestal:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_arm_itb:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        right_arm_mount:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        right_gripper_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_gripper_l_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_gripper_l_finger_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_gripper_pad_with_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_gripper_palm_endpoint:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        right_gripper_r_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_gripper_r_finger_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_gripper_tube:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_accelerometer:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_camera:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_hand_camera_axis:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        right_hand_range:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_lower_elbow:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_lower_forearm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_lower_shoulder:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_torso_itb:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        right_upper_elbow:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_upper_elbow_visual:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_upper_forearm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_upper_forearm_visual:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_upper_shoulder:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_wrist:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        screen:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sonar_ring:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        torso:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /left_hand_camera/left/rgb/image_rect_color
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: L/L/RGB
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /left_hand_camera/right_registered/rgb/image_rect_color
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: L/RRegistered/RGB
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /left_hand_camera/left/depth_registered/image_rect_raw_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: L/L/Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /left_hand_camera/right_registered/depth_registered/image_rect_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: L/RRegistered/Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /left_hand_camera/stereo/depth_registered/image_rect_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: L/Stereo/Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /left_hand_camera/fused/depth_registered/image_rect_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: L/Fused/Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: L/Fused/Points
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.01
+      Style: Points
+      Topic: /left_hand_camera/fused/depth_registered/points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: jsk_rviz_plugin/CameraInfo
+      Enabled: true
+      Image Topic: ""
+      Name: L/L/RGB/CameraInfo
+      Topic: /left_hand_camera/left/rgb/camera_info
+      Unreliable: false
+      Value: true
+      alpha: 1
+      color: 85; 255; 255
+      edge color: 85; 255; 255
+      far clip: 0.1
+      not show side polygons: true
+      show edges: true
+      show polygons: false
+      use image: false
+    - Class: jsk_rviz_plugin/CameraInfo
+      Enabled: true
+      Image Topic: ""
+      Name: L/R/RGB/CameraInfo
+      Topic: /left_hand_camera/right/rgb/camera_info
+      Unreliable: false
+      Value: true
+      alpha: 1
+      color: 85; 255; 255
+      edge color: 85; 255; 255
+      far clip: 0.1
+      not show side polygons: true
+      show edges: true
+      show polygons: false
+      use image: false
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /right_hand_camera/left/rgb/image_rect_color
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: R/L/RGB
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /right_hand_camera/right_registered/rgb/image_rect_color
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: R/RRegistered/RGB
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /right_hand_camera/left/depth_registered/image_rect_raw_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: R/L/Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /right_hand_camera/right_registered/depth_registered/image_rect_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: R/RRegistered/Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /right_hand_camera/stereo/depth_registered/image_rect_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: R/Stereo/Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /right_hand_camera/fused/depth_registered/image_rect_view
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: R/Fused/Depth
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: R/Fused/Points
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.01
+      Style: Points
+      Topic: /right_hand_camera/fused/depth_registered/points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: jsk_rviz_plugin/CameraInfo
+      Enabled: true
+      Image Topic: ""
+      Name: R/L/RGB/CameraInfo
+      Topic: /right_hand_camera/left/rgb/camera_info
+      Unreliable: false
+      Value: true
+      alpha: 1
+      color: 85; 255; 255
+      edge color: 85; 255; 255
+      far clip: 0.1
+      not show side polygons: true
+      show edges: true
+      show polygons: false
+      use image: false
+    - Class: jsk_rviz_plugin/CameraInfo
+      Enabled: true
+      Image Topic: ""
+      Name: R/R/RGB/CameraInfo
+      Topic: /right_hand_camera/right/rgb/camera_info
+      Unreliable: false
+      Value: true
+      alpha: 1
+      color: 85; 255; 255
+      edge color: 85; 255; 255
+      far clip: 0.1
+      not show side polygons: true
+      show edges: true
+      show polygons: false
+      use image: false
+  Enabled: true
+  Global Options:
+    Background Color: 108; 108; 108
+    Fixed Frame: base
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Topic: /initialpose
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+    - Class: rviz/PublishPoint
+      Single click: true
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 1.24069
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.06
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0.568733
+        Y: 0.00534063
+        Z: -0.0494622
+      Name: Current View
+      Near Clip Distance: 0.01
+      Pitch: 1.3498
+      Target Frame: <Fixed Frame>
+      Value: Orbit (rviz)
+      Yaw: 6.27853
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1056
+  Hide Left Dock: false
+  Hide Right Dock: false
+  L/Fused/Depth:
+    collapsed: false
+  L/L/Depth:
+    collapsed: false
+  L/L/RGB:
+    collapsed: false
+  L/RRegistered/Depth:
+    collapsed: false
+  L/RRegistered/RGB:
+    collapsed: false
+  L/Stereo/Depth:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd0000000400000000000001d300000196fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000014900000196000000dd00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d00650072006101000003a8000000160000000000000000000000010000010f0000025afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007300000001640000025a000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b2000000000000000000000002000009bf0000011bfc0100000008fb0000000e004c002f004c002f0052004700420100000000000001930000006a00fffffffb00000022004c002f00520052006500670069007300740065007200650064002f005200470042010000019900000198000000b500fffffffb00000012004c002f004c002f004400650070007400680100000337000001a50000007800fffffffb00000026004c002f00520052006500670069007300740065007200650064002f0044006500700074006801000004e200000191000000c200fffffffb0000001c004c002f00530074006500720065006f002f004400650070007400680100000679000001a30000009c00fffffffb0000001c004c002f00530074006500720065006f002f00440065007000740068010000067f0000019e0000000000000000fb0000001a004c002f00460075007300650064002f0044006500700074006801000008220000019d0000009800fffffffb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009bf0000011dfc0100000008fb0000000e0052002f004c002f0052004700420100000000000001960000006c00fffffffb000000220052002f00520052006500670069007300740065007200650064002f005200470042010000019c00000198000000b600fffffffb000000120052002f004c002f00440065007000740068010000033a000001a10000007900fffffffb000000260052002f00520052006500670069007300740065007200650064002f0044006500700074006801000004e100000198000000c300fffffffb0000001c0052002f00530074006500720065006f002f00440065007000740068010000067f0000019c0000009e00fffffffb0000001a0052002f00460075007300650064002f0044006500700074006801000008210000019e0000009900fffffffc00000000000009bf0000000000fffffffa000000000200000002fb0000001a004c002f00460075007300650064002f004400650070007400680000000000ffffffff0000000000000000fb0000000800540069006d006500000003c40000003e0000003b00fffffffb0000000800540069006d00650100000000000004500000000000000000000007e60000019600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  R/Fused/Depth:
+    collapsed: false
+  R/L/Depth:
+    collapsed: false
+  R/L/RGB:
+    collapsed: false
+  R/RRegistered/Depth:
+    collapsed: false
+  R/RRegistered/RGB:
+    collapsed: false
+  R/Stereo/Depth:
+    collapsed: false
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 2495
+  X: 65
+  Y: 24
