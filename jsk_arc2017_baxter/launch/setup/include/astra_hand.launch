@@ -7,6 +7,23 @@
   <arg name="left_hand_camera_tranforms" default="-0.095 0.02 -0.01 -1.62 -0.04 -0.09" />
   <arg name="right_hand_camera_tranforms" default="-0.06 -0.10 0.01 1.63 -0.05 0.00" />
 
+  <!-- ASTRA MINI S 2017/04/11  7/10 : serial=16112210196 -->
+  <!-- ASTRA MINI S 2017/04/11  8/10 : serial=16112210193 -->
+  <!-- ASTRA MINI S 2017/04/11  9/10 : serial=16111911511 -->
+  <!-- ASTRA MINI S 2017/04/11 10/10 : serial=16112210224 -->
+
+  <arg name="serial_7"  value="16112210196" />
+  <arg name="serial_8"  value="16112210193" />
+  <arg name="serial_9"  value="16111911511" />
+  <arg name="serial_10" value="16112210224" />
+
+  <arg name="l_hand_l_camera_device_id" value="$(arg serial_7)" />
+  <arg name="l_hand_r_camera_device_id" value="$(arg serial_9)" />
+  <arg name="l_hand_stereo_devices" value="7_9" />
+  <arg name="r_hand_l_camera_device_id" value="$(arg serial_10)" />
+  <arg name="r_hand_r_camera_device_id" value="$(arg serial_8)" />
+  <arg name="r_hand_stereo_devices" value="8_10" />
+
   <!-- left hand camera -->
   <group if="$(arg launch_left)">
     <include file="$(find openni2_launch)/launch/openni2.launch">
@@ -14,11 +31,11 @@
       <arg name="camera" value="left_hand_camera" />
       <arg name="rgb_frame_id" value="left_hand_camera_rgb_optical_frame" />
       <arg name="depth_frame_id" value="left_hand_camera_depth_optical_frame" />
-      <arg name="device_id" value="16042710236" />
+      <arg name="device_id" value="$(arg l_hand_r_camera_device_id)" />
       <arg name="publish_tf" value="false" />
       <arg name="depth_registration" value="$(arg depth_registration)" />
-      <arg name="rgb_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/left_hand_rgb.yaml" />
-      <arg name="depth_camera_info_url" value="file://$(find jsk_2016_01_baxter_apc)/data/astra/left_hand_depth.yaml" />
+      <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg l_hand_stereo_devices)_right.yaml" />
+      <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg l_hand_r_camera_device_id).yaml" />
     </include>
     <node name="left_hand_camera_rgb_static_tf_publisher"
           pkg="tf" type="static_transform_publisher"
@@ -36,11 +53,11 @@
       <arg name="camera" value="right_hand_camera" />
       <arg name="rgb_frame_id" value="right_hand_camera_rgb_optical_frame" />
       <arg name="depth_frame_id" value="right_hand_camera_depth_optical_frame" />
-      <arg name="device_id" value="16112210224" />
+      <arg name="device_id" value="$(arg r_hand_l_camera_device_id)" />
       <arg name="publish_tf" value="false" />
       <arg name="depth_registration" value="$(arg depth_registration)" />
-      <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_8_10_left.yaml" />
-      <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_16112210224.yaml" />
+      <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg r_hand_stereo_devices)_left.yaml" />
+      <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg r_hand_l_camera_device_id).yaml" />
     </include>
     <node name="right_hand_camera_rgb_static_tf_publisher"
           pkg="tf" type="static_transform_publisher"
