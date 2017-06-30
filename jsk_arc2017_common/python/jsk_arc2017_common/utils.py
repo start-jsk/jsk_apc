@@ -217,7 +217,10 @@ def visualize_item_location(filename):
             font_scale=9, thickness=7)
         imgs_top.append(img_container)
     # visualize
-    img_top = tile(imgs_top, shape=(1, 4))
+    img_top = tile(imgs_top, shape=(1, len(imgs_top)))
+
+    if not item_location['boxes']:
+        return img_top
 
     # box
     imgs_box = []
@@ -226,7 +229,7 @@ def visualize_item_location(filename):
             box['size_id'], box['contents'],
             container_file=osp.join(PKG_DIR, 'data/objects/box/top.jpg'))
         imgs_box.append(img_container)
-    img_box = tile(imgs_box, shape=(1, 3))
+    img_box = tile(imgs_box, shape=(1, len(imgs_box)))
 
     scale = 1. * img_box.shape[1] / img_top.shape[1]
     img_top = cv2.resize(img_top, None, None, fx=scale, fy=scale)
