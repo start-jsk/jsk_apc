@@ -1,7 +1,7 @@
 jsk_arc2017_common
 ==================
 
-**jsk_apc2017_common** is common stacks for Amazon Picking Challenge 2017.
+**jsk_arc2017_common** is common stacks for Amazon Picking Challenge 2017.
 
 
 ROS nodes
