@@ -32,7 +32,7 @@ source_suffix = ['.rst', '.md']
 
 master_doc = 'index'
 project = u'jsk_apc'
-copyright = u'2015, JSK Lab'
+copyright = u'2017, JSK Lab'
 author = u'Kentaro Wada'
 language = 'en'
 
