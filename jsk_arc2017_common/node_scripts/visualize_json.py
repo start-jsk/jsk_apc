@@ -4,30 +4,41 @@ import os.path as osp
 
 import cv_bridge
 import jsk_arc2017_common
+from jsk_topic_tools import ConnectionBasedTransport
 from sensor_msgs.msg import Image
+from std_msgs.msg import String
 import rospy
 
 
-class VisualizeJSON(object):
+class VisualizeJSON(ConnectionBasedTransport):
 
     def __init__(self):
         super(VisualizeJSON, self).__init__()
-        self._json_dir = rospy.get_param('~json_dir')
         self._types = rospy.get_param('~types')
         if not all(t in ['item_location', 'order'] for t in self._types):
             rospy.logfatal('Unsupported type is included: %s' % self._types)
             quit(1)
-        self.pub_item_location = rospy.Publisher(
+        self.pub_item_location = self.advertise(
             '~output/item_location_viz', Image, queue_size=1)
-        self.pub_order = rospy.Publisher(
+        self.pub_order = self.advertise(
             '~output/order_viz', Image, queue_size=1)
-        rate = rospy.get_param('~rate', 1)
-        self.timer = rospy.Timer(rospy.Duration(1. / rate), self._cb)
 
-    def _cb(self, event):
+    def subscribe(self):
+        self.sub = rospy.Subscriber('~input/json_dir', String, self._cb)
+
+    def unsubscribe(self):
+        self.sub.unregister()
+
+    def _cb(self, msg):
+        json_dir = msg.data
+        if not osp.isdir(json_dir):
+            rospy.logfatal_throttle(
+                10, 'Input json_dir is not directory: %s' % json_dir)
+            return
+
         bridge = cv_bridge.CvBridge()
         if 'item_location' in self._types:
-            filename = osp.join(self._json_dir, 'item_location_file.json')
+            filename = osp.join(json_dir, 'item_location_file.json')
             if osp.exists(filename):
                 img = jsk_arc2017_common.visualize_item_location(filename)
                 imgmsg = bridge.cv2_to_imgmsg(img, encoding='rgb8')
@@ -36,7 +47,7 @@ class VisualizeJSON(object):
             else:
                 rospy.logwarn_throttle(10, '%s does not exists yet' % filename)
         if 'order' in self._types:
-            filename = osp.join(self._json_dir, 'order_file.json')
+            filename = osp.join(json_dir, 'order_file.json')
             if osp.exists(filename):
                 img = jsk_arc2017_common.visualize_order(filename)
                 imgmsg = bridge.cv2_to_imgmsg(img, encoding='rgb8')

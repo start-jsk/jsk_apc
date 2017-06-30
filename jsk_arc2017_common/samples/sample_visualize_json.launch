@@ -1,12 +1,13 @@
 <launch>
 
   <arg name="gui" default="true" />
-  <arg name="json_dir" default="$(find jsk_arc2017_common)/data/json/sample_pick_task" />
+
+  <include file="$(find jsk_arc2017_common)/samples/sample_json_saver.launch" />
 
   <node name="visualize_json"
         pkg="jsk_arc2017_common" type="visualize_json.py">
+    <remap from="~input/json_dir" to="json_saver/output/json_dir" />
     <rosparam subst_value="true">
-      json_dir: $(arg json_dir)
       types:
         - item_location
         - order
