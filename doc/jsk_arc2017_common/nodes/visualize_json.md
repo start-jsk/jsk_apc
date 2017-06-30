@@ -14,7 +14,9 @@ Visualizes `item_location_file.json` and `order_file.json`.
 
 ## Subscribing topics
 
-None
+- `~input/json_dir` (`String`)
+
+  Where json files are located.
 
 
 ## Publshing topics
@@ -34,17 +36,9 @@ None
 
 ## Parameters
 
-- `~rate` (Int, default: `1`)
-
-  Hz of publishing topics.
-
 - `~types` (List of string, required)
 
   `item_location` or/and `order`.
-
-- `~json_dir` (String, required)
-
-  Directory location where json files are be located.
 
 
 ## Sample
