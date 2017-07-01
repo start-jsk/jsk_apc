@@ -2,7 +2,7 @@
 
   <arg name="rviz" default="false" />
   <arg name="fuse" default="true" />
-  <arg name="right_hand_stereo_left_transform" default="-0.06 -0.10 0.01 1.63 -0.05 0.00" />
+  <arg name="right_hand_stereo_left_transform" default="-0.045 -0.09 0.00 1.63 -0.01 0.03" />
 
   <!-- TODO(YutoUchimi): make launch_right:=true -->
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
