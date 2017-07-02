@@ -100,7 +100,8 @@
     (send self :pick-object-in-tote arm
           :n-trial 2
           :n-trial-same-pos 1
-          :do-stop-grasp nil)
+          :do-stop-grasp nil
+          :grasp-style grasp-style)
     (send *ri* :angle-vector
           (send self :ik->tote-center arm
                 :offset #f(0 0 300) :rotation-axis :z :use-gripper t)

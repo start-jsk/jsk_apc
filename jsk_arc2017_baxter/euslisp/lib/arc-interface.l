@@ -251,7 +251,8 @@
       (setq graspingp (send* self :pick-object-with-movable-region arm movable-region args))
       graspingp))
   (:pick-object-with-movable-region
-    (arm movable-region &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
+    (arm movable-region &key (n-trial 1) (n-trial-same-pos 1)
+         (do-stop-grasp nil) (grasp-style :suction))
     (let (graspingp avs object-index)
       ;; TODO: object-index is set randomly
       (setq object-index (random (length (gethash arm object-boxes-))))
