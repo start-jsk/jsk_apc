@@ -276,19 +276,30 @@
         (format nil "/gripper_front/limb/~a/servo/torque" l/r)
         (instance std_msgs::Bool :init :data nil))))
   (:graspingp
-    (arm)
-    (let (topic)
+    (arm &optional type)
+    (let (topic finger-av fingerp)
       (if (ros::get-param "/apc_on_gazebo" nil)
         (progn
           (setq topic (format nil "/robot/~a_vacuum_gripper/grasping" (arm-to-str arm)))
           (send (one-shot-subscribe topic std_msgs::Bool) :data)
           )
         (progn
-          (setq topic (format nil "gripper_front/limb/~a/pressure/state" (arm-to-str arm)))
-          (< (send (one-shot-subscribe topic std_msgs::Float64) :data)
-             (cond
-               ((eq arm :rarm) rarm-pressure-threshold-)
-               ((eq arm :larm) larm-pressure-threshold-)))))))
+          (when (eq arm :rarm)
+            (setq finger-av (send self :get-real-finger-av arm))
+            (setq fingerp
+                  (and (or
+                         (and (< (aref finger-av 0) 45) (< (aref finger-av 1) 80))
+                         (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 115))
+                         (> (send self :get-prismatic-load arm) 0.25))
+                       (> (send self :get-finger-load arm) 0.55))))
+          (send self :spin-once)
+          (or (if (not (eq type :suction)) fingerp nil)
+              (if (not (eq type :pinch))
+                (< (gethash arm pressure-)
+                   (cond
+                     ((eq arm :rarm) rarm-pressure-threshold-)
+                     ((eq arm :larm) larm-pressure-threshold-)))
+                nil))))))
   (:arm-potentio-vector
     (arm)
     (case arm
