@@ -15,7 +15,11 @@
   :super baxter-interface
   :slots (rarm-pressure-threshold-
           larm-pressure-threshold-
-          right-hand-action-))
+          right-hand-action-
+          pressure-
+          finger-flex-
+          finger-load-
+          prismatic-load-))
 
 (defmethod jsk_arc2017_baxter::baxter-interface
   (:init
@@ -62,6 +66,34 @@
       (and joint-action-enable (send right-hand-action- :wait-for-server 3))
       (ros::ros-warn "~A is not respond" right-hand-action-)
       (ros::ros-info "*** if you do not have hand, you can ignore this message ***"))
+    ;; gripper sensors
+    (setq pressure- (make-hash-table))
+    (setq finger-load- (make-hash-table))
+    (setq finger-flex- (make-hash-table))
+    (setq prismatic-load- (make-hash-table))
+    (setq prismatic-vel- (make-hash-table))
+    (dolist (arm (list :rarm :larm))
+      (ros::subscribe (format nil "/gripper_front/limb/~a/pressure/state" (arm2str arm))
+                      std_msgs::Float64
+                      #'send self :set-pressure arm
+                      :groupname groupname)
+      (ros::subscribe (format nil "/gripper_front/limb/~a/dxl/finger_tendon_controller/state"
+                              (arm2str arm))
+                      dynamixel_msgs::JointState
+                      #'send self :set-finger-load arm
+                      :groupname groupname)
+      (ros::subscribe (format nil "/gripper_front/limb/~a/dxl/prismatic_joint_controller/state"
+                              (arm2str arm))
+                      dynamixel_msgs::JointState
+                      #'send self :set-prismatic-state arm
+                      :groupname groupname)
+      (sethash arm finger-flex- (make-hash-table))
+      (dolist (side (list :right :left))
+        (ros::subscribe (format nil "/gripper_front/limb/~a/flex/~a/state"
+                                (arm2str arm) (symbol2str side))
+                        std_msgs::UInt16
+                        #'send self :set-finger-flex arm side
+                        :groupname groupname)))
     (if mvit-rb (setq moveit-robot mvit-rb))
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot))))
   ;; Overwrite super class's :rarm-controller
@@ -108,6 +140,19 @@
      (cons :controller-state "/gripper_front/limb/left/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "left_gripper_vacuum_pad_joint")))))
+  (:set-pressure
+    (arm msg)
+    (sethash arm pressure- (send msg :data)))
+  (:set-finger-load
+    (arm msg)
+    (sethash arm finger-load- (send msg :load)))
+  (:set-prismatic-state
+    (arm msg)
+    (sethash arm prismatic-load- (send msg :load))
+    (sethash arm prismatic-vel- (send msg :velocity)))
+  (:set-finger-flex
+    (arm side msg)
+    (sethash side (gethash arm finger-flex-) (send msg :data)))
 
   ;; Hand interface
   ;; based on naoqi-interface and fetch-interface
