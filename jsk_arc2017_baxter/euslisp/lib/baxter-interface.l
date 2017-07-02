@@ -322,6 +322,56 @@
         (progn
           (ros::ros-info "[:wait-interpolation-until-grasp] Grasping detected. Cancel angle vector: ~a" arm)
           (send self :cancel-angle-vector)))))
+  (:wait-interpolation-until
+    (arm &rest args)
+    (when (send self :simulation-modep)
+      (return-from :wait-interpolation-until (send self :wait-interpolation)))
+    (unless (or (eq arm :rarm) (eq arm :larm))
+      (error ":wait-interpolation-until set arm for first arg~%"))
+    (let (conds r-init-flex l-init-flex init-load)
+      (setq r-init-flex (send self :get-finger-flex arm :right))
+      (setq l-init-flex (send self :get-finger-flex arm :left))
+      (setq init-load (send self :get-finger-load arm))
+      (ros::ros-info
+        "[:wait-interpolation-until] Init flex:  r: ~a l: ~a" r-init-flex l-init-flex)
+      (ros::ros-info "[:wait-interpolation-until] Init load: ~a" init-load)
+      (when (member :grasp args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for grasp")
+        (pushback #'(lambda () (send self :graspingp arm)) conds))
+      (when (member :finger-flexion args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for finger flexion")
+        (pushback
+          #'(lambda () (or (> (send self :get-finger-flex arm :right) (+ r-init-flex 20))
+                           (> (send self :get-finger-flex arm :left) (+ l-init-flex 20))))
+          conds))
+      (when (member :finger-extension args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for finger extension")
+        (pushback
+          #'(lambda () (or (< (send self :get-finger-flex arm :right) (- r-init-flex 30))
+                           (< (send self :get-finger-flex arm :left) (- l-init-flex 30))))
+          conds))
+      (when (member :finger-loaded args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for finger loaded")
+        (pushback
+          #'(lambda () (> (send self :get-finger-load arm) (+ init-load 0.01)))
+          conds))
+      (when (member :finger-unloaded args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for finger unloaded")
+        (pushback
+          #'(lambda () (< (send self :get-finger-load arm) (- init-load 0.01)))
+          conds))
+      (when (member :prismatic-loaded args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for prismatic joint loaded")
+        (pushback
+          #'(lambda () (and (< (send self :get-prismatic-load arm) -0.07)
+                            (< (send self :get-prismatic-vel arm) 0.01)))
+          conds))
+      ;; wait for :interpolatingp
+      (unix::usleep 10000)
+      (while (send self :interpolatingp)
+        (when (reduce #'(lambda (x y) (or x y)) (mapcar #'funcall conds))
+          (ros::ros-info "[:wait-interpolation-until-grasp] Cancel angle vector: ~a" arm)
+          (send self :cancel-angle-vector)))))
   (:calib-pressure-threshold
     (&optional (arm :arms))
     (send self :start-grasp arm)
