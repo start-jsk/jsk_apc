@@ -113,6 +113,7 @@ class StateServer(threading.Thread):
                     can_start = False
             elif state == 'wait-for-opposite-arm':
                 if opposite_state == 'recognize-object' \
+                        or opposite_state == 'set-grasp-style' \
                         or opposite_state == 'pick-object' \
                         or opposite_state == 'check-picking-fail-count' \
                         or opposite_state == 'verify-object' \

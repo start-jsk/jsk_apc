@@ -19,14 +19,16 @@
           target-bin
           target-index
           target-obj
-          tote-contents))
+          tote-contents
+          grasp-style))
 
 (defmethod jsk_arc2017_baxter::stow-interface
   (:init (&key (moveit nil))
     (send-super :init)
     (setq picking-fail-count 0)
     (setq recognize-fail-count 0)
-    (setq moveit-p moveit))
+    (setq moveit-p moveit)
+    (setq grasp-style nil))
   (:recognize-bboxes (arm)
     (ros::ros-info "[main] recognizing bin boxes")
     (send self :recognize-bin-boxes :stamp (ros::time-now))
@@ -89,6 +91,9 @@
     (incf recognize-fail-count)
     (ros::ros-info "[main] arm: ~a, recognize fail count: ~a" arm recognize-fail-count)
     (> recognize-fail-count 1))
+  (:set-grasp-style (arm)
+    (if (and (eq grasp-style :suction) (eq arm :rarm))
+      (setq grasp-style :pinch) (setq grasp-style :suction)))
   (:pick-object (arm)
     (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-tote-scene arm))
