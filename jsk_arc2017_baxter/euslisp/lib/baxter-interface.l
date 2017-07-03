@@ -256,6 +256,9 @@
                (send self :move-hand l/r finger-av 1000)
                (when (> (aref finger-av 0) 45)
                  ;; if cylindrical and spherical grasp, move other gripper joints
+                 (pushback (send robot :angle-vector) avs)
+                 (send robot l/r :gripper-x :joint-angle 120)
+                 (pushback (send robot :angle-vector) avs)
                  (send robot l/r :gripper-p :joint-angle 0)
                  (pushback (send robot :angle-vector) avs)
                  (send robot l/r :gripper-x :joint-angle 0)
