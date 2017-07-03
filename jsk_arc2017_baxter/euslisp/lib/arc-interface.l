@@ -476,7 +476,7 @@
       (ros::ros-info "[:try-to-pinch-object] arm:~a pinch-yaw: ~a" arm pinch-yaw)
       ;; Initialize finger
       (send *ri* :move-hand arm
-            (send *baxter* :hand-grasp-pose arm :cylindrical :angle 30) 1000)
+            (send *baxter* :hand-grasp-pose arm :cylindrical :angle 40) 1000)
       ;; start the vacuum gripper before approaching to the object
       (ros::ros-info "[:try-to-pinch-object] arm:~a start vacuum gripper" arm)
       (send *ri* :start-grasp arm)
