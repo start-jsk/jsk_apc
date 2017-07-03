@@ -292,8 +292,7 @@
             (setq fingerp
                   (and (or
                          (and (< (aref finger-av 0) 45) (< (aref finger-av 1) 80))
-                         (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 115))
-                         (> (send self :get-prismatic-load arm) 0.25))
+                         (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 155)))
                        (> (send self :get-finger-load arm) 0.55))))
           (send self :spin-once)
           (or (if (not (eq type :suction)) fingerp nil)
