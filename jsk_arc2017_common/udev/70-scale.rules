@@ -1,0 +1,4 @@
+# Create symlink /dev/scale*
+# This detects USB-Serial adapters connected to scales
+IMPORT{program}="/usr/local/sbin/unique-num /dev scale SCALE_NUM"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="056e", ATTRS{idProduct}=="5004", MODE="0666", SYMLINK+="scale%E{SCALE_NUM}"

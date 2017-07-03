@@ -107,6 +107,14 @@ $ rosrun jsk_arc2017_baxter create_udev_rules
 ```
 so that Arduinos can appear on `/dev/arduino*` and DXHUB can appear on `/dev/r_dxhub`
 
+**Setup scales**
+
+Create udev rules:
+```
+$ rosrun jsk_arc2017_common create_udev_rules
+```
+so that scales can appear on `/dev/scale*`
+
 **Setup SSH**
 
 Write below in `~/.ssh/config`:

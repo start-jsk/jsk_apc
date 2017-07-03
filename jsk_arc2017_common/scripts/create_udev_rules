@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo ""
+echo "This script copies udev rules for scales and their dependencies"
+echo "to /etc/udev/rules.d and /usr/local/sbin"
+echo ""
+
+sudo cp `rospack find jsk_arc2017_common`/udev/70-scale.rules /etc/udev/rules.d
+sudo cp `rospack find jsk_arc2017_common`/udev/unique-num /usr/local/sbin
+
+echo ""
+echo "Restarting udev"
+echo ""
+sudo service udev reload
+sudo service udev restart
