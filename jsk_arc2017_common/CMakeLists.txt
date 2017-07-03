@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(jsk_arc2017_common)
 
 find_package(catkin REQUIRED
+    dynamic_reconfigure
     message_generation
 )
 
@@ -21,6 +22,10 @@ add_message_files(
 add_service_files(
     FILES
     UpdateJSON.srv
+)
+
+generate_dynamic_reconfigure_options(
+    cfg/CandidatesPublisher.cfg
 )
 
 generate_messages(
