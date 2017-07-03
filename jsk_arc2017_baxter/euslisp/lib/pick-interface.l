@@ -68,9 +68,7 @@
     (ros::set-dynparam
       (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
       (cons "label_value" (position target-obj label-names :test #'string=)))
-    (send self :set-object-segmentation-candidates arm
-      (mapcar #'(lambda (x) (position x label-names :test #'string=))
-              (append (list "__background__") bin-contents (list "__shelf__"))))
+    (send self :set-target-location arm (cons :bin target-bin))
     (ros::set-param
       (format nil "~a_hand/target_bin" (arm2str arm))
       (symbol2str target-bin))

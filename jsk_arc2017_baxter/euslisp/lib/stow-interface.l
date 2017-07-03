@@ -49,9 +49,7 @@
             (ros::get-param (format nil "/~a_hand_camera/label_names"
                                     (arm2str arm))))
       (setq tote-contents (ros::get-param "/tote_contents"))
-      (send self :set-object-segmentation-candidates arm
-        (mapcar #'(lambda (x) (position x label-names :test #'string=))
-                (append (list "__background__") tote-contents (list "__shelf__"))))
+      (send self :set-target-location arm :tote)
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-tote-scene arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
