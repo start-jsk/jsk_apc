@@ -473,6 +473,7 @@
   (:try-to-pinch-object
     (arm obj-pos pinch-yaw &key (offset #f(0 0 0)))
     (let (graspingp)
+      (ros::ros-info "[:try-to-pinch-object] arm:~a pinch-yaw: ~a" arm pinch-yaw)
       ;; Initialize finger
       (send *ri* :move-hand arm
             (send *baxter* :hand-grasp-pose arm :cylindrical :angle 30) 1000)
