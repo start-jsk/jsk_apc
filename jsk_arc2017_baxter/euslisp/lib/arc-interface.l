@@ -623,6 +623,13 @@
         (format nil "/~a_hand_camera/apply_context_to_label_proba/update_candidates"
                 (arm2str arm))
         req)))
+  (:set-target-location (arm location)
+    (if (consp location)
+      (setq location (format nil "~a_~a" (symbol2str (car location)) (symbol-string (cdr location))))
+      (setq location (symbol2str location)))
+    (ros::set-dynparam
+      (format nil "/~a_hand_camera/candidates_publisher" (arm2str arm))
+      (cons "target_location" location)))
   (:set-arm-state-param (arm state)
     (ros::set-param (format nil "~a_hand/state" (arm2str arm)) (symbol2str state)))
   (:get-bin-contents (bin)
