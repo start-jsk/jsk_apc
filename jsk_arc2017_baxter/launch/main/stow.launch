@@ -42,6 +42,22 @@
         pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
         args="/visualize_json/output/item_location_viz" />
 
+  <!-- candidates publisher -->
+  <group ns="left_hand_camera">
+    <node name="candidates_publisher"
+        pkg="jsk_arc2017_common" type="candidates_publisher.py" >
+      <remap from="~input/json_dir" to="/json_saver/output/json_dir" />
+      <remap from="~label_names" to="label_names" />
+    </node>
+  </group>
+  <group ns="right_hand_camera">
+    <node name="candidates_publisher"
+        pkg="jsk_arc2017_common" type="candidates_publisher.py" >
+      <remap from="~input/json_dir" to="/json_saver/output/json_dir" />
+      <remap from="~label_names" to="label_names" />
+    </node>
+  </group>
+
   <!-- smach viewer -->
   <!-- FIXME: Segmentation Fault occurs on sheeta -->
   <!-- <node pkg="smach_viewer" type="smach_viewer.py" name="smach_viewer" /> -->
