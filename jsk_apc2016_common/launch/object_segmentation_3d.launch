@@ -46,8 +46,8 @@
       <remap from="~input" to="$(arg INPUT_CLOUD)" />
       <remap from="~target" to="label_to_cluster_indices/output" />
       <rosparam>
-        approximate_sync: true
-        queue_size: 100
+        approximate_sync: false
+        queue_size: 1000
         sort_by: -cloud_size
       </rosparam>
     </node>
