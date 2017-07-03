@@ -19,9 +19,10 @@
             (:wait-for-opposite-arm !-> :wait-for-opposite-arm)
             (:set-target -> :recognize-object)
             (:set-target !-> :wait-for-user-input)
-            (:recognize-object -> :pick-object)
+            (:recognize-object -> :set-grasp-style)
             (:recognize-object !-> :return-from-recognize-object)
             (:return-from-recognize-object -> :wait-for-opposite-arm-start-picking)
+            (:set-grasp-style -> :pick-object)
             (:pick-object -> :verify-object)
             (:pick-object !-> :check-picking-fail-count)
             (:check-picking-fail-count -> :return-from-pick-object)
@@ -67,6 +68,11 @@
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :return-from-recognize-object)
                  (send *ti* :return-from-recognize-object *arm*)
+                 t))
+            (:set-grasp-style
+              '(lambda (userdata)
+                 (send *ti* :update-state *arm* :set-grasp-style)
+                 (send *ti* :set-grasp-style *arm*)
                  t))
             (:pick-object
               '(lambda (userdata)
