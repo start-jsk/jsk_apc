@@ -1,0 +1,28 @@
+<launch>
+
+  <arg name="gui" default="true" />
+
+  <include file="$(find jsk_arc2017_common)/samples/sample_json_saver.launch" />
+
+  <node name="visualize_json"
+        pkg="jsk_arc2017_common" type="visualize_json.py">
+    <remap from="~input/json_dir" to="json_saver/output/json_dir" />
+    <rosparam subst_value="true">
+      types:
+        - item_location
+        - order
+    </rosparam>
+  </node>
+
+  <group if="$(arg gui)">
+    <node name="image_view0"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="visualize_json/output/item_location_viz" />
+    </node>
+    <node name="image_view1"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="visualize_json/output/order_viz" />
+    </node>
+  </group>
+
+</launch>

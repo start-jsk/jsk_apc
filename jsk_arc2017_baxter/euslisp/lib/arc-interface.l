@@ -259,7 +259,7 @@
       (send *ri* :gripper-servo-on arm)
       (if (eq arm :larm)
         (progn
-          (send *ri* :angle-vector
+          (send *ri* :angle-vector-raw
                 (send *baxter* arm :inverse-kinematics
                       (make-coords :pos (v+ obj-pos #f(0 0 150))
                                    :rpy #f(0 0 0))
@@ -284,7 +284,7 @@
           (setq gripper-x (send *baxter* arm :gripper-x :joint-angle))
           (send *baxter* :angle-vector prev-av)
           ;; First, move prismatic joint to target position
-          (send *ri* :angle-vector
+          (send *ri* :angle-vector-raw
                 (send *baxter* :slide-gripper arm gripper-x :relative nil)
                 :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
           (send *ri* :wait-interpolation)
@@ -294,7 +294,7 @@
           (send *ri* :move-hand arm
                 (send *baxter* :hand-grasp-pose arm :cylindrical :angle 100) 1000)
           ;; Move whole arm to target pose
-          (send *ri* :angle-vector
+          (send *ri* :angle-vector-raw
                 (send *baxter* :angle-vector next-av)
                 :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
           (send *ri* :wait-interpolation)))
@@ -310,7 +310,7 @@
                         :offset (float-vector 0 0 (- (* i -50) 30))))
             (pushback (send *baxter* :angle-vector) avs))))
       (when do-stop-grasp (unless graspingp (send *ri* :stop-grasp arm)))
-      (send *ri* :angle-vector-sequence (reverse avs)
+      (send *ri* :angle-vector-sequence-raw (reverse avs)
             :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
       (send *ri* :wait-interpolation)
       (when (eq arm :rarm)
@@ -468,7 +468,7 @@
         (send self :ik->bin-center arm bin
               :offset offset :rpy rpy :use-gripper nil)
         avs)
-      (send *ri* :angle-vector-sequence avs :fast
+      (send *ri* :angle-vector-sequence-raw avs :fast
             (send *ri* :get-arm-controller arm) 0 :scale 3.0)))
   (:move-arm-body->tote-overlook-pose
     (arm &key (gripper-angle 90))
@@ -483,7 +483,7 @@
         (send self :ik->tote-center arm
               :offset offset :rpy rpy :use-gripper nil)
         avs)
-      (send *ri* :angle-vector-sequence avs :fast
+      (send *ri* :angle-vector-sequence-raw avs :fast
             (send *ri* :get-arm-controller arm) 0 :scale 3.0)))
   (:wait-for-user-input-to-start (arm)
     (let (can-start)
@@ -578,12 +578,18 @@
       (setq req (instance jsk_arc2017_baxter::GetStateRequest :init))
       (setq state (send (ros::service-call service-name req) :state))
       state))
-  (:update-json (object &key dst (src :tote))
+  (:update-json (object &key src dst)
     (let ((service-name (format nil "/json_saver/update_json"))
           (req (instance jsk_arc2017_common::UpdateJSONRequest :init)))
       (ros::wait-for-service service-name)
-      (send req :src (symbol-string src))
-      (send req :dst (symbol-string dst))
+      (if (consp src)
+        (setq src (format nil "~a_~a" (symbol2str (car src)) (symbol-string (cdr src))))
+        (setq src (symbol2str src)))
+      (if (consp dst)
+        (setq dst (format nil "~a_~a" (symbol2str (car dst)) (symbol-string (cdr dst))))
+        (setq dst (symbol2str dst)))
+      (send req :src src)
+      (send req :dst dst)
       (send req :item object)
       (send (ros::service-call service-name req) :updated)))
   (:save-json ()

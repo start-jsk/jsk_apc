@@ -5,9 +5,12 @@ import datetime
 from jsk_arc2017_common.srv import UpdateJSON
 from jsk_arc2017_common.srv import UpdateJSONResponse
 import json
+import operator
 import os
 import os.path as osp
 import rospy
+import shutil
+from std_msgs.msg import String
 from std_srvs.srv import Trigger
 from std_srvs.srv import TriggerResponse
 import threading
@@ -33,15 +36,62 @@ class JSONSaver(threading.Thread):
         location_path = osp.join(json_dir, 'item_location_file.json')
         self.output_json_path = osp.join(
             output_dir, 'item_location_file.json')
-        with open(location_path) as location_f:
-            data = json.load(location_f)
+        if osp.exists(location_path):
+            shutil.copy(location_path, self.output_json_path)
+            with open(location_path) as location_f:
+                data = json.load(location_f)
+        else:
+            rospy.logerr(
+                'item_location_file.json does not exists in {}', location_path)
         self.bin_contents = {}
         for bin_ in data['bins']:
             self.bin_contents[bin_['bin_id']] = bin_['contents']
         self.tote_contents = data['tote']['contents']
 
+        self.cardboard_contents = {}
+        self.cardboard_ids = {}
+
+        # this is for pick task
+        # carboard is only used in pick task
+        if len(data['boxes']) > 0:
+            size_ids = []
+            cardboard_contents = {}
+            for box in data['boxes']:
+                size_id = box['size_id']
+                size_ids.append(size_id)
+                cardboard_contents[size_id] = box['contents']
+
+            box_sizes = {}
+            box_path = osp.join(json_dir, 'box_sizes.json')
+            with open(box_path) as box_f:
+                box_infos = json.load(box_f)['boxes']
+            for box_info in box_infos:
+                size_id = box_info['size_id']
+                box_sizes[size_id] = reduce(
+                    operator.mul, box_info['dimensions'])
+            sorted_size_ids = sorted(size_ids, key=lambda x: box_sizes[x])
+
+            for key, size_id in zip('ABC', sorted_size_ids):
+                self.cardboard_ids[key] = size_id
+            for key in 'ABC':
+                size_id = self.cardboard_ids[key]
+                self.cardboard_contents[key] = cardboard_contents[size_id]
+
+        order_path = osp.join(json_dir, 'order_file.json')
+        if osp.exists(order_path):
+            output_order_path = osp.join(output_dir, 'order_file.json')
+            shutil.copy(order_path, output_order_path)
+
+        # publish stamped json_dir
+        self.pub = rospy.Publisher('~output/json_dir', String, queue_size=1)
+        rate = rospy.get_param('~rate', 1)
+        self.timer_pub = rospy.Timer(rospy.Duration(1. / rate), self._cb_pub)
+
         self.lock = threading.Lock()
         self.daemon = True
+
+    def _cb_pub(self, event):
+        self.pub.publish(String(data=osp.dirname(self.output_json_path)))
 
     def _run_services(self):
         self.services = []
@@ -64,6 +114,13 @@ class JSONSaver(threading.Thread):
         separators = (',', ': ')
         self.lock.acquire()
         is_saved = True
+        boxes = []
+        if len(self.cardboard_contents.keys()) > 0:
+            for key in 'ABC':
+                boxes.append({
+                    'size_id': self.cardboard_ids[key],
+                    'contents': self.cardboard_contents[key]
+                })
         location = {
             'bins': [
                 {
@@ -79,7 +136,7 @@ class JSONSaver(threading.Thread):
                     'contents': self.bin_contents['C']
                 },
             ],
-            'boxes': [],
+            'boxes': boxes,
             'tote': {
                 'contents': self.tote_contents,
             }
@@ -97,25 +154,50 @@ class JSONSaver(threading.Thread):
         return is_saved
 
     def _update_location(self, req):
+        is_updated = True
+        self.lock.acquire()
         item = req.item
         src = req.src
         dst = req.dst
-        is_updated = True
-        self.lock.acquire()
-        if src in 'ABC':
+        if src[:3] == 'bin':
+            src = src[4]
             try:
                 self.bin_contents[src].remove(item)
-                self.bin_contents[dst].append(item)
             except Exception:
                 rospy.logerr('{0} does not exist in bin {1}'.format(item, src))
-                is_updated = False
-        else:
+                self.lock.release()
+                return False
+        elif src[:9] == 'cardboard':
+            src = src[10]
+            try:
+                self.cardboard_contents[src].remove(item)
+            except Exception:
+                rospy.logerr('{0} does not exist in bin {1}'.format(item, src))
+                self.lock.release()
+                return False
+        elif src == 'tote':
             try:
                 self.tote_contents.remove(item)
-                self.bin_contents[dst].append(item)
             except Exception:
                 rospy.logerr('{} does not exist in tote'.format(item))
-                is_updated = False
+                self.lock.release()
+                return False
+        else:
+            rospy.logerr('Invalid src request {}', src)
+            is_updated = False
+
+        if dst[:3] == 'bin':
+            dst = dst[4]
+            self.bin_contents[dst].append(item)
+        elif dst[:9] == 'cardboard':
+            dst = dst[10]
+            self.cardboard_contents[dst].append(item)
+        elif dst == 'tote':
+            self.tote_contents.append(item)
+        else:
+            rospy.logerr('Invalid dst request {}', dst)
+            is_updated = False
+
         self.lock.release()
         return is_updated
 

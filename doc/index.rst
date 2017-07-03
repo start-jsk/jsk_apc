@@ -29,8 +29,9 @@ The code is open source, and `available on github`_.
    :maxdepth: 2
    :caption: ROS Packages
 
-   jsk_2015_05_baxter_apc/index
-   jsk_2016_01_baxter_apc/index
-   jsk_arc2017_baxter/index
    jsk_apc2015_common/index
+   jsk_2015_05_baxter_apc/index
    jsk_apc2016_common/index
+   jsk_2016_01_baxter_apc/index
+   jsk_arc2017_common/index
+   jsk_arc2017_baxter/index

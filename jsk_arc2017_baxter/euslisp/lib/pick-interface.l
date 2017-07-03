@@ -95,7 +95,7 @@
       is-recognized))
   (:return-from-recognize-object (arm)
     (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
-    (send *ri* :angle-vector-sequence
+    (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :fold-to-keep-object arm)
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
@@ -118,7 +118,7 @@
     graspingp)
   (:return-from-pick-object (arm)
     (send *ri* :stop-grasp arm)
-    (send *ri* :angle-vector-sequence
+    (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
@@ -144,7 +144,7 @@
         (ros::ros-info "[main] target-cardboard: ~a" target-cardboard)
         t)))
   (:return-object (arm)
-    (send *ri* :angle-vector
+    (send *ri* :angle-vector-raw
           (send self :ik->bin-center arm target-bin
                 :offset #f(0 0 0) :rotation-axis :z :use-gripper t)
           :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
@@ -186,6 +186,8 @@
           (send *ri* :stop-grasp arm))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
+          (send self :update-json target-obj
+                :src (cons :bin target-bin) :dst (cons :cardboard target-cardboard))
           (when moveit-p (send self :delete-cardboard-scene))
           (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -200) :world)
                 2000 (send *ri* :get-arm-controller arm) 0)
