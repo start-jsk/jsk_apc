@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 location prefix var-name" >&2
+    exit 1
+fi
+
+location="$1"
+prefix="$2"
+key="$3"
+
+needindex=1
+index=0
+
+while [ $needindex -eq 1 ]
+do
+        if [ ! -e $location/$prefix$index ]; then
+                needindex=0
+                echo "$key=$index"
+        else
+                (( index++ ))
+        fi
+done
