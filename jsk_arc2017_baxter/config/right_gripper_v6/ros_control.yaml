@@ -28,7 +28,7 @@ flex_thresholds:
   - 720
   - 700
 wind_offset_flex:
-  - 0.35
-  - 0.35
+  - 0.5
+  - 0.5
 
 control_rate: 20

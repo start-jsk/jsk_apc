@@ -65,7 +65,9 @@ private:
   ros::Subscriber robot_state_sub_;
 
   std::map<std::string, dynamixel_msgs::JointState> received_actr_states_;
-  std::map<std::string, int> received_flex_;
+  std::vector<int> received_flex_;
+  std::vector<bool> is_flexion_;
+  std::vector<int> flex_dec_cnt_;
   bool is_gripper_enabled_;
 
   // ROS service clients
@@ -138,11 +140,14 @@ public:
     // Publisher for vacuum
     vacuum_pub_ = nh_.advertise<std_msgs::Bool>("vacuum", 10);
 
+    received_flex_ = std::vector<int>(flex_names_.size(), 0);
+    is_flexion_ = std::vector<bool>(flex_names_.size(), false);
+    flex_dec_cnt_ = std::vector<int>(flex_names_.size(), 0);
     // Subscribers for flex
-    for (std::vector<std::string>::const_iterator itr = flex_names_.begin(); itr != flex_names_.end(); ++itr)
+    for (int i = 0; i < flex_names_.size(); i++)
     {
-      flex_sub_[*itr] = nh_.subscribe<std_msgs::UInt16>("flex/" + *itr + "/state", 1,
-                                                        boost::bind(&GripperRosControl::flexCallback, this, _1, *itr));
+      flex_sub_[flex_names_[i]] = nh_.subscribe<std_msgs::UInt16>("flex/" + flex_names_[i] + "/state", 1,
+                                                        boost::bind(&GripperRosControl::flexCallback, this, _1, i));
     }
 
     // Subscriber for robot state
@@ -180,7 +185,7 @@ public:
       {
         for (int j = 0; j < flex_names_.size(); j++)
         {
-          if (received_flex_[flex_names_[j]] > flex_thre_[j])
+          if (is_flexion_[j])
           {
             actr_curr_pos_[actr_names_[i]] -= wind_offset_flex_[j];
           }
@@ -207,7 +212,7 @@ public:
         {
           for (int j = 0; j < flex_names_.size(); j++)
           {
-            if (received_flex_[flex_names_[j]] > flex_thre_[j])
+            if (is_flexion_[j])
             {
               actr_cmd_pos_[actr_names_[i]] += wind_offset_flex_[j];
             }
@@ -247,9 +252,23 @@ public:
     received_actr_states_[dxl_actr_state->name] = *dxl_actr_state;
   }
 
-  void flexCallback(const std_msgs::UInt16ConstPtr& flex, const std::string& name)
+  void flexCallback(const std_msgs::UInt16ConstPtr& flex, const int& idx)
   {
-    received_flex_[name] = flex->data;
+    received_flex_[idx] = flex->data;
+    if (received_flex_[idx] > flex_thre_[idx])
+    {
+      is_flexion_[idx] = true;
+      flex_dec_cnt_[idx] = 0;
+    }
+    else
+    {
+      flex_dec_cnt_[idx]++;
+      if (flex_dec_cnt_[idx] > 2)
+      {
+        is_flexion_[idx] = false;
+        flex_dec_cnt_[idx] = 0;
+      }
+    }
   }
 
   void robotStateCallback(const baxter_core_msgs::AssemblyStateConstPtr& state)
