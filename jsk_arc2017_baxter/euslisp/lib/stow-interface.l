@@ -64,15 +64,16 @@
       (setq recognition-count 1)
       (while (null (or (> recognition-count trial-times) is-recognized))
         (setq target-index (send self :get-largest-object-index arm :stamp (ros::time-now)))
-        (setq target-obj (elt label-names target-index))
-        (ros::set-dynparam
-          (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
-          (cons "label_value" target-index))
-        (ros::set-param
-          (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
-        (ros::ros-info-blue "[~a] [main] :recognize-object, target-obj: ~a" (ros::get-name) target-obj)
         (setq is-recognized
-              (send self :recognize-target-object arm :stamp (ros::time-now)))
+          (when target-index
+            (setq target-obj (elt label-names target-index))
+            (ros::set-dynparam
+              (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
+              (cons "label_value" target-index))
+            (ros::set-param
+              (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
+            (ros::ros-info-blue "[~a] [main] :recognize-object, target-obj: ~a" (ros::get-name) target-obj)
+            (send self :recognize-target-object arm :stamp (ros::time-now))))
         (setq recognition-count (incf recognition-count)))
       is-recognized))
   (:return-from-recognize-object (arm)

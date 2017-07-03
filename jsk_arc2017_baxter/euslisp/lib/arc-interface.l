@@ -223,13 +223,15 @@
                                         :timeout 10000
                                         :after-stamp stamp))
       (dolist (box (send box-msg :boxes))
-        (let (volume)
-          (setq volume (* (send box :dimensions :x)
-                          (send box :dimensions :y)
-                          (send box :dimensions :z)))
-          (if (> bbox-volume-threshold- volume)
-            (return-from :get-largest-object-index
-                         (+ (send box :label) 1)))))))
+        (when box
+          (let (volume)
+            (setq volume (* (send box :dimensions :x)
+                            (send box :dimensions :y)
+                            (send box :dimensions :z)))
+            (if (> bbox-volume-threshold- volume)
+              (return-from :get-largest-object-index
+                           (+ (send box :label) 1))))))
+      nil))
   (:pick-object-in-bin
     (arm bin &rest args)
     (let (graspingp movable-region)
