@@ -1,15 +1,15 @@
 <launch>
   <node name="scale0" pkg="jsk_arc2017_common" type="ekew_i_driver.py">
-    <rosparam>port: /dev/ttyUSB0</rosparam>
+    <rosparam>port: /dev/scale0</rosparam>
   </node>
   <node name="scale1" pkg="jsk_arc2017_common" type="ekew_i_driver.py">
-    <rosparam>port: /dev/ttyUSB1</rosparam>
+    <rosparam>port: /dev/scale1</rosparam>
   </node>
   <node name="scale2" pkg="jsk_arc2017_common" type="ekew_i_driver.py">
-    <rosparam>port: /dev/ttyUSB2</rosparam>
+    <rosparam>port: /dev/scale2</rosparam>
   </node>
   <node name="scale3" pkg="jsk_arc2017_common" type="ekew_i_driver.py">
-    <rosparam>port: /dev/ttyUSB3</rosparam>
+    <rosparam>port: /dev/scale3</rosparam>
   </node>
 
   <node name="estimate_object_by_scale" pkg="jsk_arc2017_common" type="estimate_object_by_scale.py">
