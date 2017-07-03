@@ -56,6 +56,7 @@
                 (append (list "__background__") tote-contents (list "__shelf__"))))
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-tote-scene arm))
+      (send *ri* :stop-grasp arm)
       (if (eq arm :rarm)
         (send self :move-fingers-pinch->init arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
