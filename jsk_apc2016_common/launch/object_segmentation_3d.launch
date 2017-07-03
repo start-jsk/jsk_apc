@@ -28,6 +28,10 @@
   <node name="apply_context_to_label_proba"
         pkg="jsk_perception" type="apply_context_to_label_probability">
     <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
+    <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
+    <rosparam>
+      use_topic: true
+    </rosparam>
   </node>
 
   <!-- label -> cluster indices -->
