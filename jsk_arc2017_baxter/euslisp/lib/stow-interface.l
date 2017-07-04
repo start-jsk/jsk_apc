@@ -71,6 +71,9 @@
         (setq target-index (send self :get-largest-object-index arm :stamp (ros::time-now)))
         (setq is-recognized
           (when target-index
+            (if (not (string= target-obj (elt label-names target-index)))
+              ;; reset picking-fail-count for new target
+              (setq picking-fail-count 0))
             (setq target-obj (elt label-names target-index))
             (ros::set-dynparam
               (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
