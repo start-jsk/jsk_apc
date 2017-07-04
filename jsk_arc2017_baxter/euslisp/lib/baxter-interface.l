@@ -369,7 +369,9 @@
                             (< (send self :get-prismatic-vel arm) 0.01)))
           conds))
       ;; wait for :interpolatingp
-      (unix::usleep 10000)
+      (dotimes (x 100)
+        (if (send self :interpolatingp) (return))
+        (unix::usleep 1000))
       (while (send self :interpolatingp)
         (when (reduce #'(lambda (x y) (or x y)) (mapcar #'funcall conds))
           (ros::ros-info "[:wait-interpolation-until-grasp] Cancel angle vector: ~a" arm)
