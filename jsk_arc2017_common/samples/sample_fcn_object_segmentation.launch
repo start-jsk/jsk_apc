@@ -15,27 +15,15 @@
 
   <arg name="INPUT_IMAGE" value="image_publisher/output" />
 
-  <rosparam ns="object_names" command="load" file="$(find jsk_arc2017_common)/config/label_names.yaml" />
+  <arg name="NODELET_MANAGER" value="nodelet_manager" />
+  <node name="$(arg NODELET_MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
 
-  <node name="fcn_object_segmentation"
-        pkg="jsk_perception" type="fcn_object_segmentation.py">
-    <remap from="~input" to="$(arg INPUT_IMAGE)" />
-    <rosparam subst_value="true">
-      gpu: $(arg GPU)
-      backend: chainer
-      model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170704.npz
-      # model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz
-      model_name: fcn32s
-    </rosparam>
-    <remap from="~target_names" to="object_names" />
-  </node>
-  <node name="apply_context_to_label_proba"
-        pkg="jsk_perception" type="apply_context_to_label_probability">
-    <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
-    <rosparam>
-      candidates: []
-    </rosparam>
-  </node>
+  <include file="$(find jsk_arc2017_common)/launch/object_segmentation_3d.launch">
+    <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
+    <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)" />
+    <arg name="INPUT_CLOUD" value="/none" />
+  </include>
 
   <node name="label_image_decomposer1"
         pkg="jsk_perception" type="label_image_decomposer.py">
@@ -49,7 +37,7 @@
         pkg="jsk_perception" type="label_image_decomposer.py">
     <remap from="~input" to="apply_context_to_label_proba/output/label" />
     <remap from="~input/label" to="apply_context_to_label_proba/output/label" />
-    <remap from="~label_names" to="object_names" />
+    <remap from="~label_names" to="label_names" />
     <rosparam>
       queue_size: 50
     </rosparam>
@@ -58,7 +46,7 @@
         pkg="jsk_perception" type="label_image_decomposer.py">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <remap from="~input/label" to="apply_context_to_label_proba/output/label" />
-    <remap from="~label_names" to="object_names" />
+    <remap from="~label_names" to="label_names" />
     <rosparam>
       queue_size: 50
     </rosparam>
