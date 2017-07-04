@@ -324,14 +324,9 @@
         (dotimes (j n-trial-same-pos)
           (unless graspingp
             (setq graspingp
-                  (if (eq arm :larm)
-                    (send self :try-to-pick-object-v4 arm obj-pos
-                          :offset (float-vector 0 0 (- (* i -50) 30)))
-                    (if (eq grasp-style :suction)
-                      (send self :try-to-suction-object arm obj-pos
-                            :offset (float-vector 0 0 (- (* i -50) 30)))
-                      (send self :try-to-pinch-object arm obj-pos pinch-yaw
-                            :offset (float-vector 0 0 (- (* i -50) 30)))))))))
+                  (send self :try-to-pick-object arm obj-pos pinch-yaw
+                        :offset (float-vector 0 0 (- (* i -50) 30))
+                        :grasp-style grasp-style)))))
       (when do-stop-grasp
         (unless graspingp
           (send *ri* :stop-grasp arm)
@@ -366,7 +361,17 @@
       (setq obj-box-z-length (z-of-cube (send self :bbox->cube obj-box)))
       (setq obj-pos (v+ obj-pos (float-vector 0 0 (/ obj-box-z-length 2))))
       obj-pos))
-  (:try-to-pick-object-v4
+  (:try-to-pick-object
+    (arm obj-pos pinch-yaw &key (offset #f(0 0 0)) (grasp-style :suction))
+      (if (eq grasp-style :suction)
+        (send self :try-to-suction-object arm obj-pos :offset offset)
+        (send self :try-to-pinch-object arm obj-pos pinch-yaw :offset offset)))
+  (:try-to-suction-object
+    (arm obj-pos &key (offset #f(0 0 0)))
+    (if (eq arm :larm)
+      (send self :try-to-suction-object-with-gripper-v4 arm obj-pos :offset offset)
+      (send self :try-to-suction-object-with-gripper-v6 arm obj-pos :offset offset)))
+  (:try-to-suction-object-with-gripper-v4
     (arm obj-pos &key (offset #f(0 0 0)))
     (let (graspingp)
       (send *ri* :angle-vector-raw
@@ -378,7 +383,7 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
       ;; start the vacuum gripper after approaching to the object
-      (ros::ros-info "[:try-to-pick-object-v4] arm:~a start vacuum gripper" arm)
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a start vacuum gripper" arm)
       (send *ri* :start-grasp arm)
       (unix::sleep 1)
       (send *ri* :angle-vector-raw
@@ -390,9 +395,9 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until-grasp arm)
       (setq graspingp (send *ri* :graspingp arm))
-      (ros::ros-info "[:try-to-pick-object-v4] arm:~a graspingp: ~a" arm graspingp)
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
-        (ros::ros-info "[:try-to-pick-object-v4] arm:~a again approach to the object" arm)
+        (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a again approach to the object" arm)
         (let ((temp-av (send *baxter* :angle-vector)))
           ;; only if robot can solve IK
           (if (send *baxter* arm :move-end-pos #f(0 0 -50) :local)
@@ -403,23 +408,23 @@
                   3000 (send *ri* :get-arm-controller arm) 0) ;; revert baxter
           (send *ri* :wait-interpolation-until-grasp arm)))
       ;; lift object
-      (ros::ros-info "[:try-to-pick-object-v4] arm:~a lift the object" arm)
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a lift the object" arm)
       (send *ri* :gripper-servo-off arm)
       (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 200) :world)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send *ri* :graspingp arm))
-      (ros::ros-info "[:try-to-pick-object-v4] arm:~a graspingp: ~a" arm graspingp)
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
-  (:try-to-suction-object
+  (:try-to-suction-object-with-gripper-v6
     (arm obj-pos &key (offset #f(0 0 0)))
     (let (graspingp)
       ;; Fold fingers again
       (send *ri* :move-hand arm
             (send *baxter* :hand-grasp-pose arm :cylindrical :angle 100) 1000)
       ;; start the vacuum gripper before approaching to the object
-      (ros::ros-info "[:try-to-suction-object] arm:~a start vacuum gripper" arm)
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a start vacuum gripper" arm)
       (send *ri* :start-grasp arm)
       (send *ri* :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
@@ -445,9 +450,9 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
       (setq graspingp (send *ri* :graspingp arm))
-      (ros::ros-info "[:try-to-suction-object] arm:~a graspingp: ~a" arm graspingp)
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
-        (ros::ros-info "[:try-to-suction-object] arm:~a again approach to the object" arm)
+        (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a again approach to the object" arm)
         (let ((temp-av (send *baxter* :angle-vector)))
           ;; only if robot can solve IK
           (if (send *baxter* arm :move-end-pos #f(0 0 -100) :local)
@@ -461,14 +466,14 @@
       (send *ri* :move-hand arm
             (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000)
       ;; lift object
-      (ros::ros-info "[:try-to-suction-object] arm:~a lift the object" arm)
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a lift the object" arm)
       (send *ri* :gripper-servo-off arm)
       (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 200) :world)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send *ri* :graspingp arm))
-      (ros::ros-info "[:try-to-suction-object] arm:~a graspingp: ~a" arm graspingp)
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
   (:try-to-pinch-object
     (arm obj-pos pinch-yaw &key (offset #f(0 0 0)))
