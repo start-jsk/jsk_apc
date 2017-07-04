@@ -545,16 +545,20 @@
   (:ik->cardboard-center
     (arm cardboard &key (offset #f(0 0 0))
          (rotation-axis t) (use-gripper nil) (move-palm-end nil))
-    (send *baxter* arm :inverse-kinematics
-          (make-coords
-            :pos (v+ offset
-                     (cond ((eq cardboard :a) (float-vector 1200 100 550))
-                           ((eq cardboard :b) (float-vector 1200 -200 550))
-                           (t (float-vector 1200 0 165))))
-            :rpy (float-vector 0 (/ -pi/2 2) 0))
-          :rotation-axis rotation-axis
-          :use-gripper use-gripper
-          :move-palm-end move-palm-end))
+    (let (cardboard-coords)
+      (setq cardboard-coords
+            (make-coords
+              :pos (v+ offset
+                       (cond ((eq cardboard :a) (float-vector 1200 100 550))
+                             ((eq cardboard :b) (float-vector 1200 -200 550))
+                             (t (float-vector 1200 0 165))))
+              :rpy (float-vector 0 (/ -pi/2 2) 0)))
+      (send *baxter* arm :inverse-kinematics cardboard-coords
+            :rotation-axis nil :use-gripper nil)
+      (send *baxter* arm :inverse-kinematics cardboard-coords
+            :rotation-axis rotation-axis
+            :use-gripper use-gripper
+            :move-palm-end move-palm-end)))
   (:ik->tote-center
     (arm &key (offset #f(0 0 0)) (rpy #f(0 0 0))
          (rotation-axis t) (use-gripper nil) (move-palm-end nil))
