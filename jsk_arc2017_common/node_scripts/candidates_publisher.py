@@ -62,7 +62,7 @@ class CandidatesPublisher(ConnectionBasedTransport):
             labels = []
             for label in label_list:
                 label_msg = Label()
-                label_msg.label = label
+                label_msg.id = label
                 label_msg.name = self.label_names[label]
                 labels.append(label_msg)
             msg = LabelArray()
