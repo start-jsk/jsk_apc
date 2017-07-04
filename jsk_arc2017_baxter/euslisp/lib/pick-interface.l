@@ -48,6 +48,8 @@
       (setq order nil)
       can-start))
   (:set-target (arm)
+    ;; reset picking-fail-count for new target
+    (setq picking-fail-count 0)
     (setq label-names
           (ros::get-param (format nil "/~a_hand_camera/label_names"
                                   (arm2str arm))))
