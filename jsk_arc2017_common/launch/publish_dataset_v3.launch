@@ -1,0 +1,40 @@
+<launch>
+
+  <node name="publish_dataset_v3"
+        pkg="jsk_arc2017_common" type="publish_dataset_v3.py">
+    <remap from="~output/rgb/camera_info" to="camera/rgb/camera_info" />
+    <remap from="~output/rgb/image_rect_color" to="camera/rgb/image_rect_color" />
+    <remap from="~output/depth_registered/camera_info" to="camera/depth_registered/camera_info" />
+    <remap from="~output/depth_registered/image_rect" to="camera/depth_registered/image_rect" />
+  </node>
+
+  <group ns="camera/depth_registered">
+    <node name="image_rect_view"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="image_rect" />
+      <rosparam>
+        gui: false
+        colormap: 2
+        min_image_value: 0.5
+        max_image_value: 2.0
+      </rosparam>
+    </node>
+  </group>
+
+  <group ns="camera">
+    <node name="point_cloud_xyzrgb"
+          pkg="nodelet" type="nodelet"
+          args="standalone depth_image_proc/point_cloud_xyzrgb">
+    </node>
+  </group>
+
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find jsk_arc2017_common)/rvizconfig/publish_dataset_v3.rviz">
+  </node>
+  <node name="rqt_reconfigure"
+        pkg="rqt_reconfigure" type="rqt_reconfigure"
+        args="publish_dataset_v3">
+  </node>
+
+</launch>
