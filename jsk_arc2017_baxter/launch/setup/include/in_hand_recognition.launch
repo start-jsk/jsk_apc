@@ -1,0 +1,74 @@
+<launch>
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/astra_external.launch" />
+
+  <group ns="external_camera">
+    <!-- for left hand -->
+    <arg name="manager" value="/external_camera/external_camera_nodelet_manager" />
+    <group ns="left_hand">
+      <node name="in_hand_clipper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg manager)">
+          <remap from="~input/points" to="/external_camera/depth_registered/points" />
+        <rosparam subst_value="true">
+          use_multiple_attention: false
+          dimension_x: 0.3
+          dimension_y: 0.3
+          dimension_z: 0.4
+          initial_pos: [0.0, 0.0, 0.15]
+          initial_rot: [0, 0, 0]
+          frame_id: left_gripper_vacuum_pad
+        </rosparam>
+      </node>
+      <node name="pi_to_mask"
+          type="nodelet" pkg="nodelet"
+          args="load jsk_pcl/PointIndicesToMaskImage $(arg NODELET_MANAGER)">
+        <remap from="~input" to="in_hand_clipper/output/point_indices" />
+        <remap from="~input/image" to="/external_camera/rgb/image_rect_color" />
+        <rosparam>
+          approximate_sync: true
+          queue_size: 10
+        </rosparam>
+      </node>
+      <include file="$(find jsk_arc2017_common)/launch/object_classification.launch">
+        <arg name="NODELET_MANAGER" value="$(arg manager)" />
+        <arg name="INPUT_IMAGE" value="/external_camera/rgb/image_rect_color" />
+        <arg name="INPUT_MASK" value="pi_to_mask/output" />
+        <arg name="INPUT_CANDIDATES" value="/left_hand_camera/candidates_publisher/output/candidates" />
+      </include>
+    </group>
+
+    <!-- for right hand -->
+    <group ns="right_hand">
+      <node name="in_hand_clipper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg manager)">
+        <remap from="~input/points" to="/external_camera/depth_registered/points" />
+        <rosparam subst_value="true">
+          use_multiple_attention: false
+          dimension_x: 0.3
+          dimension_y: 0.3
+          dimension_z: 0.4
+          initial_pos: [0.0, 0.0, 0.15]
+          initial_rot: [0, 0, 0]
+          frame_id: right_gripper_pad_with_base
+        </rosparam>
+      </node>
+      <node name="pi_to_mask"
+          type="nodelet" pkg="nodelet"
+          args="load jsk_pcl/PointIndicesToMaskImage $(arg NODELET_MANAGER)">
+        <remap from="~input" to="in_hand_clipper/output/point_indices" />
+        <remap from="~input/image" to="/external_camera/rgb/image_rect_color" />
+        <rosparam>
+          approximate_sync: true
+          queue_size: 10
+        </rosparam>
+      </node>
+      <include file="$(find jsk_arc2017_common)/launch/object_classification.launch">
+        <arg name="NODELET_MANAGER" value="$(arg manager)" />
+        <arg name="INPUT_IMAGE" value="/external_camera/rgb/image_rect_color" />
+        <arg name="INPUT_MASK" value="pi_to_mask/output" />
+        <arg name="INPUT_CANDIDATES" value="/right_hand_camera/candidates_publisher/output/candidates" />
+      </include>
+    </group>
+  </group>
+</launch>
