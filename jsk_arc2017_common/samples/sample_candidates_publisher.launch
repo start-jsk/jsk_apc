@@ -1,0 +1,14 @@
+<launch>
+  <rosparam command="load" file="$(find jsk_arc2017_common)/config/label_names.yaml" ns="label_names" />
+
+  <include file="$(find jsk_arc2017_common)/samples/sample_json_saver.launch" />
+
+  <node name="candidates_publisher"
+      pkg="jsk_arc2017_common" type="candidates_publisher.py" >
+    <remap from="~input/json_dir" to="/json_saver/output/json_dir" />
+    <remap from="~label_names" to="label_names" />
+    <rosparam>
+      target_location: bin_A
+    </rosparam>
+  </node>
+</launch>

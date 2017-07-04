@@ -1,0 +1,10 @@
+<launch>
+  <include file="$(find jsk_arc2017_common)/samples/sample_candidates_publisher.launch" />
+
+  <test test-name="test_candidates_publisher"
+        name="test_candidates_publisher"
+        pkg="jsk_tools"  type="test_topic_published.py" >
+    <param name="~topic_0" value="/candidates_publisher/output/candidates" />
+    <param name="~timeout_0" value="10" />
+  </test>
+</launch>
