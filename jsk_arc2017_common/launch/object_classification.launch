@@ -1,0 +1,82 @@
+<launch>
+  <arg name="NODELET_MANAGER" doc="Nodelet manager" />
+  <arg name="INPUT_IMAGE" doc="Input rgb image" />
+  <arg name="INPUT_MASK" doc="Input mask image" />
+  <arg name="INPUT_CANDIDATES" doc="classification candidates"/>
+
+  <arg name="GPU" default="0" />
+  <arg name="BACKEND" default="chainer" />
+  <arg name="MODEL_NAME" default="fcn32s" />
+  <arg name="MODEL_FILE" default="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170704.npz" />
+  <arg name="LABEL_YAML" default="$(find jsk_arc2017_common)/config/label_names.yaml" />
+
+  <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
+
+  <node name="bounding_object_mask"
+        type="nodelet" pkg="nodelet"
+        args="load jsk_perception/BoundingObjectMaskImage $(arg NODELET_MANAGER)">
+    <remap from="~input" to="$(arg INPUT_MASK)" />
+  </node>
+  <node name="concave_full_mask"
+        type="nodelet" pkg="nodelet"
+        args="load jsk_perception/ConcaveHullMaskImage $(arg NODELET_MANAGER)">
+    <remap from="~input" to="bounding_object_mask/output" />
+  </node>
+  <node name="fcn_object_segmentation"
+        pkg="jsk_perception" type="fcn_object_segmentation.py">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="concave_full_mask/output" />
+    <rosparam subst_value="true">
+      use_mask: true
+      gpu: $(arg GPU)
+      backend: $(arg BACKEND)
+      model_name: $(arg MODEL_NAME)
+      model_file: $(arg MODEL_FILE)
+      approximate_sync: true
+      queue_size: 10
+    </rosparam>
+    <remap from="~target_names" to="label_names" />
+  </node>
+  <node name="apply_context_to_label_proba"
+        pkg="jsk_perception" type="apply_context_to_label_probability">
+    <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
+    <remap from="~input/candidates" to="$(arg INPUT_CANDIDATES)" />
+    <rosparam>
+      use_topic: true
+    </rosparam>
+  </node>
+
+  <node name="object_classifier"
+        pkg="jsk_perception" type="probability_image_classifier.py">
+    <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
+    <remap from="~target_names" to="label_names" />
+    <rosparam>
+      ignore_labels:
+        - 0   # __background__
+        - 41  # __shelf__
+    </rosparam>
+  </node>
+
+  <!-- Visualization -->
+  <node name="apply_mask"
+      pkg="nodelet" type="nodelet"
+      args="load jsk_perception/ApplyMaskImage $(arg NODELET_MANAGER)">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="concave_full_mask/output" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 10
+    </rosparam>
+  </node>
+  <node name="label_image_decomposer"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/label" to="apply_context_to_label_proba/output/label" />
+    <remap from="~label_names" to="label_names" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 30
+    </rosparam>
+  </node>
+
+</launch>
