@@ -46,6 +46,15 @@ def main():
         md5='e4e07b66ebeaf6b33a79eb1b605ee3a3',
     )
 
+    # dataset: v2
+    # augmentation: stack
+    # unknown_objects: apc2016
+    download_data(
+        path='data/models/fcn32s_arc2017_datasetv2_cfg003_20170704.npz',
+        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vcEZMbVR0eHlVdDg',
+        md5='606d2f6bc0c701e79b64466c73c83a72',
+    )
+
 
 if __name__ == '__main__':
     main()

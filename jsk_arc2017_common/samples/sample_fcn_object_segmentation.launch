@@ -5,7 +5,8 @@
   <node name="image_publisher"
         pkg="jsk_perception" type="image_publisher.py">
     <rosparam subst_value="true">
-      file_name: $(find jsk_arc2017_common)/samples/data/right_astra_hand_pick_shelfv1.jpg
+      file_name: $(find jsk_arc2017_common)/samples/data/right_astra_hand_with_unknown.jpg
+      # file_name: $(find jsk_arc2017_common)/samples/data/right_astra_hand_pick_shelfv1.jpg
       encoding: rgb8
       publish_info: false
       rate: 30
@@ -22,7 +23,8 @@
     <rosparam subst_value="true">
       gpu: $(arg GPU)
       backend: chainer
-      model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz
+      model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170704.npz
+      # model_file: $(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz
       model_name: fcn32s
     </rosparam>
     <remap from="~target_names" to="object_names" />
