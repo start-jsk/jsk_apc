@@ -108,6 +108,7 @@
           :n-trial-same-pos 1
           :do-stop-grasp nil
           :grasp-style grasp-style)
+    (when moveit-p (send self :add-tote-scene arm))
     (if (eq grasp-style :suction)
       (send *ri* :angle-vector
             (send self :ik->tote-center arm
@@ -118,6 +119,7 @@
                   :offset #f(0 0 300) :rotation-axis :z :move-palm-end t)
             3000 (send *ri* :get-arm-controller arm :gripper nil) 0))
     (send *ri* :wait-interpolation)
+    (when moveit-p (send self :delete-tote-scene arm))
     (setq graspingp (send *ri* :graspingp arm))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
