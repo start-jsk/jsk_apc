@@ -99,6 +99,7 @@ class StateServer(threading.Thread):
                         or opposite_state == 'check-picking-fail-count' \
                         or opposite_state == 'verify-object' \
                         or opposite_state == 'set-target-cardboard' \
+                        or opposite_state == 'place-object' \
                         or opposite_state == 'return-object':
                     can_start = False
                 else:
