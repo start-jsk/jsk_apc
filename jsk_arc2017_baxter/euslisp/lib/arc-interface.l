@@ -324,9 +324,10 @@
         (dotimes (j n-trial-same-pos)
           (unless graspingp
             (setq graspingp
-                  (send self :try-to-pick-object arm obj-pos pinch-yaw
+                  (send self :try-to-pick-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -50) 30))
-                        :grasp-style grasp-style)))))
+                        :grasp-style grasp-style
+                        :pinch-yaw pinch-yaw)))))
       (when do-stop-grasp
         (unless graspingp
           (send *ri* :stop-grasp arm)
@@ -362,7 +363,8 @@
       (setq obj-pos (v+ obj-pos (float-vector 0 0 (/ obj-box-z-length 2))))
       obj-pos))
   (:try-to-pick-object
-    (arm obj-pos pinch-yaw &key (offset #f(0 0 0)) (grasp-style :suction))
+    (arm obj-pos &key (offset #f(0 0 0)) (grasp-style :suction)
+         (pinch-yaw (if (eq grasp-style :pinch) 0)))
       (if (eq grasp-style :suction)
         (send self :try-to-suction-object arm obj-pos :offset offset)
         (send self :try-to-pinch-object arm obj-pos pinch-yaw :offset offset)))
