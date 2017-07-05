@@ -24,6 +24,8 @@
     <disable_collisions link1="${side}_gripper_base" link2="${side}_wrist" reason="Never" />
 
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_l_finger" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_r_finger" reason="Never" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_tube" reason="Adjacent" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_hand" reason="Never" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_hand_accelerometer" reason="Never" />
@@ -42,6 +44,8 @@
 
     <disable_collisions link1="${side}_gripper_l_finger" link2="head" reason="Never" />
     <disable_collisions link1="${side}_gripper_l_finger" link2="${side}_gripper_l_finger_base" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_l_finger" link2="${side}_gripper_r_finger" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger" link2="${side}_gripper_tube" reason="Never" />
     <disable_collisions link1="${side}_gripper_l_finger" link2="${side}_hand" reason="Never" />
     <disable_collisions link1="${side}_gripper_l_finger" link2="${side}_hand_accelerometer" reason="Never" />
     <disable_collisions link1="${side}_gripper_l_finger" link2="${side}_hand_camera" reason="Never" />
@@ -73,6 +77,7 @@
 
     <disable_collisions link1="${side}_gripper_r_finger" link2="head" reason="Never" />
     <disable_collisions link1="${side}_gripper_r_finger" link2="${side}_gripper_r_finger_base" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_r_finger" link2="${side}_gripper_tube" reason="Never" />
     <disable_collisions link1="${side}_gripper_r_finger" link2="${side}_hand" reason="Never" />
     <disable_collisions link1="${side}_gripper_r_finger" link2="${side}_hand_accelerometer" reason="Never" />
     <disable_collisions link1="${side}_gripper_r_finger" link2="${side}_hand_camera" reason="Never" />
