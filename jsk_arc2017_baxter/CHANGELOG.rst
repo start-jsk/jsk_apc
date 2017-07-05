@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.2.0 (2017-07-06)
+------------------
 * add in_hand_recognition launch
 * add astra_external launch
 * add set-target-location method

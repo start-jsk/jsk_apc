@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.2.0 (2017-07-06)
+------------------
 * add object_classification with FCN launch
 * add doc, sample and test for candidates_publisher
 * update Label msg API

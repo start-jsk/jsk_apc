@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.2.0 (2017-07-06)
+------------------
 * update candidates for segmentation via topic
 * Contributors: Shingo Kitagawa
 
