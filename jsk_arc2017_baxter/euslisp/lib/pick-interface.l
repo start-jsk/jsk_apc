@@ -119,6 +119,7 @@
           :n-trial-same-pos 1
           :do-stop-grasp nil
           :grasp-style grasp-style)
+    (when moveit-p (send self :add-shelf-scene))
     (if (eq grasp-style :suction)
       (send *ri* :angle-vector
             (send self :ik->bin-center arm target-bin
@@ -129,6 +130,7 @@
                   :offset #f(0 0 300) :rotation-axis :z :move-palm-end t)
             3000 (send *ri* :get-arm-controller arm :gripper nil) 0))
     (send *ri* :wait-interpolation)
+    (when moveit-p (send self :delete-shelf-scene))
     (setq graspingp (send *ri* :graspingp arm))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
