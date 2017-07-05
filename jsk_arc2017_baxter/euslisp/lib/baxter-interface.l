@@ -374,7 +374,7 @@
         (unix::usleep 1000))
       (while (send self :interpolatingp)
         (when (reduce #'(lambda (x y) (or x y)) (mapcar #'funcall conds))
-          (ros::ros-info "[:wait-interpolation-until-grasp] Cancel angle vector: ~a" arm)
+          (ros::ros-info "[:wait-interpolation-until] Cancel angle vector: ~a" arm)
           (send self :cancel-angle-vector)))))
   (:calib-pressure-threshold
     (&optional (arm :arms))
