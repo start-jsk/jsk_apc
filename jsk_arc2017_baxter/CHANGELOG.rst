@@ -2,6 +2,65 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add in_hand_recognition launch
+* add astra_external launch
+* add set-target-location method
+* update candidates for segmentation via topic
+* Avoid collision to shelf or tote in pick-object
+* Fix offset of place-object in pick for moveit
+* Ignore collision between fingers and other gripper parts
+* Wait for opposite return-object in pick task
+* Don't turn gripper over in ik->cardboard-center
+* Fix logging of wait-interpolation-until
+* Fold fingers more tightly before suction-object
+* Move pinch-yaw to key in try-to-pick-object
+* Add meta method :try-to-pick-object and :try-to-suction-object
+* Rewrite waiting for :interpolatingp
+* Reset picking-fail-count for new target obj
+* Ignore unstable flex value and calib flex offset
+* Don't use prismatic load for graspingp and calib thresholds
+* Calib finger init state of try-to-pick-object
+* Re-calibrate finger tendon winder
+* Avoid collision between fingers
+* Add logging to try-to-pinch-object
+* Stop grasp in return-from-pick-object
+* Add pinching to pick
+* Don't back to fold-pose-back until 2nd failure in pick
+* Add :try-to-pinch-object and use it in stow
+* Use wait-interpolation-until in try-to-suction-object
+* Split try-to-pick-object to try-to-pick-object-v4 and try-to-suction-object
+* Enable :pick-object-with-movable-region to get grasp-style
+* Add set-grasp-style state in stow
+* Don't back to fold-pose-back until 2nd failure in stow
+* Enable to set palm endpoint as move-target in IK
+* Enable to select no gripper controller
+* Add :wait-interpolation-until
+* Erase one-shot-subscribe in pressure calib
+* Erase one-shot-subscribe and consider pinching in :graspingp
+* Enable :start-grasp and :stop-grasp to move hand
+* Add get func of gripper sensor states
+* Enable to get gripper sensor states
+* Create object_segmentation_3d.launch in jsk_arc2017_common
+* return nil when largest bbox subscription timeout
+* Calibrated extrinsic parameters of right_hand_stereo by @YutoUchimi
+* Calibrated extrinsic parameters of right_hand_stereo by @YutoUchimi
+* introduce left stereo astra camera
+  thanks to @YutoUchimi and @pazeshun
+* modify not to use moveit unnecessary part
+* modify joint_limits for moveit
+* Visualize json_dir on baxter's xdisplay
+* introduce stereo Astra Mini S camera into both hands
+* modify json save dir
+* save json in pick task
+* modify :update-json api in arc-interface
+  (send self :update-json target-obj :src :tote :dst (cons :bin target-bin))
+  (send self :update-json target-obj :src (cons :bin target-bin) :dst (cons :cardboard target-cardboard))
+  (send self :update-json target-obj :src (cons :bin target-bin) :dst (cons :bin target-bin))
+* calibrate intrinsic parameter of left hand camera
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa, Yuto Uchimi
+
 3.1.0 (2017-06-30)
 ------------------
 * Fix for euslint

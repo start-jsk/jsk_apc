@@ -2,6 +2,26 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add object_classification with FCN launch
+* add doc, sample and test for candidates_publisher
+* update Label msg API
+  follow https://github.com/jsk-ros-pkg/jsk_recognition/pull/2143/commits/109c73fac35f1cdaa13fd31273ca166b2bcbfce9
+* add candidates_publisher node
+* Create object_segmentation_3d.launch in jsk_arc2017_common
+* Semantic segmentation of unknown objects
+* Use simlink to scales
+* Add udev rule for scale
+* Support json with no boxes in visualize_json
+* Update doc for visualize_json.py
+* Subscribe json_dir input topic in visualize_json
+* Publish json_dir in json_saver.py
+* Visualize json (item_location/order) for ARC tasks
+* copy location and order json in save dir at first
+* json_saver supports pick task
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa
+
 3.1.0 (2017-06-30)
 ------------------
 * Add mesh models for 36 objects
