@@ -1,0 +1,198 @@
+<launch>
+
+  <arg name="gui" default="true" />
+
+  <include file="$(find jsk_arc2017_common)/launch/publish_dataset_v3.launch">
+    <arg name="gui" value="false" />
+  </include>
+
+  <node name="object_array_publisher"
+        pkg="jsk_recognition_msgs" type="object_array_publisher.py">
+    <remap from="~output" to="/object_array" />
+    <rosparam>
+      latch: true
+      objects:
+        - id: 1
+          name: avery_binder
+          thumbnail: package://jsk_arc2017_common/data/objects/avery_binder/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/avery_binder/mesh/mesh.obj
+        - id: 2
+          name: balloons
+          thumbnail: package://jsk_arc2017_common/data/objects/balloons/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/balloons/mesh/mesh.obj
+        - id: 3
+          name: band_aid_tape
+          thumbnail: package://jsk_arc2017_common/data/objects/band_aid_tape/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/band_aid_tape/mesh/mesh.obj
+        - id: 4
+          name: bath_sponge
+          thumbnail: package://jsk_arc2017_common/data/objects/bath_sponge/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/bath_sponge/mesh/mesh.obj
+        - id: 5
+          name: black_fashion_gloves
+          thumbnail: package://jsk_arc2017_common/data/objects/black_fashion_gloves/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/black_fashion_gloves/mesh/mesh.obj
+        - id: 6
+          name: burts_bees_baby_wipes
+          thumbnail: package://jsk_arc2017_common/data/objects/burts_bees_baby_wipes/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/burts_bees_baby_wipes/mesh/mesh.obj
+        - id: 7
+          name: colgate_toothbrush_4pk
+          thumbnail: package://jsk_arc2017_common/data/objects/colgate_toothbrush_4pk/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/colgate_toothbrush_4pk/mesh/mesh.obj
+        - id: 8
+          name: composition_book
+          thumbnail: package://jsk_arc2017_common/data/objects/composition_book/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/composition_book/mesh/mesh.obj
+        - id: 9
+          name: crayons
+          thumbnail: package://jsk_arc2017_common/data/objects/crayons/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/crayons/mesh/mesh.obj
+        - id: 10
+          name: duct_tape
+          thumbnail: package://jsk_arc2017_common/data/objects/duct_tape/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/duct_tape/mesh/mesh.obj
+        - id: 11
+          name: epsom_salts
+          thumbnail: package://jsk_arc2017_common/data/objects/epsom_salts/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/epsom_salts/mesh/mesh.obj
+        - id: 12
+          name: expo_eraser
+          thumbnail: package://jsk_arc2017_common/data/objects/expo_eraser/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/expo_eraser/mesh/mesh.obj
+        - id: 13
+          name: fiskars_scissors
+          thumbnail: package://jsk_arc2017_common/data/objects/fiskars_scissors/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/fiskars_scissors/mesh/mesh.obj
+        - id: 14
+          name: flashlight
+          thumbnail: package://jsk_arc2017_common/data/objects/flashlight/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/flashlight/mesh/mesh.obj
+        - id: 15
+          name: glue_sticks
+          thumbnail: package://jsk_arc2017_common/data/objects/glue_sticks/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/glue_sticks/mesh/mesh.obj
+        - id: 16
+          name: hand_weight
+          thumbnail: package://jsk_arc2017_common/data/objects/hand_weight/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/hand_weight/mesh/mesh.obj
+        - id: 17
+          name: hanes_socks
+          thumbnail: package://jsk_arc2017_common/data/objects/hanes_socks/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/hanes_socks/mesh/mesh.obj
+        - id: 18
+          name: hinged_ruled_index_cards
+          thumbnail: package://jsk_arc2017_common/data/objects/hinged_ruled_index_cards/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/hinged_ruled_index_cards/mesh/mesh.obj
+        - id: 19
+          name: ice_cube_tray
+          thumbnail: package://jsk_arc2017_common/data/objects/ice_cube_tray/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/ice_cube_tray/mesh/mesh.obj
+        - id: 20
+          name: irish_spring_soap
+          thumbnail: package://jsk_arc2017_common/data/objects/irish_spring_soap/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/irish_spring_soap/mesh/mesh.obj
+        - id: 21
+          name: laugh_out_loud_jokes
+          thumbnail: package://jsk_arc2017_common/data/objects/laugh_out_loud_jokes/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/laugh_out_loud_jokes/mesh/mesh.obj
+        - id: 22
+          name: marbles
+          thumbnail: package://jsk_arc2017_common/data/objects/marbles/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/marbles/mesh/mesh.obj
+        - id: 23
+          name: measuring_spoons
+          thumbnail: package://jsk_arc2017_common/data/objects/measuring_spoons/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/measuring_spoons/mesh/mesh.obj
+        - id: 24
+          name: mesh_cup
+          thumbnail: package://jsk_arc2017_common/data/objects/mesh_cup/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/mesh_cup/mesh/mesh.obj
+        - id: 25
+          name: mouse_traps
+          thumbnail: package://jsk_arc2017_common/data/objects/mouse_traps/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/mouse_traps/mesh/mesh.obj
+        - id: 26
+          name: pie_plates
+          thumbnail: package://jsk_arc2017_common/data/objects/pie_plates/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/pie_plates/mesh/mesh.obj
+        - id: 27
+          name: plastic_wine_glass
+          thumbnail: package://jsk_arc2017_common/data/objects/plastic_wine_glass/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/plastic_wine_glass/mesh/mesh.obj
+        - id: 28
+          name: poland_spring_water
+          thumbnail: package://jsk_arc2017_common/data/objects/poland_spring_water/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/poland_spring_water/mesh/mesh.obj
+        - id: 29
+          name: reynolds_wrap
+          thumbnail: package://jsk_arc2017_common/data/objects/reynolds_wrap/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/reynolds_wrap/mesh/mesh.obj
+        - id: 30
+          name: robots_dvd
+          thumbnail: package://jsk_arc2017_common/data/objects/robots_dvd/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/robots_dvd/mesh/mesh.obj
+        - id: 31
+          name: robots_everywhere
+          thumbnail: package://jsk_arc2017_common/data/objects/robots_everywhere/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/robots_everywhere/mesh/mesh.obj
+        - id: 32
+          name: scotch_sponges
+          thumbnail: package://jsk_arc2017_common/data/objects/scotch_sponges/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/scotch_sponges/mesh/mesh.obj
+        - id: 33
+          name: speed_stick
+          thumbnail: package://jsk_arc2017_common/data/objects/speed_stick/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/speed_stick/mesh/mesh.obj
+        - id: 34
+          name: table_cloth
+          thumbnail: package://jsk_arc2017_common/data/objects/table_cloth/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/table_cloth/mesh/mesh.obj
+        - id: 35
+          name: tennis_ball_container
+          thumbnail: package://jsk_arc2017_common/data/objects/tennis_ball_container/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/tennis_ball_container/mesh/mesh.obj
+        - id: 36
+          name: ticonderoga_pencils
+          thumbnail: package://jsk_arc2017_common/data/objects/ticonderoga_pencils/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/ticonderoga_pencils/mesh/mesh.obj
+        - id: 37
+          name: tissue_box
+          thumbnail: package://jsk_arc2017_common/data/objects/tissue_box/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/tissue_box/mesh/mesh.obj
+        - id: 38
+          name: toilet_brush
+          thumbnail: package://jsk_arc2017_common/data/objects/toilet_brush/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/toilet_brush/mesh/mesh.obj
+        - id: 39
+          name: white_facecloth
+          thumbnail: package://jsk_arc2017_common/data/objects/white_facecloth/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/white_facecloth/mesh/mesh.obj
+        - id: 40
+          name: windex
+          thumbnail: package://jsk_arc2017_common/data/objects/windex/top.jpg
+          mesh_resource: package://jsk_arc2017_common/data/objects/windex/mesh/mesh.obj
+    </rosparam>
+  </node>
+
+  <node name="transformable_interactive_server"
+        pkg="jsk_interactive_marker" type="transformable_server_sample">
+    <rosparam subst_value="true">
+      display_interactive_manipulator: true
+      display_interactive_manipulator_only_selected: true
+      interaction_mode: 2
+    </rosparam>
+  </node>
+
+  <group if="$(arg gui)">
+    <node name="rviz"
+          pkg="rviz" type="rviz"
+          args="-d $(find jsk_arc2017_common)/rvizconfig/object_3d_annotation.rviz">
+    </node>
+    <node name="rqt_reconfigure"
+          pkg="rqt_reconfigure" type="rqt_reconfigure"
+          args="publish_dataset_v3">
+    </node>
+  </group>
+
+</launch>
