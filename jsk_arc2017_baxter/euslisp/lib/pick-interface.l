@@ -21,14 +21,16 @@
           order
           target-bin
           target-cardboard
-          target-obj))
+          target-obj
+          grasp-style))
 
 (defmethod jsk_arc2017_baxter::pick-interface
   (:init (&key (moveit nil))
     (send-super :init)
     (setq picking-fail-count 0)
     (setq bins (list :a :b :c))
-    (setq moveit-p moveit))
+    (setq moveit-p moveit)
+    (setq grasp-style nil))
   (:recognize-bin-boxes ()
     (ros::ros-info "[main] recognizing shelf bin boxes")
     (send-super :recognize-bin-boxes :stamp (ros::time-now))
@@ -46,6 +48,8 @@
       (setq order nil)
       can-start))
   (:set-target (arm)
+    ;; reset picking-fail-count for new target
+    (setq picking-fail-count 0)
     (setq label-names
           (ros::get-param (format nil "/~a_hand_camera/label_names"
                                   (arm2str arm))))
@@ -81,6 +85,9 @@
     (let (is-recognized recognition-count)
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-cardboard-scene))
+      (send *ri* :stop-grasp arm)
+      (if (eq arm :rarm)
+        (send self :move-fingers-pinch->init arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
@@ -102,16 +109,25 @@
     (send *ri* :wait-interpolation)
     (when moveit-p (send self :delete-shelf-scene))
     (when moveit-p (send self :delete-cardboard-scene)))
+  (:set-grasp-style (arm)
+    (if (and (eq grasp-style :suction) (eq arm :rarm))
+      (setq grasp-style :pinch) (setq grasp-style :suction)))
   (:pick-object (arm)
     (when moveit-p (send self :delete-shelf-scene))
     (send self :pick-object-in-bin arm target-bin
-          :n-trial 2
+          :n-trial 1
           :n-trial-same-pos 1
-          :do-stop-grasp nil)
-    (send *ri* :angle-vector
-          (send self :ik->bin-center arm target-bin
-                :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
-          3000 (send *ri* :get-arm-controller arm) 0)
+          :do-stop-grasp nil
+          :grasp-style grasp-style)
+    (if (eq grasp-style :suction)
+      (send *ri* :angle-vector
+            (send self :ik->bin-center arm target-bin
+                  :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+            3000 (send *ri* :get-arm-controller arm) 0)
+      (send *ri* :angle-vector
+            (send self :ik->bin-center arm target-bin
+                  :offset #f(0 0 300) :rotation-axis :z :move-palm-end t)
+            3000 (send *ri* :get-arm-controller arm :gripper nil) 0))
     (send *ri* :wait-interpolation)
     (setq graspingp (send *ri* :graspingp arm))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
@@ -121,8 +137,10 @@
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
-          :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
-    (send *ri* :wait-interpolation))
+          :fast (send *ri* :get-arm-controller arm :gripper (eq grasp-style :suction)) 0 :scale 4.0)
+    (send *ri* :wait-interpolation)
+    (if (eq grasp-style :pinch)
+      (send self :move-fingers-pinch->init arm)))
   (:verify-object (arm)
     (setq picking-fail-count 0)
     ;; TODO: in-hand verification
@@ -144,12 +162,19 @@
         (ros::ros-info "[main] target-cardboard: ~a" target-cardboard)
         t)))
   (:return-object (arm)
-    (send *ri* :angle-vector-raw
-          (send self :ik->bin-center arm target-bin
-                :offset #f(0 0 0) :rotation-axis :z :use-gripper t)
-          :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
+    (if (eq grasp-style :suction)
+      (send *ri* :angle-vector-raw
+            (send self :ik->bin-center arm target-bin
+                  :offset #f(0 0 0) :rotation-axis :z :use-gripper t)
+            :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
+      (send *ri* :angle-vector-raw
+            (send self :ik->bin-center arm target-bin
+                  :offset #f(0 0 0) :rotation-axis :z :move-palm-end t)
+            :fast (send *ri* :get-arm-controller arm :gripper nil) 0 :scale 3.0))
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp arm)
+    (if (eq grasp-style :pinch)
+      (send self :move-fingers-pinch->init arm))
     (send self :spin-off-by-wrist 5)
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in shelf" arm)
@@ -173,31 +198,48 @@
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
       (when moveit-p (send self :add-shelf-scene))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
-      (send *ri* :angle-vector
-            (send self :ik->cardboard-center arm target-cardboard
-                  :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
-            4000 (send *ri* :get-arm-controller arm) 0
-            :path-constraints path-constraints)
+      (if (eq grasp-style :suction)
+        (send *ri* :angle-vector
+              (send self :ik->cardboard-center arm target-cardboard
+                    :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
+              4000 (send *ri* :get-arm-controller arm) 0
+              :path-constraints path-constraints)
+        ;; TODO Add path constraints to pinching
+        (send *ri* :angle-vector
+              (send self :ik->cardboard-center arm target-cardboard
+                    :offset #f(0 0 200) :rotation-axis nil :move-palm-end t)
+              4000 (send *ri* :get-arm-controller arm :gripper nil) 0))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm)))
       (if dropped
         (progn
           (ros::ros-error "[main] arm ~a: dropped object" arm)
-          (send *ri* :stop-grasp arm))
+          (send *ri* :stop-grasp arm)
+          (if (eq grasp-style :pinch)
+            (send self :move-fingers-pinch->init arm)))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
           (send self :update-json target-obj
                 :src (cons :bin target-bin) :dst (cons :cardboard target-cardboard))
           (when moveit-p (send self :delete-cardboard-scene))
-          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 -200) :world)
+          (send *ri* :angle-vector-raw
+                (send *baxter* arm :move-end-pos #f(0 0 -200) :world
+                      :rotation-axis (eq grasp-style :suction))
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm) ;; release object
+          (if (eq grasp-style :pinch)
+            (send *ri* :stop-grasp arm :pinch)) ;; release object
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 200) :world)
+          (send *ri* :angle-vector-raw
+                (send *baxter* arm :move-end-pos #f(0 0 200) :world
+                      :rotation-axis (eq grasp-style :suction))
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
+          (if (eq grasp-style :pinch)
+            (send self :move-fingers-pinch->init arm))
+          (setq grasp-style nil)
           (when moveit-p (send self :add-cardboard-scene))))))
   (:return-from-place-object (arm)
     (send self :fold-pose-back arm)
