@@ -26,6 +26,7 @@
   <build_depend>dynamixel_msgs</build_depend>
 
   <run_depend>force_proximity_ros</run_depend>
+  <run_depend>joint_trajectory_controller</run_depend>
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <run_depend>jsk_2016_01_baxter_apc</run_depend>
   <run_depend>jsk_apc2015_common</run_depend>
