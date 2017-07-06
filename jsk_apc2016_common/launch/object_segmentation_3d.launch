@@ -21,7 +21,6 @@
       gpu: $(arg GPU)
       backend: $(arg BACKEND)
       model_name: $(arg MODEL_NAME)
-      model_h5: $(arg MODEL_FILE)
       model_file: $(arg MODEL_FILE)
     </rosparam>
     <remap from="~target_names" to="label_names" />

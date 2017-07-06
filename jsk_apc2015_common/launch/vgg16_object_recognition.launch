@@ -11,7 +11,7 @@
     <rosparam subst_value="true">
       gpu: $(arg gpu)
       model_name: vgg16_batch_normalization
-      model_h5: $(find jsk_perception)/trained_data/vgg16_bn_apc2015_496000.chainermodel
+      model_file: $(find jsk_perception)/trained_data/vgg16_bn_apc2015_496000.chainermodel
       target_names:
         - background
         - champion_copper_plus_spark_plug

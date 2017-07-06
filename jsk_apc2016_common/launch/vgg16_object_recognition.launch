@@ -13,7 +13,7 @@
       use_mask: true
       gpu: $(arg GPU)
       model_name: vgg16_batch_normalization
-      model_h5: $(find jsk_apc2016_common)/trained_data/vgg16_rotation_translation_brightness_372000.chainermodel
+      model_file: $(find jsk_apc2016_common)/trained_data/vgg16_rotation_translation_brightness_372000.chainermodel
       target_names:
         - no_object
         - barkely_hide_bones
