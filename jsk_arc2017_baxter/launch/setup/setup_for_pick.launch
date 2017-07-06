@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="stereo" default="false" />
+  <arg name="stereo" default="true" />
 
   <!-- hand mounted camera -->
   <group if="$(arg stereo)">
@@ -10,13 +10,30 @@
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/astra_hand.launch" />
   </group>
 
+  <arg name="LEFT_CAMERA_INFO" if="$(arg stereo)" value="/left_hand_camera/fused/rgb/camera_info" />
+  <arg name="LEFT_INPUT_CLOUD" if="$(arg stereo)" value="/left_hand_camera/fused/depth_registered/points" />
+  <arg name="LEFT_INPUT_IMAGE" if="$(arg stereo)" value="/left_hand_camera/left/rgb/image_rect_color" />
+  <arg name="LEFT_MANAGER" if="$(arg stereo)" value="/left_hand_camera/left/left_nodelet_manager" />
+  <arg name="RIGHT_CAMERA_INFO" if="$(arg stereo)" value="/right_hand_camera/fused/rgb/camera_info" />
+  <arg name="RIGHT_INPUT_CLOUD" if="$(arg stereo)" value="/right_hand_camera/fused/depth_registered/points" />
+  <arg name="RIGHT_INPUT_IMAGE" if="$(arg stereo)" value="/right_hand_camera/left/rgb/image_rect_color" />
+  <arg name="RIGHT_MANAGER" if="$(arg stereo)" value="/right_hand_camera/left/left_nodelet_manager" />
+
+  <arg name="LEFT_CAMERA_INFO" unless="$(arg stereo)" value="/left_hand_camera/depth_registered/camera_info" />
+  <arg name="LEFT_INPUT_CLOUD" unless="$(arg stereo)" value="/left_hand_camera/depth_registered/points" />
+  <arg name="LEFT_INPUT_IMAGE" unless="$(arg stereo)" value="/left_hand_camera/rgb/image_rect_color" />
+  <arg name="LEFT_MANAGER" unless="$(arg stereo)" value="/left_hand_camera/left_hand_camera_nodelet_manager" />
+  <arg name="RIGHT_CAMERA_INFO" unless="$(arg stereo)" value="/right_hand_camera/depth_registered/camera_info" />
+  <arg name="RIGHT_INPUT_CLOUD" unless="$(arg stereo)" value="/right_hand_camera/depth_registered/points" />
+  <arg name="RIGHT_INPUT_IMAGE" unless="$(arg stereo)" value="/right_hand_camera/rgb/image_rect_color" />
+  <arg name="RIGHT_MANAGER" unless="$(arg stereo)" value="/right_hand_camera/right_hand_camera_nodelet_manager" />
+
   <!-- Launch pipeline for 3D object segmentation. -->
   <!-- for left hand camera -->
   <group ns="left_hand_camera">
-    <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_left)">
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg LEFT_MANAGER)">
       <remap from="~input" to="/transformable_markers_client/output/boxes" />
       <rosparam>
         index: 0
@@ -24,9 +41,9 @@
     </node>
     <node name="attention_clipper_target_bin"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/AttentionClipper $(arg manager_left)">
-      <remap from="~input" to="/left_hand_camera/depth_registered/camera_info" />
-      <remap from="~input/points" to="/left_hand_camera/depth_registered/points" />
+          args="load jsk_pcl/AttentionClipper $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg LEFT_INPUT_CLOUD)" />
       <remap from="~input/box" to="bbox_array_to_bbox/output" />
       <rosparam subst_value="true">
         use_multiple_attention: false
@@ -34,8 +51,8 @@
     </node>
     <node name="extract_indices_target_bin"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/ExtractIndices $(arg manager_left)">
-      <remap from="~input" to="/left_hand_camera/depth_registered/points" />
+          args="load jsk_pcl/ExtractIndices $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_INPUT_CLOUD)" />
       <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
       <rosparam>
         keep_organized: true
@@ -44,17 +61,16 @@
       </rosparam>
     </node>
     <include file="$(find jsk_arc2017_common)/launch/object_segmentation_3d.launch">
-      <arg name="NODELET_MANAGER" value="$(arg manager_left)" />
-      <arg name="INPUT_IMAGE" value="/left_hand_camera/rgb/image_rect_color"/>
+      <arg name="NODELET_MANAGER" value="$(arg LEFT_MANAGER)" />
+      <arg name="INPUT_IMAGE" value="$(arg LEFT_INPUT_IMAGE)"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
     </include>
   </group>
   <!-- for right hand camera -->
   <group ns="right_hand_camera">
-    <arg name="manager_right" value="right_hand_camera_nodelet_manager" />
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg manager_right)">
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg RIGHT_MANAGER)">
       <remap from="~input" to="/transformable_markers_client/output/boxes" />
       <rosparam>
         index: 2
@@ -62,9 +78,9 @@
     </node>
     <node name="attention_clipper_target_bin"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/AttentionClipper $(arg manager_right)">
-      <remap from="~input" to="/right_hand_camera/depth_registered/camera_info" />
-      <remap from="~input/points" to="/right_hand_camera/depth_registered/points" />
+          args="load jsk_pcl/AttentionClipper $(arg RIGHT_MANAGER)">
+      <remap from="~input" to="$(arg RIGHT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg RIGHT_INPUT_CLOUD)" />
       <remap from="~input/box" to="bbox_array_to_bbox/output" />
       <rosparam subst_value="true">
         use_multiple_attention: false
@@ -72,8 +88,8 @@
     </node>
     <node name="extract_indices_target_bin"
           pkg="nodelet" type="nodelet"
-          args="load jsk_pcl/ExtractIndices $(arg manager_right)">
-      <remap from="~input" to="/right_hand_camera/depth_registered/points" />
+          args="load jsk_pcl/ExtractIndices $(arg RIGHT_MANAGER)">
+      <remap from="~input" to="$(arg RIGHT_INPUT_CLOUD)" />
       <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
       <rosparam>
         keep_organized: true
@@ -82,8 +98,8 @@
       </rosparam>
     </node>
     <include file="$(find jsk_arc2017_common)/launch/object_segmentation_3d.launch">
-      <arg name="NODELET_MANAGER" value="$(arg manager_right)" />
-      <arg name="INPUT_IMAGE" value="/right_hand_camera/rgb/image_rect_color"/>
+      <arg name="NODELET_MANAGER" value="$(arg RIGHT_MANAGER)" />
+      <arg name="INPUT_IMAGE" value="$(arg RIGHT_INPUT_IMAGE)"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
     </include>
   </group>
