@@ -46,7 +46,7 @@
       </node>
       <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
         <arg name="NODELET_MANAGER" value="$(arg manager_left)" />
-        <arg name="INPUT_IMAGE" value="/left_hand_camera/fused/rgb/image_rect_color"/>
+        <arg name="INPUT_IMAGE" value="/left_hand_camera/left/rgb/image_rect_color"/>
         <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
         <arg name="FIXED_FRAME" value="base" />
         <arg name="BACKEND" value="chainer" />
@@ -90,7 +90,7 @@
       </node>
       <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
         <arg name="NODELET_MANAGER" value="$(arg manager_right)" />
-        <arg name="INPUT_IMAGE" value="/right_hand_camera/fused/rgb/image_rect_color"/>
+        <arg name="INPUT_IMAGE" value="/right_hand_camera/left/rgb/image_rect_color"/>
         <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
         <arg name="FIXED_FRAME" value="base" />
         <arg name="BACKEND" value="chainer" />
