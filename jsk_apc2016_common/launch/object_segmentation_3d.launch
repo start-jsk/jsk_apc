@@ -10,6 +10,7 @@
   <arg name="MODEL_FILE" default="$(find jsk_apc2016_common)/trained_data/fcn32s_v2_148000.chainermodel"/>
   <arg name="LABEL_YAML" default="$(find jsk_apc2016_common)/config/label_names.yaml"/>
   <arg name="SELECT_LARGEST" default="false" />
+  <arg name="USE_PCA" default="false" />
 
   <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
 
@@ -108,6 +109,7 @@
       queue_size: 1000
       align_boxes: true
       align_boxes_with_plane: false
+      use_pca: $(arg USE_PCA)
       target_frame_id: $(arg FIXED_FRAME)
     </rosparam>
   </node>
