@@ -74,7 +74,7 @@ $ source devel/setup.bash
 * Edit `/etc/hosts`:
 
 ```
-133.11.216.214 baxter 011310P0014.local
+133.11.216.224 baxter 011310P0014.local
 ```
 
 * Add below in your `~/.bashrc`:
