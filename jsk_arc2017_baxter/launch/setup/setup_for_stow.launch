@@ -46,7 +46,6 @@
         <arg name="INPUT_IMAGE" value="/left_hand_camera/rgb/image_rect_color"/>
         <arg name="INPUT_CLOUD" value="extract_indices_tote/output"/>
         <arg name="SELECT_LARGEST" value="true" />
-        <arg name="IGNORE_LABELS" value="[41]" />
       </include>
     </group>
     <group unless="$(arg use_fcn)">
@@ -110,7 +109,6 @@
         <arg name="INPUT_IMAGE" value="/right_hand_camera/rgb/image_rect_color"/>
         <arg name="INPUT_CLOUD" value="extract_indices_tote/output"/>
         <arg name="SELECT_LARGEST" value="true" />
-        <arg name="IGNORE_LABELS" value="[41]" />
       </include>
     </group>
     <group unless="$(arg use_fcn)">

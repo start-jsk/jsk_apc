@@ -4,7 +4,6 @@
   <arg name="INPUT_IMAGE" doc="Input rgb image" />
   <arg name="INPUT_CLOUD" doc="Input organized point cloud" />
   <arg name="SELECT_LARGEST" default="false" doc="enable selecting largest object"/>
-  <arg name="IGNORE_LABELS" default="[]" doc="ignore label when selecting largest object"/>
 
   <arg name="FIXED_FRAME" default="base" />
   <arg name="GPU" default="0" />
@@ -21,7 +20,7 @@
     <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
     <arg name="USE_PCA" value="true" />
     <arg name="SELECT_LARGEST" value="$(arg SELECT_LARGEST)" />
-    <arg name="IGNORE_LABELS" value="$(arg IGNORE_LABELS)" />
+    <arg name="IGNORE_LABELS" value="[0, 41]" />
   </include>
 
 </launch>
