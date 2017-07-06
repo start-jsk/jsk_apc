@@ -11,7 +11,7 @@
   <arg name="LABEL_YAML" default="$(find jsk_apc2016_common)/config/label_names.yaml"/>
   <arg name="SELECT_LARGEST" default="false" />
   <arg name="USE_PCA" default="false" />
-
+  <arg name="IGNORE_LABELS" default="[]" />
   <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
 
   <node name="fcn_object_segmentation"
@@ -41,8 +41,9 @@
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/LabelToClusterPointIndices $(arg NODELET_MANAGER)">
       <remap from="~input" to="apply_context_to_label_proba/output/label" />
-      <rosparam>
+      <rosparam subst_value="true">
         bg_label: 0
+        ignore_labels: $(arg IGNORE_LABELS)
       </rosparam>
     </node>
     <node name="cluster_indices_decomposer_label"
