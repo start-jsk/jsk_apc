@@ -584,10 +584,10 @@ Visualization Manager:
       Value: true
       font: DejaVu Sans Mono
       height: 800
-      left: 20
+      left: 0
       line width: 2
       text size: 10
-      top: 20
+      top: 0
       width: 500
     - Background Alpha: 0.8
       Background Color: 0; 0; 0
@@ -1231,6 +1231,28 @@ Visualization Manager:
         Show Robot Collision: false
         Show Robot Visual: false
       Value: true
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: LeftFCN
+      Topic: /left_hand_camera/label_image_decomposer/output/label_viz
+      Value: true
+      alpha: 1
+      height: 128
+      keep aspect ratio: true
+      left: 25
+      top: 39
+      width: 300
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: RightFCN
+      Topic: /right_hand_camera/label_image_decomposer/output/label_viz
+      Value: true
+      alpha: 1
+      height: 128
+      keep aspect ratio: true
+      left: 350
+      top: 39
+      width: 300
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -1293,5 +1315,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1865
-  X: 595
+  X: 585
   Y: 14
