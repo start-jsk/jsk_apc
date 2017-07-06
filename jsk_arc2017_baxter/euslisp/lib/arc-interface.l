@@ -231,7 +231,7 @@
                               (send box :dimensions :z)))
               (if (> bbox-volume-threshold- volume)
                 (return-from :get-largest-object-index
-                             (+ (send box :label) 1)))))))
+                             (send box :label)))))))
       nil))
   (:move-fingers-pinch->init
     (arm)
