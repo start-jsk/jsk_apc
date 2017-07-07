@@ -109,12 +109,13 @@
     (case (car args)
       ((:angle-vector)
        (let ((av (cadr args)) (joints (gethash arm hand-joints-)))
-         (when av
-           (dotimes (i (length av))
-             (send self (elt joints i) :joint-angle (elt av i))
-             (send self (elt joints (+ i (length av))) :joint-angle (elt av i))))
+         (if (and (null (eq (length av) 0)) (null (eq (length av) 2)))
+             (error "length of angle-vector must be 0 or 2.~%"))
+         (dotimes (i (length av))
+           (send self (elt joints i) :joint-angle (elt av i))
+           (send self (elt joints (+ i (length av))) :joint-angle (elt av i)))
          (mapcar
-           #'(lambda (j) (send self j :joint-angle))
+          #'(lambda (j) (send self j :joint-angle))
            (subseq joints 0 (/ (length joints) 2)))
          ))
       (t (error ":hand first arg is invalid. args: ~A~%" args))
