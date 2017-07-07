@@ -273,7 +273,9 @@
       (setq obj-pos
             (send self :get-object-position arm movable-region :object-index object-index))
       (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) object-index)))
-      (if (> (x-of-cube obj-cube) (y-of-cube obj-cube)) (setq pinch-yaw pi/2) (setq pinch-yaw 0))
+      (if (> (x-of-cube obj-cube) (y-of-cube obj-cube))
+        (setq pinch-yaw (+ pi/2 (caar (send (send obj-cube :worldcoords) :rpy-angle))))
+        (setq pinch-yaw (caar (send (send obj-cube :worldcoords) :rpy-angle))))
       (ros::ros-info "[:pick-object-with-movable-region] arm:~a approach to the object" arm)
       (send *ri* :gripper-servo-on arm)
       ;; Setup arm for picking
