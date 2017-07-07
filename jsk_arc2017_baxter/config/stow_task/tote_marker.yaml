@@ -1,15 +1,13 @@
-frame_id: /base
-initial_orientation: [0.0, 0.0, 0.0, 1.0]
-initial_x: 0.58
-initial_y: 0.0
-initial_z: -0.37
-object_a: 0.2
-object_b: 0.2
-object_g: 0.0
-object_r: 0.0
-object_type: cube
-object_x: 0.865
-object_y: 0.865
-object_z: 1.0
-publish_tf: true
-tf_frame: tote_base
+boxes:
+- dimensions: [0.3, 0.32, 0.15]
+  frame_id: base
+  name: tote_left
+  orientation: [1.4420626973492358e-08, -7.850819340191699e-09, -0.04216614997941334,
+    0.9991106123927987]
+  position: [0.6810776591300964, 0.18552696704864502, -0.33438313007354736]
+- dimensions: [0.3, 0.32, 0.15]
+  frame_id: base
+  name: tote_right
+  orientation: [1.4387504311643188e-08, -2.3788071610381197e-08, -0.05639489658033719,
+    0.9984085414496874]
+  position: [0.6487714052200317, -0.1551169753074646, -0.32098641991615295]
