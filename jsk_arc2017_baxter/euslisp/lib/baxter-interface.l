@@ -263,7 +263,9 @@
                ;; rotate arm using proximity sensor
                (setf (aref finger-av 1) 180)
                (send self :move-hand l/r finger-av 2000 :wait nil)
-               (unix:usleep 10000)
+               (dotimes (x 100)
+                 (if (send self :interpolatingp) (return))
+                 (unix::usleep 1000))
                (while (and
                         (< (max (send self :get-proximity l/r :right)
                                 (send self :get-proximity l/r :left))
@@ -292,7 +294,9 @@
                      (send robot :angle-vector prev-av)
                      (send self :angle-vector-raw av 2000)
                      (send self :move-hand l/r finger-av 4000 :wait nil)
-                     (unix::usleep 10000)
+                     (dotimes (x 100)
+                       (if (send self :interpolatingp) (return))
+                       (unix::usleep 1000))
                      (while (and (> (send self :get-proximity l/r :right)
                                     (send self :get-proximity l/r :left))
                                  (send self :interpolatingp)))))
