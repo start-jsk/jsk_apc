@@ -260,6 +260,7 @@
   (:pick-object-with-movable-region
     (arm movable-region &key (n-trial 1) (n-trial-same-pos 1)
          (do-stop-grasp nil) (grasp-style :suction))
+    (send *ri* :calib-proximity-threshold arm)
     (let (graspingp avs object-index obj-pos obj-cube pinch-yaw)
       ;; TODO: object-index is set randomly
       (setq object-index (random (length (gethash arm object-boxes-))))
