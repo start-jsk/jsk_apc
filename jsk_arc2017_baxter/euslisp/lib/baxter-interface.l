@@ -165,8 +165,8 @@
     (arm side msg)
     (sethash side (gethash arm finger-flex-) (send msg :data)))
   (:set-proximities
-   (arm msg)
-   (sethash arm proximities- (send msg :proximities)))
+    (arm msg)
+    (sethash arm proximities- (send msg :proximities)))
 
   ;; Hand interface
   ;; based on naoqi-interface and fetch-interface
@@ -215,21 +215,21 @@
     (send self :spin-once)
     (gethash arm prismatic-vel-))
   (:get-proximity (arm side &key (raw nil))
-     (send self :spin-once)
-     (let ((rl (gethash :left (gethash arm proximity-init-values-)))
-           (rr (gethash :right (gethash arm proximity-init-values-)))
-           ;;(rm (gethash :middle (gethash arm proximity-init-values-)))
-           (proximities (gethash arm proximities-)))
-       (if (null raw)
-           (cond
-            ;; for sparkfun proximity sensor
-            ((eq side :left)
-             (/ (- (send (elt proximities 0) :average) rl) (expt (/ rl 2500.0) 1.5)))
-            ((eq side :right)
-             (/ (- (send (elt proximities 1) :average) rr) (expt (/ rr 2500.0) 1.5))))
-         (cond
-          ((eq side :left) (send (elt proximities 0) :average))
-          ((eq side :right) (send (elt proximities 1) :average))))))
+    (send self :spin-once)
+    (let ((rl (gethash :left (gethash arm proximity-init-values-)))
+          (rr (gethash :right (gethash arm proximity-init-values-)))
+          ;;(rm (gethash :middle (gethash arm proximity-init-values-)))
+          (proximities (gethash arm proximities-)))
+      (if (null raw)
+        (cond
+         ;; for sparkfun proximity sensor
+         ((eq side :left)
+          (/ (- (send (elt proximities 0) :average) rl) (expt (/ rl 2500.0) 1.5)))
+         ((eq side :right)
+          (/ (- (send (elt proximities 1) :average) rr) (expt (/ rr 2500.0) 1.5))))
+        (cond
+         ((eq side :left) (send (elt proximities 0) :average))
+         ((eq side :right) (send (elt proximities 1) :average))))))
   (:get-real-finger-av (arm)
     (send self :update-robot-state :wait-until-update t)
     (float-vector
@@ -467,16 +467,15 @@
     (ros::ros-info "[:calib-pressure-threshold] Threshold r: ~a l: ~a"
                    rarm-pressure-threshold- larm-pressure-threshold-))
   (:calib-proximity-threshold
-   (&optional (arm :arms))
-   (send self :spin-once)
-   (dolist (l/r (if (eq arm :arms) (list :rarm :larm) (list arm)))
-     (let ((hash-table (make-hash-table)))
-       (sethash :left hash-table (send self :get-proximity l/r :left :raw t))
-       (sethash :right hash-table (send self :get-proximity l/r :right :raw t))
-       (sethash :middle hash-table (send self :get-proximity l/r :middle :raw t))
-       (sethash l/r proximity-init-values- hash-table)
-       )
-     (setq proximity-threshold- 100)))) ;; TODO decide proper threshold 100 -> ???
+    (&optional (arm :arms))
+    (send self :spin-once)
+    (dolist (l/r (if (eq arm :arms) (list :rarm :larm) (list arm)))
+      (let ((hash-table (make-hash-table)))
+        (sethash :left hash-table (send self :get-proximity l/r :left :raw t))
+        (sethash :right hash-table (send self :get-proximity l/r :right :raw t))
+        (sethash :middle hash-table (send self :get-proximity l/r :middle :raw t))
+        (sethash l/r proximity-init-values- hash-table))
+      (setq proximity-threshold- 100)))) ;; TODO decide proper threshold 100 -> ???
 
 
 (defclass jsk_arc2017_baxter::baxter-moveit-environment
