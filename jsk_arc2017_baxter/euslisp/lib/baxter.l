@@ -110,7 +110,7 @@
       ((:angle-vector)
        (let ((av (cadr args)) (joints (gethash arm hand-joints-)))
          (if (and (null (eq (length av) 0)) (null (eq (length av) 2)))
-             (error "length of angle-vector must be 0 or 2.~%"))
+           (error "length of angle-vector must be 0 or 2.~%"))
          (dotimes (i (length av))
            (send self (elt joints i) :joint-angle (elt av i))
            (send self (elt joints (+ i (length av))) :joint-angle (elt av i)))
