@@ -1,0 +1,10 @@
+vacuum_gripper:
+  type: "position_controllers/JointTrajectoryController"
+  joints:
+    - left_gripper_prismatic_joint
+    - left_gripper_vacuum_pad_joint
+hand:
+  type: "position_controllers/JointTrajectoryController"
+  joints:
+    - left_gripper_finger_yaw_joint
+    - left_gripper_finger_roll_joint
