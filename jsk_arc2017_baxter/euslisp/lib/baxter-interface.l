@@ -222,14 +222,14 @@
           (proximities (gethash arm proximities-)))
       (if (null raw)
         (cond
-         ;; for sparkfun proximity sensor
-         ((eq side :left)
-          (/ (- (send (elt proximities 0) :average) rl) (expt (/ rl 2500.0) 1.5)))
-         ((eq side :right)
-          (/ (- (send (elt proximities 1) :average) rr) (expt (/ rr 2500.0) 1.5))))
+          ;; for sparkfun proximity sensor
+          ((eq side :left)
+           (/ (- (send (elt proximities 0) :average) rl) (expt (/ rl 2500.0) 1.5)))
+          ((eq side :right)
+           (/ (- (send (elt proximities 1) :average) rr) (expt (/ rr 2500.0) 1.5))))
         (cond
-         ((eq side :left) (send (elt proximities 0) :average))
-         ((eq side :right) (send (elt proximities 1) :average))))))
+          ((eq side :left) (send (elt proximities 0) :average))
+          ((eq side :right) (send (elt proximities 1) :average))))))
   (:get-real-finger-av (arm)
     (send self :update-robot-state :wait-until-update t)
     (float-vector
@@ -276,18 +276,18 @@
                  (send self :update-robot-state :wait-until-update t)
                  (setq prev-av (send robot :angle-vector))
                  (if (< (send self :get-proximity l/r :right) (send self :get-proximity l/r :left))
-                     (progn
-                        (send robot l/r :wrist-r :joint-angle 45 :relative t)
-                        (setq av (send robot :angle-vector))
-                        (send robot :angle-vector prev-av)
-                        (send self :angle-vector-raw av 2000)
-                        (send self :move-hand l/r finger-av 4000 :wait nil)
-                        (dotimes (x 100)
-                          (if (send self :interpolatingp) (return))
-                          (unix::usleep 1000))
-                        (while (and (< (send self :get-proximity l/r :right)
-                                       (send self :get-proximity l/r :left))
-                                    (send self :interpolatingp))))
+                   (progn
+                     (send robot l/r :wrist-r :joint-angle 45 :relative t)
+                     (setq av (send robot :angle-vector))
+                     (send robot :angle-vector prev-av)
+                     (send self :angle-vector-raw av 2000)
+                     (send self :move-hand l/r finger-av 4000 :wait nil)
+                     (dotimes (x 100)
+                       (if (send self :interpolatingp) (return))
+                       (unix::usleep 1000))
+                     (while (and (< (send self :get-proximity l/r :right)
+                                    (send self :get-proximity l/r :left))
+                                 (send self :interpolatingp))))
                    (progn
                      (send robot l/r :wrist-r :joint-angle -45 :relative t)
                      (setq av (send robot :angle-vector))
