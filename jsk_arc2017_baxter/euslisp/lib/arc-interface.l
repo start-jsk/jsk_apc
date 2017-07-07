@@ -112,7 +112,7 @@
   (:check-bin-exist (bin) (if (gethash bin bin-cubes-) t nil))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
-    (let ((box-topic (format nil "publish_bin_boxes/output"))
+    (let ((box-topic (format nil "transformable_markers_client/output/boxes"))
           box-msg bin-list)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
@@ -129,7 +129,7 @@
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:recognize-tote-boxes
     (&key (stamp (ros::time-now)))
-    (let ((box-topic (format nil "publish_tote_boxes/output"))
+    (let ((box-topic (format nil "transformable_markers_client_stow/output/boxes"))
                      box-msg box-list)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
