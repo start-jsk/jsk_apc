@@ -115,7 +115,7 @@
            (send self (elt joints i) :joint-angle (elt av i))
            (send self (elt joints (+ i (length av))) :joint-angle (elt av i)))
          (mapcar
-          #'(lambda (j) (send self j :joint-angle))
+           #'(lambda (j) (send self j :joint-angle))
            (subseq joints 0 (/ (length joints) 2)))
          ))
       (t (error ":hand first arg is invalid. args: ~A~%" args))

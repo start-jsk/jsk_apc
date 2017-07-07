@@ -15,11 +15,14 @@
   :super baxter-interface
   :slots (rarm-pressure-threshold-
           larm-pressure-threshold-
+          proximity-threshold-
           right-hand-action-
           pressure-
           finger-flex-
           finger-load-
-          prismatic-load-))
+          prismatic-load-
+          proximities-
+          proximity-init-values-))
 
 (defmethod jsk_arc2017_baxter::baxter-interface
   (:init
@@ -72,6 +75,8 @@
     (setq finger-flex- (make-hash-table))
     (setq prismatic-load- (make-hash-table))
     (setq prismatic-vel- (make-hash-table))
+    (setq proximities- (make-hash-table))
+    (setq proximity-init-values- (make-hash-table))
     (dolist (arm (list :rarm :larm))
       (ros::subscribe (format nil "/gripper_front/limb/~a/pressure/state" (arm2str arm))
                       std_msgs::Float64
@@ -87,7 +92,13 @@
                       dynamixel_msgs::JointState
                       #'send self :set-prismatic-state arm
                       :groupname groupname)
+      (ros::subscribe (format nil "/gripper_front/limb/~a/proximity_array"
+                              (arm2str arm))
+                      force_proximity_ros::ProximityArray
+                      #'send self :set-proximities arm
+                      :groupname groupname)
       (sethash arm finger-flex- (make-hash-table))
+      (sethash arm proximity-init-values- (make-hash-table))
       (dolist (side (list :right :left))
         (ros::subscribe (format nil "/gripper_front/limb/~a/flex/~a/state"
                                 (arm2str arm) (symbol2str side))
@@ -153,6 +164,9 @@
   (:set-finger-flex
     (arm side msg)
     (sethash side (gethash arm finger-flex-) (send msg :data)))
+  (:set-proximities
+   (arm msg)
+   (sethash arm proximities- (send msg :proximities)))
 
   ;; Hand interface
   ;; based on naoqi-interface and fetch-interface
@@ -184,6 +198,10 @@
           res)
         nil)
       nil))
+  (:cancel-move-hand()
+    (send right-hand-action- :cancel-goal))
+  (:hand-interpolatingp ()
+    (eq (send right-hand-action- :get-state) ros::*simple-goal-state-active*))
   (:get-finger-flex (arm side)
     (send self :spin-once)
     (gethash side (gethash arm finger-flex-)))
@@ -196,6 +214,22 @@
   (:get-prismatic-vel (arm)
     (send self :spin-once)
     (gethash arm prismatic-vel-))
+  (:get-proximity (arm side &key (raw nil))
+     (send self :spin-once)
+     (let ((rl (gethash :left (gethash arm proximity-init-values-)))
+           (rr (gethash :right (gethash arm proximity-init-values-)))
+           ;;(rm (gethash :middle (gethash arm proximity-init-values-)))
+           (proximities (gethash arm proximities-)))
+       (if (null raw)
+           (cond
+            ;; for sparkfun proximity sensor
+            ((eq side :left)
+             (/ (- (send (elt proximities 0) :average) rl) (expt (/ rl 2500.0) 1.5)))
+            ((eq side :right)
+             (/ (- (send (elt proximities 1) :average) rr) (expt (/ rr 2500.0) 1.5))))
+         (cond
+          ((eq side :left) (send (elt proximities 0) :average))
+          ((eq side :right) (send (elt proximities 1) :average))))))
   (:get-real-finger-av (arm)
     (send self :update-robot-state :wait-until-update t)
     (float-vector
@@ -225,9 +259,46 @@
             ((eq type :pinch)
              (send self :update-robot-state :wait-until-update t)
              (let ((finger-av (send self :get-real-finger-av l/r))
-                   (prev-av (send robot :angle-vector)) avs)
+                   prev-av av avs hand-interpolatingp)
+               ;; rotate arm using proximity sensor
                (setf (aref finger-av 1) 180)
-               (send self :move-hand l/r finger-av 1000)
+               (send self :move-hand l/r finger-av 2000 :wait nil)
+               (unix:usleep 10000)
+               (while (and
+                       (< (max (send self :get-proximity l/r :right)
+                               (send self :get-proximity l/r :left))
+                          proximity-threshold-)
+                       (setq hand-interpolatingp (send self :hand-interpolatingp))))
+               (when hand-interpolatingp
+                 (send self :cancel-move-hand)
+                 (send self :update-robot-state :wait-until-update t)
+                 (setq prev-av (send robot :angle-vector))
+                 (if (< (send self :get-proximity l/r :right) (send self :get-proximity l/r :left))
+                     (progn
+                        (send robot l/r :wrist-r :joint-angle 45 :relative t)
+                        (setq av (send robot :angle-vector))
+                        (send robot :angle-vector prev-av)
+                        (send self :angle-vector-raw av 2000)
+                        (send self :move-hand l/r finger-av 4000 :wait nil)
+                        (unix::usleep 10000)
+                        (while (and (< (send self :get-proximity l/r :right)
+                                       (send self :get-proximity l/r :left))
+                                    (send self :interpolatingp))))
+                   (progn
+                     (send robot l/r :wrist-r :joint-angle -45 :relative t)
+                     (setq av (send robot :angle-vector))
+                     (send robot :angle-vector prev-av)
+                     (send self :angle-vector-raw av 2000)
+                     (send self :move-hand l/r finger-av 4000 :wait nil)
+                     (unix::usleep 10000)
+                     (while (and (> (send self :get-proximity l/r :right)
+                                    (send self :get-proximity l/r :left))
+                                 (send self :interpolatingp)))))
+                 (send self :cancel-move-hand)
+                 (send self :cancel-angle-vector)
+                 (send self :update-robot-state :wait-until-update t)
+                 (send self :move-hand l/r finger-av 1000))
+               (setq prev-av (send robot :angle-vector))
                (when (> (aref finger-av 0) 45)
                  ;; if cylindrical and spherical grasp, move other gripper joints
                  (send robot l/r :gripper-p :joint-angle -90)
@@ -394,7 +465,18 @@
                (setq rarm-pressure-threshold- (- min-pressure 15))))))
     (send self :stop-grasp arm)
     (ros::ros-info "[:calib-pressure-threshold] Threshold r: ~a l: ~a"
-                   rarm-pressure-threshold- larm-pressure-threshold-)))
+                   rarm-pressure-threshold- larm-pressure-threshold-))
+  (:calib-proximity-threshold
+   (&optional (arm :arms))
+   (send self :spin-once)
+   (dolist (l/r (if (eq arm :arms) (list :rarm :larm) (list arm)))
+     (let ((hash-table (make-hash-table)))
+       (sethash :left hash-table (send self :get-proximity l/r :left :raw t))
+       (sethash :right hash-table (send self :get-proximity l/r :right :raw t))
+       (sethash :middle hash-table (send self :get-proximity l/r :middle :raw t))
+       (sethash l/r proximity-init-values- hash-table)
+       )
+     (setq proximity-threshold- 100)))) ;; TODO decide proper threshold 100 -> ???
 
 
 (defclass jsk_arc2017_baxter::baxter-moveit-environment
