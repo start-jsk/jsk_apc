@@ -10,9 +10,3 @@
     local-name: FA-I-sensor/force_proximity_ros
     uri: https://github.com/knorth55/FA-I-sensor.git
     version: jsk_apc
-
-# waiting for release of https://github.com/jsk-ros-pkg/jsk_recognition/pull/2118
-- git:
-    local-name: jsk-ros-pkg/jsk_recognition
-    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
-    version: 4320a60bc06e324c98bc92ed9a9f90491e4d5e5e
