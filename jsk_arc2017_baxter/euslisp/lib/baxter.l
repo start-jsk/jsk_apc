@@ -110,7 +110,7 @@
       ((:angle-vector)
        (let ((av (cadr args)) (joints (gethash arm hand-joints-)))
          (if (and (null (eq (length av) 0)) (null (eq (length av) 2)))
-           (ros::ros-error "length of angle-vector must be 0 or 2.~%"))
+           (progn (ros::ros-error "length of angle-vector must be 0 or 2.~%") (exit)))
          (dotimes (i (length av))
            (send self (elt joints i) :joint-angle (elt av i))
            (send self (elt joints (+ i (length av))) :joint-angle (elt av i)))
@@ -118,7 +118,7 @@
            #'(lambda (j) (send self j :joint-angle))
            (subseq joints 0 (/ (length joints) 2)))
          ))
-      (t (ros::ros-error ":hand first arg is invalid. args: ~A~%" args))
+      (t (ros::ros-error ":hand first arg is invalid. args: ~A~%" args) (exit))
       ))
   (:hand-grasp-pre-pose
     (arm style)
@@ -126,7 +126,7 @@
       (:opposed (send self :hand arm :angle-vector #f(0 0)))
       (:spherical (send self :hand arm :angle-vector #f(30 0)))
       (:cylindrical (send self :hand arm :angle-vector #f(90 0)))
-      (t (ros::ros-error ":hand-grasp-pre-pose no such style ~A~%" style))
+      (t (ros::ros-error ":hand-grasp-pre-pose no such style ~A~%" style) (exit))
     ))
   (:hand-grasp-pose
     (arm style &key (angle 180))
@@ -134,7 +134,7 @@
       (:opposed (send self :hand arm :angle-vector (float-vector 0 angle)))
       (:spherical (send self :hand arm :angle-vector (float-vector 30 angle)))
       (:cylindrical (send self :hand arm :angle-vector (float-vector 90 angle)))
-      (t (ros::ros-error ":hand-grasp-pose no such style ~A~%" style))
+      (t (ros::ros-error ":hand-grasp-pose no such style ~A~%" style) (exit))
     ))
   (:avoid-shelf-pose
     (arm bin)
