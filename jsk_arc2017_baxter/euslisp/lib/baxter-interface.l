@@ -316,7 +316,7 @@
                  (pushback (send robot :angle-vector) avs)
                  (send robot :angle-vector prev-av)
                  (send self :angle-vector-sequence-raw avs)
-                 (send self :wait-interpolation)))))))
+                 (send self :wait-interpolation))))))))
   (:stop-grasp
     (&optional (arm :arms) (type :suction))
     (dolist (l/r (if (eq arm :arms) (list :rarm :larm) (list arm)))
