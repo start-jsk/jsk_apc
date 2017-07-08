@@ -512,7 +512,7 @@
             :grasp :finger-flexion :finger-loaded :prismatic-loaded)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (send *ri* :angle-vector-raw
-            (send *baxter* :slide-gripper :rarm 120 :relative nil)
+            (send *baxter* :slide-gripper arm 120 :relative nil)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
