@@ -16,7 +16,7 @@
   :slots (rarm-pressure-threshold-
           larm-pressure-threshold-
           proximity-threshold-
-          right-hand-action-
+          hand-actions-
           pressure-
           finger-flex-
           finger-load-
@@ -58,17 +58,20 @@
       (ros::advertise "/vacuum_gripper/limb/right" std_msgs::Bool))
     (ros::advertise "/gripper_front/limb/left/servo/torque" std_msgs::Bool)
     (ros::advertise "/gripper_front/limb/right/servo/torque" std_msgs::Bool)
-    ;; initialize hand action
-    (setq right-hand-action-
-          (instance ros::simple-action-client :init
-                    "/gripper_front/limb/right/hand/follow_joint_trajectory"
-                    control_msgs::FollowJointTrajectoryAction
-                    :groupname groupname))
-    ;; check if hand action is respond (based on baxter-interface)
-    (unless
-      (and joint-action-enable (send right-hand-action- :wait-for-server 3))
-      (ros::ros-warn "~A is not respond" right-hand-action-)
-      (ros::ros-info "*** if you do not have hand, you can ignore this message ***"))
+    (setq hand-actions- (make-hash-table))
+    (dolist (arm (list :rarm :larm))
+      ;; initialize hand action
+      (sethash arm hand-actions-
+               (instance ros::simple-action-client :init
+                         (format nil "/gripper_front/limb/~a/hand/follow_joint_trajectory"
+                                 (arm2str arm))
+                         control_msgs::FollowJointTrajectoryAction
+                         :groupname groupname))
+      ;; check if hand action is respond (based on baxter-interface)
+      (unless
+        (and joint-action-enable (send (gethash arm hand-actions-) :wait-for-server 3))
+        (ros::ros-warn "~A is not respond" (gethash arm hand-actions-))
+        (ros::ros-info "*** if you do not have hand, you can ignore this message ***")))
     ;; gripper sensors
     (setq pressure- (make-hash-table))
     (setq finger-load- (make-hash-table))
@@ -147,10 +150,10 @@
   (:lgripper-controller ()
    (list
     (list
-     (cons :controller-action "/gripper_front/limb/left/follow_joint_trajectory")
-     (cons :controller-state "/gripper_front/limb/left/state")
+     (cons :controller-action "/gripper_front/limb/left/vacuum_gripper/follow_joint_trajectory")
+     (cons :controller-state "/gripper_front/limb/left/vacuum_gripper/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "left_gripper_vacuum_pad_joint")))))
+     (cons :joint-names (list "left_gripper_prismatic_joint" "left_gripper_vacuum_pad_joint")))))
   (:set-pressure
     (arm msg)
     (sethash arm pressure- (send msg :data)))
@@ -173,35 +176,34 @@
   (:move-hand
     (arm av tm &key (wait t))
     (if (and (= (length av) 2) (not (send self :simulation-modep)))
-      (if (eq arm :rarm)
-        (let (av-list res (goal (instance control_msgs::FollowJointTrajectoryActionGoal :init))
-                      (traj (instance trajectory_msgs::JointTrajectory :init)))
-          (dotimes (i (length av)) (pushback (elt av i) av-list))
-          (send traj :header :seq 1)
-          (send traj :header :stamp (ros::time-now))
-          (send traj :joint_names
-                (list "right_gripper_finger_yaw_joint" "right_gripper_finger_roll_joint"))
-          (send traj :points
-                (list (instance trajectory_msgs::JointTrajectoryPoint
-                                :init
-                                :positions (mapcar #'deg2rad av-list)
-                                :time_from_start (ros::time (/ tm 1000)))))
-          (send goal :goal :trajectory traj)
-          (send right-hand-action- :send-goal goal)
-          (setq res (send right-hand-action- :get-result))
-          (when wait
-            (send right-hand-action- :wait-for-result)
-            (setq res (send right-hand-action- :get-result)))
-          (unless (eq (send res :error_code) 0)
-            (warning-message 3 ":move-hand error code ~A returns from JTA: ~A~%"
-                              (send res :error_code) (send res :error_string)))
-          res)
-        nil)
+      (let (av-list res (goal (instance control_msgs::FollowJointTrajectoryActionGoal :init))
+                    (traj (instance trajectory_msgs::JointTrajectory :init)))
+        (dotimes (i (length av)) (pushback (elt av i) av-list))
+        (send traj :header :seq 1)
+        (send traj :header :stamp (ros::time-now))
+        (send traj :joint_names
+              (list (format nil "~a_gripper_finger_yaw_joint" (arm2str arm))
+                    (format nil "~a_gripper_finger_roll_joint" (arm2str arm))))
+        (send traj :points
+              (list (instance trajectory_msgs::JointTrajectoryPoint
+                              :init
+                              :positions (mapcar #'deg2rad av-list)
+                              :time_from_start (ros::time (/ tm 1000)))))
+        (send goal :goal :trajectory traj)
+        (send (gethash arm hand-actions-) :send-goal goal)
+        (setq res (send (gethash arm hand-actions-) :get-result))
+        (when wait
+          (send (gethash arm hand-actions-) :wait-for-result)
+          (setq res (send (gethash arm hand-actions-) :get-result)))
+        (unless (eq (send res :error_code) 0)
+          (warning-message 3 ":move-hand error code ~A returns from JTA: ~A~%"
+                           (send res :error_code) (send res :error_string)))
+        res)
       nil))
-  (:cancel-move-hand()
-    (send right-hand-action- :cancel-goal))
-  (:hand-interpolatingp ()
-    (eq (send right-hand-action- :get-state) ros::*simple-goal-state-active*))
+  (:cancel-move-hand (arm)
+    (send (gethash arm hand-actions-) :cancel-goal))
+  (:hand-interpolatingp (arm)
+    (eq (send (gethash arm hand-actions-) :get-state) ros::*simple-goal-state-active*))
   (:get-finger-flex (arm side)
     (send self :spin-once)
     (gethash side (gethash arm finger-flex-)))
@@ -238,8 +240,7 @@
       (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
             :joint-angle)))
   (:finger-closep (arm)
-    (if (eq arm :rarm)
-      (> (aref (send self :get-real-finger-av arm) 1) 30) nil))
+    (> (aref (send self :get-real-finger-av arm) 1) 30) nil)
 
   (:get-arm-controller (arm &key (gripper t))
     (cond ((eq arm :rarm) (if gripper :rarm-controller :rarm-no-gripper-controller))
@@ -270,10 +271,10 @@
                         (< (max (send self :get-proximity l/r :right)
                                 (send self :get-proximity l/r :left))
                            proximity-threshold-)
-                        (setq hand-interpolatingp (send self :hand-interpolatingp)))
+                        (setq hand-interpolatingp (send self :hand-interpolatingp l/r)))
                  (unix::usleep 1000))
                (when hand-interpolatingp
-                 (send self :cancel-move-hand)
+                 (send self :cancel-move-hand l/r)
                  (send self :update-robot-state :wait-until-update t)
                  (setq prev-av (send robot :angle-vector))
                  (if (< (send self :get-proximity l/r :right) (send self :get-proximity l/r :left))
@@ -303,7 +304,7 @@
                                     (send self :get-proximity l/r :left))
                                  (send self :interpolatingp))
                        (unix::usleep 1000))))
-                 (send self :cancel-move-hand)
+                 (send self :cancel-move-hand l/r)
                  (send self :cancel-angle-vector)
                  (send self :update-robot-state :wait-until-update t)
                  (send self :move-hand l/r finger-av 1000))
@@ -367,13 +368,12 @@
           (send (one-shot-subscribe topic std_msgs::Bool) :data)
           )
         (progn
-          (when (eq arm :rarm)
-            (setq finger-av (send self :get-real-finger-av arm))
-            (setq fingerp
-                  (and (or
-                         (and (< (aref finger-av 0) 45) (< (aref finger-av 1) 80))
-                         (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 155)))
-                       (> (send self :get-finger-load arm) 0.55))))
+          (setq finger-av (send self :get-real-finger-av arm))
+          (setq fingerp
+                (and (or
+                       (and (< (aref finger-av 0) 45) (< (aref finger-av 1) 80))
+                       (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 155)))
+                     (> (send self :get-finger-load arm) 0.55)))
           (send self :spin-once)
           (or (if (not (eq type :suction)) fingerp nil)
               (if (not (eq type :pinch))
@@ -385,8 +385,8 @@
   (:arm-potentio-vector
     (arm)
     (case arm
-      (:larm (subseq (send *ri* :state :potentio-vector) 1 9))
-      (:rarm (subseq (send *ri* :state :potentio-vector) 9 17))
+      (:larm (subseq (send self :state :potentio-vector) 1 10))
+      (:rarm (subseq (send self :state :potentio-vector) 10 19))
       (t nil)))
   (:tf-pose->coords
     (frame_id pose)
@@ -516,7 +516,7 @@
             (setq min-pressure (gethash l/r pressure-)))
           (unix::sleep 1))
         (cond ((eq l/r :larm)
-               (setq larm-pressure-threshold- (- min-pressure 5)))
+               (setq larm-pressure-threshold- (- min-pressure 15)))
               ((eq l/r :rarm)
                (setq rarm-pressure-threshold- (- min-pressure 15))))))
     (send self :stop-grasp arm)

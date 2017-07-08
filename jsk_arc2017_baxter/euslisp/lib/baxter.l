@@ -51,12 +51,22 @@
                    ;; We have to move mimic joints, too
                    :right_gripper_r_finger_yaw_joint
                    :right_gripper_r_finger_roll_joint))
+    (sethash :larm hand-joints-
+             (list :left_gripper_finger_yaw_joint
+                   :left_gripper_finger_roll_joint
+                   ;; We have to move mimic joints, too
+                   :left_gripper_r_finger_yaw_joint
+                   :left_gripper_r_finger_roll_joint))
     ;; translate palm end for good cylindrical grasp
     (send self :rarm-palm-endpoint :translate #f(30 0 0) :local)
+    (send self :larm-palm-endpoint :translate #f(30 0 0) :local)
     )
   (:rarm-palm-endpoint
     (&rest args)
     (send* self :right_gripper_palm_endpoint_lk args))
+  (:larm-palm-endpoint
+    (&rest args)
+    (send* self :left_gripper_palm_endpoint_lk args))
   (:set-ik-prepared-poses
     (poses)
     (if (listp poses)
@@ -76,7 +86,7 @@
     ;; currently works only if move-target is not list
     ;; set endpoint of palm as move-target
     (if move-palm-end
-      (dolist (limb (list :rarm))
+      (dolist (limb (list :rarm :larm))
         (when (eq move-target (send self limb :end-coords))
           (setq move-target (send self limb :palm-endpoint))
           (setq link-list (send self :link-list (send move-target :parent))))))
@@ -84,7 +94,7 @@
     (if (null use-gripper)
       (cond ((equal (send (car (last link-list)) :name) "right_gripper_pad_with_base")
              (setq link-list (butlast link-list 2)))
-            ((equal (send (car (last link-list)) :name) "left_gripper_vacuum_pad_base")
+            ((equal (send (car (last link-list)) :name) "left_gripper_pad_with_base")
              (setq link-list (butlast link-list))))
       nil)
     (send-super* :inverse-kinematics target-coords
