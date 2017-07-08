@@ -15,16 +15,16 @@ class RepublishGripperSensorStates(ConnectionBasedTransport):
     def __init__(self):
         super(RepublishGripperSensorStates, self).__init__()
         self.pub_prox = self.advertise(
-            'gripper_front/limb/right/proximity_array', ProximityArray,
+            'proximity_array', ProximityArray,
             queue_size=1)
         self.pub_pressure = self.advertise(
-            'gripper_front/limb/right/pressure/state', Float64,
+            'pressure/state', Float64,
             queue_size=1)
         self.pub_r_finger_flex = self.advertise(
-            'gripper_front/limb/right/flex/right/state', UInt16,
+            'flex/right/state', UInt16,
             queue_size=1)
         self.pub_l_finger_flex = self.advertise(
-            'gripper_front/limb/right/flex/left/state', UInt16,
+            'flex/left/state', UInt16,
             queue_size=1)
         # low-pass filtered proximity reading
         self.average_value = []
@@ -36,7 +36,7 @@ class RepublishGripperSensorStates(ConnectionBasedTransport):
         self.ea = 0.3
 
     def subscribe(self):
-        self.sub = rospy.Subscriber('rgripper_sensors', GripperSensorStates,
+        self.sub = rospy.Subscriber('~input', GripperSensorStates,
                                     self._cb)
 
     def unsubscribe(self):

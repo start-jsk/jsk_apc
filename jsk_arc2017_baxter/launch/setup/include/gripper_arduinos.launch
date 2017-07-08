@@ -23,6 +23,15 @@
   </node>
 
   <!-- Republish gripper sensor states -->
-  <node name="rgripper_sensors_republisher" pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py" />
+  <group ns="gripper_front/limb/right">
+    <node name="gripper_sensors_republisher" pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py">
+      <remap from="~input" to="/rgripper_sensors" />
+    </node>
+  </group>
+  <group ns="gripper_front/limb/left">
+    <node name="gripper_sensors_republisher" pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py">
+      <remap from="~input" to="/lgripper_sensors" />
+    </node>
+  </group>
 
 </launch>

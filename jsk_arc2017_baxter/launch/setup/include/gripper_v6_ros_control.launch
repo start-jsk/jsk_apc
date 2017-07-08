@@ -1,4 +1,7 @@
 <launch>
+
+  <arg name="launch_right" default="true" />
+  <arg name="launch_left" default="true" />
   <arg name="gripper_only" default="false"/>
   <arg name="gazebo" default="false" />
 
@@ -7,7 +10,8 @@
          command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxter.xacro"
          if="$(arg gripper_only)"/>
 
-  <group ns="gripper_front/limb/right">
+  <!-- right gripper -->
+  <group ns="gripper_front/limb/right" if="$(arg launch_right)">
     <!-- Start the ros_control node -->
     <node name="ros_control_node" pkg="jsk_arc2017_baxter" type="gripper_v6_ros_control_node" output="screen">
       <rosparam file="$(find jsk_arc2017_baxter)/config/right_gripper_v6/ros_control.yaml" command="load"/>
@@ -28,4 +32,28 @@
                 hand" />
 
   </group>
+
+  <!-- left gripper -->
+  <group ns="gripper_front/limb/left" if="$(arg launch_left)">
+    <!-- Start the ros_control node -->
+    <node name="ros_control_node" pkg="jsk_arc2017_baxter" type="gripper_v6_ros_control_node" output="screen">
+      <rosparam file="$(find jsk_arc2017_baxter)/config/left_gripper_v6/ros_control.yaml" command="load"/>
+      <remap from="joint_states" to="/robot/joint_states"/>
+      <remap from="vacuum" to="/vacuum_gripper/limb/left"/>
+    </node>
+
+    <!-- Start the joint state controller -->
+    <rosparam file="$(find jsk_arc2017_baxter)/config/left_gripper_v6/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller">
+    </node>
+
+    <!-- Start the joint trajectory controller -->
+    <rosparam file="$(find jsk_arc2017_baxter)/config/left_gripper_v6/joint_trajectory_controller.yaml" command="load" unless="$(arg gazebo)" />
+    <node name="joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" unless="$(arg gazebo)"
+          args="vacuum_gripper
+                hand" />
+
+  </group>
+
 </launch>
