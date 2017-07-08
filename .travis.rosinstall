@@ -16,9 +16,3 @@
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
     version: 4320a60bc06e324c98bc92ed9a9f90491e4d5e5e
-
-# waiting for release of https://github.com/jsk-ros-pkg/jsk_visualization/pull/670
-- git:
-    local-name: jsk-ros-pkg/jsk_visualization
-    uri: https://github.com/jsk-ros-pkg/jsk_visualization.git
-    version: f42cd325f3c97be9ff4f4062564aa7256c541336
