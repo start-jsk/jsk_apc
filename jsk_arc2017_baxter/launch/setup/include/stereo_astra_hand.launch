@@ -61,9 +61,9 @@
             pkg="tf" type="static_transform_publisher"
             args="$(arg left_hand_stereo_left_transform) left_hand left_hand_camera_left_depth_optical_frame 20" />
       <group ns="left/depth_registered">
-        <node name="image_rect_raw_view"
+        <node name="image_rect_view"
               pkg="image_view" type="image_view">
-          <remap from="image" to="sw_registered/image_rect_raw" />
+          <remap from="image" to="sw_registered/image_rect" />
           <remap from="~output" to="~" />
           <rosparam>
             gui: false
@@ -219,7 +219,7 @@
             input_topics:
             # - /left_hand_camera/right_registered/depth_registered/image_rect
             - /left_hand_camera/stereo/depth_registered/image_rect
-            - /left_hand_camera/left/depth_registered/sw_registered/image_rect_raw
+            - /left_hand_camera/left/depth_registered/sw_registered/image_rect
           </rosparam>
         </node>
         <group ns="depth_registered">
@@ -277,9 +277,9 @@
             pkg="tf" type="static_transform_publisher"
             args="$(arg right_hand_stereo_left_transform) right_hand right_hand_camera_left_depth_optical_frame 20" />
       <group ns="left/depth_registered">
-        <node name="image_rect_raw_view"
+        <node name="image_rect_view"
               pkg="image_view" type="image_view">
-          <remap from="image" to="sw_registered/image_rect_raw" />
+          <remap from="image" to="sw_registered/image_rect" />
           <remap from="~output" to="~" />
           <rosparam>
             gui: false
@@ -433,7 +433,7 @@
             input_topics:
             # - /right_hand_camera/right_registered/depth_registered/image_rect
             - /right_hand_camera/stereo/depth_registered/image_rect
-            - /right_hand_camera/left/depth_registered/sw_registered/image_rect_raw
+            - /right_hand_camera/left/depth_registered/sw_registered/image_rect
           </rosparam>
         </node>
         <group ns="depth_registered">
