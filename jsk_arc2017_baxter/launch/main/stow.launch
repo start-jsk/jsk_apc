@@ -3,6 +3,7 @@
   <arg name="json_dir" />
   <arg name="rviz" default="true" />
   <arg name="moveit" default="true" />
+  <arg name="smach_viewer" default="false" />
 
   <!-- set bin_contents rosparam -->
   <node name="set_tote_contents"
@@ -59,8 +60,7 @@
   </group>
 
   <!-- smach viewer -->
-  <!-- FIXME: Segmentation Fault occurs on sheeta -->
-  <!-- <node pkg="smach_viewer" type="smach_viewer.py" name="smach_viewer" /> -->
+  <node pkg="smach_viewer" type="smach_viewer.py" name="smach_viewer" if="$(arg smach_viewer)"/>
 
   <!-- parameter -->
   <param name="/left_hand/target_bin" value="" />
