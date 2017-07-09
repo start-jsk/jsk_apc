@@ -16,7 +16,7 @@
       display_description_only_selected: true
     </rosparam>
   </node>
-  <node name="transformable_markers_client"
+  <node name="transformable_bin_markers"
         pkg="jsk_interactive_marker" type="transformable_markers_client.py">
     <remap from="~server" to="transformable_interactive_server" />
     <rosparam subst_value="true">
@@ -26,7 +26,7 @@
   </node>
 
   <group unless="$(arg pick)">
-    <node name="transformable_markers_client_stow"
+    <node name="transformable_tote_markers"
           pkg="jsk_interactive_marker" type="transformable_markers_client.py">
       <remap from="~server" to="transformable_interactive_server" />
       <rosparam subst_value="true">
@@ -37,7 +37,7 @@
   </group>
 
   <group if="$(arg pick)">
-    <node name="transformable_markers_client_pick"
+    <node name="transformable_cardboard_markers"
           pkg="jsk_interactive_marker" type="transformable_markers_client.py">
       <remap from="~server" to="transformable_interactive_server" />
       <rosparam subst_value="true">
