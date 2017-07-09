@@ -85,8 +85,7 @@
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-cardboard-scene))
       (send *ri* :stop-grasp arm)
-      (if (eq arm :rarm)
-        (send self :move-fingers-pinch->init arm))
+      (send self :move-fingers-pinch->init arm)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
@@ -109,7 +108,7 @@
     (when moveit-p (send self :delete-shelf-scene))
     (when moveit-p (send self :delete-cardboard-scene)))
   (:set-grasp-style (arm)
-    (if (and (eq grasp-style :suction) (eq arm :rarm))
+    (if (eq grasp-style :suction)
       (setq grasp-style :pinch) (setq grasp-style :suction)))
   (:pick-object (arm)
     (when moveit-p (send self :delete-shelf-scene))
@@ -195,7 +194,7 @@
       ;; FIXME: moveit cannot solve path
       ;; moveit path constraints
       ;; (setq end-coords-name
-      ;;       (if (eq arm :larm) "left_gripper_vacuum_pad" "right_gripper_pad_with_base"))
+      ;;       (if (eq arm :larm) "left_gripper_pad_with_base" "right_gripper_pad_with_base"))
       ;; (setq orientation (instance geometry_msgs::Quaternion :init :x 0 :y 0 :z 0 :w 1))
       ;; (setq orientation-constraint
       ;;       (instance moveit_msgs::OrientationConstraint :init
