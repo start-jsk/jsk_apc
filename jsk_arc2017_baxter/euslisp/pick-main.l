@@ -11,8 +11,8 @@
 (defun make-picking-state-machine ()
   (setq *sm*
         (make-state-machine
-          '((:init -> :recognize-bin-boxes)
-            (:recognize-bin-boxes -> :wait-for-user-input)
+          '((:init -> :recognize-bboxes)
+            (:recognize-bboxes -> :wait-for-user-input)
             (:wait-for-user-input -> :wait-for-opposite-arm)
             (:wait-for-user-input !-> :finish)
             (:wait-for-opposite-arm -> :set-target)
@@ -42,10 +42,10 @@
                  (send *ti* :update-state *arm* :init)
                  (ros::ros-info "start ~a picking" (arm2str *arm*))
                  t))
-            (:recognize-bin-boxes
+            (:recognize-bboxes
               '(lambda (userdata)
-                 (send *ti* :update-state *arm* :recognize-bin-boxes)
-                 (send *ti* :recognize-bin-boxes)
+                 (send *ti* :update-state *arm* :recognize-bboxes)
+                 (send *ti* :recognize-bboxes)
                  t))
             (:wait-for-user-input
               '(lambda (userdata)
