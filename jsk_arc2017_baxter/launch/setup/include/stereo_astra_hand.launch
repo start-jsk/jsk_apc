@@ -56,7 +56,7 @@
       </include>
       <node name="left_rgb_static_tf_publisher"
             pkg="tf" type="static_transform_publisher"
-            args="0.025 0 0 0 0 0 left_hand_camera_left_depth_optical_frame left_hand_camera_left_rgb_optical_frame 20" />
+            args="0.04 0.04 0 0 0 0 left_hand_camera_left_depth_optical_frame left_hand_camera_left_rgb_optical_frame 20" />
       <node name="left_depth_static_tf_publisher"
             pkg="tf" type="static_transform_publisher"
             args="$(arg left_hand_stereo_left_transform) left_hand left_hand_camera_left_depth_optical_frame 20" />
@@ -265,7 +265,7 @@
       </include>
       <node name="left_rgb_static_tf_publisher"
             pkg="tf" type="static_transform_publisher"
-            args="0.025 0 0 0 0 0 right_hand_camera_left_depth_optical_frame right_hand_camera_left_rgb_optical_frame 20" />
+            args="0.05 0 0 0 0 0 right_hand_camera_left_depth_optical_frame right_hand_camera_left_rgb_optical_frame 20" />
       <node name="left_depth_static_tf_publisher"
             pkg="tf" type="static_transform_publisher"
             args="$(arg right_hand_stereo_left_transform) right_hand right_hand_camera_left_depth_optical_frame 20" />
