@@ -30,9 +30,10 @@ controller_list:
     joints:
       - right_gripper_vacuum_pad_joint
       - right_gripper_prismatic_joint
-  - name: /gripper_front/limb/left
+  - name: /gripper_front/limb/left/vacuum_gripper
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: true
     joints:
       - left_gripper_vacuum_pad_joint
+      - left_gripper_prismatic_joint

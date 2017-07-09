@@ -37,9 +37,14 @@ joint_limits:
     max_velocity: 4.0
     has_acceleration_limits: true
     max_acceleration: 2.0
+  left_gripper_prismatic_joint:
+    has_velocity_limits: true
+    max_velocity: 0.132
+    has_acceleration_limits: false
+    max_acceleration: 0
   left_gripper_vacuum_pad_joint:
     has_velocity_limits: true
-    max_velocity: 4.5
+    max_velocity: 3.36
     has_acceleration_limits: false
     max_acceleration: 0
   right_e0:
@@ -83,6 +88,6 @@ joint_limits:
     max_acceleration: 0
   right_gripper_vacuum_pad_joint:
     has_velocity_limits: true
-    max_velocity: 4.5
+    max_velocity: 3.36
     has_acceleration_limits: false
     max_acceleration: 0
