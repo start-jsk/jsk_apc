@@ -85,10 +85,14 @@
         <arg name="depth_registration" value="false" />
         <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg l_hand_stereo_devices)_right.yaml" />
         <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg l_hand_r_camera_device_id).yaml" />
+        <arg name="depth_processing" value="false" />
+        <arg name="depth_registered_processing" value="false" />
       </include>
+      <!-- FIXME: IR sensors conflicts.
       <node name="right_rgb_static_tf_publisher"
             pkg="tf" type="static_transform_publisher"
-            args="0.025 0 0 0 0 0 left_hand_camera_right_depth_optical_frame left_hand_camera_right_rgb_optical_frame 20" />
+            args="0.05 0 0 0 0 0 left_hand_camera_right_depth_optical_frame left_hand_camera_right_rgb_optical_frame 20" />
+      -->
       <!-- roll = -atan(self.R[7] / self.R[8]) -->
       <!-- pitch = -atan(-self.R[6] / sqrt(self.R[7]*self.R[7] + self.R[8]*self.R[8])) -->
       <!-- yaw = -atan(self.R[3] / self.R[0]) -->
@@ -144,6 +148,8 @@
       </group>
 
       <!-- stereo rgb-d fusion -->
+      <!-- ns: /left_hand_camera/right -->
+      <!-- FIXME: IR sensors conflicts.
       <group ns="right_registered">
         <node name="relay_rgb_camera_info"
               pkg="nodelet" type="nodelet"
@@ -177,7 +183,8 @@
             </rosparam>
           </node>
         </group>
-      </group>  <!-- ns: right -->
+      </group>
+      -->
       <group ns="fused" if="$(arg fuse)">
         <node name="relay_rgb_camera_info"
               pkg="nodelet" type="nodelet"
@@ -195,7 +202,7 @@
             averaging: false
             queue_size: 50
             input_topics:
-            - /left_hand_camera/right_registered/rgb/image_rect_color
+            # - /left_hand_camera/right_registered/rgb/image_rect_color
             - /left_hand_camera/stereo/rgb/image_rect_color
             - /left_hand_camera/left/rgb/image_rect_color
           </rosparam>
@@ -210,7 +217,7 @@
             averaging: true
             queue_size: 50
             input_topics:
-            - /left_hand_camera/right_registered/depth_registered/image_rect
+            # - /left_hand_camera/right_registered/depth_registered/image_rect
             - /left_hand_camera/stereo/depth_registered/image_rect
             - /left_hand_camera/left/depth_registered/sw_registered/image_rect_raw
           </rosparam>
@@ -294,10 +301,14 @@
         <arg name="depth_registration" value="false" />
         <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg r_hand_stereo_devices)_right.yaml" />
         <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg r_hand_r_camera_device_id).yaml" />
+        <arg name="depth_processing" value="false" />
+        <arg name="depth_registered_processing" value="false" />
       </include>
+      <!-- FIXME: IR sensors conflicts.
       <node name="right_rgb_static_tf_publisher"
             pkg="tf" type="static_transform_publisher"
-            args="0.025 0 0 0 0 0 right_hand_camera_right_depth_optical_frame right_hand_camera_right_rgb_optical_frame 20" />
+            args="-0.04 0.040 0.03 0 0 0 right_hand_camera_right_depth_optical_frame right_hand_camera_right_rgb_optical_frame 20" />
+      -->
       <!-- 0.08486 = -1 * P[3] / P[0] -->
       <node name="right_depth_static_tf_publisher"
             pkg="tf" type="static_transform_publisher"
@@ -351,6 +362,8 @@
       </group>
 
       <!-- stereo rgb-d fusion -->
+      <!-- ns: /right_hand_camera/right -->
+      <!-- FIXME: IR sensors conflicts.
       <group ns="right_registered">
         <node name="relay_rgb_camera_info"
               pkg="nodelet" type="nodelet"
@@ -384,7 +397,8 @@
             </rosparam>
           </node>
         </group>
-      </group>  <!-- ns: right -->
+      </group>
+      -->
       <group ns="fused" if="$(arg fuse)">
         <node name="relay_rgb_camera_info"
               pkg="nodelet" type="nodelet"
@@ -402,7 +416,7 @@
             averaging: false
             queue_size: 50
             input_topics:
-            - /right_hand_camera/right_registered/rgb/image_rect_color
+            # - /right_hand_camera/right_registered/rgb/image_rect_color
             - /right_hand_camera/stereo/rgb/image_rect_color
             - /right_hand_camera/left/rgb/image_rect_color
           </rosparam>
@@ -417,7 +431,7 @@
             averaging: true
             queue_size: 50
             input_topics:
-            - /right_hand_camera/right_registered/depth_registered/image_rect
+            # - /right_hand_camera/right_registered/depth_registered/image_rect
             - /right_hand_camera/stereo/depth_registered/image_rect
             - /right_hand_camera/left/depth_registered/sw_registered/image_rect_raw
           </rosparam>
