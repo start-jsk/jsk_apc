@@ -32,7 +32,7 @@
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg LEFT_MANAGER)">
-      <remap from="~input" to="/transformable_markers_client_stow/output/boxes" />
+      <remap from="~input" to="/transformable_tote_markers/output/boxes" />
       <rosparam>
         index: 0
       </rosparam>
@@ -94,7 +94,7 @@
     <node name="bbox_array_to_bbox"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg RIGHT_MANAGER)">
-      <remap from="~input" to="/transformable_markers_client_stow/output/boxes" />
+      <remap from="~input" to="/transformable_tote_markers/output/boxes" />
       <rosparam>
         index: 1
       </rosparam>
