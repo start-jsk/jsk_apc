@@ -50,7 +50,7 @@
         <arg name="depth_frame_id" value="left_hand_camera_left_depth_optical_frame" />
         <arg name="device_id" value="$(arg l_hand_l_camera_device_id)" />
         <arg name="publish_tf" value="false" />
-        <arg name="depth_registration" value="true" />
+        <arg name="depth_registration" value="false" />
         <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg l_hand_stereo_devices)_left.yaml" />
         <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg l_hand_l_camera_device_id).yaml" />
       </include>
@@ -63,7 +63,7 @@
       <group ns="left/depth_registered">
         <node name="image_rect_raw_view"
               pkg="image_view" type="image_view">
-          <remap from="image" to="hw_registered/image_rect_raw" />
+          <remap from="image" to="sw_registered/image_rect_raw" />
           <remap from="~output" to="~" />
           <rosparam>
             gui: false
@@ -82,7 +82,7 @@
         <arg name="depth_frame_id" value="left_hand_camera_right_depth_optical_frame" />
         <arg name="device_id" value="$(arg l_hand_r_camera_device_id)" />
         <arg name="publish_tf" value="false" />
-        <arg name="depth_registration" value="true" />
+        <arg name="depth_registration" value="false" />
         <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg l_hand_stereo_devices)_right.yaml" />
         <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg l_hand_r_camera_device_id).yaml" />
       </include>
@@ -212,7 +212,7 @@
             input_topics:
             - /left_hand_camera/right_registered/depth_registered/image_rect
             - /left_hand_camera/stereo/depth_registered/image_rect
-            - /left_hand_camera/left/depth_registered/hw_registered/image_rect_raw
+            - /left_hand_camera/left/depth_registered/sw_registered/image_rect_raw
           </rosparam>
         </node>
         <group ns="depth_registered">
@@ -259,7 +259,7 @@
         <arg name="depth_frame_id" value="right_hand_camera_left_depth_optical_frame" />
         <arg name="device_id" value="$(arg r_hand_l_camera_device_id)" />
         <arg name="publish_tf" value="false" />
-        <arg name="depth_registration" value="true" />
+        <arg name="depth_registration" value="false" />
         <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg r_hand_stereo_devices)_left.yaml" />
         <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg r_hand_l_camera_device_id).yaml" />
       </include>
@@ -272,7 +272,7 @@
       <group ns="left/depth_registered">
         <node name="image_rect_raw_view"
               pkg="image_view" type="image_view">
-          <remap from="image" to="hw_registered/image_rect_raw" />
+          <remap from="image" to="sw_registered/image_rect_raw" />
           <remap from="~output" to="~" />
           <rosparam>
             gui: false
@@ -291,7 +291,7 @@
         <arg name="depth_frame_id" value="right_hand_camera_right_depth_optical_frame" />
         <arg name="device_id" value="$(arg r_hand_r_camera_device_id)" />
         <arg name="publish_tf" value="false" />
-        <arg name="depth_registration" value="true" />
+        <arg name="depth_registration" value="false" />
         <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg r_hand_stereo_devices)_right.yaml" />
         <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg r_hand_r_camera_device_id).yaml" />
       </include>
@@ -419,7 +419,7 @@
             input_topics:
             - /right_hand_camera/right_registered/depth_registered/image_rect
             - /right_hand_camera/stereo/depth_registered/image_rect
-            - /right_hand_camera/left/depth_registered/hw_registered/image_rect_raw
+            - /right_hand_camera/left/depth_registered/sw_registered/image_rect_raw
           </rosparam>
         </node>
         <group ns="depth_registered">
