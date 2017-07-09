@@ -554,16 +554,19 @@
             :use-gripper use-gripper
             :move-palm-end move-palm-end)))
   (:ik->cardboard-center
-    (arm cardboard &key (offset #f(0 0 0))
+    (arm cardboard &key (offset #f(0 0 0)) (rpy #f(0 0 0))
          (rotation-axis t) (use-gripper nil) (move-palm-end nil))
-    (let (cardboard-coords)
-      (setq cardboard-coords
-            (make-coords
-              :pos (v+ offset
-                       (cond ((eq cardboard :a) (float-vector 1200 100 550))
-                             ((eq cardboard :b) (float-vector 1200 -200 550))
-                             (t (float-vector 1200 0 165))))
-              :rpy (float-vector 0 (/ -pi/2 2) 0)))
+    (let (cardboard-cube cardboard-coords)
+      (setq cardboard-cube (gethash cardboard cardboard-cubes-))
+      (setq cardboard-coords (send cardboard-cube :copy-worldcoords))
+      (send cardboard-coords :translate
+            (float-vector 0.0 0.0 (/ (z-of-cube cardboard-cube) 2.0))
+            :local)
+      (send cardboard-coords :translate offset :world)
+      (send cardboard-coords :rotate (aref rpy 0) :z)
+      (send cardboard-coords :rotate (aref rpy 1) :y)
+      (send cardboard-coords :rotate (aref rpy 2) :x)
+
       (send *baxter* arm :inverse-kinematics cardboard-coords
             :rotation-axis nil :use-gripper nil)
       (send *baxter* arm :inverse-kinematics cardboard-coords
