@@ -411,7 +411,7 @@
       (return-from :wait-interpolation-until (send self :wait-interpolation)))
     (unless (or (eq arm :rarm) (eq arm :larm))
       (error ":wait-interpolation-until set arm for first arg~%"))
-    (let (conds r-init-flex l-init-flex init-load)
+    (let (conds r-init-flex l-init-flex init-load r-flex l-flex finger-load prismatic-load)
       (setq r-init-flex (send self :get-finger-flex arm :right))
       (setq l-init-flex (send self :get-finger-flex arm :left))
       (setq init-load (send self :get-finger-load arm))
@@ -420,34 +420,75 @@
       (ros::ros-info "[:wait-interpolation-until] Init load: ~a" init-load)
       (when (member :grasp args)
         (ros::ros-info "[:wait-interpolation-until] Prepare for grasp")
-        (pushback #'(lambda () (send self :graspingp arm)) conds))
+        (pushback
+          #'(lambda ()
+              (if (send self :graspingp arm)
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected grasping")
+                  t)
+                nil))
+          conds))
       (when (member :finger-flexion args)
         (ros::ros-info "[:wait-interpolation-until] Prepare for finger flexion")
         (pushback
-          #'(lambda () (or (> (send self :get-finger-flex arm :right) (+ r-init-flex 20))
-                           (> (send self :get-finger-flex arm :left) (+ l-init-flex 20))))
+          #'(lambda ()
+              (setq r-flex (send self :get-finger-flex arm :right))
+              (setq l-flex (send self :get-finger-flex arm :left))
+              (if (or (> r-flex (+ r-init-flex 20)) (> l-flex (+ l-init-flex 20)))
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected finger flexion: r: ~a l: ~a"
+                                 r-flex l-flex)
+                  t)
+                nil))
           conds))
       (when (member :finger-extension args)
         (ros::ros-info "[:wait-interpolation-until] Prepare for finger extension")
         (pushback
-          #'(lambda () (or (< (send self :get-finger-flex arm :right) (- r-init-flex 30))
-                           (< (send self :get-finger-flex arm :left) (- l-init-flex 30))))
+          #'(lambda ()
+              (setq r-flex (send self :get-finger-flex arm :right))
+              (setq l-flex (send self :get-finger-flex arm :left))
+              (if (or (< r-flex (- r-init-flex 30)) (< l-flex (- l-init-flex 30)))
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected finger extension r: ~a l: ~a"
+                                 r-flex l-flex)
+                  t)
+                nil))
           conds))
       (when (member :finger-loaded args)
         (ros::ros-info "[:wait-interpolation-until] Prepare for finger loaded")
         (pushback
-          #'(lambda () (> (send self :get-finger-load arm) (+ init-load 0.01)))
+          #'(lambda ()
+              (setq finger-load (send self :get-finger-load arm))
+              (if (> finger-load (+ init-load 0.01))
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected finger loaded load: ~a"
+                                 finger-load)
+                  t)
+                nil))
           conds))
       (when (member :finger-unloaded args)
         (ros::ros-info "[:wait-interpolation-until] Prepare for finger unloaded")
         (pushback
-          #'(lambda () (< (send self :get-finger-load arm) (- init-load 0.01)))
+          #'(lambda ()
+              (setq finger-load (send self :get-finger-load arm))
+              (if (< finger-load (- init-load 0.01))
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected finger unloaded load: ~a"
+                                 finger-load)
+                  t)
+                nil))
           conds))
       (when (member :prismatic-loaded args)
         (ros::ros-info "[:wait-interpolation-until] Prepare for prismatic joint loaded")
         (pushback
-          #'(lambda () (and (< (send self :get-prismatic-load arm) -0.07)
-                            (< (send self :get-prismatic-vel arm) 0.01)))
+          #'(lambda ()
+              (setq prismatic-load (send self :get-prismatic-load arm))
+              (if (and (< prismatic-load -0.07) (< (send self :get-prismatic-vel arm) 0.01))
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected prismatic loaded load: ~a"
+                                 prismatic-load)
+                  t)
+                nil))
           conds))
       ;; wait for :interpolatingp
       (dotimes (x 100)
