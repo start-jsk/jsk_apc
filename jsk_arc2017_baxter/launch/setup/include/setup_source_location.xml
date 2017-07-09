@@ -36,4 +36,15 @@
     </node>
   </group>
 
+  <group if="$(arg pick)">
+    <node name="transformable_markers_client_pick"
+          pkg="jsk_interactive_marker" type="transformable_markers_client.py">
+      <remap from="~server" to="transformable_interactive_server" />
+      <rosparam subst_value="true">
+        config_file: $(find jsk_arc2017_baxter)/config/pick_task/cardboard_marker.yaml
+        config_auto_save: true  <!-- Use true to save config updated on rviz -->
+      </rosparam>
+    </node>
+  </group>
+
 </launch>
