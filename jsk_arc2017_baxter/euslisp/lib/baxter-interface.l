@@ -411,10 +411,14 @@
       (return-from :wait-interpolation-until (send self :wait-interpolation)))
     (unless (or (eq arm :rarm) (eq arm :larm))
       (error ":wait-interpolation-until set arm for first arg~%"))
-    (let (conds r-init-flex l-init-flex init-load r-flex l-flex finger-load prismatic-load)
+    (let (conds r-init-flex l-init-flex init-load r-flex l-flex
+                finger-load prismatic-load flex-thre-offset)
       (setq r-init-flex (send self :get-finger-flex arm :right))
       (setq l-init-flex (send self :get-finger-flex arm :left))
       (setq init-load (send self :get-finger-load arm))
+      (setq flex-thre-offset
+            (if (member :flex-thre-offset args)
+              (cadr (member :flex-thre-offset args)) nil))
       (ros::ros-info
         "[:wait-interpolation-until] Init flex:  r: ~a l: ~a" r-init-flex l-init-flex)
       (ros::ros-info "[:wait-interpolation-until] Init load: ~a" init-load)
@@ -434,7 +438,8 @@
           #'(lambda ()
               (setq r-flex (send self :get-finger-flex arm :right))
               (setq l-flex (send self :get-finger-flex arm :left))
-              (if (or (> r-flex (+ r-init-flex 20)) (> l-flex (+ l-init-flex 20)))
+              (if (or (> r-flex (+ r-init-flex (if flex-thre-offset flex-thre-offset 20)))
+                      (> l-flex (+ l-init-flex (if flex-thre-offset flex-thre-offset 20))))
                 (progn
                   (ros::ros-info "[:wait-interpolation-until] Detected finger flexion: r: ~a l: ~a"
                                  r-flex l-flex)
@@ -447,7 +452,8 @@
           #'(lambda ()
               (setq r-flex (send self :get-finger-flex arm :right))
               (setq l-flex (send self :get-finger-flex arm :left))
-              (if (or (< r-flex (- r-init-flex 30)) (< l-flex (- l-init-flex 30)))
+              (if (or (< r-flex (- r-init-flex (if flex-thre-offset flex-thre-offset 30)))
+                      (< l-flex (- l-init-flex (if flex-thre-offset flex-thre-offset 30))))
                 (progn
                   (ros::ros-info "[:wait-interpolation-until] Detected finger extension r: ~a l: ~a"
                                  r-flex l-flex)
