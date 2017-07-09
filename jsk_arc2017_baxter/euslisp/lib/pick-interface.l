@@ -206,10 +206,18 @@
               4000 (send *ri* :get-arm-controller arm) 0
               :path-constraints path-constraints)
         ;; TODO Add path constraints to pinching
-        (send *ri* :angle-vector
-              (send self :ik->cardboard-center arm target-cardboard
-                    :offset #f(0 0 350) :rotation-axis nil :move-palm-end t)
-              4000 (send *ri* :get-arm-controller arm :gripper nil) 0))
+        (let (avs)
+          (setq avs nil)
+          (if (not (eq target-cardboard :c))
+            (pushback
+              (send self :ik->bin-center arm :b :offset #f(0 0 500)
+                    :rotation-axis nil :move-palm-end t) avs))
+          (pushback
+            (send self :ik->cardboard-center arm target-cardboard
+                  :offset #f(0 0 200) :rotation-axis nil :move-palm-end t)
+            avs)
+          (send *ri* :angle-vector-sequence-raw avs 4000
+                (send *ri* :get-arm-controller arm :gripper nil) 0)))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm)))
       (if dropped
@@ -226,7 +234,7 @@
           (send *ri* :angle-vector-raw
                 (if (eq grasp-style :suction)
                   (send *baxter* arm :move-end-pos #f(0 0 -200) :world)
-                  (send *baxter* arm :move-end-pos #f(0 0 -350) :world :rotation-axis nil))
+                  (send *baxter* arm :move-end-pos #f(0 0 -200) :world :rotation-axis nil))
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm) ;; release object
