@@ -543,9 +543,9 @@
       (setq bin-cube (gethash bin bin-cubes-))
       (setq bin-coords (send bin-cube :copy-worldcoords))
       (send bin-coords :translate
-            (v+ (float-vector
-                  0.0 0.0 (/ (z-of-cube bin-cube) 2.0))
-                offset) :local)
+            (float-vector 0.0 0.0 (/ (z-of-cube bin-cube) 2.0))
+            :local)
+      (send bin-coords :translate offset :world)
       (send bin-coords :rotate (aref rpy 0) :z)
       (send bin-coords :rotate (aref rpy 1) :y)
       (send bin-coords :rotate (aref rpy 2) :x)
@@ -580,9 +580,9 @@
       (setq tote-cube (gethash arm tote-cubes-))
       (setq tote-coords (send tote-cube :copy-worldcoords))
       (send tote-coords :translate
-            (v+ (float-vector
-                  0.0 0.0 (/ (z-of-cube tote-cube) 2.0))
-                offset) :local)
+            (float-vector 0.0 0.0 (/ (z-of-cube tote-cube) 2.0))
+            :local)
+      (send tote-coords :translate offset :world)
       (send tote-coords :rotate (aref rpy 0) :z)
       (send tote-coords :rotate (aref rpy 1) :y)
       (send tote-coords :rotate (aref rpy 2) :x)
