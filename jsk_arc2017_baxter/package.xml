@@ -46,6 +46,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>rosserial_python</run_depend>
   <run_depend>xacro</run_depend>
+  <run_depend>smach_viewer</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>baxter_core_msgs</run_depend>
   <run_depend>hardware_interface</run_depend>
