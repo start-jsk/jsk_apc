@@ -30,16 +30,6 @@
     (setq object-boxes- (make-hash-table))
     (setq object-coords- (make-hash-table))
     (setq cardboard-cubes- (make-hash-table))
-    (setq upper-cardboard-cube (make-cube 400 800 200))
-    (send upper-cardboard-cube :newcoords
-          (make-coords :pos (float-vector 1200 0 550)
-                       :rpy (float-vector 0 (/ -pi/2 2) 0)))
-    (setq lower-cardboard-cube (make-cube 400 800 200))
-    (send lower-cardboard-cube :newcoords
-          (make-coords :pos (float-vector 1200 0 165)
-                       :rpy (float-vector 0 (/ -pi/2 2) 0)))
-    (sethash :upper cardboard-cubes- upper-cardboard-cube)
-    (sethash :lower cardboard-cubes- lower-cardboard-cube)
     (setq tote-cubes- (make-hash-table))
     (setq tote-movable-regions- (make-hash-table)))
   (:fold-pose-back
@@ -127,6 +117,23 @@
             (sethash bin bin-cubes- (send self :bbox->cube (car box-list)))
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
+  (:recognize-cardboard-boxes
+    (&key (stamp (ros::time-now)))
+    (let ((box-topic (format nil "transformable_markers_client_pick/output/boxes"))
+          box-msg cardboard-list)
+      (setq box-msg (one-shot-subscribe box-topic
+                                        jsk_recognition_msgs::BoundingBoxArray
+                                        :timeout 10000
+                                        :after-stamp stamp))
+      (if box-msg
+        (progn
+          (ros::ros-info "[~a] [:recognize-cardboard-boxes] recognize cardboard boxes" (ros::get-name))
+          (setq box-list (send box-msg :boxes))
+          (setq cardboard-list (list :a :b :c))
+          (dolist (cardboard cardboard-list)
+            (sethash cardboard cardboard-cubes- (send self :bbox->cube (car box-list)))
+            (setq box-list (cdr box-list))))
+        (ros::ros-fatal "[:recognize-cardboard-boxes] cannot recognize cardboard boxes"))))
   (:recognize-tote-boxes
     (&key (stamp (ros::time-now)))
     (let ((box-topic (format nil "transformable_markers_client_stow/output/boxes"))
@@ -155,7 +162,7 @@
       (cond
         ((eq box-type :bin) (setq box-cubes bin-cubes- box-color :blue))
         ((eq box-type :tote) (setq box-cubes tote-cubes- box-color :red))
-        ((eq box-type :cardboard) (ros::ros-error "Not implemented box-type: :cardboard"))
+        ((eq box-type :cardboard) (setq box-cubes cardboard-cubes- box-color :yellow))
         (t (ros::ros-error "Unsupported box-type ~a" box-type))
         )
       (dolist (box-inside (send box-cubes :list-values))
