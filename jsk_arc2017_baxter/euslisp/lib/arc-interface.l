@@ -669,7 +669,7 @@
         (setq cardboard-cube (gethash key cardboard-cubes-))
         (send *co* :add-object cardboard-cube :frame-id base-name
               :relative-pose (send cardboard-cube :copy-worldcoords)
-              :object-id (format nil "~a_cardboard" (symbol2str key))))))
+              :object-id (format nil "cardboard_~A" (symbol-string key))))))
   (:delete-cardboard-scene ()
     (let (cardboard-cube)
       (dolist (key (list :upper :lower))
