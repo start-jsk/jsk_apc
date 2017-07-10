@@ -4,6 +4,7 @@ project(jsk_arc2017_common)
 find_package(catkin REQUIRED
     dynamic_reconfigure
     message_generation
+    std_msgs
 )
 
 catkin_python_setup()
@@ -14,6 +15,8 @@ catkin_python_setup()
 
 add_message_files(
     FILES
+    Weight.msg
+    WeightStamped.msg
     WorkOrder.msg
     WorkOrderArray.msg
     ObjectCandidates.msg
@@ -30,6 +33,7 @@ generate_dynamic_reconfigure_options(
 
 generate_messages(
     DEPENDENCIES
+    std_msgs
 )
 
 ################################################
