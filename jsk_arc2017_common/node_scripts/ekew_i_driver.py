@@ -2,8 +2,8 @@
 
 import serial
 
+from jsk_arc2017_common.msg import WeightStamped
 import rospy
-from std_msgs.msg import Float32
 
 
 class EkEwIDriver(object):
@@ -20,7 +20,7 @@ class EkEwIDriver(object):
         # EK-i/EW-i series default settings
         self.ser = serial.Serial(
             port, baudrate=2400, bytesize=7, parity=serial.PARITY_EVEN)
-        self.pub = rospy.Publisher('~output', Float32, queue_size=1)
+        self.pub = rospy.Publisher('~output', WeightStamped, queue_size=1)
         rate = rospy.get_param('~rate', 10)
         self.read_timer = rospy.Timer(rospy.Duration(1. / rate),
                                       self._read_timer_cb)
@@ -40,7 +40,9 @@ class EkEwIDriver(object):
             if unit != '  g':
                 rospy.logerr('Unsupported unit: %s', unit)
                 return
-            msg = Float32(data=weight)
+            msg = WeightStamped()
+            msg.header.stamp = rospy.Time.now()
+            msg.weight.value = weight
             self.pub.publish(msg)
         elif header == 'QT':
             # number mode
