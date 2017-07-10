@@ -1,0 +1,31 @@
+<launch>
+
+  <arg name="left" default="true" />
+  <arg name="left_or_right" value="left" if="$(arg left)" />
+  <arg name="left_or_right" value="right" unless="$(arg left)" />
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch" />
+
+  <group ns="$(arg left_or_right)_hand_camera">
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/checkerboard_detector.xml">
+      <arg name="INPUT_IMAGE" value="/$(arg left_or_right)_hand_camera/left/rgb/image_rect_color" />
+      <arg name="INPUT_CAMERA_INFO" value="/$(arg left_or_right)_hand_camera/left/rgb/camera_info" />
+    </include>
+
+    <node name="test_hand_eye_coordination"
+          pkg="jsk_arc2017_baxter" type="test_hand_eye_coordination.py"
+          output="screen">
+      <remap from="~input/checkerboard_pose" to="checkerdetector/objectdetection_pose" />
+      <rosparam subst_value="true">
+        out_file: $(optenv HOME)/.ros/jsk_arc2017_baxter/test_hand_eye_coordination/$(arg left_or_right).csv
+      </rosparam>
+    </node>
+  </group>
+
+  <node name="joint_trajectory_file_playback"
+        pkg="baxter_examples" type="joint_trajectory_file_playback.py"
+        args="--file $(find jsk_arc2017_baxter)/data/joint_records/look_around_checkerboard/$(arg left_or_right).txt"
+        required="true">
+  </node>
+
+</launch>
