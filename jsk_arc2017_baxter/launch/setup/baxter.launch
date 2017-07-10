@@ -1,5 +1,6 @@
 <launch>
 
+  <arg name="debug" default="false" />
   <arg name="moveit" default="true" />
   <arg name="pick" default="true" doc="pick_task: true, stow_task: false" />
   <arg name="gripper_v4_limb" default="['left']" />
@@ -70,6 +71,9 @@
         pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
         args="/desktop_bg_publisher/output" />
 
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter_moveit.launch" if="$(arg moveit)" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter_moveit.launch" if="$(arg moveit)">
+    <arg name="load_robot_description" value="false" />
+    <arg name="debug" value="$(arg debug)" />
+  </include>
 
 </launch>
