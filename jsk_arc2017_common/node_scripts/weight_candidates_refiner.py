@@ -10,10 +10,10 @@ from std_srvs.srv import Trigger
 from std_srvs.srv import TriggerResponse
 
 
-class EstimateObjectByScale(ConnectionBasedTransport):
+class WeightCanditatesRefiner(ConnectionBasedTransport):
 
     def __init__(self):
-        super(EstimateObjectByScale, self).__init__()
+        super(WeightCanditatesRefiner, self).__init__()
         self.scale_inputs = rospy.get_param('~scale_inputs')
         self.object_weights = rospy.get_param('~object_weights')
         self.error = rospy.get_param('~error', 1.0)
@@ -106,6 +106,6 @@ class EstimateObjectByScale(ConnectionBasedTransport):
         return TriggerResponse(success=is_success)
 
 if __name__ == '__main__':
-    rospy.init_node('estimate_object_by_scale')
-    eobs = EstimateObjectByScale()
+    rospy.init_node('weight_candidates_refiner')
+    app = WeightCanditatesRefiner()
     rospy.spin()
