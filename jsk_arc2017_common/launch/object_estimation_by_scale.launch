@@ -1,4 +1,6 @@
 <launch>
+  <arg name="INPUT_CANDIDATES" doc="object candidates msg [jsk_recognition_msgs/LabelArray]" />
+
   <node name="scale0" pkg="jsk_arc2017_common" type="ekew_i_driver.py">
     <rosparam>port: /dev/scale0</rosparam>
   </node>
@@ -13,9 +15,17 @@
   </node>
 
   <node name="estimate_object_by_scale" pkg="jsk_arc2017_common" type="estimate_object_by_scale.py">
+    <remap from="~input/candidates" to="$(arg INPUT_CANDIDATES)" />
+    <remap from="~label_names" to="label_names" />
     <rosparam ns="object_weights" file="$(find jsk_arc2017_common)/data/objects/weight.yaml" />
     <rosparam>
-      scale_inputs: [/scale0/output, /scale1/output, /scale2/output, /scale3/output]
+      approximate_sync: true
+      queue_size: 10
+      scale_inputs:
+        - /scale0/output
+        - /scale1/output
+        - /scale2/output
+        - /scale3/output
       error: 5.0
     </rosparam>
   </node>

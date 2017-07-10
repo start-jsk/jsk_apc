@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-from jsk_arc2017_common.msg import ObjectCandidates
+from jsk_arc2017_common.msg import WeightStamped
+from jsk_recognition_msgs.msg import Label
+from jsk_recognition_msgs.msg import LabelArray
 from jsk_topic_tools import ConnectionBasedTransport
+import message_filters
 import rospy
-from std_msgs.msg import Float32
-from std_srvs.srv import Empty
-from std_srvs.srv import EmptyResponse
-import threading
+from std_srvs.srv import Trigger
+from std_srvs.srv import TriggerResponse
 
 
 class EstimateObjectByScale(ConnectionBasedTransport):
@@ -16,51 +17,93 @@ class EstimateObjectByScale(ConnectionBasedTransport):
         self.scale_inputs = rospy.get_param('~scale_inputs')
         self.object_weights = rospy.get_param('~object_weights')
         self.error = rospy.get_param('~error', 1.0)
+
         self.scale_values = [0.0] * len(self.scale_inputs)
         self.init_sum = 0.0
         self.weight_sum_pub = self.advertise(
-            '~weight_sum', Float32, queue_size=1)
+            '~output/weight_sum', WeightStamped, queue_size=1)
         self.picked_pub = self.advertise(
-            '~picked_object_candidates', ObjectCandidates, queue_size=1)
-        self.stowed_pub = self.advertise(
-            '~stowed_object_candidates', ObjectCandidates, queue_size=1)
+            '~output/candidates/picked', LabelArray, queue_size=1)
+        self.placed_pub = self.advertise(
+            '~output/candidates/placed', LabelArray, queue_size=1)
         self.init_srv = rospy.Service(
-            '~initialize', Empty, self._initialize)
-        self.lock = threading.Lock()
+            '~initialize', Trigger, self._initialize)
 
     def subscribe(self):
-        self.scale_subs = []
-        for i, scale_input in enumerate(self.scale_inputs):
-            self.scale_subs.append(
-                rospy.Subscriber(
-                    scale_input, Float32, self._scale_cb, callback_args=i))
+        use_async = rospy.get_param('~approximate_sync', False)
+        queue_size = rospy.get_param('~queue_size', 10)
+        # add candidates subscriber
+        self.sub_candidates = rospy.Subscriber(
+            '~input/candidates', LabelArray, self._candidates_cb)
+        # add scale subscriber
+        self.subs = []
+        for scale_input in self.scale_inputs:
+            sub = message_filters.Subscriber(scale_input, WeightStamped)
+            self.subs.append(sub)
+        if use_async:
+            slop = rospy.get_param('~slop', 0.1)
+            sync = message_filters.ApproximateTimeSynchronizer(
+                self.subs, queue_size=queue_size, slop=slop)
+        else:
+            sync = message_filters.TimeSynchronizer(
+                self.subs, queue_size=queue_size)
+        sync.registerCallback(self._scale_cb)
 
     def unsubscribe(self):
-        self.scale_subs.unregister()
+        self.sub_candidates.unregister()
+        for sub in self.subs:
+            sub.unregister()
 
-    def _scale_cb(self, value, index):
-        self.lock.acquire()
-        self.scale_values[index] = value.data
+    def _candidates_cb(self, labels_msg):
+        candidates = {}
+        for label_msg in labels_msg.labels:
+            candidates[label_msg.name] = label_msg.id
+
         weight_sum = sum(self.scale_values)
         weight_diff = weight_sum - self.init_sum
-        picked_object = ObjectCandidates()
-        stowed_object = ObjectCandidates()
-        for obj, w in self.object_weights.items():
-            if (weight_diff - self.error) < w < (weight_diff + self.error):
-                stowed_object.candidates.append(obj)
-            if (weight_diff - self.error) < -w < (weight_diff + self.error):
-                picked_object.candidates.append(obj)
+        sum_msg = WeightStamped()
+        sum_msg.header = labels_msg.header
+        sum_msg.weight.value = weight_sum
+        sum_msg = WeightStamped()
+        sum_msg.header = labels_msg.header
+        sum_msg.weight.value = weight_sum
 
-        self.weight_sum_pub.publish(Float32(weight_sum))
-        self.picked_pub.publish(picked_object)
-        self.stowed_pub.publish(stowed_object)
-        self.lock.release()
+        pick_msg = LabelArray()
+        place_msg = LabelArray()
+        pick_msg.header = labels_msg.header
+        place_msg.header = labels_msg.header
+        diff_lower = weight_diff - self.error
+        diff_upper = weight_diff + self.error
+        for obj, w in self.object_weights.items():
+            if obj not in candidates.keys():
+                continue
+            if diff_upper > w and w > diff_lower:
+                label = Label()
+                label.id = candidates[obj]
+                label.name = obj
+                place_msg.labels.append(label)
+            elif diff_upper > -w and -w > diff_lower:
+                label = Label()
+                label.id = candidates[obj]
+                label.name = obj
+                pick_msg.labels.append(label)
+
+        self.weight_sum_pub.publish(sum_msg)
+        self.picked_pub.publish(pick_msg)
+        self.placed_pub.publish(place_msg)
+
+    def _scale_cb(self, *args):
+        assert len(args) == len(self.scale_values)
+        for i, weight_msg in enumerate(args):
+            self.scale_values[i] = weight_msg.weight.value
 
     def _initialize(self, req):
-        self.lock.acquire()
-        self.init_sum = sum(self.scale_values)
-        self.lock.release()
-        return EmptyResponse()
+        is_success = True
+        try:
+            self.init_sum = sum(self.scale_values)
+        except Exception:
+            is_success = False
+        return TriggerResponse(success=is_success)
 
 if __name__ == '__main__':
     rospy.init_node('estimate_object_by_scale')
