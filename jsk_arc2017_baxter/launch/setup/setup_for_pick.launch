@@ -64,6 +64,8 @@
       <arg name="NODELET_MANAGER" value="$(arg LEFT_MANAGER)" />
       <arg name="INPUT_IMAGE" value="$(arg LEFT_INPUT_IMAGE)"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
+      <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
+      <arg name="SELECT_LARGEST" value="false" />
     </include>
   </group>
   <!-- for right hand camera -->
@@ -101,6 +103,8 @@
       <arg name="NODELET_MANAGER" value="$(arg RIGHT_MANAGER)" />
       <arg name="INPUT_IMAGE" value="$(arg RIGHT_INPUT_IMAGE)"/>
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
+      <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
+      <arg name="SELECT_LARGEST" value="false" />
     </include>
   </group>
 
