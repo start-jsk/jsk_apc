@@ -10,6 +10,9 @@
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/astra_hand.launch" />
   </group>
 
+  <!-- weight scale -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/scale.launch" />
+
   <arg name="LEFT_CAMERA_INFO" if="$(arg stereo)" value="/left_hand_camera/fused/rgb/camera_info" />
   <arg name="LEFT_INPUT_CLOUD" if="$(arg stereo)" value="/left_hand_camera/fused/depth_registered/points" />
   <arg name="LEFT_INPUT_IMAGE" if="$(arg stereo)" value="/left_hand_camera/left/rgb/image_rect_color" />
@@ -67,6 +70,23 @@
       <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
       <arg name="SELECT_LARGEST" value="false" />
     </include>
+
+    <!-- weight object classifier -->
+    <node name="weight_candidates_refiner"
+          pkg="jsk_arc2017_common" type="weight_candidates_refiner.py">
+      <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
+      <rosparam ns="object_weights" file="$(find jsk_arc2017_common)/data/objects/weight.yaml" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 10
+        scale_inputs:
+          - /scale0/output
+          - /scale1/output
+          - /scale2/output
+          - /scale3/output
+        error: 5.0
+      </rosparam>
+    </node>
   </group>
   <!-- for right hand camera -->
   <group ns="right_hand_camera">
@@ -106,6 +126,23 @@
       <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
       <arg name="SELECT_LARGEST" value="false" />
     </include>
+
+    <!-- weight object classifier -->
+    <node name="weight_candidates_refiner"
+          pkg="jsk_arc2017_common" type="weight_candidates_refiner.py">
+      <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
+      <rosparam ns="object_weights" file="$(find jsk_arc2017_common)/data/objects/weight.yaml" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 10
+        scale_inputs:
+          - /scale0/output
+          - /scale1/output
+          - /scale2/output
+          - /scale3/output
+        error: 5.0
+      </rosparam>
+    </node>
   </group>
 
 </launch>
