@@ -79,7 +79,7 @@
       <rosparam>
         approximate_sync: true
         queue_size: 10
-        scale_inputs:
+        input_topics:
           - /scale0/output
           - /scale1/output
           - /scale2/output
@@ -135,7 +135,7 @@
       <rosparam>
         approximate_sync: true
         queue_size: 10
-        scale_inputs:
+        input_topics:
           - /scale0/output
           - /scale1/output
           - /scale2/output
