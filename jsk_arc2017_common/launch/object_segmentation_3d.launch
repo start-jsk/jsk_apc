@@ -3,6 +3,7 @@
   <arg name="NODELET_MANAGER" doc="Nodelet manager" />
   <arg name="INPUT_IMAGE" doc="Input rgb image" />
   <arg name="INPUT_CLOUD" doc="Input organized point cloud" />
+  <arg name="INPUT_CANDIDATES" doc="Input object candidates" />
   <arg name="SELECT_LARGEST" default="false" doc="enable selecting largest object"/>
 
   <arg name="FIXED_FRAME" default="base" />
@@ -12,6 +13,7 @@
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
     <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)"/>
     <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)"/>
+    <arg name="INPUT_CANDIDATES" value="$(arg INPUT_CANDIDATES)" />
     <arg name="FIXED_FRAME" value="$(arg FIXED_FRAME)" />
     <arg name="BACKEND" value="chainer" />
     <arg name="GPU" value="$(arg GPU)" />
@@ -19,6 +21,7 @@
     <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv2_cfg003_20170704.npz" />
     <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
     <arg name="USE_PCA" value="true" />
+    <arg name="USE_TOPIC" value="true" />
     <arg name="SELECT_LARGEST" value="$(arg SELECT_LARGEST)" />
     <arg name="IGNORE_LABELS" value="[0, 41]" />
   </include>

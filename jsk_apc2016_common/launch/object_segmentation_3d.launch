@@ -3,6 +3,7 @@
   <arg name="NODELET_MANAGER" />
   <arg name="INPUT_IMAGE" />
   <arg name="INPUT_CLOUD" />
+  <arg name="INPUT_CANDIDATES" />
   <arg name="FIXED_FRAME" />
   <arg name="GPU" default="0" />
   <arg name="BACKEND" default="chainer" />
@@ -11,6 +12,7 @@
   <arg name="LABEL_YAML" default="$(find jsk_apc2016_common)/config/label_names.yaml"/>
   <arg name="SELECT_LARGEST" default="false" />
   <arg name="USE_PCA" default="false" />
+  <arg name="USE_TOPIC" default="false" />
   <arg name="IGNORE_LABELS" default="[]" />
   <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
 
@@ -25,14 +27,25 @@
     </rosparam>
     <remap from="~target_names" to="label_names" />
   </node>
-  <node name="apply_context_to_label_proba"
-        pkg="jsk_perception" type="apply_context_to_label_probability">
-    <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
-    <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
-    <rosparam>
-      use_topic: true
-    </rosparam>
-  </node>
+  <group if="$(arg USE_TOPIC)">
+    <node name="apply_context_to_label_proba"
+          pkg="jsk_perception" type="apply_context_to_label_probability">
+      <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
+      <remap from="~input/candidates" to="$(arg INPUT_CANDIDATES)" />
+      <rosparam>
+        use_topic: true
+      </rosparam>
+    </node>
+  </group>
+  <group unless="$(arg USE_TOPIC)">
+    <node name="apply_context_to_label_proba"
+          pkg="jsk_perception" type="apply_context_to_label_probability">
+      <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
+      <rosparam>
+        use_topic: false
+      </rosparam>
+    </node>
+  </group>
 
   <!-- label -> cluster indices -->
   <group if="$(arg SELECT_LARGEST)">
