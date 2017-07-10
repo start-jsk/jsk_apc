@@ -33,28 +33,28 @@ class EkEwIDriver(object):
         data = self.ser.read(17)
 
         header = data[:2]
+        weight = -1  # unknown
         if header == 'ST':
             # scale mode
-            weight = float(data[3:12])
             unit = data[12:15]
             if unit != '  g':
                 rospy.logerr('Unsupported unit: %s', unit)
-                return
-            msg = WeightStamped()
-            msg.header.stamp = rospy.Time.now()
-            msg.weight.value = weight
-            self.pub.publish(msg)
+            else:
+                weight = float(data[3:12])
         elif header == 'QT':
             # number mode
             rospy.logerr('Unsupported mode: %s', header)
-            return
         elif header == 'US':
             # unstable
-            return
+            pass
         elif header == 'OL':
             # scale over
             rospy.logerr('Scale over')
-            return
+
+        msg = WeightStamped()
+        msg.header.stamp = event.current_real
+        msg.weight.value = weight
+        self.pub.publish(msg)
 
 
 if __name__ == '__main__':
