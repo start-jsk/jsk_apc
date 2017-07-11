@@ -184,40 +184,47 @@
     (send *ri* :wait-interpolation))
   (:place-object (arm)
     (let (dropped end-coords-name orientation path-constraints orientation-constraint)
+      ;; FIXME: moveit cannot solve path
       ;; moveit path constraints
-      (setq end-coords-name
-            (if (eq arm :larm) "left_gripper_vacuum_pad" "right_gripper_pad_with_base"))
-      (setq orientation (instance geometry_msgs::Quaternion :init :x 0 :y 0 :z 0 :w 1))
-      (setq orientation-constraint
-            (instance moveit_msgs::OrientationConstraint :init
-                      :link_name end-coords-name
-                      :orientation orientation))
-      (send orientation-constraint :header :frame_id end-coords-name)
-      (setq path-constraints (instance moveit_msgs::Constraints :init
-                                       :orientation_constraints (list orientation-constraint)))
+      ;; (setq end-coords-name
+      ;;       (if (eq arm :larm) "left_gripper_vacuum_pad" "right_gripper_pad_with_base"))
+      ;; (setq orientation (instance geometry_msgs::Quaternion :init :x 0 :y 0 :z 0 :w 1))
+      ;; (setq orientation-constraint
+      ;;       (instance moveit_msgs::OrientationConstraint :init
+      ;;                 :link_name end-coords-name
+      ;;                 :orientation orientation))
+      ;; (send orientation-constraint :header :frame_id end-coords-name)
+      ;; (setq path-constraints (instance moveit_msgs::Constraints :init
+      ;;                                  :orientation_constraints (list orientation-constraint)))
 
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
       (when moveit-p (send self :add-shelf-scene))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 70 -70))
-      (if (eq grasp-style :suction)
-        (send *ri* :angle-vector
-              (send self :ik->cardboard-center arm target-cardboard
-                    :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
-              4000 (send *ri* :get-arm-controller arm) 0
-              :path-constraints path-constraints)
-        ;; TODO Add path constraints to pinching
-        (let (avs)
-          (setq avs nil)
-          (if (not (eq target-cardboard :c))
-            (pushback
-              (send self :ik->bin-center arm :b :offset #f(0 0 500)
-                    :rotation-axis nil :move-palm-end t) avs))
+
+      ;; FIXME: moveit cannot solve path
+      ;; (send *ri* :angle-vector
+      ;;       (send self :ik->cardboard-center arm target-cardboard
+      ;;             :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
+      ;;       4000 (send *ri* :get-arm-controller arm) 0
+      ;;       :path-constraints path-constraints)
+      (let (avs)
+        (if (not (eq target-cardboard :c))
           (pushback
+            (if (eq grasp-style :suction)
+              (send self :ik->bin-center arm :b :offset #f(0 0 500)
+                    :rotation-axis :z :use-gripper t)
+              (send self :ik->bin-center arm :b :offset #f(0 0 500)
+                    :rotation-axis nil :move-palm-end t))
+            avs))
+        (pushback
+          (if (eq grasp-style :suction)
             (send self :ik->cardboard-center arm target-cardboard
-                  :offset #f(0 0 200) :rotation-axis nil :move-palm-end t)
-            avs)
-          (send *ri* :angle-vector-sequence-raw avs 4000
-                (send *ri* :get-arm-controller arm :gripper nil) 0)))
+                  :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
+            (send self :ik->cardboard-center arm target-cardboard
+                  :offset #f(0 0 200) :rotation-axis nil :move-palm-end t))
+          avs)
+        (send *ri* :angle-vector-sequence-raw avs 4000
+              (send *ri* :get-arm-controller arm :gripper nil) 0))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm)))
       (if dropped
