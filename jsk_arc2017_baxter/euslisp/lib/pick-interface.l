@@ -267,8 +267,11 @@
           (setq grasp-style nil)
           (when moveit-p (send self :add-cardboard-scene))))))
   (:return-from-place-object (arm)
-    (send self :fold-pose-back arm 5000 (send *ri* :get-arm-controller arm) 0)
-    (send *ri* :wait-interpolation)))
+    (let (avs)
+      (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
+      (pushback (send *baxter* :fold-pose-back arm) avs)
+      (send *ri* :angle-vector-sequence avs 5000 (send *ri* :get-arm-controller arm) 0)
+      (send *ri* :wait-interpolation))))
 
 
 (defun jsk_arc2017_baxter::pick-init (&key (ctype :default-controller) (moveit nil))
