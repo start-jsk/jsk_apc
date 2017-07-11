@@ -12,6 +12,15 @@
     local-name: jsk-ros-pkg/jsk_visualization
     uri: https://github.com/jsk-ros-pkg/jsk_visualization.git
     version: master
+# jsk_pr2eus needs belows:
+# https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/306
+# https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/308
+# https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/309
+# https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/310
+- git:
+    local-name: jsk-ros-pkg/jsk_pr2eus
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: master
 - git:
     local-name: FOR_ASTRA/openni2_camera
     uri: https://github.com/ros-drivers/openni2_camera.git
