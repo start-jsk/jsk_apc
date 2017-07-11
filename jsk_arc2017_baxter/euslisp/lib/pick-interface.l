@@ -176,7 +176,7 @@
     (send *ri* :stop-grasp arm)
     (if (eq grasp-style :pinch)
       (send self :move-fingers-pinch->init arm))
-    (send self :spin-off-by-wrist 5)
+    (send self :spin-off-by-wrist arm :times 5)
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in shelf" arm)
     (when moveit-p (send self :add-shelf-scene))
