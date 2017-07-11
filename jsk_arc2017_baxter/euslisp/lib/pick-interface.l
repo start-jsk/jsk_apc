@@ -114,7 +114,7 @@
   (:pick-object (arm)
     (when moveit-p (send self :delete-shelf-scene))
     (send self :pick-object-in-bin arm target-bin
-          :n-trial 1
+          :n-trial (if (eq grasp-style :suction) 2 1)
           :n-trial-same-pos 1
           :do-stop-grasp nil
           :grasp-style grasp-style)
