@@ -1,3 +1,5 @@
+import cPickle as pickle
+import hashlib
 import json
 import math
 import os.path as osp
@@ -198,6 +200,32 @@ def visualize_container(container_id, contents, container_file,
     return img_container
 
 
+memos = {}
+def memoize(key=None):
+    def _memoize(func):
+        def func_wrapper(*args, **kwargs):
+            if key:
+                contents = pickle.dumps(
+                    {'func': func.func_code.co_code,
+                     'contents': key(*args, **kwargs)})
+            else:
+                contents = pickle.dumps(
+                    {'func': func.func_code.co_code,
+                     'args': args, 'kwargs': kwargs})
+            sha1 = hashlib.sha1(contents).hexdigest()
+            if sha1 in memos:
+                return memos[sha1]
+            res = func(*args, **kwargs)
+            if len(memos) > 50:
+                memos.popitem()
+            else:
+                memos[sha1] = res
+            return res
+        return func_wrapper
+    return _memoize
+
+
+@memoize(key=lambda filename: json.load(open(filename)))
 def visualize_item_location(filename):
     item_location = json.load(open(filename))
 
@@ -237,6 +265,7 @@ def visualize_item_location(filename):
     return img
 
 
+@memoize(key=lambda filename: json.load(open(filename)))
 def visualize_order(filename):
     data = json.load(open(filename))
     imgs = []
