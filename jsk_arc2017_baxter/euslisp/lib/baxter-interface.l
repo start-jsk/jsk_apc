@@ -240,7 +240,7 @@
       (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
             :joint-angle)))
   (:finger-closep (arm)
-    (> (aref (send self :get-real-finger-av arm) 1) 30) nil)
+    (> (aref (send self :get-real-finger-av arm) 1) 30))
 
   (:get-arm-controller (arm &key (gripper t))
     (cond ((eq arm :rarm) (if gripper :rarm-controller :rarm-no-gripper-controller))
