@@ -101,6 +101,7 @@
   (:pick-object (arm)
     (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-tote-scene arm))
+    (send self :reset-scale arm)
     (send self :pick-object-in-tote arm
           :n-trial (if (eq grasp-style :suction) 2 1)
           :n-trial-same-pos 1
@@ -136,7 +137,16 @@
     ;; TODO: in-hand verification
     ;; TODO: (setq target-obj (send *ti* :recognize-object-in-hand arm))
     ;; TODO: (return-from :verify-objec target-obj)
-    t)
+    (let (scale-candidates)
+      (setq scale-candidates
+            (send self :get-scale-candidates arm :picked :stamp (ros::time-now)))
+      (when (eq scale-candidates :timeout)
+        (ros::ros-error "subscribed weight candidates, but timeout")
+        (return-from :verify-object nil))
+      (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
+      (when (eq (length scale-candidates) 1)
+        (setq target-obj (car scale-candidates)))
+      (if (find target-obj scale-candidates :test #'string=) t nil)))
   (:check-picking-fail-count (arm)
     (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)

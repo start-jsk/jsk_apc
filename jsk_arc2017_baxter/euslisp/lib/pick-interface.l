@@ -113,6 +113,7 @@
       (setq grasp-style :pinch) (setq grasp-style :suction)))
   (:pick-object (arm)
     (when moveit-p (send self :delete-shelf-scene))
+    (send self :reset-scale arm)
     (send self :pick-object-in-bin arm target-bin
           :n-trial (if (eq grasp-style :suction) 2 1)
           :n-trial-same-pos 1
@@ -147,7 +148,14 @@
     ;; TODO: in-hand verification
     ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
     ;; TODO:   target-obj != in-hand object -> :return_object
-    t)
+    (let (scale-candidates)
+      (setq scale-candidates
+            (send self :get-scale-candidates arm :picked :stamp (ros::time-now)))
+      (when (eq scale-candidates :timeout)
+        (ros::ros-error "subscribed weight candidates, but timeout")
+        (return-from :verify-object nil))
+      (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
+      (if (find target-obj scale-candidates :test #'string=) t nil)))
   (:check-picking-fail-count (arm)
     (setq picking-fail-count (incf picking-fail-count))
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
