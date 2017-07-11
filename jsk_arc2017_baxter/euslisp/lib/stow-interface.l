@@ -57,7 +57,7 @@
       (send *ri* :stop-grasp arm)
       (if (eq arm :rarm)
         (send self :move-fingers-pinch->init arm))
-      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -80 80))
+      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
       (ros::ros-info "[main] Recognizing objects in tote")
@@ -178,7 +178,7 @@
     (let (dropped)
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
       (when moveit-p (send self :add-tote-scene arm))
-      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 80 -80))
+      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 70 -70))
       (if (eq grasp-style :suction)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
