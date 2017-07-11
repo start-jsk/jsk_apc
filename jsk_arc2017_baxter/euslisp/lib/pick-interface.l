@@ -211,17 +211,17 @@
         (if (not (eq target-cardboard :c))
           (pushback
             (if (eq grasp-style :suction)
-              (send self :ik->bin-center arm :b :offset #f(0 0 500)
+              (send self :ik->bin-center arm :b :offset #f(0 0 800)
                     :rotation-axis :z :use-gripper t)
-              (send self :ik->bin-center arm :b :offset #f(0 0 500)
+              (send self :ik->bin-center arm :b :offset #f(0 0 800)
                     :rotation-axis nil :move-palm-end t))
             avs))
         (pushback
           (if (eq grasp-style :suction)
             (send self :ik->cardboard-center arm target-cardboard
-                  :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
+                  :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
             (send self :ik->cardboard-center arm target-cardboard
-                  :offset #f(0 0 200) :rotation-axis nil :move-palm-end t))
+                  :offset #f(0 0 300) :rotation-axis nil :move-palm-end t))
           avs)
         (send *ri* :angle-vector-sequence-raw avs 4000
               (send *ri* :get-arm-controller arm :gripper nil) 0))
@@ -250,7 +250,7 @@
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-raw
-                (send *baxter* arm :move-end-pos #f(0 0 200) :world
+                (send *baxter* arm :move-end-pos #f(0 0 100) :world
                       :rotation-axis (eq grasp-style :suction))
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
@@ -259,7 +259,7 @@
           (setq grasp-style nil)
           (when moveit-p (send self :add-cardboard-scene))))))
   (:return-from-place-object (arm)
-    (send self :fold-pose-back arm)
+    (send self :fold-pose-back arm 5000 (send *ri* :get-arm-controller arm) 0)
     (send *ri* :wait-interpolation)))
 
 
