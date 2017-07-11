@@ -9,7 +9,6 @@ import numpy as np
 import skimage.color
 import skimage.io
 import skimage.transform
-import yaml
 
 import rospkg
 
@@ -201,6 +200,8 @@ def visualize_container(container_id, contents, container_file,
 
 
 memos = {}
+
+
 def memoize(key=None):
     def _memoize(func):
         def func_wrapper(*args, **kwargs):
