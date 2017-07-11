@@ -102,7 +102,7 @@
     (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-tote-scene arm))
     (send self :pick-object-in-tote arm
-          :n-trial 1
+          :n-trial (if (eq grasp-style :suction) 2 1)
           :n-trial-same-pos 1
           :do-stop-grasp nil
           :grasp-style grasp-style)
