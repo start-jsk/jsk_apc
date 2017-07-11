@@ -736,6 +736,23 @@
     (let ((service-name (format nil "/json_saver/save_json"))
           (req (instance std_srvs::TriggerRequest :init)))
       (ros::wait-for-service service-name)
+      (send (ros::service-call service-name req) :success)))
+  (:get-scale-candidates (arm action &key (stamp (ros::time-now)))
+    (let ((topic-name
+            (format nil "~a_hand_camera/weight_candidates_refiner/output/candidates/~a"
+                    (arm2str arm) (symbol2str action)))
+          msg)
+      (setq msg
+        (one-shot-subscribe topic-name jsk_recognition_msgs::LabelArray
+                            :timeout 10000
+                            :after-stamp stamp))
+      (if msg
+        (mapcar #'(lambda (label-msg) (send label-msg :name)) (send msg :labels))
+        :timeout)))
+  (:reset-scale (arm)
+    (let ((service-name (format nil "/~a_hand_camera/weight_candidates_refiner/reset" (arm2str arm)))
+          (req (instance std_srvs::TriggerRequest :init)))
+      (ros::wait-for-service service-name)
       (send (ros::service-call service-name req) :success))))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
