@@ -134,18 +134,18 @@
       (send self :larm-controller)))
   ;; Overwrite super class's :default-controller
   (:default-controller ()
-   (append
-    (send-super :head-controller)
-    (send-super :rarm-controller)
-    (send self :rgripper-controller)
-    (send-super :larm-controller)
-    (send self :lgripper-controller)))
+    (append
+      (send-super :head-controller)
+      (send-super :rarm-controller)
+      (send self :rgripper-controller)
+      (send-super :larm-controller)
+      (send self :lgripper-controller)))
   ;; Rename super class's :rarm-controller to :rarm-no-gripper-controller
   (:rarm-no-gripper-controller ()
-   (send-super :rarm-controller))
+    (send-super :rarm-controller))
   ;; Rename super class's :larm-controller to :larm-no-gripper-controller
   (:larm-no-gripper-controller ()
-   (send-super :larm-controller))
+    (send-super :larm-controller))
   (:rarm-head-no-gripper-controller ()
     (append
       (send-super :head-controller)
@@ -155,23 +155,23 @@
       (send-super :head-controller)
       (send self :larm-no-gripper-controller)))
   (:no-gripper-controller ()
-   (append
-    (send self :rarm-no-gripper-controller)
-    (send self :larm-no-gripper-controller)))
+    (append
+      (send self :rarm-no-gripper-controller)
+      (send self :larm-no-gripper-controller)))
   (:rgripper-controller ()
-   (list
     (list
-     (cons :controller-action "/gripper_front/limb/right/vacuum_gripper/follow_joint_trajectory")
-     (cons :controller-state "/gripper_front/limb/right/vacuum_gripper/state")
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "right_gripper_prismatic_joint" "right_gripper_vacuum_pad_joint")))))
+      (list
+        (cons :controller-action "/gripper_front/limb/right/vacuum_gripper/follow_joint_trajectory")
+        (cons :controller-state "/gripper_front/limb/right/vacuum_gripper/state")
+        (cons :action-type control_msgs::FollowJointTrajectoryAction)
+        (cons :joint-names (list "right_gripper_prismatic_joint" "right_gripper_vacuum_pad_joint")))))
   (:lgripper-controller ()
-   (list
     (list
-     (cons :controller-action "/gripper_front/limb/left/vacuum_gripper/follow_joint_trajectory")
-     (cons :controller-state "/gripper_front/limb/left/vacuum_gripper/state")
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "left_gripper_prismatic_joint" "left_gripper_vacuum_pad_joint")))))
+      (list
+        (cons :controller-action "/gripper_front/limb/left/vacuum_gripper/follow_joint_trajectory")
+        (cons :controller-state "/gripper_front/limb/left/vacuum_gripper/state")
+        (cons :action-type control_msgs::FollowJointTrajectoryAction)
+        (cons :joint-names (list "left_gripper_prismatic_joint" "left_gripper_vacuum_pad_joint")))))
   (:set-pressure
     (arm msg)
     (sethash arm pressure- (send msg :data)))
@@ -260,9 +260,17 @@
   (:finger-closep (arm)
     (> (aref (send self :get-real-finger-av arm) 1) 30))
 
-  (:get-arm-controller (arm &key (gripper t))
-    (cond ((eq arm :rarm) (if gripper :rarm-controller :rarm-no-gripper-controller))
-          ((eq arm :larm) (if gripper :larm-controller :larm-no-gripper-controller))
+  (:get-arm-controller (arm &key (gripper t) (head nil))
+    (cond ((eq arm :rarm)
+           (cond ((and head gripper) :rarm-head-controller)
+                 ((and (null head) gripper) :rarm-controller)
+                 ((and head (null gripper)) :rarm-head-no-gripper-controller)
+                 ((and (null head) (null gripper)) :rarm-no-gripper-controller)))
+          ((eq arm :larm)
+           (cond ((and head gripper) :rarm-head-controller)
+                 ((and (null head) gripper) :rarm-controller)
+                 ((and head (null gripper)) :rarm-head-no-gripper-controller)
+                 ((and (null head) (null gripper)) :rarm-no-gripper-controller)))
           (t nil)))
   (:start-grasp
     (&optional (arm :arms) (type :suction))
