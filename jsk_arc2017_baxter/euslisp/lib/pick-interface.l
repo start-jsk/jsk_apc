@@ -231,7 +231,7 @@
                   :offset #f(0 0 300) :rotation-axis nil :move-palm-end t))
           avs)
         (send *ri* :angle-vector-sequence-raw avs 4000
-              (send *ri* :get-arm-controller arm :gripper nil) 0))
+              (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm)))
       (if dropped
