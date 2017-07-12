@@ -106,7 +106,7 @@
           - /scale1/output
           - /scale2/output
           - /scale3/output
-        error: 5.0
+        error: 10.0
       </rosparam>
     </node>
   </group>  <!-- ns="left_hand_camera" -->
@@ -186,7 +186,7 @@
           - /scale1/output
           - /scale2/output
           - /scale3/output
-        error: 5.0
+        error: 10.0
       </rosparam>
     </node>
   </group>  <!-- ns="right_hand_camera" -->
