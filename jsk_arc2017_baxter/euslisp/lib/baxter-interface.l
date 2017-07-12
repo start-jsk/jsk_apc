@@ -38,9 +38,13 @@
                  :robot baxter-robot
                  :moveit-environment nil
                  :moveit-robot nil args)
+    (send self :add-controller :rarm-head-controller)
+    (send self :add-controller :larm-head-controller)
     (send self :add-controller :no-gripper-controller)
     (send self :add-controller :rarm-no-gripper-controller)
     (send self :add-controller :larm-no-gripper-controller)
+    (send self :add-controller :rarm-head-no-gripper-controller)
+    (send self :add-controller :larm-head-no-gripper-controller)
     (send self :add-controller :rgripper-controller)
     (send self :add-controller :lgripper-controller)
     ;; hack for https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/227
@@ -112,16 +116,22 @@
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot))))
   ;; Overwrite super class's :rarm-controller
   (:rarm-controller ()
-   (append
-    (send-super :head-controller)
-    (send-super :rarm-controller)
-    (send self :rgripper-controller)))
+    (append
+      (send-super :rarm-controller)
+      (send self :rgripper-controller)))
   ;; Overwrite super class's :larm-controller
   (:larm-controller ()
-   (append
-    (send-super :head-controller)
-    (send-super :larm-controller)
-    (send self :lgripper-controller)))
+    (append
+      (send-super :larm-controller)
+      (send self :lgripper-controller)))
+  (:rarm-head-controller ()
+    (append
+      (send-super :head-controller)
+      (send self :rarm-controller)))
+  (:larm-head-controller ()
+    (append
+      (send-super :head-controller)
+      (send self :larm-controller)))
   ;; Overwrite super class's :default-controller
   (:default-controller ()
    (append
@@ -136,6 +146,14 @@
   ;; Rename super class's :larm-controller to :larm-no-gripper-controller
   (:larm-no-gripper-controller ()
    (send-super :larm-controller))
+  (:rarm-head-no-gripper-controller ()
+    (append
+      (send-super :head-controller)
+      (send self :rarm-no-gripper-controller)))
+  (:larm-head-no-gripper-controller ()
+    (append
+      (send-super :head-controller)
+      (send self :larm-no-gripper-controller)))
   (:no-gripper-controller ()
    (append
     (send self :rarm-no-gripper-controller)
