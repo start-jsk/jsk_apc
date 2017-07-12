@@ -446,7 +446,8 @@
     (unless (or (eq arm :rarm) (eq arm :larm))
       (error ":wait-interpolation-until set arm for first arg~%"))
     (let (conds r-init-flex l-init-flex init-load r-flex l-flex
-                finger-load prismatic-load flex-thre-offset)
+                finger-load prismatic-load flex-thre-offset
+                r-proximity l-proximity)
       (setq r-init-flex (send self :get-finger-flex arm :right))
       (setq l-init-flex (send self :get-finger-flex arm :left))
       (setq init-load (send self :get-finger-load arm))
@@ -527,6 +528,19 @@
                 (progn
                   (ros::ros-info "[:wait-interpolation-until] Detected prismatic loaded load: ~a"
                                  prismatic-load)
+                  t)
+                nil))
+          conds))
+      (when (member :proximity args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for proximity")
+        (pushback
+          #'(lambda ()
+              (setq r-proximity (send self :get-proximity arm :right))
+              (setq l-proximity (send self :get-proximity arm :left))
+              (if (> (max r-proximity l-proximity) proximity-threshold-)
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected proximity. r: ~a, l: ~a"
+                                 r-proximity l-proximity)
                   t)
                 nil))
           conds))
