@@ -39,7 +39,8 @@
   ;; :rotate-gripper :rarm 0
   ;; :slide-gripper :rarm 60
   ;; end-coords #f(600 -700 -300)
-  (send *baxter* :rarm :angle-vector #f(-5.75614 -30.0687 24.2855 64.5333 -24.212 60.2145 -25.4255 60.0 0.0))
+  (send *baxter* :rarm :angle-vector
+        #f(-5.75614 -30.0687 24.2855 64.5333 -24.212 60.2145 -25.4255 60.0 0.0))
   (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000)
   (send *ri* :wait-interpolation-until arm
         :grasp :finger-flexion :finger-loaded :prismatic-loaded)
@@ -51,8 +52,10 @@
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
   (send *ri* :start-grasp arm :pinch)
   (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
-  (send *baxter* :rarm :angle-vector #f(-4.768 -49.2085 25.2526 50.688 -16.1874 91.2884 -30.4901 60.0 0.0))
-  (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 (send *ri* :get-arm-controller arm :gripper nil) 0)
+  (send *baxter* :rarm :angle-vector
+        #f(-4.768 -49.2085 25.2526 50.688 -16.1874 91.2884 -30.4901 60.0 0.0))
+  (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
+        (send *ri* :get-arm-controller arm :gripper nil) 0)
   (send *ri* :wait-interpolation)
   (unix::sleep 5)
   (send *ri* :stop-grasp)
