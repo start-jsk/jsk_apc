@@ -53,32 +53,32 @@
                                ((eq view-frame :8) (float-vector 0 (+ pi/2 pi/12) 0))
                                ((eq view-frame :9) (float-vector 0 (+ pi/2 pi/12) pi/4))))))
     (pushback
-      (send *ti* :ik->bin-entrance arm bin
+      (send *ti* :ik->bin-center arm bin
             :offset offset :rpy rpy :use-gripper nil)
       avs)
     (send *ri* :angle-vector-sequence avs :fast
-          (send *ri* :get-arm-controller arm) 0 :scale 3.0)))
+          (send *ri* :get-arm-controller arm) 0 :scale 5.0)))
 
 
 (defun main ()
   (setq *arm* :rarm)
 
   (jsk_arc2017_baxter::arc-init :ctype :rarm-controller :moveit nil)
-  (send *ti* :wipe-all-scene)
+  ;; (send *ti* :wipe-all-scene)
 
   (send *ti* :recognize-bin-boxes)
   (objects (append (list *baxter*) (send *ti* :visualize-bins)))
 
-  (send *ti* :add-cardboard-scene *arm*)
-  (send *ti* :add-bin-scene :b)
-  (send *ti* :add-bin-scene :c)
+  ;; (send *ti* :add-cardboard-scene)
+  ;; (send *ti* :add-bin-scene :b)
+  ;; (send *ti* :add-bin-scene :c)
 
   (send *baxter* :fold-pose-back *arm*)
   (send *baxter* :head_pan :joint-angle 80)
   (send *ti* :send-av)
 
-  (send *ti* :delete-bin-scene :b)
-  (send *ti* :delete-bin-scene :c)
+  ;; (send *ti* :delete-bin-scene :b)
+  ;; (send *ti* :delete-bin-scene :c)
 
   (while (send *ti* :wait-for-user-input-to-start *arm*)
     (dolist (bin (list :b :c))
@@ -87,16 +87,16 @@
         (cond ((eq bin :b) (ros::set-param "/right_hand/target_bin_name" "tort_back"))
               ((eq bin :c) (ros::set-param "/right_hand/target_bin_name" "tort_front")))
         (ros::set-param "/right_hand/view_frame" (symbol2str view-frame))
-        (send *ti* :add-bin-scene :b)
-        (send *ti* :add-bin-scene :c)
+        ;; (send *ti* :add-bin-scene :b)
+        ;; (send *ti* :add-bin-scene :c)
         ;; (send *ti* :move-arm-body->bin-overlook-pose *arm* bin)
         (move-arm-body->bin-overlook-pose->multi-view *arm* bin view-frame)
         ;; (send *baxter* *arm* :move-end-pos #f(0 0 100) :world)
         (send *ti* :send-av)
         (send *irtviewer* :redraw)
         (send *ri* :wait-interpolation)
-        (send *ti* :delete-bin-scene :b)
-        (send *ti* :delete-bin-scene :c)
+        ;; (send *ti* :delete-bin-scene :b)
+        ;; (send *ti* :delete-bin-scene :c)
 
         (unix::sleep 3)
         (setq res

@@ -1,15 +1,17 @@
-frame_id: /base
-initial_orientation: [0.0, 0.0, 0.0, 1.0]
-initial_x: 0.79
-initial_y: 0.0
-initial_z: -0.35
-object_a: 0.2
-object_b: 0.2
-object_g: 0.0
-object_r: 0.0
-object_type: cube
-object_x: 0.865
-object_y: 0.865
-object_z: 1.0
-publish_tf: true
-tf_frame: shelf_base
+boxes:
+- dimensions: [0.6, 0.3, 0.26]
+  frame_id: base
+  name: bin_A
+  orientation: [-7.371399732629166e-10, 0.0014931466695371988, -2.2011175495377822e-09,
+    0.9999988852558903]
+  position: [0.6367276906967163, 0.10167920589447021, -0.40250787138938904]
+- dimensions: [0.3, 0.3, 0.26]
+  frame_id: base
+  name: bin_B
+  orientation: [0.0, 0.0, 0.0, 1.0]
+  position: [0.7637709379196167, -0.20960268378257751, -0.4115633964538574]
+- dimensions: [0.3, 0.3, 0.26]
+  frame_id: base
+  name: bin_C
+  orientation: [0.0, 0.0, 0.0, 1.0]
+  position: [0.4774504601955414, -0.21625442802906036, -0.4082919955253601]
