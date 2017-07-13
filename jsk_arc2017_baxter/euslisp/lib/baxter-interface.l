@@ -331,7 +331,8 @@
                                  (send self :interpolatingp))
                        (unix::usleep 1000))))
                  (send self :cancel-move-hand l/r)
-                 (send self :cancel-angle-vector)
+                 (send self :cancel-angle-vector
+                       :controller-type (send self :get-arm-controller arm))
                  (send self :update-robot-state :wait-until-update t)
                  (send self :move-hand l/r finger-av 1000))
                (setq prev-av (send robot :angle-vector))
@@ -429,7 +430,8 @@
       (if (send self :graspingp arm)
         (progn
           (ros::ros-info "[:wait-interpolation-until-grasp] Grasping detected. Cancel angle vector: ~a" arm)
-          (send self :cancel-angle-vector)))
+          (send self :cancel-angle-vector
+                :controller-type (send self :get-arm-controller arm))))
       (unix::usleep 1000)))
   (:wait-interpolation-until
     (arm &rest args)
@@ -529,7 +531,8 @@
       (while (send self :interpolatingp)
         (when (reduce #'(lambda (x y) (or x y)) (mapcar #'funcall conds))
           (ros::ros-info "[:wait-interpolation-until] Cancel angle vector: ~a" arm)
-          (send self :cancel-angle-vector))
+          (send self :cancel-angle-vector
+                :controller-type (send self :get-arm-controller arm)))
         (unix::usleep 1000))))
   (:calib-pressure-threshold
     (&optional (arm :arms))
