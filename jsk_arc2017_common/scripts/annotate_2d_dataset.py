@@ -24,23 +24,18 @@ def json_to_label(json_file):
 
     img = labelme.utils.img_b64_to_array(data['imageData'])
     shapes = []
-    shelf_shape = None
+    shelf_shapes = []
     for shape in data['shapes']:
         if shape['label'] == '41':
-            if shelf_shape is not None:
-                raise RuntimeError
-            shelf_shape = shape
+            shelf_shapes.append(shape)
         else:
             shapes.append(shape)
-
-    if shelf_shape is None:
-        raise RuntimeError
 
     lbl = np.zeros(img.shape[:2], dtype=np.int32)
     lbl.fill(-1)
 
     lbl_shelf, _ = labelme.utils.labelme_shapes_to_label(
-        img.shape, [shelf_shape])
+        img.shape, shelf_shapes)
     mask_shelf = lbl_shelf == 1
     lbl[mask_shelf] = 41
 
