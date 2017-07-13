@@ -387,8 +387,8 @@
         (format nil "/gripper_front/limb/~a/servo/torque" l/r)
         (instance std_msgs::Bool :init :data nil))))
   (:graspingp
-    (arm &optional type)
-    (let (topic finger-av fingerp)
+    (arm &optional (type :suction))
+    (let (topic finger-av pinchingp)
       (if (ros::get-param "/apc_on_gazebo" nil)
         (progn
           (setq topic (format nil "/robot/~a_vacuum_gripper/grasping" (arm-to-str arm)))
@@ -396,13 +396,15 @@
           )
         (progn
           (setq finger-av (send self :get-real-finger-av arm))
-          (setq fingerp
-                (and (or
-                       (and (< (aref finger-av 0) 45) (< (aref finger-av 1) 80))
-                       (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 155)))
-                     (> (send self :get-finger-load arm) 0.55)))
+          ;; FIXME: cannot detect grasping small objects
+          ;; (setq pinchingp
+          ;;       (and (or
+          ;;              (and (< (aref finger-av 0) 45) (< (aref finger-av 1) 80))
+          ;;              (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 155)))
+          ;;            (> (send self :get-finger-load arm) 0.55)))
+          (setq pinchingp t)
           (send self :spin-once)
-          (or (if (not (eq type :suction)) fingerp nil)
+          (or (if (not (eq type :suction)) pinchingp nil)
               (if (not (eq type :pinch))
                 (< (gethash arm pressure-)
                    (cond

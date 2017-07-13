@@ -130,7 +130,7 @@
             3000 (send *ri* :get-arm-controller arm :gripper nil) 0))
     (send *ri* :wait-interpolation)
     (when moveit-p (send self :delete-shelf-scene))
-    (setq graspingp (send *ri* :graspingp arm))
+    (setq graspingp (send *ri* :graspingp arm grasp-style))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
   (:return-from-pick-object (arm)
@@ -233,7 +233,7 @@
         (send *ri* :angle-vector-sequence-raw avs 4000
               (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
       (send *ri* :wait-interpolation)
-      (setq dropped (not (send *ri* :graspingp arm)))
+      (setq dropped (not (send *ri* :graspingp arm grasp-style)))
       (if dropped
         (progn
           (ros::ros-error "[main] arm ~a: dropped object" arm)
