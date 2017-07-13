@@ -63,8 +63,13 @@
 (defun main ()
   (setq *arm* :rarm)
 
-  (jsk_arc2017_baxter::arc-init :ctype :rarm-controller :moveit nil)
+  (jsk_arc2017_baxter::arc-init :ctype :rarm-head-controller :moveit nil)
   ;; (send *ti* :wipe-all-scene)
+
+  ;; rotate head to opposite side of moving arm
+  (send *baxter* :head_pan :joint-angle 70)
+  (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
+  (send *ri* :wait-interpolation)
 
   (send *ti* :recognize-bin-boxes)
   (objects (append (list *baxter*) (send *ti* :visualize-bins)))
