@@ -15,6 +15,7 @@
           pkg="jsk_data" type="data_collection_server.py"
           clear_params="true" output="screen">
       <rosparam subst_value="true">
+        slop: 0.5
         save_dir: ~/.ros/jsk_arc2017_baxter/dataset_jsk_v3
         topics:
           - name: /right_hand_camera/left/rgb/camera_info
@@ -53,7 +54,7 @@
         parent_frame_id: base
         child_frame_id: right_hand_camera_left_rgb_optical_frame
         duration: 1
-        rate: 30
+        rate: 10
       </rosparam>
     </node>
   </group>
