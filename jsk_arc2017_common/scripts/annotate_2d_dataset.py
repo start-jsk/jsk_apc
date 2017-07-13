@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import datetime
 import json
 import os
@@ -55,7 +56,12 @@ def json_to_label(json_file):
 
 
 def main():
-    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSKV1')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--dataset-dir', help='Dataset directory',
+                        default=osp.join(PKG_DIR, 'data/datasets/JSKV1'))
+    args = parser.parse_args()
+
+    dataset_dir = args.dataset_dir
     if not osp.exists(dataset_dir):
         print('Please install JSKV1 dataset to: %s' % dataset_dir)
         quit(1)
