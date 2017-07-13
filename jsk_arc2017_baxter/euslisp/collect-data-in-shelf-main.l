@@ -63,7 +63,7 @@
 (defun main ()
   (setq *arm* :rarm)
 
-  (jsk_arc2017_baxter::arc-init :ctype :rarm-controller :moveit t)
+  (jsk_arc2017_baxter::arc-init :ctype :rarm-controller :moveit nil)
   (send *ti* :wipe-all-scene)
 
   (send *ti* :recognize-bin-boxes)
