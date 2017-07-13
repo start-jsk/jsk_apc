@@ -14,7 +14,9 @@ import jsk_arc2017_common
 PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
 
-def generate_pick_json(dirname):
+def generate_pick_json(dirname=None):
+    if dirname is None:
+        dirname = 'sample_pick_task'
     label_list = jsk_arc2017_common.get_object_names()[1:-1]
     box_id_list = ['A1', '1AD', '1A5', '1B2', 'K3']
     box_A_candidate = box_id_list[:2]   # box_A is for 2 items
@@ -111,13 +113,56 @@ def generate_pick_json(dirname):
         json.dump(order, f, sort_keys=True, indent=4, separators=separators)
 
 
+def generate_stow_json(dirname):
+    if dirname is None:
+        dirname = 'sample_stow_task'
+    label_list = jsk_arc2017_common.get_object_names()[1:-1]
+    tote_contents = random.sample(label_list, 20)
+    location = {
+        'bins': [
+            {
+                'bin_id': 'A',
+                'contents': []
+            },
+            {
+                'bin_id': 'B',
+                'contents': []
+            },
+            {
+                'bin_id': 'C',
+                'contents': []
+            }
+        ],
+        'boxes': [],
+        'tote': {
+            'contents': tote_contents
+        }
+    }
+
+    separators = (',', ': ')
+    output_dir = osp.join(PKG_DIR, 'data', 'json', dirname)
+    if not osp.exists(output_dir):
+        os.mkdir(output_dir)
+    else:
+        raise IOError('output dir already exists: {}'.format(output_dir))
+
+    location_path = osp.join(output_dir, 'item_location_file.json')
+    with open(location_path, 'w+') as f:
+        json.dump(location, f, sort_keys=True, indent=4, separators=separators)
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--dir', default='sample_pick_task')
+    parser.add_argument('-d', '--dir', default=None, help='output JSON dir')
+    parser.add_argument(
+        '-s', '--stow', action='store_true', help='generate stow task JSON')
     args = parser.parse_args()
 
     dirname = args.dir
-    generate_pick_json(dirname)
+    if args.stow:
+        generate_stow_json(dirname)
+    else:
+        generate_pick_json(dirname)
 
 
 if __name__ == '__main__':
