@@ -397,7 +397,7 @@
                   :rotation-axis :z)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until-grasp arm)
-      (setq graspingp (send *ri* :graspingp arm))
+      (setq graspingp (send *ri* :graspingp arm :suction))
       (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
         (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a again approach to the object" arm)
@@ -417,7 +417,7 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
-      (setq graspingp (send *ri* :graspingp arm))
+      (setq graspingp (send *ri* :graspingp arm :suction))
       (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
   (:try-to-suction-object-with-gripper-v6
@@ -452,7 +452,7 @@
                   :rotation-axis :z)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
-      (setq graspingp (send *ri* :graspingp arm))
+      (setq graspingp (send *ri* :graspingp arm :suction))
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
         (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a again approach to the object" arm)
@@ -475,7 +475,7 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
-      (setq graspingp (send *ri* :graspingp arm))
+      (setq graspingp (send *ri* :graspingp arm :suction))
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
   (:try-to-pinch-object
@@ -515,7 +515,7 @@
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (send *ri* :start-grasp arm :pinch)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
-      (setq graspingp (send *ri* :graspingp arm))
+      (setq graspingp (send *ri* :graspingp arm :pinch))
       (ros::ros-info "[:try-to-pinch-object] arm:~a graspingp: ~a" arm graspingp)
       ;; lift object
       (ros::ros-info "[:try-to-pinch-object] arm:~a lift the object" arm)
@@ -523,7 +523,7 @@
             3000 (send *ri* :get-arm-controller arm :gripper nil) 0)
       (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
-      (setq graspingp (send *ri* :graspingp arm))
+      (setq graspingp (send *ri* :graspingp arm :pinch))
       (ros::ros-info "[:try-to-pinch-object] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
   (:ik->bin-center
