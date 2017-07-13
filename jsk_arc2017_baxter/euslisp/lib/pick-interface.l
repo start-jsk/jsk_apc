@@ -186,6 +186,10 @@
     (send self :spin-off-by-wrist arm :times 5)
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in shelf" arm)
+    (send *ri* :angle-vector-raw
+          (send *baxter* arm :move-end-pos #f(0 0 200) :world :rotation-axis :z)
+          :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
+    (send *ri* :wait-interpolation)
     (when moveit-p (send self :add-shelf-scene))
     (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation))
