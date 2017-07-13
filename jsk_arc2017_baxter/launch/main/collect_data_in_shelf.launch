@@ -1,28 +1,10 @@
 <launch>
 
   <!-- update source location for collecting data -->
-  <arg name="collect_data" default="false" />
-  <node name="interactive_adjust_shelf"
-        pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" file="$(find jsk_arc2017_baxter)/config/collect_data/shelf_marker.yaml"/>
-  </node>
-  <node name="publish_bin_boxes"
-        pkg="jsk_recognition_utils" type="bounding_box_array_publisher.py">
-    <rosparam command="load" file="$(find jsk_arc2017_common)/config/shelf_bin.yaml" />
-  </node>
-
-  <group ns="fuse_depth_images">
-    <node name="output_view"
-          pkg="image_view" type="image_view">
-      <remap from="image" to="output" />
-      <rosparam>
-        gui: false
-        colormap: 2  # JET
-        min_image_value: 0.5
-        max_image_value: 1.0
-      </rosparam>
-    </node>
-  </group>
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml">
+    <arg name="pick" value="true" />
+    <arg name="task" value="collect_data_in_shelf" />
+  </include>
 
   <!-- *********************************************************************************** -->
   <!-- Data collection                                                                     -->
@@ -35,19 +17,19 @@
       <rosparam subst_value="true">
         save_dir: ~/.ros/jsk_arc2017_baxter/dataset_jsk_v3
         topics:
-          - name: /right_hand_left_camera/rgb/camera_info
+          - name: /right_hand_camera/left/rgb/camera_info
             msg_class: sensor_msgs/CameraInfo
-            fname: camera_info_right_hand_left_camera.yaml
+            fname: camera_info_right_hand_camera_left.yaml
             savetype: YAML
-          - name: /fuse_rgb_images/output
+          - name: /right_hand_camera/left/rgb/image_rect_color
             msg_class: sensor_msgs/Image
             fname: image.jpg
             savetype: ColorImage
-          - name: /fuse_depth_images/output
+          - name: /right_hand_camera/fused/depth_registered/image_rect
             msg_class: sensor_msgs/Image
             fname: depth.npz
             savetype: DepthImage
-          - name: /fuse_depth_images/output_view/output
+          - name: /right_hand_camera/fused/depth_registered/image_rect_view
             msg_class: sensor_msgs/Image
             fname: depth_viz.jpg
             savetype: ColorImage
@@ -69,7 +51,7 @@
           pkg="jsk_topic_tools" type="tf_to_transform.py">
       <rosparam>
         parent_frame_id: base
-        child_frame_id: right_hand_left_camera_rgb_optical_frame
+        child_frame_id: right_hand_camera_left_rgb_optical_frame
         duration: 1
         rate: 30
       </rosparam>
