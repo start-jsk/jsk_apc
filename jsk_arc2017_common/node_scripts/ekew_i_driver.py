@@ -16,10 +16,12 @@ class EkEwIDriver(object):
     def __init__(self):
         super(EkEwIDriver, self).__init__()
         port = rospy.get_param('~port', '/dev/ttyUSB0')
+        timeout = rospy.get_param('~timeout', None)
         rospy.loginfo('port=%s', port)
         # EK-i/EW-i series default settings
         self.ser = serial.Serial(
-            port, baudrate=2400, bytesize=7, parity=serial.PARITY_EVEN)
+            port, baudrate=2400, bytesize=7, parity=serial.PARITY_EVEN,
+            timeout=timeout, writeTimeout=timeout)
         self.pub = rospy.Publisher('~output', WeightStamped, queue_size=1)
         rate = rospy.get_param('~rate', 10)
         self.read_timer = rospy.Timer(rospy.Duration(1. / rate),
@@ -29,8 +31,17 @@ class EkEwIDriver(object):
         if self.pub.get_num_connections() == 0:
             return
 
-        self.ser.write('Q\r\n')
+        try:
+            self.ser.write('Q\r\n')
+        except  SerialTimeoutException:
+            rospy.logerr('Serial write timeout')
+            rospy.signal_shutdown('Serial write timeout')
+            return
         data = self.ser.read(17)
+        if len(data) != 17:
+            rospy.logerr('Serial read timeout')
+            rospy.signal_shutdown('Serial read timeout')
+            return
 
         header = data[:2]
         weight = -1  # unknown
