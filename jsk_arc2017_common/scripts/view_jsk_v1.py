@@ -8,7 +8,6 @@ import warnings
 import click
 import cv2
 import dateutil.parser
-import fcn
 import matplotlib.cm
 import numpy as np
 import skimage.io
@@ -38,12 +37,68 @@ def colorize_depth(depth, min_value=None, max_value=None):
     return colorized
 
 
+def get_text_color(color):
+    if color[0] * 0.299 + color[1] * 0.587 + color[2] * 0.114 > 170:
+        return (0, 0, 0)
+    return (255, 255, 255)
+
+
+def label2rgb(lbl, img=None, label_names=None, alpha=0.3):
+    import fcn
+    import scipy
+    if label_names is None:
+        n_labels = lbl.max() + 1  # +1 for bg_label 0
+    else:
+        n_labels = len(label_names)
+    cmap = fcn.utils.labelcolormap(n_labels)
+    cmap = (cmap * 255).astype(np.uint8)
+
+    lbl_viz = cmap[lbl]
+
+    if img is not None:
+        img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        img_gray = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2RGB)
+        lbl_viz = alpha * lbl_viz + (1 - alpha) * img_gray
+        lbl_viz = lbl_viz.astype(np.uint8)
+
+    if label_names is None:
+        return lbl_viz
+
+    np.random.seed(1234)
+    labels = np.unique(lbl)
+    labels = labels[labels != 0]
+    for label in labels:
+        mask = lbl == label
+        mask = (mask * 255).astype(np.uint8)
+        y, x = scipy.ndimage.center_of_mass(mask)
+        y, x = map(int, [y, x])
+
+        if lbl[y, x] != label:
+            Y, X = np.where(mask)
+            point_index = np.random.randint(0, len(Y))
+            y, x = Y[point_index], X[point_index]
+
+        text = label_names[label]
+        font_face = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 0.7
+        thickness = 2
+        text_size, baseline = cv2.getTextSize(
+            text, font_face, font_scale, thickness)
+
+        color = get_text_color(lbl_viz[y, x])
+        cv2.putText(lbl_viz, text,
+                    (x - text_size[0] // 2, y),
+                    font_face, font_scale, color, thickness)
+    return lbl_viz
+
+
 @click.command()
 @click.option('-s', '--start')
-def main(start):
-    dataset_dir = osp.join(PKG_DIR, 'data/datasets/JSKV1')
+@click.option('-d', '--dataset-dir',
+              default=osp.join(PKG_DIR, 'data/datasets/JSKV1'))
+def main(start, dataset_dir):
     if not osp.exists(dataset_dir):
-        print('Please install JSKV1 dataset to: %s' % dataset_dir)
+        print('Please install dataset to: %s' % dataset_dir)
         quit(1)
 
     label_files = []
@@ -89,9 +144,9 @@ def main(start):
             img_labeled = img.copy()
             img_labeled[mask_unlabeled] = \
                 np.random.randint(0, 255, (mask_unlabeled.sum(), 3))
-            label_viz = fcn.utils.draw_label(
-                label, img_labeled, len(object_names),
-                dict(enumerate(object_names)))
+            label_viz = label2rgb(
+                lbl=label, img=img_labeled,
+                label_names=dict(enumerate(object_names)))
         else:
             label_viz = np.zeros_like(img)
 
