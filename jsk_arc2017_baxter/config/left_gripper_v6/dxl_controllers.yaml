@@ -24,9 +24,9 @@ vacuum_pad_tendon_controller:
   joint_torque_limit: 0.4
   motor:
     id: 4
-    init: 570
-    min: 120
-    max: 1023
+    init: 500
+    min: 0
+    max: 1000
 finger_yaw_joint_controller:
   controller:
     package: dynamixel_controllers
