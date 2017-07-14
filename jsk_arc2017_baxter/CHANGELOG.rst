@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.3.0 (2017-07-15)
+------------------
 * Add look_around_bins experiment
 * Update hand action state in :hand-interpolatingp
 * Clean up :graspingp

@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.3.0 (2017-07-15)
+------------------
 * add use_topic and input_candidates args
 * replace bg_label by ignore_labels
 * ad ignore_labels in label_to_cpi

@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.3.0 (2017-07-15)
+------------------
 * Add script to visualize annotated 2d dataset
 * fix E271 multiple spaces after keyword ERROR....
 * Detect serial blocked and restart

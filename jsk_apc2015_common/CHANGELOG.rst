@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.3.0 (2017-07-15)
+------------------
 * Fix fcn model_file param name
 * Contributors: Kentaro Wada
 
