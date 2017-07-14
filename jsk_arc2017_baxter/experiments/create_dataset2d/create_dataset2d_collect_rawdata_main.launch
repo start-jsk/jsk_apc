@@ -20,6 +20,9 @@
         pkg="jsk_arc2017_baxter" type="create-dataset2d-collect-rawdata-main.l"
         output="screen">
     <env name="DISPLAY" value="" />
+    <rosparam>
+      side: right
+    </rosparam>
   </node>
 
   <!-- Gui -->
