@@ -2,6 +2,32 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add script to visualize annotated 2d dataset
+* fix E271 multiple spaces after keyword ERROR....
+* Detect serial blocked and restart
+* Update to support multi shelf bins
+* Add README to annotate_2d_dataset
+* Rename to annotate_2d_dataset.py
+* Publish scenes and view frame of DatasetV3 in ROS
+* merge json_generator into one program (`#2270 <https://github.com/start-jsk/jsk_apc/issues/2270>`_)
+* Fix for flake8
+* Memoize result of visualize_json
+* refine weight_candidates_refiner node
+* publish -1 when scale is disabled
+* remove unused launch
+* rename to weight_candidates_refiner node
+* add use_topic and input_candidates args
+* sub candidates in scale object estimation node
+* publish WeightStamped from scale node
+* add Weight and WeightStamped msg
+* replace bg_label by ignore_labels
+* use arc2017 object_segmentation_3d in stow task
+* ad ignore_labels in label_to_cpi
+* add USE_PCA argment in object_segmentation_3d.launch
+* Contributors: Kei Okada, Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa, Shun Hasegawa
+
 3.2.0 (2017-07-06)
 ------------------
 * add object_classification with FCN launch

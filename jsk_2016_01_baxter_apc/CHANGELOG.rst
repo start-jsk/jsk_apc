@@ -2,6 +2,11 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* disable test to pass travis
+* Contributors: Kei Okada
+
 3.2.0 (2017-07-06)
 ------------------
 

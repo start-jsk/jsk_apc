@@ -2,6 +2,15 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add use_topic and input_candidates args
+* replace bg_label by ignore_labels
+* ad ignore_labels in label_to_cpi
+* Fix fcn model_file param name
+* add USE_PCA argment in object_segmentation_3d.launch
+* Contributors: Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa
+
 3.2.0 (2017-07-06)
 ------------------
 * update candidates for segmentation via topic
