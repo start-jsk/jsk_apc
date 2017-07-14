@@ -388,7 +388,7 @@
         (instance std_msgs::Bool :init :data nil))))
   (:graspingp
     (arm &optional (type :suction))
-    (let (topic finger-av pinchingp)
+    (let (topic finger-av suctioningp pinchingp)
       (if (ros::get-param "/apc_on_gazebo" nil)
         (progn
           (setq topic (format nil "/robot/~a_vacuum_gripper/grasping" (arm-to-str arm)))
@@ -396,6 +396,11 @@
           )
         (progn
           (setq finger-av (send self :get-real-finger-av arm))
+          (setq suctioningp
+                (< (gethash arm pressure-)
+                   (cond
+                     ((eq arm :rarm) rarm-pressure-threshold-)
+                     ((eq arm :larm) larm-pressure-threshold-))))
           ;; FIXME: cannot detect grasping small objects
           ;; (setq pinchingp
           ;;       (and (or
@@ -404,13 +409,10 @@
           ;;            (> (send self :get-finger-load arm) 0.55)))
           (setq pinchingp t)
           (send self :spin-once)
-          (or (if (not (eq type :suction)) pinchingp nil)
-              (if (not (eq type :pinch))
-                (< (gethash arm pressure-)
-                   (cond
-                     ((eq arm :rarm) rarm-pressure-threshold-)
-                     ((eq arm :larm) larm-pressure-threshold-)))
-                nil))))))
+          (cond ((eq type :suction) suctioningp)
+                ((eq type :pinch) pinchingp)
+                ((null type) (or suctioningp pinchingp))
+                (t (ros::ros-error "Unsupported type for :graspingp") (exit)))))))
   (:arm-potentio-vector
     (arm)
     (case arm
