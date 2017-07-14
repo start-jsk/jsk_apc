@@ -13,14 +13,22 @@ jsk_arc2017_baxter
    usage_of_baxter
    setup_gripper_v6
 
+Experiments
+-----------
+
+.. toctree::
+  :maxdepth: 1
+  :glob:
+
+  experiments/*
+
 Testing
 -------
 
 .. code-block:: bash
 
   catkin run_tests jsk_arc2017_baxter --no-deps
-  
-  
+
 Shared data
 -----------
 
