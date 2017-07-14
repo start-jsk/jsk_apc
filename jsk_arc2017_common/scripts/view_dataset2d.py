@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
+import argparse
 import datetime
 import os
 import os.path as osp
 import warnings
 
-import click
 import cv2
 import dateutil.parser
 import matplotlib.cm
@@ -15,9 +15,6 @@ import skimage.io
 import jsk_recognition_utils
 import rospkg
 import yaml
-
-
-PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
 
 def colorize_depth(depth, min_value=None, max_value=None):
@@ -92,11 +89,16 @@ def label2rgb(lbl, img=None, label_names=None, alpha=0.3):
     return lbl_viz
 
 
-@click.command()
-@click.option('-s', '--start')
-@click.option('-d', '--dataset-dir',
-              default=osp.join(PKG_DIR, 'data/datasets/JSKV1'))
-def main(start, dataset_dir):
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('dataset_dir', help='Dataset dir path')
+    parser.add_argument('-s', '--start',
+                        help='Start timestamp (ex. 2017-06-10T10:00:23)')
+    args = parser.parse_args()
+
+    dataset_dir = args.dataset_dir
+    start = args.start
+
     if not osp.exists(dataset_dir):
         print('Please install dataset to: %s' % dataset_dir)
         quit(1)
@@ -112,6 +114,7 @@ def main(start, dataset_dir):
     print('==> Size of dataset: All: %d, Annotated: %d.' %
           (len(label_files), len(list(filter(None, label_files)))))
 
+    PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
     with open(osp.join(PKG_DIR, 'config/label_names.yaml')) as f:
         object_names = yaml.load(f)
     object_names.append('__unlabeled__')
@@ -157,8 +160,14 @@ def main(start, dataset_dir):
         if key == ord('q'):
             break
         elif key == ord('n'):
+            if i == len(stamp_dirs) - 1:
+                print('Reached the end edge of the dataset')
+                continue
             i += 1
         elif key == ord('p'):
+            if i == 0:
+                print('Reached the start edge of the dataset')
+                continue
             i -= 1
         else:
             continue

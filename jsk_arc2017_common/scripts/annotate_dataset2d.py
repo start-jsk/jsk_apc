@@ -16,9 +16,6 @@ import subprocess32 as subprocess
 import rospkg
 
 
-PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
-
-
 def json_to_label(json_file):
     data = json.load(open(json_file))
 
@@ -52,8 +49,7 @@ def json_to_label(json_file):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--dataset-dir', help='Dataset directory',
-                        default=osp.join(PKG_DIR, 'data/datasets/JSKV1'))
+    parser.add_argument('dataset_dir', help='Dataset directory')
     args = parser.parse_args()
 
     dataset_dir = args.dataset_dir
@@ -61,6 +57,7 @@ def main():
         print('Please install JSKV1 dataset to: %s' % dataset_dir)
         quit(1)
 
+    PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
     objlist_file = osp.join(PKG_DIR, 'data/others/object_list_5x8.jpg')
     objlist = cv2.imread(objlist_file)
     scale = 1000. / max(objlist.shape[:2])
