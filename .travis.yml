@@ -24,11 +24,6 @@ env:
 install:
   - git clone https://github.com/jsk-ros-pkg/jsk_travis.git .travis
   - (cd .travis && git checkout 40640d45c709bdc7d74a1f8983d51d5df553dbc1)
-  # FIXME: https://github.com/start-jsk/jsk_apc/issues/2281
-  - sudo -H apt-get install -qq -y python-setuptools
-  - sudo -H easy_install -q -U pip
-  - sudo -H pip install -q -U pip setuptools
-  - sudo -H pip install -U gdown
 
 script:
   # build & test ROS packages
