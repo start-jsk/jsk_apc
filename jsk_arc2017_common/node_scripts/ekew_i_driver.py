@@ -33,7 +33,7 @@ class EkEwIDriver(object):
 
         try:
             self.ser.write('Q\r\n')
-        except  SerialTimeoutException:
+        except SerialTimeoutException:
             rospy.logerr('Serial write timeout')
             rospy.signal_shutdown('Serial write timeout')
             return
