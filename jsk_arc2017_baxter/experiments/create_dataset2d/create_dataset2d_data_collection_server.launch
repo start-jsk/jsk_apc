@@ -1,0 +1,54 @@
+<launch>
+
+  <arg name="side" doc="Left or right" />
+
+  <group ns="$(arg side)_hand">
+    <node name="data_collection_server"
+          pkg="jsk_data" type="data_collection_server.py"
+          clear_params="true" output="screen">
+      <rosparam subst_value="true">
+        slop: 0.3
+        save_dir: ~/.ros/jsk_arc2017_baxter/create_dataset2d/$(arg side)_hand
+        topics:
+          - name: /$(arg side)_hand_camera/left/rgb/camera_info
+            msg_class: sensor_msgs/CameraInfo
+            fname: camera_info_$(arg side)_hand_camera_left.yaml
+            savetype: YAML
+          - name: /$(arg side)_hand_camera/left/rgb/image_rect_color
+            msg_class: sensor_msgs/Image
+            fname: image.jpg
+            savetype: ColorImage
+          - name: /$(arg side)_hand_camera/fused/depth_registered/image_rect
+            msg_class: sensor_msgs/Image
+            fname: depth.npz
+            savetype: DepthImage
+          - name: /$(arg side)_hand_camera/fused/depth_registered/image_rect_view
+            msg_class: sensor_msgs/Image
+            fname: depth_viz.jpg
+            savetype: ColorImage
+          - name: /$(arg side)_hand/tf_to_transform/output
+            msg_class: geometry_msgs/TransformStamped
+            fname: tf_camera_rgb_from_base.yaml
+            savetype: YAML
+        params:
+          - key: /$(arg side)_hand/target_bin_name
+            fname: shelf_bin.txt
+            savetype: Text
+          - key: /$(arg side)_hand/view_frame
+            fname: view_frame.txt
+            savetype: Text
+      </rosparam>
+    </node>
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam subst_value="true">
+        parent_frame_id: base
+        child_frame_id: $(arg side)_hand_camera_left_rgb_optical_frame
+        duration: 1
+        rate: 10
+      </rosparam>
+    </node>
+  </group>
+
+
+</launch>
