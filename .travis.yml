@@ -28,7 +28,7 @@ install:
   - sudo -H apt-get install -qq -y python-setuptools
   - sudo -H easy_install -q -U pip
   - sudo -H pip install -q -U pip setuptools
-  - sudo -H pip install -q -U gdown
+  - sudo -H pip install -U gdown
 
 script:
   # build & test ROS packages
