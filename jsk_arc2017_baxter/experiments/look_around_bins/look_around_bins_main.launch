@@ -1,0 +1,37 @@
+<launch>
+
+  <arg name="camera" value="right_hand_camera" />
+  <arg name="INPUT_CAMERA_INFO" default="/right_hand_camera/left/depth_registered/camera_info" />
+  <arg name="INPUT_DEPTH" default="/$(arg camera)/fused/depth_registered/hw_registered/image_rect_raw" />
+  <arg name="INPUT_COLOR" default="/$(arg camera)/left/rgb/image_rect_color" />
+  <arg name="MANAGER" default="/$(arg camera)/left/left_nodelet_manager" />
+
+  <node name="kinfu"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl/Kinfu $(arg MANAGER)" output="screen">
+    <remap from="~input/camera_info" to="/right_hand_camera/left/depth_registered/camera_info" />
+    <remap from="~input/depth" to="/right_hand_camera/fused/depth_registered/image_rect" />
+    <remap from="~input/color" to="/right_hand_camera/left/rgb/image_rect_color" />
+    <rosparam>
+      queue_size: 50
+      auto_reset: false
+      integrate_color: true
+    </rosparam>
+  </node>
+
+  <node name="look_around_bin_main"
+        pkg="jsk_arc2017_baxter" type="look-around-bins-main.l"
+        args="&quot;(progn (play-main :scale 16.0))&quot;"
+        required="true">
+  </node>
+
+  <node name="xdisplay_image_topic"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/right_hand_camera/left/image_rect_color">
+  </node>
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find jsk_arc2017_baxter)/experiments/look_around_bins/default.rviz">
+  </node>
+
+</launch>
