@@ -221,6 +221,7 @@
   (:cancel-move-hand (arm)
     (send (gethash arm hand-actions-) :cancel-goal))
   (:hand-interpolatingp (arm)
+    (send self :spin-once)
     (eq (send (gethash arm hand-actions-) :get-state) ros::*simple-goal-state-active*))
   (:get-finger-flex (arm side)
     (send self :spin-once)
