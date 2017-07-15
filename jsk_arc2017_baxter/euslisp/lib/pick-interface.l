@@ -119,11 +119,11 @@
           :grasp-style grasp-style)
     (when moveit-p (send self :add-shelf-scene))
     (if (eq grasp-style :suction)
-      (send *ri* :angle-vector
+      (send *ri* :angle-vector-raw
             (send self :ik->bin-center arm target-bin
                   :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
             3000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :angle-vector
+      (send *ri* :angle-vector-raw
             (send self :ik->bin-center arm target-bin
                   :offset #f(0 0 300) :rotation-axis :z :move-palm-end t)
             3000 (send *ri* :get-arm-controller arm :gripper nil) 0))
