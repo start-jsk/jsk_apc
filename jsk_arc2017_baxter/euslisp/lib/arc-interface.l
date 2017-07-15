@@ -14,9 +14,9 @@
   :slots (bbox-volume-threshold-
           bin-cubes-
           bin-movable-regions-
+          cardboard-cubes-
           object-boxes-
           object-coords-
-          cardboard-cubes-
           tote-cubes-
           tote-movable-regions-
           ))
