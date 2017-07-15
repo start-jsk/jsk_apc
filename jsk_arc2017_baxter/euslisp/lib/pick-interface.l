@@ -84,7 +84,6 @@
     (let (is-recognized recognition-count)
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-cardboard-scene))
-      (send *ri* :stop-grasp arm)
       (send self :move-fingers-pinch->init arm)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
@@ -134,7 +133,6 @@
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
   (:return-from-pick-object (arm)
-    (send *ri* :stop-grasp arm)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
@@ -156,6 +154,7 @@
       (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
       (if (find target-obj scale-candidates :test #'string=) t nil)))
   (:check-picking-fail-count (arm)
+    (send *ri* :stop-grasp arm)
     (setq picking-fail-count (incf picking-fail-count))
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
     (> picking-fail-count 1))
