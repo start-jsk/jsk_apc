@@ -269,7 +269,7 @@ add_custom_target(compile_stow_kiva_world ALL
 # endif()
 
 ## Add folders to be run by python nosetests
-if(CATKIN_ENABLE_TESTING AND 0) # DISABLE TEST TO PASS TRAVIS https://travis-ci.org/start-jsk/jsk_apc/builds/253529816
+if(CATKIN_ENABLE_TESTING)
   find_package(roslint REQUIRED)
   roslint_python(node_scripts)
   roslint_add_test()
