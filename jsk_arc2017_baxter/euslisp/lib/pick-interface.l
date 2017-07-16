@@ -46,6 +46,7 @@
                                      (instance jsk_gui_msgs::YesNoRequest))
                   :yes))
       (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
+      (send self :get-work-orders arm)
       (setq order nil)
       can-start))
   (:set-target (arm)
