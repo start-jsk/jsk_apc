@@ -132,6 +132,44 @@
       (when (string= (send (elt orders- i) :bin)
                      (symbol-string bin))
         (return-from :get-certain-work-order (elt orders- i)))))
+  (:select-work-order-in-bin
+    (arm bin &key (stamp (ros::time-now)))
+    (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
+          box-msg box-objects bin-orders label-names)
+      (setq bin-orders
+            (remove nil (mapcar
+                          #'(lambda (order)
+                              (when (string= (send order :bin) (symbol-string bin)) order))
+                          orders-)))
+      (setq label-names
+            (ros::get-param (format nil "/~a_hand_camera/label_names"
+                                    (arm2str arm))))
+      (setq box-msg (one-shot-subscribe box-topic
+                                        jsk_recognition_msgs::BoundingBoxArray
+                                        :timeout 15000
+                                        :after-stamp stamp))
+      (when box-msg
+        (setq box-labels
+              (remove nil (mapcar
+                            #'(lambda (box)
+                                (let (volume)
+                                  (setq volume (* (send box :dimensions :x)
+                                                  (send box :dimensions :y)
+                                                  (send box :dimensions :z)))
+                                  (when (and (> bbox-volume-threshold- volume)
+                                             (> volume 0.0))
+                                    (send box :label))))
+                            (send box-msg :boxes))))
+        (unless box-labels (return-from :select-work-order-in-bin nil))
+        (setq box-objects (mapcar #'(lambda (label) (elt label-names label)) box-labels))
+        (dolist (skipping-objects
+                  (list (append finished-objects- postponed-objects-) finished-objects-))
+          (dolist (order bin-orders)
+            (let ((object-name (send order :item)))
+              (when (and (find object-name box-objects :test #'string=)
+                         (not (find object-name skipping-objects :test #'string=)))
+                (return-from :select-work-order-in-bin order))))))
+      nil))
   (:check-bin-exist (bin) (if (gethash bin bin-cubes-) t nil))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
