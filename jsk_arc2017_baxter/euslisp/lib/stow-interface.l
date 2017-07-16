@@ -211,6 +211,7 @@
             (send self :move-fingers-pinch->init arm)))
         (progn
           (send self :update-json target-obj :src :tote :dst (cons :bin target-bin))
+          (send self :add-finished-object arm target-obj)
           (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a" arm target-obj target-bin)
           (when moveit-p (send self :delete-bin-scene target-bin))
           (send *ri* :angle-vector-raw

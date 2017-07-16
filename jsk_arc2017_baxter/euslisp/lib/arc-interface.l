@@ -15,6 +15,7 @@
           bin-cubes-
           bin-movable-regions-
           cardboard-cubes-
+          finished-objects-
           object-boxes-
           object-coords-
           tote-cubes-
@@ -78,16 +79,15 @@
           (format nil "/strategic_work_order/~a_hand" (arm2str arm))
           jsk_arc2017_common::WorkOrderArray))
       (send msg :orders)))
-  (:get-next-work-order
-    (arm current-order)
+  (:get-next-work-order (arm)
     (let ((orders (send self :get-work-orders arm)))
       (when (eq (length orders) 0)
         (ros::ros-error "[:get-next-work-order] There is no order")
         (return-from :get-next-work-order nil))
-      (when (null current-order) (return-from :get-next-work-order (elt orders 0)))
-      (dotimes (i (- (length orders) 1))
-        (when (string= (send (elt orders i) :item) (send current-order :item))
-          (return-from :get-next-work-order (elt orders (+ i 1)))))))
+      (dolist (order orders)
+        (unless (find (send order :item) finished-objects- :test #'string=)
+          (return-from :get-next-work-order order)))
+      nil))
   (:get-certain-work-order
     (arm bin)
     (let ((orders (send self :get-work-orders arm)))
@@ -755,7 +755,10 @@
     (let ((service-name (format nil "/~a_hand_camera/weight_candidates_refiner/reset" (arm2str arm)))
           (req (instance std_srvs::TriggerRequest :init)))
       (ros::wait-for-service service-name)
-      (send (ros::service-call service-name req) :success))))
+      (send (ros::service-call service-name req) :success)))
+  (:add-finished-object (arm obj)
+    (pushback obj finished-objects-)
+    (ros::set-param (format nil "/~a_hand/finished_objects" (arm2str arm)) finished-objects-)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)

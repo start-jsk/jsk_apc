@@ -54,7 +54,7 @@
     (setq label-names
           (ros::get-param (format nil "/~a_hand_camera/label_names"
                                   (arm2str arm))))
-    (setq order (send self :get-next-work-order arm order))
+    (setq order (send self :get-next-work-order arm))
     (unless order (return-from :set-target nil))
     (ros::ros-warn "next-work-order: ~a" (send order :item))
     ;; get target param
@@ -247,6 +247,7 @@
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
           (send self :update-json target-obj
                 :src (cons :bin target-bin) :dst (cons :cardboard target-cardboard))
+          (send self :add-finished-object arm target-obj)
           (when moveit-p (send self :delete-cardboard-scene))
           (send *ri* :angle-vector-raw
                 (if (eq grasp-style :suction)
