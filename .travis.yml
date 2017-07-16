@@ -17,7 +17,7 @@ env:
     - ROS_PARALLEL_JOBS="-j2"
     - ROSDEP_ADDITIONAL_OPTIONS="-n -q --ignore-src --skip-keys=jsk_smart_gui --skip-keys=ros3djs --skip-keys=pr2_calibration_launch --skip-keys=jsk_android_gui_api9 --skip-keys=ros2djs --skip-keys=face_recognition --skip-keys=roslibjs --skip-keys=force_proximity_ros --skip-keys=safe_teleop_base"
     - USE_DEB=false
-    - USE_TRAVIS=true
+    # - USE_TRAVIS=true
   matrix:
     - ROS_DISTRO=indigo
 
