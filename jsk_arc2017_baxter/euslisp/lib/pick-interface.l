@@ -99,6 +99,7 @@
         (setq recognition-count (incf recognition-count)))
       is-recognized))
   (:return-from-recognize-object (arm)
+    (send self :add-postponed-object arm target-obj)
     (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :fold-to-keep-object arm)
@@ -134,6 +135,7 @@
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
   (:return-from-pick-object (arm)
+    (send self :add-postponed-object arm target-obj)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
@@ -170,6 +172,7 @@
         (ros::ros-info "[main] target-cardboard: ~a" target-cardboard)
         t)))
   (:return-object (arm)
+    (send self :add-postponed-object arm target-obj)
     (if (eq grasp-style :suction)
       (send *ri* :angle-vector-raw
             (send self :ik->bin-center arm target-bin
@@ -243,7 +246,8 @@
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style :pinch)
-            (send self :move-fingers-pinch->init arm)))
+            (send self :move-fingers-pinch->init arm))
+          (send self :add-postponed-object arm target-obj))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
           (send self :update-json target-obj

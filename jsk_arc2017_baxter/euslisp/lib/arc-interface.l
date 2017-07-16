@@ -19,6 +19,7 @@
           object-boxes-
           object-coords-
           orders-
+          postponed-objects-
           tote-cubes-
           tote-movable-regions-
           ))
@@ -84,9 +85,12 @@
     (when (eq (length orders-) 0)
       (ros::ros-error "[:get-next-work-order] There is no order")
       (return-from :get-next-work-order nil))
-    (dolist (order orders-)
-      (unless (find (send order :item) finished-objects- :test #'string=)
-        (return-from :get-next-work-order order)))
+    ;; return never tried object
+    (dolist (skipping-objects
+              (list (append finished-objects- postponed-objects-) finished-objects-))
+      (dolist (order orders-)
+        (unless (find (send order :item) skipping-objects :test #'string=)
+          (return-from :get-next-work-order order))))
     nil)
   (:get-certain-work-order
     (arm bin)
@@ -757,7 +761,10 @@
       (send (ros::service-call service-name req) :success)))
   (:add-finished-object (arm obj)
     (pushback obj finished-objects-)
-    (ros::set-param (format nil "/~a_hand/finished_objects" (arm2str arm)) finished-objects-)))
+    (ros::set-param (format nil "/~a_hand/finished_objects" (arm2str arm)) finished-objects-))
+  (:add-postponed-object (arm obj)
+    (pushback obj postponed-objects-)
+    (ros::set-param (format nil "/~a_hand/postponed_objects" (arm2str arm)) postponed-objects-)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)

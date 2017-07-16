@@ -208,7 +208,8 @@
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style :pinch)
-            (send self :move-fingers-pinch->init arm)))
+            (send self :move-fingers-pinch->init arm))
+          (send self :add-postponed-object arm target-obj))
         (progn
           (send self :update-json target-obj :src :tote :dst (cons :bin target-bin))
           (send self :add-finished-object arm target-obj)
