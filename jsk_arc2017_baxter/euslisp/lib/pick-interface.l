@@ -55,31 +55,19 @@
     (setq label-names
           (ros::get-param (format nil "/~a_hand_camera/label_names"
                                   (arm2str arm))))
-    (setq order (send self :get-next-work-order arm))
-    (unless order (return-from :set-target nil))
-    (ros::ros-warn "next-work-order: ~a" (send order :item))
     ;; get target param
-    (setq target-bin (str2symbol (send order :bin)))
-    (setq target-obj (send order :item))
-    (setq target-cardboard (str2symbol (send order :box)))
+    (setq target-bin (send self :get-next-target-bin arm))
     (setq bin-contents (send self :get-bin-contents target-bin))
     (unless (send self :check-bin-exist target-bin)
       (ros::ros-warn "[~a] [main] could not find bin box: ~a" (ros::get-name) target-bin)
       (return-from :set-target nil))
-    (ros::set-param
-      (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
     (ros::set-dynparam
       (format nil "/~a_hand_camera/bbox_array_to_bbox" (arm2str arm))
       (cons "index" (position target-bin bins)))
-    (ros::set-dynparam
-      (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
-      (cons "label_value" (position target-obj label-names :test #'string=)))
     (send self :set-target-location arm (cons :bin target-bin))
     (ros::set-param
       (format nil "~a_hand/target_bin" (arm2str arm))
       (symbol2str target-bin))
-    ;; logging
-    (ros::ros-info-blue "[~a] [main] :set-target, target-bin: ~a, target-obj: ~a" (ros::get-name) target-bin target-obj)
     t)
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
@@ -96,9 +84,19 @@
       (send *ri* :wait-interpolation)
       (setq recognition-count 1)
       (while (null (or (> recognition-count trial-times) is-recognized))
+        (setq order (send self :select-work-order-in-bin arm target-bin :stamp (ros::time-now)))
         (setq is-recognized
-              (send self :recognize-target-object arm :stamp (ros::time-now)))
-        (setq recognition-count (incf recognition-count)))
+          (when order
+            (setq target-obj (send order :item))
+            (setq target-cardboard (str2symbol (send order :box)))
+            (ros::set-param
+              (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
+            (ros::set-dynparam
+              (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
+              (cons "label_value" (position target-obj label-names :test #'string=)))
+            (ros::ros-info-blue "[~a] [main] :recognize-object, target-bin: ~a, target-obj: ~a" (ros::get-name) target-bin target-obj)
+            (send self :recognize-target-object arm :stamp (ros::time-now))))
+        (incf recognition-count))
       is-recognized))
   (:return-from-recognize-object (arm)
     (send self :add-postponed-object arm target-obj)
