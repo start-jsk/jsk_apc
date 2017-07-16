@@ -14,16 +14,16 @@
   :slots (bin-contents
           bins
           dropped
-          picking-fail-count
           graspingp
+          grasp-style
           label-names
           moveit-p
           order
+          picking-fail-count
           target-bin
           target-cardboard
           target-obj
-          trial-fail-count
-          grasp-style))
+          trial-fail-count))
 
 (defmethod jsk_arc2017_baxter::pick-interface
   (:init (&key (moveit nil))
