@@ -32,7 +32,7 @@
             (:check-picking-fail-count !-> :wait-for-opposite-arm)
             (:verify-object -> :set-target-cardboard)
             (:verify-object !-> :return-object)
-            (:return-object -> :wait-for-opposite-arm)
+            (:return-object -> :check-picking-fail-count)
             (:set-target-cardboard -> :place-object)
             (:set-target-cardboard !-> :return-object)
             (:place-object -> :return-from-place-object)

@@ -139,7 +139,6 @@
     (if (eq grasp-style :pinch)
       (send self :move-fingers-pinch->init arm)))
   (:verify-object (arm)
-    (setq picking-fail-count 0)
     ;; TODO: in-hand verification
     ;; TODO: (setq target-obj (send *ti* :recognize-object-in-hand arm))
     ;; TODO: (return-from :verify-objec target-obj)
@@ -161,6 +160,7 @@
       (if picking-failp (setq picking-fail-count 0))
       picking-failp))
   (:set-target-bin (arm)
+    (setq picking-fail-count 0)
     ;; TODO: when we select target-bin, we should consider target-obj size.
     ;; TODO: (setq target-bin (send *ti* :get-target-bin arm target-obj))
     (setq target-bin
