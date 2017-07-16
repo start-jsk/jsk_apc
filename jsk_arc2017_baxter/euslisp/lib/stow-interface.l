@@ -11,17 +11,18 @@
 
 (defclass jsk_arc2017_baxter::stow-interface
   :super jsk_arc2017_baxter::arc-interface
-  :slots (graspingp
+  :slots (dropped
+          graspingp
+          grasp-style
+          label-names
           moveit-p
           picking-fail-count
-          label-names
           recognize-fail-count
           target-bin
           target-index
           target-obj
           tote-contents
-          trial-fail-count
-          grasp-style))
+          trial-fail-count))
 
 (defmethod jsk_arc2017_baxter::stow-interface
   (:init (&key (moveit nil))
