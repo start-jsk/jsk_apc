@@ -20,6 +20,7 @@
           target-index
           target-obj
           tote-contents
+          trial-fail-count
           grasp-style))
 
 (defmethod jsk_arc2017_baxter::stow-interface
@@ -27,6 +28,7 @@
     (send-super :init)
     (setq picking-fail-count 0)
     (setq recognize-fail-count 0)
+    (setq trial-fail-count 0)
     (setq moveit-p moveit)
     (setq grasp-style nil))
   (:recognize-bboxes (arm)
@@ -47,6 +49,8 @@
       can-start))
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
+      (setq trial-fail-count 0)
+      (setq grasp-style nil)
       (setq label-names
             (ros::get-param (format nil "/~a_hand_camera/label_names"
                                     (arm2str arm))))
@@ -67,9 +71,6 @@
         (setq target-index (send self :get-largest-object-index arm :stamp (ros::time-now)))
         (setq is-recognized
           (when target-index
-            (if (not (string= target-obj (elt label-names target-index)))
-              ;; reset picking-fail-count for new target
-              (setq picking-fail-count 0))
             (setq target-obj (elt label-names target-index))
             (ros::set-dynparam
               (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
@@ -120,6 +121,14 @@
     (setq graspingp (send *ri* :graspingp arm grasp-style))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
+  (:check-trial-fail-count (arm)
+    (send *ri* :stop-grasp arm)
+    (incf trial-fail-count)
+    (ros::ros-info "[main] arm: ~a, trial fail count: ~a" arm trial-fail-count)
+    (let (trial-failp)
+      (setq trial-failp (> trial-fail-count 1))
+      (if trial-failp (setq trial-fail-count 0))
+      trial-failp))
   (:return-from-pick-object (arm)
     (ros::ros-info "[main] arm: ~a return from pick-object to fold-pose-back" arm)
     (send *ri* :angle-vector-sequence-raw
@@ -145,10 +154,12 @@
         (setq target-obj (car scale-candidates)))
       (if (find target-obj scale-candidates :test #'string=) t nil)))
   (:check-picking-fail-count (arm)
-    (send *ri* :stop-grasp arm)
     (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
-    (> picking-fail-count 1))
+    (let (picking-failp)
+      (setq picking-failp (> picking-fail-count 1))
+      (if picking-failp (setq picking-fail-count 0))
+      picking-failp))
   (:set-target-bin (arm)
     ;; TODO: when we select target-bin, we should consider target-obj size.
     ;; TODO: (setq target-bin (send *ti* :get-target-bin arm target-obj))
