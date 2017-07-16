@@ -22,12 +22,14 @@
           target-bin
           target-cardboard
           target-obj
+          trial-fail-count
           grasp-style))
 
 (defmethod jsk_arc2017_baxter::pick-interface
   (:init (&key (moveit nil))
     (send-super :init)
     (setq picking-fail-count 0)
+    (setq trial-fail-count 0)
     (setq bins (list :a :b :c))
     (setq moveit-p moveit)
     (setq grasp-style nil))
@@ -50,8 +52,6 @@
       (setq order nil)
       can-start))
   (:set-target (arm)
-    ;; reset picking-fail-count for new target
-    (setq picking-fail-count 0)
     (setq label-names
           (ros::get-param (format nil "/~a_hand_camera/label_names"
                                   (arm2str arm))))
@@ -83,6 +83,8 @@
     t)
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
+      (setq trial-fail-count 0)
+      (setq grasp-style nil)
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-cardboard-scene))
       (send self :move-fingers-pinch->init arm)
@@ -134,6 +136,14 @@
     (setq graspingp (send *ri* :graspingp arm grasp-style))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
+  (:check-trial-fail-count (arm)
+    (send *ri* :stop-grasp arm)
+    (incf trial-fail-count)
+    (ros::ros-info "[main] arm: ~a, trial fail count: ~a" arm trial-fail-count)
+    (let (trial-failp)
+      (setq trial-failp (> trial-fail-count 1))
+      (if trial-failp (setq trial-fail-count 0))
+      trial-failp))
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj)
     (send *ri* :angle-vector-sequence-raw
@@ -157,10 +167,12 @@
       (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
       (if (find target-obj scale-candidates :test #'string=) t nil)))
   (:check-picking-fail-count (arm)
-    (send *ri* :stop-grasp arm)
-    (setq picking-fail-count (incf picking-fail-count))
+    (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
-    (> picking-fail-count 1))
+    (let (picking-failp)
+      (setq picking-failp (> picking-fail-count 1))
+      (if picking-failp (setq picking-fail-count 0))
+      picking-failp))
   (:set-target-cardboard (arm)
     (if (eq target-cardboard :shelf)
       (progn
