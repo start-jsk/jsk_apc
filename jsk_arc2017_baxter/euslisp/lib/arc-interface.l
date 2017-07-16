@@ -73,6 +73,36 @@
     (let (cube)
       (setq cube (gethash arm tote-cubes-))
       (sethash arm tote-movable-regions- (send self :cube->movable-region cube :offset offset))))
+  (:get-next-target-bin (arm)
+    (when (eq (length orders-) 0)
+      (ros::ros-error "[:get-next-target-bin] no work-order, try :get-work-orders first")
+      (return-from :get-next-target-bin nil))
+    (let (target-bins postponed-bins)
+      (setq target-bins
+            (remove-duplicates
+              (remove nil
+                      (mapcar
+                        #'(lambda (order)
+                            (unless
+                              (or (find (send order :item) finished-objects- :test #'string=)
+                                  (find (send order :item) postponed-objects- :test #'string=))
+                              (send order :bin)))
+                        orders-))))
+      (when target-bins
+        (return-from :get-next-target-bin
+                     (str2symbol (elt target-bins (random (length target-bins))))))
+      (setq postponed-bins
+            (remove-duplicates
+              (remove nil
+                      (mapcar
+                        #'(lambda (order)
+                            (unless (find (send order :item) finished-objects- :test #'string=)
+                              (send order :bin)))
+                        orders-))))
+      (when postponed-bins
+        (return-from :get-next-target-bin
+                     (str2symbol (elt postponed-bins (random (length postponed-bins))))))
+      nil))
   (:get-work-orders
     (arm)
     (let (msg)
