@@ -30,7 +30,6 @@ script:
   - source .travis/travis.sh
   # build doc
   - cd $TRAVIS_BUILD_DIR/doc
-  - unset PYTHONPATH  # cleanup for virtualenv
   - source setup.sh
   - make html
 
