@@ -18,10 +18,11 @@
             (:wait-for-opposite-arm -> :set-target)
             (:wait-for-opposite-arm !-> :wait-for-opposite-arm)
             (:set-target -> :recognize-object)
-            (:set-target !-> :wait-for-user-input)
             (:recognize-object -> :set-grasp-style)
             (:recognize-object !-> :return-from-recognize-object)
-            (:return-from-recognize-object -> :wait-for-opposite-arm-start-picking)
+            (:return-from-recognize-object -> :check-recognize-fail-count)
+            (:check-recognize-fail-count -> :wait-for-user-input)
+            (:check-recognize-fail-count !-> :wait-for-opposite-arm-start-picking)
             (:set-grasp-style -> :pick-object)
             (:pick-object -> :verify-object)
             (:pick-object !-> :check-trial-fail-count)
@@ -61,7 +62,8 @@
             (:set-target
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :set-target)
-                 (send *ti* :set-target *arm*)))
+                 (send *ti* :set-target *arm*)
+                 t))
             (:recognize-object
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :recognize-object)
@@ -71,6 +73,10 @@
                  (send *ti* :update-state *arm* :return-from-recognize-object)
                  (send *ti* :return-from-recognize-object *arm*)
                  t))
+            (:check-recognize-fail-count
+              '(lambda (userdata)
+                 (send *ti* :update-state *arm* :check-recognize-fail-count)
+                 (send *ti* :check-recognize-fail-count *arm*)))
             (:set-grasp-style
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :set-grasp-style)
