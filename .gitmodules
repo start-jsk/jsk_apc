@@ -2,3 +2,7 @@
 	path = jsk_apc2016_common/python/jsk_apc2016_common/rbo_segmentation
 	url = https://github.com/yuyu2172/rbo-apc-object-segmentation
  	branch = jsk_apc
+[submodule ".travis"]
+	path = .travis
+	url = https://github.com/jsk-ros-pkg/jsk_travis.git
+	version = 0.4.26
