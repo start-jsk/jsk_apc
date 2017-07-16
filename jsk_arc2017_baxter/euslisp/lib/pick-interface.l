@@ -154,7 +154,6 @@
     (if (eq grasp-style :pinch)
       (send self :move-fingers-pinch->init arm)))
   (:verify-object (arm)
-    (setq picking-fail-count 0)
     ;; TODO: in-hand verification
     ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
     ;; TODO:   target-obj != in-hand object -> :return_object
@@ -174,6 +173,7 @@
       (if picking-failp (setq picking-fail-count 0))
       picking-failp))
   (:set-target-cardboard (arm)
+    (setq picking-fail-count 0)
     (if (eq target-cardboard :shelf)
       (progn
         (ros::ros-info "[main] blacklisted object, return to shelf")
