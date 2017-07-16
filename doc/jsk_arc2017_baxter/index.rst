@@ -10,6 +10,7 @@ jsk_arc2017_baxter
 
    arc2017_pick_trial
    arc2017_stow_trial
+   state_machine
    usage_of_baxter
    setup_gripper_v6
 
