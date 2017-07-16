@@ -18,6 +18,7 @@
           finished-objects-
           object-boxes-
           object-coords-
+          orders-
           tote-cubes-
           tote-movable-regions-
           ))
@@ -78,27 +79,25 @@
         (one-shot-subscribe
           (format nil "/strategic_work_order/~a_hand" (arm2str arm))
           jsk_arc2017_common::WorkOrderArray))
-      (send msg :orders)))
+      (setq orders- (send msg :orders))))
   (:get-next-work-order (arm)
-    (let ((orders (send self :get-work-orders arm)))
-      (when (eq (length orders) 0)
-        (ros::ros-error "[:get-next-work-order] There is no order")
-        (return-from :get-next-work-order nil))
-      (dolist (order orders)
-        (unless (find (send order :item) finished-objects- :test #'string=)
-          (return-from :get-next-work-order order)))
-      nil))
+    (when (eq (length orders-) 0)
+      (ros::ros-error "[:get-next-work-order] There is no order")
+      (return-from :get-next-work-order nil))
+    (dolist (order orders-)
+      (unless (find (send order :item) finished-objects- :test #'string=)
+        (return-from :get-next-work-order order)))
+    nil)
   (:get-certain-work-order
     (arm bin)
-    (let ((orders (send self :get-work-orders arm)))
-      (when (eq (length orders) 0)
-        (ros::ros-error "[:get-certain-work-order] There is no order")
-        (return-from :get-certain-work-order nil))
-      (when (null bin) (return-from :get-certain-work-order (elt orders 0)))
-      (dotimes (i (length orders))
-        (when (string= (send (elt orders i) :bin)
-                       (symbol-string bin))
-          (return-from :get-certain-work-order (elt orders i))))))
+    (when (eq (length orders-) 0)
+      (ros::ros-error "[:get-certain-work-order] There is no order")
+      (return-from :get-certain-work-order nil))
+    (when (null bin) (return-from :get-certain-work-order (elt orders- 0)))
+    (dotimes (i (length orders-))
+      (when (string= (send (elt orders- i) :bin)
+                     (symbol-string bin))
+        (return-from :get-certain-work-order (elt orders- i)))))
   (:check-bin-exist (bin) (if (gethash bin bin-cubes-) t nil))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
