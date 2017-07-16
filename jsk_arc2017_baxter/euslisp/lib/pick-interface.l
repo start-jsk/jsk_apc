@@ -20,6 +20,7 @@
           moveit-p
           order
           picking-fail-count
+          recognize-fail-count
           target-bin
           target-cardboard
           target-obj
@@ -30,6 +31,7 @@
     (send-super :init)
     (setq picking-fail-count 0)
     (setq trial-fail-count 0)
+    (setq recognize-fail-count 0)
     (setq bins (list :a :b :c))
     (setq moveit-p moveit)
     (setq grasp-style nil))
@@ -108,10 +110,15 @@
     (send *ri* :wait-interpolation)
     (when moveit-p (send self :delete-shelf-scene))
     (when moveit-p (send self :delete-cardboard-scene)))
+  (:check-recognize-fail-count (arm)
+    (incf recognize-fail-count)
+    (ros::ros-info "[main] arm: ~a, recognize fail count: ~a" arm recognize-fail-count)
+    (> recognize-fail-count 1))
   (:set-grasp-style (arm)
     (if (eq grasp-style :suction)
       (setq grasp-style :pinch) (setq grasp-style :suction)))
   (:pick-object (arm)
+    (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-shelf-scene))
     (send self :reset-scale arm)
     (send self :pick-object-in-bin arm target-bin
