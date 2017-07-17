@@ -54,7 +54,6 @@
       (send self :set-target-location arm :tote)
       (when moveit-p (send self :add-shelf-scene))
       (when moveit-p (send self :add-tote-scene arm))
-      (send *ri* :stop-grasp arm)
       (send self :move-fingers-pinch->init arm)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
@@ -122,7 +121,6 @@
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
   (:return-from-pick-object (arm)
-    (send *ri* :stop-grasp arm)
     (ros::ros-info "[main] arm: ~a return from pick-object to fold-pose-back" arm)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
@@ -147,6 +145,7 @@
         (setq target-obj (car scale-candidates)))
       (if (find target-obj scale-candidates :test #'string=) t nil)))
   (:check-picking-fail-count (arm)
+    (send *ri* :stop-grasp arm)
     (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
     (> picking-fail-count 1))
