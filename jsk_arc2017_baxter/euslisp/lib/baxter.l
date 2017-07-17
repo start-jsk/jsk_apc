@@ -95,7 +95,7 @@
       (cond ((equal (send (car (last link-list)) :name) "right_gripper_pad_with_base")
              (setq link-list (butlast link-list 2)))
             ((equal (send (car (last link-list)) :name) "left_gripper_pad_with_base")
-             (setq link-list (butlast link-list))))
+             (setq link-list (butlast link-list 2))))
       nil)
     (send-super* :inverse-kinematics target-coords
                  :move-target move-target :link-list link-list :rthre rthre args)
