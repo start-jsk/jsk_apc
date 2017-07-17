@@ -1,0 +1,68 @@
+<launch>
+
+  <!-- **********************************************************************************************
+       Usage:
+         roslaunch jsk_arc2017_baxter baxter.launch moveit:=false pick:=true
+         roslaunch jsk_arc2017_baxter stereo_astra_hand.launch
+         roslaunch jsk_arc2017_baxter create_dataset2d_collect_rawdata_main.launch
+       ********************************************************************************************** -->
+
+  <!-- Data collection server -->
+  <include file="$(find jsk_arc2017_baxter)/experiments/create_dataset2d/create_dataset2d_data_collection_server.launch">
+    <arg name="side" value="left" />
+  </include>
+  <include file="$(find jsk_arc2017_baxter)/experiments/create_dataset2d/create_dataset2d_data_collection_server.launch">
+    <arg name="side" value="right" />
+  </include>
+
+  <!-- Main -->
+  <node name="create_dataset2d_collect_rawdata_main"
+        pkg="jsk_arc2017_baxter" type="create-dataset2d-collect-rawdata-main.l"
+        output="screen">
+    <env name="DISPLAY" value="" />
+    <rosparam>
+      side: right
+    </rosparam>
+  </node>
+
+  <!-- Gui -->
+  <node name="rqt_gui"
+        pkg="rqt_gui" type="rqt_gui"
+        args="--perspective-file $(find jsk_arc2017_baxter)/experiments/create_dataset2d/create_dataset2d_collect_rawdata_main.perspective">
+  </node>
+
+  <!-- Misc -->
+  <node name="tile_rgb_images"
+        pkg="jsk_perception" type="tile_image.py">
+    <rosparam>
+      input_topics:
+        - /left_hand_camera/left/rgb/image_rect_color
+        - /right_hand_camera/left/rgb/image_rect_color
+    </rosparam>
+  </node>
+  <group ns="left_hand_camera">
+    <node name="tile_images"
+          pkg="jsk_perception" type="tile_image.py">
+      <rosparam>
+        input_topics:
+          - /left_hand_camera/left/rgb/image_rect_color
+          - /left_hand_camera/fused/depth_registered/image_rect_view
+      </rosparam>
+    </node>
+  </group>
+  <group ns="right_hand_camera">
+    <node name="tile_images"
+          pkg="jsk_perception" type="tile_image.py">
+      <rosparam>
+        input_topics:
+          - /right_hand_camera/left/rgb/image_rect_color
+          - /right_hand_camera/fused/depth_registered/image_rect_view
+      </rosparam>
+    </node>
+  </group>
+  <node name="xdisplay_image_topic"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/tile_rgb_images/output">
+  </node>
+
+</launch>

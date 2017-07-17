@@ -241,11 +241,11 @@
                              (send box :label)))))))
       nil))
   (:move-fingers-pinch->init
-    (arm)
+    (arm &key (wait t))
     ;; Move fingers to initial pose
     (send *ri* :stop-grasp arm :pinch)
     (send *ri* :move-hand arm
-          (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
+          (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait wait))
   (:pick-object-in-bin
     (arm bin &rest args)
     (let (graspingp movable-region)
@@ -267,6 +267,7 @@
   (:pick-object-with-movable-region
     (arm movable-region &key (n-trial 1) (n-trial-same-pos 1)
          (do-stop-grasp nil) (grasp-style :suction))
+    (send self :move-fingers-pinch->init arm :wait nil)
     (send *ri* :calib-proximity-threshold arm)
     (let (graspingp avs object-index obj-pos obj-cube pinch-yaw)
       ;; TODO: object-index is set randomly
@@ -312,12 +313,14 @@
         (send *ri* :angle-vector-raw
               (send *baxter* :slide-gripper arm gripper-x :relative nil)
               :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
-        (send *ri* :wait-interpolation)
         ;; Fold fingers to avoid collision
         (send *ri* :move-hand arm
-              (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000)
+              (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000
+              :wait nil)
         (send *ri* :move-hand arm
-              (send *baxter* :hand-grasp-pose arm :cylindrical :angle 110) 1000)
+              (send *baxter* :hand-grasp-pose arm :cylindrical :angle 110) 1000
+              :wait nil)
+        (send *ri* :wait-interpolation)
         ;; Move whole arm to target pose
         (send *ri* :angle-vector-raw
               (send *baxter* :angle-vector next-av)

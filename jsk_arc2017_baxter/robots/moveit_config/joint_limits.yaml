@@ -61,6 +61,7 @@ joint_limits:
     has_velocity_limits: true
     max_velocity: 1.5
     has_acceleration_limits: true
+    max_acceleration: 2.0
   right_s1:
     has_velocity_limits: true
     max_velocity: 1.5

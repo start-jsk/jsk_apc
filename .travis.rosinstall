@@ -1,7 +1,8 @@
+# jsk_robot: will be removed after the release of 1.0.10
 - git:
     local-name: jsk-ros-pkg/jsk_robot
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-    version: master
+    version: c978f3da06261c77e0dafea2f2e4df072323b555
 - git:
     local-name: FA-I-sensor/force_proximity_ros
     uri: https://github.com/knorth55/FA-I-sensor.git

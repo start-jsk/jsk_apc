@@ -2,6 +2,121 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.3.0 (2017-07-15)
+------------------
+* Add look_around_bins experiment
+* Update hand action state in :hand-interpolatingp
+* Clean up :graspingp
+* Always set graspingp of pinching as true
+* Detect serial blocked and restart
+* Re-calibrate left vacuum pad joint
+* Move gripper upward in :return-object to prevent collision
+* Add initialization of left hand
+* Fix for slow tf_to_transform
+* Rotate head monitor before collect_data_in_shelf
+* Use transformable_markers_client in collect_data_in_shelf
+* Disable moveit to see in shelf
+* add sleep after publishing moveit scene msg
+* Fix :get-arm-controller for larm (`#2271 <https://github.com/start-jsk/jsk_apc/issues/2271>`_)
+* Program to test hand-eye coordination (`#2265 <https://github.com/start-jsk/jsk_apc/issues/2265>`_)
+  * Test hand eye coordination
+  * Add test_hand_eye_coordination example
+* add controller-type in cancel-angle-vector (`#2266 <https://github.com/start-jsk/jsk_apc/issues/2266>`_)
+* Make @pazeshun happy by hand-eye calibration (`#2264 <https://github.com/start-jsk/jsk_apc/issues/2264>`_)
+  * Make @pazeshun happy by hand-eye calibration
+  * Remove initial pose setting in stereo_astra_hand.launch
+* fix indent in baxter-interface.l
+* add arm-head-controller, exclude head from arm-controller
+* Fix topic of republish_gripper_sensor_states.py
+* Fix typo in :finger-closep
+* Fix line length
+* vacuum_gripper.srdf.xacro -> gripper_v6.srdf.xacro
+* Adjust pick and stow to left gripper-v6
+* Adjust moveit config to left gripper-v6
+* Adjust baxter interface to left gripper-v6
+* Adjust baxter.launch to left gripper-v6
+* Add left gripper-v6 to gripper launch
+* Add udev rule for left gripper-v6
+* Add Arduino firm for left gripper-v6
+* Add config for left gripper-v6
+* Add left gripper-v6 to robot model
+* Add mesh of left gripper-v6
+* loosen weight error limit
+* Enable to change offset of flex threshold in :wait-interpolation-until
+* Improve logging of :wait-interpolation-until
+* Fix for euslint
+* divide too long lines into several lines
+* add check pinch graspability program
+* add midpoint when returning from place object
+* remove duplicated file
+* add unix::sleep in while loop
+* change error to ros::ros-error
+* wait for :interpolatingp
+* use proximity in :start-grasp
+* rotate gripper according to BoundingBox pose before pinching
+* check if angle-vector length is 0 or 2
+* add scale methods in arc-interface
+* refine weight_candidates_refiner node
+* add scale node in setup launch
+* add scale.launch
+* add use_topic and input_candidates args
+* update place motion
+* make cardboard bbox bigger to avoid collision
+* disable moveit and add fixme
+* escape when both arm waiting other arm
+* fix typo in main program
+* try twice when grasp-stye is :suction
+* change head_pan angle to suppress warning message
+* add moveit debug arg in baxter.launch
+* add midpoint for place object
+* Fix encoding of depth: use 32FC1
+* Stop using right side depth sensor to avoid ir conflicts
+* Calibrate intrinsic parameters
+* Use software registration for depth registration
+* Revert `#2235 <https://github.com/start-jsk/jsk_apc/issues/2235>`_ 'Grasp using proximity'
+  Because
+  - We cannot use left hand with this change.
+  - Has typo.
+* update pick.rviz
+* Add test for :recognize-bboxes
+* update add-cardboard-scene method
+* fix typo in arc-interface
+* update transformable_markers_client node name
+* modify to set offset in world coords
+* update ik->cardboard-center to use subscribed bbox
+* add recognize-cardboard-boxes method
+* add cardboard markers
+* order depends of jsk_arc2017_baxter alphabetically
+* add smach_viewer args in main launch
+* add smach_viewer as run_depend
+* apply stereo to setup_for_pick/stow.launch (fixed 3e91e84)
+* Fix topic name in euslisp
+* Replace publish_boxes to transformable_markers_client/output/boxes
+* Use transformable_markers_client to adjust scene
+* fix typo  :rarm -> arm
+* correct open/close parenthesises
+* add exit after ros::ros-error
+* add unix::sleep in while loop
+* change error to ros::ros-error
+* correct indent 3
+* wait for :interpolatingp
+* correct indent 2
+* correct indent
+* use proximity in :start-grasp
+* rotate gripper according to BoundingBox pose before pinching
+* check if angle-vector length is 0 or 2
+* Add sleep in :wait-interpolation-until loop
+* replace bg_label by ignore_labels
+* use arc2017 object_segmentation_3d in stow task
+* return nil when largest box is not found
+* Show FCN results in stow.rviz
+* Improve stow.rviz with transparent moveit scene
+* Resolve dependency on position_controller/joint_trajectory_controller
+* Revert "Apply stereo camera to setup_for_pick/stow.launch"
+* do not use fused RGB as FCN input
+* apply stereo camera to setup_for_pick/stow.launch
+* Contributors: Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa, Shun Hasegawa, Yuto Uchimi
+
 3.2.0 (2017-07-06)
 ------------------
 * add in_hand_recognition launch
