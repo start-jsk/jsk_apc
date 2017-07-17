@@ -26,7 +26,7 @@
             (:pick-object -> :verify-object)
             (:pick-object !-> :check-picking-fail-count)
             (:check-picking-fail-count -> :return-from-pick-object)
-            (:check-picking-fail-count !-> :recognize-object)
+            (:check-picking-fail-count !-> :set-grasp-style)
             (:return-from-pick-object -> :wait-for-opposite-arm-start-picking)
             (:verify-object -> :set-target-bin)
             (:verify-object !-> :return-object)
