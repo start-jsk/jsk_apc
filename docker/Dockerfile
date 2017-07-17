@@ -21,11 +21,6 @@ RUN cd ~ && \
     wstool up -j 2 && \
     wstool merge start-jsk/jsk_apc/.travis.rosinstall && \
     wstool up -j 2
-
 RUN rosdep update
-RUN rosdep install --from-path ~/src/jsk-ros-pkg/jsk_recognition -r -y -i
-RUN rosdep install --from-path ~/src/jsk-ros-pkg/jsk_robot/jsk_baxter_robot -r -y -i --skip-keys=ros3djs --skip-keys=ros2djs --skip-keys=roslibjs
-RUN rosdep install --from-path ~/src/FA-I-sensor/force_proximity_ros -r -y -i
-RUN rosdep install --from-path ~/src/start-jsk/jsk_apc -r -y -i
-
+RUN rosdep install --from-path ~/src -r -y -i
 RUN rm -rf ~/src
