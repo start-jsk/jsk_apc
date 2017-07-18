@@ -146,7 +146,7 @@
   (:select-work-order-in-bin
     (arm bin &key (stamp (ros::time-now)))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
-          box-msg box-objects bin-orders label-names)
+          box-msg box-objects box-labels bin-orders label-names)
       (setq bin-orders
             (remove nil (mapcar
                           #'(lambda (order)
