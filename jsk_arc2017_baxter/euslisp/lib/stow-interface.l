@@ -82,6 +82,7 @@
         (setq recognition-count (incf recognition-count)))
       is-recognized))
   (:return-from-recognize-object (arm)
+    (send self :add-postponed-object arm target-obj :tote)
     (ros::ros-info "[main] arm: ~a, failed to recognize object in tote" arm)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :fold-to-keep-object arm)
@@ -133,6 +134,7 @@
       (if trial-failp (setq trial-fail-count 0))
       trial-failp))
   (:return-from-pick-object (arm)
+    (send self :add-postponed-object arm target-obj :tote)
     (ros::ros-info "[main] arm: ~a return from pick-object to fold-pose-back" arm)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
@@ -177,6 +179,7 @@
         (ros::ros-info "[main] target-bin: ~a" target-bin)
         t)))
   (:return-object (arm)
+    (send self :add-postponed-object arm target-obj :tote)
     (if (eq grasp-style :suction)
       (send *ri* :angle-vector-raw
             (send self :ik->tote-center arm :offset #f(0 0 0)
@@ -223,10 +226,10 @@
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style :pinch)
             (send self :move-fingers-pinch->init arm))
-          (send self :add-postponed-object arm target-obj))
+          (send self :add-postponed-object arm target-obj :tote))
         (progn
           (send self :update-json target-obj :src :tote :dst (cons :bin target-bin))
-          (send self :add-finished-object arm target-obj)
+          (send self :add-finished-object arm target-obj :tote)
           (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a" arm target-obj target-bin)
           (when moveit-p (send self :delete-bin-scene target-bin))
           (send *ri* :angle-vector-raw
