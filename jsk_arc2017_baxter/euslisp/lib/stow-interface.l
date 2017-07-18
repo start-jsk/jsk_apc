@@ -70,7 +70,7 @@
       (send *ri* :wait-interpolation)
       (setq recognition-count 1)
       (while (null (or (> recognition-count trial-times) is-recognized))
-        (setq target-index (send self :get-largest-object-index arm :stamp (ros::time-now)))
+        (setq target-index (send self :get-largest-object-index arm :tote :stamp (ros::time-now)))
         (setq is-recognized
           (when target-index
             (setq target-obj (elt label-names target-index))
