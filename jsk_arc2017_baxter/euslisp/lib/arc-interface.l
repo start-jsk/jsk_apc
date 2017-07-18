@@ -22,6 +22,7 @@
           postponed-objects-
           tote-cubes-
           tote-movable-regions-
+          unfinished-objects-
           ))
 
 (defmethod jsk_arc2017_baxter::arc-interface
@@ -34,7 +35,10 @@
     (setq object-coords- (make-hash-table))
     (setq cardboard-cubes- (make-hash-table))
     (setq tote-cubes- (make-hash-table))
-    (setq tote-movable-regions- (make-hash-table)))
+    (setq tote-movable-regions- (make-hash-table))
+    (setq postponed-objects- (make-hash-table))
+    (setq finished-objects- (make-hash-table))
+    (setq unfinished-objects- (make-hash-table)))
   (:fold-pose-back
     (&optional (arm :arms) &rest args)
     (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
@@ -84,8 +88,12 @@
                       (mapcar
                         #'(lambda (order)
                             (unless
-                              (or (find (send order :item) finished-objects- :test #'string=)
-                                  (find (send order :item) postponed-objects- :test #'string=))
+                              (or (find (send order :item)
+                                        (gethash (str2symbol (send order :bin)) finished-objects-)
+                                        :test #'string=)
+                                  (find (send order :item)
+                                        (gethash (str2symbol (send order :bin)) postponed-objects-)
+                                        :test #'string=))
                               (send order :bin)))
                         orders-))))
       (when target-bins
@@ -96,7 +104,9 @@
               (remove nil
                       (mapcar
                         #'(lambda (order)
-                            (unless (find (send order :item) finished-objects- :test #'string=)
+                            (unless (find (send order :item)
+                                          (gethash (str2symbol (send order :bin)) finished-objects-)
+                                          :test #'string=)
                               (send order :bin)))
                         orders-))))
       (when postponed-bins
@@ -117,7 +127,8 @@
       (return-from :get-next-work-order nil))
     ;; return never tried object
     (dolist (skipping-objects
-              (list (append finished-objects- postponed-objects-) finished-objects-))
+              (list (append (gethash bin finished-objects-) (gethash bin postponed-objects-))
+                    (gethash bin finished-objects-)))
       (dolist (order orders-)
         (unless (find (send order :item) skipping-objects :test #'string=)
           (return-from :get-next-work-order order))))
@@ -163,7 +174,8 @@
         (unless box-labels (return-from :select-work-order-in-bin nil))
         (setq box-objects (mapcar #'(lambda (label) (elt label-names label)) box-labels))
         (dolist (skipping-objects
-                  (list (append finished-objects- postponed-objects-) finished-objects-))
+                  (list (append (gethash bin finished-objects-) (gethash bin postponed-objects-))
+                        (gethash bin finished-objects-)))
           (dolist (order bin-orders)
             (let ((object-name (send order :item)))
               (when (and (find object-name box-objects :test #'string=)
@@ -827,15 +839,51 @@
           (req (instance std_srvs::TriggerRequest :init)))
       (ros::wait-for-service service-name)
       (send (ros::service-call service-name req) :success)))
-  (:add-finished-object (arm obj)
-    (pushback obj finished-objects-)
-    (ros::set-param (format nil "/~a_hand/finished_objects" (arm2str arm)) finished-objects-)
-    (when (find obj postponed-objects- :test #'string=)
-      (setq postponed-objects- (remove obj postponed-objects- :test #'string=))
-      (ros::set-param (format nil "/~a_hand/postponed_objects" (arm2str arm)) postponed-objects-)))
-  (:add-postponed-object (arm obj)
-    (pushback obj postponed-objects-)
-    (ros::set-param (format nil "/~a_hand/postponed_objects" (arm2str arm)) postponed-objects-)))
+  (:update-object-tables (obj bin &key object-type)
+    (cond
+      ((eq object-type :unfinished-objects)
+       (sethash bin unfinished-objects- (append (gethash bin unfinished-objects-) (list obj))))
+      ((eq object-type :postponed-objects)
+       (sethash bin unfinished-objects-
+                (remove obj (gethash bin unfinished-objects-) :test #'string= :count 1))
+       (sethash bin postponed-objects- (append (gethash bin postponed-objects-) (list obj))))
+      ((eq object-type :finished-objects)
+       ;; first, add into postponed-objects-
+       (send self :update-object-tables obj bin :object-type :postponed-objects)
+       ;; then move to finished-objects-
+       ;; this is for the case that targets are same object.
+       (sethash bin postponed-objects-
+                (remove obj (gethash bin postponed-objects-) :test #'string= :count 1))
+       (sethash bin finished-objects- (append (gethash bin finished-objects-) (list obj))))
+      (t nil)))
+  (:set-objects-param (arm bin &key object-type)
+    (cond
+      ((eq object-type :unfinished-objects)
+       (ros::set-param
+         (format nil "/~a_hand/unfinished_objects/~a" (arm2str arm)
+                 (if (eq bin :tote) (symbol2str bin) (format nil "bin_~a" (symbol-string bin))))
+         (gethash bin unfinished-objects-)))
+      ((eq object-type :finished-objects)
+       (ros::set-param
+         (format nil "/~a_hand/finished_objects/~a" (arm2str arm)
+                 (if (eq bin :tote) (symbol2str bin) (format nil "bin_~a" (symbol-string bin))))
+         (gethash bin finished-objects-)))
+      ((eq object-type :postponed-objects)
+       (ros::set-param
+         (format nil "/~a_hand/postponed_objects/~a" (arm2str arm)
+                 (if (eq bin :tote) (symbol2str bin) (format nil "bin_~a" (symbol-string bin))))
+         (gethash bin postponed-objects-)))
+      ((eq object-type :all)
+       (send self :set-objects-param arm bin :object-type :unfinished-objects)
+       (send self :set-objects-param arm bin :object-type :finished-objects)
+       (send self :set-objects-param arm bin :object-type :postponed-objects))
+      (t nil)))
+  (:add-finished-object (arm obj bin)
+    (send self :update-object-tables obj bin :object-type :finished-objects)
+    (send self :set-objects-param arm bin :object-type :finished-objects))
+  (:add-postponed-object (arm obj bin)
+    (send self :update-object-tables obj bin :object-type :postponed-objects)
+    (send self :set-objects-param arm bin :object-type :postponed-objects)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)

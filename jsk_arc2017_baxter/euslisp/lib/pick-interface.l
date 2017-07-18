@@ -101,7 +101,7 @@
         (incf recognition-count))
       is-recognized))
   (:return-from-recognize-object (arm)
-    (send self :add-postponed-object arm target-obj)
+    (send self :add-postponed-object arm target-obj target-bin)
     (ros::ros-info "[main] arm: ~a, failed to recognize object ~a" arm target-obj)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :fold-to-keep-object arm)
@@ -153,7 +153,7 @@
       (if trial-failp (setq trial-fail-count 0))
       trial-failp))
   (:return-from-pick-object (arm)
-    (send self :add-postponed-object arm target-obj)
+    (send self :add-postponed-object arm target-obj target-bin)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
@@ -192,7 +192,7 @@
         (ros::ros-info "[main] target-cardboard: ~a" target-cardboard)
         t)))
   (:return-object (arm)
-    (send self :add-postponed-object arm target-obj)
+    (send self :add-postponed-object arm target-obj target-bin)
     (if (eq grasp-style :suction)
       (send *ri* :angle-vector-raw
             (send self :ik->bin-center arm target-bin
@@ -267,12 +267,12 @@
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style :pinch)
             (send self :move-fingers-pinch->init arm))
-          (send self :add-postponed-object arm target-obj))
+          (send self :add-postponed-object arm target-obj target-bin))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
           (send self :update-json target-obj
                 :src (cons :bin target-bin) :dst (cons :cardboard target-cardboard))
-          (send self :add-finished-object arm target-obj)
+          (send self :add-finished-object arm target-obj target-bin)
           (when moveit-p (send self :delete-cardboard-scene))
           (send *ri* :angle-vector-raw
                 (if (eq grasp-style :suction)
