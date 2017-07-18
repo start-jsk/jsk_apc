@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import jsk_arc2017_common
 from jsk_arc2017_common.msg import WorkOrder
 from jsk_arc2017_common.msg import WorkOrderArray
 import json
@@ -50,8 +51,17 @@ class WorkOrderPublisher(object):
             self.cardboard_ids[size_id] = 'ABC'[i]
 
         publish_orders = self._generate_publish_orders(orders)
-        self.larm_msg = self._generate_msg(publish_orders['left_hand'])
-        self.rarm_msg = self._generate_msg(publish_orders['right_hand'])
+
+        object_weights = jsk_arc2017_common.get_object_weights()
+        left_sorted_orders = sorted(
+            publish_orders['left_hand'],
+            key=lambda order: object_weights[order['item']])
+        right_sorted_orders = sorted(
+            publish_orders['right_hand'],
+            key=lambda order: object_weights[order['item']])
+
+        self.larm_msg = self._generate_msg(left_sorted_orders)
+        self.rarm_msg = self._generate_msg(right_sorted_orders)
         self.larm_pub = rospy.Publisher(
             '~left_hand', WorkOrderArray, queue_size=1)
         self.rarm_pub = rospy.Publisher(
