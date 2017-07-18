@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import jsk_arc2017_common
 from jsk_arc2017_common.msg import WeightStamped
 from jsk_recognition_msgs.msg import Label
 from jsk_recognition_msgs.msg import LabelArray
@@ -18,7 +19,7 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
         self.candidates = {}
         self.input_topics = rospy.get_param('~input_topics')
         # {object_name: weight}
-        self.object_weights = rospy.get_param('~object_weights')
+        self.object_weights = jsk_arc2017_common.get_object_weights()
         self.error = rospy.get_param('~error', 1.0)
 
         self.weight_sum = 0.0

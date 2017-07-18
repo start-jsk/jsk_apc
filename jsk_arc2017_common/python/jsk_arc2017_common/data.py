@@ -6,6 +6,13 @@ import yaml
 import rospkg
 
 
+def get_object_weights():
+    PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
+
+    with open(osp.join(PKG_DIR, 'config/object_weights.yaml')) as f:
+        return yaml.load(f)
+
+
 def get_object_names():
     PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
