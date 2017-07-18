@@ -49,19 +49,38 @@
 
   <!-- label -> cluster indices -->
   <group if="$(arg SELECT_LARGEST)">
+    <node name="resize_label"
+          pkg="nodelet" type="nodelet"
+          args="load image_proc/resize $(arg NODELET_MANAGER)">
+      <remap from="image" to="apply_context_to_label_proba/output/label" />
+      <rosparam>
+        interpolation: 0
+        scale_height: 0.5
+        scale_width: 0.5
+      </rosparam>
+    </node>
     <node name="label_to_cluster_indices"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl_utils/LabelToClusterPointIndices $(arg NODELET_MANAGER)">
-      <remap from="~input" to="apply_context_to_label_proba/output/label" />
+      <remap from="~input" to="resize_label/image" />
       <rosparam subst_value="true">
         bg_label: -1
         ignore_labels: $(arg IGNORE_LABELS)
       </rosparam>
     </node>
+    <node name="resize_points_publisher_label"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_pcl/ResizePointsPublisher">
+      <remap from="~input" to="$(arg INPUT_CLOUD)" />
+      <rosparam>
+        step_x: 2
+        step_y: 2
+      </rosparam>
+    </node>
     <node name="cluster_indices_decomposer_label"
           pkg="nodelet" type="nodelet"
           args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
-      <remap from="~input" to="$(arg INPUT_CLOUD)" />
+      <remap from="~input" to="resize_points_publisher_label/output" />
       <remap from="~target" to="label_to_cluster_indices/output" />
       <rosparam>
         approximate_sync: true
@@ -93,7 +112,7 @@
       keep_organized: true
     </rosparam>
   </node>
-  <node name="resize_points_publisher"
+  <node name="resize_points_publisher_target"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/ResizePointsPublisher $(arg NODELET_MANAGER)">
     <remap from="~input" to="extract_indices_target_label/output" />  <!-- depth timestamp -->
@@ -105,7 +124,7 @@
   <node name="euclidean_clustering"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/EuclideanClustering $(arg NODELET_MANAGER)">
-    <remap from="~input" to="resize_points_publisher/output" />  <!-- depth timestamp -->
+    <remap from="~input" to="resize_points_publisher_target/output" />  <!-- depth timestamp -->
     <rosparam>
       min_size: 10
       max_size: 10000
@@ -115,7 +134,7 @@
   <node name="cluster_indices_decomposer_target"
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
-    <remap from="~input" to="resize_points_publisher/output" />  <!-- depth timestamp -->
+    <remap from="~input" to="resize_points_publisher_target/output" />  <!-- depth timestamp -->
     <remap from="~target" to="euclidean_clustering/output" />  <!-- depth timestamp -->
     <rosparam subst_value="true">
       approximate_sync: false
