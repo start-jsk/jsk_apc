@@ -3,8 +3,7 @@
   <arg name="gui" default="false" />
   <env name="DISPLAY" value="" unless="$(arg gui)" />
 
-
   <test test-name="test_pick_arc_interface"
         name="test_arc_interface" pkg="jsk_arc2017_baxter"
-        type="test-arc-interface.l" time-limit="10000" />
+        type="test-arc-interface.l" time-limit="100" />
 </launch>

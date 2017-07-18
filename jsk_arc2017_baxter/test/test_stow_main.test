@@ -3,5 +3,5 @@
 
   <test test-name="test_stow_main"
         name="test_stow_main" pkg="jsk_arc2017_baxter"
-        type="test-stow-main.l" time-limit="10000" />
+        type="test-stow-main.l" time-limit="100" />
 </launch>
