@@ -137,7 +137,7 @@
     <remap from="~target" to="euclidean_clustering/output" />  <!-- depth timestamp -->
     <rosparam subst_value="true">
       approximate_sync: false
-      queue_size: 1000
+      queue_size: 100
       align_boxes: true
       align_boxes_with_plane: false
       use_pca: $(arg USE_PCA)
