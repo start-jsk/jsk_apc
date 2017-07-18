@@ -305,23 +305,36 @@
          (setq is-recognized nil)))
       is-recognized))
   (:get-largest-object-index
-    (arm &key (stamp (ros::time-now)))
+    (arm bin &key (stamp (ros::time-now)))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
-          box-msg)
+          box-msg box-labels label-names)
+      (setq label-names
+            (ros::get-param (format nil "/~a_hand_camera/label_names"
+                                    (arm2str arm))))
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
                                         :timeout 10000
                                         :after-stamp stamp))
       (when box-msg
-        (dolist (box (send box-msg :boxes))
-          (when box
-            (let (volume)
-              (setq volume (* (send box :dimensions :x)
-                              (send box :dimensions :y)
-                              (send box :dimensions :z)))
-              (if (> bbox-volume-threshold- volume)
-                (return-from :get-largest-object-index
-                             (send box :label)))))))
+        (setq box-labels
+              (remove nil (mapcar
+                            #'(lambda (box)
+                                (let (volume)
+                                  (setq volume (* (send box :dimensions :x)
+                                                  (send box :dimensions :y)
+                                                  (send box :dimensions :z)))
+                                  (when (and (> bbox-volume-threshold- volume)
+                                             (> volume 0.0))
+                                    (send box :label))))
+                            (send box-msg :boxes))))
+        (unless box-labels (return-from :get-largest-object-index nil))
+        (dolist (skipping-objects
+                  (list (append (gethash bin finished-objects-) (gethash bin postponed-objects-))
+                        (gethash bin finished-objects-)))
+          (dolist (label-index box-labels)
+            (let ((object-name (elt label-names label-index)))
+              (unless (find object-name skipping-objects :test #'string=)
+                (return-from :get-largest-object-index label-index))))))
       nil))
   (:move-fingers-pinch->init
     (arm &key (wait t))
