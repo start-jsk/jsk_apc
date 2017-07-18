@@ -48,6 +48,7 @@
                   :yes))
       (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
       (send self :reset-object-tables :tote)
+      (send self :set-objects-param arm :tote :object-type :all)
       can-start))
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
