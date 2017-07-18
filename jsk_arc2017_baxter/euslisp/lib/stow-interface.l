@@ -47,6 +47,7 @@
                                      (instance jsk_gui_msgs::YesNoRequest))
                   :yes))
       (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
+      (send self :reset-object-tables :tote)
       can-start))
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)

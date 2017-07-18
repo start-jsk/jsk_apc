@@ -51,6 +51,7 @@
                   :yes))
       (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
       (send self :get-work-orders arm)
+      (send self :reset-object-tables :bins)
       (setq order nil)
       can-start))
   (:set-target (arm)
