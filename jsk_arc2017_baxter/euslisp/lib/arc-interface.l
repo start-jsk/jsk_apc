@@ -673,7 +673,7 @@
   (:move-arm-body->tote-overlook-pose
     (arm &key (gripper-angle 90))
     (let (avs offset rpy
-              (offset-y (if (eq arm :larm) 180 -180)))
+              (offset-y (if (eq arm :larm) 300 -300)))
       (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
       (send *baxter* :reset-pose arm)
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
