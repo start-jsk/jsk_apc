@@ -22,11 +22,13 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
         self.object_weights = jsk_arc2017_common.get_object_weights()
         self.error = rospy.get_param('~error', 1.0)
 
-        self.weight_sum = 0.0
+        self.weight_sum_at_reset = 0.0
         self.prev_weight_values = [0] * len(self.input_topics)
 
         self.weight_sum_pub = self.advertise(
-            '~output/weight_sum', WeightStamped, queue_size=1)
+            '~debug/weight_sum', WeightStamped, queue_size=1)
+        self.weight_sum_at_reset_pub = self.advertise(
+            '~debug/weight_sum_at_reset', WeightStamped, queue_size=1)
         self.picked_pub = self.advertise(
             '~output/candidates/picked', LabelArray, queue_size=1)
         self.placed_pub = self.advertise(
@@ -76,10 +78,13 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
         self.prev_weight_values = weight_values
 
         weight_sum = sum(weight_values)
-        weight_diff = weight_sum - self.weight_sum
+        weight_diff = weight_sum - self.weight_sum_at_reset
         sum_msg = WeightStamped()
         sum_msg.header = weight_msgs[0].header
         sum_msg.weight.value = weight_sum
+        sum_at_reset_msg = WeightStamped()
+        sum_at_reset_msg.header = weight_msgs[0].header
+        sum_at_reset_msg.weight.value = self.weight_sum_at_reset
 
         pick_msg = LabelArray()
         place_msg = LabelArray()
@@ -102,6 +107,7 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
                 label.name = obj_name
                 pick_msg.labels.append(label)
 
+        self.weight_sum_at_reset_pub.publish(prev_sum_msg)
         self.weight_sum_pub.publish(sum_msg)
         self.picked_pub.publish(pick_msg)
         self.placed_pub.publish(place_msg)
@@ -109,7 +115,7 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
     def _reset(self, req):
         is_success = True
         try:
-            self.weight_sum = sum(self.prev_weight_values)
+            self.weight_sum_at_reset = sum(self.prev_weight_values)
         except Exception:
             is_success = False
         return TriggerResponse(success=is_success)
