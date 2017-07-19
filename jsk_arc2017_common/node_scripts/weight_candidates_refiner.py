@@ -26,9 +26,9 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
         self.prev_weight_values = [0] * len(self.input_topics)
 
         self.weight_sum_pub = self.advertise(
-            '~output/weight_sum', WeightStamped, queue_size=1)
+            '~debug/weight_sum', WeightStamped, queue_size=1)
         self.prev_weight_sum_pub = self.advertise(
-            '~output/prev_weight_sum', WeightStamped, queue_size=1)
+            '~dubug/prev_weight_sum', WeightStamped, queue_size=1)
         self.picked_pub = self.advertise(
             '~output/candidates/picked', LabelArray, queue_size=1)
         self.placed_pub = self.advertise(
