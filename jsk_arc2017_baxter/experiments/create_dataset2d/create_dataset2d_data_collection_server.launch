@@ -1,6 +1,7 @@
 <launch>
 
   <arg name="side" doc="Left or right" />
+  <arg name="box" doc="Bin or tote" />
 
   <group ns="$(arg side)_hand">
     <node name="data_collection_server"
@@ -31,8 +32,8 @@
             fname: tf_camera_rgb_from_base.yaml
             savetype: YAML
         params:
-          - key: /$(arg side)_hand/target_bin_name
-            fname: shelf_bin.txt
+          - key: /$(arg side)_hand/target_$(arg box)_name
+            fname: shelf_$(arg box).txt
             savetype: Text
           - key: /$(arg side)_hand/view_frame
             fname: view_frame.txt
