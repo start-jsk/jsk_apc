@@ -8,19 +8,23 @@
 
 ;; Parameters
 ;; ==========
+(setq boxes (ros::get-param "~boxes" "bin"))
 (let ((side (ros::get-param "~side" "right")))
   (cond ((string= side "both") (setq *arms* '(:larm :rarm)))
         ((string= side "left") (setq *arms* '(:larm)))
         ((string= side "right") (setq *arms* '(:rarm)))
         )
-  (ros::ros-info-green "Collect rawdata for creating dataset2d using ~a hand" side)
+  (ros::ros-info-green "Collect rawdata for creating dataset2d in ~a boxes, using ~a hand" boxes side)
   )
 
 ;; Main
 ;; ====
 (jsk_arc2017_baxter::arc-init :ctype :default-controller :moveit nil)
 (objects (list *baxter*))
-(send *ti* :recognize-bin-boxes)
+(cond ((string= boxes "bin") (send *ti* :recognize-bin-boxes))
+      ((string= boxes "tote") (send *ti* :recognize-tote-boxes))
+      (t (ros::ros-info-red "Invalid input rosparam \"boxes\". Use \"bin\" or \"tote\"."))
+      )
 
 (defun rqt_yn_btn (&key (message ""))
   (let ((req (instance jsk_gui_msgs::YesNoRequest :init)))
@@ -28,20 +32,27 @@
     (ros::wait-for-service "rqt_yn_btn")
     (send (ros::service-call "rqt_yn_btn" req) :yes)))
 
-(ros::ros-info-green "Start collecting raw data in bins")
+(ros::ros-info-green "Start collecting raw data in ~a" boxes)
 (while
   t
-  (let ((bins '(:a :b :c)))
-    (when (rqt_yn_btn :message "Can I collect rawdata from bins?")
-      (dolist (bin bins)
-        (let ((arm (if (eq bin :a) :larm :rarm)))
+  (let ((bins '(:a :b :c)) (totes '(:tote)) bins-or-totes)
+    (when (rqt_yn_btn :message "Can I collect rawdata?")
+      (setq bins-or-totes (cond ((string= boxes "bin") bins)
+                                ((string= boxes "tote") totes)
+                                ))
+      (dolist (bin-or-tote bins-or-totes)
+        (let ((arm (cond ((string= boxes "bin") (if (eq bin-or-tote :a) :larm :rarm))
+                         ((string= boxes "tote") :rarm)
+                         )))
           (when (find arm *arms*)
-            (ros::set-param (format nil "/~a_hand/target_bin_name" (arm-to-str arm))
-                            (symbol2str bin))
+            (ros::set-param (format nil "/~a_hand/target_~a_name" (arm-to-str arm) boxes)
+                            (symbol2str bin-or-tote))
             (ros::set-param (format nil "/~a_hand/view_frame" (arm-to-str arm)) "default")
 
-            ;; overlook the target bin
-            (send *ti* :move-arm-body->bin-overlook-pose arm bin)
+            ;; overlook the target box
+            (cond ((string= boxes "bin") (send *ti* :move-arm-body->bin-overlook-pose arm bin-or-tote))
+                  ((string= boxes "tote") (send *ti* :move-arm-body->tote-overlook-pose arm))
+                  )
             (send *ri* :wait-interpolation)
 
             ;; request saving raw data
