@@ -18,12 +18,12 @@
   (assert (find (send *ti* :get-next-target-bin :rarm) (list :a :c))
           (format nil "failed to get-next-target-bin: ~a"
                   (symbol2str (send *ti* :get-next-target-bin :rarm))))
-  (send *ti* :add-finished-object :rarm "a")
-  (send *ti* :add-postponed-object :rarm "b")
+  (send *ti* :add-finished-object :rarm "a" :a)
+  (send *ti* :add-postponed-object :rarm "b" :c)
   (assert (eq (send *ti* :get-next-target-bin :rarm) :c)
           (format nil "failed to get-next-target-bin: ~a"
                   (symbol2str (send *ti* :get-next-target-bin :rarm))))
-  (send *ti* :add-finished-object :rarm "b")
+  (send *ti* :add-finished-object :rarm "b" :c)
   (assert (null (send *ti* :get-next-target-bin :rarm))
           (format nil "failed to get-next-target-bin: ~a"
                   (symbol2str (send *ti* :get-next-target-bin :rarm)))))
