@@ -107,7 +107,7 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
                 label.name = obj_name
                 pick_msg.labels.append(label)
 
-        self.weight_sum_at_reset_pub.publish(prev_sum_msg)
+        self.weight_sum_at_reset_pub.publish(sum_at_reset_msg)
         self.weight_sum_pub.publish(sum_msg)
         self.picked_pub.publish(pick_msg)
         self.placed_pub.publish(place_msg)
