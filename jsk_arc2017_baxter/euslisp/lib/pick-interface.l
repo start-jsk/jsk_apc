@@ -253,9 +253,9 @@
         (pushback
           (if (eq grasp-style :suction)
             (send self :ik->cardboard-center arm target-cardboard
-                  :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+                  :offset #f(100 0 300) :rotation-axis :z :use-gripper t)
             (send self :ik->cardboard-center arm target-cardboard
-                  :offset #f(0 0 300) :rotation-axis nil :move-palm-end t))
+                  :offset #f(100 0 300) :rotation-axis nil :move-palm-end t))
           avs)
         (send *ri* :angle-vector-sequence-raw avs 4000
               (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
@@ -276,8 +276,8 @@
           (when moveit-p (send self :delete-cardboard-scene))
           (send *ri* :angle-vector-raw
                 (if (eq grasp-style :suction)
-                  (send *baxter* arm :move-end-pos #f(0 0 -200) :world)
-                  (send *baxter* arm :move-end-pos #f(0 0 -200) :world :rotation-axis nil))
+                  (send *baxter* arm :move-end-pos #f(0 0 -100) :world)
+                  (send *baxter* arm :move-end-pos #f(0 0 -100) :world :rotation-axis nil))
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm) ;; release object
