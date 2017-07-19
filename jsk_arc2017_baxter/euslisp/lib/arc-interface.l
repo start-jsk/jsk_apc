@@ -371,7 +371,7 @@
                             (< -30 (send *baxter* arm :gripper-p :joint-angle) 30)))))
           (progn
             (send *baxter* :rotate-gripper arm 0 :relative nil)
-            (send *baxter* :slide-gripper arm 60 :relative nil)
+            (send *baxter* :slide-gripper arm 75 :relative nil)
             (setq next-av
                   (send *baxter* arm :inverse-kinematics
                         (make-coords :pos (v+ obj-pos #f(0 0 200))
