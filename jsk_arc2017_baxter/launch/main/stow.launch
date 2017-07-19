@@ -4,6 +4,7 @@
   <arg name="rviz" default="true" />
   <arg name="moveit" default="true" />
   <arg name="smach_viewer" default="false" />
+  <arg name="rosbag" default="false" />
 
   <!-- set bin_contents rosparam -->
   <node name="set_tote_contents"
@@ -124,5 +125,12 @@
     </rosparam>
   </node>
   -->
+
+  <group if="$(arg rosbag)">
+    <arg name="rosbag_filename" />
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/record_rosbag.launch">
+      <arg name="filename" value="$(arg rosbag_filename)" />
+    </include>
+  </group>
 
 </launch>
