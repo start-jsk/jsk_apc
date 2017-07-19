@@ -84,7 +84,7 @@
           - /scale2/output
           - /scale3/output
         # FIXME: error for hose weight
-        error: 20.0
+        error: 15.0
       </rosparam>
     </node>
   </group>
@@ -140,7 +140,7 @@
           - /scale2/output
           - /scale3/output
         # FIXME: error for hose weight
-        error: 20.0
+        error: 15.0
       </rosparam>
     </node>
   </group>
