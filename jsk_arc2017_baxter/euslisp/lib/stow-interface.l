@@ -64,7 +64,6 @@
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
       (ros::ros-info "[main] Recognizing objects in tote")
-      ;; TODO: :move-arm-body->tote-overlook-pose
       (send self :move-arm-body->tote-overlook-pose arm)
       (send *ri* :wait-interpolation)
       (setq recognition-count 1)
