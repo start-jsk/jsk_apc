@@ -26,7 +26,7 @@
     <env name="DISPLAY" value="" />
     <rosparam subst_value="True">
       side: right
-      boxes: $(arg box)
+      box_type: $(arg box)
     </rosparam>
   </node>
 
