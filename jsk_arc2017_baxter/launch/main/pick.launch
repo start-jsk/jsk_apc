@@ -4,6 +4,7 @@
   <arg name="rviz" default="true" />
   <arg name="moveit" default="true" />
   <arg name="smach_viewer" default="false" />
+  <arg name="rosbag" default="false" />
 
   <!-- set bin_contents rosparam -->
   <node name="set_bin_contents"
@@ -131,5 +132,12 @@
         pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
         args="/visualize_json/output">
   </node>
+
+  <group if="$(arg rosbag)">
+    <arg name="rosbag_filename" />
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/record_rosbag.launch">
+      <arg name="filename" value="$(arg rosbag_filename)" />
+    </include>
+  </group>
 
 </launch>

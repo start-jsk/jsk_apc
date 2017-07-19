@@ -1,0 +1,40 @@
+<launch>
+  <arg name="filename" />
+  <node name="rosbag_record"
+        pkg="rosbag" type="record"
+        args="-b 0
+              /tf
+              /robot/joint_states
+
+              /lgripper_sensors
+              /rgripper_sensors
+
+              /vacuum_gripper/limb/left/state
+              /vacuum_gripper/limb/left
+              /vacuum_gripper/limb/right/state
+              /vacuum_gripper/limb/right
+
+              /scale0
+              /scale1
+              /scale2
+              /scale3
+
+              /left_hand_camera/left/rgb/camera_info
+              /left_hand_camera/left/rgb/image_raw/compressed
+              /left_hand_camera/left/depth_registered/camera_info
+              /left_hand_camera/left/depth_registered/image_raw/compressedDepth
+              /left_hand_camera/right/rgb/camera_info
+              /left_hand_camera/right/rgb/image_raw/compressed
+              /left_hand_camera/right/depth_registered/camera_info
+              /left_hand_camera/right/depth_registered/image_raw/compressedDepth
+
+              /right_hand_camera/left/rgb/camera_info
+              /right_hand_camera/left/rgb/image_raw/compressed
+              /right_hand_camera/left/depth_registered/camera_info
+              /right_hand_camera/left/depth_registered/image_raw/compressedDepth
+              /right_hand_camera/right/rgb/camera_info
+              /right_hand_camera/right/rgb/image_raw/compressed
+              /right_hand_camera/right/depth_registered/camera_info
+              /right_hand_camera/right/depth_registered/image_raw/compressedDepth -O $(arg filename)">
+    </node>
+  </launch>
