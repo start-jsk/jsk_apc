@@ -18,7 +18,7 @@
 //#define PS_DATA_M //High byte of PS_DATA_L
 
 
-#define NSENSORS 5
+#define NSENSORS 2
 #define PCA9547D_RESET 32
 #define LOOP_TIME 50  // loop duration in ms
 
@@ -63,6 +63,7 @@ void measure_proximity()
   {
     ChgI2CMultiplexer(0x70, i);
     proximities[i] = readFromCommandRegister(PS_DATA_L);
+    stopProxSensor();
     delay(1);
   }
 
@@ -87,12 +88,7 @@ void measure_pressure_and_flex()
 
 void initVCNL4040()
 {
-  //Clear PS_SD to turn on proximity sensing
-  //byte conf1 = 0b00000000; //Clear PS_SD bit to begin reading
-  byte conf1 = 0b00001110; //Integrate 8T, Clear PS_SD bit to begin reading
-  byte conf2 = 0b00001000; //Set PS to 16-bit
-  //byte conf2 = 0b00000000; //Clear PS to 12-bit
-  writeToCommandRegister(PS_CONF1, conf1, conf2); //Command register, low byte, high byte
+  startProxSensor();
 
   delay(1);
   //Set the options for PS_CONF3 and PS_MS bytes
@@ -102,6 +98,24 @@ void initVCNL4040()
   //byte ms = 0b00000110; //Set IR LED current to 180mA
   //byte ms = 0b00000111; //Set IR LED current to 200mA
   writeToCommandRegister(PS_CONF3, conf3, ms);
+}
+
+void startProxSensor()
+{
+  //Clear PS_SD to turn on proximity sensing
+  //byte conf1 = 0b00000000; //Clear PS_SD bit to begin reading
+  byte conf1 = 0b00001110; //Integrate 8T, Clear PS_SD bit to begin reading
+  byte conf2 = 0b00001000; //Set PS to 16-bit
+  //byte conf2 = 0b00000000; //Clear PS to 12-bit
+  writeToCommandRegister(PS_CONF1, conf1, conf2); //Command register, low byte, high byte
+}
+
+void stopProxSensor()
+{
+  //Set PS_SD to turn off proximity sensing
+  byte conf1 = 0b00000001; //Set PS_SD bit to stop reading
+  byte conf2 = 0b00000000;
+  writeToCommandRegister(PS_CONF1, conf1, conf2); //Command register, low byte, high byte
 }
 
 //Reads a two byte value from a command register
@@ -167,6 +181,13 @@ void loop()
   measure_pressure_and_flex();
 
   gripper_sensor_pub.publish(&gripper_sensor_msg);
+
+  int i;
+  for(i=0;i<NSENSORS;i++)
+  {
+    ChgI2CMultiplexer(0x70,i);
+    startProxSensor();
+  }
 
   while (millis() < time + LOOP_TIME); // enforce constant loop time
 
