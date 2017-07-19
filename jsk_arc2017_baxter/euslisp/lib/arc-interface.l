@@ -305,7 +305,7 @@
          (setq is-recognized nil)))
       is-recognized))
   (:get-largest-object-index
-    (arm bin &key (stamp (ros::time-now)))
+    (arm bin &key (stamp (ros::time-now)) (n-random nil))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
           box-msg box-labels label-names)
       (setq label-names
@@ -331,10 +331,21 @@
         (dolist (skipping-objects
                   (list (append (gethash bin finished-objects-) (gethash bin postponed-objects-))
                         (gethash bin finished-objects-)))
-          (dolist (label-index box-labels)
-            (let ((object-name (elt label-names label-index)))
-              (unless (find object-name skipping-objects :test #'string=)
-                (return-from :get-largest-object-index label-index))))))
+          (let (label-indices target-indices target-index)
+            (setq label-indices
+                  (remove nil (mapcar
+                                #'(lambda (label-index)
+                                    (let ((obj-name (elt label-names label-index)))
+                                      (unless (find obj-name skipping-objects :test #'string=)
+                                        label-index)))
+                                box-labels)))
+            (when label-indices
+              (if n-random
+                (progn
+                  (setq target-indices (subseq label-indices 0 n-random))
+                  (setq target-index (elt target-indices (random (length target-indices)))))
+                (setq target-index (car label-indices)))
+              (return-from :get-largest-object-index target-index)))))
       nil))
   (:move-fingers-pinch->init
     (arm &key (wait t))
