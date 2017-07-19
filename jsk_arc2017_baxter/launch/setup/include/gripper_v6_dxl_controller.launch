@@ -20,7 +20,7 @@
     </node>
 
     <!-- Start the Dynamixel servo controllers -->
-    <rosparam file="$(find jsk_arc2017_baxter)/config/right_gripper_v6/dxl_controllers.yaml" command="load"/>
+    <rosparam file="$(find jsk_arc2017_baxter)/robots/right_gripper_v6/dxl_controllers.yaml" command="load"/>
     <node name="controller_spawner" pkg="dynamixel_controllers" type="controller_spawner.py"
           args="--manager=dxl_manager
                 --port port
@@ -49,7 +49,7 @@
     </node>
 
     <!-- Start the Dynamixel servo controllers -->
-    <rosparam file="$(find jsk_arc2017_baxter)/config/left_gripper_v6/dxl_controllers.yaml" command="load"/>
+    <rosparam file="$(find jsk_arc2017_baxter)/robots/left_gripper_v6/dxl_controllers.yaml" command="load"/>
     <node name="controller_spawner" pkg="dynamixel_controllers" type="controller_spawner.py"
           args="--manager=dxl_manager
                 --port port
