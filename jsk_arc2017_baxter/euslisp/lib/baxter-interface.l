@@ -408,7 +408,7 @@
           ;;       (and (or
           ;;              (and (< (aref finger-av 0) 45) (< (aref finger-av 1) 80))
           ;;              (and (>= (aref finger-av 0) 45) (< (aref finger-av 1) 155)))
-          ;;            (> (send self :get-finger-load arm) 0.55)))
+          ;;            (< (send self :get-finger-load arm) -0.55)))
           (setq pinchingp t)
           (send self :spin-once)
           (cond ((eq type :suction) suctioningp)
@@ -499,7 +499,7 @@
         (pushback
           #'(lambda ()
               (setq finger-load (send self :get-finger-load arm))
-              (if (> finger-load (+ init-load 0.01))
+              (if (< finger-load (- init-load 0.01))
                 (progn
                   (ros::ros-info "[:wait-interpolation-until] Detected finger loaded load: ~a"
                                  finger-load)
@@ -511,7 +511,7 @@
         (pushback
           #'(lambda ()
               (setq finger-load (send self :get-finger-load arm))
-              (if (< finger-load (- init-load 0.01))
+              (if (> finger-load (+ init-load 0.01))
                 (progn
                   (ros::ros-info "[:wait-interpolation-until] Detected finger unloaded load: ~a"
                                  finger-load)
