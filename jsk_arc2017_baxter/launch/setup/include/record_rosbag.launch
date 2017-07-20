@@ -14,10 +14,10 @@
               /vacuum_gripper/limb/right/state
               /vacuum_gripper/limb/right
 
-              /scale0
-              /scale1
-              /scale2
-              /scale3
+              /scale0/output
+              /scale1/output
+              /scale2/output
+              /scale3/output
 
               /left_hand_camera/left/rgb/camera_info
               /left_hand_camera/left/rgb/image_raw/compressed
