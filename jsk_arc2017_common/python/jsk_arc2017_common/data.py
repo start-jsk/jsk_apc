@@ -29,3 +29,10 @@ def get_object_images():
         img_obj = skimage.io.imread(obj_file)
         object_imgs[obj] = img_obj
     return object_imgs
+
+
+def get_object_graspability():
+    PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
+
+    with open(osp.join(PKG_DIR, 'config/object_graspability.yaml')) as f:
+        return yaml.load(f)
