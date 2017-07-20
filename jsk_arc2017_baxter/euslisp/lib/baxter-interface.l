@@ -21,6 +21,7 @@
           finger-flex-
           finger-load-
           prismatic-load-
+          prismatic-vel-
           proximities-
           proximity-init-values-))
 
