@@ -23,6 +23,7 @@
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
     <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)" />
     <arg name="INPUT_CLOUD" value="/none" />
+    <arg name="INPUT_CANDIDATES" value="/none" />
   </include>
 
   <node name="label_image_decomposer1"
