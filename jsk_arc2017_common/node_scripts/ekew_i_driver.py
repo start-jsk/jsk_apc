@@ -39,6 +39,7 @@ class EkEwIDriver(object):
             rospy.signal_shutdown('Serial write timeout')
             return
         data = self.ser.read(17)
+        stamp = rospy.Time.now()
         if len(data) != 17:
             rospy.logerr('Serial read timeout')
             rospy.signal_shutdown('Serial read timeout')
@@ -52,7 +53,7 @@ class EkEwIDriver(object):
         else:
             weight_raw = float(data[3:12])
         msg = WeightStamped()
-        msg.header.stamp = event.current_real
+        msg.header.stamp = stamp
         msg.weight.value = weight_raw
         self.pub_raw.publish(msg)
 
