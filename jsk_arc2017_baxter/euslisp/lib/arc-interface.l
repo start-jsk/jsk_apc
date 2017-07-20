@@ -961,7 +961,23 @@
     (send self :set-objects-param arm bin :object-type :finished-objects))
   (:add-postponed-object (arm obj bin)
     (send self :update-object-tables obj bin :object-type :postponed-objects)
-    (send self :set-objects-param arm bin :object-type :postponed-objects)))
+    (send self :set-objects-param arm bin :object-type :postponed-objects))
+  (:get-grasp-style (arm obj trial-time)
+    (let ((service-name
+           (format nil "/grasp_style_server/get_grasp_style"))
+          req res succeeded)
+      (ros::wait-for-service service-name)
+      (setq req (instance jsk_arc2017_common::GetGraspStyleRequest :init))
+      (send req :item obj)
+      (send req :trial_time trial-time)
+      (setq res (ros::service-call service-name req))
+      (setq succeeded (send res :success))
+      (if succeeded
+        (str2symbol (send res :style))
+        (progn
+          (ros::ros-warn "[:get-grasp-style] arm: ~a, cannot get grasp-style" (arm2str arm))
+          (ros::ros-warn "[:get-grasp-style] message: ~a" (send res :message))
+          succeeded)))))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
