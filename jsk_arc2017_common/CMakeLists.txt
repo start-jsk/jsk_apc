@@ -25,6 +25,7 @@ add_message_files(
 add_service_files(
     FILES
     UpdateJSON.srv
+    GetGraspStyle.srv
 )
 
 generate_dynamic_reconfigure_options(
