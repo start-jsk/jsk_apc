@@ -188,7 +188,10 @@
     (sethash side (gethash arm finger-flex-) (send msg :data)))
   (:set-proximities
     (arm msg)
-    (sethash arm proximities- (send msg :proximities)))
+    (let ((hash-table (make-hash-table)))
+      (sethash :left hash-table (send (elt (send msg :proximities) 0) :average))
+      (sethash :right hash-table (send (elt (send msg :proximities) 1) :average))
+      (sethash arm proximities- hash-table)))
 
   ;; Hand interface
   ;; based on naoqi-interface and fetch-interface
@@ -238,19 +241,20 @@
     (gethash arm prismatic-vel-))
   (:get-proximity (arm side &key (raw nil))
     (send self :spin-once)
-    (let ((rl (gethash :left (gethash arm proximity-init-values-)))
-          (rr (gethash :right (gethash arm proximity-init-values-)))
-          (proximities (gethash arm proximities-)))
+    (let ((l-init (gethash :left (gethash arm proximity-init-values-)))
+          (r-init (gethash :right (gethash arm proximity-init-values-)))
+          (l (gethash :left (gethash arm proximities-)))
+          (r (gethash :right (gethash arm proximities-))))
       (if (null raw)
         (cond
           ;; for sparkfun proximity sensor
           ((eq side :left)
-           (/ (- (send (elt proximities 0) :average) rl) (expt (/ rl 2500.0) 1.5)))
+           (/ (- l l-init) (expt (/ l-init 2500.0) 1.5)))
           ((eq side :right)
-           (/ (- (send (elt proximities 1) :average) rr) (expt (/ rr 2500.0) 1.5))))
+           (/ (- r r-init) (expt (/ r-init 2500.0) 1.5))))
         (cond
-          ((eq side :left) (send (elt proximities 0) :average))
-          ((eq side :right) (send (elt proximities 1) :average))))))
+          ((eq side :left) l)
+          ((eq side :right) r)))))
   (:get-real-finger-av (arm)
     (send self :update-robot-state :wait-until-update t)
     (float-vector
