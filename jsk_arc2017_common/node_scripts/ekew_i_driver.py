@@ -23,12 +23,13 @@ class EkEwIDriver(object):
             port, baudrate=2400, bytesize=7, parity=serial.PARITY_EVEN,
             timeout=timeout, writeTimeout=timeout)
         self.pub = rospy.Publisher('~output', WeightStamped, queue_size=1)
+        self.pub_raw = rospy.Publisher('~output_raw', WeightStamped, queue_size=1)
         rate = rospy.get_param('~rate', 10)
         self.read_timer = rospy.Timer(rospy.Duration(1. / rate),
                                       self._read_timer_cb)
 
     def _read_timer_cb(self, event):
-        if self.pub.get_num_connections() == 0:
+        if (self.pub.get_num_connections() == 0) and (self.pub_raw.get_num_connections() == 0):
             return
 
         try:
@@ -43,8 +44,20 @@ class EkEwIDriver(object):
             rospy.signal_shutdown('Serial read timeout')
             return
 
+        weight = -1 # unknown
+        unit = data[12:15]
+        if unit != '  g':
+            rospy.logerr('Unsupported unit: %s', unit)
+        else:
+            weight = float(data[3:12])
+        msg = WeightStamped()
+        msg.header.stamp = event.current_real
+        msg.weight.value = weight
+        self.pub_raw.publish(msg)
+
         header = data[:2]
         weight = -1  # unknown
+
         if header == 'ST':
             # scale mode
             unit = data[12:15]
@@ -62,8 +75,6 @@ class EkEwIDriver(object):
             # scale over
             rospy.logerr('Scale over')
 
-        msg = WeightStamped()
-        msg.header.stamp = event.current_real
         msg.weight.value = weight
         self.pub.publish(msg)
 
