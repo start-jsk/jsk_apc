@@ -57,7 +57,6 @@ class EkEwIDriver(object):
 
         header = data[:2]
         weight = -1  # unknown
-
         if header == 'ST':
             # scale mode
             unit = data[12:15]
