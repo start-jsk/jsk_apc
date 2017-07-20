@@ -377,8 +377,8 @@
     (send self :move-fingers-pinch->init arm :wait nil)
     (send *ri* :calib-proximity-threshold arm)
     (let (graspingp avs object-index obj-pos obj-cube pinch-yaw)
-      ;; TODO: object-index is set randomly
-      (setq object-index (random (length (gethash arm object-boxes-))))
+      ;; pick largest bounding box
+      (setq object-index 0)
       (setq obj-pos
             (send self :get-object-position arm movable-region :object-index object-index))
       (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) object-index)))
