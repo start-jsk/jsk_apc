@@ -40,7 +40,12 @@ class VisualizeJSON(ConnectionBasedTransport):
         if 'item_location' in self._types:
             filename = osp.join(json_dir, 'item_location_file.json')
             if osp.exists(filename):
-                img = jsk_arc2017_common.visualize_item_location(filename)
+                order_file = osp.join(json_dir, 'order_file.json')
+                if not osp.exists(order_file):
+                    order_file = None
+
+                img = jsk_arc2017_common.visualize_item_location(
+                    filename, order_file)
                 imgmsg = bridge.cv2_to_imgmsg(img, encoding='rgb8')
                 imgmsg.header.stamp = rospy.Time.now()
                 self.pub_item_location.publish(imgmsg)
