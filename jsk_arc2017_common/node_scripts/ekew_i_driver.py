@@ -23,7 +23,7 @@ class EkEwIDriver(object):
             port, baudrate=2400, bytesize=7, parity=serial.PARITY_EVEN,
             timeout=timeout, writeTimeout=timeout)
         self.pub = rospy.Publisher('~output', WeightStamped, queue_size=1)
-        self.pub_raw = rospy.Publisher('~output_raw', WeightStamped, queue_size=1)
+        self.pub_raw = rospy.Publisher('~output/weight_raw', WeightStamped, queue_size=1)
         rate = rospy.get_param('~rate', 10)
         self.read_timer = rospy.Timer(rospy.Duration(1. / rate),
                                       self._read_timer_cb)
