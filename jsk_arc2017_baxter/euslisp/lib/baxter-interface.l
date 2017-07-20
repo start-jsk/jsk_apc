@@ -530,15 +530,15 @@
                   t)
                 nil))
           conds))
-      (when (member :proximity args)
-        (ros::ros-info "[:wait-interpolation-until] Prepare for proximity")
+      (when (member :finger-proximity args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for finger proximity")
         (pushback
           #'(lambda ()
               (setq r-proximity (send self :get-proximity arm :right))
               (setq l-proximity (send self :get-proximity arm :left))
               (if (> (max r-proximity l-proximity) proximity-threshold-)
                 (progn
-                  (ros::ros-info "[:wait-interpolation-until] Detected proximity. r: ~a, l: ~a"
+                  (ros::ros-info "[:wait-interpolation-until] Detected finger proximity. r: ~a, l: ~a"
                                  r-proximity l-proximity)
                   t)
                 nil))
