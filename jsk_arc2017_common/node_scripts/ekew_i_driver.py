@@ -43,7 +43,8 @@ class EkEwIDriver(object):
             rospy.logerr('Serial read timeout')
             rospy.signal_shutdown('Serial read timeout')
             return
-
+    
+        # get raw scale value without checking the mode of the scale
         weight_raw = -1 # unknown
         unit = data[12:15]
         if unit != '  g':
@@ -55,6 +56,7 @@ class EkEwIDriver(object):
         msg.weight.value = weight_raw
         self.pub_raw.publish(msg)
 
+        # get scale value with checking the mode of the scale
         header = data[:2]
         weight = -1  # unknown
         if header == 'ST':
