@@ -107,6 +107,7 @@
                       :groupname groupname)
       (sethash arm finger-flex- (make-hash-table))
       (sethash arm proximity-init-values- (make-hash-table))
+      (sethash arm proximities- (make-hash-table))
       (dolist (side (list :right :left))
         (ros::subscribe (format nil "/gripper_front/limb/~a/flex/~a/state"
                                 (arm2str arm) (symbol2str side))
@@ -188,10 +189,8 @@
     (sethash side (gethash arm finger-flex-) (send msg :data)))
   (:set-proximities
     (arm msg)
-    (let ((hash-table (make-hash-table)))
-      (sethash :left hash-table (send (elt (send msg :proximities) 0) :average))
-      (sethash :right hash-table (send (elt (send msg :proximities) 1) :average))
-      (sethash arm proximities- hash-table)))
+    (sethash :left (gethash arm proximities-) (send (elt (send msg :proximities) 0) :average))
+    (sethash :right (gethash arm proximities-) (send (elt (send msg :proximities) 1) :average)))
 
   ;; Hand interface
   ;; based on naoqi-interface and fetch-interface
@@ -578,10 +577,10 @@
     (&optional (arm :arms))
     (send self :spin-once)
     (dolist (l/r (if (eq arm :arms) (list :rarm :larm) (list arm)))
-      (let ((hash-table (make-hash-table)))
-        (sethash :left hash-table (send self :get-proximity l/r :left :raw t))
-        (sethash :right hash-table (send self :get-proximity l/r :right :raw t))
-        (sethash l/r proximity-init-values- hash-table))
+      (sethash :left (gethash l/r proximity-init-values-)
+               (send self :get-proximity l/r :left :raw t))
+      (sethash :right (gethash l/r proximity-init-values-)
+               (send self :get-proximity l/r :right :raw t))
       ;; TODO: decide proper threshold 100 -> ???
       (setq proximity-threshold- 100))))
 
