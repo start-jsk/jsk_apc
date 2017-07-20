@@ -1,3 +1,4 @@
+import collections
 import cPickle as pickle
 import hashlib
 import json
@@ -157,8 +158,13 @@ def tile(imgs, shape=None, dst=None, margin_color=None):
     return _tile(imgs, shape, dst)
 
 
-def visualize_container(container_id, contents, container_file,
+def visualize_container(container_id, contents, container_file, orders=None,
                         alpha=0.6, font_scale=5.5, thickness=4):
+    if not isinstance(contents, collections.Sequence):
+        raise TypeError('contents must be a sequence')
+    if orders is not None and not isinstance(orders, collections.Sequence):
+        raise TypeError('orders must be a sequence')
+
     img_container = skimage.io.imread(container_file) / 255.
     img_container = (img_container * alpha) + (1. - alpha)
     img_container = (img_container * 255).astype(np.uint8)
@@ -168,6 +174,13 @@ def visualize_container(container_id, contents, container_file,
         tile_shape = get_tile_shape(len(contents), ratio_hw)
 
         object_imgs = get_object_images()
+        if orders is not None:
+            for obj_name, img_obj in object_imgs.items():
+                if obj_name in orders:
+                    center = img_obj.shape[1] // 2, img_obj.shape[0] // 2
+                    radius = min(center)
+                    cv2.circle(img_obj, center, radius, (255, 0, 0), thickness)
+
         imgs = [object_imgs[obj] for obj in contents]
         img_tiled = tile(imgs, shape=tile_shape)
         img_tiled = centerize(img_tiled, img_container.shape)
@@ -226,22 +239,30 @@ def memoize(key=None):
     return _memoize
 
 
-@memoize(key=lambda filename: json.load(open(filename)))
-def visualize_item_location(filename):
+@memoize(key=lambda filename, order_file:
+         (json.load(open(filename)), order_file))
+def visualize_item_location(filename, order_file=None):
     item_location = json.load(open(filename))
+
+    # orders
+    orders = []
+    if order_file:
+        data_order = json.load(open(order_file))
+        for order in data_order['orders']:
+            orders.extend(order['contents'])
 
     imgs_top = []
     # tote
     tote = item_location['tote']
     img_container = visualize_container(
-        'tote', tote['contents'],
+        'tote', tote['contents'], orders=orders,
         container_file=osp.join(PKG_DIR, 'data/objects/tote/top.jpg'),
         font_scale=11, thickness=8)
     imgs_top.append(img_container)
     # bin
     for bin_ in item_location['bins']:
         img_container = visualize_container(
-            bin_['bin_id'], bin_['contents'],
+            bin_['bin_id'], bin_['contents'], orders=orders,
             container_file=osp.join(PKG_DIR, 'data/objects/bin/top.jpg'),
             font_scale=9, thickness=7)
         imgs_top.append(img_container)
@@ -255,7 +276,7 @@ def visualize_item_location(filename):
     imgs_box = []
     for box in item_location['boxes']:
         img_container = visualize_container(
-            box['size_id'], box['contents'],
+            box['size_id'], box['contents'], orders=orders,
             container_file=osp.join(PKG_DIR, 'data/objects/box/top.jpg'))
         imgs_box.append(img_container)
     img_box = tile(imgs_box, shape=(1, len(imgs_box)))
