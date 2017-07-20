@@ -387,6 +387,10 @@
               (+ (if (eq arm :rarm) pi/2 -pi/2)
                  (caar (send (send obj-cube :worldcoords) :rpy-angle))))
         (setq pinch-yaw (caar (send (send obj-cube :worldcoords) :rpy-angle))))
+      (while (> pinch-yaw pi/2)
+        (setq pinch-yaw (- pinch-yaw pi)))
+      (while (< pinch-yaw -pi/2)
+        (setq pinch-yaw (+ pinch-yaw pi)))
       (ros::ros-info "[:pick-object-with-movable-region] arm:~a approach to the object" arm)
       (send *ri* :gripper-servo-on arm)
       ;; Setup arm for picking
