@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*- from jsk_arc2017_baxter.srv import CheckCanStart
+# -*- coding:utf-8 -*-
 
 from jsk_arc2017_baxter.srv import CheckCanStart
 from jsk_arc2017_baxter.srv import CheckCanStartResponse
