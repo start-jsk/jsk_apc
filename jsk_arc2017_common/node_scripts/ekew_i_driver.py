@@ -44,15 +44,15 @@ class EkEwIDriver(object):
             rospy.signal_shutdown('Serial read timeout')
             return
 
-        weight = -1 # unknown
+        weight_raw = -1 # unknown
         unit = data[12:15]
         if unit != '  g':
             rospy.logerr('Unsupported unit: %s', unit)
         else:
-            weight = float(data[3:12])
+            weight_raw = float(data[3:12])
         msg = WeightStamped()
         msg.header.stamp = event.current_real
-        msg.weight.value = weight
+        msg.weight.value = weight_raw
         self.pub_raw.publish(msg)
 
         header = data[:2]
