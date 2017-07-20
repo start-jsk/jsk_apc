@@ -1,0 +1,120 @@
+avery_binder:
+  suction: 2
+  pinch: 3
+balloons:
+  suction: 1
+  pinch: 1
+band_aid_tape:
+  suction: 1
+  pinch: 2
+bath_sponge:
+  suction: 3
+  pinch: 1
+black_fashion_gloves:
+  suction: 1
+  pinch: 1
+burts_bees_baby_wipes:
+  suction: 3
+  pinch: 2
+colgate_toothbrush_4pk:
+  suction: 2
+  pinch: 2
+composition_book:
+  suction: 3
+  pinch: 3
+crayons:
+  suction: 1
+  pinch: 2
+duct_tape:
+  suction: 3
+  pinch: 3
+epsom_salts:
+  suction: 3
+  pinch: 3
+expo_eraser:
+  suction: 1
+  pinch: 1
+fiskars_scissors:
+  suction: 2
+  pinch: 3
+flashlight:
+  suction: 2
+  pinch: 3
+glue_sticks:
+  suction: 1
+  pinch: 3
+hand_weight:
+  suction: 3
+  pinch: 1
+hanes_socks:
+  suction: 1
+  pinch: 1
+hinged_ruled_index_cards:
+  suction: 1
+  pinch: 3
+ice_cube_tray:
+  suction: 1
+  pinch: 3
+irish_spring_soap:
+  suction: 1
+  pinch: 1
+laugh_out_loud_jokes:
+  suction: 1
+  pinch: 3
+marbles:
+  suction: 3
+  pinch: 1
+measuring_spoons:
+  suction: 3
+  pinch: 3
+mesh_cup:
+  suction: 3
+  pinch: 2
+mouse_traps:
+  suction: 1
+  pinch: 2
+pie_plates:
+  suction: 3
+  pinch: 3
+plastic_wine_glass:
+  suction: 3
+  pinch: 2
+poland_spring_water:
+  suction: 3
+  pinch: 1
+reynolds_wrap:
+  suction: 2
+  pinch: 1
+robots_dvd:
+  suction: 1
+  pinch: 3
+robots_everywhere:
+  suction: 2
+  pinch: 3
+scotch_sponges:
+  suction: 1
+  pinch: 1
+speed_stick:
+  suction: 2
+  pinch: 1
+table_cloth:
+  suction: 1
+  pinch: 1
+tennis_ball_container:
+  suction: 1
+  pinch: 1
+ticonderoga_pencils:
+  suction: 1
+  pinch: 2
+tissue_box:
+  suction: 1
+  pinch: 3
+toilet_brush:
+  suction: 3
+  pinch: 1
+white_facecloth:
+  suction: 1
+  pinch: 3
+windex:
+  suction: 3
+  pinch: 3
