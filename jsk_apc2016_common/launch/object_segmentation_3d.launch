@@ -138,6 +138,7 @@
     <rosparam subst_value="true">
       approximate_sync: false
       queue_size: 100
+      sort_by: -cloud_size
       align_boxes: true
       align_boxes_with_plane: false
       use_pca: $(arg USE_PCA)
