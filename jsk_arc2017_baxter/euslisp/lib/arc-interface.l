@@ -607,7 +607,7 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       ;; Wait until grasp or finger touch
       (send *ri* :wait-interpolation-until arm
-            :grasp :finger-flexion :finger-loaded :prismatic-loaded)
+            :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
       (send *ri* :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
@@ -616,7 +616,7 @@
                   :rotation-axis t)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm
-            :grasp :finger-flexion :finger-loaded :prismatic-loaded)
+            :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (send *ri* :angle-vector-raw
             (send *baxter* :slide-gripper arm 120 :relative nil)
