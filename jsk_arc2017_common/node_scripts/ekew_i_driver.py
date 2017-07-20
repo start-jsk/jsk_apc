@@ -43,9 +43,9 @@ class EkEwIDriver(object):
             rospy.logerr('Serial read timeout')
             rospy.signal_shutdown('Serial read timeout')
             return
-    
+
         # get raw scale value without checking the mode of the scale
-        weight_raw = -1 # unknown
+        weight_raw = -1  # unknown
         unit = data[12:15]
         if unit != '  g':
             rospy.logerr('Unsupported unit: %s', unit)
