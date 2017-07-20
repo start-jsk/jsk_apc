@@ -67,6 +67,14 @@
     </node>
   </group>
 
+  <!-- grasp style server -->
+  <node name="grasp_style_server"
+        pkg="jsk_arc2017_common" type="grasp_style_server.py">
+    <rosparam>
+      max_trial: 2
+    </rosparam>
+  </node>
+
   <!-- smach viewer -->
   <node pkg="smach_viewer" type="smach_viewer.py" name="smach_viewer" if="$(arg smach_viewer)"/>
 
