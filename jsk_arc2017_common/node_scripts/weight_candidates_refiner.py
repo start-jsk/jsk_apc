@@ -35,6 +35,10 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
             '~output/candidates/placed', LabelArray, queue_size=1)
         self.init_srv = rospy.Service('~reset', Trigger, self._reset)
 
+        # XXX: this node must always subscribe weight scale values
+        rospy.set_param('~always_subscribe', True)
+        self.subscribe()
+
     def subscribe(self):
         use_async = rospy.get_param('~approximate_sync', False)
         queue_size = rospy.get_param('~queue_size', 10)
