@@ -2,6 +2,24 @@ Tips & FAQ
 ==========
 
 
+How to run rostests?
+--------------------
+
+.. code-block:: bash
+
+  catkin run_tests --this --no-deps
+  catkin run_tests jsk_arc2017_baxter --no-deps
+
+
+How to run roslint?
+-------------------
+
+.. code-block:: bash
+
+  catkin build --this --no-deps --catkin-make-args roslint --
+  catkin build jsk_arc2017_baxter --no-deps --catkin-make-args roslint --
+
+
 Controlling joints of the robot does not work.
 ----------------------------------------------
 Run below to synchronize the time with robot.

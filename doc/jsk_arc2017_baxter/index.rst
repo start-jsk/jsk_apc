@@ -23,13 +23,6 @@ Experiments
 
   experiments/*
 
-Testing
--------
-
-.. code-block:: bash
-
-  catkin run_tests jsk_arc2017_baxter --no-deps
-
 Shared data
 -----------
 
