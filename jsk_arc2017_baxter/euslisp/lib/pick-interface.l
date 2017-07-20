@@ -21,6 +21,7 @@
           order
           picking-fail-count
           recognize-fail-count
+          start-picking-fail-count
           target-bin
           target-cardboard
           target-obj
@@ -32,6 +33,7 @@
     (setq picking-fail-count 0)
     (setq trial-fail-count 0)
     (setq recognize-fail-count 0)
+    (setq start-picking-fail-count 0)
     (setq bins (list :a :b :c))
     (setq moveit-p moveit)
     (setq grasp-style nil))
@@ -87,8 +89,9 @@
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
       (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
-      (send self :move-arm-body->bin-overlook-pose arm target-bin)
-      (send *ri* :wait-interpolation)
+      (unless (> start-picking-fail-count 0)
+        (send self :move-arm-body->bin-overlook-pose arm target-bin)
+        (send *ri* :wait-interpolation))
       (setq recognition-count 1)
       (while (null (or (> recognition-count trial-times) is-recognized))
         (setq order (send self :select-work-order-in-bin arm target-bin :stamp (ros::time-now)))
@@ -122,10 +125,30 @@
       (setq recognize-failp (> recognize-fail-count 1))
       (if recognize-failp (setq recognize-fail-count 0))
       recognize-failp))
-  (:set-grasp-style (arm)
+  (:check-can-start-picking (arm)
+    ;; first trial: trial-time = 1
+    (setq grasp-style (send self :get-grasp-style arm target-obj 1))
+    (ros::ros-info "arm: ~a, grasp-style: ~a, trial-time: ~a"
+                   (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
+    (if grasp-style t nil))
+  (:check-start-picking-fail-count (arm)
+    (incf start-picking-fail-count)
+    (ros::ros-info "[main] arm: ~a, start picking fail count: ~a" arm start-picking-fail-count)
+    (let (start-picking-failp)
+      (setq start-picking-failp (> start-picking-fail-count 1))
+      (if start-picking-failp (setq start-picking-fail-count 0))
+      start-picking-failp))
+  (:change-grasp-style (arm)
+    (incf trial-fail-count)
+    (send *ri* :stop-grasp arm)
+    ;; try another grasp style
     (setq grasp-style (send self :get-grasp-style arm target-obj (+ trial-fail-count 1)))
+    (ros::ros-info "arm: ~a, grasp-style: ~a, trial-time: ~a"
+                   (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
+    (unless grasp-style (setq trial-fail-count 0))
     (if grasp-style t nil))
   (:pick-object (arm)
+    (setq start-picking-fail-count 0)
     (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-shelf-scene))
     (if (eq grasp-style :suction)
@@ -152,14 +175,6 @@
     (setq graspingp (send *ri* :graspingp arm grasp-style))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
-  (:check-trial-fail-count (arm)
-    (send *ri* :stop-grasp arm)
-    (incf trial-fail-count)
-    (ros::ros-info "[main] arm: ~a, trial fail count: ~a" arm trial-fail-count)
-    (let (trial-failp)
-      (setq trial-failp (> trial-fail-count 1))
-      (if trial-failp (setq trial-fail-count 0))
-      trial-failp))
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj target-bin)
     (send *ri* :angle-vector-sequence-raw
