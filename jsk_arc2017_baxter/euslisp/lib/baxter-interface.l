@@ -240,7 +240,6 @@
     (send self :spin-once)
     (let ((rl (gethash :left (gethash arm proximity-init-values-)))
           (rr (gethash :right (gethash arm proximity-init-values-)))
-          ;;(rm (gethash :middle (gethash arm proximity-init-values-)))
           (proximities (gethash arm proximities-)))
       (if (null raw)
         (cond
@@ -578,7 +577,6 @@
       (let ((hash-table (make-hash-table)))
         (sethash :left hash-table (send self :get-proximity l/r :left :raw t))
         (sethash :right hash-table (send self :get-proximity l/r :right :raw t))
-        (sethash :middle hash-table (send self :get-proximity l/r :middle :raw t))
         (sethash l/r proximity-init-values- hash-table))
       ;; TODO: decide proper threshold 100 -> ???
       (setq proximity-threshold- 100))))
