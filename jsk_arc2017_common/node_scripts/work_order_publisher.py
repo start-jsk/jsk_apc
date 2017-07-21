@@ -52,6 +52,7 @@ class WorkOrderPublisher(object):
 
         publish_orders = self._generate_publish_orders(orders)
 
+        # first: sort by object weight
         object_weights = jsk_arc2017_common.get_object_weights()
         left_sorted_orders = sorted(
             publish_orders['left_hand'],
@@ -59,6 +60,15 @@ class WorkOrderPublisher(object):
         right_sorted_orders = sorted(
             publish_orders['right_hand'],
             key=lambda order: object_weights[order['item']])
+
+        # second: sort by object graspability
+        graspability = jsk_arc2017_common.get_object_graspability()
+        left_sorted_orders = sorted(
+            left_sorted_orders,
+            key=lambda order: graspability[order['item']]['suction'])
+        right_sorted_orders = sorted(
+            right_sorted_orders,
+            key=lambda order: graspability[order['item']]['suction'])
 
         self.larm_msg = self._generate_msg(left_sorted_orders)
         self.rarm_msg = self._generate_msg(right_sorted_orders)
