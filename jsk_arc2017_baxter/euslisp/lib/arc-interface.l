@@ -417,8 +417,14 @@
                         (make-coords :pos (v+ obj-pos #f(0 0 200))
                                      :rpy (float-vector pinch-yaw 0 0))
                         :move-palm-end t
-                        :rotation-axis t
-                        :revert-if-fail nil))))
+                        :rotation-axis t))
+            (if (null next-av)
+              (setq next-av
+                  (send *baxter* arm :inverse-kinematics
+                        (make-coords :pos (v+ obj-pos #f(0 0 200))
+                                     :rpy (float-vector pinch-yaw 0 0))
+                        :move-palm-end t
+                        :rotation-axis :z)))))
         (setq gripper-x (send *baxter* arm :gripper-x :joint-angle))
         (send *baxter* :angle-vector prev-av)
         ;; First, move prismatic joint to target position
@@ -595,7 +601,7 @@
       graspingp))
   (:try-to-pinch-object
     (arm obj-pos pinch-yaw &key (offset #f(0 0 0)))
-    (let (graspingp pre-coords)
+    (let (av graspingp pre-coords)
       (ros::ros-info "[:try-to-pinch-object] arm:~a pinch-yaw: ~a" arm pinch-yaw)
       ;; Initialize finger
       (send *ri* :move-hand arm
@@ -603,25 +609,37 @@
       ;; start the vacuum gripper before approaching to the object
       (ros::ros-info "[:try-to-pinch-object] arm:~a start vacuum gripper" arm)
       (send *ri* :start-grasp arm)
-      (send *ri* :angle-vector-raw
+      (setq av
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos (v+ obj-pos offset)
                                :rpy (float-vector pinch-yaw 0 0))
                   :move-palm-end t
-                  :rotation-axis t
-                  :revert-if-fail nil)
-            3000 (send *ri* :get-arm-controller arm) 0)
+                  :rotation-axis t))
+      (if (null av)
+        (setq av
+              (send *baxter* arm :inverse-kinematics
+                    (make-coords :pos (v+ obj-pos offset)
+                                 :rpy (float-vector pinch-yaw 0 0))
+                    :move-palm-end t
+                    :rotation-axis :z)))
+      (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0)
       ;; Wait until grasp or finger touch
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
-      (send *ri* :angle-vector-raw
+      (setq av
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
                                :rpy (float-vector pinch-yaw 0 0))
                   :move-palm-end t
-                  :rotation-axis t
-                  :revert-if-fail nil)
-            3000 (send *ri* :get-arm-controller arm) 0)
+                  :rotation-axis t))
+      (if (null av)
+        (setq av
+              (send *baxter* arm :inverse-kinematics
+                    (make-coords :pos obj-pos
+                                 :rpy (float-vector pinch-yaw 0 0))
+                    :move-palm-end t
+                    :rotation-axis :z)))
+      (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
@@ -636,14 +654,13 @@
       (ros::ros-info "[:try-to-pinch-object] arm:~a graspingp: ~a" arm graspingp)
       ;; lift object
       (ros::ros-info "[:try-to-pinch-object] arm:~a lift the object" arm)
-      (setq pre-coords (send (send *baxter* :rarm :end-coords) :copy-worldcoords))
+      (setq pre-coords (send (send *baxter* arm :end-coords) :copy-worldcoords))
       (send pre-coords :translate #f(0 0 200) :world)
-      (send *ri* :angle-vector-raw
-            (send *baxter* :arm :inverse-kinematics
-                  pre-coords
-                  :rotation-axis :z
-                  :revert-if-fail nil)
-            3000 (send *ri* :get-arm-controller arm :gripper nil) 0)
+      (setq av (send *baxter* arm :inverse-kinematics pre-coords :rotation-axis t))
+      (if (null av)
+        (setq av
+              (send *baxter* arm :inverse-kinematics pre-coords :rotation-axis :z)))
+      (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm :gripper nil) 0)
       (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send *ri* :graspingp arm :pinch))
