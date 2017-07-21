@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
     transmission_interface
     controller_manager
     dynamixel_msgs
+    actionlib_msgs
 )
 
 ################################################
@@ -28,10 +29,16 @@ add_service_files(
     CheckCanStart.srv
 )
 
+add_action_files(
+    DIRECTORY action
+    FILES CalibJoint.action
+)
+
 generate_messages(
     DEPENDENCIES
     std_msgs
     force_proximity_ros
+    actionlib_msgs
 )
 
 ################################################
@@ -54,6 +61,7 @@ catkin_package(
     transmission_interface
     controller_manager
     dynamixel_msgs
+    actionlib_msgs
 )
 
 ###########
