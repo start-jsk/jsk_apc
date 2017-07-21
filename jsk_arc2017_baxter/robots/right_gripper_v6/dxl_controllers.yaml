@@ -1,6 +1,6 @@
 prismatic_joint_controller:
   controller:
-    package: jsk_2016_01_baxter_apc
+    package: jsk_arc2017_baxter
     module: calib_required_joint_controller
     type: CalibRequiredJointController
   joint_name: right_gripper_prismatic_joint_motor
