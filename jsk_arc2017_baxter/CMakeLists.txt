@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
     actionlib_msgs
 )
 
+catkin_python_setup()
+
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
