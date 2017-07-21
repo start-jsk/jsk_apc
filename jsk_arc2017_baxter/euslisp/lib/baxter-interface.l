@@ -599,13 +599,13 @@
          (list :larm
                (cons :group-name "left_arm")
                (cons :target-link
-                     (send self :search-link-from-name "left_gripper_vacuum_pad"))
+                     (send self :search-link-from-name "left_gripper_pad_with_base"))
                (cons :joint-list (send robot :larm :joint-list)))
          (list :arms
                (cons :group-name "both_arms")
                (cons :target-link
                      (list
-                       (send self :search-link-from-name "left_gripper_vacuum_pad")
+                       (send self :search-link-from-name "left_gripper_pad_with_base")
                        (send self :search-link-from-name "right_gripper_pad_with_base")))
                (cons :joint-list (append (send robot :larm :joint-list)
                                          (send robot :rarm :joint-list)))))))
