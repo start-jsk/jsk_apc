@@ -95,9 +95,10 @@ class StateServer(threading.Thread):
             elif state == 'wait-for-opposite-arm':
                 if opposite_state == 'set-target' \
                         or opposite_state == 'recognize-object' \
-                        or opposite_state == 'set-grasp-style' \
+                        or opposite_state == 'check-can-start-picking' \
+                        or opposite_state == 'check-start-picking-fail-count' \
                         or opposite_state == 'pick-object' \
-                        or opposite_state == 'check-trial-fail-count' \
+                        or opposite_state == 'change-grasp-style' \
                         or opposite_state == 'verify-object' \
                         or opposite_state == 'set-target-cardboard' \
                         or opposite_state == 'place-object' \
@@ -118,9 +119,10 @@ class StateServer(threading.Thread):
                     can_start = False
             elif state == 'wait-for-opposite-arm':
                 if opposite_state == 'recognize-object' \
-                        or opposite_state == 'set-grasp-style' \
+                        or opposite_state == 'check-can-start-picking' \
+                        or opposite_state == 'check-start-picking-fail-count' \
                         or opposite_state == 'pick-object' \
-                        or opposite_state == 'check-trial-fail-count' \
+                        or opposite_state == 'change-grasp-style' \
                         or opposite_state == 'verify-object' \
                         or opposite_state == 'set-target-bin' \
                         or opposite_state == 'return-object':
