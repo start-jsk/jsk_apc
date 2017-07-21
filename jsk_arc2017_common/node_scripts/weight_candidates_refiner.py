@@ -11,10 +11,9 @@ from std_srvs.srv import Trigger
 from std_srvs.srv import TriggerResponse
 
 
-class WeightCanditatesRefiner(ConnectionBasedTransport):
+class WeightCanditatesRefiner(object):
 
     def __init__(self):
-        super(WeightCanditatesRefiner, self).__init__()
         # {object_name: object_id}
         self.candidates = {}
         self.input_topics = rospy.get_param('~input_topics')
@@ -25,18 +24,15 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
         self.weight_sum_at_reset = 0.0
         self.prev_weight_values = [0] * len(self.input_topics)
 
-        self.weight_sum_pub = self.advertise(
+        self.weight_sum_pub = rospy.Publisher(
             '~debug/weight_sum', WeightStamped, queue_size=1)
-        self.weight_sum_at_reset_pub = self.advertise(
+        self.weight_sum_at_reset_pub = rospy.Publisher(
             '~debug/weight_sum_at_reset', WeightStamped, queue_size=1)
-        self.picked_pub = self.advertise(
+        self.picked_pub = rospy.Publisher(
             '~output/candidates/picked', LabelArray, queue_size=1)
-        self.placed_pub = self.advertise(
+        self.placed_pub = rospy.Publisher(
             '~output/candidates/placed', LabelArray, queue_size=1)
         self.init_srv = rospy.Service('~reset', Trigger, self._reset)
-
-        # XXX: this node must always subscribe weight scale values
-        rospy.set_param('~always_subscribe', True)
         self.subscribe()
 
     def subscribe(self):
@@ -48,7 +44,7 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
         # add scale subscriber
         self.subs = []
         for input_topic in self.input_topics:
-            sub = message_filters.Subscriber(input_topic, WeightStamped)
+            sub = message_filters.Subscriber(input_topic, WeightStamped, queue_size=1)
             self.subs.append(sub)
         if use_async:
             slop = rospy.get_param('~slop', 0.1)
@@ -59,10 +55,10 @@ class WeightCanditatesRefiner(ConnectionBasedTransport):
                 self.subs, queue_size=queue_size)
         sync.registerCallback(self._scale_cb)
 
-    def unsubscribe(self):
-        self.sub_candidates.unregister()
-        for sub in self.subs:
-            sub.unregister()
+    # def unsubscribe(self):
+    #     self.sub_candidates.unregister()
+    #     for sub in self.subs:
+    #         sub.unregister()
 
     def _candidates_cb(self, labels_msg):
         self.candidates = {}
