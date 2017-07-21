@@ -11,7 +11,8 @@
 
 (defclass jsk_arc2017_baxter::arc-interface
   :super propertied-object
-  :slots (bbox-volume-threshold-
+  :slots (attached-objects-
+          bbox-volume-threshold-
           bin-cubes-
           bin-movable-regions-
           cardboard-cubes-
@@ -29,6 +30,7 @@
   (:init ()
     ;; initialize slots
     (setq bbox-volume-threshold- 0.01) ;; [m^3]
+    (setq attached-objects- (make-hash-table))
     (setq bin-cubes- (make-hash-table))
     (setq bin-movable-regions- (make-hash-table))
     (setq object-boxes- (make-hash-table))
@@ -823,6 +825,31 @@
   (:delete-tote-scene (arm)
     (send *co* :delete-object (gethash arm tote-cubes-))
     (unix::usleep (* 500 1000)))
+  (:add-object-in-hand-scene (arm target-obj)
+    ;; add object as attached collision object
+    (let ((end-coords-name (format nil "~a_gripper_pad_with_base" (arm2str arm))) obj-cube)
+      ;; attach largest bounding box
+      (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) 0)))
+      (send *co* :add-attached-object obj-cube end-coords-name
+            :frame-id end-coords-name
+            :object-id target-obj
+            :relative-pose (make-coords :pos (float-vector 0 0 (/ (z-of-cube obj-cube) 2)))
+            :touch-links (list
+                           (format nil "~a_gripper_base" (arm2str arm))
+                           (format nil "~a_gripper_tube" (arm2str arm))
+                           (format nil "~a_gripper_pad_with_base" (arm2str arm))
+                           (format nil "~a_gripper_l_finger_base" (arm2str arm))
+                           (format nil "~a_gripper_r_finger_base" (arm2str arm))
+                           (format nil "~a_gripper_l_finger" (arm2str arm))
+                           (format nil "~a_gripper_r_finger" (arm2str arm))
+                           (format nil "~a_gripper_palm_endpoint" (arm2str arm))))
+      (sethash arm attached-objects- obj-cube)))
+  (:delete-object-in-hand-scene (arm)
+    ;; delete object as attached collision object
+    (let (obj-cube)
+      (setq obj-cube (gethash arm attached-objects-))
+      (send *co* :delete-attached-object obj-cube)
+      (send *co* :delete-object obj-cube)))
   (:wipe-all-scene ()
     (send *co* :wipe-all))
   (:spin-off-by-wrist
