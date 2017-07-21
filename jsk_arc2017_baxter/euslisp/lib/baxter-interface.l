@@ -17,6 +17,7 @@
           larm-pressure-threshold-
           proximity-threshold-
           hand-actions-
+          prismatic-calib-actions-
           pressure-
           finger-flex-
           finger-load-
@@ -64,6 +65,7 @@
     (ros::advertise "/gripper_front/limb/left/servo/torque" std_msgs::Bool)
     (ros::advertise "/gripper_front/limb/right/servo/torque" std_msgs::Bool)
     (setq hand-actions- (make-hash-table))
+    (setq prismatic-calib-actions- (make-hash-table))
     (dolist (arm (list :rarm :larm))
       ;; initialize hand action
       (sethash arm hand-actions-
@@ -76,7 +78,19 @@
       (unless
         (and joint-action-enable (send (gethash arm hand-actions-) :wait-for-server 3))
         (ros::ros-warn "~A is not respond" (gethash arm hand-actions-))
-        (ros::ros-info "*** if you do not have hand, you can ignore this message ***")))
+        (ros::ros-info "*** if you do not have hand, you can ignore this message ***"))
+      ;; initialize action for prismatic joint calib
+      (sethash arm prismatic-calib-actions-
+               (instance ros::simple-action-client :init
+                         (format nil "/gripper_front/limb/~a/dxl/prismatic_joint_controller/calib"
+                                 (arm2str arm))
+                         jsk_arc2017_baxter::CalibJointAction
+                         :groupname groupname))
+      ;; check if action is respond
+      (unless
+        (and joint-action-enable (send (gethash arm prismatic-calib-actions-) :wait-for-server 3))
+        (ros::ros-error "~A is not respond" (gethash arm prismatic-calib-actions-))
+        (ros::ros-error "You cannot calibrate gripper joint")))
     ;; gripper sensors
     (setq pressure- (make-hash-table))
     (setq finger-load- (make-hash-table))
@@ -263,6 +277,12 @@
             :joint-angle)))
   (:finger-closep (arm)
     (> (aref (send self :get-real-finger-av arm) 1) 30))
+  (:start-prismatic-calib (arm)
+    (send (gethash arm prismatic-calib-actions-)
+          :send-goal (instance jsk_arc2017_baxter::CalibJointActionGoal :init)))
+  (:prismatic-calibratingp (arm)
+    (send self :spin-once)
+    (eq (send (gethash arm prismatic-calib-actions-) :get-state) ros::*simple-goal-state-active*))
 
   (:get-arm-controller (arm &key (gripper t) (head nil))
     (cond ((eq arm :rarm)
