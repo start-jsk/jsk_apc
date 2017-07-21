@@ -541,7 +541,8 @@
       graspingp))
   (:try-to-suction-object-with-gripper-v6
     (arm obj-pos &key (offset #f(0 0 0)))
-    (let (graspingp)
+    (let (graspingp
+          (coords-before-approach (send *baxter* arm :end-coords :copy-worldcoords)))
       ;; Fold fingers again
       (send *ri* :move-hand arm
             (send *baxter* :hand-grasp-pose arm :cylindrical :angle 110) 1000)
@@ -590,7 +591,12 @@
       ;; lift object
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a lift the object" arm)
       (send *ri* :gripper-servo-off arm)
-      (send *ri* :angle-vector-raw (send *baxter* arm :move-end-pos #f(0 0 200) :world)
+      (let ((tc (send *baxter* arm :end-coords :copy-worldcoords)))
+        ;; overwrite only world-z
+        (setf (aref (send tc :worldpos) 2) (elt (send coords-before-approach :worldpos) 2))
+        (send *baxter* arm :inverse-kinematics tc :rotation-axis :z)
+        )
+      (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
       (unix::sleep 1)  ;; wait for arm to follow
