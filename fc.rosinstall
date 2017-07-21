@@ -70,3 +70,7 @@
     local-name: PointCloudLibrary/pcl
     uri: https://github.com/PointCloudLibrary/pcl.git
     version: pcl-1.8.0rc2
+- tar:
+    local-name: ros_comm/message_filters
+    uri: https://github.com/ros-gbp/ros_comm-release/archive/release/kinetic/message_filters/1.12.7-0.tar.gz
+    version: ros_comm-release-release-kinetic-message_filters-1.12.7-0
