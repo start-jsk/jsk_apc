@@ -215,7 +215,9 @@
   (:place-object (arm)
     (let (dropped)
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
-      (when moveit-p (send self :add-tote-scene arm))
+      (when moveit-p
+        (send self :add-tote-scene arm)
+        (send self :add-object-in-hand-scene arm target-obj))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 70 -70))
 
       (if (eq grasp-style :suction)
@@ -229,6 +231,7 @@
               4000 (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm grasp-style)))
+      (when moveit-p (send self :delete-object-in-hand-scene arm))
       (if dropped
         (progn
           (ros::ros-error "[main] arm ~a: dropped object" arm)
