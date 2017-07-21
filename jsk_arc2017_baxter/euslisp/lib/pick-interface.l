@@ -40,7 +40,9 @@
     (send self :recognize-bin-boxes :stamp (ros::time-now))
     (ros::ros-info "[main] recognizing cardboard boxes")
     (send self :recognize-cardboard-boxes :stamp (ros::time-now))
-    (send self :set-movable-region-for-bin :offset (list 80 120 0)))
+    ;; XXX: movable region will be set in :pick-object
+    ;; (send self :set-movable-region-for-bin :offset (list 80 120 0))
+    )
   (:wait-for-user-input (arm)
     (let (can-start)
       (ros::ros-info "[:wait-for-user-input] wait for user input to start: ~a" arm)
@@ -126,6 +128,9 @@
   (:pick-object (arm)
     (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-shelf-scene))
+    (if (eq grasp-style :suction)
+      (send self :set-movable-region-for-bin :offset (list 80 80 0))
+      (send self :set-movable-region-for-bin :offset (list 80 120 0)))
     (send self :reset-scale arm)
     (send self :pick-object-in-bin arm target-bin
           :n-trial (if (eq grasp-style :suction) 2 1)
