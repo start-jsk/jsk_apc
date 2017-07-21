@@ -415,7 +415,7 @@
                             (< -30 (send *baxter* arm :gripper-p :joint-angle) 30)))))
           (progn
             (send *baxter* :rotate-gripper arm 0 :relative nil)
-            (send *baxter* :slide-gripper arm 75 :relative nil)
+            (send *baxter* :slide-gripper arm 0 :relative nil)
             (setq next-av
                   (send *baxter* arm :inverse-kinematics
                         (make-coords :pos (v+ obj-pos #f(0 0 200))
@@ -651,12 +651,18 @@
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
+      (send *baxter* arm :move-end-pos #f(0 0 -40) :world)
       (send *ri* :angle-vector-raw
             (send *baxter* :slide-gripper arm 120 :relative nil)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
+      ;; stop suction to bend suction finger
+      (send *ri* :stop-grasp arm)
       (send *ri* :start-grasp arm :pinch)
+      ;; start suction to help pinch
+      (send *ri* :start-grasp arm)
+      (unix::sleep 1)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (setq graspingp (send *ri* :graspingp arm :pinch))
       (ros::ros-info "[:try-to-pinch-object] arm:~a graspingp: ~a" arm graspingp)
@@ -670,7 +676,13 @@
               (send *baxter* arm :inverse-kinematics pre-coords :rotation-axis :z)))
       (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm :gripper nil) 0)
       (send *ri* :wait-interpolation)
-      (unix::sleep 1)  ;; wait for arm to follow
+      ;; slide gripper to grasp tightly
+      (send *baxter* :rotate-gripper arm -90 :relative nil)
+      (send *baxter* :slide-gripper arm 0 :relative nil)
+      (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
+            :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
+      (send *ri* :wait-interpolation)
+      (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (setq graspingp (send *ri* :graspingp arm :pinch))
       (ros::ros-info "[:try-to-pinch-object] arm:~a graspingp: ~a" arm graspingp)
       graspingp))

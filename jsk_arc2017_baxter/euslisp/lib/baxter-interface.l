@@ -364,8 +364,8 @@
                  ;; if cylindrical and spherical grasp, move other gripper joints
                  (send robot l/r :gripper-p :joint-angle -90)
                  (pushback (send robot :angle-vector) avs)
-                 (send robot l/r :gripper-x :joint-angle 0)
-                 (pushback (send robot :angle-vector) avs)
+                 ;(send robot l/r :gripper-x :joint-angle 0)
+                 ;(pushback (send robot :angle-vector) avs)
                  (send robot :angle-vector prev-av)
                  (send self :angle-vector-sequence-raw avs)
                  (send self :wait-interpolation)))))))
