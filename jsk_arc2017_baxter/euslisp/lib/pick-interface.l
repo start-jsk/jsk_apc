@@ -299,7 +299,7 @@
           (send self :update-json target-obj
                 :src (cons :bin target-bin) :dst (cons :cardboard target-cardboard))
           (send self :add-finished-object arm target-obj target-bin)
-          (when moveit-p (send self :delete-cardboard-scene))
+          (when moveit-p (send self :delete-cardboard-scene target-cardboard))
           (send *ri* :angle-vector-raw
                 (if (eq grasp-style :suction)
                   (send *baxter* arm :move-end-pos #f(0 0 -100) :world)
@@ -319,7 +319,7 @@
           (if (eq grasp-style :pinch)
             (send self :move-fingers-pinch->init arm))
           (setq grasp-style nil)
-          (when moveit-p (send self :add-cardboard-scene))))))
+          (when moveit-p (send self :add-cardboard-scene target-cardboard))))))
   (:return-from-place-object (arm)
     (let (avs)
       (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
