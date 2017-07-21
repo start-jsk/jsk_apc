@@ -465,7 +465,7 @@
       graspingp))
   (:get-object-position
     (arm movable-region &key (object-index 0))
-    (let (obj-box obj-coords obj-pos obj-box-z-length)
+    (let (obj-box obj-coords obj-pos)
       (setq obj-box (elt (gethash arm object-boxes-) object-index))
       (setq obj-coords (elt (gethash arm object-coords-) object-index))
       (setq obj-pos (send obj-coords :worldpos))
@@ -483,8 +483,6 @@
                               (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 1)))
               (t nil)))
-      (setq obj-box-z-length (z-of-cube (send self :bbox->cube obj-box)))
-      (setq obj-pos (v+ obj-pos (float-vector 0 0 (/ obj-box-z-length 2))))
       obj-pos))
   (:try-to-pick-object
     (arm obj-pos &key (offset #f(0 0 0)) (grasp-style :suction)
