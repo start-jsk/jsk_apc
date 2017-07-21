@@ -44,6 +44,9 @@
     )
   (:wait-for-user-input (arm)
     (let (can-start)
+      (when moveit-p
+        (send self :add-shelf-scene)
+        (send self :add-tote-scene arm))
       (ros::ros-info "[:wait-for-user-input] wait for user input to start: ~a" arm)
       (ros::wait-for-service "/rviz/yes_no_button")
       (setq can-start
@@ -63,8 +66,6 @@
                                     (arm2str arm))))
       (setq tote-contents (ros::get-param "/tote_contents"))
       (send self :set-target-location arm :tote)
-      (when moveit-p (send self :add-shelf-scene))
-      (when moveit-p (send self :add-tote-scene arm))
       (send self :move-fingers-pinch->init arm)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
@@ -97,9 +98,7 @@
           (list (send *baxter* :fold-to-keep-object arm)
                 (send *baxter* :fold-pose-back arm))
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
-    (send *ri* :wait-interpolation)
-    (when moveit-p (send self :delete-shelf-scene))
-    (when moveit-p (send self :delete-tote-scene arm)))
+    (send *ri* :wait-interpolation))
   (:check-recognize-fail-count (arm)
     (incf recognize-fail-count)
     (ros::ros-info "[main] arm: ~a, recognize fail count: ~a" arm recognize-fail-count)
@@ -152,7 +151,6 @@
                   :offset #f(0 0 300) :rotation-axis :z :move-palm-end t)
             3000 (send *ri* :get-arm-controller arm :gripper nil) 0))
     (send *ri* :wait-interpolation)
-    (when moveit-p (send self :delete-tote-scene arm))
     (setq graspingp (send *ri* :graspingp arm grasp-style))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
@@ -203,6 +201,7 @@
         t)))
   (:return-object (arm)
     (send self :add-postponed-object arm target-obj :tote)
+    (when moveit-p (send self :delete-tote-scene arm))
     (if (eq grasp-style :suction)
       (send *ri* :angle-vector-raw
             (send self :ik->tote-center arm :offset #f(0 0 0)
@@ -229,9 +228,7 @@
   (:place-object (arm)
     (let (dropped)
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
-      (when moveit-p
-        (send self :add-tote-scene arm)
-        (send self :add-object-in-hand-scene arm target-obj))
+      (when moveit-p (send self :add-object-in-hand-scene arm target-obj))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 70 -70))
 
       (if (eq grasp-style :suction)
