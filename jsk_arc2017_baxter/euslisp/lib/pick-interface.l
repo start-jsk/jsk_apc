@@ -63,6 +63,14 @@
         (send self :set-objects-param arm bin :object-type :all))
       (setq order nil)
       can-start))
+  (:calib-prismatic-joint (arm &key (timeout 10))
+    (send *ri* :start-prismatic-calib arm)
+    (let ((time-count 1))
+      (while (and (send *ri* :prismatic-calibratingp arm)
+                  (> (* timeout 10) time-count))
+        (unix::usleep (* 100 1000))
+        (incf time-count))
+      (if (send *ri* :prismatic-calibratingp arm) nil t)))
   (:set-target (arm)
     (setq label-names
           (ros::get-param (format nil "/~a_hand_camera/label_names"
