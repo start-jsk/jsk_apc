@@ -9,6 +9,7 @@ prismatic_joint_controller:
   calib_speed: 1.0
   calib_torque_limit: 0.3
   detect_limit_load: 0.17
+  is_multiturn: true
   motor:
     id: 1
     init: 3300
