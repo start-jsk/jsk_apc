@@ -449,10 +449,10 @@
               :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
         ;; Fold fingers to avoid collision
         (send *ri* :move-hand arm
-              (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000
+              (send *baxter* :hand-grasp-pre-pose arm :spherical) 1000
               :wait nil)
         (send *ri* :move-hand arm
-              (send *baxter* :hand-grasp-pose arm :cylindrical :angle 110) 1000
+              (send *baxter* :hand-grasp-pose arm :spherical :angle 110) 1000
               :wait nil)
         (send *ri* :wait-interpolation)
         ;; Move whole arm to target pose
@@ -561,7 +561,7 @@
           (coords-before-approach (send *baxter* arm :end-coords :copy-worldcoords)))
       ;; Fold fingers again
       (send *ri* :move-hand arm
-            (send *baxter* :hand-grasp-pose arm :cylindrical :angle 110) 1000)
+            (send *baxter* :hand-grasp-pose arm :spherical :angle 110) 1000)
       ;; start the vacuum gripper before approaching to the object
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a start vacuum gripper" arm)
       (send *ri* :start-grasp arm)
@@ -622,7 +622,7 @@
           (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)))
       ;; Open fingers in bin
       (send *ri* :move-hand arm
-            (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000)
+            (send *baxter* :hand-grasp-pre-pose arm :spherical) 1000)
       ;; suction: prismatic-based approach
       (send *baxter* :slide-gripper arm 0 :relative nil)
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
