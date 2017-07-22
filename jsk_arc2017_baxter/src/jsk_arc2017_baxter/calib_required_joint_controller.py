@@ -26,6 +26,9 @@ class CalibRequiredJointController(JointPositionController):
         self.detect_limit_load = rospy.get_param(
                 self.controller_namespace + '/detect_limit_load',
                 0.15)
+        self.is_multiturn = rospy.get_param(
+                self.controller_namespace + '/is_multiturn',
+                False)
 
         self.calib_server = actionlib.SimpleActionServer(
                 self.controller_namespace + '/calib',
@@ -72,8 +75,12 @@ class CalibRequiredJointController(JointPositionController):
             rate.sleep()
         self.__set_speed_wheel(0.0)
         self.set_torque_enable(False)
-        # Change to previous mode
-        self.__set_angle_limits(prev_limits['min'], prev_limits['max'])
+        if self.is_multiturn:
+            # Change to multiturn mode
+            self.__set_angle_limits(4095, 4095)
+        else:
+            # Change to previous mode
+            self.__set_angle_limits(prev_limits['min'], prev_limits['max'])
         self.set_speed(self.joint_speed)
         if self.torque_limit is not None:
             self.set_torque_limit(self.torque_limit)
