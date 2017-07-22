@@ -355,6 +355,8 @@
     (arm &key (wait t))
     ;; Move fingers to initial pose
     (send *ri* :stop-grasp arm :pinch)
+    (send *baxter* :angle-vector
+          (send *ri* :state :potentio-vector :wait-until-update t))
     (send *ri* :move-hand arm
           (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait wait))
   (:pick-object-in-bin

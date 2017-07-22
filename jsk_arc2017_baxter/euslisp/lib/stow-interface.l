@@ -262,7 +262,9 @@
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm) ;; release object
           (if (eq grasp-style :pinch)
-            (send *ri* :stop-grasp arm :pinch)) ;; release object
+            (send *ri* :stop-grasp arm :pinch)
+            (send *baxter* :angle-vector
+                  (send *ri* :state :potentio-vector :wait-until-update t))) ;; release object
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-raw
