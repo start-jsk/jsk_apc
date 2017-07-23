@@ -53,13 +53,21 @@ def main():
         md5='980d3c6f0b3ef5e541f4db5280233c33',
     )
 
-    # dataset: v2
+    # # dataset: v2
+    # # augmentation: stack
+    # # unknown_objects: apc2016
+    # download_data(
+    #     path='data/models/fcn32s_arc2017_datasetv2_cfg003_20170704.npz',
+    #     url='https://drive.google.com/uc?id=0B9P1L--7Wd2vcEZMbVR0eHlVdDg',
+    #     md5='606d2f6bc0c701e79b64466c73c83a72',
+    # )
+
+    # dataset: v3 (natural dataset)
     # augmentation: stack
-    # unknown_objects: apc2016
     download_data(
-        path='data/models/fcn32s_arc2017_datasetv2_cfg003_20170704.npz',
-        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vcEZMbVR0eHlVdDg',
-        md5='606d2f6bc0c701e79b64466c73c83a72',
+        path='data/models/fcn32s_arc2017_datasetv3_cfg009_20170723.npz',
+        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vUVBsbnJWYTk5V3M',
+        md5='266c0e5caa355cfd88ba9345168f689b',
     )
 
 
