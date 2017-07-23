@@ -148,9 +148,10 @@
                      (symbol-string bin))
         (return-from :get-certain-work-order (elt orders- i)))))
   (:select-work-order-in-bin
-    (arm bin &key (stamp (ros::time-now)))
+    (arm bin &key (stamp (ros::time-now)) (timeout 10))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
-          box-msg box-objects box-labels bin-orders label-names)
+          (candidates-topic (format nil "/~a_hand_camera/candidates_publisher/output/candidates" (arm2str arm)))
+          box-msg candidates-msg box-objects box-labels bin-orders label-names)
       (setq bin-orders
             (remove nil (mapcar
                           #'(lambda (order)
@@ -159,11 +160,25 @@
       (setq label-names
             (ros::get-param (format nil "/~a_hand_camera/label_names"
                                     (arm2str arm))))
-      (setq box-msg (one-shot-subscribe box-topic
-                                        jsk_recognition_msgs::BoundingBoxArray
-                                        :timeout 15000
-                                        :after-stamp stamp))
-      (when box-msg
+      (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq box-msg msg)))))
+      (ros::subscribe candidates-topic jsk_recognition_msgs::LabelArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq candidates-msg msg)))))
+      (while (and (not (and box-msg candidates-msg))
+                  (> (+ (send stamp :to-sec) timeout)
+                     (send (ros::time-now) :to-sec)))
+             (unix::usleep (* 50 1000))
+             (ros::spin-once))
+      (ros::unsubscribe box-topic)
+      (ros::unsubscribe candidates-topic)
+
+      (when (and box-msg candidates-msg)
         (setq box-labels
               (remove nil (mapcar
                             #'(lambda (box)
@@ -175,6 +190,13 @@
                                              (> volume 0.0))
                                     (send box :label))))
                             (send box-msg :boxes))))
+        (setq candidate-labels
+              (mapcar #'(lambda (label-msg) (send label-msg :id)) (send candidates-msg :labels)))
+        (setq box-labels
+              (remove nil (mapcar
+                            #'(lambda (label)
+                                (when (find label candidate-labels) label))
+                            box-labels)))
         (unless box-labels (return-from :select-work-order-in-bin nil))
         (setq box-objects (mapcar #'(lambda (label) (elt label-names label)) box-labels))
         (dolist (skipping-objects
