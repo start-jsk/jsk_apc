@@ -791,11 +791,12 @@
   (:move-arm-body->bin-overlook-pose
     (arm bin &key (gripper-angle 90))
     (let (avs offset rpy
-              (offset-y (if (eq arm :larm) 180 -180)))
+              (offset-x (if (eq arm :larm) 30 -50))
+              (offset-y (if (eq arm :larm) 280 -250)))
       (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
       (send *baxter* :reset-pose arm)
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
-      (setq offset (float-vector -100 offset-y 250))
+      (setq offset (float-vector offset-x offset-y 250))
       (setq rpy
             (float-vector 0 pi/2 (if (eq arm :larm) pi/2 -pi/2)))
       (pushback
@@ -807,11 +808,12 @@
   (:move-arm-body->tote-overlook-pose
     (arm &key (gripper-angle 90))
     (let (avs offset rpy
-              (offset-y (if (eq arm :larm) 300 -300)))
+              (offset-x (if (eq arm :larm) 0 -20))
+              (offset-y (if (eq arm :larm) 390 -320)))
       (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
       (send *baxter* :reset-pose arm)
       (send *baxter* :rotate-gripper arm gripper-angle :relative nil)
-      (setq offset (float-vector 0 offset-y 250))
+      (setq offset (float-vector offset-x offset-y 250))
       (setq rpy (float-vector 0 pi/2 (if (eq arm :larm) pi/2 -pi/2)))
       (pushback
         (send self :ik->tote-center arm
