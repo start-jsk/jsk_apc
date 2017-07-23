@@ -496,7 +496,7 @@
               :wait t)
         ;; Move whole arm to target pose
         (send *ri* :angle-vector-sequence-raw next-avs
-              :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+              :fast (send *ri* :get-arm-controller arm :head t) 0 :scale 5.0)
         (send *ri* :wait-interpolation))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
