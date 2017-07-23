@@ -134,7 +134,9 @@
     (setq grasp-style (send self :get-grasp-style arm target-obj 1))
     (ros::ros-info "arm: ~a, grasp-style: ~a, trial-time: ~a"
                    (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
-    (when grasp-style (setq start-picking-fail-count 0))
+    (if grasp-style
+      (setq start-picking-fail-count 0)
+      (send self :add-postponed-object arm target-obj target-bin))
     (if grasp-style t nil))
   (:check-start-picking-fail-count (arm)
     (incf start-picking-fail-count)
