@@ -6,7 +6,8 @@ balloons:
   pinch: 1
 band_aid_tape:
   suction: 1
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 bath_sponge:
   suction: 3
   pinch: 1
@@ -15,16 +16,19 @@ black_fashion_gloves:
   pinch: 1
 burts_bees_baby_wipes:
   suction: 3
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 colgate_toothbrush_4pk:
   suction: 2
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 composition_book:
   suction: 3
   pinch: 3
 crayons:
   suction: 1
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 duct_tape:
   suction: 3
   pinch: 3
@@ -33,7 +37,8 @@ epsom_salts:
   pinch: 3
 expo_eraser:
   suction: 1
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 fiskars_scissors:
   suction: 2
   pinch: 3
@@ -57,7 +62,8 @@ ice_cube_tray:
   pinch: 3
 irish_spring_soap:
   suction: 1
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 laugh_out_loud_jokes:
   suction: 1
   pinch: 3
@@ -69,22 +75,27 @@ measuring_spoons:
   pinch: 3
 mesh_cup:
   suction: 3
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 mouse_traps:
   suction: 1
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 pie_plates:
   suction: 2
   pinch: 3
 plastic_wine_glass:
   suction: 3
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 poland_spring_water:
   suction: 3
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 reynolds_wrap:
   suction: 2
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 robots_dvd:
   suction: 1
   pinch: 3
@@ -93,10 +104,12 @@ robots_everywhere:
   pinch: 3
 scotch_sponges:
   suction: 1
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 speed_stick:
   suction: 2
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 table_cloth:
   suction: 1
   pinch: 1
@@ -105,7 +118,8 @@ tennis_ball_container:
   pinch: 1
 ticonderoga_pencils:
   suction: 1
-  pinch: 2
+  # pinch: 2
+  pinch: 3
 tissue_box:
   suction: 1
   pinch: 3
