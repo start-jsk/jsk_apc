@@ -65,9 +65,9 @@ def main():
     # dataset: v3 (natural dataset)
     # augmentation: stack
     download_data(
-        path='data/models/fcn32s_arc2017_datasetv3_cfg009_20170723.npz',
-        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vUVBsbnJWYTk5V3M',
-        md5='266c0e5caa355cfd88ba9345168f689b',
+        path='data/models/fcn32s_arc2017_datasetv3_cfg009_20170724.npz',
+        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vWXRNa3BpeWlqcFE',
+        md5='17536436262487185740e186e39651bf',
     )
 
 
