@@ -18,7 +18,7 @@
     <arg name="BACKEND" value="chainer" />
     <arg name="GPU" value="$(arg GPU)" />
     <arg name="MODEL_NAME" value="fcn32s" />
-    <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv3_cfg009_20170723.npz" />
+    <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s_arc2017_datasetv3_cfg009_20170724.npz" />
     <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
     <arg name="USE_PCA" value="true" />
     <arg name="USE_TOPIC" value="true" />
