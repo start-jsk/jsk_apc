@@ -2,6 +2,14 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* sort target cpi decomposer by cloud_size
+* set smaller queue_size for target cpi decomposer
+* set smaller queue_size for label cpi decomposer
+* resize input of cpi decomposer for largest object selection
+* Contributors: Shingo Kitagawa
+
 3.3.0 (2017-07-15)
 ------------------
 * add use_topic and input_candidates args

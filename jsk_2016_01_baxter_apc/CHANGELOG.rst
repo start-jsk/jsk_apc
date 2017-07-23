@@ -2,6 +2,13 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use baxter_simple.urdf in jsk_2016_01_baxter_apc baxterrgv5.xacro
+* Use baxter_simple.urdf in jsk_2016_01_baxter_apc baxter.xacro
+* Re enable jsk_2016_01_baxter_apc's tests
+* Contributors: Kentaro Wada
+
 3.3.0 (2017-07-15)
 ------------------
 * disable test to pass travis

@@ -2,6 +2,48 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix workorder in shared shelf-bin (B)
+* Fix suction for pie plates
+* Enhance object location display
+* fix graspability of some items
+* Fix graspability of speed stick
+* FCN32s trained using natural dataset (datasetV3)
+* add grasp_style_server.py
+* add GetGraspStyle service
+* sort work order by graspability
+* add list_graspability script
+* add func get_object_graspability()
+* Fixed training of FCN32s using stacking data augmentation
+* No use of ConnectionBasedTransport in WeightCanditatesRefiner
+* Fix old timestamp in EkEwIDriver output
+* Always subscribe weight scale in weight_candidates_refiner
+* Use class segmentation in known objects
+  Because we changed the strategy to handle the unknown (newly passed)
+  objects.
+* Mark ordered objects with red circle in VisualizeJSON
+* Fix for pep8
+* Update ekew_i_driver.py
+* Update ekew_i_driver.py
+* Update ekew_i_driver.py
+* change topic name
+* always publish raw weight value
+* Fix typo in weight_candidates_refiner.py
+* publish prev_weight_sum for debugging (`#2322 <https://github.com/start-jsk/jsk_apc/issues/2322>`_)
+  * publish prev_weight_sum for debugging
+  * Update weight_candidates_refiner.py
+  * Fix typo
+  * Update weight_candidates_refiner.py
+* sort work order by object weight, pick lighter one
+* add get_object_weights() in jsk_arc2017_common
+* move object weight yaml to config dir
+* Update README.md
+* Disable of downloading old chainer models
+* Create dataset V2
+* Rename scripts annotate_dataset2d.py, view_dataset2d.py
+* Contributors: Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa, Shun Hasegawa
+
 3.3.0 (2017-07-15)
 ------------------
 * Add script to visualize annotated 2d dataset

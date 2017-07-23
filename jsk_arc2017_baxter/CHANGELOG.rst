@@ -2,6 +2,132 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Improve rosoncole output on rviz
+* Add right_main and left_main flag to pick/stow.launch
+* Re-calibration right_hand hand-eye extrinsic params
+* do not stop-grasp in pinch
+* avoid collision with head_pan
+* Error message about movable region
+* Fix ik failure in pinching
+* Fix for record and play the rosbag
+* Fix finger angle in spherical position
+* Re-calibrate finger tendon
+* Fix movable region
+* Fix rotation of gripper to avoid IK failure
+* Move reseting gripper to pick-object-with-movable-region
+* Lift gripper to avoid collision
+* Use rotate-wrist-ik in pick-object
+* Use near-wall in suction
+* Use near-wall in pinch
+* Add :check-near-wall
+* reset gripper rotation after lifting object
+* Revert "reset gripper rotation after lifting object"
+  This reverts commit 2c6935465c32e1ef110f61074a83d9bf89b6cbb7.
+* modify overlook-pose offset
+* reset gripper rotation after lifting object
+* Improve pinching
+* Don't extend prismatic joint in :stop-grasp
+* reset weight error for pick task
+* use spherical grasp-pose in suction picking
+* use prismatic-based approach in :pick-object
+* update place-object motion
+* update cardboard_marker yaml
+* refine moveit scene operation in main
+* add cardboard-rack scene methods
+* add and delete cardboard-scene separately
+* add cardboard rack leg scene methods
+* Re-calibrate vacuum pad joint
+* Set multiturn after calib
+* Add euslisp interface to prismatic calib
+* Enable dynamic calib of prismatic joints
+* Add action for prismatic joint calib
+* add object-in-hand as attached object scene
+* update state_server for new state_machines
+* check start picking and redesign state_machine
+* introduce grasp_style_server in task system
+* add :get-grasp-style method
+* fix typo in state_server.py
+* Use angle-vector-raw
+* Better drawing from box after suction grasp of object
+* use only centroid for determining obj-pos
+* slow down return-object motion
+* fix typo in baxter-interface.l moveit-environment
+* Fix typo
+* Dynamic movable region in :pick-object method
+* do not use :revert-if-fail
+* use :rotation-axis nil in pinch
+* restrict pinch-yaw : -pi/2 ~ pi/2
+* change how to sethash proximity
+* add :finger-proximity in :wait-interpolation-until in pinch
+* use hash-table in proximities-
+* remove unused valiable : middle proximity sensor
+* change prismatic joint length during pinch
+* Save scale value outputs correctly
+* change box index in arc-interface.l to pick largest boundingbox
+* change keyword :proximity -> :finger-proximity
+* add proximity condition in :wait-interpolation-until
+* add n-random key in get-larget-target-object
+* Fix load direction
+* Add missing slot variable
+* move gripper config in robots/ dir
+* Use baxter_simple.urdf in jsk_arc2017_baxter baxter.xacro
+* Fix error of weight_candidates_refiner for expo (20g)
+* update get-next-target-bin test
+* skip finished-objects in :get-largest-object-index
+* fix typo: add missing local variable
+* set objects rosparam in :wait-for-user-input
+* add :reset-object-tables method
+* use hash-table for objects controll
+* Adjust hand-eye extrinsic parameters for both hands (`#2325 <https://github.com/start-jsk/jsk_apc/issues/2325>`_)
+* modify place object position for stable place
+* increase weight error for pick task
+* modify move-arm-body->tote-overlook-pose position
+* update shelf and tote marker
+* add NOQA for long line in state_server
+* fix typo: rename to check-trail-fail-count state
+* Stabilize flex sensor
+* Add rosbag record for pick and stow
+* Use box_type instead of boxes to select bin or tote
+* enable data collection in tote
+* add get_object_weights() in jsk_arc2017_common
+* Reasonable time-limit for eus test codes
+* add get-next-target-bin test
+* reset recognize-fail-count in check-recognize-fail-count
+* add check-recognize-fail-count state in pick
+* select work order dynamically
+* add select-work-order-in-bin method
+* add :get-next-target-bin method
+* enable cpi decomposer for labels in pick task
+* line slots in alphabetical order
+* Remove outlier values in flex sensor values
+* updated extrinsic parameter between depth_optical_frame and rgb_optical_frame
+* updated IR intrinsic parameter
+* reset picking-fail-count after verify-object
+  this is because `:graspingp` is always `t`, when `grasp-style` is
+  `:pinch`
+* add check trail fail count
+* remove obj from postponed list when finished
+* add postponed-objects in slots
+* subscribe work-order msg only once
+  current system only needs to subscribe work order once in the beginning.
+* add finished-objects slots
+* line slots in alphabetical order
+* Fix larm IK to accept :use-gripper nil
+* update stow.rviz
+* update pick.rviz
+* use raw instead to make lifting object faster
+* do not wait move-hand in pick-object
+* add put stop-grasp in proper position
+* try picking twice and not recognize
+* add max_acceleration for right_s0 in joint_limits
+* Update doc for create_dataset2d
+* Can select both / right / left
+* Create dataset V2
+* Update README for look_around_bins
+* Contributors: Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa, Shun Hasegawa, Yuto Uchimi
+
 3.3.0 (2017-07-15)
 ------------------
 * Add look_around_bins experiment
