@@ -52,6 +52,6 @@ finger_tendon_controller:
   ignored_errors: ['DXL_OVERLOAD_ERROR']
   motor:
     id: 3
-    init: 3370
-    min: 3370
-    max: 800
+    init: 3140
+    min: 3140
+    max: 570
