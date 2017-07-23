@@ -93,6 +93,10 @@
             (ros::set-param
               (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
             (ros::ros-info-blue "[~a] [main] :recognize-object, target-obj: ~a" (ros::get-name) target-obj)
+
+            (ros::service-call
+              (format nil "/~a_hand_camera/image_buffer/save" (arm2str arm))
+              (instance std_srvs::TriggerRequest :init))
             (send self :recognize-target-object arm :stamp (ros::time-now))))
         (setq recognition-count (incf recognition-count)))
       is-recognized))
@@ -201,16 +205,31 @@
     ;; TODO: in-hand verification
     ;; TODO: (setq target-obj (send *ti* :recognize-object-in-hand arm))
     ;; TODO: (return-from :verify-objec target-obj)
-    (let (scale-candidates)
+    (let (scale-candidates (stamp (ros::time-now)))
       (setq scale-candidates
             (send self :get-scale-candidates arm :picked :stamp (ros::time-now)))
       (when (eq scale-candidates :timeout)
         (ros::ros-error "subscribed weight candidates, but timeout")
         (return-from :verify-object nil))
       (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
+      (unless scale-candidates (return-from :verify-object nil))
       (when (eq (length scale-candidates) 1)
-        (setq target-obj (car scale-candidates)))
-      (if (find target-obj scale-candidates :test #'string=) t nil)))
+        (setq target-obj (car scale-candidates))
+        (return-from :verify-object t))
+      (if (find target-obj scale-candidates :test #'string=)
+        t  ;; scale can classify the grasped object
+        (progn  ;; scale narrows down candidate objects
+          (let (msg new-order)
+            (setq msg
+              (one-shot-subscribe
+                (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
+                jsk_recognition_msgs::ClassificationResult
+                :timeout 15000
+                :after-stamp stamp))
+            (setq target-obj (car (send msg :label_names)))
+            (ros::ros-info-blue "[~a] [main] :verify-object, overwrite target, target-obj: ~a"
+                                (ros::get-name) target-obj)
+            t)))))
   (:check-picking-fail-count (arm)
     (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
