@@ -94,19 +94,13 @@ class WorkOrderPublisher(object):
                     'box': self.cardboard_ids[size_id]
                 }
                 if bin_ == 'A':
-                    hand = 'left_hand'
+                    publish_orders['left_hand'].append(order)
                 elif bin_ == 'C':
-                    hand = 'right_hand'
+                    publish_orders['right_hand'].append(order)
                 else:  # bin_ == 'B'
-                    right_length = len(publish_orders['right_hand'])
-                    left_length = len(publish_orders['left_hand'])
-                    if right_length > left_length:
-                        hand = 'left_hand'
-                    elif left_length > right_length:
-                        hand = 'right_hand'
-                    else:
-                        hand = random.choice(['left_hand', 'right_hand'])
-                publish_orders[hand].append(order)
+                    publish_orders['left_hand'].append(order)
+                    publish_orders['right_hand'].append(order)
+
         return publish_orders
 
     def _generate_msg(self, orders):
