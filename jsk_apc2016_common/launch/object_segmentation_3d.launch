@@ -83,7 +83,8 @@
       <remap from="~input" to="resize_points_publisher_label/output" />
       <remap from="~target" to="label_to_cluster_indices/output" />
       <rosparam>
-        queue_size: 50
+        approximate_sync: true
+        queue_size: 100
         sort_by: -cloud_size
       </rosparam>
     </node>
