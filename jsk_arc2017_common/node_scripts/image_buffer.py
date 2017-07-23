@@ -58,6 +58,7 @@ class ImageBuffer(object):
         rospy.logerr('Save request is called to image buffer.')
         rospy.logerr('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
         self.stamp = rospy.Time.now()
+        self.pub_imgs = None
         res = TriggerResponse()
         res.success = True
         return res
