@@ -428,12 +428,12 @@
             (send *baxter* :slide-gripper arm 0 :relative nil)
             (if (null suction-yaw)
               (setq next-av
-                    (send *baxter* arm :inverse-kinematics
+                    (send *baxter* :rotate-wrist-ik arm
                           (make-coords :pos (v+ obj-pos #f(0 0 120))
                                        :rpy #f(0 0 0))
                           :rotation-axis :z))
               (setq next-av
-                    (send *baxter* arm :inverse-kinematics
+                    (send *baxter* :rotate-wrist-ik arm
                           (make-coords :pos (v+ obj-pos #f(0 0 120))
                                        :rpy (float-vector suction-yaw 0 0))
                           :rotation-axis t))))
@@ -442,14 +442,14 @@
             (send *baxter* :rotate-gripper arm 0 :relative nil)
             (send *baxter* :slide-gripper arm 0 :relative nil)
             (setq next-av
-                  (send *baxter* arm :inverse-kinematics
+                  (send *baxter* :rotate-wrist-ik arm
                         (make-coords :pos (v+ obj-pos #f(0 0 200))
                                      :rpy (float-vector pinch-yaw 0 0))
                         :move-palm-end t
                         :rotation-axis t))
             (if (null next-av)
               (setq next-av
-                  (send *baxter* arm :inverse-kinematics
+                  (send *baxter* :rotate-wrist-ik arm
                         (make-coords :pos (v+ obj-pos #f(0 0 200))
                                      :rpy (float-vector pinch-yaw 0 0))
                         :move-palm-end t
