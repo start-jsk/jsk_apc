@@ -489,9 +489,34 @@
           (if (eq grasp-style :pinch)
             (send self :move-fingers-pinch->init arm))))
       (if (eq grasp-style :suction)
-        ;; Move underactuated fingers to initial pose
-        (send *ri* :move-hand arm
-              (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
+        (progn
+          ;; Move underactuated fingers to initial pose
+          (send *ri* :move-hand arm
+                (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)
+          ;; reset gripper rotation
+          (let (av (end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos)))
+            (cond
+              ((eq arm :rarm)
+               (setq av (send *baxter* arm :inverse-kinematics
+                              (make-coords :pos end-pos :rpy (float-vector pi/2 0 0)))))
+              ((eq arm :larm)
+               (setq av (send *baxter* arm :inverse-kinematics
+                              (make-coords :pos end-pos :rpy (float-vector -pi/2 0 0))))))
+            (if av
+              (progn
+                (send *ri* :angle-vector-raw av 2000 (send *ri* :get-arm-controller arm) 0)
+                (send *ri* :wait-interpolation)))))
+        (progn
+          ;; reset gripper rotation
+          (let (av (end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos)))
+            (setq av (send *baxter* arm :inverse-kinematics
+                           (make-coords :pos end-pos :rpy #f(0 0 0))
+                           :move-palm-end t))
+            (if av
+              (progn
+                (send *ri* :angle-vector-raw av
+                      2000 (send *ri* :get-arm-controller arm :gripper nil) 0)
+                (send *ri* :wait-interpolation))))))
       (send *ri* :gripper-servo-on arm)
       graspingp))
   (:get-object-position
@@ -675,18 +700,6 @@
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation)
-      (let (av (end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos)))
-        (cond
-          ((eq arm :rarm)
-            (setq av (send *baxter* arm :inverse-kinematics
-                           (make-coords :pos end-pos :rpy (float-vector pi/2 0 0)))))
-          ((eq arm :larm)
-            (setq av (send *baxter* arm :inverse-kinematics
-                           (make-coords :pos end-pos :rpy (float-vector -pi/2 0 0))))))
-        (if av
-            (progn
-              (send *ri* :angle-vector-raw av 2000 (send *ri* :get-arm-controller arm) 0)
-              (send *ri* :wait-interpolation))))
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send *ri* :graspingp arm :suction))
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a graspingp: ~a" arm graspingp)
@@ -767,12 +780,6 @@
             :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
       (send *ri* :wait-interpolation)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
-      (let (av (end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos)))
-        (setq av (send *baxter* arm :inverse-kinematics (make-coords :pos end-pos :rpy #f(0 0 0)) :move-palm-end t))
-        (if av
-            (progn
-              (send *ri* :angle-vector-raw av 2000 (send *ri* :get-arm-controller arm) 0)
-              (send *ri* :wait-interpolation))))
       (setq graspingp (send *ri* :graspingp arm :pinch))
       (ros::ros-info "[:try-to-pinch-object] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
