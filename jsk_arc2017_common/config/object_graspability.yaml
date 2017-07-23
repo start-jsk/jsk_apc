@@ -96,7 +96,7 @@ scotch_sponges:
   pinch: 1
 speed_stick:
   suction: 2
-  pinch: 1
+  pinch: 2
 table_cloth:
   suction: 1
   pinch: 1
