@@ -151,8 +151,8 @@
     (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-bin-scene target-bin))
     (if (eq grasp-style :suction)
-      (send self :set-movable-region-for-bin :offset (list 80 80 0))
-      (send self :set-movable-region-for-bin :offset (list 80 120 0)))
+      (send self :set-movable-region-for-bin :offset (list 50 50 0))
+      (send self :set-movable-region-for-bin :offset (list 50 50 0)))
     (send self :reset-scale arm)
     (send self :pick-object-in-bin arm target-bin
           :n-trial (if (eq grasp-style :suction) 2 1)
