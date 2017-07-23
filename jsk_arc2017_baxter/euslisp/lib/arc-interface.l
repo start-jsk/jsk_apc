@@ -162,14 +162,30 @@
       (setq label-names
             (ros::get-param (format nil "/~a_hand_camera/label_names"
                                     (arm2str arm))))
-      (setq box-msg (one-shot-subscribe box-topic
-                                        jsk_recognition_msgs::BoundingBoxArray
-                                        :timeout 15000
-                                        :after-stamp stamp))
-      (setq com-msg (one-shot-subscribe com-topic
-                                        geometry_msgs::PoseArray
-                                        :timeout 15000
-                                        :after-stamp stamp))
+      ;; (setq box-msg (one-shot-subscribe box-topic
+      ;;                                   jsk_recognition_msgs::BoundingBoxArray
+      ;;                                   :timeout 15000
+      ;;                                   :after-stamp stamp))
+      ;; (setq com-msg (one-shot-subscribe com-topic
+      ;;                                   geometry_msgs::PoseArray
+      ;;                                   :timeout 15000
+      ;;                                   :after-stamp stamp))
+      (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq box-msg msg)))))
+      (ros::subscribe com-topic geometry_msgs::PoseArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq com-msg msg)))))
+      (while (and (not (and box-msg com-msg))
+                  (> (+ (send stamp :to-sec) timeout) (send (ros::time-now) :to-sec)))
+             (unix::usleep (* 50 1000))
+             (ros::spin-once))
+      (ros::unsubscribe box-topic)
+      (ros::unsubscribe com-topic)
       (when (com-msg)
         (setq obj-coords
               (mapcar #'(lambda (obj-pose)
@@ -302,7 +318,7 @@
       (ros::unsubscribe com-topic)
       (cond
         ((and box-msg com-msg)
-         (ros::ros-info "[:recognize-target-object] arm: ~a get cpi msg" arm)
+         (ros::ros-info "[:recognize-target-object] arm: ~a get cpi ms" arm)
          (setq obj-box (send box-msg :boxes))
          (setq obj-coords
                (mapcar #'(lambda (obj-pose)
