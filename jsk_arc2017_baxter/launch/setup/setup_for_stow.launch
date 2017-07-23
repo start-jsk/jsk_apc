@@ -113,6 +113,15 @@
         error: 10.0
       </rosparam>
     </node>
+
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
+        <arg name="INPUT_BBOXES" value="cluster_indices_decomposer_target/boxes" />
+        <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
+        <arg name="INPUT_CLOUD" value="extract_indices_tote/output" />
+        <arg name="INPUT_INFO" value="left/rgb/camera_info" />
+        <arg name="INPUT_PROBA_IMAGE" value="fcn_object_segmentation/output/proba_image" />
+        <arg name="NODELET_MANAGER" value="left/left_nodelet_manager" />
+    </include>
   </group>  <!-- ns="left_hand_camera" -->
 
   <group ns="right_hand_camera">
@@ -192,6 +201,15 @@
         error: 10.0
       </rosparam>
     </node>
+
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
+        <arg name="INPUT_BBOXES" value="cluster_indices_decomposer_target/boxes" />
+        <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
+        <arg name="INPUT_CLOUD" value="extract_indices_tote/output" />
+        <arg name="INPUT_INFO" value="left/rgb/camera_info" />
+        <arg name="INPUT_PROBA_IMAGE" value="fcn_object_segmentation/output/proba_image" />
+        <arg name="NODELET_MANAGER" value="left/left_nodelet_manager" />
+    </include>
   </group>  <!-- ns="right_hand_camera" -->
 
  </launch>
