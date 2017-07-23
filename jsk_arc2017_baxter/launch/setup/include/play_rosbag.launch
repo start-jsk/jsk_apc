@@ -1,0 +1,92 @@
+<launch>
+  <arg name="filename" />
+  <param name="/use_sim_time" value="true" />
+  <node name="rosbag_play"
+        pkg="rosbag" type="play"
+        args="$(arg filename) --clock --loop">
+  </node>
+
+  <!-- cameras >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+  <arg name="pick" default="true" />
+  <group if="$(arg pick)">
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/setup_for_pick.launch">
+      <arg name="load_driver" value="false" />
+    </include>
+  </group>
+  <group unless="$(arg pick)">
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/setup_for_stow.launch">
+      <arg name="load_driver" value="false" />
+    </include>
+  </group>
+
+  <!-- left_hand_camera -->
+  <group ns="/left_hand_camera/left/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/left/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/right/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/right/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/left/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <!-- right_hand_camera -->
+  <group ns="/right_hand_camera/left/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/right/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/right/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+
+  <!-- cameras <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+
+</launch>
