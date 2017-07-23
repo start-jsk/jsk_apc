@@ -113,6 +113,9 @@
               (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
               (cons "label_value" (position target-obj label-names :test #'string=)))
             (ros::ros-info-blue "[~a] [main] :recognize-object, target-bin: ~a, target-obj: ~a" (ros::get-name) target-bin target-obj)
+            (ros::service-call
+              (format nil "/~a_hand_camera/image_buffer/save" (arm2str arm))
+              (instance std_srvs::TriggerRequest :init))
             (send self :recognize-target-object arm :stamp (ros::time-now))))
         (incf recognition-count))
       is-recognized))
@@ -219,14 +222,32 @@
     ;; TODO: in-hand verification
     ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
     ;; TODO:   target-obj != in-hand object -> :return_object
-    (let (scale-candidates)
+    (let (scale-candidates (stamp (ros::time-now)))
       (setq scale-candidates
-            (send self :get-scale-candidates arm :picked :stamp (ros::time-now)))
+            (send self :get-scale-candidates arm :picked :stamp stamp))
       (when (eq scale-candidates :timeout)
         (ros::ros-error "subscribed weight candidates, but timeout")
         (return-from :verify-object nil))
       (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
-      (if (find target-obj scale-candidates :test #'string=) t nil)))
+      (if (find target-obj scale-candidates :test #'string=)
+        t  ;; scale can classify the grasped object
+        (progn  ;; scale narrows down candidate objects
+          (let (msg new-order)
+            (setq msg
+              (one-shot-subscribe
+                (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
+                jsk_recognition_msgs::ClassificationResult
+                :timeout 15000
+                :after-stamp stamp))
+            (setq new-order (send self :check-exist-in-order (car (send msg :label_names))))
+            (if new-order
+              (progn
+                (setq target-obj (send new-order :item))
+                (setq target-cardboard (str2symbol (send new-order :box)))
+                (ros::ros-info-blue "[~a] [main] :verify-object, overwrite target, target-obj: ~a"
+                                    (ros::get-name) target-obj)
+                t)
+              nil))))))
   (:check-picking-fail-count (arm)
     (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)

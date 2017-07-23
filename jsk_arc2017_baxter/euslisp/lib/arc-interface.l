@@ -208,6 +208,14 @@
                          (not (find object-name skipping-objects :test #'string=)))
                 (return-from :select-work-order-in-bin order))))))
       nil))
+  (:check-exist-in-order (obj)
+    (let (index)
+      (setq index
+            (position obj
+                      (mapcar #'(lambda (order) (send order :item)) orders-) :test #'string=))
+      (if index
+        (elt orders- index)
+        nil)))
   (:check-bin-exist (bin) (if (gethash bin bin-cubes-) t nil))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
