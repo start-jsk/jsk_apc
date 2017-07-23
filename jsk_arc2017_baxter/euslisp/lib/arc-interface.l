@@ -732,7 +732,8 @@
       (send *ri* :wait-interpolation)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (let (av (end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos)))
-        (setq av (send *baxter* arm :inverse-kinematics (make-coords :pos end-pos :rpy #f(0 0 0)) :move-palm-end t))
+        (setq av (send *baxter* arm :inverse-kinematics
+                       (make-coords :pos end-pos :rpy #f(0 0 0)) :move-palm-end t))
         (if av
             (progn
               (send *ri* :angle-vector-raw av 2000 (send *ri* :get-arm-controller arm) 0)
