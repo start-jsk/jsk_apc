@@ -7,13 +7,13 @@ from sensor_msgs.msg import Image
 import message_filters
 
 
-class ImageBuffer():
+class ImageBuffer(object):
 
     def __init__(self):
+        self.stamp = None
         self.pub_imgs = None
-        self.sub_imgs = None
         rospy.loginfo("Subscribing image.")
-        self.service = rospy.Service('~save', Trigger, self._save)
+        self.save_service = rospy.Service('~save', Trigger, self._save)
         input_topics = rospy.get_param('~input_topics', [])
         rate = rospy.get_param('~rate', 1.)
         approximate_sync = rospy.get_param('~approximate_sync', False)
@@ -47,16 +47,19 @@ class ImageBuffer():
             sync.registerCallback(self._cb)
 
     def _cb(self, *sub_imgs):
-        self.sub_imgs = sub_imgs
+        if self.stamp and self.stamp < sub_imgs[0].header.stamp:
+            rospy.logerr('Time diff: %.2f[s]' %
+                         (sub_imgs[0].header.stamp - self.stamp).secs)
+            self.pub_imgs = sub_imgs
+            self.stamp = None
 
     def _save(self, req):
+        rospy.logerr('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        rospy.logerr('Save request is called to image buffer.')
+        rospy.logerr('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+        self.stamp = rospy.Time.now()
         res = TriggerResponse()
-        if self.sub_imgs is None:
-            res.success = False
-            res.message = 'input topic is not published yet'
-        else:
-            self.pub_imgs = self.sub_imgs
-            res.success = True
+        res.success = True
         return res
 
     def publish(self, event):
@@ -64,8 +67,9 @@ class ImageBuffer():
             rospy.logwarn_throttle(5, "Input topic is not published yet.")
             return
         for pub, pub_img in zip(self.pubs, self.pub_imgs):
-            pub_img.header.stamp = rospy.Time.now()
+            pub_img.header.stamp = event.current_real
             pub.publish(pub_img)
+
 
 if __name__ == '__main__':
     rospy.init_node('image_buffer')

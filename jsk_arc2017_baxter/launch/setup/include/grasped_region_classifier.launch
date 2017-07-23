@@ -46,7 +46,7 @@
   <node name="multiply_mask_image"
         pkg="nodelet" type="nodelet"
         args="load jsk_perception/MultiplyMaskImage $(arg NODELET_MANAGER)" >
-    <remap from="~input/src1" to="rect_to_mask_image/output" />
+    <remap from="~input/src1" to="polygon_to_mask_image/output" />
     <remap from="~input/src2" to="pointcloud_to_mask_image/output" />
     <rosparam>
       approximate_sync: true
@@ -60,7 +60,7 @@
     <remap from="~input_mask" to="multiply_mask_image/output" />
     <rosparam>
       approximate_sync: true
-      queue_size: 100
+      queue_size: 30
     </rosparam>
   </node>
 
@@ -71,7 +71,7 @@
         - apply_mask_to_proba_image/output
         - left/rgb/image_rect_color
       approximate_sync: true
-      queue_size: 1000
+      queue_size: 500
       rate: 5
     </rosparam>
   </node>
@@ -82,7 +82,7 @@
     <remap from="~input/candidates" to="$(arg INPUT_CANDIDATES)" />
     <rosparam>
       use_topic: true
-      bg_label: 0
+      candidates_fixed: [0, 41]
     </rosparam>
   </node>
 
@@ -90,23 +90,15 @@
         pkg="jsk_perception" type="probability_image_classifier.py" >
     <remap from="~input" to="apply_context_to_label_proba_by_scale/output" />
     <remap from="~target_names" to="label_names" />
-    <rosparam>
-      ignore_labels:
-        - 0
-        - 41
-    </rosparam>
   </node>
 
+  <!--
   <node name="label_image_classifier"
         pkg="jsk_perception" type="label_image_classifier.py" >
     <remap from="~input" to="apply_context_to_label_proba_by_scale/output/label" />
     <remap from="~target_names" to="label_names" />
-    <rosparam>
-      ignore_labels:
-        - 0
-        - 41
-    </rosparam>
   </node>
+  -->
 
   <!-- Visualization -->
   <node name="label_image_decomposer_by_scale"
@@ -116,9 +108,8 @@
     <remap from="~label_names" to="label_names" />
     <rosparam>
       approximate_sync: true
-      queue_size: 100
+      queue_size: 30
     </rosparam>
   </node>
-
 
 </launch>

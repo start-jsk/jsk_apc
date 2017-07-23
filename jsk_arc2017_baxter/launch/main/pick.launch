@@ -149,7 +149,7 @@
         - .*:joint-angle.*
         - .*:wait-interpolation-until.*
         - ^;;.*
-        - if you do not have gripper,.*
+        - .*if you do not have gripper,.*
     </rosparam>
   </node>
 
