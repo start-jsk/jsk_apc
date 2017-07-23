@@ -614,35 +614,17 @@ Visualization Manager:
       Enabled: true
       Foreground Alpha: 0.8
       Foreground Color: 25; 255; 240
-      Name: LeftTargetLabel
+      Name: Rosconsole
       Overtake Color Properties: false
       Overtake Position Properties: true
       Topic: /rosconsole_overlay_text/output
       Value: true
       font: DejaVu Sans Mono
-      height: 800
-      left: 20
+      height: 500
+      left: 16
       line width: 2
       text size: 10
-      top: 20
-      width: 500
-    - Background Alpha: 0.8
-      Background Color: 0; 0; 0
-      Class: jsk_rviz_plugin/OverlayText
-      Enabled: true
-      Foreground Alpha: 0.8
-      Foreground Color: 25; 255; 240
-      Name: RightTargetLabel
-      Overtake Color Properties: false
-      Overtake Position Properties: true
-      Topic: /right_hand_camera/overlay_target_label/output
-      Value: true
-      font: DejaVu Sans Mono
-      height: 800
-      left: 1200
-      line width: 2
-      text size: 10
-      top: 20
+      top: 250
       width: 500
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
@@ -1389,5 +1371,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1912
-  X: 394
-  Y: 30
+  X: 384
+  Y: 20
