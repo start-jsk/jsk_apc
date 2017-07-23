@@ -11,7 +11,8 @@
 
 (defclass jsk_arc2017_baxter::arc-interface
   :super propertied-object
-  :slots (attached-objects-
+  :slots (all-coords-
+          attached-objects-
           bbox-volume-threshold-
           bin-cubes-
           bin-movable-regions-
@@ -36,6 +37,7 @@
     (setq bin-movable-regions- (make-hash-table))
     (setq object-boxes- (make-hash-table))
     (setq object-coords- (make-hash-table))
+    (setq all-coords- (make-hash-table))
     (setq cardboard-cubes- (make-hash-table))
     (setq tote-cubes- (make-hash-table))
     (setq tote-movable-regions- (make-hash-table))
@@ -150,7 +152,8 @@
   (:select-work-order-in-bin
     (arm bin &key (stamp (ros::time-now)))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
-          box-msg box-objects box-labels bin-orders label-names)
+          (com-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/centroid_pose_array" (arm2str arm)))
+          box-msg box-objects box-labels bin-orders label-names obj-coords)
       (setq bin-orders
             (remove nil (mapcar
                           #'(lambda (order)
@@ -159,10 +162,37 @@
       (setq label-names
             (ros::get-param (format nil "/~a_hand_camera/label_names"
                                     (arm2str arm))))
-      (setq box-msg (one-shot-subscribe box-topic
-                                        jsk_recognition_msgs::BoundingBoxArray
-                                        :timeout 15000
-                                        :after-stamp stamp))
+      ;; (setq box-msg (one-shot-subscribe box-topic
+      ;;                                   jsk_recognition_msgs::BoundingBoxArray
+      ;;                                   :timeout 15000
+      ;;                                   :after-stamp stamp))
+      ;; (setq com-msg (one-shot-subscribe com-topic
+      ;;                                   geometry_msgs::PoseArray
+      ;;                                   :timeout 15000
+      ;;                                   :after-stamp stamp))
+      (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq box-msg msg)))))
+      (ros::subscribe com-topic geometry_msgs::PoseArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq com-msg msg)))))
+      (while (and (not (and box-msg com-msg))
+                  (> (+ (send stamp :to-sec) timeout) (send (ros::time-now) :to-sec)))
+             (unix::usleep (* 50 1000))
+             (ros::spin-once))
+      (ros::unsubscribe box-topic)
+      (ros::unsubscribe com-topic)
+      (when (com-msg)
+        (setq obj-coords
+              (mapcar #'(lambda (obj-pose)
+                          (send *ri* :tf-pose->coords
+                                (send com-msg :header :frame_id) obj-pose))
+                      (send com-msg :poses)))
+        (sethash bin all-coords- obj-coords))
       (when box-msg
         (setq box-labels
               (remove nil (mapcar
@@ -288,7 +318,7 @@
       (ros::unsubscribe com-topic)
       (cond
         ((and box-msg com-msg)
-         (ros::ros-info "[:recognize-target-object] arm: ~a get cpi msg" arm)
+         (ros::ros-info "[:recognize-target-object] arm: ~a get cpi ms" arm)
          (setq obj-box (send box-msg :boxes))
          (setq obj-coords
                (mapcar #'(lambda (obj-pose)
