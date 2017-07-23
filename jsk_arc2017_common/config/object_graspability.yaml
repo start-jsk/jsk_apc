@@ -74,7 +74,7 @@ mouse_traps:
   suction: 1
   pinch: 2
 pie_plates:
-  suction: 3
+  suction: 2
   pinch: 3
 plastic_wine_glass:
   suction: 3
