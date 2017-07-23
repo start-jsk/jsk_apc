@@ -505,16 +505,16 @@
       (setq obj-pos (send obj-coords :worldpos))
       (dolist (i (list 0 1))
         (cond ((> (elt (elt movable-region i) 0) (aref obj-pos i))
-               (ros::ros-info "[:get-object-position] object is out of movable region. ~a > ~a < ~a"
-                              (elt (elt movable-region i) 1)
-                              (elt (send obj-coords :pos) i)
-                              (elt (elt movable-region i) 0))
+               (ros::ros-error "[:get-object-position] object is out of movable region. ~a > ~a < ~a"
+                               (elt (elt movable-region i) 1)
+                               (elt (send obj-coords :pos) i)
+                               (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 0)))
               ((> (aref obj-pos i) (elt (elt movable-region i) 1))
-               (ros::ros-info "[:get-object-position] object is out of movable region. ~a < ~a > ~a"
-                              (elt (elt movable-region i) 1)
-                              (elt (send obj-coords :pos) i)
-                              (elt (elt movable-region i) 0))
+               (ros::ros-error "[:get-object-position] object is out of movable region. ~a < ~a > ~a"
+                               (elt (elt movable-region i) 1)
+                               (elt (send obj-coords :pos) i)
+                               (elt (elt movable-region i) 0))
                (setf (aref obj-pos i) (elt (elt movable-region i) 1)))
               (t nil)))
       obj-pos))
