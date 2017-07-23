@@ -18,6 +18,7 @@
             (:wait-for-opposite-arm -> :set-target)
             (:wait-for-opposite-arm !-> :wait-for-opposite-arm)
             (:set-target -> :recognize-object)
+            (:set-target !-> :wait-for-user-input)
             (:recognize-object -> :check-can-start-picking)
             (:recognize-object !-> :return-from-recognize-object)
             (:return-from-recognize-object -> :check-recognize-fail-count)
@@ -67,8 +68,7 @@
             (:set-target
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :set-target)
-                 (send *ti* :set-target *arm*)
-                 t))
+                 (send *ti* :set-target *arm*)))
             (:recognize-object
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :recognize-object)
