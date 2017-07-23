@@ -380,7 +380,7 @@
          (do-stop-grasp nil) (grasp-style :suction))
     (send self :move-fingers-pinch->init arm :wait nil)
     (send *ri* :calib-proximity-threshold arm)
-    (let (graspingp avs object-index obj-pos obj-cube pinch-yaw near-wall)
+    (let (graspingp avs object-index obj-pos obj-cube pinch-yaw suction-yaw near-wall)
       ;; pick largest bounding box
       (setq object-index 0)
       (setq obj-pos
@@ -388,10 +388,10 @@
       (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) object-index)))
       (setq near-wall (send self :check-near-wall obj-pos movable-region :range 100))
       (cond
-        ((eq near-wall :rear) (setq pinch-yaw pi))
-        ((eq near-wall :front) (setq pinch-yaw 0))
-        ((eq near-wall :right) (setq pinch-yaw -pi/2))
-        ((eq near-wall :left) (setq pinch-yaw pi/2))
+        ((eq near-wall :rear) (setq pinch-yaw pi) (setq suction-yaw 0))
+        ((eq near-wall :front) (setq pinch-yaw 0) (setq suction-yaw pi))
+        ((eq near-wall :right) (setq pinch-yaw -pi/2) (setq suction-yaw pi/2))
+        ((eq near-wall :left) (setq pinch-yaw pi/2) (setq suction-yaw -pi/2))
         (t
           (if (> (x-of-cube obj-cube) (y-of-cube obj-cube))
             (setq pinch-yaw
@@ -426,11 +426,17 @@
           (progn
             (send *baxter* :rotate-gripper arm 0 :relative nil)
             (send *baxter* :slide-gripper arm 0 :relative nil)
-            (setq next-av
-                  (send *baxter* arm :inverse-kinematics
-                        (make-coords :pos (v+ obj-pos #f(0 0 120))
-                                     :rpy #f(0 0 0))
-                        :rotation-axis :z)))
+            (if (null suction-yaw)
+              (setq next-av
+                    (send *baxter* arm :inverse-kinematics
+                          (make-coords :pos (v+ obj-pos #f(0 0 120))
+                                       :rpy #f(0 0 0))
+                          :rotation-axis :z))
+              (setq next-av
+                    (send *baxter* arm :inverse-kinematics
+                          (make-coords :pos (v+ obj-pos #f(0 0 120))
+                                       :rpy (float-vector suction-yaw 0 0))
+                          :rotation-axis t))))
           ;; suction: prismatic-based approach
           (progn
             (send *baxter* :rotate-gripper arm 0 :relative nil)
@@ -474,6 +480,7 @@
                   (send self :try-to-pick-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -50) 30))
                         :grasp-style grasp-style
+                        :suction-yaw suction-yaw
                         :pinch-yaw pinch-yaw)))))
       (when do-stop-grasp
         (unless graspingp
@@ -521,14 +528,14 @@
             (t nil))
       near-wall))
   (:try-to-pick-object
-    (arm obj-pos &key (offset #f(0 0 0)) (grasp-style :suction)
+    (arm obj-pos &key (offset #f(0 0 0)) (grasp-style :suction) suction-yaw
          (pinch-yaw (if (eq grasp-style :pinch) 0)))
       (if (eq grasp-style :suction)
-        (send self :try-to-suction-object arm obj-pos :offset offset)
+        (send self :try-to-suction-object arm obj-pos suction-yaw :offset offset)
         (send self :try-to-pinch-object arm obj-pos pinch-yaw :offset offset)))
   (:try-to-suction-object
-    (arm obj-pos &key (offset #f(0 0 0)))
-    (send self :try-to-suction-object-with-gripper-v6 arm obj-pos :offset offset))
+    (arm obj-pos suction-yaw &key (offset #f(0 0 0)))
+    (send self :try-to-suction-object-with-gripper-v6 arm obj-pos suction-yaw :offset offset))
   (:try-to-suction-object-with-gripper-v4
     (arm obj-pos &key (offset #f(0 0 0)))
     (let (graspingp)
@@ -576,9 +583,10 @@
       (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a graspingp: ~a" arm graspingp)
       graspingp))
   (:try-to-suction-object-with-gripper-v6
-    (arm obj-pos &key (offset #f(0 0 0)))
+    (arm obj-pos suction-yaw &key (offset #f(0 0 0)))
     (let (graspingp
           (coords-before-approach (send *baxter* arm :end-coords :copy-worldcoords)))
+      (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a suction-yaw: ~a" arm suction-yaw)
       ;; Fold fingers again
       (send *ri* :move-hand arm
             (send *baxter* :hand-grasp-pose arm :spherical :angle 110) 1000)
@@ -603,11 +611,17 @@
       ;; suction: prismatic-based approach
       (send *baxter* :slide-gripper arm (- 120 (elt offset 2)) :relative nil)
       (send *ri* :angle-vector-raw
-            (send *baxter* arm :inverse-kinematics
-                  (make-coords :pos (v+ obj-pos offset)
-                               :rpy #f(0 0 0))
-                  :use-gripper nil
-                  :rotation-axis :z)
+            (if (null suction-yaw)
+              (send *baxter* arm :inverse-kinematics
+                    (make-coords :pos (v+ obj-pos offset)
+                                 :rpy #f(0 0 0))
+                    :use-gripper nil
+                    :rotation-axis :z)
+              (send *baxter* arm :inverse-kinematics
+                    (make-coords :pos (v+ obj-pos offset)
+                                 :rpy (float-vector suction-yaw 0 0))
+                    :use-gripper nil
+                    :rotation-axis t))
             3000 (send *ri* :get-arm-controller arm) 0)
       ;; suction: prismatic-based approach
       ;; Wait until grasp or push object to prevent tooth flying
