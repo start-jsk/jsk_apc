@@ -125,24 +125,19 @@
   </group>
 
   <!-- visualization -->
-  <!-- TODO: json visualization -->
-  <!--
-  <node name="visualize_json"
-    pkg="jsk_apc2016_common" type="visualize_pick_json.py"
-    args="$(arg json)" />
-  -->
-    <node name="rosconsole_overlay_text"
-          pkg="jsk_rviz_plugins" type="rosconsole_overlay_text.py">
+  <node name="rosconsole_overlay_text"
+        pkg="jsk_rviz_plugins" type="rosconsole_overlay_text.py">
     <rosparam>
       nodes:
-        - /left_hand
-        - /right_hand
+        - /left_hand_main
+        - /right_hand_main
+      exclude_regexes:
+        - .*follow_joint_trajectory.*
+        - .*:joint-angle.*
+        - .*:wait-interpolation-until.*
+        - ^;;.*
+        - if you do not have gripper,.*
     </rosparam>
-  </node>
-
-  <node name="team_k_desktop_xdisplay"
-        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
-        args="/visualize_json/output">
   </node>
 
   <group if="$(arg rosbag)">
