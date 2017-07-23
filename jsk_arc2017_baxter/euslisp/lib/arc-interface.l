@@ -388,7 +388,9 @@
       (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) object-index)))
       (setq near-wall (send self :check-near-wall obj-pos movable-region :range 100))
       (cond
-        ((eq near-wall :rear) (setq pinch-yaw pi) (setq suction-yaw 0))
+        ;; IK failure
+        ;((eq near-wall :rear) (setq pinch-yaw pi) (setq suction-yaw 0))
+        ((eq near-wall :rear) (setq pinch-yaw 0) (setq suction-yaw 0))
         ((eq near-wall :front) (setq pinch-yaw 0) (setq suction-yaw pi))
         ((eq near-wall :right) (setq pinch-yaw -pi/2) (setq suction-yaw pi/2))
         ((eq near-wall :left) (setq pinch-yaw pi/2) (setq suction-yaw -pi/2))
