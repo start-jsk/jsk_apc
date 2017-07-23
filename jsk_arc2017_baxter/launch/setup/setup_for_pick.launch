@@ -1,13 +1,18 @@
 <launch>
 
   <arg name="stereo" default="true" />
+  <arg name="load_driver" default="true" />
 
   <!-- hand mounted camera -->
   <group if="$(arg stereo)">
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch" />
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+      <arg name="load_driver" value="$(arg load_driver)" />
+    </include>
   </group>
   <group unless="$(arg stereo)">
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/astra_hand.launch" />
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/astra_hand.launch">
+      <arg name="load_driver" value="$(arg load_driver)" />
+    </include>
   </group>
 
   <!-- weight scale -->
