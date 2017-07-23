@@ -144,11 +144,11 @@
     (if (eq grasp-style :suction)
       (send *ri* :angle-vector-raw
             (send self :ik->tote-center arm
-                  :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+                  :offset #f(0 0 400) :rotation-axis :z :use-gripper t)
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :angle-vector-raw
             (send self :ik->tote-center arm
-                  :offset #f(0 0 300) :rotation-axis :z :move-palm-end t)
+                  :offset #f(0 0 400) :rotation-axis :z :move-palm-end t)
             3000 (send *ri* :get-arm-controller arm :gripper nil) 0))
     (send *ri* :wait-interpolation)
     (setq graspingp (send *ri* :graspingp arm grasp-style))
