@@ -229,6 +229,7 @@
         (ros::ros-error "subscribed weight candidates, but timeout")
         (return-from :verify-object nil))
       (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
+      (unless scale-candidates (return-from :verify-object nil))
       (if (find target-obj scale-candidates :test #'string=)
         t  ;; scale can classify the grasped object
         (progn  ;; scale narrows down candidate objects
