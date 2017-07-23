@@ -92,16 +92,8 @@
       </rosparam>
     </node>
 
-    <node name="bbox_array_to_bbox_target"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg LEFT_MANAGER)" >
-      <remap from="~input" to="cluster_indices_decomposer_target/boxes" />
-      <rosparam>
-        index: 0
-      </rosparam>
-    </node>
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
-      <arg name="INPUT_BBOX" value="bbox_array_to_bbox_target/output" />
+      <arg name="INPUT_BBOXES" value="cluster_indices_decomposer_target/boxes" />
       <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output" />
       <arg name="INPUT_INFO" value="left/rgb/camera_info" />
@@ -164,16 +156,8 @@
       </rosparam>
     </node>
 
-    <node name="bbox_array_to_bbox_target"
-          pkg="nodelet" type="nodelet"
-          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg RIGHT_MANAGER)" >
-      <remap from="~input" to="cluster_indices_decomposer_target/boxes" />
-      <rosparam>
-        index: 0
-      </rosparam>
-    </node>
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
-      <arg name="INPUT_BBOX" value="bbox_array_to_bbox_target/output" />
+      <arg name="INPUT_BBOXES" value="cluster_indices_decomposer_target/boxes" />
       <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output" />
       <arg name="INPUT_INFO" value="left/rgb/camera_info" />
