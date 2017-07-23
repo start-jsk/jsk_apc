@@ -735,11 +735,7 @@
             3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
-      ;; stop suction to bend suction finger
-      (send *ri* :stop-grasp arm)
       (send *ri* :start-grasp arm :pinch)
-      ;; start suction to help pinch
-      (send *ri* :start-grasp arm)
       (unix::sleep 1)
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (setq graspingp (send *ri* :graspingp arm :pinch))
