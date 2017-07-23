@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.0 (2017-07-24)
+------------------
 * Improve rosoncole output on rviz
 * Add right_main and left_main flag to pick/stow.launch
 * Re-calibration right_hand hand-eye extrinsic params

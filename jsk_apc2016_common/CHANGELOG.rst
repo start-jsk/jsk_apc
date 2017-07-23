@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.0 (2017-07-24)
+------------------
 * sort target cpi decomposer by cloud_size
 * set smaller queue_size for target cpi decomposer
 * set smaller queue_size for label cpi decomposer

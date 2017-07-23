@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.0 (2017-07-24)
+------------------
 * Fix workorder in shared shelf-bin (B)
 * Fix suction for pie plates
 * Enhance object location display
