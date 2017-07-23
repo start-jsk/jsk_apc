@@ -214,7 +214,9 @@
         t)))
   ;; return offset from bin-center for ik->bin-center
   (:find-sparse-bin-area (arm bin)
-    (let (obj-coords-list bin-cube region bin-center-x bin-center-y (obj-area-list '(0 0 0 0)) area-index)
+    (let ((obj-area-list '(0 0 0 0))
+          obj-coords-list bin-cube region bin-center-x bin-center-y
+          area-index)
       (setq obj-coords-list (gethash bin all-coords-))
       (setq bin-cube (gethash bin bin-cubes-))
       (setq region (send self :cube->movable-region bin-cube))
