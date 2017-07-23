@@ -132,8 +132,8 @@
     (setq recognize-fail-count 0)
     (when moveit-p (send self :delete-tote-scene arm))
     (if (eq grasp-style :suction)
-      (send self :set-movable-region-for-tote arm :offset (list 80 80 0))
-      (send self :set-movable-region-for-tote arm :offset (list 100 80 0)))
+      (send self :set-movable-region-for-tote arm :offset (list 50 50 0))
+      (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
     (send self :reset-scale arm)
     (send self :pick-object-in-tote arm
           :n-trial (if (eq grasp-style :suction) 2 1)
