@@ -28,7 +28,6 @@ class ApplyMaskToProbaImage():
                 [proba_sub, mask_sub], queue_size=queue_size)
         sync.registerCallback(self.callback)
 
-
     def callback(self, proba_msg, mask_msg):
         br = cv_bridge.CvBridge()
         proba_img = br.imgmsg_to_cv2(proba_msg).copy()
