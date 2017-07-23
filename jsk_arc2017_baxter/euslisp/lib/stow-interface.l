@@ -164,7 +164,7 @@
             avs)
           (pushback
             (send self :ik->tote-center arm
-                  :offset #f(0 0 300)
+                  :offset #f(0 0 400)
                   :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
                   :rotation-axis t :use-gripper t)
             avs))
@@ -179,7 +179,7 @@
             avs)
           (pushback
             (send self :ik->tote-center arm
-                  :offset #f(0 0 300)
+                  :offset #f(0 0 400)
                   :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
                   :rotation-axis t :move-palm-end t)
             avs)))
