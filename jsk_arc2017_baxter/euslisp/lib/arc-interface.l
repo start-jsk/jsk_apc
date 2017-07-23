@@ -470,7 +470,7 @@
               (send *baxter* :hand-grasp-pre-pose arm :spherical) 1000
               :wait nil)
         (send *ri* :move-hand arm
-              (send *baxter* :hand-grasp-pose arm :spherical :angle 110) 1000
+              (send *baxter* :hand-grasp-pose arm :spherical :angle 90) 1000
               :wait t)
         ;; Move whole arm to target pose
         (send *ri* :angle-vector-sequence-raw next-avs
@@ -618,7 +618,7 @@
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a suction-yaw: ~a" arm suction-yaw)
       ;; Fold fingers again
       (send *ri* :move-hand arm
-            (send *baxter* :hand-grasp-pose arm :spherical :angle 110) 1000)
+            (send *baxter* :hand-grasp-pose arm :spherical :angle 90) 1000)
       ;; start the vacuum gripper before approaching to the object
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a start vacuum gripper" arm)
       (send *ri* :start-grasp arm)
