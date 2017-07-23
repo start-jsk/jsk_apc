@@ -88,7 +88,9 @@
     (ros::set-param
       (format nil "~a_hand/target_bin" (arm2str arm))
       (symbol2str target-bin))
-    t)
+    (unless target-bin
+      (ros::ros-info "there is no order to execute"))
+    (if target-bin t nil))
   (:recognize-object (arm &key (trial-times 10))
     (let (is-recognized recognition-count)
       (setq trial-fail-count 0)
