@@ -380,21 +380,28 @@
          (do-stop-grasp nil) (grasp-style :suction))
     (send self :move-fingers-pinch->init arm :wait nil)
     (send *ri* :calib-proximity-threshold arm)
-    (let (graspingp avs object-index obj-pos obj-cube pinch-yaw)
+    (let (graspingp avs object-index obj-pos obj-cube pinch-yaw near-wall)
       ;; pick largest bounding box
       (setq object-index 0)
       (setq obj-pos
             (send self :get-object-position arm movable-region :object-index object-index))
       (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) object-index)))
-      (if (> (x-of-cube obj-cube) (y-of-cube obj-cube))
-        (setq pinch-yaw
-              (+ (if (eq arm :rarm) pi/2 -pi/2)
-                 (caar (send (send obj-cube :worldcoords) :rpy-angle))))
-        (setq pinch-yaw (caar (send (send obj-cube :worldcoords) :rpy-angle))))
-      (while (> pinch-yaw pi/2)
-        (setq pinch-yaw (- pinch-yaw pi)))
-      (while (< pinch-yaw -pi/2)
-        (setq pinch-yaw (+ pinch-yaw pi)))
+      (setq near-wall (send self :check-near-wall obj-pos movable-region :range 100))
+      (cond
+        ((eq near-wall :rear) (setq pinch-yaw pi))
+        ((eq near-wall :front) (setq pinch-yaw 0))
+        ((eq near-wall :right) (setq pinch-yaw -pi/2))
+        ((eq near-wall :left) (setq pinch-yaw pi/2))
+        (t
+          (if (> (x-of-cube obj-cube) (y-of-cube obj-cube))
+            (setq pinch-yaw
+                  (+ (if (eq arm :rarm) pi/2 -pi/2)
+                     (caar (send (send obj-cube :worldcoords) :rpy-angle))))
+            (setq pinch-yaw (caar (send (send obj-cube :worldcoords) :rpy-angle))))
+          (while (> pinch-yaw pi/2)
+                 (setq pinch-yaw (- pinch-yaw pi)))
+          (while (< pinch-yaw -pi/2)
+                 (setq pinch-yaw (+ pinch-yaw pi)))))
       (ros::ros-info "[:pick-object-with-movable-region] arm:~a approach to the object" arm)
       (send *ri* :gripper-servo-on arm)
       ;; Setup arm for picking
