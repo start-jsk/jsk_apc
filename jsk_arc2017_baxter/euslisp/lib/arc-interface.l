@@ -494,31 +494,7 @@
         (progn
           ;; Move underactuated fingers to initial pose
           (send *ri* :move-hand arm
-                (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)
-          ;; reset gripper rotation
-          (let (av (end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos)))
-            (cond
-              ((eq arm :rarm)
-               (setq av (send *baxter* arm :inverse-kinematics
-                              (make-coords :pos end-pos :rpy (float-vector pi/2 0 0)))))
-              ((eq arm :larm)
-               (setq av (send *baxter* arm :inverse-kinematics
-                              (make-coords :pos end-pos :rpy (float-vector -pi/2 0 0))))))
-            (if av
-              (progn
-                (send *ri* :angle-vector-raw av 2000 (send *ri* :get-arm-controller arm) 0)
-                (send *ri* :wait-interpolation)))))
-        (progn
-          ;; reset gripper rotation
-          (let (av (end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos)))
-            (setq av (send *baxter* arm :inverse-kinematics
-                           (make-coords :pos end-pos :rpy #f(0 0 0))
-                           :move-palm-end t))
-            (if av
-              (progn
-                (send *ri* :angle-vector-raw av
-                      2000 (send *ri* :get-arm-controller arm :gripper nil) 0)
-                (send *ri* :wait-interpolation))))))
+                (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)))
       (send *ri* :gripper-servo-on arm)
       graspingp))
   (:get-object-position
@@ -729,6 +705,9 @@
                                  :rpy (float-vector pinch-yaw 0 0))
                     :move-palm-end t
                     :rotation-axis :z)))
+      (unless av
+        (ros::ros-info "[:try-to-pinch-object] arm:~a IK fails. Abort picking" arm)
+        (return-from :try-to-pinch-object nil))
       (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0)
       ;; Wait until grasp or finger touch
       (send *ri* :wait-interpolation-until arm
