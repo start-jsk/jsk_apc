@@ -234,13 +234,16 @@
         t  ;; scale can classify the grasped object
         (progn  ;; scale narrows down candidate objects
           (let (msg new-order)
-            (setq msg
-              (one-shot-subscribe
-                (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
-                jsk_recognition_msgs::ClassificationResult
-                :timeout 15000
-                :after-stamp stamp))
-            (setq new-order (send self :check-exist-in-order (car (send msg :label_names))))
+            (if (eq (length scale-candidates) 1)
+              (setq new-order (send self :check-exist-in-order (car scale-candidates)))
+              (progn
+                (setq msg
+                  (one-shot-subscribe
+                    (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
+                    jsk_recognition_msgs::ClassificationResult
+                    :timeout 15000
+                    :after-stamp stamp))
+                (setq new-order (send self :check-exist-in-order (car (send msg :label_names))))))
             (if new-order
               (progn
                 (setq target-obj (send new-order :item))
