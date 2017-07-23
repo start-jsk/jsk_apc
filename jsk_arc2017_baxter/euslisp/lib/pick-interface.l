@@ -86,7 +86,6 @@
       (setq trial-fail-count 0)
       (setq grasp-style nil)
       (send self :move-fingers-pinch->init arm)
-      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
       (send *ri* :wait-interpolation)
       (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
@@ -154,6 +153,7 @@
       (send self :set-movable-region-for-bin :offset (list 50 50 0))
       (send self :set-movable-region-for-bin :offset (list 50 50 0)))
     (send self :reset-scale arm)
+    (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
     (send self :pick-object-in-bin arm target-bin
           :n-trial (if (eq grasp-style :suction) 2 1)
           :n-trial-same-pos 1
@@ -255,7 +255,6 @@
 
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
       (when moveit-p (send self :add-object-in-hand-scene arm target-obj))
-      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 70 -70))
 
       ;; FIXME: moveit cannot solve path
       ;; (send *ri* :angle-vector
