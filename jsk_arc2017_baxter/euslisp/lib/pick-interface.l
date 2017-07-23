@@ -204,7 +204,15 @@
         (ros::ros-error "subscribed weight candidates, but timeout")
         (return-from :verify-object nil))
       (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
-      (if (find target-obj scale-candidates :test #'string=) t nil)))
+      (if (find target-obj scale-candidates :test #'string=)
+        t
+        (progn
+          (if (and (eq (length scale-candidates) 1)
+                   (send self :check-exist-in-order (car scale-candidates)))
+            (progn
+              (setq target-obj (car scale-candidates))
+              t)
+            nil)))))
   (:check-picking-fail-count (arm)
     (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)
