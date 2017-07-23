@@ -33,7 +33,7 @@ epsom_salts:
   pinch: 3
 expo_eraser:
   suction: 1
-  pinch: 1
+  pinch: 2
 fiskars_scissors:
   suction: 2
   pinch: 3
@@ -57,7 +57,7 @@ ice_cube_tray:
   pinch: 3
 irish_spring_soap:
   suction: 1
-  pinch: 1
+  pinch: 2
 laugh_out_loud_jokes:
   suction: 1
   pinch: 3
@@ -81,10 +81,10 @@ plastic_wine_glass:
   pinch: 2
 poland_spring_water:
   suction: 3
-  pinch: 1
+  pinch: 2
 reynolds_wrap:
   suction: 2
-  pinch: 1
+  pinch: 2
 robots_dvd:
   suction: 1
   pinch: 3
@@ -93,7 +93,7 @@ robots_everywhere:
   pinch: 3
 scotch_sponges:
   suction: 1
-  pinch: 1
+  pinch: 2
 speed_stick:
   suction: 2
   pinch: 2
