@@ -67,9 +67,6 @@
       (setq tote-contents (ros::get-param "/tote_contents"))
       (send self :set-target-location arm :tote)
       (send self :move-fingers-pinch->init arm)
-      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
-      (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
-      (send *ri* :wait-interpolation)
       (ros::ros-info "[main] Recognizing objects in tote")
       (unless (> start-picking-fail-count 0)
         (send self :move-arm-body->tote-overlook-pose arm)
@@ -135,6 +132,9 @@
       (send self :set-movable-region-for-tote arm :offset (list 50 50 0))
       (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
     (send self :reset-scale arm)
+    (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
+    (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
+    (send *ri* :wait-interpolation)
     (send self :pick-object-in-tote arm
           :n-trial (if (eq grasp-style :suction) 2 1)
           :n-trial-same-pos 1

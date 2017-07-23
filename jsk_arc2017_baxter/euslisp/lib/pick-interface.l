@@ -86,8 +86,6 @@
       (setq trial-fail-count 0)
       (setq grasp-style nil)
       (send self :move-fingers-pinch->init arm)
-      (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
-      (send *ri* :wait-interpolation)
       (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
       (unless (> start-picking-fail-count 0)
         (send self :move-arm-body->bin-overlook-pose arm target-bin)
@@ -154,6 +152,8 @@
       (send self :set-movable-region-for-bin :offset (list 50 50 0)))
     (send self :reset-scale arm)
     (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
+    (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000 :head-controller 0)
+    (send *ri* :wait-interpolation)
     (send self :pick-object-in-bin arm target-bin
           :n-trial (if (eq grasp-style :suction) 2 1)
           :n-trial-same-pos 1
