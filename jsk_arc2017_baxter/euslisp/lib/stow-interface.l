@@ -181,7 +181,8 @@
                   :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
                   :rotation-axis t :move-palm-end t)
             avs)))
-      (send *ri* :angle-vector-sequence-raw avs 3000 (send *ri* :get-arm-controller arm :gripper nil) 0)
+      (send *ri* :angle-vector-sequence-raw avs 3000
+            (send *ri* :get-arm-controller arm :gripper nil) 0)
       (send *ri* :wait-interpolation))
     (setq graspingp (send *ri* :graspingp arm grasp-style))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
