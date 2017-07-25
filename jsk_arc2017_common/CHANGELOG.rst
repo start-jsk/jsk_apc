@@ -2,6 +2,24 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Reset pub_imgs
+* Classify object in grasped region
+* fix apply_mask_to_proba_image.py:32:5: E303 too many blank lines (2) ?
+* create apply_mask_to_proba_image.py
+* create image_buffer.py
+* 148000 iterations with Datasetv3
+  ```
+  % ./evaluate.py logs/fcn32s_CFG-009_DATASET-v3_OPTIMIZER-Adam_WEIGHT_DECAY-0.0005_LR-1e-05_MAX_ITERATION-150000_VCS-c0bff11_TIME-20170723-112528/models/fcn32s_dataset_v3_cfg009_20170724.npz
+  Accuracy: 93.7259
+  AccClass: 92.3574
+  Mean IoU: 84.6101
+  Fwav Acc: 88.3183
+  ```
+* pinch graspability 2 -> 3
+* Contributors: Kei Okada, Kentaro Wada, Naoya Yamaguchi, Yuto Uchimi
+
 4.0.0 (2017-07-24)
 ------------------
 * Fix workorder in shared shelf-bin (B)

@@ -2,6 +2,14 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix line number in euslint
+* Install euslint to global bin
+* Make it work grasped_region_classifier with resized image
+* loosen synchronizer of cpi_decomposer label
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 4.0.0 (2017-07-24)
 ------------------
 * sort target cpi decomposer by cloud_size

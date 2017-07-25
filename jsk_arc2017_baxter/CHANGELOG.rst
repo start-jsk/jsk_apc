@@ -2,6 +2,50 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix for euslint
+* Make it work grasped_region_classifier with resized image
+* Fix cluster_indices_to_indices in grasped_region_classifier
+* Restart gripper when gripper response is stopped
+* Respawn when dynamixel driver dies
+* fix typo in place object
+* lift first, and rotate wrist then
+* postpone object in when grasp-style nil
+* Use point indices for grasped region
+* Draw classification result in grasped_region_classifier.launch
+* Update stow.rviz
+* Improve message from data_collection_server
+* Save only image in data_collection_server
+* comment out transform collection
+* when # of scale-cand = 1, check if it exists in order
+* add grasped_region_classifier in stow task
+* Check if scale-candidates in verify-object if scale returns nil
+* Classify object in grasped region
+* Refactoring
+* add grasped_region_classifier to pick task
+* create grasped region classifying pipeline applied context by scale
+* lift object first, and rotate wrist
+* Fix threshold of pressure to detect gloves
+* Don't push gripper to object in pinch
+* finish task when target-bin is nil
+* Update hand-eye extrinsic params
+* Collect data while the pick/stow task (`#2391 <https://github.com/start-jsk/jsk_apc/issues/2391>`_)
+  * Collect data while the pick/stow task
+  * Disable data_collection by default
+  * Make it work
+  * Make it work
+* fix long line to pass euslint
+* remove head_pan waiting in pick_object
+* lift higher to avoid collision b/w obj adn shelf
+* lift object set :rotation-axis t to avoid collision
+* postpone target-obj if it cannot start picking
+* add reset start-picking-fail-count
+* rotate head in proper position
+* filter candidates in select-work-order-in-bin
+* add calib-prismatic-joint state in task state machine
+* Contributors: Kentaro Wada, Shingo Kitagawa, Yuto Uchimi
+
 4.0.0 (2017-07-24)
 ------------------
 * Improve rosoncole output on rviz

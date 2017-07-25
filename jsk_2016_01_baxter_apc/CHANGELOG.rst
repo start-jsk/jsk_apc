@@ -2,6 +2,9 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.0.0 (2017-07-24)
 ------------------
 * Use baxter_simple.urdf in jsk_2016_01_baxter_apc baxterrgv5.xacro
