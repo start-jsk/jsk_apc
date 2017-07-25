@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.1 (2017-07-26)
+------------------
 * Fix for euslint
 * Make it work grasped_region_classifier with resized image
 * Fix cluster_indices_to_indices in grasped_region_classifier

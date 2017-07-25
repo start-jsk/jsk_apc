@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.1 (2017-07-26)
+------------------
 * Fix line number in euslint
 * Install euslint to global bin
 * Make it work grasped_region_classifier with resized image

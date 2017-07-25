@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.1 (2017-07-26)
+------------------
 * Reset pub_imgs
 * Classify object in grasped region
 * fix apply_mask_to_proba_image.py:32:5: E303 too many blank lines (2) ?
