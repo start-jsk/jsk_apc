@@ -5,6 +5,7 @@
   <arg name="moveit" default="true" />
   <arg name="smach_viewer" default="false" />
   <arg name="rosbag" default="false" />
+  <arg name="data_collection" default="false" />
 
   <arg name="left_main" default="true" />
   <arg name="right_main" default="true" />
@@ -103,11 +104,17 @@
             args="&quot;(progn (pick-init :ctype :larm-head-controller :moveit t) (pick-mainloop :larm))&quot;"
             respawn="true" output="screen">
         <env name="DISPLAY" value="" />
+        <rosparam subst_value="true">
+          data_collection: $(arg data_collection)
+        </rosparam>
       </node>
       <node unless="$(arg moveit)" pkg="jsk_arc2017_baxter" type="pick-main.l" name="left_hand_main"
             args="&quot;(progn (pick-init :ctype :larm-head-controller :moveit nil) (pick-mainloop :larm))&quot;"
             respawn="true" output="screen">
         <env name="DISPLAY" value="" />
+        <rosparam subst_value="true">
+          data_collection: $(arg data_collection)
+        </rosparam>
       </node>
     </group>
     <group if="$(arg right_main)">
@@ -115,11 +122,17 @@
             args="&quot;(progn (pick-init :ctype :rarm-head-controller :moveit t) (pick-mainloop :rarm))&quot;"
             respawn="true" output="screen">
         <env name="DISPLAY" value="" />
+        <rosparam subst_value="true">
+          data_collection: $(arg data_collection)
+        </rosparam>
       </node>
       <node unless="$(arg moveit)" pkg="jsk_arc2017_baxter" type="pick-main.l" name="right_hand_main"
             args="&quot;(progn (pick-init :ctype :rarm-head-controller :moveit nil) (pick-mainloop :rarm))&quot;"
             respawn="true" output="screen">
         <env name="DISPLAY" value="" />
+        <rosparam subst_value="true">
+          data_collection: $(arg data_collection)
+        </rosparam>
       </node>
     </group>
   </group>
@@ -144,6 +157,12 @@
     <arg name="rosbag_filename" />
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/record_rosbag.launch">
       <arg name="filename" value="$(arg rosbag_filename)" />
+    </include>
+  </group>
+
+  <group if="$(arg data_collection)">
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/data_collection_server.launch">
+      <arg name="pick" value="true" />
     </include>
   </group>
 

@@ -1,0 +1,88 @@
+<launch>
+
+  <arg name="pick" />
+
+  <arg name="task" value="pick" if="$(arg pick)" />
+  <arg name="task" value="stow" unless="$(arg pick)" />
+
+  <group ns="left_hand_camera">
+    <node name="data_collection_server"
+          pkg="jsk_data" type="data_collection_server.py">
+      <rosparam subst_value="true">
+        slop: 0.5
+        save_dir: ~/.ros/jsk_arc2017_baxter/$(arg task)/left_hand_camera
+        topics:
+          - name: /left_hand_camera/left/rgb/camera_info
+            msg_class: sensor_msgs/CameraInfo
+            fname: camera_info.yaml
+            savetype: YAML
+          - name: /left_hand_camera/left/rgb/image_rect_color
+            msg_class: sensor_msgs/Image
+            fname: image.jpg
+            savetype: ColorImage
+          - name: /left_hand_camera/fused/depth_registered/image_rect
+            msg_class: sensor_msgs/Image
+            fname: depth.npz
+            savetype: DepthImage
+          - name: /left_hand_camera/fused/depth_registered/image_rect_view
+            msg_class: sensor_msgs/Image
+            fname: depth_viz.jpg
+            savetype: ColorImage
+          - name: /left_hand_camera/tf_to_transform/output
+            msg_class: geometry_msgs/TransformStamped
+            fname: tf_camera_rgb_from_base.yaml
+            savetype: YAML
+      </rosparam>
+    </node>
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: base
+        child_frame_id: left_hand_camera_left_rgb_optical_frame
+        duration: 1
+        rate: 30
+      </rosparam>
+    </node>
+  </group>
+
+  <group ns="right_hand_camera">
+    <node name="data_collection_server"
+          pkg="jsk_data" type="data_collection_server.py">
+      <rosparam subst_value="true">
+        slop: 0.5
+        save_dir: ~/.ros/jsk_arc2017_baxter/$(arg task)/right_hand_camera
+        topics:
+          - name: /right_hand_camera/left/rgb/camera_info
+            msg_class: sensor_msgs/CameraInfo
+            fname: camera_info.yaml
+            savetype: YAML
+          - name: /right_hand_camera/left/rgb/image_rect_color
+            msg_class: sensor_msgs/Image
+            fname: image.jpg
+            savetype: ColorImage
+          - name: /right_hand_camera/fused/depth_registered/image_rect
+            msg_class: sensor_msgs/Image
+            fname: depth.npz
+            savetype: DepthImage
+          - name: /right_hand_camera/fused/depth_registered/image_rect_view
+            msg_class: sensor_msgs/Image
+            fname: depth_viz.jpg
+            savetype: ColorImage
+          - name: /right_hand_camera/tf_to_transform/output
+            msg_class: geometry_msgs/TransformStamped
+            fname: tf_camera_rgb_from_base.yaml
+            savetype: YAML
+      </rosparam>
+    </node>
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: base
+        child_frame_id: right_hand_camera_left_rgb_optical_frame
+        duration: 1
+        rate: 30
+      </rosparam>
+    </node>
+  </group>
+
+</launch>
