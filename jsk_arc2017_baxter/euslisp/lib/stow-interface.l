@@ -80,25 +80,26 @@
         (send self :move-arm-body->tote-overlook-pose arm)
         (send *ri* :wait-interpolation))
       (setq recognition-count 1)
-      (while (null (or (> recognition-count trial-times) is-recognized))
-        (setq target-index
-              (send self :get-largest-object-index arm :tote :stamp (ros::time-now)
-                    :n-random (if (> picking-fail-count 0) 3 nil)))
-        (setq is-recognized
-          (when target-index
-            (setq target-obj (elt label-names target-index))
-            (ros::set-dynparam
-              (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
-              (cons "label_value" target-index))
-            (ros::set-param
-              (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
-            (ros::ros-info-blue "[~a] [main] :recognize-object, target-obj: ~a" (ros::get-name) target-obj)
+      (let ((stamp (ros::time-now)))
+        (while (null (or (> recognition-count trial-times) is-recognized))
+          (setq target-index
+                (send self :get-largest-object-index arm :tote :stamp stamp
+                      :n-random (if (> picking-fail-count 0) 3 nil)))
+          (setq is-recognized
+            (when target-index
+              (setq target-obj (elt label-names target-index))
+              (ros::set-dynparam
+                (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
+                (cons "label_value" target-index))
+              (ros::set-param
+                (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
+              (ros::ros-info-blue "[~a] [main] :recognize-object, target-obj: ~a" (ros::get-name) target-obj)
 
-            (ros::service-call
-              (format nil "/~a_hand_camera/image_buffer/save" (arm2str arm))
-              (instance std_srvs::TriggerRequest :init))
-            (send self :recognize-target-object arm :stamp (ros::time-now))))
-        (setq recognition-count (incf recognition-count)))
+              (ros::service-call
+                (format nil "/~a_hand_camera/image_buffer/save" (arm2str arm))
+                (instance std_srvs::TriggerRequest :init))
+              (send self :recognize-target-object arm :stamp stamp)))
+          (setq recognition-count (incf recognition-count))))
       is-recognized))
   (:return-from-recognize-object (arm)
     (send self :add-postponed-object arm target-obj :tote)

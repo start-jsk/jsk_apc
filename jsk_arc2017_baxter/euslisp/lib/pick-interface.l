@@ -101,23 +101,24 @@
         (send self :move-arm-body->bin-overlook-pose arm target-bin)
         (send *ri* :wait-interpolation))
       (setq recognition-count 1)
-      (while (null (or (> recognition-count trial-times) is-recognized))
-        (setq order (send self :select-work-order-in-bin arm target-bin :stamp (ros::time-now)))
-        (setq is-recognized
-          (when order
-            (setq target-obj (send order :item))
-            (setq target-cardboard (str2symbol (send order :box)))
-            (ros::set-param
-              (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
-            (ros::set-dynparam
-              (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
-              (cons "label_value" (position target-obj label-names :test #'string=)))
-            (ros::ros-info-blue "[~a] [main] :recognize-object, target-bin: ~a, target-obj: ~a" (ros::get-name) target-bin target-obj)
-            (ros::service-call
-              (format nil "/~a_hand_camera/image_buffer/save" (arm2str arm))
-              (instance std_srvs::TriggerRequest :init))
-            (send self :recognize-target-object arm :stamp (ros::time-now))))
-        (incf recognition-count))
+      (let ((stamp (ros::time-now)))
+        (while (null (or (> recognition-count trial-times) is-recognized))
+          (setq order (send self :select-work-order-in-bin arm target-bin :stamp stamp))
+          (setq is-recognized
+            (when order
+              (setq target-obj (send order :item))
+              (setq target-cardboard (str2symbol (send order :box)))
+              (ros::set-param
+                (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
+              (ros::set-dynparam
+                (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
+                (cons "label_value" (position target-obj label-names :test #'string=)))
+              (ros::ros-info-blue "[~a] [main] :recognize-object, target-bin: ~a, target-obj: ~a" (ros::get-name) target-bin target-obj)
+              (ros::service-call
+                (format nil "/~a_hand_camera/image_buffer/save" (arm2str arm))
+                (instance std_srvs::TriggerRequest :init))
+              (send self :recognize-target-object arm :stamp stamp)))
+          (incf recognition-count)))
       is-recognized))
   (:return-from-recognize-object (arm)
     (send self :add-postponed-object arm target-obj target-bin)
