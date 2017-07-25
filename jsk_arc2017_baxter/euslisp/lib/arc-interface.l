@@ -81,41 +81,49 @@
     (let (cube)
       (setq cube (gethash arm tote-cubes-))
       (sethash arm tote-movable-regions- (send self :cube->movable-region cube :offset offset))))
-  (:get-next-target-bin (arm)
+  (:get-next-target-bin (arm &key (stamp (ros::time-now)))
     (when (eq (length orders-) 0)
       (ros::ros-error "[:get-next-target-bin] no work-order, try :get-work-orders first")
       (return-from :get-next-target-bin nil))
-    (let (target-bins postponed-bins)
+    (let (target-bins postponed-bins msg)
+      (setq msg (one-shot-subscribe "/json_saver/output/bin_contents"
+                                    jsk_arc2017_common::ContentArray
+                                    :timeout 10000
+                                    :after-stamp stamp))
+      (setq bin-contents
+            (mapcar #'(lambda (content)
+                        (cons (str2symbol (send content :bin))
+                              (send content :items)))
+                    (send msg :contents)))
       (setq target-bins
-            (remove-duplicates
-              (remove nil
-                      (mapcar
-                        #'(lambda (order)
-                            (unless
-                              (or (find (send order :item)
-                                        (gethash (str2symbol (send order :bin)) finished-objects-)
-                                        :test #'string=)
-                                  (find (send order :item)
-                                        (gethash (str2symbol (send order :bin)) postponed-objects-)
-                                        :test #'string=))
-                              (send order :bin)))
-                        orders-))))
+            (remove nil
+                    (mapcar
+                      #'(lambda (order)
+                          (let ((item (send order :item))
+                                (bin (str2symbol (send order :bin))))
+                            (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
+                              (unless
+                                (or (find item (gethash bin finished-objects-) :test #'string=)
+                                    (find item (gethash bin postponed-objects-) :test #'string=))
+                                bin))))
+                      orders-)))
       (when target-bins
         (return-from :get-next-target-bin
-                     (str2symbol (elt target-bins (random (length target-bins))))))
+                     (elt target-bins (random (length target-bins)))))
       (setq postponed-bins
-            (remove-duplicates
-              (remove nil
-                      (mapcar
-                        #'(lambda (order)
-                            (unless (find (send order :item)
-                                          (gethash (str2symbol (send order :bin)) finished-objects-)
-                                          :test #'string=)
-                              (send order :bin)))
-                        orders-))))
+            (remove nil
+                    (mapcar
+                      #'(lambda (order)
+                          (let ((item (send order :item))
+                                (bin (str2symbol (send order :bin))))
+                            (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
+                              (unless
+                                (find item (gethash bin finished-objects-) :test #'string=)
+                                bin))))
+                      orders-)))
       (when postponed-bins
         (return-from :get-next-target-bin
-                     (str2symbol (elt postponed-bins (random (length postponed-bins))))))
+                     (elt postponed-bins (random (length postponed-bins)))))
       nil))
   (:get-work-orders
     (arm)
