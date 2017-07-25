@@ -540,7 +540,7 @@
         (progn
           ;; Move underactuated fingers to initial pose
           (send *ri* :move-hand arm
-                (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)))
+                (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait nil)))
       (send *ri* :gripper-servo-on arm)
       graspingp))
   (:get-object-position
@@ -707,7 +707,7 @@
           (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)))
       ;; Open fingers in bin
       (send *ri* :move-hand arm
-            (send *baxter* :hand-grasp-pre-pose arm :spherical) 1000)
+            (send *baxter* :hand-grasp-pre-pose arm :spherical) 1000 :wait nil)
       ;; suction: prismatic-based approach
       (send *baxter* :slide-gripper arm 0 :relative nil)
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
