@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.3)
 project(jsk_arc2017_baxter)
 
 find_package(catkin REQUIRED COMPONENTS
-    force_proximity_ros
     message_generation
     roseus
     std_msgs
@@ -13,6 +12,14 @@ find_package(catkin REQUIRED COMPONENTS
     dynamixel_msgs
     actionlib_msgs
 )
+
+# force_proximity_ros could not find on this system
+find_package(catkin QUIET COMPONENTS force_proximity_ros)
+if(force_proximity_ros_FOUND)
+  set(FORCE_PROXIMITY_ROS_PKG force_proximity_ros)
+else()
+  message(WARNING "COULD NOT FOUND force_proximity_ros PACKAGE")
+endif()
 
 catkin_python_setup()
 
@@ -39,7 +46,7 @@ add_action_files(
 generate_messages(
     DEPENDENCIES
     std_msgs
-    force_proximity_ros
+    ${FORCE_PROXIMITY_ROS_PKG}
     actionlib_msgs
 )
 
@@ -56,7 +63,7 @@ generate_messages(
 catkin_package(
     CATKIN_DEPENDS
     message_runtime
-    force_proximity_ros
+    ${FORCE_PROXIMITY_ROS_PKG}
     std_msgs
     baxter_core_msgs
     hardware_interface
