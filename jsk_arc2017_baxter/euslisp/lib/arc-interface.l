@@ -509,7 +509,7 @@
           (unless graspingp
             (setq graspingp
                   (send self :try-to-pick-object arm obj-pos
-                        :offset (float-vector 0 0 (- (* i -50) 30))
+                        :offset (float-vector 0 0 (- (* i -50) 80))
                         :grasp-style grasp-style
                         :suction-yaw suction-yaw
                         :pinch-yaw pinch-yaw)))))
