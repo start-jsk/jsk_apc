@@ -90,6 +90,9 @@
         pkg="jsk_perception" type="probability_image_classifier.py" >
     <remap from="~input" to="apply_context_to_label_proba_by_scale/output" />
     <remap from="~target_names" to="label_names" />
+    <rosparam>
+      ignore_labels: [0, 41]
+    </rosparam>
   </node>
 
   <!--
@@ -110,6 +113,12 @@
       approximate_sync: true
       queue_size: 30
     </rosparam>
+  </node>
+
+  <node name="draw_classification_result"
+        pkg="jsk_perception" type="draw_classification_result.py">
+    <remap from="~input/image" to="label_image_decomposer_by_scale/output" />
+    <remap from="~input" to="probability_image_classifier/output" />
   </node>
 
 </launch>
