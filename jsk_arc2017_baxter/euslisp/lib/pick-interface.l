@@ -125,7 +125,7 @@
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :fold-to-keep-object arm)
                 (send *baxter* :fold-pose-back arm))
-          :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+          :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
     (send *ri* :wait-interpolation))
   (:check-recognize-fail-count (arm)
     (incf recognize-fail-count)
@@ -178,33 +178,25 @@
     (let (avs end-pos)
       (if (eq grasp-style :suction)
         (progn
-          (pushback
-            (send self :ik->bin-center arm target-bin
-                  :offset #f(0 0 300)
-                  :rotation-axis :z :use-gripper t)
-            avs)
+          (send self :ik->bin-center arm target-bin
+                :offset #f(0 0 300)
+                :rotation-axis :z :use-gripper t)
           (setq end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos))
-          (pushback
-            (send *baxter* :rotate-wrist-ik arm
-                  (make-coords :pos end-pos
-                               :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
-                  :rotate-axis t)
-            avs))
+          (send *baxter* :rotate-wrist-ik arm
+                (make-coords :pos end-pos
+                             :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
+                :rotate-axis t))
         (progn
-          (pushback
-            (send self :ik->bin-center arm target-bin
-                  :offset #f(0 0 300)
-                  :rotation-axis :z :move-palm-end t)
-            avs)
+          (send self :ik->bin-center arm target-bin
+                :offset #f(0 0 300)
+                :rotation-axis :z :move-palm-end t)
           (setq end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos))
-          (pushback
-            (send *baxter* :rotate-wrist-ik arm
-                  (make-coords :pos end-pos
-                               :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
-                  :move-palm-end t
-                  :rotate-axis t)
-            avs)))
-      (send *ri* :angle-vector-sequence-raw avs 3000
+          (send *baxter* :rotate-wrist-ik arm
+                (make-coords :pos end-pos
+                             :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
+                :move-palm-end t
+                :rotate-axis t)))
+      (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
             (send *ri* :get-arm-controller arm :gripper nil) 0)
       (send *ri* :wait-interpolation))
     (setq graspingp (send *ri* :graspingp arm grasp-style))
@@ -215,7 +207,7 @@
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
-          :fast (send *ri* :get-arm-controller arm :gripper (eq grasp-style :suction)) 0 :scale 4.0)
+          :fast (send *ri* :get-arm-controller arm :gripper (eq grasp-style :suction)) 0 :scale 3.0)
     (send *ri* :wait-interpolation)
     (if (eq grasp-style :pinch)
       (send self :move-fingers-pinch->init arm)))
@@ -355,8 +347,8 @@
                       :offset (float-vector 50 0 200) :rotation-axis nil :move-palm-end t))
               avs)
             (setq place-z 100)))
-        (send *ri* :angle-vector-sequence-raw avs 4000
-              (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
+        (send *ri* :angle-vector-sequence-raw avs :fast
+              (send *ri* :get-arm-controller arm :gripper nil :head t) 0 :scale 5.0))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm grasp-style)))
       (when moveit-p (send self :delete-object-in-hand-scene arm))
