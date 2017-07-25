@@ -15,6 +15,8 @@ catkin_python_setup()
 
 add_message_files(
     FILES
+    Content.msg
+    ContentArray.msg
     Weight.msg
     WeightStamped.msg
     WorkOrder.msg
