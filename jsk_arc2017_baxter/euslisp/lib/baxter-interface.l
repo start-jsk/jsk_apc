@@ -587,7 +587,7 @@
         (cond ((eq l/r :larm)
                (setq larm-pressure-threshold- (- min-pressure 15)))
               ((eq l/r :rarm)
-               (setq rarm-pressure-threshold- (- min-pressure 15))))))
+               (setq rarm-pressure-threshold- (- min-pressure 10))))))
     (send self :stop-grasp arm)
     (ros::ros-info "[:calib-pressure-threshold] Threshold r: ~a l: ~a"
                    rarm-pressure-threshold- larm-pressure-threshold-))
