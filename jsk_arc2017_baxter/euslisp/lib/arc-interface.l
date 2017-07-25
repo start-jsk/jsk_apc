@@ -397,12 +397,17 @@
                 (setq target-index (car label-indices)))
               (return-from :get-largest-object-index target-index)))))
       nil))
-  (:move-fingers-pinch->init
-    (arm &key (wait t))
-    ;; Move fingers to initial pose
-    (send *ri* :stop-grasp arm :pinch)
+  (:resolve-collision-between-fingers (arm)
+    (send *ri* :angle-vector-raw
+          (send *baxter* :slide-gripper arm 120 :relative nil)
+          1000 (send *ri* :get-arm-controller arm) 0)
     (send *ri* :move-hand arm
-          (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait wait))
+          (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1500)
+    (send *ri* :angle-vector-raw
+          (send *baxter* :slide-gripper arm 0 :relative nil)
+          1000 (send *ri* :get-arm-controller arm) 0)
+    (send *ri* :move-hand arm
+          (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
   (:pick-object-in-bin
     (arm bin &rest args)
     (let (graspingp movable-region)
@@ -424,7 +429,7 @@
   (:pick-object-with-movable-region
     (arm movable-region &key (n-trial 1) (n-trial-same-pos 1)
          (do-stop-grasp nil) (grasp-style :suction))
-    (send self :move-fingers-pinch->init arm :wait nil)
+    (send *ri* :stop-grasp arm :pinch)
     (send *ri* :calib-proximity-threshold arm)
     (let (graspingp avs object-index obj-pos obj-cube pinch-yaw suction-yaw near-wall)
       ;; pick largest bounding box
@@ -535,7 +540,7 @@
         (unless graspingp
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style :pinch)
-            (send self :move-fingers-pinch->init arm))))
+            (send *ri* :stop-grasp arm :pinch))))
       (if (eq grasp-style :suction)
         (progn
           ;; Move underactuated fingers to initial pose
