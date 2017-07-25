@@ -95,7 +95,8 @@
     (let (is-recognized recognition-count)
       (setq trial-fail-count 0)
       (setq grasp-style nil)
-      (send self :move-fingers-pinch->init arm)
+      (send *ri* :move-hand arm
+            (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait nil)
       (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
       (unless (> start-picking-fail-count 0)
         (send self :move-arm-body->bin-overlook-pose arm target-bin)
@@ -213,7 +214,7 @@
           :fast (send *ri* :get-arm-controller arm :gripper (eq grasp-style :suction)) 0 :scale 3.0)
     (send *ri* :wait-interpolation)
     (if (eq grasp-style :pinch)
-      (send self :move-fingers-pinch->init arm)))
+      (send self :resolve-collision-between-fingers arm)))
   (:verify-object (arm)
     ;; TODO: in-hand verification
     ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
@@ -281,7 +282,7 @@
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp arm)
     (if (eq grasp-style :pinch)
-      (send self :move-fingers-pinch->init arm))
+      (send *ri* :stop-grasp arm :pinch))
     (send self :spin-off-by-wrist arm :times 5)
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in shelf" arm)
@@ -291,7 +292,9 @@
     (send *ri* :wait-interpolation)
     (when moveit-p (send self :add-bin-scene target-bin))
     (send self :fold-pose-back arm)
-    (send *ri* :wait-interpolation))
+    (send *ri* :wait-interpolation)
+    (if (eq grasp-style :pinch)
+      (send self :resolve-collision-between-fingers arm)))
   (:place-object (arm)
     (let (dropped end-coords-name orientation path-constraints orientation-constraint place-z)
       ;; FIXME: moveit cannot solve path
@@ -375,7 +378,7 @@
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style :pinch)
-            (send self :move-fingers-pinch->init arm))
+            (send *ri* :stop-grasp arm :pinch))
           (send self :add-postponed-object arm target-obj target-bin))
         (progn
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj target-cardboard)
@@ -403,16 +406,16 @@
                         :rotation-axis t))
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
-          (if (eq grasp-style :pinch)
-            (send self :move-fingers-pinch->init arm))
-          (setq grasp-style nil)
           (when moveit-p (send self :add-cardboard-scene target-cardboard))))))
   (:return-from-place-object (arm)
     (let (avs)
       (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
       (pushback (send *baxter* :fold-pose-back arm) avs)
       (send *ri* :angle-vector-sequence avs 5000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :wait-interpolation))))
+      (send *ri* :wait-interpolation)
+      (if (eq grasp-style :pinch)
+        (send self :resolve-collision-between-fingers arm))
+      (setq grasp-style nil))))
 
 
 (defun jsk_arc2017_baxter::pick-init (&key (ctype :default-controller) (moveit nil))
