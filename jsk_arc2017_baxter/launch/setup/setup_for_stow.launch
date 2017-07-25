@@ -194,4 +194,6 @@
     </node>
   </group>  <!-- ns="right_hand_camera" -->
 
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/data_collection_server.launch" />
+
  </launch>

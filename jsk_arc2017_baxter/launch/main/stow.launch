@@ -5,6 +5,7 @@
   <arg name="moveit" default="true" />
   <arg name="smach_viewer" default="false" />
   <arg name="rosbag" default="false" />
+  <arg name="data_collection" default="true" />
 
   <arg name="left_main" default="true" />
   <arg name="right_main" default="true" />
@@ -97,11 +98,17 @@
             args="&quot;(progn (stow-init :ctype :larm-head-controller :moveit t) (stow-mainloop :larm))&quot;"
             respawn="true" output="screen">
         <env name="DISPLAY" value="" />
+        <rosparam subst_value="true">
+          data_collection: $(arg data_collection)
+        </rosparam>
       </node>
       <node unless="$(arg moveit)" pkg="jsk_arc2017_baxter" type="stow-main.l" name="left_hand_main"
             args="&quot;(progn (stow-init :ctype :larm-head-controller :moveit nil) (stow-mainloop :larm))&quot;"
             respawn="true" output="screen">
         <env name="DISPLAY" value="" />
+        <rosparam subst_value="true">
+          data_collection: $(arg data_collection)
+        </rosparam>
       </node>
     </group>
     <group if="$(arg right_main)">
@@ -109,11 +116,17 @@
             args="&quot;(progn (stow-init :ctype :rarm-head-controller :moveit t) (stow-mainloop :rarm))&quot;"
             respawn="true" output="screen">
         <env name="DISPLAY" value="" />
+        <rosparam subst_value="true">
+          data_collection: $(arg data_collection)
+        </rosparam>
       </node>
       <node unless="$(arg moveit)" pkg="jsk_arc2017_baxter" type="stow-main.l" name="right_hand_main"
             args="&quot;(progn (stow-init :ctype :rarm-head-controller :moveit nil) (stow-mainloop :rarm))&quot;"
             respawn="true" output="screen">
         <env name="DISPLAY" value="" />
+        <rosparam subst_value="true">
+          data_collection: $(arg data_collection)
+        </rosparam>
       </node>
     </group>
   </group>
