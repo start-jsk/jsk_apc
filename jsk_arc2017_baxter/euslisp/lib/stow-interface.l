@@ -308,20 +308,32 @@
           (send self :add-finished-object arm target-obj :tote)
           (ros::ros-info-green "[main] arm ~a: place object ~a in bin ~a" arm target-obj target-bin)
           (when moveit-p (send self :delete-bin-scene target-bin))
-          (send *ri* :angle-vector-raw
-                (send *baxter* arm :move-end-pos #f(0 0 -300) :world
-                      :rotation-axis (eq grasp-style :suction))
-                2000 (send *ri* :get-arm-controller arm) 0)
+          (if (eq grasp-style :suction)
+            (send *ri* :angle-vector-raw
+                  (send *baxter* arm :move-end-pos #f(0 0 -300) :world
+                        :rotation-axis :z
+                        :use-gripper t)
+                  2000 (send *ri* :get-arm-controller arm) 0)
+             (send *ri* :angle-vector-raw
+                  (send *baxter* arm :move-end-pos #f(0 0 -300) :world
+                        :rotation-axis nil)
+                  2000 (send *ri* :get-arm-controller arm) 0))
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm) ;; release object
           (if (eq grasp-style :pinch)
             (send *ri* :stop-grasp arm :pinch)) ;; release object
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector-raw
-                (send *baxter* arm :move-end-pos #f(0 0 300) :world
-                      :rotation-axis (eq grasp-style :suction))
-                1000 (send *ri* :get-arm-controller arm) 0)
+          (if (eq grasp-style :suction)
+            (send *ri* :angle-vector-raw
+                  (send *baxter* arm :move-end-pos #f(0 0 300) :world
+                        :rotation-axis :z
+                        :use-gripper t)
+                  2000 (send *ri* :get-arm-controller arm) 0)
+             (send *ri* :angle-vector-raw
+                  (send *baxter* arm :move-end-pos #f(0 0 300) :world
+                        :rotation-axis nil)
+                  2000 (send *ri* :get-arm-controller arm) 0))
           (send *ri* :wait-interpolation)
           (if (eq grasp-style :pinch)
             (send self :move-fingers-pinch->init arm))
