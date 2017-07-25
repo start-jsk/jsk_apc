@@ -127,6 +127,7 @@
   (:check-start-picking-fail-count (arm)
     (incf start-picking-fail-count)
     (ros::ros-info "[main] arm: ~a, start picking fail count: ~a" arm start-picking-fail-count)
+    (send self :add-postponed-object arm target-obj :tote)
     (let (start-picking-failp)
       (setq start-picking-failp (> start-picking-fail-count 1))
       (if start-picking-failp (setq start-picking-fail-count 0))
