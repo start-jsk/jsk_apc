@@ -174,20 +174,24 @@
     (let (avs end-pos)
       (if (eq grasp-style :suction)
         (progn
+          (pushback
+            (send self :ik->bin-center arm target-bin
+                  :offset #f(0 0 300)
+                  :rotation-axis :z :use-gripper t)
+            avs)
           (setq end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos))
           (pushback
             (send *baxter* :rotate-wrist-ik arm
                   (make-coords :pos end-pos
                                :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
                   :rotate-axis t)
-            avs)
+            avs))
+        (progn
           (pushback
             (send self :ik->bin-center arm target-bin
                   :offset #f(0 0 300)
-                  :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
-                  :rotation-axis t :use-gripper t)
-            avs))
-        (progn
+                  :rotation-axis :z :move-palm-end t)
+            avs)
           (setq end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos))
           (pushback
             (send *baxter* :rotate-wrist-ik arm
@@ -195,12 +199,6 @@
                                :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
                   :move-palm-end t
                   :rotate-axis t)
-            avs)
-          (pushback
-            (send self :ik->bin-center arm target-bin
-                  :offset #f(0 0 300)
-                  :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
-                  :rotation-axis t :move-palm-end t)
             avs)))
       (send *ri* :angle-vector-sequence-raw avs 3000
             (send *ri* :get-arm-controller arm :gripper nil) 0)
