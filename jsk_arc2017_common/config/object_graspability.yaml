@@ -94,8 +94,7 @@ poland_spring_water:
   pinch: 3
 reynolds_wrap:
   suction: 2
-  # pinch: 2
-  pinch: 3
+  pinch: 2
 robots_dvd:
   suction: 1
   pinch: 3
