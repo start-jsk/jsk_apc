@@ -381,8 +381,11 @@
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-raw
-                (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
-                      :rotation-axis (eq grasp-style :suction))
+                (if (eq grasp-style :suction)
+                  (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
+                        :rotation-axis :z :use-gripper t)
+                  (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
+                        :rotation-axis t))
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (if (eq grasp-style :pinch)
