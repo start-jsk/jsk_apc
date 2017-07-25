@@ -15,7 +15,8 @@ def parse(source_code, max_line_length):
         'whitespace': [],
         'line_length': [],
     }
-    for line_num, line in enumerate(source_code.splitlines()):
+    for i, line in enumerate(source_code.splitlines()):
+        line_num = i + 1
         if line.startswith('#|'):
             is_block_comment = True
         elif line.startswith('|#'):
