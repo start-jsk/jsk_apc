@@ -294,8 +294,10 @@
           com-msg obj-box obj-coords is-recognized)
       (when (ros::get-param "~data_collection" nil)
         (ros::ros-info-green "Requesting data collection for shelf-bin/tote.")
-        (ros::service-call (format nil "~a_hand_camera/data_collection_server/save" (arm2str arm))
-                           (instance std_srvs::TriggerRequest :init)))
+        (let ((res (ros::service-call (format nil "~a_hand_camera/data_collection_server/save_request" (arm2str arm))
+                           (instance std_srvs::TriggerRequest :init))))
+          (ros::ros-info-green "~a" (send res :message))
+          ))
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
                           (let ((st (send msg :header :stamp)))
