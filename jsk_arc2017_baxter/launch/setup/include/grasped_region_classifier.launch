@@ -17,6 +17,7 @@
         pkg="nodelet" type="nodelet"
         args="load jsk_pcl_utils/PointIndicesToMaskImage $(arg NODELET_MANAGER)">
     <remap from="~input" to="cluster_indices_to_indices/output" />
+    <remap from="~input/image" to="resize_label/image" />  <!-- x0.5 -->
   </node>
   <node name="resize_mask_image"
         pkg="nodelet" type="nodelet"
@@ -94,6 +95,9 @@
         pkg="jsk_perception" type="draw_classification_result.py">
     <remap from="~input/image" to="label_image_decomposer_by_scale/output" />
     <remap from="~input" to="probability_image_classifier/output" />
+    <rosparam>
+      queue_size: 30
+    </rosparam>
   </node>
 
 </launch>
