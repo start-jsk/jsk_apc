@@ -5,7 +5,7 @@
   <arg name="moveit" default="true" />
   <arg name="smach_viewer" default="false" />
   <arg name="rosbag" default="false" />
-  <arg name="data_collection" default="true" />
+  <arg name="data_collection" default="false" />
 
   <arg name="left_main" default="true" />
   <arg name="right_main" default="true" />
