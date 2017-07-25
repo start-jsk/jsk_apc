@@ -66,7 +66,7 @@
             (:recognize-object
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :recognize-object)
-                 (send *ti* :recognize-object *arm* :trial-times 10)))
+                 (send *ti* :recognize-object *arm* :trial-times 3)))
             (:return-from-recognize-object
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :return-from-recognize-object)
