@@ -6,7 +6,7 @@
   <!-- right gripper -->
   <group ns="gripper_front/limb/right/dxl" if="$(arg launch_right)">
     <!-- Start the Dynamixel servo controller manager -->
-    <node name="controller_manager" pkg="dynamixel_controllers" type="controller_manager.py" required="true" output="screen">
+    <node name="controller_manager" pkg="dynamixel_controllers" type="controller_manager.py" respawn="true" output="screen">
       <rosparam>
         namespace: dxl_manager
         serial_ports:
@@ -35,7 +35,7 @@
   <!-- left gripper -->
   <group ns="gripper_front/limb/left/dxl" if="$(arg launch_left)">
     <!-- Start the Dynamixel servo controller manager -->
-    <node name="controller_manager" pkg="dynamixel_controllers" type="controller_manager.py" required="true" output="screen">
+    <node name="controller_manager" pkg="dynamixel_controllers" type="controller_manager.py" respawn="true" output="screen">
       <rosparam>
         namespace: dxl_manager
         serial_ports:
