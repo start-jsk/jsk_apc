@@ -83,7 +83,7 @@
             (:check-start-picking-fail-count
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :check-start-picking-fail-count)
-                 (send *ti* :check-start-picking-fail-count *arm*)))
+                 (send *ti* :check-start-picking-fail-count *arm* :count-limit 5)))
             (:change-grasp-style
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :change-grasp-style)
