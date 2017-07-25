@@ -1,11 +1,16 @@
 <launch>
 
+  <arg name="pick" />
+
+  <arg name="task" value="pick" if="$(arg pick)" />
+  <arg name="task" value="stow" unless="$(arg pick)" />
+
   <group ns="left_hand_camera">
     <node name="data_collection_server"
           pkg="jsk_data" type="data_collection_server.py">
-      <rosparam>
+      <rosparam subst_value="true">
         slop: 0.5
-        save_dir: ~/.ros/jsk_arc2017_baxter/pick/left_hand_camera
+        save_dir: ~/.ros/jsk_arc2017_baxter/$(arg task)/left_hand_camera
         topics:
           - name: /left_hand_camera/left/rgb/camera_info
             msg_class: sensor_msgs/CameraInfo
@@ -43,9 +48,9 @@
   <group ns="right_hand_camera">
     <node name="data_collection_server"
           pkg="jsk_data" type="data_collection_server.py">
-      <rosparam>
+      <rosparam subst_value="true">
         slop: 0.5
-        save_dir: ~/.ros/jsk_arc2017_baxter/pick/right_hand_camera
+        save_dir: ~/.ros/jsk_arc2017_baxter/$(arg task)/right_hand_camera
         topics:
           - name: /right_hand_camera/left/rgb/camera_info
             msg_class: sensor_msgs/CameraInfo

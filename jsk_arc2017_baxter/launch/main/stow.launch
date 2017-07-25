@@ -155,7 +155,9 @@
   </group>
 
   <group if="$(arg data_collection)">
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/data_collection_server.launch" />
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/data_collection_server.launch">
+      <arg name="pick" value="false" />
+    </include>
   </group>
 
 </launch>
