@@ -93,7 +93,6 @@
     </node>
 
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
-      <arg name="INPUT_BBOXES" value="cluster_indices_decomposer_target/boxes" />
       <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output" />
       <arg name="INPUT_INFO" value="left/rgb/camera_info" />
@@ -157,7 +156,6 @@
     </node>
 
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
-      <arg name="INPUT_BBOXES" value="cluster_indices_decomposer_target/boxes" />
       <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
       <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output" />
       <arg name="INPUT_INFO" value="left/rgb/camera_info" />
