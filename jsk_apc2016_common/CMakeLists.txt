@@ -179,15 +179,16 @@ add_custom_target(install_sample_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/
 ## Install ##
 #############
 
-# all install targets should use catkin DESTINATION variables
-# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
-
-## Mark executable scripts (Python etc.) for installation
-## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+# install to global bin
+set(BIN_EXECUTABLES euslint)
+foreach(exec ${BIN_EXECUTABLES})
+  add_custom_command(OUTPUT ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_BIN_DESTINATION}/${exec}
+    COMMAND cmake -E make_directory ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_BIN_DESTINATION}
+    COMMAND cmake -E copy ${PROJECT_SOURCE_DIR}/scripts/${exec} ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_BIN_DESTINATION}/
+    DEPENDS ${PROJECT_SOURCE_DIR}/scripts/${exec})
+  add_custom_target(install_${exec} ALL DEPENDS ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_BIN_DESTINATION}/${exec})
+  install(PROGRAMS bin/euslint DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+endforeach(exec)
 
 ## Mark executables and/or libraries for installation
 install(TARGETS sib_topic_synchronizer cloud_to_spatial_features
