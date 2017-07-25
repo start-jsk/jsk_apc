@@ -1,63 +1,35 @@
 <launch>
-  <arg name="INPUT_BBOXES" />
   <arg name="INPUT_CANDIDATES" />
   <arg name="INPUT_CLOUD" />
   <arg name="INPUT_INFO" />
   <arg name="INPUT_PROBA_IMAGE" />
   <arg name="NODELET_MANAGER" />
 
-  <node name="bboxes_to_rects"
+  <node name="cluster_indices_to_indices"
         pkg="nodelet" type="nodelet"
-        args="load jsk_perception/BoundingBoxToRect $(arg NODELET_MANAGER)" >
-    <remap from="~input" to="$(arg INPUT_BBOXES)" />
-    <remap from="~input/info" to="$(arg INPUT_INFO)" />
+        args="load jsk_pcl_utils/ClusterPointIndicesToPointIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="euclidean_clustering/output" />
+  </node>
+  <node name="point_indices_to_mask_image"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/PointIndicesToMaskImage $(arg NODELET_MANAGER)">
+    <remap from="~input" to="cluster_indices_to_indices/output" />
+  </node>
+  <node name="resize_mask_image"
+        pkg="nodelet" type="nodelet"
+        args="load image_proc/resize $(arg NODELET_MANAGER)">
+    <remap from="image" to="point_indices_to_mask_image/output" />
     <rosparam>
-      approximate_sync: true
-      queue_size: 100
-    </rosparam>
-  </node>
-
-  <node name="rects_to_polygons"
-        pkg="jsk_recognition_utils" type="rect_array_to_polygon_array.py">
-    <remap from="~input" to="bboxes_to_rects/output" />
-  </node>
-
-  <node name="polygons_to_polygon"
-        pkg="jsk_recognition_utils" type="polygon_array_to_polygon.py">
-    <remap from="~input" to="rects_to_polygons/output" />
-    <rosparam>
-      index: 0
-    </rosparam>
-  </node>
-
-  <node name="polygon_to_mask_image"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_perception/RectToMaskImage $(arg NODELET_MANAGER)" >
-    <remap from="~input" to="polygons_to_polygon/output" />
-    <remap from="~input/camera_info" to="$(arg INPUT_INFO)" />
-  </node>
-
-  <node name="pointcloud_to_mask_image"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_pcl_utils/PointCloudToMaskImage $(arg NODELET_MANAGER)" >
-    <remap from="~input" to="$(arg INPUT_CLOUD)" />
-  </node>
-
-  <node name="multiply_mask_image"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_perception/MultiplyMaskImage $(arg NODELET_MANAGER)" >
-    <remap from="~input/src1" to="polygon_to_mask_image/output" />
-    <remap from="~input/src2" to="pointcloud_to_mask_image/output" />
-    <rosparam>
-      approximate_sync: true
-      queue_size: 100
+      use_scale: true
+      scale_height: 2.0
+      scale_width: 2.0
     </rosparam>
   </node>
 
   <node name="apply_mask_to_proba_image"
         pkg="jsk_arc2017_common" type="apply_mask_to_proba_image.py" >
     <remap from="~input_proba" to="$(arg INPUT_PROBA_IMAGE)" />
-    <remap from="~input_mask" to="multiply_mask_image/output" />
+    <remap from="~input_mask" to="resize_mask_image/image" />
     <rosparam>
       approximate_sync: true
       queue_size: 30
