@@ -175,6 +175,8 @@
           :do-stop-grasp nil
           :grasp-style grasp-style)
     (when moveit-p (send self :add-bin-scene target-bin))
+    (setq graspingp (send *ri* :graspingp arm grasp-style))
+    (unless graspingp (return-from :pick-object nil))
     (let (avs end-pos)
       (if (eq grasp-style :suction)
         (progn
