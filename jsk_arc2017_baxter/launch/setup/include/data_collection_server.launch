@@ -12,22 +12,23 @@
         slop: 0.5
         save_dir: ~/.ros/jsk_arc2017_baxter/$(arg task)/left_hand_camera
         topics:
-          - name: /left_hand_camera/left/rgb/camera_info
-            msg_class: sensor_msgs/CameraInfo
-            fname: camera_info.yaml
-            savetype: YAML
+          # - name: /left_hand_camera/left/rgb/camera_info
+          #   msg_class: sensor_msgs/CameraInfo
+          #   fname: camera_info.yaml
+          #   savetype: YAML
           - name: /left_hand_camera/left/rgb/image_rect_color
             msg_class: sensor_msgs/Image
             fname: image.jpg
             savetype: ColorImage
-          - name: /left_hand_camera/fused/depth_registered/image_rect
-            msg_class: sensor_msgs/Image
-            fname: depth.npz
-            savetype: DepthImage
-          - name: /left_hand_camera/fused/depth_registered/image_rect_view
-            msg_class: sensor_msgs/Image
-            fname: depth_viz.jpg
-            savetype: ColorImage
+          ## FIXME: cannot synchronize
+          # - name: /left_hand_camera/fused/depth_registered/image_rect
+          #   msg_class: sensor_msgs/Image
+          #   fname: depth.npz
+          #   savetype: DepthImage
+          # - name: /left_hand_camera/fused/depth_registered/image_rect_view
+          #   msg_class: sensor_msgs/Image
+          #   fname: depth_viz.jpg
+          #   savetype: ColorImage
           # - name: /left_hand_camera/tf_to_transform/output
           #   msg_class: geometry_msgs/TransformStamped
           #   fname: tf_camera_rgb_from_base.yaml
@@ -54,22 +55,23 @@
         slop: 0.5
         save_dir: ~/.ros/jsk_arc2017_baxter/$(arg task)/right_hand_camera
         topics:
-          - name: /right_hand_camera/left/rgb/camera_info
-            msg_class: sensor_msgs/CameraInfo
-            fname: camera_info.yaml
-            savetype: YAML
+          # - name: /right_hand_camera/left/rgb/camera_info
+          #   msg_class: sensor_msgs/CameraInfo
+          #   fname: camera_info.yaml
+          #   savetype: YAML
           - name: /right_hand_camera/left/rgb/image_rect_color
             msg_class: sensor_msgs/Image
             fname: image.jpg
             savetype: ColorImage
-          - name: /right_hand_camera/fused/depth_registered/image_rect
-            msg_class: sensor_msgs/Image
-            fname: depth.npz
-            savetype: DepthImage
-          - name: /right_hand_camera/fused/depth_registered/image_rect_view
-            msg_class: sensor_msgs/Image
-            fname: depth_viz.jpg
-            savetype: ColorImage
+          ## FIXME: cannot synchronize
+          # - name: /right_hand_camera/fused/depth_registered/image_rect
+          #   msg_class: sensor_msgs/Image
+          #   fname: depth.npz
+          #   savetype: DepthImage
+          # - name: /right_hand_camera/fused/depth_registered/image_rect_view
+          #   msg_class: sensor_msgs/Image
+          #   fname: depth_viz.jpg
+          #   savetype: ColorImage
           # - name: /right_hand_camera/tf_to_transform/output
           #   msg_class: geometry_msgs/TransformStamped
           #   fname: tf_camera_rgb_from_base.yaml
