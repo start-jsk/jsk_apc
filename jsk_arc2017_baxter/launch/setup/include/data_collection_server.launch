@@ -28,12 +28,13 @@
             msg_class: sensor_msgs/Image
             fname: depth_viz.jpg
             savetype: ColorImage
-          - name: /left_hand_camera/tf_to_transform/output
-            msg_class: geometry_msgs/TransformStamped
-            fname: tf_camera_rgb_from_base.yaml
-            savetype: YAML
+          # - name: /left_hand_camera/tf_to_transform/output
+          #   msg_class: geometry_msgs/TransformStamped
+          #   fname: tf_camera_rgb_from_base.yaml
+          #   savetype: YAML
       </rosparam>
     </node>
+    <!--
     <node name="tf_to_transform"
           pkg="jsk_topic_tools" type="tf_to_transform.py">
       <rosparam>
@@ -43,6 +44,7 @@
         rate: 30
       </rosparam>
     </node>
+    -->
   </group>
 
   <group ns="right_hand_camera">
@@ -68,12 +70,13 @@
             msg_class: sensor_msgs/Image
             fname: depth_viz.jpg
             savetype: ColorImage
-          - name: /right_hand_camera/tf_to_transform/output
-            msg_class: geometry_msgs/TransformStamped
-            fname: tf_camera_rgb_from_base.yaml
-            savetype: YAML
+          # - name: /right_hand_camera/tf_to_transform/output
+          #   msg_class: geometry_msgs/TransformStamped
+          #   fname: tf_camera_rgb_from_base.yaml
+          #   savetype: YAML
       </rosparam>
     </node>
+    <!--
     <node name="tf_to_transform"
           pkg="jsk_topic_tools" type="tf_to_transform.py">
       <rosparam>
@@ -83,6 +86,7 @@
         rate: 30
       </rosparam>
     </node>
+    -->
   </group>
 
 </launch>
