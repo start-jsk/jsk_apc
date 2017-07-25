@@ -92,10 +92,6 @@
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :pick-object)
                  (send *ti* :pick-object *arm*)))
-            (:check-trial-fail-count
-              '(lambda (userdata)
-                 (send *ti* :update-state *arm* :check-trial-fail-count)
-                 (send *ti* :check-trial-fail-count *arm*)))
             (:return-from-pick-object
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :return-from-pick-object)
