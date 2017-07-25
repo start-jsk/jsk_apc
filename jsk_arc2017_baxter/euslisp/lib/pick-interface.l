@@ -342,13 +342,25 @@
                 (send self :ik->bin-center arm :b :offset #f(0 0 800)
                       :rotation-axis nil :move-palm-end t))
               avs)
-            (pushback
-              (if (eq grasp-style :suction)
-                (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector 50 0 200) :rotation-axis :z :use-gripper t)
-                (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector 50 0 200) :rotation-axis nil :move-palm-end t))
-              avs)
+            (if (eq grasp-style :suction)
+              (progn
+                (pushback
+                  (send self :ik->cardboard-center arm target-cardboard
+                        :offset (float-vector -50 0 200) :rotation-axis :z :use-gripper t)
+                  avs)
+                (pushback
+                  (send self :ik->cardboard-center arm target-cardboard
+                        :offset (float-vector 30 0 200) :rotation-axis :z :use-gripper t)
+                  avs))
+              (progn
+                (pushback
+                  (send self :ik->cardboard-center arm target-cardboard
+                        :offset (float-vector -50 0 200) :rotation-axis nil :move-palm-end t)
+                  avs)
+                (pushback
+                  (send self :ik->cardboard-center arm target-cardboard
+                        :offset (float-vector 30 0 200) :rotation-axis nil :move-palm-end t)
+                  avs)))
             (setq place-z 100)))
         (send *ri* :angle-vector-sequence-raw avs :fast
               (send *ri* :get-arm-controller arm :gripper nil :head t) 0 :scale 5.0))
