@@ -29,7 +29,7 @@
   (dolist (msg (send *last-messages* :list-values))
     (setq time-elapsed (- (send (ros::time-now) :to-sec) (send (send msg :header :stamp) :to-sec)))
     ;(ros::ros-info "  ~A received ~A [sec] ago" (send msg :name) time-elapsed)
-    (when (>  time-elapsed 1)
+    (when (> time-elapsed 1)
       (ros::ros-error "  ~A received ~A [sec] ago, kill ~A" (send msg :name) time-elapsed target-node-name)
       (unix::system (format nil "rosnode kill ~A" target-node-name))
       (setq namespace (subseq (ros::get-namespace) 1))
