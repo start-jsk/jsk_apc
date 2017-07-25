@@ -304,8 +304,10 @@
         (ros::ros-info-green "Requesting data collection for shelf-bin/tote.")
         (let ((res (ros::service-call (format nil "~a_hand_camera/data_collection_server/save_request" (arm2str arm))
                            (instance std_srvs::TriggerRequest :init))))
-          (ros::ros-info-green "~a" (send res :message))
-          ))
+          (if (send res :success)
+            (ros::ros-info-green "~a" (send res :message))
+            (ros::ros-info-red "~a" (send res :message))
+            )))
       (ros::subscribe box-topic jsk_recognition_msgs::BoundingBoxArray
                       #'(lambda (msg)
                           (let ((st (send msg :header :stamp)))
