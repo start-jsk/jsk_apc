@@ -2,6 +2,8 @@
 
 import datetime
 
+from jsk_arc2017_common.msg import Content
+from jsk_arc2017_common.msg import ContentArray
 from jsk_arc2017_common.srv import UpdateJSON
 from jsk_arc2017_common.srv import UpdateJSONResponse
 import json
@@ -84,6 +86,10 @@ class JSONSaver(threading.Thread):
 
         # publish stamped json_dir
         self.pub = rospy.Publisher('~output/json_dir', String, queue_size=1)
+        self.pub_bin = rospy.Publisher(
+            '~output/bin_contents',
+            ContentArray,
+            queue_size=1)
         rate = rospy.get_param('~rate', 1)
         self.timer_pub = rospy.Timer(rospy.Duration(1. / rate), self._cb_pub)
 
@@ -92,6 +98,16 @@ class JSONSaver(threading.Thread):
 
     def _cb_pub(self, event):
         self.pub.publish(String(data=osp.dirname(self.output_json_path)))
+        contents_msg = ContentArray()
+        contents = []
+        for bin_ in 'ABC':
+            msg = Content()
+            msg.bin = bin_
+            msg.items = self.bin_contents[bin_]
+            contents.append(msg)
+        contents_msg.header.stamp = rospy.Time.now()
+        contents_msg.contents = contents
+        self.pub_bin.publish(contents_msg)
 
     def _run_services(self):
         self.services = []
