@@ -118,7 +118,7 @@
               (ros::service-call
                 (format nil "/~a_hand_camera/image_buffer/save" (arm2str arm))
                 (instance std_srvs::TriggerRequest :init))
-              (send self :recognize-target-object arm :stamp stamp)))
+              (send self :recognize-target-object arm :stamp (ros::time-now))))
           (incf recognition-count)))
       is-recognized))
   (:return-from-recognize-object (arm)
