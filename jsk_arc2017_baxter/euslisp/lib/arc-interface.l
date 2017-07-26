@@ -904,8 +904,8 @@
         (send self :ik->tote-center arm
               :offset offset :rpy rpy :use-gripper nil)
         avs)
-      (send *ri* :angle-vector-sequence-raw avs :fast
-            (send *ri* :get-arm-controller arm) 0 :scale 3.0)))
+      (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
+            (send *ri* :get-arm-controller arm) 0)))
   (:wait-for-user-input-to-start (arm)
     (let (can-start)
       (ros::ros-info "[:wait-for-user-input-to-start] wait for user input to start: ~a" arm)
