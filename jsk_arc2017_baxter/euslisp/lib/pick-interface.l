@@ -139,8 +139,8 @@
   (:check-can-start-picking (arm)
     ;; first trial: trial-time = 1
     (setq grasp-style (send self :get-grasp-style arm target-obj 1))
-    (ros::ros-info "arm: ~a, grasp-style: ~a, trial-time: ~a"
-                   (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
+    (ros::ros-info-green "arm: ~a, grasp-style: ~a, trial-time: ~a"
+                         (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
     (if grasp-style
       (setq start-picking-fail-count 0)
       (send self :add-postponed-object arm target-obj target-bin))
@@ -158,8 +158,8 @@
     (send *ri* :stop-grasp arm)
     ;; try another grasp style
     (setq grasp-style (send self :get-grasp-style arm target-obj (+ trial-fail-count 1)))
-    (ros::ros-info "arm: ~a, grasp-style: ~a, trial-time: ~a"
-                   (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
+    (ros::ros-info-green "arm: ~a, grasp-style: ~a, trial-time: ~a"
+                         (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
     (unless grasp-style (setq trial-fail-count 0))
     (if grasp-style t nil))
   (:pick-object (arm)
