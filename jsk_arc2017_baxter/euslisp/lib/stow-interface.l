@@ -229,7 +229,10 @@
                 jsk_recognition_msgs::ClassificationResult
                 :timeout 15000
                 :after-stamp stamp))
-            (if (> (car (send msg :label_proba)) proba-thre)
+            (ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
+                                (arm2str arm) (car (send msg :label_names))
+                                (elt (send msg :label_proba) 0))
+            (if (> (elt (send msg :label_proba) 0) proba-thre)
                 (setq target-obj (car (send msg :label_names)))
               (return-from :verify-object nil))
             (ros::ros-info-blue "[~a] [main] :verify-object, overwrite target, target-obj: ~a"
