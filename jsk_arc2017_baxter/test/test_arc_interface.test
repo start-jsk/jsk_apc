@@ -5,7 +5,7 @@
 
   <include file="$(find jsk_arc2017_common)/samples/sample_json_saver.launch" />
 
-  <test test-name="test_pick_arc_interface"
+  <test test-name="test_arc_interface"
         name="test_arc_interface" pkg="jsk_arc2017_baxter"
         type="test-arc-interface.l" time-limit="100" />
 </launch>
