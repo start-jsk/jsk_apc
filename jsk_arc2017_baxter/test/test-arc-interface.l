@@ -16,17 +16,20 @@
     (setq orders (append orders (list msg))))
   (setq (*ti* . orders-) orders)
   (assert (find (send *ti* :get-next-target-bin :rarm) (list :a :c))
-          (format nil "failed to get-next-target-bin: ~a"
+          (format nil "failed to get-next-target-bin: ~a, expecting (list :a :c)"
                   (symbol2str (send *ti* :get-next-target-bin :rarm))))
   (send *ti* :add-finished-object :rarm "a" :a)
   (send *ti* :add-postponed-object :rarm "b" :c)
   (assert (eq (send *ti* :get-next-target-bin :rarm) :c)
-          (format nil "failed to get-next-target-bin: ~a"
+          (format nil "failed to get-next-target-bin: ~a,  expecting :c"
                   (symbol2str (send *ti* :get-next-target-bin :rarm))))
   (send *ti* :add-finished-object :rarm "b" :c)
   (assert (null (send *ti* :get-next-target-bin :rarm))
-          (format nil "failed to get-next-target-bin: ~a"
+          (format nil "failed to get-next-target-bin: ~a,  expecting null"
                   (symbol2str (send *ti* :get-next-target-bin :rarm)))))
 
+(ros::service-call "~set_logger_level"
+                   (instance roscpp::SetLoggerLevelRequest
+                             :init :logger "ros.roseus" :level "DEBUG"))
 (run-all-tests)
 (exit)
