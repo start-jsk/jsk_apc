@@ -515,16 +515,28 @@
                   (send *baxter* :hand-grasp-pose arm :spherical :angle 90) 1000
                   :wait t))
           ;; suction: prismatic-based approach
-          (progn
+          (let (target-pos)
             (send *baxter* :rotate-gripper arm 0 :relative nil)
             (send *baxter* :slide-gripper arm 0 :relative nil)
+            (setq target-pos (copy-object obj-pos))
+            (setf (elt target-pos 2) (+ (cadr (elt movable-region 2)) 100))
             (pushback
               (send *baxter* :rotate-wrist-ik arm
-                    (make-coords :pos (v+ obj-pos #f(0 0 300))
+                    (make-coords :pos target-pos
                                  :rpy (float-vector pinch-yaw 0 0))
                     :move-palm-end t
                     :rotation-axis t)
-              next-avs)))
+              next-avs)
+            (setf (elt target-pos 2) (- (cadr (elt movable-region 2)) 60))
+            (pushback
+              (send *baxter* :rotate-wrist-ik arm
+                    (make-coords :pos target-pos
+                                 :rpy (float-vector pinch-yaw 0 0))
+                    :move-palm-end t
+                    :rotation-axis t)
+              next-avs)
+            (send *ri* :move-hand arm
+                  (send *baxter* :hand-grasp-pose arm :cylindrical :angle 90) 1000)))
         (dolist (av next-avs)
           (unless av
             (ros::ros-error "[:pick-object-with-movable-region] arm:~a IK before trying grasp fails. Abort picking" arm)
