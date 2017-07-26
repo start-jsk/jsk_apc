@@ -29,7 +29,8 @@
   </node>
   <group if="$(arg USE_TOPIC)">
     <node name="apply_context_to_label_proba"
-          pkg="jsk_perception" type="apply_context_to_label_probability">
+          pkg="jsk_perception" type="apply_context_to_label_probability"
+          clear_params="true">
       <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
       <remap from="~input/candidates" to="$(arg INPUT_CANDIDATES)" />
       <rosparam>
@@ -39,7 +40,8 @@
   </group>
   <group unless="$(arg USE_TOPIC)">
     <node name="apply_context_to_label_proba"
-          pkg="jsk_perception" type="apply_context_to_label_probability">
+          pkg="jsk_perception" type="apply_context_to_label_probability"
+          clear_params="true">
       <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
       <rosparam>
         use_topic: false
