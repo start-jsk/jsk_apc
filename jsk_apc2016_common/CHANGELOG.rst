@@ -2,6 +2,9 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.0.1 (2017-07-26)
 ------------------
 * Fix line number in euslint

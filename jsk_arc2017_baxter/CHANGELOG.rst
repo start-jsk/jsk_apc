@@ -2,6 +2,42 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix bug in classifier results
+* return from :verify-object if classified probability < proba-thre
+* reset return tote offset
+* print ros-info of return object offset
+* improve tote return motion
+* improve decide-place-area and move to arc-interface
+* improve return method and move to arc-interface
+* ros-info-green in grasp-style
+* modify move-arm-body->tote motion
+* place object randomly
+* remove unix::sleep in arc-interface.l
+* return object randomly
+* Skip IK when IK fails in picking
+* Speed up finger motion in suction
+* Fix place object of pinch in pick
+* Improve resolving finger collision
+* Resolve collision between fingers in fold-pose-back
+* make slower place-object motion
+* fix typo in place-object
+* refine place motion for cardboard :a and :b
+* fix typo in place in pick-object
+  I haven't tested with real robot.
+* consider bin_contents in get-next-target-bin
+* set less recognize trial times
+* remove unnecessary setq
+* use stamp just after recognize pose for recognize
+* make task motion faster
+* return-from :pick-object faster when graspingp nil
+* set count-limit 5 for start-picking-fail-count
+* remove unused state in main
+* add count-limit key in task-interface
+* move arm lower when pick object
+* Contributors: Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa, Shun Hasegawa, Yuto Uchimi
+
 4.0.1 (2017-07-26)
 ------------------
 * Fix for euslint

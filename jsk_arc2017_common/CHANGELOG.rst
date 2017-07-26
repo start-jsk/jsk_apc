@@ -2,6 +2,14 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* change pinch graspability of white_facecloth
+* publish bin_contents in json_saver
+* add Content and ContentArray msg
+* change reynolds wrap graspability
+* Contributors: Naoya Yamaguchi, Shingo Kitagawa
+
 4.0.1 (2017-07-26)
 ------------------
 * Reset pub_imgs
