@@ -54,9 +54,9 @@ class CandidatesPublisher(ConnectionBasedTransport):
                 contents = tote_contents
             else:
                 return
-            candidates = ['__background__']
-            candidates = candidates + contents
-            candidates.append('__shelf__')
+            candidates_fixed = [l for l in self.label_names
+                                if l.startswith('__')]
+            candidates = candidates_fixed + contents
             label_list = [self.label_names.index(x) for x in candidates]
             label_list = sorted(label_list)
             labels = []

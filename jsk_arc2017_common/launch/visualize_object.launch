@@ -1,0 +1,19 @@
+<launch>
+
+  <arg name="object_name" />
+
+  <node name="visualize_object"
+        pkg="jsk_arc2017_common" type="visualize_object.py"
+        args="$(arg object_name)">
+  </node>
+
+  <node name="xdisplay_image_topic"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/visualize_object/output" />
+
+  <node name="image_view"
+        pkg="image_view" type="image_view">
+    <remap from="image" to="visualize_object/output" />
+  </node>
+
+</launch>

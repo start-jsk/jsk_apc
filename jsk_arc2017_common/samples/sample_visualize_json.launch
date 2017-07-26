@@ -1,8 +1,11 @@
 <launch>
 
   <arg name="gui" default="true" />
+  <arg name="json_dir" default="$(find jsk_arc2017_common)/data/json/sample_pick_task" />
 
-  <include file="$(find jsk_arc2017_common)/samples/sample_json_saver.launch" />
+  <include file="$(find jsk_arc2017_common)/samples/sample_json_saver.launch">
+    <arg name="json_dir" value="$(arg json_dir)" />
+  </include>
 
   <node name="visualize_json"
         pkg="jsk_arc2017_common" type="visualize_json.py">
