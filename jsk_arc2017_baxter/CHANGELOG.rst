@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.2 (2017-07-27)
+------------------
 * fix bug in classifier results
 * return from :verify-object if classified probability < proba-thre
 * reset return tote offset

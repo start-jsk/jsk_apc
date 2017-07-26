@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.2 (2017-07-27)
+------------------
 * change pinch graspability of white_facecloth
 * publish bin_contents in json_saver
 * add Content and ContentArray msg
