@@ -402,12 +402,14 @@
           (send *baxter* :slide-gripper arm 120 :relative nil)
           1000 (send *ri* :get-arm-controller arm) 0)
     (send *ri* :move-hand arm
-          (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1500)
+          (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000 :wait nil)
+    (send *ri* :wait-interpolation)
     (send *ri* :angle-vector-raw
           (send *baxter* :slide-gripper arm 0 :relative nil)
           1000 (send *ri* :get-arm-controller arm) 0)
     (send *ri* :move-hand arm
-          (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000))
+          (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait nil)
+    (send *ri* :wait-interpolation))
   (:pick-object-in-bin
     (arm bin &rest args)
     (let (graspingp movable-region)
