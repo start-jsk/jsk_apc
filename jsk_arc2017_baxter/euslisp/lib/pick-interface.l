@@ -230,7 +230,7 @@
       (if (find target-obj scale-candidates :test #'string=)
         t  ;; scale can classify the grasped object
         (progn  ;; scale narrows down candidate objects
-          (let (msg new-order)
+          (let (msg (proba-thre 0.80) new-order)
             (if (eq (length scale-candidates) 1)
               (setq new-order (send self :check-exist-in-order (car scale-candidates)))
               (progn
@@ -240,7 +240,8 @@
                     jsk_recognition_msgs::ClassificationResult
                     :timeout 15000
                     :after-stamp stamp))
-                (setq new-order (send self :check-exist-in-order (car (send msg :label_names))))))
+                (setq new-order (and (send self :check-exist-in-order (car (send msg :label_names)))
+                                     (> (car (send msg :label_proba)) proba-thre)))))
             (if new-order
               (progn
                 (setq target-obj (send new-order :item))
