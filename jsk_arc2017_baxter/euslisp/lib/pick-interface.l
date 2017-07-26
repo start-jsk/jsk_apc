@@ -240,8 +240,12 @@
                     jsk_recognition_msgs::ClassificationResult
                     :timeout 15000
                     :after-stamp stamp))
-                (setq new-order (and (send self :check-exist-in-order (car (send msg :label_names)))
-                                     (> (car (send msg :label_proba)) proba-thre)))))
+				(ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
+									(arm2str arm) (car (send msg :label_names))
+									(elt (send msg :label_proba) 0))
+                (when (> (elt (send msg :label_proba) 0) proba-thre)
+                  (setq new-order
+                        (send self :check-exist-in-order (car (send msg :label_names)))))))
             (if new-order
               (progn
                 (setq target-obj (send new-order :item))
