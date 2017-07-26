@@ -131,3 +131,51 @@ white_facecloth:
 windex:
   suction: 3
   pinch: 3
+bath_duck:
+  suction: 1
+  pinch: 1
+cheezits:
+  suction: 2
+  pinch: 3
+crayons_big:
+  suction: 2
+  pinch: 3
+dental_treats:
+  suction: 1
+  pinch: 2
+duck_toy:
+  suction: 1
+  pinch: 1
+highlighters:
+  suction: 1
+  pinch: 3
+index_cards:
+  suction: 1
+  pinch: 3
+# irish_spring_soap:
+#   suction:
+#   pinch:
+mark_twine_book:
+  suction: 1
+  pinch: 3
+oreos:
+  suction: 1
+  pinch: 3
+outlet_plugs:
+  suction: 1
+  pinch: 3
+paper_mates:
+  suction: 1
+  pinch: 3
+plush_eggs:
+  suction: 1
+  pinch: 3
+safety_glasses:
+  suction: 1
+  pinch: 2
+stanley_66:
+  suction: 1
+  pinch: 3
+stir_sticks:
+  suction: 2
+  pinch: 3
