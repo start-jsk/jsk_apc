@@ -90,23 +90,27 @@
                                     jsk_arc2017_common::ContentArray
                                     :timeout 10000
                                     :after-stamp stamp))
+      (ros::ros-debug "[:get-next-target-bin] get msg ~A" msg)
       (setq bin-contents
             (mapcar #'(lambda (content)
                         (cons (str2symbol (send content :bin))
                               (send content :items)))
                     (send msg :contents)))
+      (ros::ros-debug "[:get-next-target-bin] get bin-contents ~A" bin-contents)
       (setq target-bins
             (remove nil
                     (mapcar
                       #'(lambda (order)
                           (let ((item (send order :item))
                                 (bin (str2symbol (send order :bin))))
+                            (ros::ros-debug "[:get-next-target-bin]   item ~A, bin ~A" item bin)
                             (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
                               (unless
                                 (or (find item (gethash bin finished-objects-) :test #'string=)
                                     (find item (gethash bin postponed-objects-) :test #'string=))
                                 bin))))
                       orders-)))
+      (ros::ros-debug "[:get-next-target-bin] get target-bins ~A" target-bins)
       (when target-bins
         (return-from :get-next-target-bin
                      (elt target-bins (random (length target-bins)))))
@@ -121,6 +125,7 @@
                                 (find item (gethash bin finished-objects-) :test #'string=)
                                 bin))))
                       orders-)))
+      (ros::ros-debug "[:get-next-target-bin] get postoned-bins ~A" postponed-bins)
       (when postponed-bins
         (return-from :get-next-target-bin
                      (elt postponed-bins (random (length postponed-bins)))))
