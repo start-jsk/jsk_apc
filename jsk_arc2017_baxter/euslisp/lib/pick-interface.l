@@ -334,7 +334,7 @@
                 (send self :ik->cardboard-center arm target-cardboard
                       :offset (float-vector 0 0 100) :rotation-axis :z :use-gripper t)
                 (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector 0 0 100) :rotation-axis nil :move-palm-end t))
+                      :offset (float-vector -50 0 100) :rotation-axis nil :move-palm-end t))
               avs)
             (setq place-z 50))
           (progn
@@ -362,7 +362,7 @@
                   avs)
                 (pushback
                   (send self :ik->cardboard-center arm target-cardboard
-                        :offset (float-vector 30 0 200) :rotation-axis nil :move-palm-end t)
+                        :offset (float-vector -20 0 200) :rotation-axis nil :move-palm-end t)
                   avs)))
             (setq place-z 100)))
         (if (eq grasp-style :suction)
@@ -403,7 +403,7 @@
                   (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
                         :rotation-axis :z :use-gripper t)
                   (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
-                        :rotation-axis t))
+                        :rotation-axis nil))
                 1000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (when moveit-p (send self :add-cardboard-scene target-cardboard))))))
