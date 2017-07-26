@@ -297,6 +297,20 @@
     (when moveit-p (send self :add-bin-scene target-bin))
     (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation))
+  (:decide-place-area (arm cardboard)
+    (let (cardboard-cube region x-range y-range index)
+      (setq cardboard-cube (gethash cardboard cardboard-cubes-))
+      (setq region (send self :cube->movable-region cardboard-cube))
+      (setq x-range (- (cadr (elt region 0)) (car (elt region 0))))
+      (setq y-range (- (cadr (elt region 1)) (car (elt region 1))))
+      (setq index (random 3))
+      (cond
+        ((eq index 0)
+         (float-vector 0 0 0))
+        ((eq index 1)
+         (float-vector (/ x-range 4.0) 0 0))
+        ((eq index 2)
+         (float-vector (/ x-range -4.0) 0 0)))))
   (:place-object (arm)
     (let (dropped end-coords-name orientation path-constraints orientation-constraint place-z)
       ;; FIXME: moveit cannot solve path
@@ -334,9 +348,11 @@
             (pushback
               (if (eq grasp-style :suction)
                 (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector 0 0 100) :rotation-axis :z :use-gripper t)
+                      :offset (v+ (float-vector 0 0 100) (send self :decide-place-area arm target-cardboard))
+                      :rotation-axis :z :use-gripper t)
                 (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector 0 0 100) :rotation-axis nil :move-palm-end t))
+                      :offset (v+ (float-vector 0 0 100) (send self :decide-place-area arm target-cardboard))
+                      :rotation-axis nil :move-palm-end t))
               avs)
             (setq place-z 50))
           (progn
@@ -350,9 +366,11 @@
             (pushback
               (if (eq grasp-style :suction)
                 (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector 50 0 200) :rotation-axis :z :use-gripper t)
+                      :offset (v+ (float-vector 50 0 200) (send self :decide-place-area arm target-cardboard))
+                      :rotation-axis :z :use-gripper t)
                 (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector 50 0 200) :rotation-axis nil :move-palm-end t))
+                      :offset (v+ (float-vector 50 0 200) (send self :decide-place-area arm target-cardboard))
+                      :rotation-axis nil :move-palm-end t))
               avs)
             (setq place-z 100)))
         (send *ri* :angle-vector-sequence-raw avs 4000

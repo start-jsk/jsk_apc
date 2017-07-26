@@ -278,6 +278,21 @@
     (when moveit-p (send self :add-tote-scene arm))
     (send self :fold-pose-back arm)
     (send *ri* :wait-interpolation))
+  (:decide-place-area (arm bin)
+    (let (bin-cube region x-range y-range index)
+      (setq bin-cube (gethash bin bin-cubes-))
+      (setq bin-cube (make-cube 100 100 100))
+      (setq region (send self :cube->movable-region bin-cube))
+      (setq x-range (- (cadr (elt region 0)) (car (elt region 0))))
+      (setq y-range (- (cadr (elt region 1)) (car (elt region 1))))
+      (setq index (random 3))
+      (cond
+        ((eq index 0)
+         (float-vector 0 0 0))
+        ((eq index 1)
+         (float-vector (/ x-range 4.0) 0 0))
+        ((eq index 2)
+         (float-vector (/ x-range -4.0) 0 0)))))
   (:place-object (arm)
     (let (dropped)
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
@@ -287,11 +302,13 @@
       (if (eq grasp-style :suction)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
-                    :offset #f(0 0 300) :rotation-axis :z :use-gripper t)
+                    :offset (v+ #f(0 0 300) (send self :decide-place-area arm target-bin))
+                    :rotation-axis :z :use-gripper t)
               4000 (send *ri* :get-arm-controller arm :head t) 0)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
-                    :offset #f(0 0 300) :rotation-axis nil :move-palm-end t)
+                    :offset (v+ #f(0 0 300) (send self :decide-place-area arm target-bin))
+                    :rotation-axis nil :move-palm-end t)
               4000 (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm grasp-style)))
