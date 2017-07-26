@@ -362,9 +362,12 @@
                         :offset (float-vector 30 0 200) :rotation-axis nil :move-palm-end t)
                   avs)))
             (setq place-z 100)))
-        (send *ri* :angle-vector-sequence-raw avs :fast
-              (send *ri* :get-arm-controller arm :gripper nil :head t) 0 :scale 5.0))
-      (send *ri* :wait-interpolation)
+        (if (eq grasp-style :suction)
+          (send *ri* :angle-vector-sequence-raw avs :fast
+                (send *ri* :get-arm-controller arm :gripper t :head t) 0 :scale 5.0)
+          (send *ri* :angle-vector-sequence-raw avs :fast
+                (send *ri* :get-arm-controller arm :gripper nil :head t) 0 :scale 5.0))
+        (send *ri* :wait-interpolation))
       (setq dropped (not (send *ri* :graspingp arm grasp-style)))
       (when moveit-p (send self :delete-object-in-hand-scene arm))
       (if dropped
