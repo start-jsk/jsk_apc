@@ -641,7 +641,7 @@
       graspingp))
   (:try-to-suction-object-with-gripper-v6
     (arm obj-pos suction-yaw &key (offset #f(0 0 0)))
-    (let (graspingp
+    (let (graspingp av
           (coords-before-approach (send *baxter* arm :end-coords :copy-worldcoords)))
       (send coords-before-approach :locate (v+ obj-pos #f(0 0 300)) :world)
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a suction-yaw: ~a" arm suction-yaw)
@@ -668,22 +668,27 @@
       ;; suction: ik-based approach
       ;; suction: prismatic-based approach
       (send *baxter* :slide-gripper arm (- 120 (elt offset 2)) :relative nil)
-      (send *ri* :angle-vector-raw
-            (if (null suction-yaw)
-              (send *baxter* arm :inverse-kinematics
-                    (make-coords :pos (v+ obj-pos offset)
-                                 :rpy #f(0 0 0))
-                    :use-gripper nil
-                    :rotation-axis :z)
-              (send *baxter* arm :inverse-kinematics
-                    (make-coords :pos (v+ obj-pos offset)
-                                 :rpy (float-vector suction-yaw 0 0))
-                    :use-gripper nil
-                    :rotation-axis t))
-            3000 (send *ri* :get-arm-controller arm) 0)
+      (setq av (if (null suction-yaw)
+                 (send *baxter* arm :inverse-kinematics
+                       (make-coords :pos (v+ obj-pos offset)
+                                    :rpy #f(0 0 0))
+                       :use-gripper nil
+                       :rotation-axis :z)
+                 (send *baxter* arm :inverse-kinematics
+                       (make-coords :pos (v+ obj-pos offset)
+                                    :rpy (float-vector suction-yaw 0 0))
+                       :use-gripper nil
+                       :rotation-axis t)))
+      (if av
+        (progn
+          (send *ri* :angle-vector-raw av
+                3000 (send *ri* :get-arm-controller arm) 0)
+          ;; Wait until grasp or push object to prevent tooth flying
+          (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded))
+        (progn
+          (ros::ros-error "[:try-to-suction-object-with-gripper-v6] arm:~a IK to object fails" arm)
+          (ros::ros-error "[:try-to-suction-object-with-gripper-v6] arm:~a Just slide gripper" arm)))
       ;; suction: prismatic-based approach
-      ;; Wait until grasp or push object to prevent tooth flying
-      (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
       ;; suction: ik-based approach
       ;; (send *ri* :angle-vector-raw
       ;;       (send *baxter* arm :inverse-kinematics
@@ -759,7 +764,7 @@
                     :move-palm-end t
                     :rotation-axis :z)))
       (unless av
-        (ros::ros-info "[:try-to-pinch-object] arm:~a IK fails. Abort picking" arm)
+        (ros::ros-error "[:try-to-pinch-object] arm:~a IK to object fails. Abort picking" arm)
         (return-from :try-to-pinch-object nil))
       (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0)
       ;; Wait until grasp or finger touch
@@ -778,6 +783,9 @@
                                  :rpy (float-vector pinch-yaw 0 0))
                     :move-palm-end t
                     :rotation-axis :z)))
+      (unless av
+        (ros::ros-error "[:try-to-pinch-object] arm:~a IK to object fails. Abort picking" arm)
+        (return-from :try-to-pinch-object nil))
       (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
