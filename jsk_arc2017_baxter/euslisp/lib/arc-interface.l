@@ -1227,7 +1227,6 @@
   (:decide-bin-place-area (arm bin grasp-style)
     (let (bin-cube region x-range index)
       (setq bin-cube (gethash bin bin-cubes-))
-      (setq bin-cube (make-cube 100 100 100))
       (setq region (send self :cube->movable-region bin-cube))
       (setq x-range (- (cadr (elt region 0)) (car (elt region 0))))
       (if (eq grasp-style :suction)
