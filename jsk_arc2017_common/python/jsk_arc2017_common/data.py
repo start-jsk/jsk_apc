@@ -13,15 +13,20 @@ def get_object_weights():
         return yaml.load(f)
 
 
-def get_object_names():
+def get_label_names():
     PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 
     with open(osp.join(PKG_DIR, 'config/label_names.yaml')) as f:
         return yaml.load(f)
 
 
+def get_object_names():
+    label_names = get_label_names()
+    return [l for l in label_names if not l.startswith('__')]
+
+
 def get_object_images():
-    object_names = get_object_names()[1:-1]
+    object_names = get_object_names()
     object_imgs = {}
     PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
     for obj in object_names:
