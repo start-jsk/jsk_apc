@@ -222,14 +222,16 @@
       (if (find target-obj scale-candidates :test #'string=)
         t  ;; scale can classify the grasped object
         (progn  ;; scale narrows down candidate objects
-          (let (msg new-order)
+          (let (msg (proba-thre 0.80) new-order)
             (setq msg
               (one-shot-subscribe
                 (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
                 jsk_recognition_msgs::ClassificationResult
                 :timeout 15000
                 :after-stamp stamp))
-            (setq target-obj (car (send msg :label_names)))
+            (if (> (car (send msg :label_proba)) proba-thre)
+                (setq target-obj (car (send msg :label_names)))
+              (return-from :verify-object nil))
             (ros::ros-info-blue "[~a] [main] :verify-object, overwrite target, target-obj: ~a"
                                 (ros::get-name) target-obj)
             t)))))
