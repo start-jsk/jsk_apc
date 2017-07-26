@@ -700,12 +700,10 @@
                        :rotation-axis t)))
       (if av
         (progn
-          (send (send *ri* :get-val 'robot) :ik-prepared-poses :null)
           (if (null (send *ri* :angle-vector-raw av
                           3000 (send *ri* :get-arm-controller arm) 0 :end-coords-interpolation t))
             (send *ri* :angle-vector-raw av
                   3000 (send *ri* :get-arm-controller arm) 0))
-          (send (send *ri* :get-val 'robot) :ik-prepared-poses nil)
           ;; Wait until grasp or push object to prevent tooth flying
           (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded))
         (progn
@@ -788,12 +786,10 @@
       (unless av
         (ros::ros-error "[:try-to-pinch-object] arm:~a IK to object fails. Abort picking" arm)
         (return-from :try-to-pinch-object nil))
-      (send (send *ri* :get-val 'robot) :ik-prepared-poses :null)
       (if (null (send *ri* :angle-vector-raw av
                       3000 (send *ri* :get-arm-controller arm) 0 :end-coords-interpolation t))
         (send *ri* :angle-vector-raw av
               3000 (send *ri* :get-arm-controller arm) 0))
-      (send (send *ri* :get-val 'robot) :ik-prepared-poses nil)
       ;; Wait until grasp or finger touch
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
