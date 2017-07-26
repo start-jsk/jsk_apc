@@ -21,7 +21,7 @@ def main():
 
     tile_shape = map(int, args.tile_shape.split('x'))
 
-    obj_names = jsk_arc2017_common.get_object_names()[1:-1]
+    obj_names = jsk_arc2017_common.get_object_names()
 
     imgs = []
     data_dir = osp.join(PKG_DIR, 'data')

@@ -17,7 +17,7 @@ PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')
 def generate_pick_json(dirname=None):
     if dirname is None:
         dirname = 'sample_pick_task'
-    label_list = jsk_arc2017_common.get_object_names()[1:-1]
+    label_list = jsk_arc2017_common.get_object_names()
     box_id_list = ['A1', '1AD', '1A5', '1B2', 'K3']
     box_A_candidate = box_id_list[:2]   # box_A is for 2 items
     box_B_candidate = box_id_list[2:4]  # box_B is for 3 items
@@ -116,7 +116,7 @@ def generate_pick_json(dirname=None):
 def generate_stow_json(dirname):
     if dirname is None:
         dirname = 'sample_stow_task'
-    label_list = jsk_arc2017_common.get_object_names()[1:-1]
+    label_list = jsk_arc2017_common.get_object_names()
     tote_contents = random.sample(label_list, 20)
     location = {
         'bins': [
