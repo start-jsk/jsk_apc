@@ -292,7 +292,7 @@
     (if (eq grasp-style :pinch)
       (send self :resolve-collision-between-fingers arm)))
   (:place-object (arm)
-    (let (dropped)
+    (let (dropped place-av)
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
       (when moveit-p (send self :add-object-in-hand-scene arm target-obj))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 70 -70))
@@ -328,10 +328,11 @@
                         :rotation-axis :z
                         :use-gripper t)
                   2000 (send *ri* :get-arm-controller arm) 0)
-             (send *ri* :angle-vector-raw
-                  (send *baxter* arm :move-end-pos #f(0 0 -300) :world
-                        :rotation-axis nil)
-                  2000 (send *ri* :get-arm-controller arm) 0))
+            (progn
+              (setq place-av
+                    (send *baxter* arm :move-end-pos #f(0 0 -250) :world :rotation-axis nil))
+              (if place-av
+                (send *ri* :angle-vector-raw place-av 2000 (send *ri* :get-arm-controller arm) 0))))
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm) ;; release object
           (if (eq grasp-style :pinch)
@@ -344,10 +345,11 @@
                         :rotation-axis :z
                         :use-gripper t)
                   2000 (send *ri* :get-arm-controller arm) 0)
-             (send *ri* :angle-vector-raw
-                  (send *baxter* arm :move-end-pos #f(0 0 300) :world
-                        :rotation-axis nil)
-                  2000 (send *ri* :get-arm-controller arm) 0))
+            (if place-av
+                (send *ri* :angle-vector-raw
+                      (send *baxter* arm :move-end-pos #f(0 0 250) :world
+                            :rotation-axis nil)
+                      2000 (send *ri* :get-arm-controller arm) 0)))
           (send *ri* :wait-interpolation)
           (when moveit-p (send self :add-bin-scene target-bin))))))
   (:return-from-place-object (arm)
