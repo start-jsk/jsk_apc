@@ -98,33 +98,35 @@
                     (send msg :contents)))
       (ros::ros-debug "[:get-next-target-bin] get bin-contents ~A" bin-contents)
       (setq target-bins
-            (remove nil
-                    (mapcar
-                      #'(lambda (order)
-                          (let ((item (send order :item))
-                                (bin (str2symbol (send order :bin))))
-                            (ros::ros-debug "[:get-next-target-bin]   item ~A, bin ~A" item bin)
-                            (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
-                              (unless
-                                (or (find item (gethash bin finished-objects-) :test #'string=)
-                                    (find item (gethash bin postponed-objects-) :test #'string=))
-                                bin))))
-                      orders-)))
+            (remove-duplicates
+              (remove nil
+                      (mapcar
+                        #'(lambda (order)
+                            (let ((item (send order :item))
+                                  (bin (str2symbol (send order :bin))))
+                              (ros::ros-debug "[:get-next-target-bin]   item ~A, bin ~A" item bin)
+                              (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
+                                (unless
+                                  (or (find item (gethash bin finished-objects-) :test #'string=)
+                                      (find item (gethash bin postponed-objects-) :test #'string=))
+                                  bin))))
+                        orders-))))
       (ros::ros-debug "[:get-next-target-bin] get target-bins ~A" target-bins)
       (when target-bins
         (return-from :get-next-target-bin
                      (elt target-bins (random (length target-bins)))))
       (setq postponed-bins
-            (remove nil
-                    (mapcar
-                      #'(lambda (order)
-                          (let ((item (send order :item))
-                                (bin (str2symbol (send order :bin))))
-                            (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
-                              (unless
-                                (find item (gethash bin finished-objects-) :test #'string=)
-                                bin))))
-                      orders-)))
+            (remove-duplicates
+              (remove nil
+                      (mapcar
+                        #'(lambda (order)
+                            (let ((item (send order :item))
+                                  (bin (str2symbol (send order :bin))))
+                              (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
+                                (unless
+                                  (find item (gethash bin finished-objects-) :test #'string=)
+                                  bin))))
+                        orders-))))
       (ros::ros-debug "[:get-next-target-bin] get postoned-bins ~A" postponed-bins)
       (when postponed-bins
         (return-from :get-next-target-bin
@@ -1121,19 +1123,22 @@
   (:update-object-tables (obj bin &key object-type)
     (cond
       ((eq object-type :unfinished-objects)
-       (sethash bin unfinished-objects- (append (gethash bin unfinished-objects-) (list obj))))
+       (sethash bin unfinished-objects-
+                (remove-duplicates (append (gethash bin unfinished-objects-) (list obj)))))
       ((eq object-type :postponed-objects)
        (sethash bin unfinished-objects-
-                (remove obj (gethash bin unfinished-objects-) :test #'string= :count 1))
-       (sethash bin postponed-objects- (append (gethash bin postponed-objects-) (list obj))))
+                (remove-duplicates (remove obj (gethash bin unfinished-objects-) :test #'string=)))
+       (sethash bin postponed-objects-
+                (remove-duplicates (append (gethash bin postponed-objects-) (list obj)))))
       ((eq object-type :finished-objects)
        ;; first, add into postponed-objects-
        (send self :update-object-tables obj bin :object-type :postponed-objects)
        ;; then move to finished-objects-
        ;; this is for the case that targets are same object.
        (sethash bin postponed-objects-
-                (remove obj (gethash bin postponed-objects-) :test #'string= :count 1))
-       (sethash bin finished-objects- (append (gethash bin finished-objects-) (list obj))))
+                (remove-duplicates (remove obj (gethash bin postponed-objects-) :test #'string=)))
+       (sethash bin finished-objects-
+                (remove-duplicates (append (gethash bin finished-objects-) (list obj)))))
       (t nil)))
   (:set-objects-param (arm bin &key object-type)
     (cond
@@ -1179,6 +1184,7 @@
       (t nil)))
   (:add-finished-object (arm obj bin)
     (send self :update-object-tables obj bin :object-type :finished-objects)
+    (send self :set-objects-param arm bin :object-type :postponed-objects)
     (send self :set-objects-param arm bin :object-type :finished-objects))
   (:add-postponed-object (arm obj bin)
     (send self :update-object-tables obj bin :object-type :postponed-objects)
