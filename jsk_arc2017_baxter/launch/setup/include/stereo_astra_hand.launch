@@ -5,6 +5,7 @@
   <arg name="launch_right_hand_stereo" default="true" />
   <arg name="rviz" default="false" />
   <arg name="fuse" default="true" />
+  <arg name="pick" doc="FIXME: we need different extrinsic params for pick and stow." />
 
   <!-- disable "monocular" Astra S cameras on both hands -->
   <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch">
@@ -308,15 +309,15 @@
           object_x: 0.1
           object_y: 0.1
           object_z: 0.1
-          initial_x: 0.041
+          initial_x: 0.04
           initial_y: 0.018
-          initial_z: 0.025
+          initial_z: -0.02
           initial_orientation: [0, 0, 0, 1]
         </rosparam>
       </node>
       <node name="marker_6dof_left_tf_hand_to_depth"
             pkg="jsk_interactive_marker" type="marker_6dof">
-        <rosparam>
+        <rosparam unless="$(arg pick)">
           object_type: cube
           frame_id: right_hand
           publish_tf: true
@@ -324,10 +325,23 @@
           object_x: 0.1
           object_y: 0.1
           object_z: 0.1
-          initial_x: -0.129
-          initial_y: -0.091
-          initial_z: 0.033
-          initial_orientation: [0.011, 0.051, 0.733, 0.679]
+          initial_x: -0.065
+          initial_y: -0.076
+          initial_z: -0.003
+          initial_orientation: [0.026, -0.008, 0.733, 0.680]
+        </rosparam>
+        <rosparam if="$(arg pick)">
+          object_type: cube
+          frame_id: right_hand
+          publish_tf: true
+          tf_frame: right_hand_camera_left_depth_optical_frame
+          object_x: 0.1
+          object_y: 0.1
+          object_z: 0.1
+          initial_x: -0.055
+          initial_y: -0.075
+          initial_z: -0.012
+          initial_orientation: [0.030, -0.009, 0.732, 0.680]
         </rosparam>
       </node>
 
