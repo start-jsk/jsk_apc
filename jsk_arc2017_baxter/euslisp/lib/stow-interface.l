@@ -298,16 +298,15 @@
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin)
       (when moveit-p (send self :add-object-in-hand-scene arm target-obj))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 70 -70))
-
       (if (eq grasp-style :suction)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
-                    :offset (v+ #f(0 0 300) (send self :decide-bin-place-area arm target-bin))
+                    :offset (v+ #f(0 0 300) (send self :decide-bin-place-area arm target-bin grasp-style))
                     :rotation-axis :z :use-gripper t)
               4000 (send *ri* :get-arm-controller arm :head t) 0)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
-                    :offset (v+ #f(0 0 300) (send self :decide-bin-place-area arm target-bin))
+                    :offset (v+ #f(0 0 300) (send self :decide-bin-place-area arm target-bin grasp-style))
                     :rotation-axis nil :move-palm-end t)
               4000 (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
       (send *ri* :wait-interpolation)
