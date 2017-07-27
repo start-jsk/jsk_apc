@@ -325,8 +325,8 @@
           object_y: 0.1
           object_z: 0.1
           initial_x: -0.129
-          initial_y: -0.102
-          initial_z: 0.034
+          initial_y: -0.091
+          initial_z: 0.033
           initial_orientation: [0.011, 0.051, 0.733, 0.679]
         </rosparam>
       </node>
