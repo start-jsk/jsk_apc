@@ -532,7 +532,7 @@
                     :move-palm-end t
                     :rotation-axis t)
               next-avs)
-            (setf (elt target-pos 2) (- (cadr (elt movable-region 2)) 60))
+            (setf (elt target-pos 2) (- (cadr (elt movable-region 2)) 45))
             (pushback
               (send *baxter* :rotate-wrist-ik arm
                     (make-coords :pos target-pos
