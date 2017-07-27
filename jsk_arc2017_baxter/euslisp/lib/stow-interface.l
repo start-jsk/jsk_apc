@@ -139,6 +139,7 @@
       (setq prev-target-obj nil)
       (return-from :check-start-picking-fail-count t))
     (setq prev-target-obj target-obj)
+    (ros::ros-info "prev-target-obj :~A" prev-target-obj)
     (let (start-picking-failp)
       (setq start-picking-failp (null (> count-limit start-picking-fail-count)))
       (when start-picking-failp
@@ -297,7 +298,7 @@
           :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
     (send *ri* :wait-interpolation)
     (when moveit-p (send self :add-tote-scene arm))
-    (send self :fold-pose-back arm)
+    (send self :fold-pose-back arm 3000 (send *ri* :get-arm-controller arm) 0 :move-arm arm)
     (send *ri* :wait-interpolation)
     (if (eq grasp-style :pinch)
       (send self :resolve-collision-between-fingers arm)))
@@ -312,13 +313,15 @@
                     :offset (v+ #f(0 0 300)
                                 (send self :decide-bin-place-area arm target-bin grasp-style))
                     :rotation-axis :z :use-gripper t)
-              4000 (send *ri* :get-arm-controller arm :head t) 0)
+              4000 (send *ri* :get-arm-controller arm :head t) 0
+              :move-arm arm)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
                     :offset (v+ #f(0 0 300)
                                 (send self :decide-bin-place-area arm target-bin grasp-style))
                     :rotation-axis nil :move-palm-end t)
-              4000 (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
+              4000 (send *ri* :get-arm-controller arm :gripper nil :head t) 0
+              :move-arm arm))
       (send *ri* :wait-interpolation)
       (setq dropped (not (send *ri* :graspingp arm grasp-style)))
       (when moveit-p (send self :delete-object-in-hand-scene arm))
@@ -365,7 +368,7 @@
           (send *ri* :wait-interpolation)
           (when moveit-p (send self :add-bin-scene target-bin))))))
   (:return-from-place-object (arm)
-    (send self :fold-pose-back arm)
+    (send self :fold-pose-back arm 3000 (send *ri* :get-arm-controller arm) 0 :move-arm arm)
     (send *ri* :wait-interpolation)
     (if (eq grasp-style :pinch)
       (send self :resolve-collision-between-fingers arm))
