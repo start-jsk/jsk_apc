@@ -104,6 +104,7 @@
       is-recognized))
   (:return-from-recognize-object (arm)
     (send self :add-postponed-object arm target-obj :tote)
+    (setq start-picking-fail-count 0)
     (ros::ros-info "[main] arm: ~a, failed to recognize object in tote" arm)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :fold-to-keep-object arm)
