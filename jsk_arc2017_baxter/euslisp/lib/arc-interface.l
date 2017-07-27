@@ -166,7 +166,7 @@
     (arm bin &key (stamp (ros::time-now)) (timeout 10))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
           (candidates-topic (format nil "/~a_hand_camera/candidates_publisher/output/candidates" (arm2str arm)))
-          box-msg candidates-msg box-objects box-labels bin-orders label-names)
+          box-msg candidates-msg box-objects box-labels bin-orders label-names unfinished-orders)
       (setq bin-orders
             (remove nil (mapcar
                           #'(lambda (order)
@@ -213,14 +213,22 @@
                             box-labels)))
         (unless box-labels (return-from :select-work-order-in-bin nil))
         (setq box-objects (mapcar #'(lambda (label) (elt label-names label)) box-labels))
-        (dolist (skipping-objects
-                  (list (append (gethash bin finished-objects-) (gethash bin postponed-objects-))
-                        (gethash bin finished-objects-)))
-          (dolist (order bin-orders)
-            (let ((object-name (send order :item)))
-              (when (and (find object-name box-objects :test #'string=)
-                         (not (find object-name skipping-objects :test #'string=)))
-                (return-from :select-work-order-in-bin order))))))
+        (dolist (order bin-orders)
+          (let ((object-name (send order :item)))
+            (when (and (find object-name box-objects :test #'string=)
+                       (not (find object-name (append (gethash bin finished-objects-) (gethash bin postponed-objects-))
+                                  :test #'string=)))
+              (return-from :select-work-order-in-bin order))))
+        (setq unfinished-orders
+              (mapcar #'(lambda (order)
+                          (let ((object-name (send order :item)))
+                            (when (and (find object-name box-objects :test #'string=)
+                                       (not (find object-name (gethash bin finished-objects-) :test #'string=)))
+                              order)))
+                      bin-orders))
+        (when unfinished-orders
+          (return-from :select-work-order-in-bin
+                       (elt unfinished-orders (random (length unfinished-orders))))))
       nil))
   (:check-exist-in-order (obj)
     (let (index)
