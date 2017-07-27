@@ -41,7 +41,6 @@
     <rosparam>
       types:
         - item_location
-        - order
     </rosparam>
   </node>
   <node name="xdisplay_image_topic"
