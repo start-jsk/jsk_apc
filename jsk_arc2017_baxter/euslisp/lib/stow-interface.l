@@ -17,6 +17,7 @@
           label-names
           moveit-p
           picking-fail-count
+          prev-target-obj
           recognize-fail-count
           start-picking-fail-count
           target-bin
@@ -123,17 +124,26 @@
     (setq grasp-style (send self :get-grasp-style arm target-obj 1))
     (ros::ros-info-green "arm: ~a, grasp-style: ~a, trial-time: ~a"
                          (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
-    (if grasp-style
-      (setq start-picking-fail-count 0)
+    (when grasp-style
+      (progn
+        (setq prev-target-obj nil)
+        (setq start-picking-fail-count 0))
       (send self :add-postponed-object arm target-obj target-bin))
     (if grasp-style t nil))
   (:check-start-picking-fail-count (arm &key (count-limit 2))
     (incf start-picking-fail-count)
     (ros::ros-info "[main] arm: ~a, start picking fail count: ~a" arm start-picking-fail-count)
     (send self :add-postponed-object arm target-obj :tote)
+    (when (and (> start-picking-fail-count 1)
+               (string= prev-target-obj target-obj))
+      (setq prev-target-obj nil)
+      (return-from :check-start-picking-fail-count t))
+    (setq prev-target-obj target-obj)
     (let (start-picking-failp)
       (setq start-picking-failp (null (> count-limit start-picking-fail-count)))
-      (if start-picking-failp (setq start-picking-fail-count 0))
+      (when start-picking-failp
+        (setq prev-target-obj nil)
+        (setq start-picking-fail-count 0))
       start-picking-failp))
   (:change-grasp-style (arm)
     (incf trial-fail-count)
