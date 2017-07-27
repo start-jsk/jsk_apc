@@ -232,30 +232,31 @@
         t  ;; scale can classify the grasped object
         (progn  ;; scale narrows down candidate objects
           (let (msg (proba-thre 0.80) new-order)
-            (if (eq (length scale-candidates) 1)
-              (setq new-order (send self :check-exist-in-order (car scale-candidates)))
-              (progn
-                (setq msg
-                  (one-shot-subscribe
-                    (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
-                    jsk_recognition_msgs::ClassificationResult
-                    :timeout 15000
-                    :after-stamp stamp))
-                (unless msg (return-from :verify-object nil))
-                (ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
-                                    (arm2str arm) (car (send msg :label_names))
-                                    (elt (send msg :label_proba) 0))
-                (when (> (elt (send msg :label_proba) 0) proba-thre)
-                  (setq new-order
-                        (send self :check-exist-in-order (car (send msg :label_names)))))))
-            (if new-order
-              (progn
-                (setq target-obj (send new-order :item))
-                (setq target-cardboard (str2symbol (send new-order :box)))
-                (ros::ros-info-blue "[~a] [main] :verify-object, overwrite target, target-obj: ~a"
-                                    (ros::get-name) target-obj)
-                t)
-              nil))))))
+            (when (intersection scale-candidates (send self :get-target-names arm) :test #'string=)
+              (if (eq (length scale-candidates) 1)
+                (setq new-order (send self :check-exist-in-order (car scale-candidates)))
+                (progn
+                  (setq msg
+                    (one-shot-subscribe
+                      (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
+                      jsk_recognition_msgs::ClassificationResult
+                      :timeout 15000
+                      :after-stamp stamp))
+                  (unless msg (return-from :verify-object nil))
+                  (ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
+                                      (arm2str arm) (car (send msg :label_names))
+                                      (elt (send msg :label_proba) 0))
+                  (when (> (elt (send msg :label_proba) 0) proba-thre)
+                    (setq new-order
+                          (send self :check-exist-in-order (car (send msg :label_names)))))))
+              (if new-order
+                (progn
+                  (setq target-obj (send new-order :item))
+                  (setq target-cardboard (str2symbol (send new-order :box)))
+                  (ros::ros-info-blue "[~a] [main] :verify-object, overwrite target, target-obj: ~a"
+                                      (ros::get-name) target-obj)
+                  t)
+                nil)))))))
   (:check-picking-fail-count (arm &key (count-limit 2))
     (incf picking-fail-count)
     (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count)

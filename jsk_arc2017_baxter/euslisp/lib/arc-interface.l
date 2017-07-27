@@ -1263,7 +1263,9 @@
             (float-vector (/ x-range 5.0) 0 0))
            ((eq index 2)
             (float-vector (/ x-range -5.0) 0 0))))
-        (float-vector 0 0 0)))))
+        (float-vector 0 0 0))))
+  (:get-target-names (arm)
+    (mapcar #'(lambda (order) (send order :item)) orders-)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
