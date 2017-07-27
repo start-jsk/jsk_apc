@@ -1,0 +1,35 @@
+<launch>
+
+  <group ns="left_hand_camera">
+    <node name="label_image_decomposer_all"
+          pkg="jsk_perception" type="label_image_decomposer.py">
+      <remap from="~input/label" to="fcn_object_segmentation/output" />
+      <remap from="~input" to="left/rgb/image_rect_color" />
+      <rosparam>
+        queue_size: 100
+      </rosparam>
+      <remap from="~label_names" to="label_names" />
+    </node>
+    <node name="$(anon image_view)"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="label_image_decomposer_all/output/label_viz" />
+    </node>
+  </group>
+
+  <group ns="right_hand_camera">
+    <node name="label_image_decomposer_all"
+          pkg="jsk_perception" type="label_image_decomposer.py">
+      <remap from="~input/label" to="fcn_object_segmentation/output" />
+      <remap from="~input" to="left/rgb/image_rect_color" />
+      <rosparam>
+        queue_size: 100
+      </rosparam>
+      <remap from="~label_names" to="label_names" />
+    </node>
+    <node name="$(anon image_view)"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="label_image_decomposer_all/output/label_viz" />
+    </node>
+  </group>
+
+</launch>
