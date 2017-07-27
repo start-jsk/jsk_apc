@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.3 (2017-07-27)
+------------------
 * Adjust astra_hand
 * Fix pinch motion for pick task
 * return area in pick

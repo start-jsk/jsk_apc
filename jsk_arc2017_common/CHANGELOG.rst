@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.3 (2017-07-27)
+------------------
 * Set default model
 * change suction graspability of avery_binder
 * fix nosetest path in jsk_arc2017_common
