@@ -8,6 +8,8 @@
 (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
 (require :state-machine-utils "package://roseus_smach/src/state-machine-utils.l")
 
+(make-random-state t)
+
 (defun make-stowing-state-machine ()
   (setq *sm*
         (make-state-machine
