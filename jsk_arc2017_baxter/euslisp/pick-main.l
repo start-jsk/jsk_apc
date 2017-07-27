@@ -82,8 +82,8 @@
                  t))
             (:check-recognize-fail-count
               '(lambda (userdata)
-                 (send *ti* :update-state *arm* :check-recognize-fail-count :count-limit 10)
-                 (send *ti* :check-recognize-fail-count *arm*)))
+                 (send *ti* :update-state *arm* :check-recognize-fail-count)
+                 (send *ti* :check-recognize-fail-count *arm* :count-limit 10)))
             (:check-can-start-picking
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :check-can-start-picking)
