@@ -241,9 +241,9 @@
                     :timeout 15000
                     :after-stamp stamp))
                 (unless msg (return-from :verify-object nil))
-				(ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
-									(arm2str arm) (car (send msg :label_names))
-									(elt (send msg :label_proba) 0))
+                (ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
+                                    (arm2str arm) (car (send msg :label_names))
+                                    (elt (send msg :label_proba) 0))
                 (when (> (elt (send msg :label_proba) 0) proba-thre)
                   (setq new-order
                         (send self :check-exist-in-order (car (send msg :label_names)))))))
