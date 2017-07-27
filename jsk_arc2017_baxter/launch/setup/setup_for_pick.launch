@@ -7,6 +7,7 @@
   <group if="$(arg stereo)">
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
       <arg name="load_driver" value="$(arg load_driver)" />
+      <arg name="pick" value="true" />
     </include>
   </group>
   <group unless="$(arg stereo)">
