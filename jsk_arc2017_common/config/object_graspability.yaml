@@ -1,5 +1,5 @@
 avery_binder:
-  suction: 2
+  suction: 3
   pinch: 3
 balloons:
   suction: 1
