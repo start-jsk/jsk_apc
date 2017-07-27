@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.4 (2017-07-27)
+------------------
 * Fix order types param in visualize_json
 * Update hand-eye extrinsic params
   FIXME: we need different extrinsic params for pick and stow.
