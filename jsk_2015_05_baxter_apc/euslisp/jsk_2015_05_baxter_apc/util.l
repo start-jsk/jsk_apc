@@ -19,6 +19,15 @@
             (t nil)))
     ret))
 
+(defun argmin (fvec)
+  (let (ret val minv)
+    (dotimes (i (length fvec))
+      (setq val (elt fvec i))
+      (cond ((= i 0) (setq minv val ret i))
+            ((> minv val) (setq minv val ret i))
+            (t nil)))
+    ret))
+
 
 (defun vec-list-max (vec-list &key axis)
   (let (vec max-vec)
