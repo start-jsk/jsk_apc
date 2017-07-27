@@ -299,12 +299,14 @@
       (if (eq grasp-style :suction)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
-                    :offset (v+ #f(0 0 300) (send self :decide-bin-place-area arm target-bin grasp-style))
+                    :offset (v+ #f(0 0 300)
+                                (send self :decide-bin-place-area arm target-bin grasp-style))
                     :rotation-axis :z :use-gripper t)
               4000 (send *ri* :get-arm-controller arm :head t) 0)
         (send *ri* :angle-vector
               (send self :ik->bin-center arm target-bin
-                    :offset (v+ #f(0 0 300) (send self :decide-bin-place-area arm target-bin grasp-style))
+                    :offset (v+ #f(0 0 300)
+                                (send self :decide-bin-place-area arm target-bin grasp-style))
                     :rotation-axis nil :move-palm-end t)
               4000 (send *ri* :get-arm-controller arm :gripper nil :head t) 0))
       (send *ri* :wait-interpolation)
