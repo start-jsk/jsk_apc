@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixes for unknown objects
+* Contributors: Kentaro Wada
+
 4.0.2 (2017-07-27)
 ------------------
 

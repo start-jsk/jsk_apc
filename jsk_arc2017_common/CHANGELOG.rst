@@ -2,6 +2,19 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Set default model
+* change suction graspability of avery_binder
+* fix nosetest path in jsk_arc2017_common
+* Show with red color for unknown  objects in list_label_names
+* Add get_known_object_names and its tests
+* Fixes for unknown objects
+* Use fcn32s.npz in models dir
+* Support unknown objects disclosed just before the challenge
+  This requires https://github.com/start-jsk/jsk_apc/issues/2414#issuecomment-317935277
+* Contributors: Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa
+
 4.0.2 (2017-07-27)
 ------------------
 * change pinch graspability of white_facecloth

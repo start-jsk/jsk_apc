@@ -2,6 +2,36 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Adjust astra_hand
+* Fix pinch motion for pick task
+* return area in pick
+* Check launch for fcn seg with all candidates
+* fix bug in get-next-target-bin
+* place object to bin center after pinch (because of IK)
+* Fix bug about :count-limit
+* modify return object in stow
+* pick-interface.l: fix tab->spaces
+* fix test-get-next-target-bin
+* add debug code
+* fix test name in test_arc_interface
+* fix test to pass test
+* Update cardboard_marker.yaml
+* increase count-limit for recognize failure
+* Set target_location in pick.launch
+* improve overlook pose for pick task
+* Set target_location to tote in stow
+* Fix marker locations
+* Make-random-state for euslisp
+* return-from when classifier timeout
+* fix wrong stamp in recognize target object
+* Fixes for unknown objects
+* remove bbox-volume threshold to select target obj
+* Change pinch motion
+* Abort picking when IK before grasping fails
+* Contributors: Kei Okada, Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa, Shun Hasegawa
+
 4.0.2 (2017-07-27)
 ------------------
 * fix bug in classifier results
