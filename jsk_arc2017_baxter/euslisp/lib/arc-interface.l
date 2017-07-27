@@ -898,12 +898,10 @@
       (setq offset (float-vector offset-x offset-y 250))
       (setq rpy
             (float-vector 0 pi/2 (if (eq arm :larm) pi/2 -pi/2)))
-      (pushback
-        (send self :ik->bin-center arm bin
-              :offset offset :rpy rpy :use-gripper nil)
-        avs)
-      (send *ri* :angle-vector-sequence-raw avs :fast
-            (send *ri* :get-arm-controller arm) 0 :scale 3.0)))
+      (send self :ik->bin-center arm bin
+            :offset offset :rpy rpy :use-gripper nil)
+      (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
+            (send *ri* :get-arm-controller arm) 0)))
   (:move-arm-body->tote-overlook-pose
     (arm &key (gripper-angle 90))
     (let (avs offset rpy
