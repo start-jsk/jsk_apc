@@ -220,14 +220,16 @@
         (dolist (order bin-orders)
           (let ((object-name (send order :item)))
             (when (and (find object-name box-objects :test #'string=)
-                       (not (find object-name (append (gethash bin finished-objects-) (gethash bin postponed-objects-))
+                       (not (find object-name (append (gethash bin finished-objects-)
+                                                      (gethash bin postponed-objects-))
                                   :test #'string=)))
               (return-from :select-work-order-in-bin order))))
         (setq unfinished-orders
               (mapcar #'(lambda (order)
                           (let ((object-name (send order :item)))
                             (when (and (find object-name box-objects :test #'string=)
-                                       (not (find object-name (gethash bin finished-objects-) :test #'string=)))
+                                       (not (find object-name (gethash bin finished-objects-)
+                                                  :test #'string=)))
                               order)))
                       bin-orders))
         (when unfinished-orders
