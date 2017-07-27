@@ -263,18 +263,18 @@
   (:return-object (arm)
     (send self :add-postponed-object arm target-obj :tote)
     (when moveit-p (send self :delete-tote-scene arm))
-    (let (offset)
+    (let (offset (send self :decide-tote-return-area arm))
       ;; (setq offset (send self :decide-tote-return-area arm))
       ;; (ros::ros-info "return object to tote: arm, ~A, offset ~A" (arm2str arm) offset)
       (if (eq grasp-style :suction)
         (send *ri* :angle-vector-raw
               (send self :ik->tote-center arm
-                    :offset #f(0 0 0)
+                    :offset offset
                     :rotation-axis :z :use-gripper t)
               :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
         (send *ri* :angle-vector-raw
               (send self :ik->tote-center arm
-                    :offset #f(0 0 0)
+                    :offset offset
                     :rotation-axis :z :move-palm-end t)
             :fast (send *ri* :get-arm-controller arm :gripper nil) 0 :scale 5.0)))
     (send *ri* :wait-interpolation)
