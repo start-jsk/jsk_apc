@@ -249,10 +249,7 @@
       picking-failp))
   (:set-target-bin (arm)
     (setq picking-fail-count 0)
-    ;; TODO: when we select target-bin, we should consider target-obj size.
-    ;; TODO: (setq target-bin (send *ti* :get-target-bin arm target-obj))
-    (setq target-bin
-          (if (eq arm :larm) :a (elt (list :b :c) (random 2))))
+    (setq target-bin (send self :get-stowing-target-bin arm))
     (if (eq target-bin :tote)
       (progn
         (ros::ros-info "[main] unable to recognize, return to tote")

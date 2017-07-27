@@ -15,6 +15,7 @@
           bbox-volume-threshold-
           bin-cubes-
           bin-movable-regions-
+          bin-object-volumes-
           cardboard-cubes-
           finished-objects-
           object-boxes-
@@ -34,6 +35,9 @@
     (setq attached-objects- (make-hash-table))
     (setq bin-cubes- (make-hash-table))
     (setq bin-movable-regions- (make-hash-table))
+    (setq bin-object-volumes- (make-hash-table))
+    (dolist (bin (list :a :b :c))
+      (sethash bin bin-object-volumes- 0))
     (setq object-boxes- (make-hash-table))
     (setq object-coords- (make-hash-table))
     (setq cardboard-cubes- (make-hash-table))
@@ -1263,7 +1267,20 @@
             (float-vector (/ x-range 5.0) 0 0))
            ((eq index 2)
             (float-vector (/ x-range -5.0) 0 0))))
-        (float-vector 0 0 0)))))
+        (float-vector 0 0 0))))
+  (:get-stowing-target-bin (arm)
+    (let ((bins (if (eq :larm) (list :a :b) (list :b :c)))
+          obj-bbox target-bin obj-bbox-volume)
+      (setq object-volumes
+            (mapcar #'(lambda (bin) (gethash bin bin-object-volumes-)) bins))
+      (setq target-bin (elt bins (argmin object-volumes)))
+      (setq obj-bbox (elt (gethash arm object-boxes-)))
+      (setq obj-bbox-volume (* (send obj-bbox :dimensions :x)
+                               (send obj-bbox :dimensions :y)
+                               (send obj-bbox :dimensions :z)))
+      (sethash target-bin bin-object-volumes-
+               (+ (gethash target-bin bin-object-volumes-) obj-bbox-volume))
+      target-bin)))
 
 (defun jsk_arc2017_baxter::arc-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
