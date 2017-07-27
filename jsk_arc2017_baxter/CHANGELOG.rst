@@ -2,6 +2,19 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix order types param in visualize_json
+* Update hand-eye extrinsic params
+  FIXME: we need different extrinsic params for pick and stow.
+* Fix typo
+* Add info message to :check-near-walls
+* Change yaw angle in corner picking
+* Fix offset of pinch motion
+* Fix reset of fail-count for picking
+* improve :get-next-work-order
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa
+
 4.0.3 (2017-07-27)
 ------------------
 * Adjust astra_hand
