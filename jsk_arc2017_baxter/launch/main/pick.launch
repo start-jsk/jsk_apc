@@ -61,6 +61,9 @@
         pkg="jsk_arc2017_common" type="candidates_publisher.py" >
       <remap from="~input/json_dir" to="/json_saver/output/json_dir" />
       <remap from="~label_names" to="label_names" />
+      <rosparam>
+        target_location: bin_A
+      </rosparam>
     </node>
   </group>
   <group ns="right_hand_camera">
@@ -68,6 +71,9 @@
         pkg="jsk_arc2017_common" type="candidates_publisher.py" >
       <remap from="~input/json_dir" to="/json_saver/output/json_dir" />
       <remap from="~label_names" to="label_names" />
+      <rosparam>
+        target_location: bin_C
+      </rosparam>
     </node>
   </group>
 
