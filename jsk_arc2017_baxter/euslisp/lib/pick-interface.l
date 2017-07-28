@@ -360,7 +360,12 @@
                                   (send self :decide-cardboard-place-area arm target-cardboard))
                       :rotation-axis nil :move-palm-end t))
               avs)
-            (setq place-z 50))
+            (setq place-z 50)
+            (if (eq grasp-style :suction)
+              (send *ri* :angle-vector-sequence avs 3000
+                    (send *ri* :get-arm-controller arm :gripper t :head t) 0)
+              (send *ri* :angle-vector-sequence avs 3000
+                    (send *ri* :get-arm-controller arm :gripper nil :head t) 0)))
           (progn
             (pushback
               (if (eq grasp-style :suction)
@@ -388,12 +393,12 @@
                   (send self :ik->cardboard-center arm target-cardboard
                         :offset (float-vector -20 0 200) :rotation-axis nil :move-palm-end t)
                   avs)))
-            (setq place-z 100)))
-        (if (eq grasp-style :suction)
-          (send *ri* :angle-vector-sequence-raw avs :fast
-                (send *ri* :get-arm-controller arm :gripper t :head t) 0 :scale 7.0)
-          (send *ri* :angle-vector-sequence-raw avs :fast
-                (send *ri* :get-arm-controller arm :gripper nil :head t) 0 :scale 7.0))
+            (setq place-z 100)
+            (if (eq grasp-style :suction)
+              (send *ri* :angle-vector-sequence-raw avs :fast
+                    (send *ri* :get-arm-controller arm :gripper t :head t) 0 :scale 7.0)
+              (send *ri* :angle-vector-sequence-raw avs :fast
+                    (send *ri* :get-arm-controller arm :gripper nil :head t) 0 :scale 7.0))))
         (send *ri* :wait-interpolation))
       (setq dropped (not (send *ri* :graspingp arm grasp-style)))
       (when moveit-p (send self :delete-object-in-hand-scene arm))
