@@ -730,7 +730,7 @@
       (if av
         (progn
           (send *ri* :angle-vector-raw av
-                3000 (send *ri* :get-arm-controller arm) 0)
+                :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
           ;; Wait until grasp or push object to prevent tooth flying
           (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded))
         (progn
