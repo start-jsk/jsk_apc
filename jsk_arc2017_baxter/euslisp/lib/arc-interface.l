@@ -587,7 +587,14 @@
                         :offset (float-vector 0 0 (- (* i -50) 80))
                         :grasp-style grasp-style
                         :suction-yaw suction-yaw
-                        :pinch-yaw pinch-yaw)))))
+                        :pinch-yaw pinch-yaw))
+            (if (< (+ i 1) n-trial)
+              (let (av)
+                (setq av (send *baxter* arm :move-end-pos #f(0 0 -50) :world))
+                (if av
+                  (send *ri* :angle-vector-raw av
+                        :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
+                  (send *ri* :wait-interpolation)))))))
       (when do-stop-grasp
         (unless graspingp
           (send *ri* :stop-grasp arm)
