@@ -20,6 +20,7 @@
           prev-target-obj
           recognize-fail-count
           start-picking-fail-count
+          start-time
           target-bin
           target-index
           target-obj
@@ -55,6 +56,7 @@
                                      (instance jsk_gui_msgs::YesNoRequest))
                   :yes))
       (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
+      (setq start-time (ros::time-now))
       (send self :reset-object-tables :tote)
       (send self :set-objects-param arm :tote :object-type :all)
       can-start))
@@ -234,7 +236,10 @@
       (if (find target-obj scale-candidates :test #'string=)
         t  ;; scale can classify the grasped object
         (progn  ;; scale narrows down candidate objects
-          (let (msg (proba-thre 0.80) new-order)
+          (let ((proba-thre (- 0.80 (* (/ 0.2 900.0)
+                                       (- (send (ros::time-now) :to-sec)
+                                          (send start-time :to-sec)))))
+                msg new-order)
             (setq msg
               (one-shot-subscribe
                 (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
@@ -245,6 +250,7 @@
             (ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
                                 (arm2str arm) (car (send msg :label_names))
                                 (elt (send msg :label_proba) 0))
+            (ros::ros-info "arm ~A, classifier threshold: ~A" (arm2str arm) proba-thre)
             (if (> (elt (send msg :label_proba) 0) proba-thre)
                 (setq target-obj (car (send msg :label_names)))
               (return-from :verify-object nil))
