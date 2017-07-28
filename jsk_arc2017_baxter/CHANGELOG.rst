@@ -2,6 +2,19 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update cardboard_marker pose
+* place object l/r side
+* Fix target-bin bug in pick (caused by postponed object)
+* Avoid shelf for finger if Ik fails
+* Don't return-object when IK in picking fails
+* Revert "sort largest object by graspability"
+  This reverts commit c586b6c3a8426398638e37f98a1924cc92c35677.
+  Conflicts:
+  jsk_arc2017_baxter/euslisp/lib/arc-interface.l
+* Contributors: Kentaro Wada, Naoya Yamaguchi, Shun Hasegawa
+
 4.0.6 (2017-07-28)
 ------------------
 * Update tote_marker.yaml

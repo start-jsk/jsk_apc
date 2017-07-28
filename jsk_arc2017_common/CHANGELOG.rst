@@ -2,6 +2,11 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix visualize_object
+* Contributors: Kentaro Wada
+
 4.0.6 (2017-07-28)
 ------------------
 
