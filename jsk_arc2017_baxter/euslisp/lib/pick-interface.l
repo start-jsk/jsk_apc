@@ -352,9 +352,13 @@
             (pushback
               (if (eq grasp-style :suction)
                 (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector 0 0 100) :rotation-axis :z :use-gripper t)
+                      :offset (v+ (float-vector 0 0 100)
+                                  (send self :decide-cardboard-place-area arm target-cardboard))
+                      :rotation-axis :z :use-gripper t)
                 (send self :ik->cardboard-center arm target-cardboard
-                      :offset (float-vector -50 0 100) :rotation-axis nil :move-palm-end t))
+                      :offset (v+ (float-vector -50 0 100)
+                                  (send self :decide-cardboard-place-area arm target-cardboard))
+                      :rotation-axis nil :move-palm-end t))
               avs)
             (setq place-z 50))
           (progn
