@@ -587,9 +587,9 @@
             (setq min-pressure (gethash l/r pressure-)))
           (unix::sleep 1))
         (cond ((eq l/r :larm)
-               (setq larm-pressure-threshold- (- min-pressure 15)))
+               (setq larm-pressure-threshold- (- min-pressure 17)))
               ((eq l/r :rarm)
-               (setq rarm-pressure-threshold- (- min-pressure 10))))))
+               (setq rarm-pressure-threshold- (- min-pressure 15))))))
     (send self :stop-grasp arm)
     (ros::ros-info "[:calib-pressure-threshold] Threshold r: ~a l: ~a"
                    rarm-pressure-threshold- larm-pressure-threshold-))
