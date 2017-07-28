@@ -230,13 +230,15 @@
                                   :test #'string=)))
               (return-from :select-work-order-in-bin order))))
         (setq unfinished-orders
-              (mapcar #'(lambda (order)
-                          (let ((object-name (send order :item)))
-                            (when (and (find object-name box-objects :test #'string=)
-                                       (not (find object-name (gethash bin finished-objects-)
-                                                  :test #'string=)))
-                              order)))
-                      bin-orders))
+              (remove nil
+                      (mapcar #'(lambda (order)
+                                  (let ((object-name (send order :item)))
+                                    (when (and (find object-name box-objects :test #'string=)
+                                               (not (find object-name
+                                                          (gethash bin finished-objects-)
+                                                          :test #'string=)))
+                                      order)))
+                      bin-orders)))
         (when unfinished-orders
           (return-from :select-work-order-in-bin
                        (elt unfinished-orders (random (length unfinished-orders))))))
