@@ -127,10 +127,8 @@
     (ros::ros-info-green "arm: ~a, grasp-style: ~a, trial-time: ~a"
                          (arm2str arm) (symbol2str grasp-style) (+ trial-fail-count 1))
     (when grasp-style
-      (progn
-        (setq prev-target-obj nil)
-        (setq start-picking-fail-count 0))
-      (send self :add-postponed-object arm target-obj :tote))
+      (setq prev-target-obj nil)
+      (setq start-picking-fail-count 0))
     (if grasp-style t nil))
   (:check-start-picking-fail-count (arm &key (count-limit 2))
     (incf start-picking-fail-count)
