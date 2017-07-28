@@ -6,6 +6,31 @@
 (require "package://baxtereus/baxter-util.l")
 (require "package://jsk_arc2017_baxter/robots/baxter.l")
 
+;; override ik-prepared-poses, please put thin on baxtereus 2017.07.27 k-okada
+(defmethod baxter-robot
+  (:ik-prepared-poses
+   (&optional (poses :null))
+   "(:ik-prepared-poses) returns (get self :ik-prepared-poses), unless it is :null or (:untuck-pose)
+    (:ik-prepared-poses nil) set :null to (get self :ik-prepared-poses)
+    (:ik-prepared-poses :any-posture) set :any-posutre to (get self :ik-prepared-poses)
+"
+   (let ((ik-prepared-poses (or (get self :ik-prepared-poses) '(:untuck-pose))))
+     (ros::ros-debug "[:ik-prepared-poses] called with ~A" poses)
+     (cond ((eq poses :null)
+            (ros::ros-debug "[:ik-prepared-poses] returns ~A" (if (eq ik-prepared-poses :null) nil ik-prepared-poses))
+            (return-from :ik-prepared-poses (if (eq ik-prepared-poses :null) nil ik-prepared-poses)))
+           ((eq poses nil)
+            (setf (get self :ik-prepared-poses) :null)
+            (ros::ros-debug "[:ik-prepared-poses] returns nil")
+            (return-from :ik-prepared-poses nil))
+           (t
+            (setf (get self :ik-prepared-poses) poses)
+            (ros::ros-debug "[:ik-prepared-poses] returns ~A" poses)
+            (return-from :ik-prepared-poses poses))
+           ))) ;; defmethod
+  )
+;; done
+
 (unless (find-package "JSK_ARC2017_BAXTER")
   (make-package "JSK_ARC2017_BAXTER"))
 
