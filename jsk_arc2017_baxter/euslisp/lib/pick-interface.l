@@ -18,7 +18,6 @@
           grasp-style
           label-names
           moveit-p
-          order
           picking-fail-count
           prev-target-obj
           recognize-fail-count
@@ -62,7 +61,6 @@
       (send self :reset-object-tables :bins)
       (dolist (bin bins)
         (send self :set-objects-param arm bin :object-type :all))
-      (setq order nil)
       can-start))
   (:calib-prismatic-joint (arm &key (timeout 10))
     (send *ri* :start-prismatic-calib arm)
@@ -103,7 +101,7 @@
         (send self :move-arm-body->bin-overlook-pose arm target-bin)
         (send *ri* :wait-interpolation))
       (setq recognition-count 1)
-      (let ((stamp (ros::time-now)))
+      (let ((stamp (ros::time-now)) order)
         (while (null (or (> recognition-count trial-times) is-recognized))
           (setq order (send self :select-work-order-in-bin arm target-bin :stamp stamp))
           (setq is-recognized
