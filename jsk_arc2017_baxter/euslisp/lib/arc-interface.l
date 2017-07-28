@@ -586,22 +586,28 @@
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
-            (if (and (> i 0) (eq grasp-style :suction))
-              (let (ec avs)
+            (let (ec avs)
+              (if (eq grasp-style :suction)
                 (setq ec (send *baxter* arm :end-coords :copy-worldcoords))
-                (send ec :translate #f(0 0 -100) :world)
-                (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
-                (send ec :translate #f(0 0 -100) :world)
-                (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
-                (send ec :translate #f(0 0 -100) :world)
-                (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
-                (send ec :translate #f(0 0 -30) :world)
-                (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                (if (= i 0)
+                  (progn
+                    (send ec :translate #f(0 0 80) :world)
+                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs))
+                  (progn
+                    (send ec :translate #f(0 0 -100) :world)
+                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                    (send ec :translate #f(0 0 -100) :world)
+                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                    (send ec :translate #f(0 0 -100) :world)
+                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                    (send ec :translate #f(0 0 -30) :world)
+                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)))
                 (setq avs (remove nil avs))
                 (if avs
-                  (send *ri* :angle-vector-sequence-raw avs
-                        :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
-                  (send *ri* :wait-interpolation))))
+                  (progn
+                    (send *ri* :angle-vector-sequence-raw avs
+                          :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+                    (send *ri* :wait-interpolation)))))
             (setq graspingp
                   (send self :try-to-pick-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -30) 80))
