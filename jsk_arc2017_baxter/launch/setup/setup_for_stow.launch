@@ -16,8 +16,6 @@
     </include>
   </group>
 
-  <rosparam command="load" file="$(find jsk_arc2017_common)/config/object_graspability.yaml" ns="graspability" />
-
   <!-- weight scale -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/scale.launch" />
 

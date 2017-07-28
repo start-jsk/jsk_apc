@@ -377,7 +377,7 @@
   (:get-largest-object-index
     (arm bin &key (stamp (ros::time-now)) (n-random nil))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
-          box-msg box-labels label-names graspability)
+          box-msg box-labels label-names)
       (setq label-names
             (ros::get-param (format nil "/~a_hand_camera/label_names"
                                     (arm2str arm))))
@@ -408,14 +408,6 @@
                                       (unless (find obj-name skipping-objects :test #'string=)
                                         label-index)))
                                 box-labels)))
-            (setq graspability (ros::get-param "/graspability"))
-            (setq label-indices
-                  (sort label-indices #'<
-                        #'(lambda (label-index)
-                            (let ((obj-name (elt label-names label-index)))
-                              (cdr (assoc "suction"
-                                          (cdr (assoc obj-name graspability :test #'string=))
-                                          :test #'string=))))))
             (when label-indices
               (if n-random
                 (progn
