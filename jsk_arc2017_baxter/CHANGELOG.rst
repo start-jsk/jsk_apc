@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.6 (2017-07-28)
+------------------
 * Update tote_marker.yaml
 * Fix typo in sorting
 * sort largest object by graspability
