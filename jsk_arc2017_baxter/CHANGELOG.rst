@@ -2,6 +2,27 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix fast second suction
+* Fix low pinch
+* Show task duration time by info
+* Use cyan
+* classifier threshold decrease according to runtime
+* ros-debug in check-gripper-state.l
+* Update vacuum threshold
+* Resolve finger collision
+* Fix typos
+* Fix typo
+* check prev-target-obj and return from loop fast
+* return object near center
+* adjust stow task marker
+* fix euslint
+* place object from higher place
+* Fix typo
+* set stowing target-bin considering object volumes
+* Contributors: Kei Okada, Kentaro Wada, Naoya Yamaguchi, Shingo Kitagawa, Shun Hasegawa
+
 4.0.4 (2017-07-27)
 ------------------
 * Fix order types param in visualize_json
