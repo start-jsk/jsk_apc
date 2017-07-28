@@ -589,8 +589,10 @@
                         :suction-yaw suction-yaw
                         :pinch-yaw pinch-yaw))
             (if (< (+ i 1) n-trial)
-              (let (av)
-                (setq av (send *baxter* arm :move-end-pos #f(0 0 -50) :world))
+              (let (ec av)
+                (setq ec (send *baxter* arm :end-coords :copy-worldcoords))
+                (send ec :translate #f(0 0 -50) :world)
+                (setq av (send *baxter* :rotate-wrist-ik arm ec))
                 (if av
                   (send *ri* :angle-vector-raw av
                         :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
