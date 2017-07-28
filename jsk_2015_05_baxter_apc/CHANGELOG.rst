@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.5 (2017-07-28)
+------------------
 * add argmin in util
 * Contributors: Shingo Kitagawa
 

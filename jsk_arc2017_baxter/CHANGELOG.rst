@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.5 (2017-07-28)
+------------------
 * Fix fast second suction
 * Fix low pinch
 * Show task duration time by info
