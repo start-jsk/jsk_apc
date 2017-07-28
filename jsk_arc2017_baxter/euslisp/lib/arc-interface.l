@@ -1150,21 +1150,26 @@
     (cond
       ((eq object-type :unfinished-objects)
        (sethash bin unfinished-objects-
-                (remove-duplicates (append (gethash bin unfinished-objects-) (list obj)))))
+                (remove-duplicates (append (gethash bin unfinished-objects-) (list obj))
+                                   :test #'string=)))
       ((eq object-type :postponed-objects)
        (sethash bin unfinished-objects-
-                (remove-duplicates (remove obj (gethash bin unfinished-objects-) :test #'string=)))
+                (remove-duplicates (remove obj (gethash bin unfinished-objects-) :test #'string=)
+                                   :test #'string=))
        (sethash bin postponed-objects-
-                (remove-duplicates (append (gethash bin postponed-objects-) (list obj)))))
+                (remove-duplicates (append (gethash bin postponed-objects-) (list obj))
+                                   :test #'string=)))
       ((eq object-type :finished-objects)
        ;; first, add into postponed-objects-
        (send self :update-object-tables obj bin :object-type :postponed-objects)
        ;; then move to finished-objects-
        ;; this is for the case that targets are same object.
        (sethash bin postponed-objects-
-                (remove-duplicates (remove obj (gethash bin postponed-objects-) :test #'string=)))
+                (remove-duplicates (remove obj (gethash bin postponed-objects-) :test #'string=)
+                                   :test #'string=))
        (sethash bin finished-objects-
-                (remove-duplicates (append (gethash bin finished-objects-) (list obj)))))
+                (remove-duplicates (append (gethash bin finished-objects-) (list obj))
+                                   :test #'string=)))
       (t nil)))
   (:set-objects-param (arm bin &key object-type)
     (cond
