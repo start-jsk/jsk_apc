@@ -172,8 +172,8 @@
                 :do-stop-grasp nil
                 :grasp-style grasp-style))
     (when moveit-p (send self :add-tote-scene arm))
-    (if (eq graspingp :ik-fail) (return-from :pick-object nil))
-    (setq graspingp (send *ri* :graspingp arm grasp-style))
+    (unless (eq graspingp :ik-fail)
+      (setq graspingp (send *ri* :graspingp arm grasp-style)))
     (unless graspingp (return-from :pick-object nil))
     (let (avs end-pos)
       (if (eq grasp-style :suction)
@@ -207,6 +207,7 @@
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
             (send *ri* :get-arm-controller arm :gripper nil) 0)
       (send *ri* :wait-interpolation))
+    (if (eq graspingp :ik-fail) (return-from :pick-object nil))
     (setq graspingp (send *ri* :graspingp arm grasp-style))
     (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
     graspingp)
