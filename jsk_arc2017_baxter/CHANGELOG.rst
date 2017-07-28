@@ -2,6 +2,13 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update tote_marker.yaml
+* Fix typo in sorting
+* sort largest object by graspability
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 4.0.5 (2017-07-28)
 ------------------
 * Fix fast second suction
