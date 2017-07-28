@@ -19,6 +19,7 @@ def main():
     rospy.init_node('visualize_object')
 
     pub = rospy.Publisher('~output', Image, queue_size=1)
+    rospy.sleep(1)
 
     rp = rospkg.RosPack()
     PKG_PATH = rp.get_path('jsk_arc2017_common')
