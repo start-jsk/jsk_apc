@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.7 (2017-07-28)
+------------------
 * Update cardboard_marker pose
 * place object l/r side
 * Fix target-bin bug in pick (caused by postponed object)
