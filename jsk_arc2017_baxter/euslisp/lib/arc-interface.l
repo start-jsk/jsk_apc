@@ -582,21 +582,28 @@
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
+            (if (and (> i 0) (eq grasp-style :suction))
+              (let (ec avs)
+                (setq ec (send *baxter* arm :end-coords :copy-worldcoords))
+                (send ec :translate #f(0 0 -100) :world)
+                (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                (send ec :translate #f(0 0 -100) :world)
+                (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                (send ec :translate #f(0 0 -100) :world)
+                (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                (send ec :translate #f(0 0 -30) :world)
+                (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                (setq avs (remove nil avs))
+                (if avs
+                  (send *ri* :angle-vector-sequence-raw avs
+                        :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+                  (send *ri* :wait-interpolation))))
             (setq graspingp
                   (send self :try-to-pick-object arm obj-pos
-                        :offset (float-vector 0 0 (- (* i -50) 80))
+                        :offset (float-vector 0 0 (- (* i -30) 80))
                         :grasp-style grasp-style
                         :suction-yaw suction-yaw
-                        :pinch-yaw pinch-yaw))
-            (if (< (+ i 1) n-trial)
-              (let (ec av)
-                (setq ec (send *baxter* arm :end-coords :copy-worldcoords))
-                (send ec :translate #f(0 0 -50) :world)
-                (setq av (send *baxter* :rotate-wrist-ik arm ec))
-                (if av
-                  (send *ri* :angle-vector-raw av
-                        :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
-                  (send *ri* :wait-interpolation)))))))
+                        :pinch-yaw pinch-yaw)))))
       (when do-stop-grasp
         (unless graspingp
           (send *ri* :stop-grasp arm)
