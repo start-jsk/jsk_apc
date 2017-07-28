@@ -174,7 +174,9 @@
     (arm bin &key (stamp (ros::time-now)) (timeout 10))
     (let ((box-topic (format nil "~a_hand_camera/cluster_indices_decomposer_label/boxes" (arm2str arm)))
           (candidates-topic (format nil "/~a_hand_camera/candidates_publisher/output/candidates" (arm2str arm)))
-          box-msg candidates-msg box-objects box-labels bin-orders label-names unfinished-orders)
+          box-msg box-objects box-labels bin-orders
+          candidates-msg candidate-labels label-names
+          unfinished-orders)
       (setq bin-orders
             (remove nil (mapcar
                           #'(lambda (order)
