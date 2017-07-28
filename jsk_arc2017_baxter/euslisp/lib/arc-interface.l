@@ -555,7 +555,7 @@
                     :move-palm-end t
                     :rotation-axis t)
               next-avs)
-            (setf (elt target-pos 2) (+ (car (elt movable-region 2)) 250))
+            (setf (elt target-pos 2) (+ (car (elt movable-region 2)) 300))
             (pushback
               (send *baxter* :rotate-wrist-ik arm
                     (make-coords :pos target-pos
