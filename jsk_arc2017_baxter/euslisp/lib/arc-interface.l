@@ -577,7 +577,7 @@
         (dolist (av next-avs)
           (unless av
             (ros::ros-error "[:pick-object-with-movable-region] arm:~a IK before trying grasp fails. Abort picking" arm)
-            (return-from :pick-object-with-movable-region nil)))
+            (return-from :pick-object-with-movable-region :ik-fail)))
         ;; Move whole arm to target pose
         (send *ri* :angle-vector-sequence-raw next-avs
               :fast (send *ri* :get-arm-controller arm :head t) 0 :scale 5.0)
@@ -820,7 +820,7 @@
                     :rotation-axis :z)))
       (unless av
         (ros::ros-error "[:try-to-pinch-object] arm:~a IK to object fails. Abort picking" arm)
-        (return-from :try-to-pinch-object nil))
+        (return-from :try-to-pinch-object :ik-fail))
       (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0)
       ;; Wait until grasp or finger touch
       (send *ri* :wait-interpolation-until arm
@@ -840,7 +840,7 @@
                     :rotation-axis :z)))
       (unless av
         (ros::ros-error "[:try-to-pinch-object] arm:~a IK to object fails. Abort picking" arm)
-        (return-from :try-to-pinch-object nil))
+        (return-from :try-to-pinch-object :ik-fail))
       (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0)
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
