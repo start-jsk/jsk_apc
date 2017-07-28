@@ -423,6 +423,7 @@
     (send *ri* :move-hand arm
           (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000 :wait nil)
     (send *ri* :wait-interpolation)
+    (unix::sleep 1)
     (send *ri* :angle-vector-raw
           (send *baxter* :slide-gripper arm 0 :relative nil)
           1000 (send *ri* :get-arm-controller arm) 0)
