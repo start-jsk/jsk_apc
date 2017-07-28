@@ -409,9 +409,13 @@
                                         label-index)))
                                 box-labels)))
             (setq graspability (ros::get-param "/graspability"))
-            (setq label-indices (sort label-indices #'(lambda (label-index)
-                                    (let ((obj-name (elt label-names label-index)))
-                                      (apply #'+ (mapcar #'cdr (cdr (assoc obj-name graspability :test #'string=))))))))
+            (setq label-indices
+                  (sort label-indices #'<
+                        #'(lambda (label-index)
+                            (let ((obj-name (elt label-names label-index)))
+                              (cdr (assoc "suction"
+                                          (cdr (assoc obj-name graspability :test #'string=))
+                                          :test #'string=))))))
             (when label-indices
               (if n-random
                 (progn
