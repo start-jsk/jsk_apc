@@ -128,7 +128,7 @@
       (progn
         (setq prev-target-obj nil)
         (setq start-picking-fail-count 0))
-      (send self :add-postponed-object arm target-obj target-bin))
+      (send self :add-postponed-object arm target-obj :tote))
     (if grasp-style t nil))
   (:check-start-picking-fail-count (arm &key (count-limit 2))
     (incf start-picking-fail-count)
