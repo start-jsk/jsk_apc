@@ -165,12 +165,14 @@
       (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
     (send self :reset-scale arm)
     (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
-    (send self :pick-object-in-tote arm
-          :n-trial (if (eq grasp-style :suction) 2 1)
-          :n-trial-same-pos 1
-          :do-stop-grasp nil
-          :grasp-style grasp-style)
+    (setq graspingp
+          (send self :pick-object-in-tote arm
+                :n-trial (if (eq grasp-style :suction) 2 1)
+                :n-trial-same-pos 1
+                :do-stop-grasp nil
+                :grasp-style grasp-style))
     (when moveit-p (send self :add-tote-scene arm))
+    (if (eq graspingp :ik-fail) (return-from :pick-object nil))
     (setq graspingp (send *ri* :graspingp arm grasp-style))
     (unless graspingp (return-from :pick-object nil))
     (let (avs end-pos)
