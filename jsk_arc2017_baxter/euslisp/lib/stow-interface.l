@@ -250,7 +250,7 @@
             (ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
                                 (arm2str arm) (car (send msg :label_names))
                                 (elt (send msg :label_proba) 0))
-            (ros::ros-info "arm ~A, classifier threshold: ~A" (arm2str arm) proba-thre)
+            (ros::ros-info-cyan "arm ~A, classifier threshold: ~A" (arm2str arm) proba-thre)
             (if (> (elt (send msg :label_proba) 0) proba-thre)
                 (setq target-obj (car (send msg :label_names)))
               (return-from :verify-object nil))
