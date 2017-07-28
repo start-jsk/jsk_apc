@@ -22,7 +22,6 @@
           start-picking-fail-count
           start-time
           target-bin
-          target-index
           target-obj
           tote-contents
           trial-fail-count))
@@ -84,7 +83,7 @@
         (send self :move-arm-body->tote-overlook-pose arm)
         (send *ri* :wait-interpolation))
       (setq recognition-count 1)
-      (let ((stamp (ros::time-now)))
+      (let ((stamp (ros::time-now)) target-index)
         (while (null (or (> recognition-count trial-times) is-recognized))
           (setq target-index
                 (send self :get-largest-object-index arm :tote :stamp stamp
