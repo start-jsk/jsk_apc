@@ -94,7 +94,6 @@
                                     jsk_arc2017_common::ContentArray
                                     :timeout 10000
                                     :after-stamp stamp))
-      (ros::ros-debug "[:get-next-target-bin] get msg ~A" msg)
       (setq bin-contents
             (mapcar #'(lambda (content)
                         (cons (str2symbol (send content :bin))
@@ -108,13 +107,16 @@
                         #'(lambda (order)
                             (let ((item (send order :item))
                                   (bin (str2symbol (send order :bin))))
-                              (ros::ros-debug "[:get-next-target-bin]   item ~A, bin ~A" item bin)
+                              (ros::ros-debug "[:get-next-target-bin] item ~A, bin ~A" item bin)
                               (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
                                 (unless
                                   (or (find item (gethash bin finished-objects-) :test #'string=)
                                       (find item (gethash bin postponed-objects-) :test #'string=))
                                   bin))))
                         orders-))))
+      ;; 66% random target
+      ;; 33% select unfinished-objects (never tried to recognize)
+      (when (< (random 3) 2) (setq target-bins nil))
       (ros::ros-debug "[:get-next-target-bin] get target-bins ~A" target-bins)
       (when target-bins
         (return-from :get-next-target-bin
@@ -126,12 +128,14 @@
                         #'(lambda (order)
                             (let ((item (send order :item))
                                   (bin (str2symbol (send order :bin))))
+                              (ros::ros-debug "[:get-next-target-bin]   item ~A, bin ~A" item bin)
                               (when (find item (cdr (assoc bin bin-contents)) :test #'string=)
                                 (unless
                                   (find item (gethash bin finished-objects-) :test #'string=)
                                   bin))))
                         orders-))))
-      (ros::ros-debug "[:get-next-target-bin] get postoned-bins ~A" postponed-bins)
+
+      (ros::ros-debug "[:get-next-target-bin] get postponed bins ~A" postponed-bins)
       (when postponed-bins
         (return-from :get-next-target-bin
                      (elt postponed-bins (random (length postponed-bins)))))
@@ -217,6 +221,7 @@
                             box-labels)))
         (unless box-labels (return-from :select-work-order-in-bin nil))
         (setq box-objects (mapcar #'(lambda (label) (elt label-names label)) box-labels))
+        (ros::ros-debug "arm: ~A, box-objects: ~A" (arm2str arm) box-objects)
         (dolist (order bin-orders)
           (let ((object-name (send order :item)))
             (when (and (find object-name box-objects :test #'string=)
@@ -1216,10 +1221,12 @@
       (t nil)))
   (:add-finished-object (arm obj bin)
     (send self :update-object-tables obj bin :object-type :finished-objects)
+    (send self :set-objects-param arm bin :object-type :unfinished-objects)
     (send self :set-objects-param arm bin :object-type :postponed-objects)
     (send self :set-objects-param arm bin :object-type :finished-objects))
   (:add-postponed-object (arm obj bin)
     (send self :update-object-tables obj bin :object-type :postponed-objects)
+    (send self :set-objects-param arm bin :object-type :unfinished-objects)
     (send self :set-objects-param arm bin :object-type :postponed-objects))
   (:get-grasp-style (arm obj trial-time)
     (let ((service-name
