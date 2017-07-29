@@ -29,6 +29,9 @@ def main():
     topics = [
         # pick.launch
         'candidates_publisher/output/candidates',
+
+        'weight_candidates_refiner/output/candidates/picked',
+        'weight_candidates_refiner/output/candidates/placed',
     ]
     for side in ['left', 'right']:
         for topic in topics:
