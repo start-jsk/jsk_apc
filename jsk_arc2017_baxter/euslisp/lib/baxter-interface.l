@@ -587,7 +587,7 @@
             (setq min-pressure (gethash l/r pressure-)))
           (unix::sleep 1))
         (cond ((eq l/r :larm)
-               (setq larm-pressure-threshold- (- min-pressure 17)))
+               (setq larm-pressure-threshold- (- min-pressure 15)))
               ((eq l/r :rarm)
                (setq rarm-pressure-threshold- (- min-pressure 15))))))
     (send self :stop-grasp arm)
