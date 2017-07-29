@@ -806,6 +806,10 @@
       ;; Open fingers in bin
       (send *ri* :move-hand arm
             (send *baxter* :hand-grasp-pre-pose arm :spherical) 1000 :wait nil)
+      (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
+      (send *ri* :angle-vector-raw (send *baxter* :rotate-gripper arm 30 :relative nil)
+            1000 (send *ri* :get-arm-controller arm) 0)
+      (send *ri* :wait-interpolation)
       ;; suction: prismatic-based approach
       (send *baxter* :slide-gripper arm 0 :relative nil)
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
