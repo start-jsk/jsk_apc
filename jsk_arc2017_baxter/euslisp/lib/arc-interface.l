@@ -812,6 +812,7 @@
       (send *ri* :wait-interpolation)
       ;; suction: prismatic-based approach
       (send *baxter* :slide-gripper arm 0 :relative nil)
+      (send *baxter* :rotate-gripper arm 0 :relative nil)
       (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
             3000 (send *ri* :get-arm-controller arm) 0)
       ;; suction: prismatic-based approach
