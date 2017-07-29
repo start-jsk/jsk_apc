@@ -37,6 +37,7 @@ def main():
     imgmsg.header.stamp = rospy.Time.now()
 
     pub.publish(imgmsg)
+    rospy.spin()
 
 
 if __name__ == '__main__':
