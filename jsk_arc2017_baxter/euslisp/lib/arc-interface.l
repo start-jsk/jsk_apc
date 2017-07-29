@@ -587,27 +587,37 @@
         (dotimes (j n-trial-same-pos)
           (unless graspingp
             (let (ec avs)
-              (if (eq grasp-style :suction)
+              (when (eq grasp-style :suction)
+                ;; Fold fingers again
+                (send *ri* :move-hand arm
+                      (send *baxter* :hand-grasp-pose arm :spherical :angle 90) 1000)
                 (setq ec (send *baxter* arm :end-coords :copy-worldcoords))
                 (if (= i 0)
                   (progn
-                    (send ec :translate #f(0 0 80) :world)
-                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs))
+                    (send ec :translate #f(0 0 -80) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs))
                   (progn
-                    (send ec :translate #f(0 0 -100) :world)
-                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
-                    (send ec :translate #f(0 0 -100) :world)
-                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
-                    (send ec :translate #f(0 0 -100) :world)
-                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)
+                    (send ec :translate #f(0 0 -50) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
+                    (send ec :translate #f(0 0 -50) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
+                    (send ec :translate #f(0 0 -50) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
+                    (send ec :translate #f(0 0 -50) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
+                    (send ec :translate #f(0 0 -50) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
+                    (send ec :translate #f(0 0 -50) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
                     (send ec :translate #f(0 0 -30) :world)
-                    (pushback (send *baxter* :rotate-wrist-ik arm ec) avs)))
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)))
                 (setq avs (remove nil avs))
                 (if avs
                   (progn
                     (send *ri* :angle-vector-sequence-raw avs
-                          :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
-                    (send *ri* :wait-interpolation)))))
+                          :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0)
+                    (send *ri* :wait-interpolation)))
+                ))
             (setq graspingp
                   (send self :try-to-pick-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -30) 80))
@@ -724,9 +734,6 @@
           (coords-before-approach (send *baxter* arm :end-coords :copy-worldcoords)))
       (send coords-before-approach :locate (v+ obj-pos #f(0 0 300)) :world)
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a suction-yaw: ~a" arm suction-yaw)
-      ;; Fold fingers again
-      (send *ri* :move-hand arm
-            (send *baxter* :hand-grasp-pose arm :spherical :angle 90) 1000)
       ;; start the vacuum gripper before approaching to the object
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a start vacuum gripper" arm)
       (send *ri* :start-grasp arm)
