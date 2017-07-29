@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.9 (2017-07-29)
+------------------
 * Adjust left arm pressure threshold for Pick final
 * Adjust cardboard for Pick final
 * Fix sanity script for weight_candidates_refiner

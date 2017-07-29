@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.9 (2017-07-29)
+------------------
 * Fix typo in visualize_object.py
 * Contributors: Kentaro Wada
 
