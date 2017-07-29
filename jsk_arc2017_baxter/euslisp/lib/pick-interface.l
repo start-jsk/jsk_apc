@@ -18,6 +18,7 @@
           grasp-style
           label-names
           moveit-p
+          moving-object-p-
           picking-fail-count
           prev-target-obj
           recognize-fail-count
@@ -119,6 +120,27 @@
                 (instance std_srvs::TriggerRequest :init))
               (send self :recognize-target-object arm :stamp (ros::time-now))))
           (incf recognition-count)))
+      (unless is-recognized
+        (setq recognition-count 1)
+        (let ((stamp (ros::time-now) target-index))
+          (while (null (or (> recognition-count trial-times) is-recognized))
+            (setq target-index
+                  (send self :get-largest-object-index arm target-bin
+                        :stamp stamp :n-random nil))
+            (setq is-recognized
+              (when target-index
+                (setq target-obj (elt label-names target-index))
+                (ros::set-dynparam
+                  (format nil "/~a_hand_camera/label_to_mask" (arm2str arm))
+                  (cons "label_value" target-index))
+                (ros::set-param
+                  (format nil "~a_hand/target_object" (arm2str arm)) target-obj)
+                (ros::ros-info-blue "[~a] [main] target recognition failed" (ros::get-name) target-bin)
+                (ros::ros-info-blue "[~a] [main] moving object in bin ~A" (ros::get-name) target-bin)
+                (ros::ros-info-blue "[~a] [main] :recognize-object, target-obj: ~a" (ros::get-name) target-obj)
+                (setq moving-object-p- t)
+                (send self :recognize-target-object arm :stamp (ros::time-now))))
+            (incf recognition-count))))
       is-recognized))
   (:return-from-recognize-object (arm)
     (send self :add-postponed-object arm target-obj target-bin)
@@ -229,6 +251,10 @@
     ;; TODO: in-hand verification
     ;; TODO:   target-obj = in-hand object  -> :set_target_cardboard
     ;; TODO:   target-obj != in-hand object -> :return_object
+    (when moving-object-p-
+      (setq moving-object-p- nil)
+      (ros::ros-info "moving object in bin")
+      (return-from :verify-object nil))
     (let (scale-candidates (stamp (ros::time-now)))
       (setq scale-candidates
             (send self :get-scale-candidates arm :picked :stamp stamp))
