@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.8 (2017-07-29)
+------------------
 * Fix gripper rotation after approach
 * Loosen gripper rotation in suction
 * update place object motion
