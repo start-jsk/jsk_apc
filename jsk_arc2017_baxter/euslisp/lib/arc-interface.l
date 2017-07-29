@@ -1056,7 +1056,7 @@
               (elt (send cardboard-c-cube :worldpos) 0)
               (* (if (eq side :right) -1 1) (/ (y-of-cube cardboard-c-cube) 2.0))
               (elt (send cardboard-c-coords :worldpos) 2)))
-      (setq rack-leg-cube (make-cube 300 20 800))
+      (setq rack-leg-cube (make-cube 300 20 1200))
       (send rack-leg-cube :translate offset :world)
       (send *co* :add-object rack-leg-cube :frame-id base-name
             :relative-pose (send rack-leg-cube :copy-worldcoords)
