@@ -329,7 +329,7 @@
       ;;                                  :orientation_constraints (list orientation-constraint)))
 
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard)
-      (when moveit-p (send self :add-object-in-hand-scene arm target-obj))
+      ;; (when moveit-p (send self :add-object-in-hand-scene arm target-obj))
 
       ;; FIXME: moveit cannot solve path
       ;; (send *ri* :angle-vector
@@ -399,7 +399,7 @@
                     (send *ri* :get-arm-controller arm :gripper nil :head t) 0 :scale 7.0))))
         (send *ri* :wait-interpolation))
       (setq dropped (not (send *ri* :graspingp arm grasp-style)))
-      (when moveit-p (send self :delete-object-in-hand-scene arm))
+      ;; (when moveit-p (send self :delete-object-in-hand-scene arm))
       (if dropped
         (progn
           (ros::ros-error "[main] arm ~a: dropped object" arm)
