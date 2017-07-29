@@ -86,9 +86,6 @@ def main():
         'cluster_indices_decomposer_target/boxes',
         'cluster_indices_decomposer_target/centroid_pose_array',
         'bbox_array_to_bbox/output',
-
-        'weight_candidates_refiner/output/candidates/picked',
-        'weight_candidates_refiner/output/candidates/placed',
     ]
     for side in ['left', 'right']:
         for topic in topics:
