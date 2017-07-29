@@ -2,6 +2,13 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Adjust left arm pressure threshold for Pick final
+* Adjust cardboard for Pick final
+* Fix sanity script for weight_candidates_refiner
+* Contributors: Kentaro Wada
+
 4.0.8 (2017-07-29)
 ------------------
 * Fix gripper rotation after approach
