@@ -2,6 +2,27 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix gripper rotation after approach
+* Loosen gripper rotation in suction
+* update place object motion
+* remove unused attached object scene
+* modify rackboard leg scene
+* move object in bin and change condition
+* Fix midpoints
+* Don't move arm in first suction
+* Fix offset and add midpoints
+* Use :rotate-wrist-ik
+* Don't move arm in second suction
+* Check sanity of system (topics/nodes) by script
+* add local-variable candidate-labels
+* add forgotten remove nil
+* set order as local variable
+* use moveit for place in cardboard c
+* fix cardboard c offset
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa
+
 4.0.7 (2017-07-28)
 ------------------
 * Update cardboard_marker pose
