@@ -240,6 +240,7 @@
     graspingp)
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj target-bin)
+    (setq start-picking-fail-count 0)
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :fold-pose-back arm))
