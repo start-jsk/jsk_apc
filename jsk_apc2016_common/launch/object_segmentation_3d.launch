@@ -161,5 +161,34 @@
       queue_size: 100
     </rosparam>
   </node>
+  <node name="poses_to_pose_target0"
+        pkg="jsk_recognition_utils" type="pose_array_to_pose.py">
+    <remap from="~input" to="cluster_indices_decomposer_target/centroid_pose_array" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <node name="bboxes_to_bbox_target0"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg NODELET_MANAGER)">
+    <remap from="~input" to="cluster_indices_decomposer_target/boxes" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <node name="cluster_indices_to_indices_target0"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/ClusterPointIndicesToPointIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="cluster_indices_decomposer_target/cluster_indices" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <node name="extract_indices_target0"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="resize_points_publisher_target/output" />
+    <remap from="~indices" to="cluster_indices_to_indices_target0/output" />
+  </node>
 
 </launch>
