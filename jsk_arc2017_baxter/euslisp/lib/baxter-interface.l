@@ -602,7 +602,13 @@
       (sethash :right (gethash l/r proximity-init-values-)
                (send self :get-proximity l/r :right :raw t))
       ;; TODO: decide proper threshold 100 -> ???
-      (setq proximity-threshold- 100))))
+      (setq proximity-threshold- 100)))
+  (:speak
+    (msg &key (wait nil))
+    (assert (stringp msg) (format nil "Invalid msg, though string is expected: ~a" msg))
+    (speak-en msg :wait wait)
+    )
+  )
 
 (defclass jsk_arc2017_baxter::baxter-moveit-environment
   :super moveit-environment)

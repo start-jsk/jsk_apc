@@ -1,0 +1,12 @@
+<launch>
+
+  <arg name="gui" default="false" />
+  <env name="DISPLAY" value="" unless="$(arg gui)" />
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/sound_play.launch" />
+
+  <test test-name="test_baxter_interface"
+        name="test_baxter_interface" pkg="jsk_arc2017_baxter"
+        type="test-baxter-interface.l" time-limit="100" />
+
+</launch>

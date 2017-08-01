@@ -29,6 +29,8 @@
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_dxl_controller.launch" />
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_ros_control.launch" />
 
+  <!-- voice -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/sound_play.launch" />
 
   <!-- baxter startup -->
   <include file="$(find jsk_baxter_startup)/baxter.launch">
