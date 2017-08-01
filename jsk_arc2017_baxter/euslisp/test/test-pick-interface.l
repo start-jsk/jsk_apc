@@ -7,7 +7,7 @@
 
 (jsk_arc2017_baxter::pick-init)
 
-(deftest test-pick-arc-interface
+(deftest test-pick-interface
   ;; :recognize-bin-boxes, :recognize-cardboard-boxes
   ;; (send *ti* :recognize-bin-boxes)
   ;; (send *ti* :recognize-cardboard-boxes)
