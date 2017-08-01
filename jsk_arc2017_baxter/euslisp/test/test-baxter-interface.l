@@ -10,8 +10,8 @@
 (deftest
   test-speak
 
-  (send *ri* :speak "Hello")
   (send *ri* :speak "Hello" :wait t)
+  (send *ri* :speak "Hello")
   )
 
 (run-all-tests)
