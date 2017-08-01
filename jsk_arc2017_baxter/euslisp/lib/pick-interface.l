@@ -122,7 +122,7 @@
           (incf recognition-count)))
       (unless is-recognized
         (setq recognition-count 1)
-        (let ((stamp (ros::time-now) target-index))
+        (let ((stamp (ros::time-now)) target-index)
           (while (null (or (> recognition-count trial-times) is-recognized))
             (setq target-index
                   (send self :get-largest-object-index arm target-bin
