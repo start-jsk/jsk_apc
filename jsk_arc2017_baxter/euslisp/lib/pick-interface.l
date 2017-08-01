@@ -192,8 +192,13 @@
     (unless grasp-style (setq trial-fail-count 0))
     (if grasp-style t nil))
   (:pick-object (arm)
+    ;; slots reset
     (setq start-picking-fail-count 0)
     (setq recognize-fail-count 0)
+    (send *ri* :speak
+          (format nil "Now I will try to pick ~a, which is~a an ordered object."
+                  (underscore-to-space target-obj)
+                  (if moving-object-p- " not" "")))
     (when moveit-p (send self :delete-bin-scene target-bin))
     (if (eq grasp-style :suction)
       (send self :set-movable-region-for-bin :offset (list 50 50 0))
