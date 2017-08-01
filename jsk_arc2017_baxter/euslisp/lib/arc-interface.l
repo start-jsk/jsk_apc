@@ -89,7 +89,7 @@
     (when (eq (length orders-) 0)
       (ros::ros-error "[:get-next-target-bin] no work-order, try :get-work-orders first")
       (return-from :get-next-target-bin nil))
-    (let (target-bins postponed-bins msg)
+    (let (bin-contents target-bins postponed-bins msg)
       (setq msg (one-shot-subscribe "/json_saver/output/bin_contents"
                                     jsk_arc2017_common::ContentArray
                                     :timeout 10000
@@ -148,7 +148,7 @@
           (format nil "/strategic_work_order/~a_hand" (arm2str arm))
           jsk_arc2017_common::WorkOrderArray))
       (setq orders- (send msg :orders))))
-  (:get-next-work-order (arm)
+  (:get-next-work-order (arm bin)
     (when (eq (length orders-) 0)
       (ros::ros-error "[:get-next-work-order] There is no order")
       (return-from :get-next-work-order nil))
@@ -257,7 +257,7 @@
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
     (let ((box-topic (format nil "transformable_bin_markers/output/boxes"))
-          box-msg bin-list)
+          box-msg box-list bin-list)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
                                         :timeout 10000
@@ -274,7 +274,7 @@
   (:recognize-cardboard-boxes
     (&key (stamp (ros::time-now)))
     (let ((box-topic (format nil "transformable_cardboard_markers/output/boxes"))
-          box-msg cardboard-list)
+          box-msg box-list cardboard-list)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
                                         :timeout 10000
@@ -299,9 +299,9 @@
       (if box-msg
         (progn
           (ros::ros-info "[~a] [:recognize-tote-boxes] recognize tote bbox" (ros::get-name))
-          (setq bbox-list (send box-msg :boxes))
+          (setq box-list (send box-msg :boxes))
           (dolist (arm '(:larm :rarm))
-            (sethash arm tote-cubes- (send self :bbox->cube (pop bbox-list)))))
+            (sethash arm tote-cubes- (send self :bbox->cube (pop box-list)))))
         (ros::ros-fatal "[:recognize-tote-boxes] cannot recognize tote bbox"))))
   (:visualize-bins ()
     (ros::ros-warn ":visualize-bins was deprecated. Please use :visualize-boxes.")
