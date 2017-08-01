@@ -7,7 +7,7 @@
 
 (jsk_arc2017_baxter::stow-init)
 
-(deftest test-stow-arc-interface
+(deftest test-stow-interface
   ;; :recognize-tote-boxes, :recognize-bin-boxes
   ;; (send *ti* :recognize-tote-boxes)
   ;; (send *ti* :recognize-bin-boxes)

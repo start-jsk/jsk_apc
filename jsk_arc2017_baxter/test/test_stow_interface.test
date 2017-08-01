@@ -7,7 +7,7 @@
     <arg name="pick" value="false" />
   </include>
 
-  <test test-name="test_stow_arc_interface"
-        name="test_stow_arc_interface" pkg="jsk_arc2017_baxter"
-        type="test-stow-arc-interface.l" time-limit="100" />
+  <test test-name="test_stow_interface"
+        name="test_stow_interface" pkg="jsk_arc2017_baxter"
+        type="test-stow-interface.l" time-limit="100" />
 </launch>
