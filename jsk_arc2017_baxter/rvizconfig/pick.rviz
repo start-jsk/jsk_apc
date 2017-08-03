@@ -35,7 +35,7 @@ Visualization Manager:
     - Alpha: 0.5
       Cell Size: 1
       Class: rviz/Grid
-      Color: 160; 160; 164
+      Color: 149; 149; 153
       Enabled: true
       Line Style:
         Line Width: 0.03
@@ -430,8 +430,8 @@ Visualization Manager:
       alpha: 0.8
       height: 128
       keep aspect ratio: true
-      left: 150
-      top: 20
+      left: 154
+      top: 13
       width: 300
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
@@ -530,8 +530,8 @@ Visualization Manager:
       alpha: 1
       height: 128
       keep aspect ratio: true
-      left: 1084
-      top: 551
+      left: 1086
+      top: 558
       width: 300
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
@@ -541,8 +541,8 @@ Visualization Manager:
       alpha: 1
       height: 128
       keep aspect ratio: true
-      left: 1084
-      top: 739
+      left: 1087
+      top: 741
       width: 300
     - Class: moveit_rviz_plugin/MotionPlanning
       Enabled: false
@@ -632,6 +632,7 @@ Visualization Manager:
       Unreliable: false
       Value: true
       Visibility:
+        AxisCamera: true
         BaxterArms: false
         BinBoxes: false
         CardboardBoxes: false
@@ -667,6 +668,7 @@ Visualization Manager:
       Unreliable: false
       Value: true
       Visibility:
+        AxisCamera: true
         BaxterArms: false
         BinBoxes: false
         CardboardBoxes: false
@@ -805,9 +807,20 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: AxisCamera
+      Topic: /axis/apply_mask/output
+      Value: true
+      alpha: 1
+      height: 128
+      keep aspect ratio: true
+      left: 1086
+      top: 250
+      width: 300
   Enabled: true
   Global Options:
-    Background Color: 48; 48; 48
+    Background Color: 198; 198; 198
     Fixed Frame: base
     Frame Rate: 30
   Name: root
@@ -842,10 +855,10 @@ Visualization Manager:
         Z: 0.366855
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.3154
+      Pitch: 1.3004
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.1354
+      Yaw: 3.1404
     Saved: ~
 Window Geometry:
   Displays:

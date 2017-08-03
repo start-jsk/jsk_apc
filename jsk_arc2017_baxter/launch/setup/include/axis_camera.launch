@@ -1,0 +1,41 @@
+<launch>
+  <arg name="username" default="root" />
+  <arg name="hostname" default="133.11.216.141" />
+
+  <group ns="axis">
+    <node name="axis_camera"
+          pkg="axis_camera" type="axis.py" >
+      <param name="hostname" value="$(arg hostname)" />
+      <param name="username" value="$(arg username)" />
+      <param name="password" command="cat /var/lib/robot/axis_password.txt" />
+      <rosparam>
+        width: 1280
+        height: 1024
+      </rosparam>
+    </node>
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+    <node name="mask_generator"
+          pkg="jsk_perception" type="mask_image_generator">
+      <remap from="~input" to="image_raw" />
+      <rosparam>
+        offset_x: 450
+        offset_y: 230
+        width: 600
+        height: 600
+      </rosparam>
+    </node>
+    <node name="apply_mask"
+          pkg="jsk_perception" type="apply_mask_image">
+      <remap from="~input" to="image_raw" />
+      <remap from="~input/mask" to="mask_generator/output" />
+      <rosparam>
+        clip: true
+      </rosparam>
+    </node>
+  </group>
+</launch>

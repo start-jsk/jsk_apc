@@ -71,4 +71,7 @@
     <arg name="debug" value="$(arg debug)" />
   </include>
 
+  <!-- axis camera -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/axis_camera.launch" />
+
 </launch>
