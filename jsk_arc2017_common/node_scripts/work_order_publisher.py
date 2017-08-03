@@ -4,9 +4,7 @@ import jsk_arc2017_common
 from jsk_arc2017_common.msg import WorkOrder
 from jsk_arc2017_common.msg import WorkOrderArray
 import json
-import operator
 import os.path as osp
-import random
 import rospy
 
 
@@ -29,9 +27,6 @@ class WorkOrderPublisher(object):
         order_path = osp.join(json_dir, 'order_file.json')
         with open(order_path) as order_f:
             orders = json.load(order_f)['orders']
-        box_path = osp.join(json_dir, 'box_sizes.json')
-        with open(box_path) as box_f:
-            boxes = json.load(box_f)['boxes']
 
         self.item_location = {}
         for bin_ in bins:
@@ -39,16 +34,15 @@ class WorkOrderPublisher(object):
             for item_name in bin_['contents']:
                 self.item_location[item_name] = bin_id
 
-        box_sizes = {}
-        for box in boxes:
-            size_id = box['size_id']
-            box_sizes[size_id] = reduce(operator.mul, box['dimensions'])
-        size_ids = [order['size_id'] for order in orders]
-        sorted_size_ids = sorted(size_ids, key=lambda x: box_sizes[x])
-
         self.cardboard_ids = {}
-        for i, size_id in enumerate(sorted_size_ids):
-            self.cardboard_ids[size_id] = 'ABC'[i]
+        for order in orders:
+            size_id = order['size_id']
+            if len(order['contents']) == 2:
+                self.cardboard_ids[size_id] = 'A'
+            elif len(order['contents']) == 3:
+                self.cardboard_ids[size_id] = 'B'
+            else:  # len(order['contents']) == 5
+                self.cardboard_ids[size_id] = 'C'
 
         publish_orders = self._generate_publish_orders(orders)
 
