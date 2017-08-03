@@ -1,0 +1,14 @@
+<launch>
+
+  <arg name="gui" default="true" />
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/axis_camera.launch" />
+
+  <group if="$(arg gui)">
+    <node name="image_view"
+          pkg="image_view" type="image_view">
+      <remap from="image" to="axis/apply_mask/output" />
+    </node>
+  </group>
+
+</launch>
