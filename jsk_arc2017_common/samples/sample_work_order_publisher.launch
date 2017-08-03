@@ -2,7 +2,7 @@
   <node name="pick_work_order_0"
         pkg="jsk_arc2017_common" type="work_order_publisher.py">
     <rosparam subst_value="true">
-      json_dir: $(find jsk_arc2017_common)/data/json/example_pick_task
+      json_dir: $(find jsk_arc2017_common)/data/json/sample_pick_task
     </rosparam>
   </node>
 </launch>
