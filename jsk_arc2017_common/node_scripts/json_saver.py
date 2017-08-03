@@ -7,7 +7,6 @@ from jsk_arc2017_common.msg import ContentArray
 from jsk_arc2017_common.srv import UpdateJSON
 from jsk_arc2017_common.srv import UpdateJSONResponse
 import json
-import operator
 import os
 import os.path as osp
 import rospy
@@ -54,35 +53,33 @@ class JSONSaver(threading.Thread):
         self.cardboard_ids = {}
 
         # this is for pick task
-        # carboard is only used in pick task
-        if len(data['boxes']) > 0:
-            size_ids = []
-            cardboard_contents = {}
-            for box in data['boxes']:
-                size_id = box['size_id']
-                size_ids.append(size_id)
-                cardboard_contents[size_id] = box['contents']
-
-            box_sizes = {}
-            box_path = osp.join(json_dir, 'box_sizes.json')
-            with open(box_path) as box_f:
-                box_infos = json.load(box_f)['boxes']
-            for box_info in box_infos:
-                size_id = box_info['size_id']
-                box_sizes[size_id] = reduce(
-                    operator.mul, box_info['dimensions'])
-            sorted_size_ids = sorted(size_ids, key=lambda x: box_sizes[x])
-
-            for key, size_id in zip('ABC', sorted_size_ids):
-                self.cardboard_ids[key] = size_id
-            for key in 'ABC':
-                size_id = self.cardboard_ids[key]
-                self.cardboard_contents[key] = cardboard_contents[size_id]
-
+        # order file is only used in pick task
         order_path = osp.join(json_dir, 'order_file.json')
         if osp.exists(order_path):
             output_order_path = osp.join(output_dir, 'order_file.json')
             shutil.copy(order_path, output_order_path)
+
+            order_path = osp.join(json_dir, 'order_file.json')
+            with open(order_path) as order_f:
+                orders = json.load(order_f)['orders']
+
+            for order in orders:
+                size_id = order['size_id']
+                if len(order['contents']) == 2:
+                    cardboard_id = 'A'
+                elif len(order['contents']) == 3:
+                    cardboard_id = 'B'
+                else:  # len(order['contents']) == 5
+                    cardboard_id = 'C'
+                self.cardboard_ids[cardboard_id] = size_id
+
+            cardboard_contents = {}
+            for box in data['boxes']:
+                size_id = box['size_id']
+                cardboard_contents[size_id] = box['contents']
+            for key in 'ABC':
+                size_id = self.cardboard_ids[key]
+                self.cardboard_contents[key] = cardboard_contents[size_id]
 
         # publish stamped json_dir
         self.pub = rospy.Publisher('~output/json_dir', String, queue_size=1)
