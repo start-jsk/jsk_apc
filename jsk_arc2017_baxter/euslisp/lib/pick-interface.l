@@ -51,6 +51,9 @@
       (when moveit-p
         (send self :add-shelf-scene)
         (send self :add-cardboard-rack-scene))
+      (send *ri* :speak
+            (format nil "~a arm is waiting for user input to start the picking task."
+                    (arm2str arm)))
       (ros::ros-info "[:wait-for-user-input] wait for user input to start: ~a" arm)
       (ros::wait-for-service "/rviz/yes_no_button")
       (setq can-start
@@ -99,6 +102,7 @@
             (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait nil)
       (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin)
       (unless (> start-picking-fail-count 0)
+        (send *ri* :speak (format nil "Going to bin ~a." target-bin))
         (send self :move-arm-body->bin-overlook-pose arm target-bin)
         (send *ri* :wait-interpolation))
       (setq recognition-count 1)
