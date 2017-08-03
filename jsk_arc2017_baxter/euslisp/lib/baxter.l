@@ -61,6 +61,17 @@
     (send self :rarm-palm-endpoint :translate #f(30 0 0) :local)
     (send self :larm-palm-endpoint :translate #f(30 0 0) :local)
     )
+
+  (:arc-reset-pose
+    (&optional (arm :arms))
+    (let ((arms (if (eq arm :arms) (list :larm :rarm) (list arm))))
+      (dolist (arm arms)
+        (send self :untuck-pose arm)
+        (send self arm :move-end-pos (float-vector 0 (if (eq arm :larm) 300 -300) 0) :world)
+        (send self :rotate-wrist arm (if (eq arm :larm) 90 -90) :relative nil)
+        ))
+    (send *baxter* :angle-vector))
+
   (:rarm-palm-endpoint
     (&rest args)
     (send* self :right_gripper_palm_endpoint_lk args))

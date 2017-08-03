@@ -152,7 +152,7 @@
         (send *baxter* :hand-grasp-pre-pose :rarm :opposed) 1000 :wait nil)
   (send *ri* :move-hand :larm
         (send *baxter* :hand-grasp-pre-pose :larm :opposed) 1000)
-  (send *ri* :angle-vector (send *baxter* :fold-pose-back))
+  (send *ri* :angle-vector (send *baxter* :arc-reset-pose))
   (send *ri* :wait-interpolation)
   (when calib-pressure
     (send *ri* :calib-pressure-threshold :rarm)

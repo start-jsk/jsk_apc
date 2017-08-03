@@ -47,6 +47,11 @@
     (setq rack-leg-cubes- (make-hash-table))
     (setq finished-objects- (make-hash-table))
     (setq unfinished-objects- (make-hash-table)))
+  (:arc-reset-pose
+    (&optional (arm :arms) &rest args)
+    (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
+      (send *baxter* :arc-reset-pose tmp-arm))
+    (send* *ri* :angle-vector (send *baxter* :angle-vector) args))
   (:fold-pose-back
     (&optional (arm :arms) &rest args)
     (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
