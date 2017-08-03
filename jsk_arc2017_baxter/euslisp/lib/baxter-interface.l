@@ -635,3 +635,17 @@
                        (send self :search-link-from-name "right_gripper_pad_with_base")))
                (cons :joint-list (append (send robot :larm :joint-list)
                                          (send robot :rarm :joint-list)))))))
+
+(defun jsk_arc2017_baxter::baxter-init
+  (&key (type :default-controller) (moveit nil))
+  (let (mvit-env mvit-rb)
+    (when moveit
+      (setq mvit-env (instance jsk_arc2017_baxter::baxter-moveit-environment))
+      (setq mvit-rb (instance jsk_arc2017_baxter::baxter-robot :init)))
+    (when (not (boundp '*ri*))
+      (setq *ri* (instance jsk_arc2017_baxter::baxter-interface :init
+                           :type type
+                           :moveit-environment mvit-env
+                           :moveit-robot mvit-rb)))
+    (when (not (boundp '*baxter*))
+      (setq *baxter* (instance jsk_arc2017_baxter::baxter-robot :init)))))
