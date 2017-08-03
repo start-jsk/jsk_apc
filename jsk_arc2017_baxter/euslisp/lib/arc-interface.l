@@ -860,6 +860,7 @@
       ;; Wait until grasp or finger touch
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
+      (send *ri* :stop-grasp arm)
       (setq av
             (send *baxter* arm :inverse-kinematics
                   (make-coords :pos obj-pos
