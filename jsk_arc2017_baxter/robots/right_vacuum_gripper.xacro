@@ -323,6 +323,7 @@
     <child link="right_gripper_pad_with_base"/>
     <axis xyz="0 1 0"/>
     <limit lower="-1.58" upper="1.58" effort="0" velocity="3.36"/>
+    <dynamics damping="0.7"/>
   </joint>
   <joint name="right_gripper_finger_yaw_joint" type="revolute">
     <origin rpy="0 0 0" xyz="${finger_base_offset_x} ${l_finger_base_offset_y} ${finger_base_offset_z}"/>
@@ -330,6 +331,7 @@
     <child link="right_gripper_l_finger_base"/>
     <axis xyz="0 0 1"/>
     <limit lower="0" upper="1.58" effort="0" velocity="4.23"/>
+    <dynamics damping="0.7"/>
   </joint>
   <joint name="right_gripper_r_finger_yaw_joint" type="revolute">
     <origin rpy="0 0 0" xyz="${finger_base_offset_x} ${r_finger_base_offset_y} ${finger_base_offset_z}"/>
@@ -338,6 +340,7 @@
     <mimic joint="right_gripper_finger_yaw_joint" multiplier="1"/>
     <axis xyz="0 0 -1"/>
     <limit lower="0" upper="1.58" effort="0" velocity="4.23"/>
+    <dynamics damping="0.7"/>
   </joint>
   <joint name="right_gripper_finger_roll_joint" type="revolute">
     <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -345,6 +348,7 @@
     <child link="right_gripper_l_finger"/>
     <axis xyz="1 0 0"/>
     <limit lower="0" upper="3.14" effort="0" velocity="5.5"/>
+    <dynamics damping="0.7"/>
   </joint>
   <joint name="right_gripper_r_finger_roll_joint" type="revolute">
     <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -353,6 +357,7 @@
     <mimic joint="right_gripper_finger_roll_joint" multiplier="1"/>
     <axis xyz="-1 0 0"/>
     <limit lower="0" upper="3.14" effort="0" velocity="5.5"/>
+    <dynamics damping="0.7"/>
   </joint>
   <joint name="right_gripper_palm_endpoint_fixed" type="fixed">
     <origin rpy="0 ${M_PI} 0" xyz="${palm_offset_x} 0 ${palm_offset_z}" />
