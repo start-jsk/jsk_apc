@@ -1,8 +1,7 @@
 <launch>
   <machine name="c2"
            user="baxter" address="sheeta-c2.jsk.imi.i.u-tokyo.ac.jp"
-           env-loader="/home/baxter/env-loader.sh" />
-
+           env-loader="/home/baxter/ros/jsk_apc/src/start-jsk/jsk_apc/jsk_arc2017_baxter/scripts/env-loader.sh" />
   <node name="scale0"
         pkg="jsk_arc2017_common" type="ekew_i_driver.py"
         respawn="true"
