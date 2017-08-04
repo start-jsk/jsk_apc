@@ -250,7 +250,8 @@
     (send *ri* :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :arc-reset-pose arm))
-          :fast (send *ri* :get-arm-controller arm :gripper (eq grasp-style- :suction)) 0 :scale 3.0)
+          :fast (send *ri* :get-arm-controller arm :gripper (eq grasp-style- :suction))
+          0 :scale 3.0)
     (send *ri* :wait-interpolation)
     (if (eq grasp-style- :pinch)
       (send self :resolve-collision-between-fingers arm)))
