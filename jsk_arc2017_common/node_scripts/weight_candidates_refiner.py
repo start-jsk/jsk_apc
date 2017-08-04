@@ -76,6 +76,8 @@ class WeightCanditatesRefiner(object):
         assert len(weight_msgs) == len(self.prev_weight_values)
         weight_values = [w.weight.value for w in weight_msgs]
         if any(math.isnan(w) for w in weight_values):
+            rospy.logwarn_throttle(
+                10, 'NaN values are included in scale output.')
             return  # unstable, scale over, or something
         self.prev_weight_values = weight_values
 
