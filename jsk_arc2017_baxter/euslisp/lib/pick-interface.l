@@ -98,7 +98,7 @@
             (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait nil)
       (ros::ros-info "[main] Recognizing objects in bin ~a" target-bin-)
       (unless (> start-picking-fail-count- 0)
-        (send *ri* :speak (format nil "Going to bin ~a." target-bin-))
+        (send *ri* :speak (format nil "~a arm is going to bin ~a." (arm2str arm) target-bin-))
         (send self :move-arm-body->bin-overlook-pose arm target-bin-)
         (send *ri* :wait-interpolation))
       (setq recognition-count 1)
@@ -197,7 +197,8 @@
       (setq start-picking-fail-count- 0)
       (setq recognize-fail-count- 0)
       (send *ri* :speak
-            (format nil "Now I will try to pick ~a, which is~a an ordered object."
+            (format nil "~a arm is picking ~a, which is~a an ordered object."
+                    (arm2str arm)
                     (underscore-to-space target-obj-)
                     (if moving-object-p- " not" "")))
       (when moveit-p- (send self :delete-bin-scene target-bin-))
@@ -360,6 +361,9 @@
       ;; (setq path-constraints (instance moveit_msgs::Constraints :init
       ;;                                  :orientation_constraints (list orientation-constraint)))
 
+      (send *ri* :speak
+            (format nil "~a arm is placing ~a into box ~a."
+                    (arm2str arm) (underscore-to-space target-obj-) target-cardboard-))
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-cardboard-)
       ;; (when moveit-p- (send self :add-object-in-hand-scene arm target-obj-))
 
@@ -429,6 +433,9 @@
       ;; (when moveit-p- (send self :delete-object-in-hand-scene arm))
       (if dropped
         (progn
+          (send *ri* :speak
+                (format nil "~a arm dropped ~a to somewhere."
+                        (arm2str arm) (underscore-to-space target-obj-)))
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style- :pinch)
