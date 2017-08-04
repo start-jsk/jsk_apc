@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+import os.path as osp
+import re
+import subprocess
+
+
+def sudo_bash_cmd(cmd):
+    return "sudo bash -c '%s'" % cmd
+
+
+def reconnect_usbs():
+    cmd = 'lsusb -t'
+    print('+ {:s}'.format(cmd))
+    output = subprocess.check_output(cmd, shell=True).strip()
+    print(output)
+
+    bus_id = None
+    for line in output.splitlines():
+        m = re.match('/:  Bus (.*?)\.Port.*', line)
+        if m:
+            bus_id = int(m.groups()[0])
+            continue
+
+        m = re.match('^    \|__ Port ([0-9]*?): Dev [0-9]*?, If 0, Class=.*, Driver=.*, [0-9]*M$', line)  # NOQA
+        if m:
+            port_id = int(m.groups()[0])
+
+            # ex. 1-6  ({BUS_ID}-{PORT_ID})
+            usb_id = '{:d}-{:d}'.format(bus_id, port_id)
+
+            for action in ['unbind', 'bind']:
+                cmd = 'echo -n "{:s}" > /sys/bus/usb/drivers/usb/{:s}'\
+                    .format(usb_id, action)
+                cmd = sudo_bash_cmd(cmd)
+                print('+ {:s}'.format(cmd))
+                subprocess.call(cmd, shell=True)
+
+
+def main():
+    usb_devices = [
+        'scale0',
+        'scale1',
+        'scale2',
+        'scale3',
+        'arduino0',
+        'arduino1',
+        'arduino2',
+        'l_dxhub',
+        'r_dxhub',
+    ]
+    if all(osp.exists('/dev/%s' % d) for d in usb_devices):
+        print('All USB devices are recognized.')
+        return
+
+    reconnect_usbs()
+
+
+if __name__ == '__main__':
+    main()
