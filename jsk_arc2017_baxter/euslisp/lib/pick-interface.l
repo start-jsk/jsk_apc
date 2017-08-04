@@ -14,7 +14,6 @@
   :slots (bin-contents
           bins
           dropped
-          graspingp
           grasp-style
           label-names
           moveit-p
@@ -196,57 +195,58 @@
     (unless grasp-style (setq trial-fail-count 0))
     (if grasp-style t nil))
   (:pick-object (arm)
-    ;; slots reset
-    (setq start-picking-fail-count 0)
-    (setq recognize-fail-count 0)
-    (send *ri* :speak
-          (format nil "Now I will try to pick ~a, which is~a an ordered object."
-                  (underscore-to-space target-obj)
-                  (if moving-object-p- " not" "")))
-    (when moveit-p (send self :delete-bin-scene target-bin))
-    (if (eq grasp-style :suction)
-      (send self :set-movable-region-for-bin :offset (list 50 50 0))
-      (send self :set-movable-region-for-bin :offset (list 50 50 0)))
-    (send self :reset-scale arm)
-    (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
-    (setq graspingp
-          (send self :pick-object-in-bin arm target-bin
-                :n-trial (if (eq grasp-style :suction) 2 1)
-                :n-trial-same-pos 1
-                :do-stop-grasp nil
-                :grasp-style grasp-style))
-    (when moveit-p (send self :add-bin-scene target-bin))
-    (unless (eq graspingp :ik-fail)
-      (setq graspingp (send *ri* :graspingp arm grasp-style)))
-    (unless graspingp (return-from :pick-object nil))
-    (let (avs end-pos)
+    (let (graspingp)
+      ;; slots reset
+      (setq start-picking-fail-count 0)
+      (setq recognize-fail-count 0)
+      (send *ri* :speak
+            (format nil "Now I will try to pick ~a, which is~a an ordered object."
+                    (underscore-to-space target-obj)
+                    (if moving-object-p- " not" "")))
+      (when moveit-p (send self :delete-bin-scene target-bin))
       (if (eq grasp-style :suction)
-        (progn
-          (send self :ik->bin-center arm target-bin
-                :offset #f(0 0 300)
-                :rotation-axis :z :use-gripper t)
-          (setq end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos))
-          (send *baxter* :rotate-wrist-ik arm
-                (make-coords :pos end-pos
-                             :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
-                :rotate-axis t))
-        (progn
-          (send self :ik->bin-center arm target-bin
-                :offset #f(0 0 300)
-                :rotation-axis :z :move-palm-end t)
-          (setq end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos))
-          (send *baxter* :rotate-wrist-ik arm
-                (make-coords :pos end-pos
-                             :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
-                :move-palm-end t
-                :rotate-axis t)))
-      (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
-            (send *ri* :get-arm-controller arm :gripper nil) 0)
-      (send *ri* :wait-interpolation))
-    (if (eq graspingp :ik-fail) (return-from :pick-object nil))
-    (setq graspingp (send *ri* :graspingp arm grasp-style))
-    (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
-    graspingp)
+        (send self :set-movable-region-for-bin :offset (list 50 50 0))
+        (send self :set-movable-region-for-bin :offset (list 50 50 0)))
+      (send self :reset-scale arm)
+      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
+      (setq graspingp
+            (send self :pick-object-in-bin arm target-bin
+                  :n-trial (if (eq grasp-style :suction) 2 1)
+                  :n-trial-same-pos 1
+                  :do-stop-grasp nil
+                  :grasp-style grasp-style))
+      (when moveit-p (send self :add-bin-scene target-bin))
+      (unless (eq graspingp :ik-fail)
+        (setq graspingp (send *ri* :graspingp arm grasp-style)))
+      (unless graspingp (return-from :pick-object nil))
+      (let (avs end-pos)
+        (if (eq grasp-style :suction)
+          (progn
+            (send self :ik->bin-center arm target-bin
+                  :offset #f(0 0 300)
+                  :rotation-axis :z :use-gripper t)
+            (setq end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos))
+            (send *baxter* :rotate-wrist-ik arm
+                  (make-coords :pos end-pos
+                               :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
+                  :rotate-axis t))
+          (progn
+            (send self :ik->bin-center arm target-bin
+                  :offset #f(0 0 300)
+                  :rotation-axis :z :move-palm-end t)
+            (setq end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos))
+            (send *baxter* :rotate-wrist-ik arm
+                  (make-coords :pos end-pos
+                               :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
+                  :move-palm-end t
+                  :rotate-axis t)))
+        (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
+              (send *ri* :get-arm-controller arm :gripper nil) 0)
+        (send *ri* :wait-interpolation))
+      (if (eq graspingp :ik-fail) (return-from :pick-object nil))
+      (setq graspingp (send *ri* :graspingp arm grasp-style))
+      (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
+      graspingp))
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj target-bin)
     (setq start-picking-fail-count 0)

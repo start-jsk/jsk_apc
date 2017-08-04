@@ -12,7 +12,6 @@
 (defclass jsk_arc2017_baxter::stow-interface
   :super jsk_arc2017_baxter::arc-interface
   :slots (dropped
-          graspingp
           grasp-style
           label-names
           moveit-p
@@ -155,59 +154,60 @@
     (unless grasp-style (setq trial-fail-count 0))
     (if grasp-style t nil))
   (:pick-object (arm)
-    (setq recognize-fail-count 0)
-    (when moveit-p (send self :delete-tote-scene arm))
-    (if (eq grasp-style :suction)
-      (send self :set-movable-region-for-tote arm :offset (list 50 50 0))
-      (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
-    (send self :reset-scale arm)
-    (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
-    (setq graspingp
-          (send self :pick-object-in-tote arm
-                :n-trial (if (eq grasp-style :suction) 2 1)
-                :n-trial-same-pos 1
-                :do-stop-grasp nil
-                :grasp-style grasp-style))
-    (when moveit-p (send self :add-tote-scene arm))
-    (unless (eq graspingp :ik-fail)
-      (setq graspingp (send *ri* :graspingp arm grasp-style)))
-    (unless graspingp (return-from :pick-object nil))
-    (let (avs end-pos)
+    (let (graspingp)
+      (setq recognize-fail-count 0)
+      (when moveit-p (send self :delete-tote-scene arm))
       (if (eq grasp-style :suction)
-        (progn
-          (pushback
-            (send self :ik->tote-center arm
-                  :offset #f(0 0 400)
-                  :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
-                  :rotation-axis t :use-gripper t)
-            avs)
-          (setq end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos))
-          (pushback
+        (send self :set-movable-region-for-tote arm :offset (list 50 50 0))
+        (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
+      (send self :reset-scale arm)
+      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
+      (setq graspingp
+            (send self :pick-object-in-tote arm
+                  :n-trial (if (eq grasp-style :suction) 2 1)
+                  :n-trial-same-pos 1
+                  :do-stop-grasp nil
+                  :grasp-style grasp-style))
+      (when moveit-p (send self :add-tote-scene arm))
+      (unless (eq graspingp :ik-fail)
+        (setq graspingp (send *ri* :graspingp arm grasp-style)))
+      (unless graspingp (return-from :pick-object nil))
+      (let (avs end-pos)
+        (if (eq grasp-style :suction)
+          (progn
+            (pushback
+              (send self :ik->tote-center arm
+                    :offset #f(0 0 400)
+                    :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
+                    :rotation-axis t :use-gripper t)
+              avs)
+            (setq end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos))
+            (pushback
+              (send *baxter* :rotate-wrist-ik arm
+                    (make-coords :pos end-pos
+                                 :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
+                    :rotate-axis t)
+              avs))
+          (progn
+            (pushback
+              (send self :ik->tote-center arm
+                    :offset #f(0 0 400)
+                    :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
+                    :rotation-axis t :move-palm-end t)
+              avs)
+            (setq end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos))
             (send *baxter* :rotate-wrist-ik arm
                   (make-coords :pos end-pos
                                :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
-                  :rotate-axis t)
-            avs))
-        (progn
-          (pushback
-            (send self :ik->tote-center arm
-                  :offset #f(0 0 400)
-                  :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
-                  :rotation-axis t :move-palm-end t)
-            avs)
-          (setq end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos))
-          (send *baxter* :rotate-wrist-ik arm
-                (make-coords :pos end-pos
-                             :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
-                :move-palm-end t
-                :rotate-axis t)))
-      (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
-            (send *ri* :get-arm-controller arm :gripper nil) 0)
-      (send *ri* :wait-interpolation))
-    (if (eq graspingp :ik-fail) (return-from :pick-object nil))
-    (setq graspingp (send *ri* :graspingp arm grasp-style))
-    (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
-    graspingp)
+                  :move-palm-end t
+                  :rotate-axis t)))
+        (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
+              (send *ri* :get-arm-controller arm :gripper nil) 0)
+        (send *ri* :wait-interpolation))
+      (if (eq graspingp :ik-fail) (return-from :pick-object nil))
+      (setq graspingp (send *ri* :graspingp arm grasp-style))
+      (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
+      graspingp))
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj :tote)
     (ros::ros-info "[main] arm: ~a return from pick-object to arc-reset-pose" arm)
