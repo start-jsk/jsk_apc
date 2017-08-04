@@ -147,7 +147,10 @@
 
 (defun pick-init (&key (ctype :default-controller) (calib-pressure t) (moveit nil))
   (jsk_arc2017_baxter::pick-init :ctype ctype :moveit moveit)
-  (when moveit (send *ti* :wipe-all-scene))
+  (when moveit
+    (send *ti* :wipe-all-scene)
+    (send *ti* :add-workspace-scene)
+    )
   (send *ri* :gripper-servo-on)
   ;; initialize fingers
   (send *ri* :move-hand :rarm
