@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import math
+
 import jsk_arc2017_common
 from jsk_arc2017_common.msg import WeightStamped
 from jsk_recognition_msgs.msg import Label
@@ -73,7 +75,9 @@ class WeightCanditatesRefiner(object):
 
         assert len(weight_msgs) == len(self.prev_weight_values)
         weight_values = [w.weight.value for w in weight_msgs]
-        if any(w < 0 for w in weight_values):
+        if any(math.isnan(w) for w in weight_values):
+            rospy.logwarn_throttle(
+                10, 'NaN values are included in scale output.')
             return  # unstable, scale over, or something
         self.prev_weight_values = weight_values
 

@@ -46,7 +46,7 @@ class EkEwIDriver(object):
             return
 
         # get raw scale value without checking the mode of the scale
-        weight_raw = -1  # unknown
+        weight_raw = float('nan')  # unknown
         unit = data[12:15]
         if unit != '  g':
             rospy.logerr('Unsupported unit: %s', unit)
@@ -59,7 +59,7 @@ class EkEwIDriver(object):
 
         # get scale value with checking the mode of the scale
         header = data[:2]
-        weight = -1  # unknown
+        weight = float('nan')  # unknown
         if header == 'ST':
             # scale mode
             unit = data[12:15]
