@@ -335,8 +335,9 @@
             :fast (send *ri* :get-arm-controller arm :gripper nil) 0 :scale 5.0))
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp arm)
-    (if (eq grasp-style :pinch)
-      (send *ri* :stop-grasp arm :pinch))
+    (when (eq grasp-style :pinch)
+      (send *ri* :stop-grasp arm :pinch)
+      (send *baxter* :rotate-gripper arm 90 :relative nil))
     (send self :spin-off-by-wrist arm :times 5)
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in shelf" arm)
@@ -452,8 +453,9 @@
                 2000 (send *ri* :get-arm-controller arm) 0)
           (send *ri* :wait-interpolation)
           (send *ri* :stop-grasp arm) ;; release object
-          (if (eq grasp-style :pinch)
-            (send *ri* :stop-grasp arm :pinch)) ;; release object
+          (when (eq grasp-style :pinch)
+            (send *ri* :stop-grasp arm :pinch)
+            (send *baxter* :rotate-gripper arm 90 :relative nil)) ;; release object
           (send self :spin-off-by-wrist arm :times 10)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-raw
