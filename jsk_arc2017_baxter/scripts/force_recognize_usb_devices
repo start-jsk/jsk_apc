@@ -1,0 +1,100 @@
+#!/usr/bin/env python
+
+import os
+import os.path as osp
+import re
+import subprocess
+
+import termcolor
+
+
+def sudo_bash_cmd(cmd):
+    return "sudo bash -c '%s'" % cmd
+
+
+# FIXME: Hopely we can reconnect only for disconnected device,
+#        but currently all usb devices must be reconnect for stable device finding.
+# def connected_usbs():
+#     usb_ids = set()
+#     for device in os.listdir('/dev'):
+#         device = osp.join('/dev', device)
+#         cmd = 'sudo udevadm info --query=path --name={:s}'.format(device)
+#         try:
+#             path = subprocess.check_output(cmd, shell=True, stderr=subprocess.PIPE).strip()
+#         except subprocess.CalledProcessError:
+#             continue
+#
+#         # ex.) /devices/pci0000:00/0000:00:14.0/usb3/3-6/3-6:1.0/ttyUSB0/tty/ttyUSB0
+#         m = re.match('/devices/pci0000:00/0000:00:14.0/usb[0-9]*?/(.*?)/.*', path)
+#         if not m:
+#             continue
+#
+#         usb_id = m.groups()[0]
+#         usb_ids.add(usb_id)
+#     return usb_ids
+
+
+def reconnect_usbs():
+    cmd = 'lsusb -t'
+    print('+ {:s}'.format(cmd))
+    output = subprocess.check_output(cmd, shell=True).strip()
+    # print(output)
+
+    bus_id = None
+    usb_ids = set()
+    for line in output.splitlines():
+        m = re.match('/:  Bus (.*?)\.Port.*', line)
+        if m:
+            bus_id = int(m.groups()[0])
+            continue
+
+        m = re.match('^    \|__ Port ([0-9]*?): Dev [0-9]*?, If 0, Class=.*, Driver=.*, [0-9]*M$', line)  # NOQA
+        if m:
+            port_id = int(m.groups()[0])
+
+            # ex. 1-6  ({BUS_ID}-{PORT_ID})
+            usb_id = '{:d}-{:d}'.format(bus_id, port_id)
+
+            usb_ids.add(usb_id)
+
+    for usb_id in usb_ids:
+        for action in ['unbind', 'bind']:
+            cmd = 'echo -n "{:s}" > /sys/bus/usb/drivers/usb/{:s}'\
+                .format(usb_id, action)
+            cmd = sudo_bash_cmd(cmd)
+            print('+ {:s}'.format(cmd))
+            subprocess.call(cmd, shell=True)
+
+
+def main():
+    devices = [
+        '/dev/scale0',
+        '/dev/scale1',
+        '/dev/scale2',
+        '/dev/scale3',
+        '/dev/arduino0',
+        '/dev/arduino1',
+        '/dev/arduino2',
+        '/dev/l_dxhub',
+        '/dev/r_dxhub',
+    ]
+
+    all_ok = True
+    flag_pass = termcolor.colored('[Pass]', color='green')
+    flag_fail = termcolor.colored('[Fail]', color='red')
+    for device in devices:
+        if osp.exists(device):
+            print('{:s} {:s}'.format(flag_pass, device))
+        else:
+            print('{:s} {:s}'.format(flag_fail, device))
+            all_ok = False
+    if all_ok:
+        termcolor.cprint('All USB devices are recognized.', color='green')
+        return
+
+    termcolor.cprint('Forcely recognizing USB devices.', color='red')
+    reconnect_usbs()
+
+
+if __name__ == '__main__':
+    main()
