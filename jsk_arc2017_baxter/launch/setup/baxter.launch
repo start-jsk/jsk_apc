@@ -4,6 +4,12 @@
   <arg name="moveit" default="true" />
   <arg name="pick" default="true" doc="pick_task: true, stow_task: false" />
 
+  <!-- sanity check usb devices -->
+  <node name="force_recognize_usb_devices"
+        pkg="jsk_arc2017_baxter" type="force_recognize_usb_devices"
+        output="screen">
+  </node>
+
   <!-- custom baxter params -->
   <param name="/robot_description"
          command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxter.xacro" />
