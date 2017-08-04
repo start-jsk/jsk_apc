@@ -5,7 +5,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
-    version: jsk_apc
+    version: master
 # jsk_visualization needs below:
 # https://github.com/jsk-ros-pkg/jsk_visualization/pull/670
 - git:
