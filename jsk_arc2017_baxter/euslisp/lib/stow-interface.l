@@ -149,7 +149,10 @@
                          (arm2str arm) (symbol2str grasp-style-) (+ trial-fail-count- 1))
     (unless grasp-style- (setq trial-fail-count- 0))
     (if grasp-style- t nil))
-  (:pick-object (arm)
+  (:pick-object
+    (arm)
+    (send *ri* :speak
+          (format nil "~a arm is picking ~a." (arm2str arm) (underscore-to-space target-obj-)))
     (let (graspingp)
       (setq recognize-fail-count- 0)
       (when moveit-p- (send self :delete-tote-scene arm))
