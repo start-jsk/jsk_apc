@@ -198,7 +198,7 @@ void initBME()
 {
   digitalWrite(SS, LOW);
   SPI.transfer((0xF5 & 0x7F));
-  SPI.transfer(0xA0);
+  SPI.transfer(0x20);
   SPI.transfer((0xF4 & 0x7F));
   SPI.transfer(0x27);
   digitalWrite(SS, HIGH);
