@@ -608,11 +608,12 @@
                 (setq avs (remove nil avs))
                 (when avs
                   (send *ri* :update-robot-state :wait-until-update t)
-                  (when (null (send *ri* :angle-vector-sequence-raw avs
-                                    2000 (send *ri* :get-arm-controller arm) 0
-                                    :end-coords-interpolation t))
+                  (unless (send *ri* :angle-vector-sequence-raw avs
+                                2000 (send *ri* :get-arm-controller arm) 0
+                                :end-coords-interpolation t)
                     (send *ri* :angle-vector-sequence-raw avs
-                          :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0))
+                          :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0)
+                    )
                   (send *ri* :wait-interpolation))))
             (setq graspingp
                   (send self :try-to-pick-object arm obj-pos
@@ -853,10 +854,9 @@
         (ros::ros-error "[:try-to-pinch-object] arm:~a IK to object fails. Abort picking" arm)
         (return-from :try-to-pinch-object :ik-fail))
       (send *ri* :update-robot-state :wait-until-update t)
-      (if (null (send *ri* :angle-vector-raw av
-                      3000 (send *ri* :get-arm-controller arm) 0 :end-coords-interpolation t))
-        (send *ri* :angle-vector-raw av
-              3000 (send *ri* :get-arm-controller arm) 0))
+      (unless (send *ri* :angle-vector-raw av
+                    3000 (send *ri* :get-arm-controller arm) 0 :end-coords-interpolation t)
+        (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0))
       ;; Wait until grasp or finger touch
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
