@@ -4,5 +4,4 @@
  	branch = jsk_apc
 [submodule ".travis"]
 	path = .travis
-	url = https://github.com/wkentaro/jsk_travis.git
-	version = install_patch
+	url = https://github.com/jsk-ros-pkg/jsk_travis.git

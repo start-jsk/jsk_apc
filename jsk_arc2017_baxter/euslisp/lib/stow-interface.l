@@ -149,7 +149,10 @@
                          (arm2str arm) (symbol2str grasp-style-) (+ trial-fail-count- 1))
     (unless grasp-style- (setq trial-fail-count- 0))
     (if grasp-style- t nil))
-  (:pick-object (arm)
+  (:pick-object
+    (arm)
+    (send *ri* :speak
+          (format nil "~a arm is picking ~a." (arm2str arm) (underscore-to-space target-obj-)))
     (let (graspingp)
       (setq recognize-fail-count- 0)
       (when moveit-p- (send self :delete-tote-scene arm))
@@ -305,6 +308,9 @@
       (send self :resolve-collision-between-fingers arm)))
   (:place-object (arm)
     (let (dropped place-av)
+      (send *ri* :speak
+            (format nil "~a arm is placing ~a into bin ~a."
+                    (arm2str arm) (underscore-to-space target-obj-) target-bin-))
       (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin-)
       (when moveit-p- (send self :add-object-in-hand-scene arm target-obj-))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) 70 -70))
@@ -328,6 +334,9 @@
       (when moveit-p- (send self :delete-object-in-hand-scene arm))
       (if dropped
         (progn
+          (send *ri* :speak
+                (format nil "~a arm dropped ~a to somewhere."
+                        (arm2str arm) (underscore-to-space target-obj-)))
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style- :pinch)
