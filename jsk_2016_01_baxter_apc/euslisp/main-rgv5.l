@@ -4,9 +4,9 @@
 
 (ros::roseus "robot_main")
 
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxterrgv5-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/baxterrgv5-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
 
 (defun apc-init (&optional (ctype :default-controller) (calib-pressure t))
   (jsk_2016_01_baxter_apc::baxterrgv5-init :ctype ctype)

@@ -5,7 +5,7 @@
 ;; *disbale* : ik-unsolvable range in both arms
 
 (load "package://jsk_2015_05_baxter_apc/euslisp/test/data/bin-cubes-alist.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/baxter.l")
 (load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
 
 (defun check-init ()

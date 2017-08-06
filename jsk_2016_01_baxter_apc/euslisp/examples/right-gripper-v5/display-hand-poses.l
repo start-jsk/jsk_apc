@@ -1,4 +1,4 @@
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxterrgv5-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/baxterrgv5-interface.l")
 
 (defun demo-init ()
   (jsk_2016_01_baxter_apc::baxterrgv5-init :ctype :default-controller)

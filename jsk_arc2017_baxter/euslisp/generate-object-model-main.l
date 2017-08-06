@@ -1,8 +1,8 @@
 #!/usr/bin/env roseus
 ;; vim: set ft=lisp:
 
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/baxter-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
 
 (defun model2real (&key (wait? t) (scale 16.0))
   (send *ri* :angle-vector-sequence (list (send *baxter* :angle-vector)) :fast nil 0 :scale scale)

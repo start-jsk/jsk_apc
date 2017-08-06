@@ -2,7 +2,7 @@
 ;; vim: set ft=lisp:
 
 (require "package://jsk_arc2017_baxter/euslisp/lib/arc-interface.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/util.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
 
 
 (defun move-arm-body->bin-overlook-pose->multi-view

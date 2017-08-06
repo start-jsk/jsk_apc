@@ -1,6 +1,6 @@
 #!/usr/bin/env roseus
 (require :unittest "lib/llib/unittest.l")
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/baxter.l")
 
 (init-unit-test)
 
