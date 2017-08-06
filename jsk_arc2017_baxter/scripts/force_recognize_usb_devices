@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import os
 import os.path as osp
 import re
 import subprocess
+import sys
+import time
 
 import termcolor
 
@@ -66,7 +70,7 @@ def reconnect_usbs():
             subprocess.call(cmd, shell=True)
 
 
-def main():
+def check_devices():
     devices = [
         '/dev/scale0',
         '/dev/scale1',
@@ -78,22 +82,32 @@ def main():
         '/dev/l_dxhub',
         '/dev/r_dxhub',
     ]
-
     all_ok = True
     flag_pass = termcolor.colored('[Pass]', color='green')
     flag_fail = termcolor.colored('[Fail]', color='red')
     for device in devices:
         if osp.exists(device):
-            print('{:s} {:s}'.format(flag_pass, device))
+            print('{:s} {:s}'.format(flag_pass, device), file=sys.stderr)
         else:
-            print('{:s} {:s}'.format(flag_fail, device))
+            print('{:s} {:s}'.format(flag_fail, device), file=sys.stderr)
             all_ok = False
-    if all_ok:
-        termcolor.cprint('All USB devices are recognized.', color='green')
-        return
+    return all_ok
 
-    termcolor.cprint('Forcely recognizing USB devices.', color='red')
-    reconnect_usbs()
+
+def main():
+    for i in xrange(2):
+        all_ok = check_devices()
+        if all_ok:
+            termcolor.cprint('All USB devices are recognized.',
+                             color='green', file=sys.stderr)
+            return
+        if i == 1:
+            return
+
+        termcolor.cprint('Forcely recognizing USB devices.',
+                         color='red', file=sys.stderr)
+        reconnect_usbs()
+        time.sleep(5)  # wait for connection of usbs
 
 
 if __name__ == '__main__':
