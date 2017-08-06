@@ -446,28 +446,28 @@
     (send *ri* :wait-interpolation))
   (:pick-object-in-bin
     (arm bin &rest args)
-    (let (graspingp movable-region)
+    (let (pick-res movable-region)
       (setq movable-region (gethash bin bin-movable-regions-))
       (unless movable-region
         (ros::ros-error "[:pick-object-in-bin] No movable region for bin. Call :set-movable-region-for-bin first.")
         (return-from :pick-object-in-bin nil))
-      (setq graspingp (send* self :pick-object-with-movable-region arm movable-region args))
-      graspingp))
+      (setq pick-res (send* self :pick-object-with-movable-region arm movable-region args))
+      pick-res))
   (:pick-object-in-tote
     (arm &rest args)
-    (let (graspingp movable-region)
+    (let (pick-res movable-region)
       (setq movable-region (gethash arm tote-movable-regions-))
       (unless movable-region
         (ros::ros-error "[:pick-object-in-tote] No movable region for tote. Call :set-movable-region-for-tote first.")
         (return-from :pick-object-in-tote nil))
-      (setq graspingp (send* self :pick-object-with-movable-region arm movable-region args))
-      graspingp))
+      (setq pick-res (send* self :pick-object-with-movable-region arm movable-region args))
+      pick-res))
   (:pick-object-with-movable-region
     (arm movable-region &key (n-trial 1) (n-trial-same-pos 1)
          (do-stop-grasp nil) (grasp-style :suction))
     (send *ri* :stop-grasp arm :pinch)
     (send *ri* :calib-proximity-threshold arm)
-    (let (graspingp avs object-index obj-pos obj-cube pinch-yaw suction-yaw near-walls)
+    (let (pick-res avs object-index obj-pos obj-cube pinch-yaw suction-yaw near-walls)
       ;; pick largest bounding box
       (setq object-index 0)
       (setq obj-pos
@@ -591,7 +591,7 @@
         (send *ri* :wait-interpolation))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
-          (unless graspingp
+          (unless pick-res
             (let (ec avs)
               (when (eq grasp-style :suction)
                 ;; Fold fingers again
@@ -613,16 +613,16 @@
                                 :end-coords-interpolation t)
                     (send *ri* :angle-vector-sequence-raw avs
                           :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0)
-                    )
-                  (send *ri* :wait-interpolation))))
-            (setq graspingp
+                    (send *ri* :wait-interpolation)))
+                ))
+            (setq pick-res
                   (send self :try-to-pick-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -30) 80))
                         :grasp-style grasp-style
                         :suction-yaw suction-yaw
                         :pinch-yaw pinch-yaw)))))
       (when do-stop-grasp
-        (unless graspingp
+        (unless (eq pick-res t)
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style :pinch)
             (send *ri* :stop-grasp arm :pinch))))
@@ -632,7 +632,7 @@
           (send *ri* :move-hand arm
                 (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait nil)))
       (send *ri* :gripper-servo-on arm)
-      graspingp))
+      pick-res))
   (:get-object-position
     (arm movable-region &key (object-index 0))
     (let (obj-box obj-coords obj-pos)
