@@ -5,12 +5,8 @@
   <arg name="pick" default="true" doc="pick_task: true, stow_task: false" />
 
   <!-- sanity check usb devices -->
-  <!-- sudo is required in force_recognize_usb_devices -->
-  <param name="run_sudo" command="sudo echo run_sudo" />
-  <node name="force_recognize_usb_devices"
-        pkg="jsk_arc2017_baxter" type="force_recognize_usb_devices"
-        output="screen">
-  </node>
+  <param name="force_recognize_usb_devices"
+         command="rosrun jsk_arc2017_baxter force_recognize_usb_devices" />
 
   <!-- custom baxter params -->
   <param name="/robot_description"
