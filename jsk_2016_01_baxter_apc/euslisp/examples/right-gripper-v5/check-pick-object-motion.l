@@ -2,7 +2,7 @@
 ;; CAUTION: This script works only in simulation
 #!/usr/bin/env roseus
 
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxterrgv5-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/baxterrgv5-interface.l")
 
 (ros::roseus "check_pick_object_motion")
 

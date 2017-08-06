@@ -1,7 +1,7 @@
 #!/usr/bin/env roseus
 
 (require :unittest "lib/llib/unittest.l")
-(require :baxter-interface "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
+(require :baxter-interface "package://jsk_2016_01_baxter_apc/euslisp/lib/baxter-interface.l")
 
 (init-unit-test)
 

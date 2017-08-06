@@ -1,7 +1,7 @@
 #!/usr/bin/env roseus
 ;; vim: set ft=lisp:
 
-(require "package://jsk_2016_01_baxter_apc/euslisp/jsk_2016_01_baxter_apc/baxter-interface.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/baxter-interface.l")
 
 (ros::roseus "reset_pose")
 
