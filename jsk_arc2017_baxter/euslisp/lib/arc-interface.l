@@ -602,27 +602,17 @@
                     (send ec :translate #f(0 0 -80) :world)
                     (pushback (send *baxter* arm :inverse-kinematics ec) avs))
                   (progn
-                    (send ec :translate #f(0 0 -50) :world)
-                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
-                    (send ec :translate #f(0 0 -50) :world)
-                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
-                    (send ec :translate #f(0 0 -50) :world)
-                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
-                    (send ec :translate #f(0 0 -50) :world)
-                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
-                    (send ec :translate #f(0 0 -50) :world)
-                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
-                    (send ec :translate #f(0 0 -50) :world)
-                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)
-                    (send ec :translate #f(0 0 -30) :world)
+                    (send ec :translate #f(0 0 -330) :world)
                     (pushback (send *baxter* arm :inverse-kinematics ec) avs)))
                 (setq avs (remove nil avs))
-                (if avs
-                  (progn
+                (when avs
+                  (send *ri* :update-robot-state :wait-until-update t)
+                  (when (null (send *ri* :angle-vector-sequence-raw avs
+                                    2000 (send *ri* :get-arm-controller arm) 0
+                                    :end-coords-interpolation t))
                     (send *ri* :angle-vector-sequence-raw avs
-                          :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0)
-                    (send *ri* :wait-interpolation)))
-                ))
+                          :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0))
+                  (send *ri* :wait-interpolation))))
             (setq graspingp
                   (send self :try-to-pick-object arm obj-pos
                         :offset (float-vector 0 0 (- (* i -30) 80))
@@ -861,7 +851,11 @@
       (unless av
         (ros::ros-error "[:try-to-pinch-object] arm:~a IK to object fails. Abort picking" arm)
         (return-from :try-to-pinch-object :ik-fail))
-      (send *ri* :angle-vector-raw av 3000 (send *ri* :get-arm-controller arm) 0)
+      (send *ri* :update-robot-state :wait-until-update t)
+      (if (null (send *ri* :angle-vector-raw av
+                      3000 (send *ri* :get-arm-controller arm) 0 :end-coords-interpolation t))
+        (send *ri* :angle-vector-raw av
+              3000 (send *ri* :get-arm-controller arm) 0))
       ;; Wait until grasp or finger touch
       (send *ri* :wait-interpolation-until arm
             :grasp :finger-flexion :finger-loaded :prismatic-loaded :finger-proximity)
