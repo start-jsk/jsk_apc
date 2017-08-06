@@ -21,8 +21,6 @@ env:
     # - NUMBER_OF_LOGS_TO_KEEP=10  # default is 3
     # - DOCKER_IMAGE_JENKINS="jsk-apc-indigo"  # built on Jenkins
     - USE_TRAVIS=true
-    - USE_DOCKER=true
-    - DOCKER_IMAGE="wkentaro/jsk_apc:latest"
   matrix:
     - ROS_DISTRO=indigo
 
