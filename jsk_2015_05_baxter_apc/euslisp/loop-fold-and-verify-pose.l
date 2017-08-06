@@ -1,7 +1,7 @@
 #!/usr/bin/env roseus
 ;; vim: set ft=lisp:
 
-(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/lib/baxter-interface.l")
 
 (ros::roseus "loop_fold_and_verify_pose")
 

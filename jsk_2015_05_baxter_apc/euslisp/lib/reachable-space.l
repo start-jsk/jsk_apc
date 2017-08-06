@@ -1,6 +1,6 @@
 ;; vim: set ft=lisp:
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
 
 
 (defun compute-reachable-space

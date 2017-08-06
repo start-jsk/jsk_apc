@@ -4,7 +4,7 @@
 (ros::load-ros-manifest "jsk_2015_05_baxter_apc")
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/utils.l")
-(require "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/model/score-board.l")
+(require "package://jsk_2015_05_baxter_apc/euslisp/lib/model/score-board.l")
 (setq *overlay-text-width* 1200)
 (setq *overlay-text-height* 50)
 
