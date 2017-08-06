@@ -501,6 +501,7 @@
            (setq pinch-yaw (/ (* 3 -pi) 4)) (setq suction-yaw (/ (* 3 -pi) 4)))
           (t nil)))
       (ros::ros-info "[:pick-object-with-movable-region] arm:~a approach to the object" arm)
+      (ros::ros-info "[:pick-object-with-movable-region] arm:~a obj-pos: ~a" arm obj-pos)
       (send *ri* :gripper-servo-on arm)
       ;; Setup arm for picking
       (let (next-avs)
