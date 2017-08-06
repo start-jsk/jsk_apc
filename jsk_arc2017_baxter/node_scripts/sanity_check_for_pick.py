@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os.path as osp
+import sys
 
 import rospy
 import sensor_msgs.msg
@@ -10,6 +11,8 @@ from jsk_tools.sanity_lib import checkTopicIsPublished
 
 
 def main():
+    sys.stdout = sys.__stderr__
+
     # check node is exists
     nodes = [
     ]
@@ -38,6 +41,8 @@ def main():
             topic = '/%s_hand_camera/%s' % (side, topic)
             if not checkTopicIsPublished(topic, timeout=30):
                 return
+
+    sys.stdout = sys.__stdout__
 
 
 if __name__ == '__main__':

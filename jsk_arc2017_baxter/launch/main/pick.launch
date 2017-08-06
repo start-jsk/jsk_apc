@@ -10,6 +10,9 @@
   <arg name="left_main" default="true" />
   <arg name="right_main" default="true" />
 
+  <param name="sanity_check_for_setup_for_pick"
+         command="rosrun jsk_arc2017_baxter sanity_check_for_setup_for_pick.py" />
+
   <!-- set bin_contents rosparam -->
   <node name="set_bin_contents"
         pkg="jsk_arc2017_common" type="set_location_in_rosparam.py">
