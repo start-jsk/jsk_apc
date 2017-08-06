@@ -215,9 +215,10 @@
                   :do-stop-grasp nil
                   :grasp-style grasp-style-))
       (when moveit-p- (send self :add-bin-scene target-bin-))
-      (unless (eq pick-res :ik-fail)
-        (setq graspingp (send *ri* :graspingp arm grasp-style-)))
-      (unless graspingp (return-from :pick-object nil))
+      ;; Don't trust pressure sensor
+      ;; (unless (eq pick-res :ik-fail)
+      ;;   (setq graspingp (send *ri* :graspingp arm grasp-style-)))
+      ;; (unless graspingp (return-from :pick-object nil))
       (let (avs end-pos)
         (if (eq grasp-style- :suction)
           (progn
@@ -243,9 +244,11 @@
               (send *ri* :get-arm-controller arm :gripper nil) 0)
         (send *ri* :wait-interpolation))
       (if (eq pick-res :ik-fail) (return-from :pick-object nil))
-      (setq graspingp (send *ri* :graspingp arm grasp-style-))
-      (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
-      graspingp))
+      ;; Don't trust pressure sensor
+      ;; (setq graspingp (send *ri* :graspingp arm grasp-style-))
+      ;; (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
+      ;; graspingp))
+      t))
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj- target-bin-)
     (setq start-picking-fail-count- 0)
