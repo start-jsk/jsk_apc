@@ -2,8 +2,8 @@
 
 (require :unittest "lib/llib/unittest.l")
 
-(require :baxter "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter.l")
-(require :util "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/util.l")
+(require :baxter "package://jsk_2015_05_baxter_apc/euslisp/lib/baxter.l")
+(require :util "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
 
 ;; load *bin-cubes-alist*
 (require :bin-cubes-alist "package://jsk_2015_05_baxter_apc/euslisp/test/data/bin-cubes-alist.l")

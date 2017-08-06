@@ -1,8 +1,8 @@
 ;; vim: set ft=lisp:
 
 
-(load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/baxter-interface.l")
-(load "package://jsk_2015_05_baxter_apc/euslisp/jsk_2015_05_baxter_apc/reachable-space.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/lib/baxter-interface.l")
+(load "package://jsk_2015_05_baxter_apc/euslisp/lib/reachable-space.l")
 
 
 (defun main ()
