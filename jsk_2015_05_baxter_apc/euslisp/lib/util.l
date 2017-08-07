@@ -125,6 +125,24 @@
   (gethash (str2symbol object-name) table)))
 
 
+(defun timestamp ()
+  ;; return timestamp list
+  ;; (Y, M, D, H, M, S)
+  (let ((localtime (unix::localtime)))
+    (list
+      (+ (elt localtime 5) 1900)  ;; Year
+      (+ (elt localtime 4) 1)     ;; Month
+      (elt localtime 3)           ;; Day 
+      (elt localtime 2)           ;; Hour
+      (elt localtime 1)           ;; Minute
+      (elt localtime 0)           ;; Second
+      )))
+
+(defun timestamp-string
+  (&key (control-string "~d~0,2d~0,2d_~0,2d~0,2d~0,2d")
+        (stamp (timestamp)))
+  (eval `(format nil control-string ,@stamp)))
+
 ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;; For Python Users
 ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
