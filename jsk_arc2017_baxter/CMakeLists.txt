@@ -1,8 +1,16 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_arc2017_baxter)
 
+# force_proximity_ros can not be found on build.ros.org
+find_package(force_proximity_ros QUIET)
+if(force_proximity_ros_FOUND)
+  set(FORCE_PROXIMITY_ROS_PKG force_proximity_ros)
+else()
+  message(WARNING "COULD NOT BE FOUND force_proximity_ros PACKAGE")
+endif()
+
 find_package(catkin REQUIRED COMPONENTS
-    force_proximity_ros
+    ${FORCE_PROXIMITY_ROS_PKG}
     message_generation
     roseus
     std_msgs
@@ -39,7 +47,7 @@ add_action_files(
 generate_messages(
     DEPENDENCIES
     std_msgs
-    force_proximity_ros
+    ${FORCE_PROXIMITY_ROS_PKG}
     actionlib_msgs
 )
 
@@ -56,7 +64,7 @@ generate_messages(
 catkin_package(
     CATKIN_DEPENDS
     message_runtime
-    force_proximity_ros
+    ${FORCE_PROXIMITY_ROS_PKG}
     std_msgs
     baxter_core_msgs
     hardware_interface
