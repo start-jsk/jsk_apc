@@ -216,7 +216,7 @@
                   :grasp-style grasp-style-))
       (when moveit-p- (send self :add-bin-scene target-bin-))
       ;; Don't trust pressure sensor
-      ;; (unless (eq pick-res :ik-fail)
+      ;; (unless (eq pick-res :ik-failed)
       ;;   (setq graspingp (send *ri* :graspingp arm grasp-style-)))
       ;; (unless graspingp (return-from :pick-object nil))
       (let (avs end-pos)
@@ -243,7 +243,7 @@
         (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
               (send *ri* :get-arm-controller arm :gripper nil) 0)
         (send *ri* :wait-interpolation))
-      (if (eq pick-res :ik-fail) (return-from :pick-object nil))
+      (if (eq pick-res :ik-failed) (return-from :pick-object nil))
       ;; Don't trust pressure sensor
       ;; (setq graspingp (send *ri* :graspingp arm grasp-style-))
       ;; (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
