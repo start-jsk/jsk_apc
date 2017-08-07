@@ -6,7 +6,7 @@
   <node name="tf_bbox_to_mask_left_hand"
         pkg="jsk_apc2016_common" type="tf_bbox_to_mask.py">
     <remap from="~input" to="/left_hand_camera/rgb/camera_info"/>
-    <remap from="~input/boxes" to="publish_bin_boxes/output"/>
+    <remap from="~input/boxes" to="/transformable_bin_markers/output/boxes" />
     <rosparam>
       use_bin_info: false
     </rosparam>
@@ -14,7 +14,7 @@
   <node name="tf_bbox_to_mask_right_hand"
         pkg="jsk_apc2016_common" type="tf_bbox_to_mask.py">
     <remap from="~input" to="/right_hand_camera/rgb/camera_info"/>
-    <remap from="~input/boxes" to="publish_bin_bbox/boxes"/>
+    <remap from="~input/boxes" to="/transformable_bin_markers/output/boxes" />
     <rosparam>
       use_bin_info: false
     </rosparam>

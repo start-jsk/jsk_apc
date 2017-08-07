@@ -381,8 +381,8 @@
       (position box-size box-sizes-bak)))
   (:recognize-bin-boxes
     (&key (stamp (ros::time-now)))
-    (let ((box-topic (format nil "publish_bin_boxes/output"))
-          box-msg bin-list)
+    (let ((box-topic (format nil "transformable_bin_markers/output/boxes"))
+          box-msg box-list bin-list)
       (setq box-msg (one-shot-subscribe box-topic
                                         jsk_recognition_msgs::BoundingBoxArray
                                         :timeout 10000
@@ -393,7 +393,7 @@
           (setq box-list (send box-msg :boxes))
           (setq bin-list (list :a :b :c :d :e :f :g :h :i :j :k :l))
           (dolist (bin bin-list)
-            (setf (gethash bin _bin-boxes) (car box-list))
+            (sethash bin _bin-boxes (car box-list))
             (setq box-list (cdr box-list))))
         (ros::ros-fatal "[:recognize-bin-boxes] cannot recognize bin boxes"))))
   (:recognize-order-bin-box
