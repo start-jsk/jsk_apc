@@ -23,9 +23,6 @@
         pkg="jsk_2016_01_baxter_apc" type="gripper_trajectory_server" output="screen" />
 
 
-  <!-- hand mounted camera -->
-  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" />
-
 
   <!-- baxter startup -->
   <include file="$(find jsk_baxter_startup)/baxter.launch">
