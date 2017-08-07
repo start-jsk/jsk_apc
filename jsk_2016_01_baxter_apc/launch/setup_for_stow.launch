@@ -1,5 +1,11 @@
 <launch>
 
+  <arg name="rgv5" value="false" />
+
+  <!-- hand mounted camera -->
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand.launch" unless="$(arg rgv5)"/>
+  <include file="$(find jsk_2016_01_baxter_apc)/launch/include/astra_hand_rgv5.launch" if="$(arg rgv5)"/>
+
   <!-- for left hand camera -->
   <arg name="manager_left" value="left_hand_camera_nodelet_manager" />
   <group ns="left_hand_camera">
