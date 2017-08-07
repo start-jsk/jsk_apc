@@ -465,6 +465,7 @@
   (:pick-object-with-movable-region
     (arm movable-region &key (n-trial 1) (n-trial-same-pos 1)
          (do-stop-grasp nil) (grasp-style :suction))
+    "Return value: :grasp-succeed, :grasp-fail or :ik-fail"
     (send *ri* :stop-grasp arm :pinch)
     (send *ri* :calib-proximity-threshold arm)
     (let (pick-res avs object-index obj-pos obj-cube pinch-yaw suction-yaw near-walls)
@@ -591,7 +592,7 @@
         (send *ri* :wait-interpolation))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
-          (unless pick-res
+          (when (eq pick-res :grasp-fail)
             (let (ec avs)
               (when (eq grasp-style :suction)
                 ;; Fold fingers again
@@ -622,7 +623,7 @@
                         :suction-yaw suction-yaw
                         :pinch-yaw pinch-yaw)))))
       (when do-stop-grasp
-        (unless (eq pick-res t)
+        (unless (eq pick-res :grasp-succeed)
           (send *ri* :stop-grasp arm)
           (if (eq grasp-style :pinch)
             (send *ri* :stop-grasp arm :pinch))))
@@ -681,6 +682,7 @@
     (send self :try-to-suction-object-with-gripper-v6 arm obj-pos suction-yaw :offset offset))
   (:try-to-suction-object-with-gripper-v4
     (arm obj-pos &key (offset #f(0 0 0)))
+    "Return value: :grasp-succeed or :grasp-fail"
     (let (graspingp)
       (send *ri* :angle-vector-raw
             (send *baxter* arm :inverse-kinematics
@@ -724,9 +726,10 @@
       (unix::sleep 1)  ;; wait for arm to follow
       (setq graspingp (send *ri* :graspingp arm :suction))
       (ros::ros-info "[:try-to-suction-object-with-gripper-v4] arm:~a graspingp: ~a" arm graspingp)
-      graspingp))
+      (if graspingp :grasp-succeed :grasp-fail)))
   (:try-to-suction-object-with-gripper-v6
     (arm obj-pos suction-yaw &key (offset #f(0 0 0)))
+    "Return value: :grasp-succeed or :grasp-fail"
     (let (graspingp av
           (coords-before-approach (send *baxter* arm :end-coords :copy-worldcoords)))
       (send coords-before-approach :locate (v+ obj-pos #f(0 0 300)) :world)
@@ -826,9 +829,10 @@
       (send *ri* :wait-interpolation)
       (setq graspingp (send *ri* :graspingp arm :suction))
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a graspingp: ~a" arm graspingp)
-      graspingp))
+      (if graspingp :grasp-succeed :grasp-fail)))
   (:try-to-pinch-object
     (arm obj-pos pinch-yaw &key (offset #f(0 0 0)))
+    "Return value: :grasp-succeed, :grasp-fail or :ik-fail"
     (let (av graspingp pre-coords)
       (ros::ros-info "[:try-to-pinch-object] arm:~a pinch-yaw: ~a" arm pinch-yaw)
       ;; Initialize finger
@@ -911,7 +915,7 @@
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector :wait-until-update t))
       (setq graspingp (send *ri* :graspingp arm :pinch))
       (ros::ros-info "[:try-to-pinch-object] arm:~a graspingp: ~a" arm graspingp)
-      graspingp))
+      (if graspingp :grasp-succeed :grasp-fail)))
   (:ik->bin-center
     (arm bin &key (offset #f(0 0 0)) (rpy #f(0 0 0))
          (rotation-axis t) (use-gripper nil) (move-palm-end nil))
