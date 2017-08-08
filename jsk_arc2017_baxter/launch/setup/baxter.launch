@@ -32,6 +32,8 @@
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_arduinos.launch" />
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_dxl_controller.launch" />
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_ros_control.launch" />
+  <node name="sanity_check_gripper_v6"
+        pkg="jsk_arc2017_baxter" type="sanity-check-gripper-v6.l" />
 
   <!-- voice -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/sound_play.launch" />
