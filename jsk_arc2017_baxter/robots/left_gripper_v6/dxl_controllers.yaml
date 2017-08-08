@@ -35,7 +35,7 @@ finger_yaw_joint_controller:
     type: JointPositionController
   joint_name: left_gripper_finger_yaw_joint_motor
   joint_speed: 5.5
-  joint_torque_limit: 0.15
+  joint_torque_limit: 0.2
   motor:
     id: 2
     init: 650
