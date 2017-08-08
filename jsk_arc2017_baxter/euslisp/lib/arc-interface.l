@@ -1033,7 +1033,7 @@
     ()
     (let ((base-name (send (send *baxter* :base_lk) :name))
           (dimensions (list '(2500 10 2000) '(2500 10 2000)))
-          (positions (list (float-vector 500 800 0) (float-vector 500 -800 0)))
+          (positions (list (float-vector 500 1200 0) (float-vector 500 -1200 0)))
           (names (list "workspace_left" "workspace_right")))
       (dotimes (i (length positions))
         (let ((cube (apply #'make-cube (elt dimensions i)))
