@@ -648,4 +648,5 @@
                            :moveit-environment mvit-env
                            :moveit-robot mvit-rb)))
     (when (not (boundp '*baxter*))
-      (setq *baxter* (instance jsk_arc2017_baxter::baxter-robot :init)))))
+      (setq *baxter* (instance jsk_arc2017_baxter::baxter-robot :init))
+      (send *baxter* :angle-vector (send *ri* :state :potentio-vector)))))
