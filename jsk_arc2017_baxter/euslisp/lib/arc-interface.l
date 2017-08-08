@@ -592,7 +592,7 @@
         (send *ri* :wait-interpolation))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
-          (when (eq pick-result :grasp-failed)
+          (when (or (null pick-result) (eq pick-result :grasp-failed))
             (let (ec avs)
               (when (eq grasp-style :suction)
                 ;; Fold fingers again
@@ -613,8 +613,8 @@
                                 2000 (send *ri* :get-arm-controller arm) 0
                                 :end-coords-interpolation t)
                     (send *ri* :angle-vector-sequence-raw avs
-                          :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0)
-                    (send *ri* :wait-interpolation)))
+                          :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0))
+                  (send *ri* :wait-interpolation))
                 ))
             (setq pick-result
                   (send self :try-to-pick-object arm obj-pos
