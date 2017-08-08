@@ -1,8 +1,8 @@
 ;; -*- mode: lisp;-*-
 
+(require "package://jsk_arc2017_baxter/euslisp/lib/baxter.l")
 (require "package://baxtereus/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
-(require "package://jsk_arc2017_baxter/euslisp/lib/baxter.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
 
 
