@@ -198,7 +198,7 @@
                   (arm2str arm)
                   (underscore-to-space target-obj-)
                   (if moving-object-p- " not" "")))
-    (let (pick-res graspingp)
+    (let (pick-result graspingp)
       ;; slots reset
       (setq start-picking-fail-count- 0)
       (setq recognize-fail-count- 0)
@@ -208,7 +208,7 @@
         (send self :set-movable-region-for-bin :offset (list 50 50 0)))
       (send self :reset-scale arm)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
-      (setq pick-res
+      (setq pick-result
             (send self :pick-object-in-bin arm target-bin-
                   :n-trial (if (eq grasp-style- :suction) 2 1)
                   :n-trial-same-pos 1
@@ -216,7 +216,7 @@
                   :grasp-style grasp-style-))
       (when moveit-p- (send self :add-bin-scene target-bin-))
       ;; Don't trust pressure sensor
-      ;; (unless (eq pick-res :ik-failed)
+      ;; (unless (eq pick-result :ik-failed)
       ;;   (setq graspingp (send *ri* :graspingp arm grasp-style-)))
       ;; (unless graspingp (return-from :pick-object nil))
       (let (avs end-pos)
@@ -243,7 +243,7 @@
         (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
               (send *ri* :get-arm-controller arm :gripper nil) 0)
         (send *ri* :wait-interpolation))
-      (if (eq pick-res :ik-failed) (return-from :pick-object nil))
+      (if (eq pick-result :ik-failed) (return-from :pick-object nil))
       ;; Don't trust pressure sensor
       ;; (setq graspingp (send *ri* :graspingp arm grasp-style-))
       ;; (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
