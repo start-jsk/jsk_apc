@@ -64,6 +64,18 @@ Visualization Manager:
       show coords: false
     - Class: jsk_rviz_plugin/BoundingBoxArray
       Enabled: true
+      Name: ToteBins
+      Topic: /transformable_tote_markers/output/boxes
+      Unreliable: false
+      Value: true
+      alpha: 0.8
+      color: 255; 170; 0
+      coloring: Flat color
+      line width: 0.005
+      only edge: true
+      show coords: false
+    - Class: jsk_rviz_plugin/BoundingBoxArray
+      Enabled: true
       Name: CardboardBoxes
       Topic: /transformable_cardboard_markers/output/boxes
       Unreliable: false
