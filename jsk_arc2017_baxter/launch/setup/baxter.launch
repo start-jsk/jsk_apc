@@ -40,6 +40,7 @@
   <include file="$(find jsk_baxter_startup)/baxter.launch">
     <arg name="launch_servo" value="true"/>
     <arg name="launch_joint_trajectory" value="true"/>
+    <arg name="sanity_check_joint_trajectory" value="true" />
     <arg name="launch_gripper_action" value="false"/>
     <arg name="launch_openni" value="false"/>
     <arg name="launch_kinect2" value="false"/>
