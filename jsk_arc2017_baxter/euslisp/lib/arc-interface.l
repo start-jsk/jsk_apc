@@ -520,7 +520,6 @@
           ;;                 (and
           ;;                   (< (send *baxter* arm :gripper-x :joint-angle) 110)
           ;;                   (< -30 (send *baxter* arm :gripper-p :joint-angle) 30)))))
-          ;; suction: ik-based approach
           ;; suction: prismatic-based approach
           (progn
             (send *baxter* :rotate-gripper arm 0 :relative nil)
@@ -559,7 +558,7 @@
             (send *ri* :move-hand arm
                   (send *baxter* :hand-grasp-pose arm :spherical :angle 90) 1000
                   :wait t))
-          ;; suction: prismatic-based approach
+          ;; pinch
           (let (target-pos)
             (send *baxter* :rotate-gripper arm 0 :relative nil)
             (send *baxter* :slide-gripper arm 0 :relative nil)
@@ -586,7 +585,7 @@
           (unless av
             (ros::ros-error "[:pick-object-with-movable-region] arm:~a IK before trying grasp fails. Abort picking" arm)
             (return-from :pick-object-with-movable-region :ik-failed)))
-        ;; Move whole arm to target pose
+        ;; Move whole arm to location above of the target pose
         (send *ri* :angle-vector-sequence-raw next-avs
               :fast (send *ri* :get-arm-controller arm :head t) 0 :scale 5.0)
         (send *ri* :wait-interpolation))
