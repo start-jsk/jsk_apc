@@ -505,7 +505,17 @@
       (ros::ros-info "[:pick-object-with-movable-region] arm:~a obj-pos: ~a" arm obj-pos)
       (send *ri* :gripper-servo-on arm)
       ;; Setup arm for picking
-      (let (next-avs)
+      (let (next-avs target-poss)
+        (send *baxter* :rotate-gripper arm 0 :relative nil)
+        (send *baxter* :slide-gripper arm 0 :relative nil)
+        (let ((target-pos (copy-object obj-pos)))
+          ;; movable-region: ((min-of-x max-of-x) (min-of-y max-of-y) (min-of-z max-of-z))
+          (setf (elt target-pos 2) (+ (cadr (elt movable-region 2)) 100))
+          (pushback target-pos target-poss)  ;; location above of the target object in z axis
+          ;; Go to a little inside of the bin/tote, 300 (30cm) is the z length of bins
+          ;; and smaller than that of tote. TODO: Fix the hard coded offset.
+          (setf (elt target-pos 2) (+ (car (elt movable-region 2)) 300))
+          (pushback target-pos target-poss))
         (if (eq grasp-style :suction)
           ;; suction: ik-based approach
           ;; (setq next-av
@@ -522,36 +532,16 @@
           ;;                   (< -30 (send *baxter* arm :gripper-p :joint-angle) 30)))))
           ;; suction: prismatic-based approach
           (progn
-            (send *baxter* :rotate-gripper arm 0 :relative nil)
-            (send *baxter* :slide-gripper arm 0 :relative nil)
-            (if (null suction-yaw)
-              (progn
-                (pushback
-                  (send *baxter* :rotate-wrist-ik arm
-                        (make-coords :pos (v+ obj-pos #f(0 0 250))
-                                     :rpy #f(0 0 0))
-                        :rotation-axis :z)
-                  next-avs)
-                (pushback
-                  (send *baxter* :rotate-wrist-ik arm
-                        (make-coords :pos (v+ obj-pos #f(0 0 120))
-                                     :rpy #f(0 0 0))
-                        :rotation-axis :z)
-                  next-avs))
-              (progn
-                (pushback
-                  (send *baxter* :rotate-wrist-ik arm
-                        (make-coords :pos (v+ obj-pos #f(0 0 250))
-                                     :rpy (float-vector suction-yaw 0 0))
-                        :rotation-axis t)
-                  next-avs)
-                (pushback
-                  (send *baxter* :rotate-wrist-ik arm
-                        (make-coords :pos (v+ obj-pos #f(0 0 120))
-                                     :rpy (float-vector suction-yaw 0 0))
-                        :rotation-axis t)
-                  next-avs)))
-            ;; Fold fingers to avoid collision
+            (dolist (target-pos target-poss)
+              (pushback
+                (send *baxter* :rotate-wrist-ik arm
+                      (make-coords :pos target-pos
+                                   :rpy (float-vector (or suction-yaw 0) 0 0))
+                      :move-palm-end nil
+                      :rotation-axis (if (null suction-yaw) :z t))
+                next-avs)
+              )
+            ;; Fold fingers to avoid collision to the bin walls
             (send *ri* :move-hand arm
                   (send *baxter* :hand-grasp-pre-pose arm :spherical) 1000
                   :wait nil)
@@ -559,26 +549,15 @@
                   (send *baxter* :hand-grasp-pose arm :spherical :angle 90) 1000
                   :wait t))
           ;; pinch
-          (let (target-pos)
-            (send *baxter* :rotate-gripper arm 0 :relative nil)
-            (send *baxter* :slide-gripper arm 0 :relative nil)
-            (setq target-pos (copy-object obj-pos))
-            (setf (elt target-pos 2) (+ (cadr (elt movable-region 2)) 100))
-            (pushback
-              (send *baxter* :rotate-wrist-ik arm
-                    (make-coords :pos target-pos
-                                 :rpy (float-vector pinch-yaw 0 0))
-                    :move-palm-end t
-                    :rotation-axis t)
-              next-avs)
-            (setf (elt target-pos 2) (+ (car (elt movable-region 2)) 300))
-            (pushback
-              (send *baxter* :rotate-wrist-ik arm
-                    (make-coords :pos target-pos
-                                 :rpy (float-vector pinch-yaw 0 0))
-                    :move-palm-end t
-                    :rotation-axis t)
-              next-avs)
+          (progn
+            (dolist (target-pos target-poss)
+              (pushback
+                (send *baxter* :rotate-wrist-ik arm
+                      (make-coords :pos target-pos
+                                  :rpy (float-vector pinch-yaw 0 0))
+                      :move-palm-end t
+                      :rotation-axis t)
+                next-avs))
             (send *ri* :move-hand arm
                   (send *baxter* :hand-grasp-pose arm :cylindrical :angle 90) 1000)))
         (dolist (av next-avs)
