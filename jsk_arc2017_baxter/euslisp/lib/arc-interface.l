@@ -574,11 +574,16 @@
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (when (or (null pick-result) (eq pick-result :grasp-failed))
-            (let (ec avs (offset-z %(-80 + i * -30)))
+            (let (ec avs)
               (when (eq grasp-style :suction)
                 (setq ec (send *baxter* arm :end-coords :copy-worldcoords))
-                (send ec :translate (float-vector 0 0 offset-z) :world)
-                (pushback (send *baxter* arm :inverse-kinematics ec) avs)
+                (if (= i 0)
+                  (progn
+                    (send ec :translate #f(0 0 -80) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs))
+                  (progn
+                    (send ec :translate #f(0 0 -330) :world)
+                    (pushback (send *baxter* arm :inverse-kinematics ec) avs)))
                 (setq avs (remove nil avs))
                 (when avs
                   (send *ri* :update-robot-state :wait-until-update t)
@@ -588,14 +593,13 @@
                     (send *ri* :angle-vector-sequence-raw avs
                           :fast (send *ri* :get-arm-controller arm) 0 :scale 6.0))
                   (send *ri* :wait-interpolation))
-                )
-              (setq pick-result
-                    (send self :try-to-pick-object arm obj-pos
-                          :offset (float-vector 0 0 offset-z)
-                          :grasp-style grasp-style
-                          :suction-yaw suction-yaw
-                          :pinch-yaw pinch-yaw))
-              ))))
+                ))
+            (setq pick-result
+                  (send self :try-to-pick-object arm obj-pos
+                        :offset (float-vector 0 0 (- (* i -30) 80))
+                        :grasp-style grasp-style
+                        :suction-yaw suction-yaw
+                        :pinch-yaw pinch-yaw)))))
       (when do-stop-grasp
         (unless (eq pick-result :grasp-succeeded)
           (send *ri* :stop-grasp arm)
