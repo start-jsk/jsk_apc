@@ -689,14 +689,26 @@
                           :rpy (float-vector (or suction-yaw 0) 0 0))
             :use-gripper nil
             :rotation-axis (if suction-yaw t :z))
-      (send *baxter* :slide-gripper arm 0 :relative nil)
-      (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
-            3000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :wait-interpolation)  ;; move down only the hand palm
-      (send *baxter* :slide-gripper arm 120 :relative nil)
-      (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
-            3000 (send *ri* :get-arm-controller arm) 0)
-      (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
+      (let ((prismatic-angle
+              (send (send *baxter* :joint
+                          (format nil "~a_gripper_prismatic_joint" (arm2str arm))) :joint-angle)))
+        (send *baxter* :slide-gripper arm 0 :relative nil)
+        (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
+              3000 (send *ri* :get-arm-controller arm) 0)
+        (send *ri* :wait-interpolation)  ;; move down only the hand palm
+
+        (send *baxter* :slide-gripper arm prismatic-angle :relative nil)
+        (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
+              3000 (send *ri* :get-arm-controller arm) 0)
+        ;; FIXME: :wait-interpolation-until using :prismatic-loaded sometimes ends too fast,
+        ;; so currently we firstly move suction cup without prismatic load check.
+        (send *ri* :wait-interpolation-smooth 2000)
+
+        (send *baxter* :slide-gripper arm 120 :relative nil)
+        (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
+              3000 (send *ri* :get-arm-controller arm) 0)
+        (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
+        )
       (setq graspingp (send *ri* :graspingp arm :suction))
       (ros::ros-info "[:try-to-suction-object-with-gripper-v6] arm:~a graspingp: ~a" arm graspingp)
       (unless graspingp
