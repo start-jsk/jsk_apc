@@ -925,6 +925,10 @@
       (send cardboard-coords :rotate (aref rpy 1) :y)
       (send cardboard-coords :rotate (aref rpy 2) :x)
 
+      ;; use prismatic joint as much as possible
+      (let ((jnt (send *baxter* :joint (format nil "~a_gripper_prismatic_joint" (arm2str arm)))))
+        (send jnt :joint-angle (send jnt :max-angle))
+        )
       (send *baxter* arm :inverse-kinematics cardboard-coords
             :rotation-axis nil :use-gripper nil)
       (send *baxter* arm :inverse-kinematics cardboard-coords
