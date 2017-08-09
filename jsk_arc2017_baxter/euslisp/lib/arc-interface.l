@@ -563,7 +563,7 @@
           (when (or (null pick-result) (eq pick-result :grasp-failed))
             (setq pick-result
                   (send self :try-to-pick-object arm obj-pos
-                        :offset (float-vector 0 0 (- (* i -30) 80))
+                        :offset (float-vector 0 0 (- (* i -30) 30))
                         :grasp-style grasp-style
                         :suction-yaw suction-yaw
                         :pinch-yaw pinch-yaw)))))
