@@ -589,14 +589,14 @@
         (send *ri* :angle-vector-sequence-raw next-avs
               :fast (send *ri* :get-arm-controller arm :head t) 0 :scale 5.0)
         (send *ri* :wait-interpolation))
+      ;; Now hand is inside of the bin, so we can use cylindrical
+      (send *ri* :move-hand arm (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000)
+      ;; Picking trials in the bin
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (when (or (null pick-result) (eq pick-result :grasp-failed))
             (let (ec avs)
               (when (eq grasp-style :suction)
-                ;; Fold fingers again
-                (send *ri* :move-hand arm
-                      (send *baxter* :hand-grasp-pose arm :spherical :angle 90) 1000)
                 (setq ec (send *baxter* arm :end-coords :copy-worldcoords))
                 (if (= i 0)
                   (progn
