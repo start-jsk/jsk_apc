@@ -1,0 +1,25 @@
+<launch>
+
+  <arg name="define_machine" default="false" />
+  <group if="$(arg define_machine)">
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
+  </group>
+
+  <!-- adjust gravity compensation for gripper-v6 -->
+  <node pkg="rostopic" type="rostopic" name="adjust_compensation_right"
+        args="pub -1 /robot/end_effector/right_gripper/command baxter_core_msgs/EndEffectorCommand
+              -f $(find jsk_arc2017_baxter)/robots/right_gripper_v6/gripper_mass.yaml"
+        output="screen"/>
+  <node pkg="rostopic" type="rostopic" name="adjust_compensation_left"
+        args="pub -1 /robot/end_effector/left_gripper/command baxter_core_msgs/EndEffectorCommand
+              -f $(find jsk_arc2017_baxter)/robots/left_gripper_v6/gripper_mass.yaml"
+        output="screen"/>
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_arduinos.launch" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_dxl_controller.launch" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_ros_control.launch" />
+
+  <node name="sanity_check_gripper_v6"
+        pkg="jsk_arc2017_baxter" type="sanity-check-gripper-v6.l" />
+
+</launch>

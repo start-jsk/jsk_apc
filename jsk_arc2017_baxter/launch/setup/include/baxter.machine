@@ -1,0 +1,4 @@
+<launch>
+  <machine name="c1" address="baxter-c1.jsk.imi.i.u-tokyo.ac.jp" default="true" />
+  <machine name="c2" user="baxter" address="baxter-c2.jsk.imi.i.u-tokyo.ac.jp" env-loader="/home/baxter/env-loader.sh" />
+</launch>
