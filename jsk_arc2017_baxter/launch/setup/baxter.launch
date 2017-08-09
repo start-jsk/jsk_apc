@@ -4,9 +4,8 @@
   <arg name="moveit" default="true" />
   <arg name="pick" default="true" doc="pick_task: true, stow_task: false" />
 
-  <!-- sanity check usb devices -->
-  <param name="force_recognize_usb_devices"
-         command="rosrun jsk_arc2017_baxter force_recognize_usb_devices" />
+  <!-- get machine tag -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
 
   <!-- custom baxter params -->
   <param name="/robot_description"
@@ -18,22 +17,8 @@
   <rosparam param="/baxter_joint_trajectory"
             file="$(find jsk_2015_05_baxter_apc)/config/baxter_joint_trajectory.yaml"/>
 
-  <!-- adjust gravity compensation for gripper-v6 -->
-  <node pkg="rostopic" type="rostopic" name="adjust_compensation_right"
-        args="pub -1 /robot/end_effector/right_gripper/command baxter_core_msgs/EndEffectorCommand
-              -f $(find jsk_arc2017_baxter)/robots/right_gripper_v6/gripper_mass.yaml"
-        output="screen"/>
-  <node pkg="rostopic" type="rostopic" name="adjust_compensation_left"
-        args="pub -1 /robot/end_effector/left_gripper/command baxter_core_msgs/EndEffectorCommand
-              -f $(find jsk_arc2017_baxter)/robots/left_gripper_v6/gripper_mass.yaml"
-        output="screen"/>
-
-  <!-- vacuum gripper -->
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_arduinos.launch" />
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_dxl_controller.launch" />
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_ros_control.launch" />
-  <node name="sanity_check_gripper_v6"
-        pkg="jsk_arc2017_baxter" type="sanity-check-gripper-v6.l" />
+  <!-- gripper-v6 -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_gripper_v6.launch" />
 
   <!-- voice -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/sound_play.launch" />

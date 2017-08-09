@@ -3,34 +3,41 @@
   <!-- Arduino -->
   <node name="rosserial_node_0"
         pkg="rosserial_python" type="serial_node.py"
-        respawn="true">
+        respawn="true"
+        machine="c2">
     <param name="port" type="string" value="/dev/arduino0" />
     <param name="baud" value="115200" />
   </node>
 
   <node name="rosserial_node_1"
         pkg="rosserial_python" type="serial_node.py"
-        respawn="true">
+        respawn="true"
+        machine="c2">
     <param name="port" type="string" value="/dev/arduino1" />
     <param name="baud" value="115200" />
   </node>
 
   <node name="rosserial_node_2"
         pkg="rosserial_python" type="serial_node.py"
-        respawn="true">
+        respawn="true"
+        machine="c2">
     <param name="port" type="string" value="/dev/arduino2" />
     <param name="baud" value="115200" />
   </node>
 
   <!-- Republish gripper sensor states -->
-  <node name="rgripper_sensors_republisher" pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py">
+  <node name="rgripper_sensors_republisher"
+        pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py"
+        machine="c2">
     <remap from="~input" to="/rgripper_sensors" />
     <remap from="~proximity_array" to="/gripper_front/limb/right/proximity_array" />
     <remap from="~pressure/state" to="/gripper_front/limb/right/pressure/state" />
     <remap from="~flex/right/state" to="/gripper_front/limb/right/flex/right/state" />
     <remap from="~flex/left/state" to="/gripper_front/limb/right/flex/left/state" />
   </node>
-  <node name="lgripper_sensors_republisher" pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py">
+  <node name="lgripper_sensors_republisher"
+        pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py"
+        machine="c2">
     <remap from="~input" to="/lgripper_sensors" />
     <remap from="~proximity_array" to="/gripper_front/limb/left/proximity_array" />
     <remap from="~pressure/state" to="/gripper_front/limb/left/pressure/state" />
