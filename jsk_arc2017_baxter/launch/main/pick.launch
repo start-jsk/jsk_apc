@@ -1,17 +1,31 @@
 <launch>
-  <arg name="main" default="true" />
-  <arg name="json_dir" />
-  <arg name="rviz" default="true" />
-  <arg name="moveit" default="true" />
-  <arg name="smach_viewer" default="false" />
-  <arg name="rosbag" default="false" />
-  <arg name="data_collection" default="false" />
 
+  <!-- ============================================================================= -->
+  <!-- Arguments                                                                     -->
+  <!-- ============================================================================= -->
+
+  <arg name="json_dir" />
+
+  <arg name="main" default="true" />
   <arg name="left_main" default="true" />
   <arg name="right_main" default="true" />
+  <arg name="rviz" default="true" />
+  <arg name="moveit" default="true" />
+  <arg name="data_collection" default="true" />
+
+  <arg name="smach_viewer" default="false" />
+  <arg name="rosbag" default="false" />
+
+  <!-- ============================================================================= -->
+  <!-- Sanity Check                                                                  -->
+  <!-- ============================================================================= -->
 
   <param name="sanity_check_for_setup_for_pick"
          command="rosrun jsk_arc2017_baxter sanity_check_for_setup_for_pick.py" />
+
+  <!-- ============================================================================= -->
+  <!-- Nodes                                                                         -->
+  <!-- ============================================================================= -->
 
   <!-- set bin_contents rosparam -->
   <node name="set_bin_contents"
