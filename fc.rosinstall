@@ -21,6 +21,11 @@
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
     version: master
+# https://github.com/jsk-ros-pkg/jsk_robot/pull/817
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: jsk_apc
 - git:
     local-name: FOR_ASTRA/openni2_camera
     uri: https://github.com/ros-drivers/openni2_camera.git
@@ -33,11 +38,6 @@
     local-name: FOR_LATEST_BAXTEREUS/baxter_interface
     uri: https://github.com/wkentaro/baxter_interface.git
     version: jsk_apc
-# jsk_robot: will be removed after the release of 1.0.10
-- git:
-    local-name: FOR_LATEST_BAXTEREUS/jsk_robot
-    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-    version: c978f3da06261c77e0dafea2f2e4df072323b555
 - git:
     local-name: FOR_PCL1.8/octomap_mapping
     uri: https://github.com/OctoMap/octomap_mapping.git
