@@ -687,7 +687,7 @@
       (send *baxter* arm :inverse-kinematics
             (make-coords :pos (v+ obj-pos offset)
                          :rpy (float-vector (or suction-yaw 0) 0 0))
-            :use-gripper nil
+            :use-gripper t
             :rotation-axis (if suction-yaw t :z))
       (let ((prismatic-angle
               (send (send *baxter* :joint
