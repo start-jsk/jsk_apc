@@ -701,10 +701,10 @@
         (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
               3000 (send *ri* :get-arm-controller arm) 0)
         ;; FIXME: :wait-interpolation-until using :prismatic-loaded sometimes ends too fast,
-        ;; so currently we firstly move suction cup without prismatic load check.
-        (send *ri* :wait-interpolation-smooth 2000)
+        ;; so currently we only check :grasp (suction pressure).
+        (send *ri* :wait-interpolation-until arm :grasp)
 
-        (send *baxter* :slide-gripper arm 120 :relative nil)
+        (send *baxter* :slide-gripper arm 120 :relative nil)  ;; maximum angle of prismatic joint
         (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
               3000 (send *ri* :get-arm-controller arm) 0)
         (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
