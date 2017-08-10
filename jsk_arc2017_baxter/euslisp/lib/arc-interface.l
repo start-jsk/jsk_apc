@@ -1273,7 +1273,7 @@
       (setq cardboard-cube (gethash cardboard cardboard-cubes-))
       (setq region (send self :cube->movable-region cardboard-cube))
       (setq region-y (- (cadr (elt region 1)) (car (elt region 1))))
-      (if (eq arm :larm)
+      (if (= (random 2) 0)
         (float-vector -50.0 (/ region-y -7.0) 0.0)
         (float-vector -50.0 (/ region-y 7.0) 0.0))))
   (:get-stowing-target-bin (arm)
