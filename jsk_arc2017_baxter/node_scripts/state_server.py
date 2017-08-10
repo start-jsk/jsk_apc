@@ -86,7 +86,8 @@ class StateServer(threading.Thread):
         if self.is_pick:
             # pick task: wait condition
             if state == 'wait-for-opposite-arm-start-picking':
-                if opposite_state == 'set-target' \
+                if opposite_state == 'init' \
+                        or opposite_state == 'set-target' \
                         or opposite_state == 'wait-for-user-input' \
                         or opposite_state == 'wait-for-opposite-arm-start-picking':  # NOQA
                     can_start = True
@@ -111,7 +112,8 @@ class StateServer(threading.Thread):
         else:
             # stow task: wait condition
             if state == 'wait-for-opposite-arm-start-picking':
-                if opposite_state == 'recognize-object' \
+                if opposite_state == 'init' \
+                        or opposite_state == 'recognize-object' \
                         or opposite_state == 'wait-for-user-input' \
                         or opposite_state == 'wait-for-opposite-arm-start-picking':  # NOQA
                     can_start = True
