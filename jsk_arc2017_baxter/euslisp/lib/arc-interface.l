@@ -689,9 +689,7 @@
                          :rpy (float-vector (or suction-yaw 0) 0 0))
             :use-gripper t
             :rotation-axis (if suction-yaw t :z))
-      (let ((prismatic-angle
-              (send (send *baxter* :joint
-                          (format nil "~a_gripper_prismatic_joint" (arm2str arm))) :joint-angle)))
+      (let ((prismatic-angle (send *baxter* arm :gripper-x :joint-angle)))
         (send *baxter* :slide-gripper arm 0 :relative nil)
         (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
               3000 (send *ri* :get-arm-controller arm) 0)
