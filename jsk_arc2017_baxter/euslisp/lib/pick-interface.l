@@ -338,7 +338,7 @@
     (when (eq grasp-style- :pinch)
       (send *ri* :stop-grasp arm :pinch)
       (send *baxter* :rotate-gripper arm 90 :relative nil))
-    (send self :spin-off-by-wrist arm :times 5)
+    (send self :spin-off-by-wrist arm :times 3)
     (send *ri* :wait-interpolation)
     (ros::ros-info "[main] ~a, return object in shelf" arm)
     (send *ri* :angle-vector-raw
@@ -442,6 +442,9 @@
                         (arm2str arm) (underscore-to-space target-obj-)))
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm)
+          ;; we assume object is dropped, but it can be just a mis-detection of grasp
+          (send self :spin-off-by-wrist arm :times 3)
+          (send *ri* :wait-interpolation)
           (if (eq grasp-style- :pinch)
             (send *ri* :stop-grasp arm :pinch))
           (send self :add-postponed-object arm target-obj- target-bin-))
@@ -462,7 +465,7 @@
           (when (eq grasp-style- :pinch)
             (send *ri* :stop-grasp arm :pinch)
             (send *baxter* :rotate-gripper arm 90 :relative nil)) ;; release object
-          (send self :spin-off-by-wrist arm :times 10)
+          (send self :spin-off-by-wrist arm :times 5)
           (send *ri* :wait-interpolation)
           (send *ri* :angle-vector-raw
                 (if (eq grasp-style- :suction)
