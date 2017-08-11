@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2015_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.1.0 (2017-08-12)
+------------------
+* Update LICENSE
+* Contributors: Kentaro Wada
+
 4.0.9 (2017-07-29)
 ------------------
 

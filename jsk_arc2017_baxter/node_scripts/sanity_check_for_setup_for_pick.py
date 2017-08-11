@@ -1,18 +1,14 @@
 #!/usr/bin/env python
 
-import os.path as osp
 import sys
 
 import rospy
-import sensor_msgs.msg
 
 from jsk_tools.sanity_lib import checkNodeState
-from jsk_tools.sanity_lib import checkTopicIsPublished
+from jsk_tools.sanity_lib import TopicPublishedChecker
 
 
 def main():
-    sys.stdout = sys.__stderr__
-
     # check node is exists
     nodes = [
         '/left_hand_camera/left/left_nodelet_manager',
@@ -25,6 +21,8 @@ def main():
     ]
     for node in nodes:
         checkNodeState(node, needed=True)
+
+    topic_checkers = []
 
     # common for left/right hand camera
     topics = [
@@ -50,8 +48,7 @@ def main():
         '/rgripper_sensors',
     ]
     for topic in topics:
-        if not checkTopicIsPublished(topic, timeout=5):
-            return
+        topic_checkers.append(TopicPublishedChecker(topic, timeout=5))
 
     # for left/right hand camera
     topics = [
@@ -93,12 +90,14 @@ def main():
     for side in ['left', 'right']:
         for topic in topics:
             topic = '/%s_hand_camera/%s' % (side, topic)
-            if not checkTopicIsPublished(topic, timeout=30):
-                return
+            topic_checkers.append(TopicPublishedChecker(topic, timeout=5))
 
-    sys.stdout = sys.__stdout__
+    for checker in topic_checkers:
+        checker.check()
 
 
 if __name__ == '__main__':
     rospy.init_node('sanity_check_for_setup_for_pick')
+    sys.stdout = sys.__stderr__
     main()
+    sys.stdout = sys.__stdout__
