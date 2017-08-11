@@ -2,6 +2,17 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Warn about nan value
+* Publish nan value when unstable by EkEwIDriver
+* use 1B2 instead of K3 for test
+* use sample_pick_task json for sample launch
+* fix bug in cardboard ids
+  1A5 is bigger than 1B2, but 1A5 is never used for cardboard_C and 1B2 for
+  cardboard_B
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 4.0.9 (2017-07-29)
 ------------------
 * Fix typo in visualize_object.py

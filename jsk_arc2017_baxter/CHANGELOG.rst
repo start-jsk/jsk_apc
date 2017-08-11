@@ -2,6 +2,88 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix rotate wrist ik for :rarm (inverse of :larm)
+  This solves problem reported at https://github.com/start-jsk/jsk_apc/issues/2560
+* Re-trust pressure sensor value on picking
+* Make sanity script faster
+* Fix state_server for use of only right/left arm
+* Use :gripper-x
+* Use IK to decide prismatic joint angle
+* Fix indent
+* Use random to place object to :c
+* Tune spin-off parameters
+* Cannot trust prismatic load
+* Don't trust too much the prismatic load
+* No need offset by using prismatic
+* Use prismatic IK for suction picking
+* Use prismatic joint as much as possible
+  This reduces collision of arm to shelf, and load to the cables of
+  cameras.
+* Revert "Fix offset in z axis while picking"
+  This reverts commit 50baa62bd8009f2b4127c5fdd1afd4214e9468cd.
+* Make sure hand is inside of bin/tote
+* Fix offset in z axis while picking
+  -330 is too large..
+* Fix prepose of picking inside the bin
+* Fix comment in :pick-object
+* Update pick.rviz
+* Refactor pick.launch
+* Revert "No need avoid-shelf-pose using moveit"
+  This reverts commit ae2ff39e5b8d2cdf4757fcf5aa07b790d89d9ccb.
+* Launch arduino/dxl/scales on baxter-c2
+* Always check all gripper joints
+* Add script for sanity check of gripper_v6
+* Enable sanity check of action servers
+* No need avoid-shelf-pose using moveit
+* Fix for initial value of pick-result
+* Larger workspace
+* pick-res -> pick-result
+* Change to :grasp-succeeded, :grasp-failed and :ik-failed
+* Introduce :grasp-fail and :grasp-succeed
+* Increase pressure sensor frequency
+* Don't trust pressure sensor in final check
+* Change some 'graspingp' to 'pick-res' to allow :ik-fail
+* Filter pressure sensor when graspingp is nil
+* Make eus model loading faster
+* Re-calibrate left finger yaw joint
+* Use same rvizconfig for pick and stow
+* Fix for not finding force_proximity_ros on build.ros.org
+* Move library to euslisp/lib for jsk_2015_05_baxter_apc
+* Move library to euslisp/lib for jsk_2016_01_baxter_apc
+* Use unless
+* Add info message of obj-pos
+* Use end-coords-interpolation in picking
+* Run sanity check before the launch of the pick.launch
+* Use stderr
+* Run sudo because it is required in force_recognize_usb_devices
+* Speak before approaching the picking target obj
+* Speak with more clear sentense
+* Add script to forcely recognize usbs
+* Fix for euslint
+* add hyphen in slot variables and remove unused ones
+* set graspingp as local variable
+* Open fingers when placing
+* Add moveit workspace scene
+* Fix permission of arc-interface.l
+* Stop suction while moving fingers
+* Add :arc-reset-pose as faster reset-pose than :fold-pose-back
+* Use axis camera to record baxter motion
+* add damping to gripper joints
+* add baxter-init function
+* Speak more
+* Fix renamed test files
+* Speak the target object name before picking
+* Fix test
+* Organize test files for eus
+* Add speak interface to baxter-interface
+* fix unset local variables
+* set target-index as local variable
+* Fix fail count
+* Update pick.rviz
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa
+
 4.0.9 (2017-07-29)
 ------------------
 * Adjust left arm pressure threshold for Pick final

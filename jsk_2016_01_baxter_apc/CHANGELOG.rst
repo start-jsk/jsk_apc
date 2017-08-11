@@ -2,6 +2,15 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use transformable_markers for kiva_pod
+* move camera launch in setup launch
+* Update LICENSE
+* Move library to euslisp/lib for jsk_2015_05_baxter_apc
+* Move library to euslisp/lib for jsk_2016_01_baxter_apc
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 4.0.9 (2017-07-29)
 ------------------
 

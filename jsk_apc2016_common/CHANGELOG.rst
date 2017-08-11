@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Visualize target0 (index 0 object)
+* Contributors: Kentaro Wada
+
 4.0.9 (2017-07-29)
 ------------------
 
