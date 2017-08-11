@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.0 (2017-08-12)
+------------------
 * Revert "add timestamp functions in util.l"
   This reverts commit 203d5d2eaaa5ecd86932efb7d650644299c334fc.
 * add timestamp functions in util.l

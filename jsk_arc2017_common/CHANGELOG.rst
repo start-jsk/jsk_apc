@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.0 (2017-08-12)
+------------------
 * Warn about nan value
 * Publish nan value when unstable by EkEwIDriver
 * use 1B2 instead of K3 for test

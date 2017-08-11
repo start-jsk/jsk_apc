@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.0 (2017-08-12)
+------------------
 * Fix rotate wrist ik for :rarm (inverse of :larm)
   This solves problem reported at https://github.com/start-jsk/jsk_apc/issues/2560
 * Re-trust pressure sensor value on picking

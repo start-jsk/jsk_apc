@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.0 (2017-08-12)
+------------------
 * use transformable_markers for kiva_pod
 * move camera launch in setup launch
 * Update LICENSE
