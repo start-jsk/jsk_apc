@@ -170,8 +170,9 @@
       (when moveit-p- (send self :add-tote-scene arm))
       ;; we trust pressure sensor
       (unless (eq pick-result :ik-failed)
-        (setq graspingp (send *ri* :graspingp arm grasp-style-)))
-      (unless graspingp (return-from :pick-object nil))
+        (setq graspingp (send *ri* :graspingp arm grasp-style-))
+        (unless graspingp (return-from :pick-object nil))
+        )
       (let (avs end-pos)
         (if (eq grasp-style- :suction)
           (progn
