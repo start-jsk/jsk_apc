@@ -61,9 +61,10 @@ class CalibRequiredJointController(JointPositionController):
         self.__set_angle_limits(0, 0)
         self.set_torque_limit(self.calib_torque_limit)
         self.__set_speed_wheel(0.0)
+        # release torque by disabling it
         self.set_torque_enable(False)
         rospy.sleep(0.2)
-        self.set_torque_enable(True)
+        self.set_torque_enable(True)  # re-enable it
         rospy.sleep(0.2)
         if self.flipped:
             self.__set_speed_wheel(self.calib_speed)
