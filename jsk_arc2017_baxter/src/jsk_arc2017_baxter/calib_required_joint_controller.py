@@ -60,6 +60,11 @@ class CalibRequiredJointController(JointPositionController):
         # Change to wheel mode
         self.__set_angle_limits(0, 0)
         self.set_torque_limit(self.calib_torque_limit)
+        self.__set_speed_wheel(0.0)
+        self.set_torque_enable(False)
+        rospy.sleep(0.2)
+        self.set_torque_enable(True)
+        rospy.sleep(0.2)
         if self.flipped:
             self.__set_speed_wheel(self.calib_speed)
         else:
