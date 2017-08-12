@@ -501,6 +501,16 @@
                   t)
                 nil))
           conds))
+      (when (member :ungrasp args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for ungrasp")
+        (pushback
+          #'(lambda ()
+              (if (not (send self :graspingp arm))
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected ungrasping")
+                  t)
+                nil))
+          conds))
       (when (member :finger-flexion args)
         (ros::ros-info "[:wait-interpolation-until] Prepare for finger flexion")
         (pushback
