@@ -20,6 +20,7 @@
   <build_depend>dynamixel_msgs</build_depend>
   <build_depend>force_proximity_ros</build_depend>
   <build_depend>hardware_interface</build_depend>
+  <build_depend>jsk_2016_01_baxter_apc</build_depend>
   <build_depend>jsk_apc2016_common</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>roseus</build_depend>
