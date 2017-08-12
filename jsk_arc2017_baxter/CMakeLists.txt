@@ -99,6 +99,7 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.urdf
   COMMAND ROS_PACKAGE_PATH=${PROJECT_SOURCE_DIR}:$ENV{ROS_PACKAGE_PATH} rosrun xacro xacro baxter.xacro > baxter.urdf
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
   DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.xacro
+          ${PROJECT_SOURCE_DIR}/robots/left_vacuum_gripper.xacro
           ${PROJECT_SOURCE_DIR}/robots/right_vacuum_gripper.xacro)
 # get collada-dom version
 find_package(PkgConfig)
