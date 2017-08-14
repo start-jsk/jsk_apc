@@ -1119,16 +1119,35 @@
       (ros::wait-for-service service-name)
       (send (ros::service-call service-name req) :success)))
   (:get-scale-candidates (arm action &key (stamp (ros::time-now)))
-    (let ((topic-name
+    (let ((candidates-topic
             (format nil "~a_hand_camera/weight_candidates_refiner/output/candidates/~a"
                     (arm2str arm) (symbol2str action)))
-          msg)
-      (setq msg
-        (one-shot-subscribe topic-name jsk_recognition_msgs::LabelArray
-                            :timeout 10000
-                            :after-stamp stamp))
-      (if msg
-        (mapcar #'(lambda (label-msg) (send label-msg :name)) (send msg :labels))
+          (changed-topic
+            (format nil "~a_hand_camera/weight_candidates_refiner/output/changed_from_reset"
+                    (arm2str arm)))
+          candidates-msg changed-msg)
+      (ros::subscribe candidates-topic jsk_recognition_msgs::LabelArray
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq candidates-msg msg)))))
+      (ros::subscribe changed-topic jsk_recognition_msgs::BoolStamped
+                      #'(lambda (msg)
+                          (let ((st (send msg :header :stamp)))
+                            (when (> (send st :to-sec) (send stamp :to-sec))
+                              (setq changed-msg msg)))))
+      (while (and (not (and candidates-msg changed-msg))
+                  (> (+ (send stamp :to-sec) 10)
+                     (send (ros::time-now) :to-sec)))
+        (unix::usleep (* 50 1000))
+        (ros::spin-once))
+      (ros::unsubscribe candidates-topic)
+      (ros::unsubscribe changed-topic)
+
+      (if (and candidates-msg changed-msg)
+        (if (send changed-msg :data)
+          (mapcar #'(lambda (label-msg) (send label-msg :name)) (send candidates-msg :labels))
+          :no-change)
         :timeout)))
   (:reset-scale (arm)
     (let ((service-name (format nil "/~a_hand_camera/weight_candidates_refiner/reset" (arm2str arm)))
