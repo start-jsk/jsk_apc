@@ -12,6 +12,12 @@ jsk_2016_01_baxter_apc
    apc2016_pick_trial_rgv5
    apc2016_stow_trial
 
+Installation
+------------
+
+See `Installation <installation.html>`_.
+
+
 System
 ------
 
