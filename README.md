@@ -51,8 +51,8 @@ Citations
 ```
 
 
-Install
--------
+Installation
+------------
 
 
 ### Required
@@ -92,12 +92,6 @@ $ rossetdefault baxter  # set ROS_MASTER_URI as http://baxter:11311
 
 
 ### Optional
-
-**Setup Kinect2**
-
-Please follow [Instructions at code-iai/iai\_kinect2](https://github.com/code-iai/iai_kinect2#install),
-however, maybe you have error with the master branch. In that case, please use
-[this rosinstall](https://github.com/start-jsk/jsk_apc/blob/master/kinect2.rosinstall).
 
 **Setup Arduino and DXHUB**
 
