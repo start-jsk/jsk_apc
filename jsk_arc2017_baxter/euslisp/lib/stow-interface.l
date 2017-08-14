@@ -16,6 +16,7 @@
           picking-fail-count-
           prev-target-obj-
           recognize-fail-count-
+          scale-candidates-
           start-picking-fail-count-
           start-time-
           target-bin-
@@ -210,7 +211,10 @@
       ;; (setq graspingp (send *ri* :graspingp arm grasp-style-))
       ;; (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
       ;; graspingp))
-      t))
+      (setq scale-candidates-
+            (send self :get-scale-candidates arm :picked :stamp (ros::time-now)))
+      ;; If scale value isn't changed, we don't have to verify-object and return-object
+      (not (eq scale-candidates- :no-change))))
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj- :tote)
     (ros::ros-info "[main] arm: ~a return from pick-object to arc-reset-pose" arm)
@@ -223,18 +227,16 @@
     (if (eq grasp-style- :pinch)
       (send self :resolve-collision-between-fingers arm)))
   (:verify-object (arm)
-    (let (scale-candidates (stamp (ros::time-now)))
-      (setq scale-candidates
-            (send self :get-scale-candidates arm :picked :stamp (ros::time-now)))
-      (when (eq scale-candidates :timeout)
+    (let ((stamp (ros::time-now)))
+      (when (eq scale-candidates- :timeout)
         (ros::ros-error "subscribed weight candidates, but timeout")
         (return-from :verify-object nil))
-      (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
-      (unless scale-candidates (return-from :verify-object nil))
-      (when (eq (length scale-candidates) 1)
-        (setq target-obj- (car scale-candidates))
+      (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates-)
+      (unless scale-candidates- (return-from :verify-object nil))
+      (when (eq (length scale-candidates-) 1)
+        (setq target-obj- (car scale-candidates-))
         (return-from :verify-object t))
-      (if (find target-obj- scale-candidates :test #'string=)
+      (if (find target-obj- scale-candidates- :test #'string=)
         t  ;; scale can classify the grasped object
         (progn  ;; scale narrows down candidate objects
           (let* ((task-duration (- (send (ros::time-now) :to-sec) (send start-time- :to-sec)))

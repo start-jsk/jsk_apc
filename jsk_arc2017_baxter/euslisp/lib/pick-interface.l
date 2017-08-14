@@ -19,6 +19,7 @@
           picking-fail-count-
           prev-target-obj-
           recognize-fail-count-
+          scale-candidates-
           start-picking-fail-count-
           target-bin-
           target-cardboard-
@@ -249,7 +250,10 @@
       ;; (setq graspingp (send *ri* :graspingp arm grasp-style-))
       ;; (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
       ;; graspingp))
-      t))
+      (setq scale-candidates-
+            (send self :get-scale-candidates arm :picked :stamp (ros::time-now)))
+      ;; If scale value isn't changed, we don't have to verify-object and return-object
+      (not (eq scale-candidates- :no-change))))
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj- target-bin-)
     (setq start-picking-fail-count- 0)
@@ -266,20 +270,18 @@
       (setq moving-object-p- nil)
       (ros::ros-info "moving object in bin")
       (return-from :verify-object nil))
-    (let (scale-candidates (stamp (ros::time-now)))
-      (setq scale-candidates
-            (send self :get-scale-candidates arm :picked :stamp stamp))
-      (when (eq scale-candidates :timeout)
+    (let ((stamp (ros::time-now)))
+      (when (eq scale-candidates- :timeout)
         (ros::ros-error "subscribed weight candidates, but timeout")
         (return-from :verify-object nil))
-      (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates)
-      (unless scale-candidates (return-from :verify-object nil))
-      (if (find target-obj- scale-candidates :test #'string=)
+      (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates-)
+      (unless scale-candidates- (return-from :verify-object nil))
+      (if (find target-obj- scale-candidates- :test #'string=)
         t  ;; scale can classify the grasped object
         (progn  ;; scale narrows down candidate objects
           (let (msg (proba-thre 0.80) new-order)
-            (if (eq (length scale-candidates) 1)
-              (setq new-order (send self :check-exist-in-order (car scale-candidates)))
+            (if (eq (length scale-candidates-) 1)
+              (setq new-order (send self :check-exist-in-order (car scale-candidates-)))
               (progn
                 (setq msg
                   (one-shot-subscribe
