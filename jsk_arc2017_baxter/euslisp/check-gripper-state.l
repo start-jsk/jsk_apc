@@ -29,22 +29,25 @@
 (while (ros::ok)
   (ros::spin-once)
   (dolist (key *message-keys*)
-    (let (time-elapsed msg)
+    (let (time-elapsed msg timeoutp)
       (setq msg (gethash key *last-messages*))
       (if msg
         (progn
           (setq time-elapsed (- (send (ros::time-now) :to-sec)
                                 (send (send msg :header :stamp) :to-sec)))
-          (ros::ros-debug "  ~A received ~A [sec] ago" (send msg :name) time-elapsed))
+          (ros::ros-debug "  ~A received ~A [sec] ago" (send msg :name) time-elapsed)
+          (when (> time-elapsed 1)
+            (ros::ros-error "  ~A received ~A [sec] ago, kill ~A"
+                            (send msg :name) time-elapsed *target-node-name*)
+            (setq timeoutp t)))
         (progn
           (setq time-elapsed (- (send (ros::time-now) :to-sec) (send *start-time* :to-sec)))
-          (ros::ros-debug "  ~A never received in ~A [sec]" key time-elapsed)))
-      (when (> time-elapsed 1)
-        (if msg
-          (ros::ros-error "  ~A received ~A [sec] ago, kill ~A"
-                          (send msg :name) time-elapsed *target-node-name*)
-          (ros::ros-error "  ~A never received in ~A [sec], kill ~A"
-                          key time-elapsed *target-node-name*))
+          (ros::ros-debug "  ~A never received in ~A [sec]" key time-elapsed)
+          (when (> time-elapsed 5)
+            (ros::ros-error "  ~A never received in ~A [sec], kill ~A"
+                            key time-elapsed *target-node-name*)
+            (setq timeoutp t))))
+      (when timeoutp
         (unix::system (format nil "rosnode kill ~A" *target-node-name*))
         (setq namespace (subseq (ros::get-namespace) 1))
         (ros::ros-error "  restart swpaner ~A" namespace)
