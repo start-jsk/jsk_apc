@@ -186,12 +186,18 @@
   (:change-grasp-style (arm)
     (incf trial-fail-count-)
     (send *ri* :stop-grasp arm)
-    ;; try another grasp style
-    (setq grasp-style- (send self :get-grasp-style arm target-obj- (+ trial-fail-count- 1)))
-    (ros::ros-info-green "arm: ~a, grasp-style: ~a, trial-time: ~a"
-                         (arm2str arm) (symbol2str grasp-style-) (+ trial-fail-count- 1))
-    (unless grasp-style- (setq trial-fail-count- 0))
-    (if grasp-style- t nil))
+    (let (next-style)
+      ;; try another grasp style
+      (setq next-style (send self :get-grasp-style arm target-obj- (+ trial-fail-count- 1)))
+      (ros::ros-info-green "arm: ~a, next grasp-style: ~a, trial-time: ~a"
+                           (arm2str arm) (symbol2str next-style) (+ trial-fail-count- 1))
+      (if next-style
+        (progn
+          (setq grasp-style- next-style)
+          t)
+        (progn
+          (setq trial-fail-count- 0)
+          nil))))
   (:pick-object
     (arm)
     (send *ri* :speak
