@@ -253,7 +253,11 @@
       (setq scale-candidates-
             (send self :get-scale-candidates arm :picked :stamp (ros::time-now)))
       ;; If scale value isn't changed, we don't have to verify-object and return-object
-      (not (eq scale-candidates- :no-change))))
+      (if (eq scale-candidates- :no-change)
+        (progn
+          (ros::ros-info-green "[main] arm ~a: grasping nothing is detected by scale" arm)
+          nil)
+        t)))
   (:return-from-pick-object (arm)
     (send self :add-postponed-object arm target-obj- target-bin-)
     (setq start-picking-fail-count- 0)
