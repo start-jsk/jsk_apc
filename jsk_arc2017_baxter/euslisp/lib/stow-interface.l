@@ -342,8 +342,12 @@
                         (arm2str arm) (underscore-to-space target-obj-)))
           (ros::ros-error "[main] arm ~a: dropped object" arm)
           (send *ri* :stop-grasp arm)
-          (if (eq grasp-style- :pinch)
-            (send *ri* :stop-grasp arm :pinch))
+          (when (eq grasp-style- :pinch)
+            (send *ri* :stop-grasp arm :pinch)
+            (send *baxter* :rotate-gripper arm 90 :relative nil))
+          ;; we assume object is dropped, but it can be just a mis-detection of grasp
+          (send self :spin-off-by-wrist arm :times 3)
+          (send *ri* :wait-interpolation)
           (send self :add-postponed-object arm target-obj- :tote))
         (progn
           (send self :update-json target-obj- :src :tote :dst (cons :bin target-bin-))
