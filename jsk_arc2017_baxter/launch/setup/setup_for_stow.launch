@@ -3,6 +3,9 @@
   <arg name="stereo" default="true" />
   <arg name="load_driver" default="true" />
 
+  <!-- get machine tag -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
+
   <!-- hand mounted camera -->
   <group if="$(arg stereo)">
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
