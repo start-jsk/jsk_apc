@@ -23,13 +23,12 @@ class EkEwIDriver(object):
             port, baudrate=2400, bytesize=7, parity=serial.PARITY_EVEN,
             timeout=timeout, writeTimeout=timeout)
         self.pub = rospy.Publisher('~output', WeightStamped, queue_size=1)
-        self.pub_raw = rospy.Publisher('~output/weight_raw', WeightStamped, queue_size=1)
         rate = rospy.get_param('~rate', 10)
         self.read_timer = rospy.Timer(rospy.Duration(1. / rate),
                                       self._read_timer_cb)
 
     def _read_timer_cb(self, event):
-        if (self.pub.get_num_connections() == 0) and (self.pub_raw.get_num_connections() == 0):
+        if (self.pub.get_num_connections() == 0):
             return
 
         try:
@@ -45,39 +44,36 @@ class EkEwIDriver(object):
             rospy.signal_shutdown('Serial read timeout')
             return
 
-        # get raw scale value without checking the mode of the scale
-        weight_raw = float('nan')  # unknown
-        unit = data[12:15]
-        if unit != '  g':
-            rospy.logerr('Unsupported unit: %s', unit)
-        else:
-            weight_raw = float(data[3:12])
+        # get scale value
         msg = WeightStamped()
         msg.header.stamp = stamp
-        msg.weight.value = weight_raw
-        self.pub_raw.publish(msg)
-
-        # get scale value with checking the mode of the scale
         header = data[:2]
-        weight = float('nan')  # unknown
-        if header == 'ST':
-            # scale mode
-            unit = data[12:15]
-            if unit != '  g':
-                rospy.logerr('Unsupported unit: %s', unit)
+        msg.weight.value = float(data[3:12])
+        unit = data[12:15]
+        if unit == '  g':
+            if header == 'ST':
+                # stable
+                msg.weight.stable = True
+            elif header == 'US':
+                # unstable
+                msg.weight.stable = False
+            elif header == 'OL':
+                # scale over
+                rospy.logerr('Scale data is over its range')
+                return
+            elif header == 'QT':
+                # number mode
+                rospy.logerr('Scale is in number mode')
+                return
             else:
-                weight = float(data[3:12])
-        elif header == 'QT':
-            # number mode
-            rospy.logerr('Unsupported mode: %s', header)
-        elif header == 'US':
-            # unstable
-            pass
-        elif header == 'OL':
-            # scale over
-            rospy.logerr('Scale over')
+                # Unknown header
+                rospy.logerr('Unknown header: %s', header)
+                return
+        else:
+            # unit is not g
+            rospy.logerr('Unsupported unit: %s', unit)
+            return
 
-        msg.weight.value = weight
         self.pub.publish(msg)
 
 

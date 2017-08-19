@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import math
-
 import jsk_arc2017_common
 from jsk_arc2017_common.msg import WeightStamped
+from jsk_recognition_msgs.msg import BoolStamped
 from jsk_recognition_msgs.msg import Label
 from jsk_recognition_msgs.msg import LabelArray
-from jsk_topic_tools import ConnectionBasedTransport
 import message_filters
 import rospy
 from std_srvs.srv import Trigger
@@ -30,11 +28,13 @@ class WeightCanditatesRefiner(object):
             '~debug/weight_sum', WeightStamped, queue_size=1)
         self.weight_sum_at_reset_pub = rospy.Publisher(
             '~debug/weight_sum_at_reset', WeightStamped, queue_size=1)
+        self.changed_pub = rospy.Publisher(
+            '~output/changed_from_reset', BoolStamped, queue_size=1)
         self.picked_pub = rospy.Publisher(
             '~output/candidates/picked', LabelArray, queue_size=1)
         self.placed_pub = rospy.Publisher(
             '~output/candidates/placed', LabelArray, queue_size=1)
-        self.init_srv = rospy.Service('~reset', Trigger, self._reset)
+        self.can_reset = False
         self.subscribe()
 
     def subscribe(self):
@@ -46,7 +46,8 @@ class WeightCanditatesRefiner(object):
         # add scale subscriber
         self.subs = []
         for input_topic in self.input_topics:
-            sub = message_filters.Subscriber(input_topic, WeightStamped, queue_size=1)
+            sub = message_filters.Subscriber(
+                input_topic, WeightStamped, queue_size=1)
             self.subs.append(sub)
         if use_async:
             slop = rospy.get_param('~slop', 0.1)
@@ -68,34 +69,56 @@ class WeightCanditatesRefiner(object):
             self.candidates[label_msg.name] = label_msg.id
 
     def _scale_cb(self, *weight_msgs):
-        if not self.candidates:
-            rospy.logwarn_throttle(10, 'No candidates, so skipping')
-            return
-        candidates = self.candidates
-
         assert len(weight_msgs) == len(self.prev_weight_values)
-        weight_values = [w.weight.value for w in weight_msgs]
-        if any(math.isnan(w) for w in weight_values):
-            rospy.logwarn_throttle(
-                10, 'NaN values are included in scale output, so skipping.')
-            return  # unstable, scale over, or something
-        self.prev_weight_values = weight_values
 
+        # Publish debug info
+        weight_values = [w.weight.value for w in weight_msgs]
         weight_sum = sum(weight_values)
-        weight_diff = weight_sum - self.weight_sum_at_reset
         sum_msg = WeightStamped()
         sum_msg.header = weight_msgs[0].header
         sum_msg.weight.value = weight_sum
+        sum_msg.weight.stable = all(msg.weight.stable for msg in weight_msgs)
         sum_at_reset_msg = WeightStamped()
         sum_at_reset_msg.header = weight_msgs[0].header
         sum_at_reset_msg.weight.value = self.weight_sum_at_reset
+        sum_at_reset_msg.weight.stable = True
+        self.weight_sum_at_reset_pub.publish(sum_at_reset_msg)
+        self.weight_sum_pub.publish(sum_msg)
 
+        if not sum_msg.weight.stable:
+            return  # unstable
+
+        # Store stable weight and enable resetting
+        self.prev_weight_values = weight_values
+        if not self.can_reset:
+            self.reset_srv = rospy.Service('~reset', Trigger, self._reset)
+            self.can_reset = True
+
+        if not self.candidates:
+            rospy.logwarn_throttle(10, 'No candidates, so skip refining')
+            return
+        candidates = self.candidates
+
+        # Judge if scale value is changed
+        weight_diff = weight_sum - self.weight_sum_at_reset
+        diff_lower = weight_diff - self.error
+        diff_upper = weight_diff + self.error
+        weight_min = min(self.object_weights.get(x, float('inf'))
+                         for x in candidates.keys())
+        changed_msg = BoolStamped()
+        changed_msg.header = weight_msgs[0].header
+        if -weight_min < diff_lower and diff_upper < weight_min \
+                and diff_lower < 0 and 0 < diff_upper:
+            changed_msg.data = False
+        else:
+            changed_msg.data = True
+        self.changed_pub.publish(changed_msg)
+
+        # Output candidates
         pick_msg = LabelArray()
         place_msg = LabelArray()
         pick_msg.header = weight_msgs[0].header
         place_msg.header = weight_msgs[0].header
-        diff_lower = weight_diff - self.error
-        diff_upper = weight_diff + self.error
         for obj_name, w in self.object_weights.items():
             if obj_name not in candidates:
                 continue
@@ -110,9 +133,6 @@ class WeightCanditatesRefiner(object):
                 label.id = obj_id
                 label.name = obj_name
                 pick_msg.labels.append(label)
-
-        self.weight_sum_at_reset_pub.publish(sum_at_reset_msg)
-        self.weight_sum_pub.publish(sum_msg)
         self.picked_pub.publish(pick_msg)
         self.placed_pub.publish(place_msg)
 
