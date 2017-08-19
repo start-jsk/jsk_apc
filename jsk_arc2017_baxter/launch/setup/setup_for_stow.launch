@@ -104,9 +104,8 @@
 
     <!-- weight object classifier -->
     <node name="weight_candidates_refiner"
-          pkg="jsk_perception" type="weight_candidates_refiner.py" clear_params="true">
+          pkg="jsk_arc2017_common" type="weight_candidates_refiner.py">
       <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
-      <rosparam ns="object_weights" file="$(find jsk_arc2017_common)/config/object_weights.yaml" />
       <rosparam>
         approximate_sync: true
         queue_size: 10
@@ -192,9 +191,8 @@
 
     <!-- weight object classifier -->
     <node name="weight_candidates_refiner"
-          pkg="jsk_perception" type="weight_candidates_refiner.py" clear_params="true">
+          pkg="jsk_arc2017_common" type="weight_candidates_refiner.py">
       <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
-      <rosparam ns="object_weights" file="$(find jsk_arc2017_common)/config/object_weights.yaml" />
       <rosparam>
         approximate_sync: true
         queue_size: 10
