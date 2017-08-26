@@ -187,7 +187,7 @@ foreach(exec ${BIN_EXECUTABLES})
     COMMAND cmake -E copy ${PROJECT_SOURCE_DIR}/scripts/${exec} ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_BIN_DESTINATION}/
     DEPENDS ${PROJECT_SOURCE_DIR}/scripts/${exec})
   add_custom_target(install_${exec} ALL DEPENDS ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_BIN_DESTINATION}/${exec})
-  install(PROGRAMS bin/euslint DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+  install(PROGRAMS scripts/${exec} DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
 endforeach(exec)
 
 ## Mark executables and/or libraries for installation
