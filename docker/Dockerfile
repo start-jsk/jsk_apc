@@ -22,5 +22,5 @@ RUN cd ~ && \
     wstool merge start-jsk/jsk_apc/.travis.rosinstall && \
     wstool up -j 2
 RUN rosdep update
-RUN rosdep install -r -y -i --from-path /opt/ros/indigo/share ~/src
+RUN rosdep install -r -y -i --from-paths /opt/ros/indigo/share ~/src
 RUN rm -rf ~/src
