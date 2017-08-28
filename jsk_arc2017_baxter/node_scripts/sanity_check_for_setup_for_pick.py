@@ -46,6 +46,11 @@ def main():
 
         '/lgripper_sensors',
         '/rgripper_sensors',
+
+        '/scale0/output',
+        '/scale1/output',
+        '/scale2/output',
+        '/scale3/output',
     ]
     for topic in topics:
         topic_checkers.append(TopicPublishedChecker(topic, timeout=5))
