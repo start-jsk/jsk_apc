@@ -48,7 +48,8 @@
     (let (can-start)
       (when moveit-p-
         (send self :add-shelf-scene)
-        (send self :add-cardboard-rack-scene))
+        ;; (send self :add-cardboard-rack-scene)
+        )
       (send *ri* :speak
             (format nil "~a arm is waiting for user input to start the picking task."
                     (arm2str arm)))
@@ -391,55 +392,17 @@
       ;;       4000 (send *ri* :get-arm-controller arm) 0
       ;;       :path-constraints path-constraints)
       (let (avs)
-        (if (eq target-cardboard- :c)
-          (progn
-            (pushback
-              (if (eq grasp-style- :suction)
-                (send self :ik->bin-center arm :b :offset #f(0 0 400)
-                      :rotation-axis :z :use-gripper t)
-                (send self :ik->bin-center arm :b :offset #f(0 0 400)
-                      :rotation-axis nil :move-palm-end t))
-              avs)
-            (pushback
-              (if (eq grasp-style- :suction)
-                (send self :ik->cardboard-center arm target-cardboard-
-                      :offset (v+ (float-vector 0 0 100)
-                                  (send self :decide-cardboard-place-area arm target-cardboard-))
-                      :rotation-axis :z :use-gripper t)
-                (send self :ik->cardboard-center arm target-cardboard-
-                      :offset (v+ (float-vector -50 0 100)
-                                  (send self :decide-cardboard-place-area arm target-cardboard-))
-                      :rotation-axis nil :move-palm-end t))
-              avs)
-            (setq place-z 50))
-          (progn
-            (pushback
-              (if (eq grasp-style- :suction)
-                (send self :ik->bin-center arm :b :offset #f(0 0 800)
-                      :rotation-axis :z :use-gripper t)
-                (send self :ik->bin-center arm :b :offset #f(0 0 800)
-                      :rotation-axis nil :move-palm-end t))
-              avs)
-            (if (eq grasp-style- :suction)
-              (progn
-                (pushback
-                  (send self :ik->cardboard-center arm target-cardboard-
-                        :offset (float-vector -50 0 200) :rotation-axis :z :use-gripper t)
-                  avs)
-                (pushback
-                  (send self :ik->cardboard-center arm target-cardboard-
-                        :offset (float-vector 30 0 200) :rotation-axis :z :use-gripper t)
-                  avs))
-              (progn
-                (pushback
-                  (send self :ik->cardboard-center arm target-cardboard-
-                        :offset (float-vector -50 0 200) :rotation-axis nil :move-palm-end t)
-                  avs)
-                (pushback
-                  (send self :ik->cardboard-center arm target-cardboard-
-                        :offset (float-vector -20 0 200) :rotation-axis nil :move-palm-end t)
-                  avs)))
-            (setq place-z 100)))
+        (dolist (offset (list #f(-50 0 500) #f(-50 0 200) #f(30 0 200)))
+          (pushback
+            (send self :ik->cardboard-center arm target-cardboard-
+                  :offset offset
+                  :rotation-axis (if (eq grasp-style- :suction) :z nil)
+                  :use-gripper (if (eq grasp-style- :suction) t nil)
+                  :move-palm-end (if (eq grasp-style- :suction) nil t)
+                  )
+            avs)
+          )
+        (setq place-z 50)
         (if (eq grasp-style- :suction)
           (send *ri* :angle-vector-sequence-raw avs :fast
                 (send *ri* :get-arm-controller arm :gripper t :head t) 0 :scale 7.0)
