@@ -1100,15 +1100,16 @@
       (setq graspingp (send self :graspingp arm))
       graspingp))
   (:pick-object-in-order-bin
-    (arm &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil))
-    (let (order-bin-box graspingp object-index avs avs->view)
+    (arm &key (n-trial 1) (n-trial-same-pos 1) (do-stop-grasp nil) (object-index nil))
+    (let (order-bin-box graspingp avs avs->view)
       (if (or
           (null (gethash arm objects-in-order-bin-boxes-))
           (null (gethash arm objects-in-order-bin-coords-)))
         (return-from :pick-object-in-order-bin nil) t)
       ;; (send self :fold-pose-back arm)
       ;; (send self :wait-interpolation)
-      (setq object-index (random (length (gethash arm objects-in-order-bin-boxes-))))
+      (unless object-index
+        (setq object-index (random (length (gethash arm objects-in-order-bin-boxes-)))))
       (dotimes (i n-trial)
         (dotimes (j n-trial-same-pos)
           (unless graspingp
