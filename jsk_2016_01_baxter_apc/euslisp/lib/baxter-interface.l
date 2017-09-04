@@ -1118,7 +1118,7 @@
                         :object-index object-index))
             (pushback (send *baxter* :angle-vector) avs))))
       (when do-stop-grasp (unless graspingp (send self :stop-grasp arm)))
-      (send self :angle-vector-sequence (reverse avs) :fast nil 0 :scale 5.0)
+      (send self :angle-vector-sequence-raw (reverse avs) :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       (ros::ros-info "[:pick-object] arm:~a in-order-bin -> view-hand-pose" arm)
       (send self :gripper-servo-on arm)
@@ -1126,7 +1126,7 @@
       (if (eq arm :larm)
         (pushback (send *baxter* :view-hand-pose arm :j) avs->view)
         (pushback (send *baxter* :view-hand-pose arm :l) avs->view))
-      (send *ri* :angle-vector-sequence avs->view :fast nil 0 :scale 5.0)
+      (send *ri* :angle-vector-sequence-raw avs->view :fast nil 0 :scale 5.0)
       (send self :wait-interpolation)
       graspingp))
   (:try-to-pick-object-in-order-bin
