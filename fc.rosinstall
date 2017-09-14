@@ -78,4 +78,4 @@
 - git:
     local-name: ros-drivers/rosserial
     uri: https://github.com/ros-drivers/rosserial
-    version: 0.7.4
+    version: 0.7.6
