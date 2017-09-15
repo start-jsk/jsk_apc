@@ -391,17 +391,16 @@
       ;;             :offset #f(0 0 200) :rotation-axis :z :use-gripper t)
       ;;       4000 (send *ri* :get-arm-controller arm) 0
       ;;       :path-constraints path-constraints)
-      (let (avs)
-        (dolist (offset (list #f(-50 0 500) #f(-50 0 200) #f(30 0 200)))
+      (let (avs (offsets (list #f(-50 0 500) #f(-50 0 200) #f(0 0 200) #f(30 0 200))))
+        (dolist (offset offsets)
           (pushback
             (send self :ik->cardboard-center arm target-cardboard-
                   :offset offset
                   :rotation-axis (if (eq grasp-style- :suction) :z nil)
                   :use-gripper (if (eq grasp-style- :suction) t nil)
-                  :move-palm-end (if (eq grasp-style- :suction) nil t)
-                  )
-            avs)
-          )
+                  :move-palm-end (if (eq grasp-style- :suction) nil t))
+            avs))
+        (setq avs (remove nil avs))
         (setq place-z 50)
         (if (eq grasp-style- :suction)
           (send *ri* :angle-vector-sequence-raw avs :fast
