@@ -19,7 +19,7 @@ Visualizes `item_location_file.json` and `order_file.json`.
   Where json files are located.
 
 
-## Publshing topics
+## Publishing topics
 
 - `~output/item_location_viz` (`sensor_msgs/Image`)
 
