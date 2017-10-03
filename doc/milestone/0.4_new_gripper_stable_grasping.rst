@@ -27,7 +27,7 @@ Recognition
 
 1. Location of shelf: old
 2. Object recognition in bin: old
-3. Grasp plannning in bin: old
+3. Grasp planning in bin: old
 4. Detection of grasping with vacuum sensor: new (**feature**)
 5. In-hand object recognition: None
 6. In-hand detection of grasping: None
