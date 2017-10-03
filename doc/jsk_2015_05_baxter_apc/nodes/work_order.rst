@@ -19,7 +19,7 @@ Rules
 
 .. image:: _images/abandon_objects.png
 
-2. Left bins are assigned to left arm, vice vasa.
+2. Left bins are assigned to left arm, vice versa.
 3. Center bins are assigned to one arm (left or right).
 
 
