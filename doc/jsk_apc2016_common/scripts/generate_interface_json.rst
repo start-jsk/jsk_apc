@@ -3,7 +3,7 @@ generate_interface_json.py
 
 Generate interface json file for Pick & Stow task.
 
-The json id is incremeneted according to the existing json files in
+The json id is incremented according to the existing json files in
 ``$(rospack find jsk_apc2016_common)/json``.
 Name rule is:
 
