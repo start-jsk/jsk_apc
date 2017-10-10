@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
 import multiprocessing
+import os
 
 import jsk_data
+import rospkg
 
 
 PKG = 'jsk_arc2017_common'
+
+rp = rospkg.RosPack()
+PKG_PATH = rp.get_path(PKG)
 
 
 def download_data(path, url, md5):
@@ -69,6 +74,17 @@ def main():
         url='https://drive.google.com/uc?id=0B9P1L--7Wd2vWXRNa3BpeWlqcFE',
         md5='17536436262487185740e186e39651bf',
     )
+
+    symlink_src = os.path.join(
+        PKG_PATH, 'data/models/fcn32s_arc2017_datasetv3_cfg009_20170724.npz')
+    symlink_dst = os.path.join(PKG_PATH, 'data/models/fcn32s.npz')
+    if os.path.exists(symlink_dst):
+        print('[%s] File already exists, so skipping.' % symlink_dst)
+    else:
+        if os.path.islink(symlink_dst):
+            os.remove(symlink_dst)
+        print('[%s] Creating symlink to: %s' % (symlink_dst, symlink_src))
+        os.symlink(symlink_src, symlink_dst)
 
 
 if __name__ == '__main__':
