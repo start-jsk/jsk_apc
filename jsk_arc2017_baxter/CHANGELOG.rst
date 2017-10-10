@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.1 (2017-10-10)
+------------------
 * [jsk_arc2017_baxter/euslisp/lib/baxter-interface.l] support ungrasp condition in :wait-interpolation-until.
 * Fix missing include files
   I got `No such file or directory "ros/ros.h"`.

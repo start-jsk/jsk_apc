@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.1 (2017-10-10)
+------------------
 * Fix typo: bin/euslint -> scripts/euslint
 * Contributors: Kentaro Wada
 
