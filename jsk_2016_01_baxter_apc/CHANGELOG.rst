@@ -2,6 +2,18 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add object-index key in pick-object-in-order-bin
+* use avs-raw with :fast in pick-object
+* update shelf marker
+* Fix missing include files
+  I got `No such file or directory "ros/ros.h"`.
+* Move installation for jsk_2016_01_baxter_apc to doc
+* Add light meshes
+* Remove unnecessary meshes
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa
+
 4.1.0 (2017-08-12)
 ------------------
 * use transformable_markers for kiva_pod

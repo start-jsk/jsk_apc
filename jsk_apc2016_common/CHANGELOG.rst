@@ -2,6 +2,11 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix typo: bin/euslint -> scripts/euslint
+* Contributors: Kentaro Wada
+
 4.1.0 (2017-08-12)
 ------------------
 * Visualize target0 (index 0 object)

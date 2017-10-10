@@ -2,6 +2,34 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_arc2017_baxter/euslisp/lib/baxter-interface.l] support ungrasp condition in :wait-interpolation-until.
+* Fix missing include files
+  I got `No such file or directory "ros/ros.h"`.
+* Revert "Use and_scale_ros and weight_candidates_refiner of jsk_perception"
+  This reverts commit 124dbbe62bd03d49a3d4464df6f42844d761912d.
+* Don't change grasp-style- if next grasp style is nil
+* Add ros-info when ungrasp is detected
+* Detect ungrasp by scale
+* Use and_scale_ros and weight_candidates_refiner of jsk_perception
+* Don't trust pressure sensor again
+* Copy spin-off times from pick to stow
+* Fix release motion of pinch in pick
+* Spin off objects even if graspingp is nil in stow
+* Add machine tag in setup_for_stow
+* Make timeout longer in checking gripper state
+* Re-trust pressure sensor value on picking (`#2562 <https://github.com/start-jsk/jsk_apc/issues/2562>`_)
+  * Re-trust pressure sensor value on picking
+  * fix
+  * fix
+* Add light meshes
+* Add missing build depend
+* Update calib_required_joint_controller.py
+* Change mode directly after detecting limit
+* Resolve overload before prismatic calib
+* Contributors: Kentaro Wada, Masaki Murooka, Shun Hasegawa
+
 4.1.0 (2017-08-12)
 ------------------
 * Fix rotate wrist ik for :rarm (inverse of :larm)

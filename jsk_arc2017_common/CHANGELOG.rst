@@ -2,6 +2,12 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Equalize weight_candidates_refiner in jsk_apc to upstream PRs
+* Create ItemData by taking photos
+* Contributors: Kentaro Wada, Shun Hasegawa
+
 4.1.0 (2017-08-12)
 ------------------
 * Warn about nan value
