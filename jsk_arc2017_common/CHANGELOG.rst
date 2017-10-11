@@ -2,6 +2,12 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Create fcn32s.npz symlink by install_data.py
+  In order to avoid error in bloom.
+* Contributors: Kentaro Wada
+
 4.1.1 (2017-10-10)
 ------------------
 * Equalize weight_candidates_refiner in jsk_apc to upstream PRs

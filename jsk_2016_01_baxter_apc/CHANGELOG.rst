@@ -2,6 +2,9 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.1.1 (2017-10-10)
 ------------------
 * add object-index key in pick-object-in-order-bin
