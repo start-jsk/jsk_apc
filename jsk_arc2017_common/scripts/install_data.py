@@ -9,8 +9,14 @@ import rospkg
 
 PKG = 'jsk_arc2017_common'
 
-rp = rospkg.RosPack()
-PKG_PATH = rp.get_path(PKG)
+
+try:
+    rp = rospkg.RosPack()
+    PKG_PATH = rp.get_path(PKG)
+except rospkg.ResourceNotFound as e:
+    print('ROS package [%s] is not found. '
+          'Skipping by assuming we are in build.ros.org.' % PKG)
+    quit(0)
 
 
 def download_data(path, url, md5):
