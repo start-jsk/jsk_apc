@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_arc2017_common</name>
-  <version>4.1.3</version>
+  <version>4.1.4</version>
   <description>Common package for Amazon Robotics Challenge 2017 at JSK Lab.</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
