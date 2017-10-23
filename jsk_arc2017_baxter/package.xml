@@ -21,7 +21,6 @@
   <build_depend>force_proximity_ros</build_depend>
   <build_depend>hardware_interface</build_depend>
   <build_depend>jsk_2016_01_baxter_apc</build_depend>
-  <build_depend>jsk_apc2016_common</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>roseus</build_depend>
   <build_depend>std_msgs</build_depend>
@@ -57,6 +56,8 @@
   <run_depend>transmission_interface</run_depend>
   <run_depend>xacro</run_depend>
 
+  <test_depend>jsk_apc2016_common</test_depend>
+  <test_depend>jsk_arc2017_common</test_depend>
   <test_depend>jsk_tools</test_depend>
   <test_depend>roslint</test_depend>
   <test_depend>rostest</test_depend>
