@@ -7,8 +7,8 @@ Changelog for package jsk_arc2017_common
 * Skip ResourceNotFound error to pass build on build.ros.org
 * Contributors: Kentaro Wada
 
-Forthcoming
------------
+4.1.5 (2017-10-23)
+------------------
 * 4.1.4
 * Update CHANGELOG
 * Skip ResourceNotFound error to pass build on build.ros.org

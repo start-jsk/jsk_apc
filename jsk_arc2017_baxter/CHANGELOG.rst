@@ -5,8 +5,8 @@ Changelog for package jsk_arc2017_baxter
 4.1.4 (2017-10-15)
 ------------------
 
-Forthcoming
------------
+4.1.5 (2017-10-23)
+------------------
 * Install roslint + rostest for testing jsk_arc2017_baxter
 * 4.1.4
 * Update CHANGELOG

@@ -5,8 +5,8 @@ Changelog for package jsk_2016_01_baxter_apc
 4.1.4 (2017-10-15)
 ------------------
 
-Forthcoming
------------
+4.1.5 (2017-10-23)
+------------------
 * 4.1.4
 * Update CHANGELOG
 * Contributors: Kentaro Wada
