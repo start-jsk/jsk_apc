@@ -36,8 +36,6 @@
   <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <run_depend>jsk_2016_01_baxter_apc</run_depend>
   <run_depend>jsk_apc2015_common</run_depend>
-  <run_depend>jsk_apc2016_common</run_depend>
-  <run_depend>jsk_arc2017_common</run_depend>
   <run_depend>jsk_baxter_startup</run_depend>
   <run_depend>jsk_data</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
