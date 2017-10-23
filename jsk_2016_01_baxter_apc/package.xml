@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_2016_01_baxter_apc</name>
-  <version>4.1.5</version>
+  <version>4.1.6</version>
   <description>Common stacks for Amazon Picking Challenge 2016</description>
 
   <maintainer email="pazeshun3684@gmail.com">Hasegawa Shun</maintainer>
