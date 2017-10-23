@@ -5,6 +5,12 @@ Changelog for package jsk_arc2017_baxter
 4.1.4 (2017-10-15)
 ------------------
 
+Forthcoming
+-----------
+* Fix redundant test_depend vs run_depend
+* Fix build error on build.ros.org
+* Contributors: Kentaro Wada
+
 4.1.5 (2017-10-23)
 ------------------
 * Install roslint + rostest for testing jsk_arc2017_baxter
