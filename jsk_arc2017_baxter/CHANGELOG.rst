@@ -2,6 +2,11 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix missing build_depends for testing with find_package
+* Contributors: Kentaro Wada
+
 4.1.7 (2017-10-26)
 ------------------
 * They must be <run_depend> to generate eus messages for them
