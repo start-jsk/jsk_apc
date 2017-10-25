@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.8 (2017-10-26)
+------------------
 * Fix missing build_depends for testing with find_package
 * Contributors: Kentaro Wada
 
