@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.7 (2017-10-26)
+------------------
 * 4.1.6
 * Update CHANGELOG.rst
 * 4.1.5
