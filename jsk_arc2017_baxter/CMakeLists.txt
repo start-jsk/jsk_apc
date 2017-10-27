@@ -125,7 +125,12 @@ target_link_libraries(gripper_v6_ros_control_node ${catkin_LIBRARIES})
 ## Install ##
 #############
 
-# XXX
+install(DIRECTORY
+  config euslisp launch meshes node_scripts robots
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS
+)
+
 
 #############
 ## Testing ##
