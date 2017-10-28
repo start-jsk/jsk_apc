@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_apc2015_common</name>
-  <version>4.1.8</version>
+  <version>4.1.9</version>
   <description>Common stacks for Amazon Picking Challenge 2015</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>

@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.1.9 (2017-10-28)
+------------------
 * Install necessary directories
 * Contributors: Kentaro Wada
 
