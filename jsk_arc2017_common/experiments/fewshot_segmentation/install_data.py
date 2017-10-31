@@ -43,6 +43,11 @@ def main():
             )
         print('Created ItemData: %s' % item_data_dir)
 
+    # ~/data/arc2017/models/fcn32s_cfg012_arc2017_iter00140000_20170729.npz
+    url = 'https://www.dropbox.com/s/8dmifq2tusrmwpf/fcn32s_cfg012_arc2017_iter00140000_20170729.npz?dl=1'
+    path = osp.expanduser('~/data/arc2017/models/fcn32s_cfg012_arc2017_iter00140000_20170729.npz')
+    mvtk.data.download_mp(url=url, path=path)
+
 
 if __name__ == '__main__':
     main()
