@@ -45,3 +45,7 @@ notifications:
 branches:
   only:
     - master
+
+after_success:
+  # trigger the build of the docker image
+  - curl -X POST https://registry.hub.docker.com/u/wkentaro/jsk_apc/trigger/3ed08cc3-12bf-4a63-85a7-8082180f3639/
