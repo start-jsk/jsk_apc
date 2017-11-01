@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_apc2016_common</name>
-  <version>4.1.9</version>
+  <version>4.2.0</version>
   <description>The jsk_apc2016_common package</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>

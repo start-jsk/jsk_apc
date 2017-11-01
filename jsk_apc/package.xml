@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_apc</name>
-  <version>4.1.9</version>
+  <version>4.2.0</version>
   <description>
    <p>Metapackage for Amazon Picking Challenge</p>
   </description>

@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.2.0 (2017-11-01)
+------------------
 * Add README
 * Add .gitignore
 * Install item_data via a script for few-shot segmentation

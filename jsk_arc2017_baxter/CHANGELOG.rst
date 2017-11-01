@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.2.0 (2017-11-01)
+------------------
 * Adjust right hand astra camera
 * Fix offset of place object
 * Remove rack for cardboard boxes
