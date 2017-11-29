@@ -102,11 +102,29 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxter.urdf
   DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.xacro
           ${PROJECT_SOURCE_DIR}/robots/left_vacuum_gripper.xacro
           ${PROJECT_SOURCE_DIR}/robots/right_vacuum_gripper.xacro)
+## -------------------
+## baxterlgv7.l generation
+## -------------------
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxterlgv7.l
+  COMMAND rosrun euscollada collada2eus baxterlgv7.dae baxterlgv7.yaml baxterlgv7.l
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxterlgv7.dae ${PROJECT_SOURCE_DIR}/robots/baxterlgv7.yaml)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxterlgv7.dae
+  COMMAND rosrun collada_urdf urdf_to_collada baxterlgv7.urdf baxterlgv7.dae
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxterlgv7.urdf)
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/robots/baxterlgv7.urdf
+  COMMAND ROS_PACKAGE_PATH=${PROJECT_SOURCE_DIR}:$ENV{ROS_PACKAGE_PATH} rosrun xacro xacro baxterlgv7.xacro > baxterlgv7.urdf
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/robots
+  DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxterlgv7.xacro
+          ${PROJECT_SOURCE_DIR}/robots/left_gripper_v7.xacro
+          ${PROJECT_SOURCE_DIR}/robots/right_vacuum_gripper.xacro)
 # get collada-dom version
 find_package(PkgConfig)
 pkg_check_modules(COLLADA collada-dom>=2.4.4)
 if(${COLLADA_FOUND})
   add_custom_target(generate_baxter_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxter.l)
+  add_custom_target(generate_baxterlgv7_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/robots/baxterlgv7.l)
 else()
   pkg_check_modules(COLLADA collada-dom)
   message(WARNING "urdf_to_collada requries collada-dom >= 2.4.4, installed version is ${COLLADA_VERSION}")
