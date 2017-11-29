@@ -1,4 +1,7 @@
 robots/baxter.urdf
 robots/baxter.dae
 robots/baxter.l
+robots/baxterlgv7.urdf
+robots/baxterlgv7.dae
+robots/baxterlgv7.l
 output/
