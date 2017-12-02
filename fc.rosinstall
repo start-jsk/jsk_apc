@@ -21,11 +21,10 @@
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
     version: master
-# https://github.com/jsk-ros-pkg/jsk_robot/pull/817
 - git:
     local-name: jsk-ros-pkg/jsk_robot
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-    version: jsk_apc
+    version: master
 - git:
     local-name: FOR_ASTRA/openni2_camera
     uri: https://github.com/ros-drivers/openni2_camera.git
