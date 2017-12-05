@@ -78,3 +78,9 @@
     local-name: ros-drivers/rosserial
     uri: https://github.com/ros-drivers/rosserial
     version: 0.7.6
+# corrupting PR is merged in 1.12.21
+# https://github.com/ros-perception/image_pipeline/pull/299
+- tar:
+    local-name: image_pipeline/image_proc
+    uri: https://github.com/ros-gbp/image_pipeline-release/archive/release/indigo/image_proc/1.12.20-0.tar.gz
+    version: image_pipeline-release-release-indigo-image_proc-1.12.20-0
