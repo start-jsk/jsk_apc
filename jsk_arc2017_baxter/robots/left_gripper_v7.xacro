@@ -453,7 +453,7 @@
     </joint>
     <actuator name="left_gripper_prismatic_joint_motor">
       <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>41.66666667</mechanicalReduction>
+      <mechanicalReduction>35.71428571</mechanicalReduction>  <!-- 1 / (0.8 * 35 * 0.001) -->
     </actuator>
   </transmission>
   <transmission name="left_gripper_vacuum_pad_trans">
@@ -463,7 +463,7 @@
     </joint>
     <actuator name="left_gripper_vacuum_pad_tendon_winder">
       <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1.637369792</mechanicalReduction>
+      <mechanicalReduction>1.432291667</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="left_gripper_finger_yaw_trans">
@@ -473,7 +473,7 @@
     </joint>
     <actuator name="left_gripper_finger_yaw_joint_motor">
       <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1.3</mechanicalReduction>
+      <mechanicalReduction>1.5625</mechanicalReduction>  <!-- ~ 36 / 24 -->
     </actuator>
   </transmission>
   <transmission name="left_gripper_finger_roll_trans">
