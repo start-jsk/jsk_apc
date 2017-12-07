@@ -446,45 +446,47 @@
   </joint>
 
   <!--Transmission-->
+  <!-- FIXME: In indigo, we may have to change hardwareInterface in gazebo -->
   <transmission name="left_gripper_prismatic_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="left_gripper_prismatic_joint">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="left_gripper_prismatic_joint_motor">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
       <mechanicalReduction>35.71428571</mechanicalReduction>  <!-- 1 / (0.8 * 35 * 0.001) -->
     </actuator>
   </transmission>
   <transmission name="left_gripper_vacuum_pad_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="left_gripper_vacuum_pad_joint">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="left_gripper_vacuum_pad_tendon_winder">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1.432291667</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="left_gripper_finger_yaw_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="left_gripper_finger_yaw_joint">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="left_gripper_finger_yaw_joint_motor">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1.5625</mechanicalReduction>  <!-- ~ 36 / 24 -->
     </actuator>
   </transmission>
-  <transmission name="left_gripper_finger_roll_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_gripper_finger_roll_joint_b">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_gripper_finger_tendon_winder">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+  <transmission name="left_gripper_finger_tendon_trans">
+    <type>jsk_arc2017_baxter/TendonTransmission</type>
+    <joint name="left_gripper_finger_roll_joint_a">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <limit>1.5707963268</limit>
       <mechanicalReduction>1.0</mechanicalReduction>
-    </actuator>
+    </joint>
+    <joint name="left_gripper_finger_roll_joint_b">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <limit>3.14159265359</limit>
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </joint>
+    <actuator name="left_gripper_finger_tendon_winder" />
   </transmission>
 
 </robot>
