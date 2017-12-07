@@ -62,6 +62,10 @@ generate_messages(
 ###################################
 
 catkin_package(
+    INCLUDE_DIRS
+    include
+    LIBRARIES
+    ${PROJECT_NAME}_transmission_loader_plugins
     CATKIN_DEPENDS
     message_runtime
     ${FORCE_PROXIMITY_ROS_PKG}
@@ -130,6 +134,11 @@ else()
   message(WARNING "urdf_to_collada requries collada-dom >= 2.4.4, installed version is ${COLLADA_VERSION}")
 endif()
 
+# Transmission loader library
+add_library(${PROJECT_NAME}_transmission_loader_plugins
+  src/tendon_transmission_loader.cpp include/jsk_arc2017_baxter/tendon_transmission_loader.h)
+target_link_libraries(${PROJECT_NAME}_transmission_loader_plugins ${catkin_LIBRARIES})
+
 ## Declare a C++ executable
 add_executable(gripper_v6_ros_control_node src/gripper_v6_ros_control.cpp)
 
@@ -147,6 +156,22 @@ install(DIRECTORY
   config euslisp launch meshes node_scripts robots
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS
+)
+
+install(DIRECTORY
+  include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
+
+install(TARGETS
+  gripper_v6_ros_control_node ${PROJECT_NAME}_transmission_loader_plugins
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(FILES ros_control_plugins.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 
