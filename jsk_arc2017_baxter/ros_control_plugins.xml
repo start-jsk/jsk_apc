@@ -1,0 +1,12 @@
+<library path="lib/libjsk_arc2017_baxter_transmission_loader_plugins">
+
+  <!-- Transmission types -->
+  <class name="jsk_arc2017_baxter/TendonTransmission"
+    type="jsk_arc2017_baxter::TendonTransmissionLoader"
+    base_class_type="transmission_interface::TransmissionLoader">
+    <description>
+      Load from a URDF description the configuration of a tendon transmission.
+    </description>
+  </class>
+
+</library>
