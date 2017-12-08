@@ -54,7 +54,7 @@
             (:recognize-bboxes
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :recognize-bboxes)
-                 (send *ti* :recognize-bboxes *arm*)
+                 (send *ti* :recognize-bboxes)
                  t))
             (:wait-for-user-input
               '(lambda (userdata)

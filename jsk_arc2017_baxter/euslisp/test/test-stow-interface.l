@@ -11,8 +11,7 @@
   ;; :recognize-tote-boxes, :recognize-bin-boxes
   ;; (send *ti* :recognize-tote-boxes)
   ;; (send *ti* :recognize-bin-boxes)
-  (send *ti* :recognize-bboxes :larm)
-  (send *ti* :recognize-bboxes :rarm)
+  (send *ti* :recognize-bboxes)
 
   ;; visualize-bins
   (let ((bins-vis (send *ti* :visualize-boxes :box-type :bin))

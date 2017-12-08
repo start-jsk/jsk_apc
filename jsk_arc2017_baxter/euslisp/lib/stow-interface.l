@@ -32,7 +32,7 @@
     (setq trial-fail-count- 0)
     (setq moveit-p- moveit)
     (setq grasp-style- nil))
-  (:recognize-bboxes (arm)
+  (:recognize-bboxes ()
     (ros::ros-info "[main] recognizing bin boxes")
     (send self :recognize-bin-boxes :stamp (ros::time-now))
     (ros::ros-info "[main] recognizing tote")
