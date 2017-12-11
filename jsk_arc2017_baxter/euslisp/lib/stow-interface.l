@@ -168,7 +168,7 @@
         (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
       (send self :reset-scale arm)
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
-      (setq pick-res
+      (setq pick-result
             (send self :pick-object-in-tote arm
                   :n-trial (if (eq grasp-style- :suction) 2 1)
                   :n-trial-same-pos 1
@@ -180,29 +180,23 @@
       ;;   (setq graspingp (send *ri* :graspingp arm grasp-style-))
       ;;   (unless graspingp (return-from :pick-object nil))
       ;;   )
-      (let (avs end-pos)
+      (let (end-pos)
         (if (eq grasp-style- :suction)
           (progn
-            (pushback
-              (send self :ik->tote-center arm
-                    :offset #f(0 0 400)
-                    :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
-                    :rotation-axis t :use-gripper t)
-              avs)
+            (send self :ik->tote-center arm
+                  :offset #f(0 0 400)
+                  :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
+                  :rotation-axis t :use-gripper t)
             (setq end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos))
-            (pushback
-              (send *baxter* :rotate-wrist-ik arm
-                    (make-coords :pos end-pos
-                                 :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
-                    :rotate-axis t)
-              avs))
+            (send *baxter* :rotate-wrist-ik arm
+                  (make-coords :pos end-pos
+                               :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
+                  :rotate-axis t))
           (progn
-            (pushback
-              (send self :ik->tote-center arm
-                    :offset #f(0 0 400)
-                    :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
-                    :rotation-axis t :move-palm-end t)
-              avs)
+            (send self :ik->tote-center arm
+                  :offset #f(0 0 400)
+                  :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
+                  :rotation-axis t :move-palm-end t)
             (setq end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos))
             (send *baxter* :rotate-wrist-ik arm
                   (make-coords :pos end-pos
