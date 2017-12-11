@@ -1020,13 +1020,15 @@
     (dolist (side (list :left :right))
       (send self :delete-cardboad-rack-leg-scene side)))
   (:add-tote-scene (arm)
-    (let ((cube (gethash arm tote-cubes-))
-          (base-name (send (send *baxter* :base_lk) :name)))
-      (send *co* :add-object cube :frame-id base-name
-            :relative-pose (send cube :copy-worldcoords)
-            :object-id (format nil "~A_tote" (arm2str arm)))))
+    (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
+      (let ((cube (gethash tmp-arm tote-cubes-))
+            (base-name (send (send *baxter* :base_lk) :name)))
+        (send *co* :add-object cube :frame-id base-name
+              :relative-pose (send cube :copy-worldcoords)
+              :object-id (format nil "~A_tote" (arm2str tmp-arm))))))
   (:delete-tote-scene (arm)
-    (send *co* :delete-object (gethash arm tote-cubes-)))
+    (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
+      (send *co* :delete-object (gethash tmp-arm tote-cubes-))))
   (:add-object-in-hand-scene (arm target-obj)
     ;; add object as attached collision object
     (let ((end-coords-name (format nil "~a_gripper_pad_with_base" (arm2str arm))) obj-cube)
