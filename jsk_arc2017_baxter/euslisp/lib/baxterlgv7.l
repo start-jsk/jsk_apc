@@ -3,18 +3,18 @@
 ;; vim: set ft=lisp:
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
-(require :baxter "package://jsk_arc2017_baxter/robots/baxter.l")
+(require :baxter "package://jsk_arc2017_baxter/robots/baxterlgv7.l")
 (require "package://baxtereus/baxter-util.l")
 
 (unless (find-package "JSK_ARC2017_BAXTER")
   (make-package "JSK_ARC2017_BAXTER"))
 
 
-(defclass jsk_arc2017_baxter::baxter-robot
+(defclass jsk_arc2017_baxter::baxterlgv7-robot
   :super baxter-robot
   :slots (view-hand-pos- ik-prepared-poses- hand-joints-))
 
-(defmethod jsk_arc2017_baxter::baxter-robot
+(defmethod jsk_arc2017_baxter::baxterlgv7-robot
   (:init
     (&rest args)
     (send-super* :init args)
@@ -53,10 +53,12 @@
                    :right_gripper_r_finger_roll_joint))
     (sethash :larm hand-joints-
              (list :left_gripper_finger_yaw_joint
-                   :left_gripper_finger_roll_joint
+                   :left_gripper_finger_roll_joint_a
+                   :left_gripper_finger_roll_joint_b
                    ;; We have to move mimic joints, too
-                   :left_gripper_r_finger_yaw_joint
-                   :left_gripper_r_finger_roll_joint))
+                   :left_gripper_l_finger_yaw_joint
+                   :left_gripper_r_finger_roll_joint_a
+                   :left_gripper_r_finger_roll_joint_b))
     ;; translate palm end for good cylindrical grasp
     (send self :rarm-palm-endpoint :translate #f(30 0 0) :local)
     (send self :larm-palm-endpoint :translate #f(30 0 0) :local)
@@ -130,8 +132,10 @@
     (case (car args)
       ((:angle-vector)
        (let ((av (cadr args)) (joints (gethash arm hand-joints-)))
-         (if (and (null (eq (length av) 0)) (null (eq (length av) 2)))
+         (if (and (eq arm :rarm) (null (eq (length av) 0)) (null (eq (length av) 2)))
            (progn (ros::ros-error "length of angle-vector must be 0 or 2.~%") (exit)))
+         (if (and (eq arm :larm) (null (eq (length av) 0)) (null (eq (length av) 3)))
+           (progn (ros::ros-error "length of angle-vector must be 0 or 3.~%") (exit)))
          (dotimes (i (length av))
            (send self (elt joints i) :joint-angle (elt av i))
            (send self (elt joints (+ i (length av))) :joint-angle (elt av i)))
@@ -144,19 +148,34 @@
   (:hand-grasp-pre-pose
     (arm style)
     (case style
-      (:opposed (send self :hand arm :angle-vector #f(0 0)))
-      (:spherical (send self :hand arm :angle-vector #f(30 0)))
-      (:cylindrical (send self :hand arm :angle-vector #f(90 0)))
+      (:opposed (send self :hand arm :angle-vector (if (eq arm :rarm) #f(0 0) #f(0 0 0))))
+      (:spherical (send self :hand arm :angle-vector (if (eq arm :rarm) #f(30 0) #f(30 0 0))))
+      (:cylindrical (send self :hand arm :angle-vector (if (eq arm :rarm) #f(90 0) #f(90 0 0))))
       (t (ros::ros-error ":hand-grasp-pre-pose no such style ~A~%" style) (exit))
     ))
   (:hand-grasp-pose
     (arm style &key (angle 180))
-    (case style
-      (:opposed (send self :hand arm :angle-vector (float-vector 0 angle)))
-      (:spherical (send self :hand arm :angle-vector (float-vector 30 angle)))
-      (:cylindrical (send self :hand arm :angle-vector (float-vector 90 angle)))
-      (t (ros::ros-error ":hand-grasp-pose no such style ~A~%" style) (exit))
-    ))
+    (let (angle1 angle2)
+      ;; simulate finger joint movement of gripper_v7
+      (if (< angle 90)
+        (progn
+          (setq angle1 (+ 45 (/ angle 2)))
+          (setq angle2 angle1))
+        (progn
+          (setq angle1 90)
+          (setq angle2 angle)))
+      (case style
+        (:opposed
+          (send self :hand arm :angle-vector
+                (if (eq arm :rarm) (float-vector 0 angle) (float-vector 0 angle1 angle2))))
+        (:spherical
+          (send self :hand arm :angle-vector
+                (if (eq arm :rarm) (float-vector 30 angle) (float-vector 30 angle1 angle2))))
+        (:cylindrical
+          (send self :hand arm :angle-vector
+                (if (eq arm :rarm) (float-vector 90 angle) (float-vector 90 angle1 angle2))))
+        (t (ros::ros-error ":hand-grasp-pose no such style ~A~%" style) (exit))
+        )))
   (:avoid-shelf-pose
     (arm bin)
     (case bin

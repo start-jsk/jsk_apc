@@ -1,6 +1,6 @@
 ;; -*- mode: lisp;-*-
 
-(require "package://jsk_arc2017_baxter/euslisp/lib/baxter.l")
+(require "package://jsk_arc2017_baxter/euslisp/lib/baxterlgv7.l")
 (require "package://baxtereus/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
@@ -11,7 +11,7 @@
 (unless (find-package "JSK_ARC2017_BAXTER")
   (make-package "JSK_ARC2017_BAXTER"))
 
-(defclass jsk_arc2017_baxter::baxter-interface
+(defclass jsk_arc2017_baxter::baxterlgv7-interface
   :super baxter-interface
   :slots (rarm-pressure-threshold-
           larm-pressure-threshold-
@@ -26,12 +26,12 @@
           proximities-
           proximity-init-values-))
 
-(defmethod jsk_arc2017_baxter::baxter-interface
+(defmethod jsk_arc2017_baxter::baxterlgv7-interface
   (:init
     (&rest args &key
            ((:moveit-environment mvit-env)
-            (instance jsk_arc2017_baxter::baxter-moveit-environment))
-           ((:moveit-robot mvit-rb) (instance jsk_arc2017_baxter::baxter-robot :init))
+            (instance jsk_arc2017_baxter::baxterlgv7-moveit-environment))
+           ((:moveit-robot mvit-rb) (instance jsk_arc2017_baxter::baxterlgv7-robot :init))
            &allow-other-keys)
     ;; initialize controllers
     (send-super* :init :joint-states-queue-size 3
@@ -215,15 +215,19 @@
   ;; based on naoqi-interface and fetch-interface
   (:move-hand
     (arm av tm &key (wait t))
-    (if (and (= (length av) 2) (not (send self :simulation-modep)))
+    (if (and (= (length av) (if (eq arm :rarm) 2 3)) (not (send self :simulation-modep)))
       (let (av-list res (goal (instance control_msgs::FollowJointTrajectoryActionGoal :init))
                     (traj (instance trajectory_msgs::JointTrajectory :init)))
         (dotimes (i (length av)) (pushback (elt av i) av-list))
         (send traj :header :seq 1)
         (send traj :header :stamp (ros::time-now))
         (send traj :joint_names
-              (list (format nil "~a_gripper_finger_yaw_joint" (arm2str arm))
-                    (format nil "~a_gripper_finger_roll_joint" (arm2str arm))))
+              (if (eq arm :rarm)
+                (list (format nil "~a_gripper_finger_yaw_joint" (arm2str arm))
+                      (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
+                (list (format nil "~a_gripper_finger_yaw_joint" (arm2str arm))
+                      (format nil "~a_gripper_finger_roll_joint_a" (arm2str arm))
+                      (format nil "~a_gripper_finger_roll_joint_b" (arm2str arm)))))
         (send traj :points
               (list (instance trajectory_msgs::JointTrajectoryPoint
                               :init
@@ -275,11 +279,19 @@
           ((eq side :right) r)))))
   (:get-real-finger-av (arm)
     (send self :update-robot-state :wait-until-update t)
-    (float-vector
-      (send robot (str2symbol (format nil "~a_gripper_finger_yaw_joint" (arm2str arm)))
-            :joint-angle)
-      (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
-            :joint-angle)))
+    (if (eq arm :rarm)
+      (float-vector
+        (send robot (str2symbol (format nil "~a_gripper_finger_yaw_joint" (arm2str arm)))
+              :joint-angle)
+        (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint" (arm2str arm)))
+              :joint-angle))
+      (float-vector
+        (send robot (str2symbol (format nil "~a_gripper_finger_yaw_joint" (arm2str arm)))
+              :joint-angle)
+        (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint_a" (arm2str arm)))
+              :joint-angle)
+        (send robot (str2symbol (format nil "~a_gripper_finger_roll_joint_b" (arm2str arm)))
+              :joint-angle))))
   (:finger-closep (arm)
     (> (aref (send self :get-real-finger-av arm) 1) 30))
   (:start-prismatic-calib (arm)
@@ -628,10 +640,10 @@
       (setq proximity-threshold- 100)))
   )
 
-(defclass jsk_arc2017_baxter::baxter-moveit-environment
+(defclass jsk_arc2017_baxter::baxterlgv7-moveit-environment
   :super moveit-environment)
-(defmethod jsk_arc2017_baxter::baxter-moveit-environment
-  (:init (&key ((:robot rb) (instance jsk_arc2017_baxter::baxter-robot :init)) &rest args)
+(defmethod jsk_arc2017_baxter::baxterlgv7-moveit-environment
+  (:init (&key ((:robot rb) (instance jsk_arc2017_baxter::baxterlgv7-robot :init)) &rest args)
          (send-super* :init :robot rb :frame-id "world" args))
   (:default-configuration ()
    (list (list :rarm
@@ -654,17 +666,17 @@
                (cons :joint-list (append (send robot :larm :joint-list)
                                          (send robot :rarm :joint-list)))))))
 
-(defun jsk_arc2017_baxter::baxter-init
+(defun jsk_arc2017_baxter::baxterlgv7-init
   (&key (type :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
     (when moveit
-      (setq mvit-env (instance jsk_arc2017_baxter::baxter-moveit-environment))
-      (setq mvit-rb (instance jsk_arc2017_baxter::baxter-robot :init)))
+      (setq mvit-env (instance jsk_arc2017_baxter::baxterlgv7-moveit-environment))
+      (setq mvit-rb (instance jsk_arc2017_baxter::baxterlgv7-robot :init)))
     (when (not (boundp '*ri*))
-      (setq *ri* (instance jsk_arc2017_baxter::baxter-interface :init
+      (setq *ri* (instance jsk_arc2017_baxter::baxterlgv7-interface :init
                            :type type
                            :moveit-environment mvit-env
                            :moveit-robot mvit-rb)))
     (when (not (boundp '*baxter*))
-      (setq *baxter* (instance jsk_arc2017_baxter::baxter-robot :init))
+      (setq *baxter* (instance jsk_arc2017_baxter::baxterlgv7-robot :init))
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector)))))
