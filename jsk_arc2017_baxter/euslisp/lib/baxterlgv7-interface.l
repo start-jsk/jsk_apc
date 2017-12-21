@@ -329,7 +329,11 @@
              (let ((finger-av (send self :get-real-finger-av l/r))
                    prev-av av avs hand-interpolatingp)
                ;; rotate arm using proximity sensor
-               (setf (aref finger-av 1) 180)
+               (if (eq l/r :rarm)
+                 (setf (aref finger-av 1) 180)
+                 (progn
+                   (setf (aref finger-av 1) 90)
+                   (setf (aref finger-av 2) 180)))
                (send self :move-hand l/r finger-av 2000 :wait nil)
                (dotimes (x 100)
                  (if (send self :interpolatingp) (return))
@@ -379,7 +383,7 @@
                (setq prev-av (send robot :angle-vector))
                (when (> (aref finger-av 0) 45)
                  ;; if cylindrical and spherical grasp, move other gripper joints
-                 (send robot l/r :gripper-p :joint-angle -90)
+                 (send robot l/r :gripper-p :joint-angle (if (eq l/r :rarm) -90 90))
                  (pushback (send robot :angle-vector) avs)
                  ;(send robot l/r :gripper-x :joint-angle 0)
                  ;(pushback (send robot :angle-vector) avs)
@@ -401,7 +405,11 @@
              (send self :update-robot-state :wait-until-update t)
              (let ((finger-av (send self :get-real-finger-av l/r))
                    (prev-av (send robot :angle-vector)) avs)
-               (setf (aref finger-av 1) 0)
+               (if (eq l/r :rarm)
+                 (setf (aref finger-av 1) 0)
+                 (progn
+                   (setf (aref finger-av 1) 0)
+                   (setf (aref finger-av 2) 0)))
                (send self :move-hand l/r finger-av 1000 :wait nil)
                (if (> (aref finger-av 0) 45)
                  (progn
