@@ -45,55 +45,55 @@
     <implicitSpringDamper>false</implicitSpringDamper>
   </gazebo>
   <!--Link bodies-->
-  <xacro:property name="base_rect_offset_x" value="-0.023" />
-  <xacro:property name="base_rect_l" value="0.3036" />
-  <xacro:property name="base_rect_h" value="0.106" />
-  <xacro:property name="base_rect_w" value="0.15" />
-  <xacro:property name="camera_rect_offset_x" value="0.061" />
-  <xacro:property name="camera_rect_offset_y" value="-0.037" />
-  <xacro:property name="camera_rect_offset_z" value="0.004" />
-  <xacro:property name="camera_rect_l" value="0.04" />
-  <xacro:property name="camera_rect_h" value="0.03" />
-  <xacro:property name="camera_rect_w" value="0.165" />
-  <xacro:property name="tube_rect_offset_x" value="-0.0515" />
-  <xacro:property name="tube_rect_offset_y" value="-0.00725" />
-  <xacro:property name="tube_rect_offset_z" value="0.1131" />
-  <xacro:property name="tube_rect_l" value="0.337" />
-  <xacro:property name="tube_rect_h" value="0.034" />
-  <xacro:property name="tube_rect_w" value="0.0915" />
-  <xacro:property name="pad_with_base_offset_x" value="0.0515" />
-  <xacro:property name="pad_with_base_offset_y" value="0" />
-  <xacro:property name="pad_with_base_offset_z" value="-0.2666" />
-  <xacro:property name="pad_with_base_col_z" value="0.0164" />
-  <xacro:property name="pad_with_base_rect_l" value="0.0628" />
-  <xacro:property name="pad_with_base_rect_h" value="0.0402" />
-  <xacro:property name="pad_with_base_rect_w" value="0.03" />
-  <xacro:property name="finger_base_rect_l" value="0.022" />
-  <xacro:property name="finger_base_rect_h" value="0.032" />
-  <xacro:property name="finger_base_rect_w" value="0.036" />
-  <xacro:property name="finger_a_rect_l" value="0.036" />
-  <xacro:property name="finger_a_rect_h" value="0.032" />
-  <xacro:property name="finger_a_rect_w" value="0.032" />
-  <xacro:property name="l_finger_bc_offset_y" value="-0.022351" />
-  <xacro:property name="r_finger_bc_offset_y" value="0.022351" />
-  <xacro:property name="finger_bc_rect_l" value="0.11" />
-  <xacro:property name="finger_bc_rect_h" value="0.0277" />
-  <xacro:property name="finger_bc_rect_w" value="0.04" />
+  <xacro:property name="lg_base_rect_offset_x" value="-0.023" />
+  <xacro:property name="lg_base_rect_l" value="0.3036" />
+  <xacro:property name="lg_base_rect_h" value="0.106" />
+  <xacro:property name="lg_base_rect_w" value="0.15" />
+  <xacro:property name="lg_camera_rect_offset_x" value="0.061" />
+  <xacro:property name="lg_camera_rect_offset_y" value="-0.037" />
+  <xacro:property name="lg_camera_rect_offset_z" value="0.004" />
+  <xacro:property name="lg_camera_rect_l" value="0.04" />
+  <xacro:property name="lg_camera_rect_h" value="0.03" />
+  <xacro:property name="lg_camera_rect_w" value="0.165" />
+  <xacro:property name="lg_tube_rect_offset_x" value="-0.0515" />
+  <xacro:property name="lg_tube_rect_offset_y" value="-0.00725" />
+  <xacro:property name="lg_tube_rect_offset_z" value="0.1131" />
+  <xacro:property name="lg_tube_rect_l" value="0.337" />
+  <xacro:property name="lg_tube_rect_h" value="0.034" />
+  <xacro:property name="lg_tube_rect_w" value="0.0915" />
+  <xacro:property name="lg_pad_with_base_offset_x" value="0.0515" />
+  <xacro:property name="lg_pad_with_base_offset_y" value="0" />
+  <xacro:property name="lg_pad_with_base_offset_z" value="-0.2666" />
+  <xacro:property name="lg_pad_with_base_col_z" value="0.0164" />
+  <xacro:property name="lg_pad_with_base_rect_l" value="0.0628" />
+  <xacro:property name="lg_pad_with_base_rect_h" value="0.0402" />
+  <xacro:property name="lg_pad_with_base_rect_w" value="0.03" />
+  <xacro:property name="lg_finger_base_rect_l" value="0.022" />
+  <xacro:property name="lg_finger_base_rect_h" value="0.032" />
+  <xacro:property name="lg_finger_base_rect_w" value="0.036" />
+  <xacro:property name="lg_finger_a_rect_l" value="0.036" />
+  <xacro:property name="lg_finger_a_rect_h" value="0.032" />
+  <xacro:property name="lg_finger_a_rect_w" value="0.032" />
+  <xacro:property name="lg_l_finger_bc_offset_y" value="-0.022351" />
+  <xacro:property name="lg_r_finger_bc_offset_y" value="0.022351" />
+  <xacro:property name="lg_finger_bc_rect_l" value="0.11" />
+  <xacro:property name="lg_finger_bc_rect_h" value="0.0277" />
+  <xacro:property name="lg_finger_bc_rect_w" value="0.04" />
   <!--Joints-->
-  <xacro:property name="hand_offset_x" value="-0.01" />
-  <xacro:property name="hand_offset_y" value="-0.0205" />
-  <xacro:property name="hand_offset_z" value="0" />
-  <xacro:property name="pad_joint_offset_x" value="-0.0515" />
-  <xacro:property name="pad_joint_offset_y" value="0" />
-  <xacro:property name="pad_joint_offset_z" value="0.2666" />
-  <xacro:property name="finger_base_offset_z" value="0.290613" />
-  <xacro:property name="finger_base_offset_x" value="0.0135" />
-  <xacro:property name="l_finger_base_offset_y" value="0.027" />
-  <xacro:property name="r_finger_base_offset_y" value="-0.027" />
-  <xacro:property name="l_finger_joint_b_offset_y" value="0.022351" />
-  <xacro:property name="r_finger_joint_b_offset_y" value="-0.022351" />
-  <xacro:property name="palm_offset_x" value="0.015" />
-  <xacro:property name="palm_offset_z" value="0.3036" />
+  <xacro:property name="lg_hand_offset_x" value="-0.01" />
+  <xacro:property name="lg_hand_offset_y" value="-0.0205" />
+  <xacro:property name="lg_hand_offset_z" value="0" />
+  <xacro:property name="lg_pad_joint_offset_x" value="-0.0515" />
+  <xacro:property name="lg_pad_joint_offset_y" value="0" />
+  <xacro:property name="lg_pad_joint_offset_z" value="0.2666" />
+  <xacro:property name="lg_finger_base_offset_z" value="0.290613" />
+  <xacro:property name="lg_finger_base_offset_x" value="0.0135" />
+  <xacro:property name="lg_l_finger_base_offset_y" value="0.027" />
+  <xacro:property name="lg_r_finger_base_offset_y" value="-0.027" />
+  <xacro:property name="lg_l_finger_joint_b_offset_y" value="0.022351" />
+  <xacro:property name="lg_r_finger_joint_b_offset_y" value="-0.022351" />
+  <xacro:property name="lg_palm_offset_x" value="0.015" />
+  <xacro:property name="lg_palm_offset_z" value="0.3036" />
 
   <!--Link bodies-->
   <link name="left_gripper_base">
@@ -116,15 +116,15 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="${base_rect_offset_x} 0 ${base_rect_l/2}"/>
+      <origin rpy="0 0 0" xyz="${lg_base_rect_offset_x} 0 ${lg_base_rect_l/2}"/>
       <geometry>
-        <box size="${base_rect_h} ${base_rect_w} ${base_rect_l}"/>
+        <box size="${lg_base_rect_h} ${lg_base_rect_w} ${lg_base_rect_l}"/>
       </geometry>
     </collision>
     <collision>
-      <origin rpy="0 0 0" xyz="${camera_rect_offset_x} ${camera_rect_offset_y} ${camera_rect_offset_z}"/>
+      <origin rpy="0 0 0" xyz="${lg_camera_rect_offset_x} ${lg_camera_rect_offset_y} ${lg_camera_rect_offset_z}"/>
       <geometry>
-        <box size="${camera_rect_h} ${camera_rect_w} ${camera_rect_l}"/>
+        <box size="${lg_camera_rect_h} ${lg_camera_rect_w} ${lg_camera_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -163,9 +163,9 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="${tube_rect_offset_x} ${tube_rect_offset_y} ${tube_rect_offset_z}"/>
+      <origin rpy="0 0 0" xyz="${lg_tube_rect_offset_x} ${lg_tube_rect_offset_y} ${lg_tube_rect_offset_z}"/>
       <geometry>
-        <box size="${tube_rect_h} ${tube_rect_w} ${tube_rect_l}"/>
+        <box size="${lg_tube_rect_h} ${lg_tube_rect_w} ${lg_tube_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -177,7 +177,7 @@
   </link>
   <link name="left_gripper_pad_with_base">
     <visual>
-      <origin rpy="${M_PI/2} 0 ${-M_PI/2}" xyz="${pad_with_base_offset_x} ${pad_with_base_offset_y} ${pad_with_base_offset_z}"/>
+      <origin rpy="${M_PI/2} 0 ${-M_PI/2}" xyz="${lg_pad_with_base_offset_x} ${lg_pad_with_base_offset_y} ${lg_pad_with_base_offset_z}"/>
       <geometry>
         <mesh filename="package://jsk_arc2017_baxter/meshes/gripper_v7/left/visual/vacuum_pad_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -186,7 +186,7 @@
       </material>
     </visual>
     <visual>
-      <origin rpy="${M_PI/2} 0 ${-M_PI/2}" xyz="${pad_with_base_offset_x} ${pad_with_base_offset_y} ${pad_with_base_offset_z}"/>
+      <origin rpy="${M_PI/2} 0 ${-M_PI/2}" xyz="${lg_pad_with_base_offset_x} ${lg_pad_with_base_offset_y} ${lg_pad_with_base_offset_z}"/>
       <geometry>
         <mesh filename="package://jsk_arc2017_baxter/meshes/gripper_v7/left/visual/vacuum_pad.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -195,9 +195,9 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${pad_with_base_col_z}"/>
+      <origin rpy="0 0 0" xyz="0 0 ${lg_pad_with_base_col_z}"/>
       <geometry>
-        <box size="${pad_with_base_rect_h} ${pad_with_base_rect_w} ${pad_with_base_rect_l}"/>
+        <box size="${lg_pad_with_base_rect_h} ${lg_pad_with_base_rect_w} ${lg_pad_with_base_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -218,9 +218,9 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${-finger_base_rect_l/2}"/>
+      <origin rpy="0 0 0" xyz="0 0 ${-lg_finger_base_rect_l/2}"/>
       <geometry>
-        <box size="${finger_base_rect_h} ${finger_base_rect_w} ${finger_base_rect_l}"/>
+        <box size="${lg_finger_base_rect_h} ${lg_finger_base_rect_w} ${lg_finger_base_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -241,9 +241,9 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${-finger_base_rect_l/2}"/>
+      <origin rpy="0 0 0" xyz="0 0 ${-lg_finger_base_rect_l/2}"/>
       <geometry>
-        <box size="${finger_base_rect_h} ${finger_base_rect_w} ${finger_base_rect_l}"/>
+        <box size="${lg_finger_base_rect_h} ${lg_finger_base_rect_w} ${lg_finger_base_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -264,9 +264,9 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 ${finger_a_rect_w/2} 0"/>
+      <origin rpy="0 0 0" xyz="0 ${lg_finger_a_rect_w/2} 0"/>
       <geometry>
-        <box size="${finger_a_rect_h} ${finger_a_rect_w} ${finger_a_rect_l}"/>
+        <box size="${lg_finger_a_rect_h} ${lg_finger_a_rect_w} ${lg_finger_a_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -287,9 +287,9 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 ${-finger_a_rect_w/2} 0"/>
+      <origin rpy="0 0 0" xyz="0 ${-lg_finger_a_rect_w/2} 0"/>
       <geometry>
-        <box size="${finger_a_rect_h} ${finger_a_rect_w} ${finger_a_rect_l}"/>
+        <box size="${lg_finger_a_rect_h} ${lg_finger_a_rect_w} ${lg_finger_a_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -301,7 +301,7 @@
   </link>
   <link name="left_gripper_l_finger_bc">
     <visual>
-      <origin rpy="${M_PI/2} 0 0" xyz="0 ${l_finger_bc_offset_y} 0"/>
+      <origin rpy="${M_PI/2} 0 0" xyz="0 ${lg_l_finger_bc_offset_y} 0"/>
       <geometry>
         <mesh filename="package://jsk_arc2017_baxter/meshes/gripper_v7/left/visual/left_finger_BC_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -310,7 +310,7 @@
       </material>
     </visual>
     <visual>
-      <origin rpy="${M_PI/2} 0 0" xyz="0 ${l_finger_bc_offset_y} 0"/>
+      <origin rpy="${M_PI/2} 0 0" xyz="0 ${lg_l_finger_bc_offset_y} 0"/>
       <geometry>
         <mesh filename="package://jsk_arc2017_baxter/meshes/gripper_v7/left/visual/left_finger_BC_pad.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -319,9 +319,9 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${-finger_bc_rect_l/2}"/>
+      <origin rpy="0 0 0" xyz="0 0 ${-lg_finger_bc_rect_l/2}"/>
       <geometry>
-        <box size="${finger_bc_rect_h} ${finger_bc_rect_w} ${finger_bc_rect_l}"/>
+        <box size="${lg_finger_bc_rect_h} ${lg_finger_bc_rect_w} ${lg_finger_bc_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -333,7 +333,7 @@
   </link>
   <link name="left_gripper_r_finger_bc">
     <visual>
-      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 ${r_finger_bc_offset_y} 0"/>
+      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 ${lg_r_finger_bc_offset_y} 0"/>
       <geometry>
         <mesh filename="package://jsk_arc2017_baxter/meshes/gripper_v7/left/visual/left_finger_BC_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -342,7 +342,7 @@
       </material>
     </visual>
     <visual>
-      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 ${r_finger_bc_offset_y} 0"/>
+      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 ${lg_r_finger_bc_offset_y} 0"/>
       <geometry>
         <mesh filename="package://jsk_arc2017_baxter/meshes/gripper_v7/left/visual/left_finger_BC_pad.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -351,9 +351,9 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${-finger_bc_rect_l/2}"/>
+      <origin rpy="0 0 0" xyz="0 0 ${-lg_finger_bc_rect_l/2}"/>
       <geometry>
-        <box size="${finger_bc_rect_h} ${finger_bc_rect_w} ${finger_bc_rect_l}"/>
+        <box size="${lg_finger_bc_rect_h} ${lg_finger_bc_rect_w} ${lg_finger_bc_rect_l}"/>
       </geometry>
     </collision>
     <!--FIXME: Adjust inertia-->
@@ -367,7 +367,7 @@
 
   <!--Joints-->
   <joint name="left_gripper_base_fixed" type="fixed">
-    <origin rpy="0 0 0" xyz="${hand_offset_x} ${hand_offset_y} ${hand_offset_z}" />
+    <origin rpy="0 0 0" xyz="${lg_hand_offset_x} ${lg_hand_offset_y} ${lg_hand_offset_z}" />
     <parent link="left_hand"/>
     <child link="left_gripper_base"/>
     <dynamics damping="0.7"/>
@@ -381,7 +381,7 @@
     <dynamics damping="0.7"/>
   </joint>
   <joint name="left_gripper_vacuum_pad_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="${pad_joint_offset_x} ${pad_joint_offset_y} ${pad_joint_offset_z}"/>
+    <origin rpy="0 0 0" xyz="${lg_pad_joint_offset_x} ${lg_pad_joint_offset_y} ${lg_pad_joint_offset_z}"/>
     <parent link="left_gripper_tube"/>
     <child link="left_gripper_pad_with_base"/>
     <axis xyz="0 1 0"/>
@@ -389,7 +389,7 @@
     <dynamics damping="0.7"/>
   </joint>
   <joint name="left_gripper_finger_yaw_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="${finger_base_offset_x} ${r_finger_base_offset_y} ${finger_base_offset_z}"/>
+    <origin rpy="0 0 0" xyz="${lg_finger_base_offset_x} ${lg_r_finger_base_offset_y} ${lg_finger_base_offset_z}"/>
     <parent link="left_gripper_base"/>
     <child link="left_gripper_r_finger_base"/>
     <axis xyz="0 0 1"/>
@@ -397,7 +397,7 @@
     <dynamics damping="0.7"/>
   </joint>
   <joint name="left_gripper_l_finger_yaw_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="${finger_base_offset_x} ${l_finger_base_offset_y} ${finger_base_offset_z}"/>
+    <origin rpy="0 0 0" xyz="${lg_finger_base_offset_x} ${lg_l_finger_base_offset_y} ${lg_finger_base_offset_z}"/>
     <parent link="left_gripper_base"/>
     <child link="left_gripper_l_finger_base"/>
     <mimic joint="left_gripper_finger_yaw_joint" multiplier="1"/>
@@ -423,7 +423,7 @@
     <dynamics damping="0.7"/>
   </joint>
   <joint name="left_gripper_finger_roll_joint_b" type="revolute">
-    <origin rpy="0 0 0" xyz="0 ${l_finger_joint_b_offset_y} 0"/>
+    <origin rpy="0 0 0" xyz="0 ${lg_l_finger_joint_b_offset_y} 0"/>
     <parent link="left_gripper_l_finger_a"/>
     <child link="left_gripper_l_finger_bc"/>
     <axis xyz="1 0 0"/>
@@ -431,7 +431,7 @@
     <dynamics damping="0.7"/>
   </joint>
   <joint name="left_gripper_r_finger_roll_joint_b" type="revolute">
-    <origin rpy="0 0 0" xyz="0 ${r_finger_joint_b_offset_y} 0"/>
+    <origin rpy="0 0 0" xyz="0 ${lg_r_finger_joint_b_offset_y} 0"/>
     <parent link="left_gripper_r_finger_a"/>
     <child link="left_gripper_r_finger_bc"/>
     <mimic joint="left_gripper_finger_roll_joint_b" multiplier="1"/>
@@ -440,7 +440,7 @@
     <dynamics damping="0.7"/>
   </joint>
   <joint name="left_gripper_palm_endpoint_fixed" type="fixed">
-    <origin rpy="0 ${M_PI} 0" xyz="${palm_offset_x} 0 ${palm_offset_z}" />
+    <origin rpy="0 ${M_PI} 0" xyz="${lg_palm_offset_x} 0 ${lg_palm_offset_z}" />
     <parent link="left_gripper_base"/>
     <child link="left_gripper_palm_endpoint"/>
   </joint>
