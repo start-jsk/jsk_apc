@@ -462,7 +462,7 @@
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="left_gripper_vacuum_pad_tendon_winder">
-      <mechanicalReduction>1.432291667</mechanicalReduction>
+      <mechanicalReduction>1.888020834</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="left_gripper_finger_yaw_trans">
