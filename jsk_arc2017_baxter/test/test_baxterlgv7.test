@@ -1,0 +1,7 @@
+<launch>
+  <env name="DISPLAY" value="" />
+
+  <test test-name="test_baxterlgv7"
+        name="test_baxterlgv7" pkg="jsk_arc2017_baxter"
+        type="test-baxterlgv7.l" time-limit="100" />
+</launch>
