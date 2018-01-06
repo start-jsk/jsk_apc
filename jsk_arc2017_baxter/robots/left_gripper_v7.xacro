@@ -92,7 +92,7 @@
   <xacro:property name="lg_r_finger_base_offset_y" value="-0.027" />
   <xacro:property name="lg_l_finger_joint_b_offset_y" value="0.022351" />
   <xacro:property name="lg_r_finger_joint_b_offset_y" value="-0.022351" />
-  <xacro:property name="lg_palm_offset_x" value="0.015" />
+  <xacro:property name="lg_palm_offset_x" value="-0.015" />
   <xacro:property name="lg_palm_offset_z" value="0.3036" />
 
   <!--Link bodies-->

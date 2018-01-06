@@ -61,7 +61,7 @@
                    :left_gripper_r_finger_roll_joint_b))
     ;; translate palm end for good cylindrical grasp
     (send self :rarm-palm-endpoint :translate #f(30 0 0) :local)
-    (send self :larm-palm-endpoint :translate #f(30 0 0) :local)
+    (send self :larm-palm-endpoint :translate #f(-30 0 0) :local)
     )
 
   (:arc-reset-pose
