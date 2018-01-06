@@ -7,5 +7,9 @@
 
 (setq *ri* (instance jsk_arc2017_baxter::baxter-interface :init))
 
+(deftest test-move-hand
+  (send *ri* :move-hand :larm #f(10 20) 1000 :wait nil)
+  (send *ri* :move-hand :rarm #f(10 20) 1000 :wait nil))
+
 (run-all-tests)
 (exit)
