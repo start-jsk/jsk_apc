@@ -7,12 +7,5 @@
 
 (setq *ri* (instance jsk_arc2017_baxter::baxterlgv7-interface :init))
 
-(deftest
-  test-speak
-
-  (send *ri* :speak "Hello" :wait t)
-  (send *ri* :speak "Hello")
-  )
-
 (run-all-tests)
 (exit)
