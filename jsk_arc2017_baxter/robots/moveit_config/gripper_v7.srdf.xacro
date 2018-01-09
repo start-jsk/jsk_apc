@@ -1,0 +1,166 @@
+<?xml version="1.0" ?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="vacuum_gripper">
+    <xacro:macro name="vacuum_gripper" params="side">
+    <disable_collisions link1="${side}_gripper_base" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="pedestal" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_l_finger_a" reason="Default" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_l_finger_bc" reason="Default" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_l_finger_base" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_pad_with_base" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_r_finger_a" reason="Default" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_r_finger_bc" reason="Default" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_r_finger_base" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_gripper_tube" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_hand" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_hand_camera" reason="Default" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_hand_range" reason="Default" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_base" link2="${side}_wrist" reason="Never" />
+
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_l_finger_a" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_l_finger_bc" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_r_finger_a" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_r_finger_bc" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_tube" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_lower_shoulder" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_wrist" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="screen" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="sonar_ring" reason="Never" />
+
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_gripper_l_finger_base" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_gripper_l_finger_bc" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_gripper_r_finger_a" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_gripper_r_finger_bc" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_gripper_tube" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_a" link2="${side}_wrist" reason="Never" />
+
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_gripper_l_finger_base" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_gripper_r_finger_a" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_gripper_r_finger_bc" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_gripper_tube" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_bc" link2="${side}_wrist" reason="Never" />
+
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_gripper_r_finger_base" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_gripper_tube" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="${side}_wrist" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="screen" reason="Never" />
+    <disable_collisions link1="${side}_gripper_l_finger_base" link2="sonar_ring" reason="Never" />
+
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_gripper_r_finger_base" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_gripper_r_finger_bc" reason="Adjacent" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_gripper_tube" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_lower_shoulder" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="${side}_wrist" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="screen" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_a" link2="sonar_ring" reason="Never" />
+
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_gripper_r_finger_base" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_gripper_tube" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_lower_shoulder" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="${side}_wrist" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="screen" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_bc" link2="sonar_ring" reason="Never" />
+
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="head" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_gripper_tube" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_hand_range" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_lower_shoulder" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_upper_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="${side}_wrist" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="screen" reason="Never" />
+    <disable_collisions link1="${side}_gripper_r_finger_base" link2="sonar_ring" reason="Never" />
+
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_hand" reason="Never" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_hand_accelerometer" reason="Never" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_hand_camera" reason="Never" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_hand_range" reason="Default" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_lower_elbow" reason="Never" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_lower_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_upper_elbow_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_upper_forearm" reason="Never" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_upper_forearm_visual" reason="Never" />
+    <disable_collisions link1="${side}_gripper_tube" link2="${side}_wrist" reason="Never" />
+    </xacro:macro>
+</robot>
