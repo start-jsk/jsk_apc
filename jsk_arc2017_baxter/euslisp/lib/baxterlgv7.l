@@ -12,7 +12,8 @@
 
 (defclass jsk_arc2017_baxter::baxterlgv7-robot
   :super baxter-robot
-  :slots (view-hand-pos- ik-prepared-poses- hand-joints-))
+  :slots (view-hand-pos- ik-prepared-poses- hand-joints-
+                         rarm-palm-endpoint-ik- larm-palm-endpoint-ik-))
 
 (defmethod jsk_arc2017_baxter::baxterlgv7-robot
   (:init
@@ -59,9 +60,17 @@
                    :left_gripper_l_finger_yaw_joint
                    :left_gripper_r_finger_roll_joint_a
                    :left_gripper_r_finger_roll_joint_b))
-    ;; translate palm end for good cylindrical grasp
-    (send self :rarm-palm-endpoint :translate #f(30 0 0) :local)
-    (send self :larm-palm-endpoint :translate #f(-30 0 0) :local)
+    ;; set new palm end for good cylindrical grasp
+    (setq rarm-palm-endpoint-ik- (make-cascoords))
+    (send rarm-palm-endpoint-ik- :move-to
+          (send self :right_gripper_palm_endpoint_lk :worldcoords) :world)
+    (send rarm-palm-endpoint-ik- :translate #f(30 0 0) :local)
+    (send self :right_gripper_palm_endpoint_lk :assoc rarm-palm-endpoint-ik-)
+    (setq larm-palm-endpoint-ik- (make-cascoords))
+    (send larm-palm-endpoint-ik- :move-to
+          (send self :left_gripper_palm_endpoint_lk :worldcoords) :world)
+    (send larm-palm-endpoint-ik- :translate #f(-30 0 0) :local)
+    (send self :left_gripper_palm_endpoint_lk :assoc larm-palm-endpoint-ik-)
     )
 
   (:arc-reset-pose
@@ -76,10 +85,10 @@
 
   (:rarm-palm-endpoint
     (&rest args)
-    (send* self :right_gripper_palm_endpoint_lk args))
+    (forward-message-to rarm-palm-endpoint-ik- args))
   (:larm-palm-endpoint
     (&rest args)
-    (send* self :left_gripper_palm_endpoint_lk args))
+    (forward-message-to larm-palm-endpoint-ik- args))
   (:set-ik-prepared-poses
     (poses)
     (if (listp poses)
