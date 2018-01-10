@@ -21,6 +21,9 @@ class CandidatesPublisher(ConnectionBasedTransport):
         self.srv = dynamic_reconfigure.server.Server(
             CandidatesPublisherConfig, self._config_cb)
         self.label_names = rospy.get_param('~label_names')
+        self.json_dir = rospy.get_param('~json_dir')
+        hz = rospy.get_param('~hz', 10.0)
+        self.timer = rospy.Timer(rospy.Duration(1.0 / hz), self._timer_cb)
 
     def subscribe(self):
         self.sub = rospy.Subscriber('~input/json_dir', String, self._cb)
@@ -33,12 +36,14 @@ class CandidatesPublisher(ConnectionBasedTransport):
         return config
 
     def _cb(self, msg):
-        json_dir = msg.data
-        if not osp.isdir(json_dir):
+        self.json_dir = msg.data
+
+    def _timer_cb(self, event):
+        if not osp.isdir(self.json_dir):
             rospy.logfatal_throttle(
-                10, 'Input json_dir is not directory: %s' % json_dir)
+                10, 'Input json_dir is not directory: %s' % self.json_dir)
             return
-        filename = osp.join(json_dir, 'item_location_file.json')
+        filename = osp.join(self.json_dir, 'item_location_file.json')
         if osp.exists(filename):
             with open(filename) as location_f:
                 data = json.load(location_f)
