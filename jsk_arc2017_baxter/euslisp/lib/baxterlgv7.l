@@ -13,7 +13,7 @@
 (defclass jsk_arc2017_baxter::baxterlgv7-robot
   :super baxter-robot
   :slots (view-hand-pos- ik-prepared-poses- hand-joints-
-                         rarm-palm-endpoint-ik- larm-palm-endpoint-ik-))
+                         rarm-palm-end-coords- larm-palm-end-coords-))
 
 (defmethod jsk_arc2017_baxter::baxterlgv7-robot
   (:init
@@ -61,16 +61,16 @@
                    :left_gripper_r_finger_roll_joint_a
                    :left_gripper_r_finger_roll_joint_b))
     ;; set new palm end for good cylindrical grasp
-    (setq rarm-palm-endpoint-ik- (make-cascoords))
-    (send rarm-palm-endpoint-ik- :move-to
+    (setq rarm-palm-end-coords- (make-cascoords))
+    (send rarm-palm-end-coords- :move-to
           (send self :right_gripper_palm_endpoint_lk :worldcoords) :world)
-    (send rarm-palm-endpoint-ik- :translate #f(30 0 0) :local)
-    (send self :right_gripper_palm_endpoint_lk :assoc rarm-palm-endpoint-ik-)
-    (setq larm-palm-endpoint-ik- (make-cascoords))
-    (send larm-palm-endpoint-ik- :move-to
+    (send rarm-palm-end-coords- :translate #f(30 0 0) :local)
+    (send self :right_gripper_palm_endpoint_lk :assoc rarm-palm-end-coords-)
+    (setq larm-palm-end-coords- (make-cascoords))
+    (send larm-palm-end-coords- :move-to
           (send self :left_gripper_palm_endpoint_lk :worldcoords) :world)
-    (send larm-palm-endpoint-ik- :translate #f(-30 0 0) :local)
-    (send self :left_gripper_palm_endpoint_lk :assoc larm-palm-endpoint-ik-)
+    (send larm-palm-end-coords- :translate #f(-30 0 0) :local)
+    (send self :left_gripper_palm_endpoint_lk :assoc larm-palm-end-coords-)
     )
 
   (:arc-reset-pose
@@ -83,12 +83,12 @@
         ))
     (send *baxter* :angle-vector))
 
-  (:rarm-palm-endpoint
+  (:rarm-palm-end-coords
     (&rest args)
-    (forward-message-to rarm-palm-endpoint-ik- args))
-  (:larm-palm-endpoint
+    (forward-message-to rarm-palm-end-coords- args))
+  (:larm-palm-end-coords
     (&rest args)
-    (forward-message-to larm-palm-endpoint-ik- args))
+    (forward-message-to larm-palm-end-coords- args))
   (:set-ik-prepared-poses
     (poses)
     (if (listp poses)
@@ -110,7 +110,7 @@
     (if move-palm-end
       (dolist (limb (list :rarm :larm))
         (when (eq move-target (send self limb :end-coords))
-          (setq move-target (send self limb :palm-endpoint))
+          (setq move-target (send self limb :palm-end-coords))
           (setq link-list (send self :link-list (send move-target :parent))))))
     ;; if the last link of link-list is in gripper, remove gripper links
     (if (null use-gripper)
