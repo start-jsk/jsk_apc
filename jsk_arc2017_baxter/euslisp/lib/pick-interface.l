@@ -424,33 +424,35 @@
           (send self :spin-off-by-wrist arm :times 3)
           (send *ri* :wait-interpolation)
           (send self :add-postponed-object arm target-obj- target-bin-))
-        (progn
+        (let (av)
           (ros::ros-info-green "[main] arm ~a: place object ~a in cardboard ~a" arm target-obj- target-cardboard-)
           (send self :update-json target-obj-
                 :src (cons :bin target-bin-) :dst (cons :cardboard target-cardboard-))
           (send self :add-finished-object arm target-obj- target-bin-)
           (when moveit-p- (send self :delete-cardboard-scene target-cardboard-))
-          (send *ri* :angle-vector-raw
-                (if (eq grasp-style- :suction)
-                  (send *baxter* arm :move-end-pos (float-vector 0 0 (- place-z)) :world)
-                  (send *baxter* arm :move-end-pos
-                        (float-vector 0 0 (- place-z)) :world :rotation-axis nil))
-                2000 (send *ri* :get-arm-controller arm) 0)
-          (send *ri* :wait-interpolation)
+          (setq av (if (eq grasp-style- :suction)
+                     (send *baxter* arm :move-end-pos (float-vector 0 0 (- place-z)) :world)
+                     (send *baxter* arm :move-end-pos
+                       (float-vector 0 0 (- place-z)) :world :rotation-axis nil)))
+          (when av
+            (send *ri* :angle-vector-raw av
+                  2000 (send *ri* :get-arm-controller arm) 0)
+            (send *ri* :wait-interpolation))
           (send *ri* :stop-grasp arm) ;; release object
           (when (eq grasp-style- :pinch)
             (send *ri* :stop-grasp arm :pinch)
             (send *baxter* :rotate-gripper arm 90 :relative nil)) ;; release object
           (send self :spin-off-by-wrist arm :times 5)
           (send *ri* :wait-interpolation)
-          (send *ri* :angle-vector-raw
-                (if (eq grasp-style- :suction)
-                  (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
-                        :rotation-axis :z :use-gripper t)
-                  (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
-                        :rotation-axis nil))
-                1000 (send *ri* :get-arm-controller arm) 0)
-          (send *ri* :wait-interpolation)
+          (when av
+            (setq av (if (eq grasp-style- :suction)
+                       (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
+                             :rotation-axis :z :use-gripper t)
+                       (send *baxter* arm :move-end-pos (float-vector 0 0 place-z) :world
+                             :rotation-axis nil)))
+            (send *ri* :angle-vector-raw av
+                  1000 (send *ri* :get-arm-controller arm) 0)
+            (send *ri* :wait-interpolation))
           (when moveit-p- (send self :add-cardboard-scene target-cardboard-))))))
   (:return-from-place-object (arm)
     (let (avs)
