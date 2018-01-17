@@ -28,8 +28,10 @@
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="head" reason="Never" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_l_finger_a" reason="Never" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_l_finger_bc" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_l_finger_base" reason="Never" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_r_finger_a" reason="Never" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_r_finger_bc" reason="Never" />
+    <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_r_finger_base" reason="Never" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_gripper_tube" reason="Adjacent" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_hand" reason="Never" />
     <disable_collisions link1="${side}_gripper_pad_with_base" link2="${side}_hand_accelerometer" reason="Never" />
