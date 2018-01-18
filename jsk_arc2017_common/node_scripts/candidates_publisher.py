@@ -21,7 +21,7 @@ class CandidatesPublisher(ConnectionBasedTransport):
         self.srv = dynamic_reconfigure.server.Server(
             CandidatesPublisherConfig, self._config_cb)
         self.label_names = rospy.get_param('~label_names')
-        self.json_dir = rospy.get_param('~json_dir')
+        self.json_dir = None
         hz = rospy.get_param('~hz', 10.0)
         self.timer = rospy.Timer(rospy.Duration(1.0 / hz), self._timer_cb)
 
@@ -39,6 +39,10 @@ class CandidatesPublisher(ConnectionBasedTransport):
         self.json_dir = msg.data
 
     def _timer_cb(self, event):
+        if self.json_dir is None:
+            rospy.logwarn_throttle(10, 'Input json_dir is not set.')
+            return
+
         if not osp.isdir(self.json_dir):
             rospy.logfatal_throttle(
                 10, 'Input json_dir is not directory: %s' % self.json_dir)
