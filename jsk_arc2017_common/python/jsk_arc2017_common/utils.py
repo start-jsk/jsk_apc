@@ -261,6 +261,8 @@ def visualize_item_location(filename, order_file=None):
     imgs_top.append(img_container)
     # bin
     for bin_ in sorted(item_location['bins'], reverse=True):  # C, B, A
+        if not bin_['contents']:
+            continue  # skip empty bin
         img_container = visualize_container(
             bin_['bin_id'], bin_['contents'], orders=orders,
             container_file=osp.join(PKG_DIR, 'data/objects/bin/top.jpg'),
