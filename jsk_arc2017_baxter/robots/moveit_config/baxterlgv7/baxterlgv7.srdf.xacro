@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="baxterlgv7" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="baxter" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:arg name="left_tip_name" default="left_gripper_pad_with_base"/>
   <xacro:arg name="right_tip_name" default="right_gripper_pad_with_base"/>
   <xacro:include filename="$(find jsk_arc2017_baxter)/robots/moveit_config/baxterlgv7/baxterlgv7_base.srdf.xacro" />
