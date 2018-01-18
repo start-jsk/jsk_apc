@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="left_vacuum_gripper">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="left_gripper_v7">
   <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/common_constants.xacro"/>
   <!-- Gazebo Tags -->
   <gazebo reference="left_gripper_base">
