@@ -13,6 +13,7 @@
 
   <!-- Load the robot specific controller manager; this sets the moveit_controller_manager ROS parameter -->
   <arg name="moveit_controller_manager" default="baxter" />
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/$(arg moveit_controller_manager)_moveit_controller_manager.launch.xml" />
-
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/moveit/common/moveit_controller_manager.launch.xml">
+    <arg name="robot" value="$(arg moveit_controller_manager)"/>
+  </include>
 </launch>

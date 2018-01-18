@@ -58,7 +58,7 @@
         pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
         args="/desktop_bg_publisher/output" />
 
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxterlgv7_moveit.launch" if="$(arg moveit)">
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/moveit/baxterlgv7/baxterlgv7_moveit.launch" if="$(arg moveit)">
     <arg name="load_robot_description" value="false" />
     <arg name="debug" value="$(arg debug)" />
   </include>

@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<robot name="baxterlgv7" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:arg name="left_tip_name" default="left_gripper_pad_with_base"/>
+  <xacro:arg name="right_tip_name" default="right_gripper_pad_with_base"/>
+  <xacro:include filename="$(find jsk_arc2017_baxter)/robots/moveit_config/baxterlgv7/baxterlgv7_base.srdf.xacro" />
+  <xacro:baxterlgv7_base left_tip_name="$(arg left_tip_name)" right_tip_name="$(arg right_tip_name)"/>
+  <!--Left End Effector Collisions-->
+  <xacro:include filename="$(find jsk_arc2017_baxter)/robots/moveit_config/common/gripper_v7.srdf.xacro" />
+  <xacro:vacuum_gripper side="left"/>
+  <!--Right End Effector Collisions-->
+  <xacro:include filename="$(find jsk_arc2017_baxter)/robots/moveit_config/common/gripper_v6.srdf.xacro" />
+  <xacro:vacuum_gripper side="right"/>
+</robot>

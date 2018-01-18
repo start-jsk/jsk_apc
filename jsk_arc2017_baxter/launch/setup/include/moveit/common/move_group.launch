@@ -1,5 +1,7 @@
 <launch>
 
+  <arg name="robot" default="baxter"/>
+
   <!-- GDB Debug Option -->
   <arg name="debug" default="false" />
   <arg unless="$(arg debug)" name="launch_prefix" value="" />
@@ -18,12 +20,12 @@
   <arg name="publish_monitored_planning_scene" default="true"/>
 
   <!-- Planning Functionality -->
-  <include ns="move_group" file="$(find jsk_arc2017_baxter)/launch/setup/include/ompl_planning_pipeline.launch" />
+  <include ns="move_group" file="$(find jsk_arc2017_baxter)/launch/setup/include/moveit/common/ompl_planning_pipeline.launch" />
 
   <!-- Trajectory Execution Functionality -->
-  <include ns="move_group" file="$(find jsk_arc2017_baxter)/launch/setup/include/trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
+  <include ns="move_group" file="$(find jsk_arc2017_baxter)/launch/setup/include/moveit/$(arg robot)/$(arg robot)_trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
     <arg name="moveit_manage_controllers" value="true" />
-    <arg name="moveit_controller_manager" value="baxter"/>
+    <arg name="moveit_controller_manager" value="$(arg robot)"/>
   </include>
 
   <!-- Start the actual move_group node/action server -->

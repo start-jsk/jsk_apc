@@ -1,5 +1,7 @@
 <launch>
 
+  <arg name="robot" default="baxter"/>
+
   <!-- Set the param that trajectory_execution_manager needs to find the controller plugin -->
   <arg name="moveit_controller_manager" default="moveit_simple_controller_manager/MoveItSimpleControllerManager" />
   <param name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
@@ -16,6 +18,6 @@
   <param name="use_controller_manager" value="$(arg use_controller_manager)" />
 
   <!-- load controller_list and controller_manager_ns -->
-  <rosparam file="$(find jsk_arc2017_baxter)/robots/moveit_config/baxter_controllers.yaml"/>
+  <rosparam file="$(find jsk_arc2017_baxter)/robots/moveit_config/$(arg robot)/controllers.yaml"/>
 
 </launch>
