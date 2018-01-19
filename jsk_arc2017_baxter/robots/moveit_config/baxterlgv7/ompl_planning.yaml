@@ -1,0 +1,80 @@
+planner_configs:
+  SBLkConfigDefault:
+    type: geometric::SBL
+  LBKPIECEkConfigDefault:
+    type: geometric::LBKPIECE
+  RRTkConfigDefault:
+    type: geometric::RRT
+  RRTConnectkConfigDefault:
+    type: geometric::RRTConnect
+  LazyRRTkConfigDefault:
+    type: geometric::LazyRRT
+  ESTkConfigDefault:
+    type: geometric::EST
+  KPIECEkConfigDefault:
+    type: geometric::KPIECE
+  RRTStarkConfigDefault:
+    type: geometric::RRTstar
+  BKPIECEkConfigDefault:
+    type: geometric::BKPIECE
+left_arm:
+  default_planner_config: RRTConnectkConfigDefault
+  planner_configs:
+    - SBLkConfigDefault
+    - LBKPIECEkConfigDefault
+    - RRTkConfigDefault
+    - RRTConnectkConfigDefault
+    - ESTkConfigDefault
+    - KPIECEkConfigDefault
+    - BKPIECEkConfigDefault
+    - RRTStarkConfigDefault
+  projection_evaluator: joints(left_s0,left_s1)
+  longest_valid_segment_fraction: 0.01
+right_arm:
+  default_planner_config: RRTConnectkConfigDefault
+  planner_configs:
+    - SBLkConfigDefault
+    - LBKPIECEkConfigDefault
+    - RRTkConfigDefault
+    - RRTConnectkConfigDefault
+    - ESTkConfigDefault
+    - KPIECEkConfigDefault
+    - BKPIECEkConfigDefault
+    - RRTStarkConfigDefault
+  projection_evaluator: joints(right_s0,right_s1)
+  longest_valid_segment_fraction: 0.01
+both_arms:
+  default_planner_config: RRTConnectkConfigDefault
+  planner_configs:
+    - SBLkConfigDefault
+    - LBKPIECEkConfigDefault
+    - RRTkConfigDefault
+    - RRTConnectkConfigDefault
+    - ESTkConfigDefault
+    - KPIECEkConfigDefault
+    - BKPIECEkConfigDefault
+    - RRTStarkConfigDefault
+  projection_evaluator: joints(right_s0,right_s1)
+  longest_valid_segment_fraction: 0.01
+left_hand:
+  default_planner_config: RRTConnectkConfigDefault
+  planner_configs:
+    - SBLkConfigDefault
+    - LBKPIECEkConfigDefault
+    - RRTkConfigDefault
+    - RRTConnectkConfigDefault
+    - ESTkConfigDefault
+    - KPIECEkConfigDefault
+    - BKPIECEkConfigDefault
+    - RRTStarkConfigDefault
+right_hand:
+  default_planner_config: RRTConnectkConfigDefault
+  planner_configs:
+    - SBLkConfigDefault
+    - LBKPIECEkConfigDefault
+    - RRTkConfigDefault
+    - RRTConnectkConfigDefault
+    - ESTkConfigDefault
+    - KPIECEkConfigDefault
+    - BKPIECEkConfigDefault
+    - RRTStarkConfigDefault

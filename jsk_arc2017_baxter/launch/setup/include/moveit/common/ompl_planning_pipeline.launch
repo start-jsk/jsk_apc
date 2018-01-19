@@ -1,5 +1,7 @@
 <launch>
 
+  <arg name="robot" default="baxter"/>
+
   <!-- OMPL Plugin for MoveIt! -->
   <arg name="planning_plugin" value="ompl_interface/OMPLPlanner" />
 
@@ -18,6 +20,6 @@
   <param name="start_state_max_bounds_error" value="$(arg start_state_max_bounds_error)" />
 
   <rosparam command="load" file="$(find baxter_moveit_config)/config/kinematics.yaml"/>
-  <rosparam command="load" file="$(find jsk_arc2017_baxter)/robots/moveit_config/common/ompl_planning.yaml"/>
+  <rosparam command="load" file="$(find jsk_arc2017_baxter)/robots/moveit_config/$(arg robot)/ompl_planning.yaml"/>
 
 </launch>

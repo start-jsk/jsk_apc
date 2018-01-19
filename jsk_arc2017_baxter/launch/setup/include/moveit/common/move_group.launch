@@ -20,7 +20,9 @@
   <arg name="publish_monitored_planning_scene" default="true"/>
 
   <!-- Planning Functionality -->
-  <include ns="move_group" file="$(find jsk_arc2017_baxter)/launch/setup/include/moveit/common/ompl_planning_pipeline.launch" />
+  <include ns="move_group" file="$(find jsk_arc2017_baxter)/launch/setup/include/moveit/common/ompl_planning_pipeline.launch">
+    <arg name="robot" value="$(arg robot)"/>
+  </include>
 
   <!-- Trajectory Execution Functionality -->
   <include ns="move_group" file="$(find jsk_arc2017_baxter)/launch/setup/include/moveit/$(arg robot)/$(arg robot)_trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
