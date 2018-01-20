@@ -20,7 +20,7 @@ class CandidatesPublisher(ConnectionBasedTransport):
             '~output/candidates', LabelArray, queue_size=1)
         self.srv = dynamic_reconfigure.server.Server(
             CandidatesPublisherConfig, self._config_cb)
-        self.label_names = rospy.get_param('~label_names')
+        self.label_names = rospy.get_param('~json_dir', None)
         self.json_dir = None
         hz = rospy.get_param('~hz', 10.0)
         self.timer = rospy.Timer(rospy.Duration(1.0 / hz), self._timer_cb)
