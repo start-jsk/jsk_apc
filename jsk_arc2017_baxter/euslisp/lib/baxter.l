@@ -305,3 +305,50 @@
         )
       (send self :angle-vector (car pose-candidates))
       (send* self :ik->nearest-pose arm target-coords pose-candidates args))))
+
+
+(defclass jsk_arc2017_baxter::baxter-robot-safe
+  :super jsk_arc2017_baxter::baxter-robot
+  :slots (collision-ignore-pairs))
+
+(defmethod jsk_arc2017_baxter::baxter-robot-safe
+  (:init (&rest args)
+    (send-super* :init args)
+    ;; collision-avoidance-links
+    (setq collision-avoidance-links
+          (list (send self :screen_lk)
+                (send self :head_lk)
+                (send self :larm :wrist-r :child-link)
+                (send self :larm :wrist-p :child-link)
+                (send self :larm :elbow-p :child-link)
+                (send self :larm :elbow-r :child-link)
+                (send self :larm :shoulder-r :child-link)
+                (send self :larm :shoulder-p :child-link)
+                (send self :larm :shoulder-y :child-link)
+                (send self :left_gripper_r_finger_base_lk)
+                (send self :left_gripper_palm_endpoint_lk)
+                (send self :left_gripper_l_finger_base_lk)
+                (send self :left_gripper_tube_lk)
+                (send self :left_gripper_r_finger_lk)
+                (send self :left_gripper_l_finger_lk)
+                (send self :left_gripper_pad_with_base_lk)
+                (send self :rarm :wrist-r :child-link)
+                (send self :rarm :wrist-p :child-link)
+                (send self :rarm :elbow-p :child-link)
+                (send self :rarm :elbow-r :child-link)
+                (send self :rarm :shoulder-r :child-link)
+                (send self :rarm :shoulder-p :child-link)
+                (send self :rarm :shoulder-y :child-link)
+                (send self :right_gripper_r_finger_base_lk)
+                (send self :right_gripper_palm_endpoint_lk)
+                (send self :right_gripper_l_finger_base_lk)
+                (send self :right_gripper_tube_lk)
+                (send self :right_gripper_r_finger_lk)
+                (send self :right_gripper_l_finger_lk)
+                (send self :right_gripper_pad_with_base_lk)))
+    (setq larm-collision-avoidance-links collision-avoidance-links)
+    (setq rarm-collision-avoidance-links collision-avoidance-links))
+  (:self-collision-check
+    (&rest args &key (pairs (send self :collision-check-pairs :links collision-avoidance-links))
+           &allow-other-keys)
+    (send-super* :self-collision-check :pairs pairs args)))
