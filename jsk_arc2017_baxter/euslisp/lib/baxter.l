@@ -70,7 +70,7 @@
         (send self arm :move-end-pos (float-vector 0 (if (eq arm :larm) 300 -300) 0) :world)
         (send self :rotate-wrist arm (if (eq arm :larm) 90 -90) :relative nil)
         ))
-    (send *baxter* :angle-vector))
+    (send self :angle-vector))
 
   (:rarm-palm-endpoint
     (&rest args)
