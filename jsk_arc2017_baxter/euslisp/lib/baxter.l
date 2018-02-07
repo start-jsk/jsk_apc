@@ -249,36 +249,29 @@
   (:ik->nearest-pose
     (arm target-coords pose-candidates &rest args)
     (let ((opposite-arm (if (eq arm :larm) :rarm :larm))
-          current-opposite-av current-av chosen-pose)
+          current-opposite-av current-av pose-and-next-avs chosen-pose)
       (unless pose-candidates
         (setq pose-candidates (list (send self :angle-vector))))
-      (let (current-opposite-av current-av ik-solvable-poses chosen-pose)
-        (setq current-opposite-av (send self opposite-arm :angle-vector))
-        (setq current-av (send self arm :angle-vector))
-        ;; exclude poses which IK fail from
-        (dolist (pose pose-candidates)
-          (send self :angle-vector pose)
-          (if (send* self arm :inverse-kinematics target-coords args)
-            (pushback pose ik-solvable-poses)))
-        (unless ik-solvable-poses
-          (ros::ros-error "[:ik->nearest-pose] Cannot solve IK from poses")
-          (send self opposite-arm :angle-vector current-opposite-av)
-          (send self arm :angle-vector current-av)
-          (return-from :ik->nearest-pose nil))
-        (setq chosen-pose
-              (car (sort ik-solvable-poses #'<
-                         #'(lambda (pose)
-                             (norm
-                               (v-
-                                 current-av
-                                 (progn
-                                   (send self :angle-vector pose)
-                                   (send* self arm :inverse-kinematics target-coords args)
-                                   (send self arm :angle-vector))))))))
-        (format t "[:ik->nearest-pose] arm:~a midpose: ~a~%" arm chosen-pose)
-        (send self :angle-vector chosen-pose)
+      (setq current-opposite-av (send self opposite-arm :angle-vector))
+      (setq current-av (send self arm :angle-vector))
+      ;; exclude poses which IK fail from
+      (dolist (pose pose-candidates)
+        (send self :angle-vector pose)
+        (when (send* self arm :inverse-kinematics target-coords args)
+          (pushback (cons pose (send self arm :angle-vector)) pose-and-next-avs)))
+      (unless pose-and-next-avs
+        (ros::ros-error "[:ik->nearest-pose] Cannot solve IK from poses")
         (send self opposite-arm :angle-vector current-opposite-av)
-        (send* self arm :inverse-kinematics target-coords args))))
+        (send self arm :angle-vector current-av)
+        (return-from :ik->nearest-pose nil))
+      (setq chosen-pose
+            (car (car (sort pose-and-next-avs #'<
+                            #'(lambda (pose-and-next-av)
+                                (norm (v- current-av (cdr pose-and-next-av))))))))
+      (format t "[:ik->nearest-pose] arm:~a midpose: ~a~%" arm chosen-pose)
+      (send self :angle-vector chosen-pose)
+      (send self opposite-arm :angle-vector current-opposite-av)
+      (send* self arm :inverse-kinematics target-coords args)))
   (:spin-off-by-wrist
     (arm &key (times 10))
     (let (avs robot)
