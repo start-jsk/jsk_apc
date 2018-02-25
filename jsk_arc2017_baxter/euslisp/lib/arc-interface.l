@@ -379,7 +379,7 @@
            (progn
              (sethash arm object-boxes- obj-box)
              (sethash arm object-coords- obj-coords)
-             (setq is-recognized t))
+             (setq is-recognized (send box-msg :header :stamp)))
            (progn
              (ros::ros-error "[:recognize-target-object] arm: ~a obj-box length ~a" arm (length obj-box))
              (ros::ros-error "[:recognize-target-object] arm: ~a obj-coords length ~a" arm (length obj-coords))
