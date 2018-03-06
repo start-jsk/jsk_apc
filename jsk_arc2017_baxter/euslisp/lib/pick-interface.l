@@ -215,7 +215,7 @@
         (send self :set-movable-region-for-bin :offset (list 50 50 0))
         (send self :set-movable-region-for-bin :offset (list 50 50 0)))
       (send self :reset-scale arm)
-      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
+      ; (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
       (setq pick-result
             (send self :pick-object-in-bin arm target-bin-
                   :n-trial (if (eq grasp-style- :suction) 2 1)
