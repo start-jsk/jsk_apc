@@ -553,7 +553,7 @@
             (return-from :pick-object-with-movable-region :ik-failed)))
         ;; Move whole arm to location above of the target pose
         (send *ri* :angle-vector-sequence-raw next-avs
-              :fast (send *ri* :get-arm-controller arm :head t) 0 :scale 5.0)
+              :fast (send *ri* :get-arm-controller arm :head t) 0 :scale 10.0)
         (send *ri* :wait-interpolation))
       ;; Now hand is inside of the bin, so we can use cylindrical
       (send *ri* :move-hand arm (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000)
