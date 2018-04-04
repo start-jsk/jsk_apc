@@ -1,6 +1,6 @@
 <launch>
   <arg name="username" default="root" />
-  <arg name="hostname" default="133.11.216.141" />
+  <arg name="hostname" default="axis-00408ca3a878.jsk.imi.i.u-tokyo.ac.jp" />
 
   <group ns="axis">
     <node name="axis_camera"
