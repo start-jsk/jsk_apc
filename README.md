@@ -15,15 +15,6 @@ jsk\_apc
 The documentation is available at [here](http://jsk-apc.readthedocs.org).
 
 
-Build Status
-------------
-
-| Package         | Indigo (Trusty)                                                                                                                                                                          |
-|:----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| jsk_apc (i386)  | [![Build Status](http://build.ros.org/job/Ibin_uT32__jsk_apc__ubuntu_trusty_i386__binary/badge/icon)](http://build.ros.org/job/Ibin_uT32__jsk_apc__ubuntu_trusty_i386__binary)           |
-| jsk_apc (amd64) | [![Build Status](http://build.ros.org/job/Ibin_uT64__jsk_apc__ubuntu_trusty_amd64__binary/badge/icon)](http://build.ros.org/job/Ibin_uT64__jsk_apc__ubuntu_trusty_amd64__binary)         |
-
-
 Usage
 -----
 
