@@ -25,16 +25,18 @@
               /left_hand_camera/left/depth/image_raw/compressedDepth
               /left_hand_camera/right/rgb/camera_info
               /left_hand_camera/right/rgb/image_raw/compressed
-              /left_hand_camera/right/depth/camera_info
-              /left_hand_camera/right/depth/image_raw/compressedDepth
 
               /right_hand_camera/left/rgb/camera_info
               /right_hand_camera/left/rgb/image_raw/compressed
               /right_hand_camera/left/depth/camera_info
               /right_hand_camera/left/depth/image_raw/compressedDepth
               /right_hand_camera/right/rgb/camera_info
-              /right_hand_camera/right/rgb/image_raw/compressed
+              /right_hand_camera/right/rgb/image_raw/compressed -O $(arg filename)">
+              <!-- FIXME: IR sensors conflicts.
+              /left_hand_camera/right/depth/camera_info
+              /left_hand_camera/right/depth/image_raw/compressedDepth
               /right_hand_camera/right/depth/camera_info
-              /right_hand_camera/right/depth/image_raw/compressedDepth -O $(arg filename)">
+              /right_hand_camera/right/depth/image_raw/compressedDepth
+              -->
     </node>
   </launch>
