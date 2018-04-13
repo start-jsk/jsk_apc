@@ -4,26 +4,36 @@ import os
 import os.path as osp
 import shutil
 
-# import cv2
 import numpy as np
 import skimage.io
 import yaml
 
-import cv_bridge
-from geometry_msgs.msg import TransformStamped
-import genpy.message
-import rospy
-from sensor_msgs.msg import CameraInfo
-from sensor_msgs.msg import Image
-from std_msgs.msg import Header
-import tf
+import jsk_data
+
+
+ROS_HOME = osp.expanduser('~/.ros')
 
 
 class DatasetCollectedOnShelfMultiView(object):
 
     def __init__(self):
         self.ids = []
-        self.root = '/data/projects/arc2017/datasets/JSKV3'
+        self.root = osp.join(
+            ROS_HOME, 'jsk_arc2017_common/dataset_jsk_v3_20160614')
+
+        # download from google drive
+        try:
+            os.makedirs(osp.dirname(self.root))
+        except OSError:
+            pass
+        jsk_data.download_data(
+            pkg_name='jsk_arc2017_common',
+            url='https://drive.google.com/uc?id=0B1waEZT19wijb3dMZXhhcnp3Szg',
+            path=self.root + '.tgz',
+            md5='0d33a08aa5f64e0d880a7b8ca34c6ab7',
+            extract=True,
+        )
+
         for id_ in sorted(os.listdir(self.root)):
             self.ids.append(id_)
 
@@ -40,7 +50,7 @@ class DatasetCollectedOnShelfMultiView(object):
         depth = np.load(osp.join(data_dir, 'depth.npz'))['arr_0']
         camera_info = yaml.load(
             open(osp.join(data_dir,
-                          'camera_info_right_hand_camera_left.yaml')))
+                          'camera_info_right_hand_left_camera.yaml')))
         tf_camera_from_base = yaml.load(
             open(osp.join(data_dir, 'tf_camera_rgb_from_base.yaml')))
 
@@ -50,12 +60,13 @@ class DatasetCollectedOnShelfMultiView(object):
 def main():
     dataset = DatasetCollectedOnShelfMultiView()
 
-    out_dir = '/data/projects/arc2017/datasets/JSKV3_scenes'
+    out_dir = osp.join(
+        ROS_HOME, 'jsk_arc2017_common/dataset_jsk_v3_20160614_scenes')
     if not osp.exists(out_dir):
         os.makedirs(out_dir)
 
     scene_idx = 0
-    for i in xrange(len(dataset)):
+    for i in range(len(dataset)):
         frame_idx, img, depth = dataset[i][:3]
         if frame_idx == 1:
             scene_idx += 1

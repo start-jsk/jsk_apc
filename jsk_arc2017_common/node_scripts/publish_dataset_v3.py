@@ -9,22 +9,25 @@ import yaml
 
 import cv_bridge
 import dynamic_reconfigure.server
-from geometry_msgs.msg import TransformStamped
 import genpy.message
+from geometry_msgs.msg import TransformStamped
 import rospy
 from sensor_msgs.msg import CameraInfo
 from sensor_msgs.msg import Image
-from std_msgs.msg import Header
 import tf
 
 from jsk_arc2017_common.cfg import PublishDatasetV3Config
+
+
+ROS_HOME = osp.expanduser('~/.ros')
 
 
 class DatasetCollectedOnShelfMultiViewScenes(object):
 
     def __init__(self):
         self.scene_ids = []
-        self.root = '/data/projects/arc2017/datasets/JSKV3_scenes'
+        self.root = osp.join(
+            ROS_HOME, 'jsk_arc2017_common/dataset_jsk_v3_20160614_scenes')
         for scene_id in sorted(os.listdir(self.root)):
             self.scene_ids.append(scene_id)
 
@@ -46,7 +49,7 @@ class DatasetCollectedOnShelfMultiViewScenes(object):
         depth = np.load(osp.join(frame_dir, 'depth.npz'))['arr_0']
         camera_info = yaml.load(
             open(osp.join(frame_dir,
-                          'camera_info_right_hand_camera_left.yaml')))
+                          'camera_info_right_hand_left_camera.yaml')))
         tf_camera_from_base = yaml.load(
             open(osp.join(frame_dir, 'tf_camera_rgb_from_base.yaml')))
 
