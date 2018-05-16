@@ -17,11 +17,11 @@
 
 namespace jsk_arc2017_baxter
 {
-TendonTransmissionLoader::TransmissionPtr
+transmission_interface::TransmissionSharedPtr
 TendonTransmissionLoader::load(const transmission_interface::TransmissionInfo& transmission_info)
 {
   // Transmission should contain only one actuator
-  if (!checkActuatorDimension(transmission_info, 1)) {return TransmissionPtr();}
+  if (!checkActuatorDimension(transmission_info, 1)) {return transmission_interface::TransmissionSharedPtr();}
 
   // Get joint configuration
   std::vector<double> jnt_reduction;
@@ -30,12 +30,12 @@ TendonTransmissionLoader::load(const transmission_interface::TransmissionInfo& t
                                             jnt_reduction,
                                             jnt_limit);
 
-  if (!jnt_config_ok) {return TransmissionPtr();}
+  if (!jnt_config_ok) {return transmission_interface::TransmissionSharedPtr();}
 
   // Transmission instance
   try
   {
-    TransmissionPtr transmission(new TendonTransmission(jnt_reduction, jnt_limit));
+    transmission_interface::TransmissionSharedPtr transmission(new TendonTransmission(jnt_reduction, jnt_limit));
     return transmission;
   }
   catch(const transmission_interface::TransmissionInterfaceException& ex)
@@ -43,7 +43,7 @@ TendonTransmissionLoader::load(const transmission_interface::TransmissionInfo& t
     using hardware_interface::internal::demangledTypeName;
     ROS_ERROR_STREAM_NAMED("parser", "Failed to construct transmission '" << transmission_info.name_ << "' of type '" <<
                            demangledTypeName<TendonTransmission>()<< "'. " << ex.what());
-    return TransmissionPtr();
+    return transmission_interface::TransmissionSharedPtr();
   }
 }
 
