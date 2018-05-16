@@ -16,7 +16,7 @@ namespace jsk_arc2017_baxter
 class TendonTransmissionLoader : public transmission_interface::TransmissionLoader
 {
 public:
-  TransmissionPtr load(const transmission_interface::TransmissionInfo& transmission_info);
+  transmission_interface::TransmissionSharedPtr load(const transmission_interface::TransmissionInfo& transmission_info);
 
 private:
   static bool getJointConfig(const transmission_interface::TransmissionInfo& transmission_info,
