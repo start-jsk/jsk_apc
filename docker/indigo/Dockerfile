@@ -1,4 +1,4 @@
-FROM osrf/ros:indigo-desktop-full
+FROM osrf/ros:indigo-desktop-trusty
 
 RUN echo "deb http://packages.ros.org/ros-shadow-fixed/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list
 
