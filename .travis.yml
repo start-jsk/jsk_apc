@@ -23,7 +23,8 @@ env:
     - USE_DEB=false
   matrix:
     # Travis
-    - ROS_DISTRO=indigo USE_TRAVIS=true USE_DOCKER=true DOCKER_IMAGE="wkentaro/jsk_apc" ROS_PARALLEL_JOBS="-j2"
+    - ROS_DISTRO=indigo USE_TRAVIS=true USE_DOCKER=true DOCKER_IMAGE="wkentaro/jsk_apc:indigo" ROS_PARALLEL_JOBS="-j2"
+    - ROS_DISTRO=kinetic USE_TRAVIS=true USE_DOCKER=true DOCKER_IMAGE="wkentaro/jsk_apc:kinetic" ROS_PARALLEL_JOBS="-j2"
     # # Jenkins
     # - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS="wkentaro/jsk_apc" ROS_PARALLEL_JOBS="-j4"
 
