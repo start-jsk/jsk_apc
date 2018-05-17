@@ -4,6 +4,9 @@
 #ifndef JSK_ARC2017_BAXTER_TENDON_TRANSMISSION_LOADER_H
 #define JSK_ARC2017_BAXTER_TENDON_TRANSMISSION_LOADER_H
 
+// ROS
+#include <ros/common.h>
+
 // TinyXML
 #include <tinyxml.h>
 
@@ -16,7 +19,10 @@ namespace jsk_arc2017_baxter
 class TendonTransmissionLoader : public transmission_interface::TransmissionLoader
 {
 public:
-  transmission_interface::TransmissionSharedPtr load(const transmission_interface::TransmissionInfo& transmission_info);
+  #if ROS_VERSION_MINIMUM(1, 12, 0) // ROS Kinetic and above
+    typedef transmission_interface::TransmissionSharedPtr TransmissionPtr;
+  #endif
+  TransmissionPtr load(const transmission_interface::TransmissionInfo& transmission_info);
 
 private:
   static bool getJointConfig(const transmission_interface::TransmissionInfo& transmission_info,
