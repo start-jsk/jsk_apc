@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     python-wstool
 
 RUN easy_install -U pip && \
-    pip install -U pip setuptools
+    pip install 'pip<10' && \
+    pip install -U setuptools
 
 RUN cd ~ && \
     mkdir -p src && \
