@@ -25,15 +25,11 @@ env:
     - USE_DOCKER=true
     - USE_TRAVIS=true
   matrix:
-    - >|
-      ROS_DISTRO=indigo
-      DOCKER_IMAGE="wkentaro/jsk_apc:indigo"
-    - >|
-      ROS_DISTRO=kinetic
-      DOCKER_IMAGE="wkentaro/jsk_apc:kinetic"
-      ROSDEP_YET_ADDITIONAL_OPTIONS="--skip-keys=jsk_demo_common --skip-keys=roseus_mongo --skip-keys=jsk_baxter_startup --skip-keys=baxtereus"
+    - ROS_DISTRO=indigo
+    - ROS_DISTRO=kinetic ROSDEP_YET_ADDITIONAL_OPTIONS="--skip-keys=jsk_demo_common --skip-keys=roseus_mongo --skip-keys=jsk_baxter_startup --skip-keys=baxtereus --skip-keys=baxter_gazebo --skip-keys=baxter_sim_io --skip-keys=baxter_sim_controllers"
 
 script:
+  - export DOCKER_IMAGE="wkentaro/jsk_apc:$ROS_DISTRO"
   - export ROSDEP_ADDITIONAL_OPTIONS="$ROSDEP_ADDITIONAL_OPTIONS $ROSDEP_YET_ADDITIONAL_OPTIONS"
   # build & test ROS packages
   - source .travis/travis.sh
