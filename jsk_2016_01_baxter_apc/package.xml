@@ -48,7 +48,6 @@
   <run_depend>jsk_interactive_marker</run_depend>
   <run_depend>jsk_recognition_msgs</run_depend>
   <run_depend>roscpp</run_depend>
-  <run_depend>roseus_mongo</run_depend>
   <run_depend>rosserial_python</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>jsk_data</run_depend>

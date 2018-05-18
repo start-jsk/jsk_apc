@@ -79,22 +79,3 @@
 (defun ros::ros-info-cyan (fmt &rest args)
   (ros::ros-info "~C[3~Cm~A~C[0m" #x1b 54 (apply #'format nil fmt args) #x1b)
   )
-
-
-;; ------------------------------------------------------------------------------------------------
-;; Json Utils
-;; ------------------------------------------------------------------------------------------------
-
-(require :json-decode "package://roseus_mongo/euslisp/json/json-decode.l")
-
-(defun read-file-into-string (filename)
-  (with-open-file (f filename :direction :input)
-    (let (buf (str-list nil))
-      (while (setq buf (read-line f nil))
-             (setq str-list (append str-list (list (format nil buf)))))
-      (reduce #'(lambda (x y) (concatenate string x y)) str-list))))
-
-(defun read-json-into-string (filename)
-  (if (substringp "package://" filename)
-    (setq filename (ros::resolve-ros-path filename)))
-  (json::parse-from-string (read-file-into-string filename)))
