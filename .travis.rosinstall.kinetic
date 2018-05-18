@@ -1,23 +1,17 @@
+# not released yet in kinetic
+- git:
+    local-name: baxter_simulator
+    uri: https://github.com/RethinkRobotics/baxter_simulator.git
+    version: kinetic-devel
+# 2.1.3 is not released yet in kinetic
+- tar:
+    local-name: jsk_visualization/jsk_interactive_marker
+    uri: https://github.com/tork-a/jsk_visualization-release/archive/release/indigo/jsk_interactive_marker/2.1.3-0.tar.gz
+    version: jsk_visualization-release-release-indigo-jsk_interactive_marker-2.1.3-0
 - tar:
     local-name: baxter_examples
     uri: https://github.com/RethinkRobotics-release/baxter_examples-release/archive/release/indigo/baxter_examples/1.2.0-0.tar.gz
     version: baxter_examples-release-release-indigo-baxter_examples-1.2.0-0
-- tar:
-    local-name: baxter_simulator/baxter_gazebo
-    uri: https://github.com/RethinkRobotics-release/baxter_simulator-release/archive/release/indigo/baxter_gazebo/1.2.12-0.tar.gz
-    version: baxter_simulator-release-release-indigo-baxter_gazebo-1.2.12-0
-- tar:
-    local-name: baxter_simulator/baxter_sim_controllers
-    uri: https://github.com/RethinkRobotics-release/baxter_simulator-release/archive/release/indigo/baxter_sim_controllers/1.2.12-0.tar.gz
-    version: baxter_simulator-release-release-indigo-baxter_sim_controllers-1.2.12-0
-- tar:
-    local-name: baxter_simulator/baxter_sim_hardware
-    uri: https://github.com/RethinkRobotics-release/baxter_simulator-release/archive/release/indigo/baxter_sim_hardware/1.2.12-0.tar.gz
-    version: baxter_simulator-release-release-indigo-baxter_sim_hardware-1.2.12-0
-- tar:
-    local-name: baxter_simulator/baxter_sim_io
-    uri: https://github.com/RethinkRobotics-release/baxter_simulator-release/archive/release/indigo/baxter_sim_io/1.2.12-0.tar.gz
-    version: baxter_simulator-release-release-indigo-baxter_sim_io-1.2.12-0
 - tar:
     local-name: baxter_tools
     uri: https://github.com/RethinkRobotics-release/baxter_tools-release/archive/release/indigo/baxter_tools/1.2.0-0.tar.gz
@@ -58,7 +52,3 @@
     local-name: baxter_interface
     uri: https://github.com/RethinkRobotics-release/baxter_interface-release/archive/release/indigo/baxter_interface/1.2.0-0.tar.gz
     version: baxter_interface-release-release-indigo-baxter_interface-1.2.0-0
-- tar:
-    local-name: baxter_simulator/baxter_sim_kinematics
-    uri: https://github.com/RethinkRobotics-release/baxter_simulator-release/archive/release/indigo/baxter_sim_kinematics/1.2.12-0.tar.gz
-    version: baxter_simulator-release-release-indigo-baxter_sim_kinematics-1.2.12-0
