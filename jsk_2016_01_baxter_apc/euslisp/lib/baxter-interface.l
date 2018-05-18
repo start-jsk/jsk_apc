@@ -5,7 +5,10 @@
 (require "package://jsk_2016_01_baxter_apc/euslisp/lib/baxter.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
 
-(ros::load-ros-manifest "jsk_2016_01_baxter_apc")
+(ros::load-ros-manifest "control_msgs")
+(ros::load-ros-manifest "jsk_2015_05_baxter_apc")
+(ros::load-ros-manifest "jsk_recognition_msgs")
+(ros::load-ros-manifest "std_msgs")
 
 (unless (find-package "JSK_2016_01_BAXTER_APC")
   (make-package "JSK_2016_01_BAXTER_APC"))
