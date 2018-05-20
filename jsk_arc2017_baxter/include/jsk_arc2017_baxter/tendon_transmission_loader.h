@@ -19,9 +19,7 @@ namespace jsk_arc2017_baxter
 class TendonTransmissionLoader : public transmission_interface::TransmissionLoader
 {
 public:
-  #if ROS_VERSION_MINIMUM(1, 12, 0) // ROS Kinetic and above
-    typedef transmission_interface::TransmissionSharedPtr TransmissionPtr;
-  #endif
+  typedef transmission_interface::TransmissionSharedPtr TransmissionPtr;
   TransmissionPtr load(const transmission_interface::TransmissionInfo& transmission_info);
 
 private:
