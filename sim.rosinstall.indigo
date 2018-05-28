@@ -1,0 +1,4 @@
+- git:
+    local-name: FOR_SIMULATION/baxter_simulator
+    uri: https://github.com/knorth55/baxter_simulator.git
+    version: indigo-gripper-sim
