@@ -87,11 +87,13 @@ $ rossetdefault baxter  # set ROS_MASTER_URI as http://baxter:11311
 
 **Setup Arduino and DXHUB**
 
-Create udev rules:
+1. To distinguish left DXHUB from right one, follow the instruction [here](http://jsk-apc.readthedocs.io/en/latest/jsk_arc2017_baxter/setup_gripper_v6.html#distinguish-left-dxhub-from-right-one).
+
+2. Create udev rules:
 ```
 $ rosrun jsk_arc2017_baxter create_udev_rules
 ```
-so that Arduinos can appear on `/dev/arduino*` and DXHUB can appear on `/dev/r_dxhub`
+so that Arduinos can appear on `/dev/arduino*` and DXHUBs can appear on `/dev/l_dxhub` and `/dev/r_dxhub`
 
 **Setup scales**
 
