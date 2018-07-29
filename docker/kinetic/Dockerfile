@@ -21,6 +21,7 @@ RUN cd ~ && \
     wstool set start-jsk/jsk_apc https://github.com/start-jsk/jsk_apc.git -v master --git -y && \
     wstool up -j 2 && \
     wstool merge start-jsk/jsk_apc/.travis.rosinstall && \
+    wstool merge start-jsk/jsk_apc/.travis.rosinstall.kinetic && \
     wstool up -j 2
 RUN rosdep update
 RUN rosdep install --rosdistro kinetic -r -y -i --from-paths /opt/ros/kinetic/share ~/src
