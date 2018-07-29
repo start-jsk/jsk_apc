@@ -24,5 +24,6 @@ RUN cd ~ && \
     wstool merge start-jsk/jsk_apc/.travis.rosinstall.kinetic && \
     wstool up -j 2
 RUN rosdep update
-RUN rosdep install --rosdistro kinetic -r -y -i --from-paths /opt/ros/kinetic/share ~/src
+# /opt/ros/indigo/share can be changed after rosdep install, so we run it 3 times.
+RUN for i in $(seq 3); do rosdep install --rosdistro indigo -r -y -i --from-paths /opt/ros/kinetic/share ~/src; done
 RUN rm -rf ~/src
