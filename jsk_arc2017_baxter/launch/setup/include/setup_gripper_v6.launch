@@ -1,5 +1,9 @@
 <launch>
 
+  <arg name="launch_left" default="true" />
+  <arg name="launch_right" default="true" />
+  <arg name="respawn_arduino" default="true" />
+
   <arg name="define_machine" default="false" />
   <group if="$(arg define_machine)">
     <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
@@ -15,11 +19,24 @@
               -f $(find jsk_arc2017_baxter)/robots/left_gripper_v6/gripper_mass.yaml"
         output="screen"/>
 
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_arduinos.launch" />
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_dxl_controller.launch" />
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_ros_control.launch" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_arduinos.launch">
+    <arg name="launch_left" value="$(arg launch_left)" />
+    <arg name="launch_right" value="$(arg launch_right)" />
+    <arg name="respawn" value="$(arg respawn_arduino)" />
+  </include>
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_dxl_controller.launch">
+    <arg name="launch_left" value="$(arg launch_left)" />
+    <arg name="launch_right" value="$(arg launch_right)" />
+  </include>
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_ros_control.launch">
+    <arg name="launch_left" value="$(arg launch_left)" />
+    <arg name="launch_right" value="$(arg launch_right)" />
+  </include>
 
   <node name="sanity_check_gripper_v6"
-        pkg="jsk_arc2017_baxter" type="sanity-check-gripper-v6.l" />
+        pkg="jsk_arc2017_baxter" type="sanity-check-gripper-v6.l">
+    <param name="left" value="$(arg launch_left)" />
+    <param name="right" value="$(arg launch_right)" />
+  </node>
 
 </launch>
