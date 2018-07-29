@@ -37,6 +37,12 @@ script:
   - source setup.sh
   - make html
 
+after_script:
+  # trigger the build of the docker image
+  # If the test fails, new docker image can be helpful,
+  # so it should be triggered at both after_success and failure.
+  - curl -X POST https://registry.hub.docker.com/u/wkentaro/jsk_apc/trigger/3ed08cc3-12bf-4a63-85a7-8082180f3639/
+
 notifications:
   email:
     on_success: always
@@ -47,7 +53,3 @@ notifications:
 branches:
   only:
     - master
-
-after_success:
-  # trigger the build of the docker image
-  - curl -X POST https://registry.hub.docker.com/u/wkentaro/jsk_apc/trigger/3ed08cc3-12bf-4a63-85a7-8082180f3639/
