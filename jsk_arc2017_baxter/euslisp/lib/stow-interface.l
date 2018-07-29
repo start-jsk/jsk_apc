@@ -157,7 +157,7 @@
           (setq trial-fail-count- 0)
           nil))))
   (:pick-object
-    (arm)
+    (arm &key (use-scale t))
     (send *ri* :speak
           (format nil "~a arm is picking ~a." (arm2str arm) (underscore-to-space target-obj-)))
     (let (pick-result graspingp)
@@ -166,7 +166,7 @@
       (if (eq grasp-style- :suction)
         (send self :set-movable-region-for-tote arm :offset (list 50 50 0))
         (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
-      (send self :reset-scale arm)
+      (when use-scale (send self :reset-scale arm))
       (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
       (setq pick-result
             (send self :pick-object-in-tote arm
@@ -207,6 +207,7 @@
               (send *ri* :get-arm-controller arm :gripper nil) 0)
         (send *ri* :wait-interpolation))
       (if (eq pick-result :ik-failed) (return-from :pick-object nil))
+      (unless use-scale (return-from :pick-object (send *ri* :graspingp arm)))
       ;; Don't trust pressure sensor
       ;; (setq graspingp (send *ri* :graspingp arm grasp-style-))
       ;; (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
