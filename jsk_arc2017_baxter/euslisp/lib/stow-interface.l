@@ -157,7 +157,7 @@
           (setq trial-fail-count- 0)
           nil))))
   (:pick-object
-    (arm &key (use-scale t))
+    (arm &key (use-scale t) (move-head t))
     (send *ri* :speak
           (format nil "~a arm is picking ~a." (arm2str arm) (underscore-to-space target-obj-)))
     (let (pick-result graspingp)
@@ -167,7 +167,7 @@
         (send self :set-movable-region-for-tote arm :offset (list 50 50 0))
         (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
       (when use-scale (send self :reset-scale arm))
-      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
+      (when move-head (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70)))
       (setq pick-result
             (send self :pick-object-in-tote arm
                   :n-trial (if (eq grasp-style- :suction) 2 1)
