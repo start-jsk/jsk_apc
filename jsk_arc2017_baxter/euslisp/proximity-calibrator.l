@@ -14,18 +14,16 @@
   (:init (&rest args &key topic-list)
     (ros::roseus "proximity-calibrator")
     ;; create subscribers and publishers
-    (ros::subscribe "/set_init_proximities" std_msgs::Empty #'send self :set-init-proximities)
+    (ros::advertise-service "/set_init_proximities" std_srvs::Empty #'send self :set-init-proximities)
     (dolist (topic-name topic-list)
       (ros::subscribe topic-name force_proximity_ros::ProximityArray #'send self :cb topic-name)
       (ros::advertise (format nil "~A/init" topic-name) std_msgs::Float64MultiArray 1)
       (ros::advertise (format nil "~A/calibrated" topic-name) std_msgs::Float64MultiArray 1)
       (ros::advertise (format nil "~A/distance" topic-name) std_msgs::Float64MultiArray 1))
-
     ;; make hash tables
     (setq proximities-calibrated- (make-hash-table :test #'equal))
     (setq proximities-init- (make-hash-table :test #'equal))
     (setq proximities-param-a- (make-hash-table :test #'equal))
-
     ;; get default proximity parameters from rosparam
     (dolist (topic-name topic-list)
       (sethash topic-name
@@ -59,11 +57,12 @@
                     (gethash topic-name proximities-param-a-)
                     (gethash topic-name proximities-calibrated-)))
       (ros::publish (format nil "~A/distance" topic-name) float-array)))
-  (:set-init-proximities (msg)
+  (:set-init-proximities (req)
     (dolist (topic-name topic-list-)
       (sethash topic-name
                proximities-init-
-               (gethash topic-name proximities-raw-))))
+               (gethash topic-name proximities-raw-)))
+    (instance std_srvs::EmptyResponse :init))
   )
 
 
