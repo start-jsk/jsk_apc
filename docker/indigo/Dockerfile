@@ -1,6 +1,6 @@
 FROM osrf/ros:indigo-desktop-trusty
 
-ENV ROS_DISTRO=kinetic
+ENV ROS_DISTRO=indigo
 
 RUN echo "deb http://packages.ros.org/ros-shadow-fixed/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
 
