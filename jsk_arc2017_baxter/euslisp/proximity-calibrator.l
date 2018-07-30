@@ -70,3 +70,8 @@
   (when (not (boundp '*pc*))
     (setq *pc* (instance proximity-calibrator :init :topic-list topic-list)))
   (ros::spin-once))
+
+
+(init)
+(do-until-key
+ (ros::spin-once))
