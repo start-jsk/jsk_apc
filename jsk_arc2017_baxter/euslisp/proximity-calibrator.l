@@ -73,5 +73,4 @@
 
 
 (init)
-(do-until-key
- (ros::spin-once))
+(ros::spin)
