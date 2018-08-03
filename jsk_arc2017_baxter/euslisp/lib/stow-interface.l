@@ -157,7 +157,7 @@
           (setq trial-fail-count- 0)
           nil))))
   (:pick-object
-    (arm &key (use-scale t) (move-head t))
+    (arm &key (use-scale t) (move-head t) (avoid-tote t))
     (send *ri* :speak
           (format nil "~a arm is picking ~a." (arm2str arm) (underscore-to-space target-obj-)))
     (let (pick-result graspingp)
@@ -175,6 +175,7 @@
                   :do-stop-grasp nil
                   :grasp-style grasp-style-))
       (when moveit-p- (send self :add-tote-scene arm))
+      (unless avoid-tote (return-from :pick-object (send *ri* :graspingp arm)))
       ;; Don't trust pressure sensor
       ;; (unless (eq pick-result :ik-failed)
       ;;   (setq graspingp (send *ri* :graspingp arm grasp-style-))
