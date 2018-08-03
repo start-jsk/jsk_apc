@@ -8,6 +8,13 @@
   <arg name="launch_right" default="true" />
   <arg name="respawn_arduino" default="true" />
 
+  <arg name="TOTE_CONFIG_FILE"
+       default="$(find jsk_arc2017_baxter)/config/stow_task/tote_marker.yaml"
+       doc="Config file of transformable marker for tote. (Used only pick:=false)"/>
+  <arg name="CARDBOARD_CONFIG_FILE"
+       default="$(find jsk_arc2017_baxter)/config/pick_task/cardboard_marker.yaml"
+       doc="Config file of transformable marker for cardboard (Used only pick:=true)."/>
+
   <!-- get machine tag -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
 
@@ -50,10 +57,11 @@
     <arg name="USER_NAME" value="false"/>
   </include>
 
-
   <!-- picking source location: shelf/tote -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml">
     <arg name="pick" value="$(arg pick)" />
+    <arg name="TOTE_CONFIG_FILE" value="$(arg TOTE_CONFIG_FILE)" />
+    <arg name="CARDBOARD_CONFIG_FILE" value="$(arg CARDBOARD_CONFIG_FILE)" />
   </include>
 
   <node name="desktop_bg_publisher"

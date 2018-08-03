@@ -7,6 +7,13 @@
   <arg name="task" default="pick_task" if="$(arg pick)" />
   <arg name="task" default="stow_task" unless="$(arg pick)" />
 
+  <arg name="TOTE_CONFIG_FILE"
+       default="$(find jsk_arc2017_baxter)/config/stow_task/tote_marker.yaml"
+       doc="Config file of transformable marker for tote. (Used only pick:=false)"/>
+  <arg name="CARDBOARD_CONFIG_FILE"
+       default="$(find jsk_arc2017_baxter)/config/pick_task/cardboard_marker.yaml"
+       doc="Config file of transformable marker for cardboard (Used only pick:=true)."/>
+
   <!-- shelf is used in both pick and stow tasks -->
   <node name="transformable_interactive_server"
         pkg="jsk_interactive_marker" type="transformable_server_sample">
@@ -30,7 +37,7 @@
           pkg="jsk_interactive_marker" type="transformable_markers_client.py">
       <remap from="~server" to="transformable_interactive_server" />
       <rosparam subst_value="true">
-        config_file: $(find jsk_arc2017_baxter)/config/stow_task/tote_marker.yaml
+        config_file: $(arg TOTE_CONFIG_FILE)
         config_auto_save: true  <!-- Use true to save config updated on rviz -->
       </rosparam>
     </node>
@@ -41,7 +48,7 @@
           pkg="jsk_interactive_marker" type="transformable_markers_client.py">
       <remap from="~server" to="transformable_interactive_server" />
       <rosparam subst_value="true">
-        config_file: $(find jsk_arc2017_baxter)/config/pick_task/cardboard_marker.yaml
+        config_file: $(arg CARDBOARD_CONFIG_FILE)
         config_auto_save: true  <!-- Use true to save config updated on rviz -->
       </rosparam>
     </node>
