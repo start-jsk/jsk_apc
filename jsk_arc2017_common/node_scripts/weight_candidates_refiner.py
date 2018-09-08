@@ -20,6 +20,9 @@ class WeightCanditatesRefiner(object):
         # {object_name: weight}
         self.object_weights = jsk_arc2017_common.get_object_weights()
         self.error = rospy.get_param('~error', 1.0)
+        self.not_refine = rospy.get_param('~not_refine', False)
+        self.weight_min = rospy.get_param('~weight_min')
+        # Used when not_refine is True
 
         self.weight_sum_at_reset = 0.0
         self.prev_weight_values = [0] * len(self.input_topics)
@@ -94,17 +97,21 @@ class WeightCanditatesRefiner(object):
             self.reset_srv = rospy.Service('~reset', Trigger, self._reset)
             self.can_reset = True
 
-        if not self.candidates:
+        if self.candidates:
+            candidates = self.candidates
+            weight_min = min(self.object_weights.get(x, float('inf'))
+                             for x in candidates.keys())
+        elif self.not_refine:
+            candidates = {}
+            weight_min = self.weight_min
+        else:
             rospy.logwarn_throttle(10, 'No candidates, so skip refining')
             return
-        candidates = self.candidates
 
         # Judge if scale value is changed
         weight_diff = weight_sum - self.weight_sum_at_reset
         diff_lower = weight_diff - self.error
         diff_upper = weight_diff + self.error
-        weight_min = min(self.object_weights.get(x, float('inf'))
-                         for x in candidates.keys())
         changed_msg = BoolStamped()
         changed_msg.header = weight_msgs[0].header
         if -weight_min < diff_lower and diff_upper < weight_min \
