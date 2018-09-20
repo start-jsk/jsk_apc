@@ -99,7 +99,7 @@
                 (instance std_srvs::TriggerRequest :init))
               (send self :recognize-target-object arm :stamp (ros::time-now))))
           (incf recognition-count)))
-      is-recognized))
+      (not (null is-recognized))))
   (:return-from-recognize-object (arm)
     (send self :add-postponed-object arm target-obj- :tote)
     (setq start-picking-fail-count- 0)
