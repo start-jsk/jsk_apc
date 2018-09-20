@@ -143,7 +143,7 @@
                 (setq moving-object-p- t)
                 (send self :recognize-target-object arm :stamp (ros::time-now))))
             (incf recognition-count))))
-      is-recognized))
+      (not (null is-recognized))))
   (:return-from-recognize-object (arm)
     (send self :add-postponed-object arm target-obj- target-bin-)
     (setq start-picking-fail-count- 0)
