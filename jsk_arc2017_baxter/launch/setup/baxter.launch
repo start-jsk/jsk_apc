@@ -8,6 +8,11 @@
   <arg name="launch_right" default="true" />
   <arg name="respawn_arduino" default="true" />
 
+  <arg name="task" default="pick_task" if="$(arg pick)" />
+  <arg name="task" default="stow_task" unless="$(arg pick)" />
+  <arg name="SHELF_CONFIG_FILE"
+       default="$(find jsk_arc2017_baxter)/config/$(arg task)/shelf_marker.yaml"
+       doc="Config file of transformable marker for shelf."/>
   <arg name="TOTE_CONFIG_FILE"
        default="$(find jsk_arc2017_baxter)/config/stow_task/tote_marker.yaml"
        doc="Config file of transformable marker for tote. (Used only pick:=false)"/>
@@ -60,6 +65,7 @@
   <!-- picking source location: shelf/tote -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml">
     <arg name="pick" value="$(arg pick)" />
+    <arg name="SHELF_CONFIG_FILE" value="$(arg SHELF_CONFIG_FILE)" />
     <arg name="TOTE_CONFIG_FILE" value="$(arg TOTE_CONFIG_FILE)" />
     <arg name="CARDBOARD_CONFIG_FILE" value="$(arg CARDBOARD_CONFIG_FILE)" />
   </include>
