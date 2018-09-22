@@ -74,7 +74,7 @@
             (:recognize-object
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :recognize-object)
-                 (not (null (send *ti* :recognize-object *arm* :trial-times 3)))))
+                 (if (send *ti* :recognize-object *arm* :trial-times 3) t nil)))
             (:return-from-recognize-object
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :return-from-recognize-object)
