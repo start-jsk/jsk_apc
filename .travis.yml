@@ -29,7 +29,7 @@ env:
     - ROS_DISTRO=kinetic
 
 script:
-  - export DOCKER_IMAGE="wkentaro/jsk_apc:$ROS_DISTRO"
+  - export DOCKER_IMAGE="pazeshun/jsk_apc:$ROS_DISTRO"
   # build & test ROS packages
   - source .travis/travis.sh
   # build doc
