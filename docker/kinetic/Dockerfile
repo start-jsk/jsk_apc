@@ -4,7 +4,8 @@ ENV ROS_DISTRO=kinetic
 
 RUN echo "deb http://packages.ros.org/ros-shadow-fixed/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
 
-RUN apt-get update && apt-get install -y \
+# FIXME: https://github.com/start-jsk/jsk_apc/pull/2664
+RUN apt-get update && apt-get dist-upgrade && apt-get install -y \
     wget \
     git \
     python-catkin-tools \
