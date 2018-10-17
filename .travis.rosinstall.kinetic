@@ -3,11 +3,6 @@
     local-name: baxter_simulator
     uri: https://github.com/RethinkRobotics/baxter_simulator.git
     version: kinetic-devel
-# 2.1.3 is not released yet in kinetic
-- tar:
-    local-name: jsk_visualization/jsk_interactive_marker
-    uri: https://github.com/tork-a/jsk_visualization-release/archive/release/indigo/jsk_interactive_marker/2.1.3-0.tar.gz
-    version: jsk_visualization-release-release-indigo-jsk_interactive_marker-2.1.3-0
 - tar:
     local-name: baxter_examples
     uri: https://github.com/RethinkRobotics-release/baxter_examples-release/archive/release/indigo/baxter_examples/1.2.0-0.tar.gz
