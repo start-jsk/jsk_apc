@@ -8,7 +8,7 @@ jsk\_apc
 [![Gitter](https://badges.gitter.im/start-jsk/jsk_apc.svg)](https://gitter.im/start-jsk/jsk_apc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Slack](https://img.shields.io/badge/slack-%23jsk__apc-e100e1.svg)](https://jsk-robotics.slack.com/messages/jsk_apc/)
 [![Documentation Status](https://readthedocs.org/projects/jsk-apc/badge/?version=latest)](http://jsk-apc.readthedocs.org/en/latest/?badge=latest)
-[![Docker Build Status](https://img.shields.io/docker/build/wkentaro/jsk_apc.svg)](https://hub.docker.com/r/wkentaro/jsk_apc)  
+[![Docker Build Status](https://img.shields.io/docker/build/jskrobotics/jsk_apc.svg)](https://hub.docker.com/r/jskrobotics/jsk_apc)
 **Forum** ([baxter](https://groups.google.com/a/jsk.imi.i.u-tokyo.ac.jp/forum/#!forum/baxter), [apc](https://groups.google.com/a/jsk.imi.i.u-tokyo.ac.jp/forum/#!forum/apc))
 
 
