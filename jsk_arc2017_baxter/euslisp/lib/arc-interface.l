@@ -464,13 +464,12 @@
       pick-result))
   (:pick-object-with-movable-region
     (arm movable-region &key (n-trial 1) (n-trial-same-pos 1)
-         (do-stop-grasp nil) (grasp-style :suction))
+         (do-stop-grasp nil) (grasp-style :suction) (object-index 0))
     "Return value: :grasp-succeeded, :grasp-failed or :ik-failed"
     (send *ri* :stop-grasp arm :pinch)
     (send *ri* :calib-proximity-threshold arm)
-    (let (pick-result avs object-index obj-pos obj-cube pinch-yaw suction-yaw near-walls)
+    (let (pick-result avs obj-pos obj-cube pinch-yaw suction-yaw near-walls)
       ;; pick largest bounding box
-      (setq object-index 0)
       (setq obj-pos
             (send self :get-object-position arm movable-region :object-index object-index))
       (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) object-index)))
