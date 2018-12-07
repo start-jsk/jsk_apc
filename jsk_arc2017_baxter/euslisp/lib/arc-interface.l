@@ -469,7 +469,7 @@
     (send *ri* :stop-grasp arm :pinch)
     (send *ri* :calib-proximity-threshold arm)
     (let (pick-result avs obj-pos obj-cube pinch-yaw suction-yaw near-walls)
-      ;; pick largest bounding box
+      ;; pick largest bounding box when object-index is 0
       (setq obj-pos
             (send self :get-object-position arm movable-region :object-index object-index))
       (setq obj-cube (send self :bbox->cube (elt (gethash arm object-boxes-) object-index)))
