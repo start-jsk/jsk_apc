@@ -2,6 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="baxter">
 
   <xacro:arg name="gazebo" default="false"/>
+  <xacro:arg name="finger" default="true"/>
 
   <xacro:if value="$(arg gazebo)">
     <xacro:include filename="$(find baxter_description)/urdf/baxter_base/baxter_base.urdf.xacro">
@@ -19,7 +20,11 @@
   </xacro:unless>
 
   <!-- Vacuum Gripper -->
-  <xacro:include filename="$(find jsk_arc2017_baxter)/robots/right_vacuum_gripper.xacro"/>
-  <xacro:include filename="$(find jsk_arc2017_baxter)/robots/left_vacuum_gripper.xacro"/>
+  <xacro:include filename="$(find jsk_arc2017_baxter)/robots/right_vacuum_gripper.xacro">
+    <xacro:arg name="finger" value="${finger}" />
+  </xacro:include>
+  <xacro:include filename="$(find jsk_arc2017_baxter)/robots/left_vacuum_gripper.xacro">
+    <xacro:arg name="finger" value="${finger}" />
+  </xacro:include>
 
 </robot>
