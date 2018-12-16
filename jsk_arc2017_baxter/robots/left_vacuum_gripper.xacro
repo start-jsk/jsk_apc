@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="left_vacuum_gripper">
   <xacro:include filename="$(find jsk_2016_01_baxter_apc)/robots/common_constants.xacro"/>
+  <xacro:arg name="finger" default="true" />
+
   <!-- Gazebo Tags -->
   <gazebo reference="left_gripper_base">
     <selfCollide>true</selfCollide>
@@ -191,116 +193,124 @@
       <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
     </inertial>
   </link>
-  <link name="left_gripper_r_finger_base">
-    <visual>
-      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_base.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="lightgrey">
-        <color rgba="0.5 0.5 0.5 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${-lg_finger_base_rect_l/2}"/>
-      <geometry>
-        <box size="${lg_finger_base_rect_h} ${lg_finger_base_rect_w} ${lg_finger_base_rect_l}"/>
-      </geometry>
-    </collision>
-    <!--FIXME: Adjust inertia-->
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.01"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-  </link>
-  <link name="left_gripper_l_finger_base">
-    <visual>
-      <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_base.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="lightgrey">
-        <color rgba="0.5 0.5 0.5 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 ${-lg_finger_base_rect_l/2}"/>
-      <geometry>
-        <box size="${lg_finger_base_rect_h} ${lg_finger_base_rect_w} ${lg_finger_base_rect_l}"/>
-      </geometry>
-    </collision>
-    <!--FIXME: Adjust inertia-->
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.01"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-  </link>
-  <link name="left_gripper_r_finger">
-    <visual>
-      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_main.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="lightgrey">
-        <color rgba="0.5 0.5 0.5 1"/>
-      </material>
-    </visual>
-    <visual>
-      <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_pad.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="lightbrown">
-        <color rgba="0.6 0.5 0.2 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 ${-lg_finger_rect_w/2} 0"/>
-      <geometry>
-        <box size="${lg_finger_rect_h} ${lg_finger_rect_w} ${lg_finger_rect_l}"/>
-      </geometry>
-    </collision>
-    <!--FIXME: Adjust inertia-->
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.01"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-  </link>
-  <link name="left_gripper_l_finger">
-    <visual>
-      <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_main.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="lightgrey">
-        <color rgba="0.5 0.5 0.5 1"/>
-      </material>
-    </visual>
-    <visual>
-      <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_pad.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="lightbrown">
-        <color rgba="0.6 0.5 0.2 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 ${lg_finger_rect_w/2} 0"/>
-      <geometry>
-        <box size="${lg_finger_rect_h} ${lg_finger_rect_w} ${lg_finger_rect_l}"/>
-      </geometry>
-    </collision>
-    <!--FIXME: Adjust inertia-->
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.01"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-  </link>
+  <xacro:if value="$(arg finger)">
+    <link name="left_gripper_r_finger_base">
+      <visual>
+        <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_base.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="lightgrey">
+          <color rgba="0.5 0.5 0.5 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 ${-lg_finger_base_rect_l/2}"/>
+        <geometry>
+          <box size="${lg_finger_base_rect_h} ${lg_finger_base_rect_w} ${lg_finger_base_rect_l}"/>
+        </geometry>
+      </collision>
+      <!--FIXME: Adjust inertia-->
+      <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.01"/>
+        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      </inertial>
+    </link>
+    <link name="left_gripper_l_finger_base">
+      <visual>
+        <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_base.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="lightgrey">
+          <color rgba="0.5 0.5 0.5 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 ${-lg_finger_base_rect_l/2}"/>
+        <geometry>
+          <box size="${lg_finger_base_rect_h} ${lg_finger_base_rect_w} ${lg_finger_base_rect_l}"/>
+        </geometry>
+      </collision>
+      <!--FIXME: Adjust inertia-->
+      <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.01"/>
+        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      </inertial>
+    </link>
+    <link name="left_gripper_r_finger">
+      <visual>
+        <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_main.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="lightgrey">
+          <color rgba="0.5 0.5 0.5 1"/>
+        </material>
+      </visual>
+      <visual>
+        <origin rpy="${M_PI/2} 0 ${M_PI}" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_pad.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="lightbrown">
+          <color rgba="0.6 0.5 0.2 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 ${-lg_finger_rect_w/2} 0"/>
+        <geometry>
+          <box size="${lg_finger_rect_h} ${lg_finger_rect_w} ${lg_finger_rect_l}"/>
+        </geometry>
+      </collision>
+      <!--FIXME: Adjust inertia-->
+      <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.01"/>
+        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      </inertial>
+    </link>
+    <link name="left_gripper_l_finger">
+      <visual>
+        <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_main.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="lightgrey">
+          <color rgba="0.5 0.5 0.5 1"/>
+        </material>
+      </visual>
+      <visual>
+        <origin rpy="${M_PI/2} 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://jsk_2016_01_baxter_apc/meshes/gripper-v5/visual/finger_pad.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="lightbrown">
+          <color rgba="0.6 0.5 0.2 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 ${lg_finger_rect_w/2} 0"/>
+        <geometry>
+          <box size="${lg_finger_rect_h} ${lg_finger_rect_w} ${lg_finger_rect_l}"/>
+        </geometry>
+      </collision>
+      <!--FIXME: Adjust inertia-->
+      <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.01"/>
+        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      </inertial>
+    </link>
+  </xacro:if>
+  <xacro:unless value="$(arg finger)">
+    <link name="left_gripper_r_finger_base" />
+    <link name="left_gripper_l_finger_base" />
+    <link name="left_gripper_r_finger" />
+    <link name="left_gripper_l_finger" />
+  </xacro:unless>
   <link name="left_gripper_palm_endpoint"/>
 
   <!--Joints-->
