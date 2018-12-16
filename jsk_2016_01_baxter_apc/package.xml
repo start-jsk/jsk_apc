@@ -38,6 +38,7 @@
 
   <run_depend>baxter_core_msgs</run_depend>
   <run_depend>baxter_gazebo</run_depend>
+  <run_depend>baxter_moveit_config</run_depend>
   <run_depend>baxter_sim_controllers</run_depend>
   <run_depend>baxter_sim_io</run_depend>
   <run_depend>control_msgs</run_depend>
