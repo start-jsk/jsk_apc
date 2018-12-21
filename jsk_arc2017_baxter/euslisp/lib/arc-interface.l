@@ -50,9 +50,10 @@
     (setq finished-objects- (make-hash-table))
     (setq unfinished-objects- (make-hash-table)))
   (:set-robot-interface (ri) (setq robot-interface- ri))
-  (:get-robot-interface () (if robot-interface- robot-interface- (boundp '*ri* *ri* nil)))
+  (:get-robot-interface ()
+    (if robot-interface- robot-interface- (if (boundp '*ri*) *ri* nil)))
   (:set-robot (rb) (setq robot- rb))
-  (:get-robot () (if robot- robot- (boundp '*baxter* *baxter* nil)))
+  (:get-robot () (if robot- robot- (if (boundp '*baxter*) *baxter* nil)))
   (:arc-reset-pose
     (&optional (arm :arms) &rest args)
     (dolist (tmp-arm (if (eq arm :arms) (list :rarm :larm) (list arm)))
