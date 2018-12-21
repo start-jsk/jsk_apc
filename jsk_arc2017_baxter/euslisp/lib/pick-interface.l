@@ -271,7 +271,8 @@
     (send (send self :get-robot-interface) :angle-vector-sequence-raw
           (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send *baxter* :arc-reset-pose arm))
-          :fast (send (send self :get-robot-interface) :get-arm-controller arm :gripper (eq grasp-style- :suction))
+          :fast (send (send self :get-robot-interface) :get-arm-controller arm
+                      :gripper (eq grasp-style- :suction))
           0 :scale 3.0)
     (send (send self :get-robot-interface) :wait-interpolation)
     (if (eq grasp-style- :pinch)
@@ -346,7 +347,8 @@
             (send self :ik->bin-center arm target-bin-
                   :offset (send self :decide-bin-return-area arm target-bin-)
                   :rotation-axis :z :move-palm-end t)
-            :fast (send (send self :get-robot-interface) :get-arm-controller arm :gripper nil) 0 :scale 5.0))
+            :fast (send (send self :get-robot-interface) :get-arm-controller arm :gripper nil)
+            0 :scale 5.0))
     (send (send self :get-robot-interface) :wait-interpolation)
     (send (send self :get-robot-interface) :stop-grasp arm)
     (when (eq grasp-style- :pinch)
@@ -404,9 +406,11 @@
         (setq place-z 50)
         (if (eq grasp-style- :suction)
           (send (send self :get-robot-interface) :angle-vector-sequence-raw avs :fast
-                (send (send self :get-robot-interface) :get-arm-controller arm :gripper t :head t) 0 :scale 7.0)
+                (send (send self :get-robot-interface) :get-arm-controller arm
+                      :gripper t :head t) 0 :scale 7.0)
           (send (send self :get-robot-interface) :angle-vector-sequence-raw avs :fast
-                (send (send self :get-robot-interface) :get-arm-controller arm :gripper nil :head t) 0 :scale 7.0))
+                (send (send self :get-robot-interface) :get-arm-controller arm
+                      :gripper nil :head t) 0 :scale 7.0))
         (send (send self :get-robot-interface) :wait-interpolation))
       (setq dropped (not (send (send self :get-robot-interface) :graspingp arm grasp-style-)))
       ;; (when moveit-p- (send self :delete-object-in-hand-scene arm))
@@ -458,7 +462,8 @@
     (let (avs)
       (setq avs (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))))
       (pushback (send *baxter* :arc-reset-pose arm) avs)
-      (send (send self :get-robot-interface) :angle-vector-sequence avs 5000 (send (send self :get-robot-interface) :get-arm-controller arm) 0)
+      (send (send self :get-robot-interface) :angle-vector-sequence avs 5000
+            (send (send self :get-robot-interface) :get-arm-controller arm) 0)
       (send (send self :get-robot-interface) :wait-interpolation)
       (if (eq grasp-style- :pinch)
         (send self :resolve-collision-between-fingers arm))

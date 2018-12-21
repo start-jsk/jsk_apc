@@ -167,7 +167,8 @@
         (send self :set-movable-region-for-tote arm :offset (list 50 50 0))
         (send self :set-movable-region-for-tote arm :offset (list 50 50 0)))
       (when use-scale (send self :reset-scale arm))
-      (when move-head (send (send self :get-robot) :head_pan :joint-angle (if (eq arm :larm) -70 70)))
+      (when move-head
+        (send (send self :get-robot) :head_pan :joint-angle (if (eq arm :larm) -70 70)))
       (setq pick-result
             (send self :pick-object-in-tote arm
                   :n-trial (if (eq grasp-style- :suction) 2 1)
@@ -175,7 +176,8 @@
                   :do-stop-grasp nil
                   :grasp-style grasp-style-))
       (when moveit-p- (send self :add-tote-scene arm))
-      (unless avoid-tote (return-from :pick-object (send (send self :get-robot-interface) :graspingp arm)))
+      (unless avoid-tote
+        (return-from :pick-object (send (send self :get-robot-interface) :graspingp arm)))
       ;; Don't trust pressure sensor
       ;; (unless (eq pick-result :ik-failed)
       ;;   (setq graspingp (send (send self :get-robot-interface) :graspingp arm grasp-style-))
@@ -188,7 +190,9 @@
                   :offset #f(0 0 400)
                   :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
                   :rotation-axis t :use-gripper t)
-            (setq end-pos (send (send (send self :get-robot) arm :end-coords :copy-worldcoords) :worldpos))
+            (setq end-pos
+                  (send (send (send self :get-robot) arm :end-coords :copy-worldcoords)
+                        :worldpos))
             (send (send self :get-robot) :rotate-wrist-ik arm
                   (make-coords :pos end-pos
                                :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
@@ -198,17 +202,21 @@
                   :offset #f(0 0 400)
                   :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
                   :rotation-axis t :move-palm-end t)
-            (setq end-pos (send (send (send self :get-robot) arm :palm-endpoint :copy-worldcoords) :worldpos))
+            (setq end-pos
+                  (send (send (send self :get-robot) arm :palm-endpoint :copy-worldcoords)
+                        :worldpos))
             (send (send self :get-robot) :rotate-wrist-ik arm
                   (make-coords :pos end-pos
                                :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
                   :move-palm-end t
                   :rotate-axis t)))
-        (send (send self :get-robot-interface) :angle-vector-raw (send (send self :get-robot) :angle-vector) 3000
+        (send (send self :get-robot-interface) :angle-vector-raw
+              (send (send self :get-robot) :angle-vector) 3000
               (send (send self :get-robot-interface) :get-arm-controller arm :gripper nil) 0)
         (send (send self :get-robot-interface) :wait-interpolation))
       (if (eq pick-result :ik-failed) (return-from :pick-object nil))
-      (unless use-scale (return-from :pick-object (send (send self :get-robot-interface) :graspingp arm)))
+      (unless use-scale
+        (return-from :pick-object (send (send self :get-robot-interface) :graspingp arm)))
       ;; Don't trust pressure sensor
       ;; (setq graspingp (send (send self :get-robot-interface) :graspingp arm grasp-style-))
       ;; (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
@@ -227,7 +235,8 @@
     (send (send self :get-robot-interface) :angle-vector-sequence-raw
           (list (send (send self :get-robot) :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
                 (send (send self :get-robot) :arc-reset-pose arm))
-          :fast (send (send self :get-robot-interface) :get-arm-controller arm :gripper (eq grasp-style- :suction))
+          :fast (send (send self :get-robot-interface) :get-arm-controller arm
+                      :gripper (eq grasp-style- :suction))
           0 :scale 3.0)
     (send (send self :get-robot-interface) :wait-interpolation)
     (if (eq grasp-style- :pinch)
@@ -300,7 +309,8 @@
               (send self :ik->tote-center arm
                     :offset offset
                     :rotation-axis :z :move-palm-end t)
-            :fast (send (send self :get-robot-interface) :get-arm-controller arm :gripper nil) 0 :scale 5.0)))
+            :fast (send (send self :get-robot-interface) :get-arm-controller arm :gripper nil)
+            0 :scale 5.0)))
     (send (send self :get-robot-interface) :wait-interpolation)
     (send (send self :get-robot-interface) :stop-grasp arm)
     (when (eq grasp-style- :pinch)
@@ -314,7 +324,8 @@
           :fast (send (send self :get-robot-interface) :get-arm-controller arm) 0 :scale 5.0)
     (send (send self :get-robot-interface) :wait-interpolation)
     (when moveit-p- (send self :add-tote-scene arm))
-    (send self :arc-reset-pose arm 3000 (send (send self :get-robot-interface) :get-arm-controller arm) 0 :move-arm arm)
+    (send self :arc-reset-pose arm 3000
+          (send (send self :get-robot-interface) :get-arm-controller arm) 0 :move-arm arm)
     (send (send self :get-robot-interface) :wait-interpolation)
     (if (eq grasp-style- :pinch)
       (send self :resolve-collision-between-fingers arm)))
@@ -332,15 +343,16 @@
                     :offset (v+ #f(0 0 300)
                                 (send self :decide-bin-place-area arm target-bin- grasp-style-))
                     :rotation-axis :z :use-gripper t)
-              4000 (send (send self :get-robot-interface) :get-arm-controller arm :head t) 0
-              :move-arm arm)
+              4000 (send (send self :get-robot-interface) :get-arm-controller arm :head t)
+              0 :move-arm arm)
         (send (send self :get-robot-interface) :angle-vector
               (send self :ik->bin-center arm target-bin-
                     :offset (v+ #f(0 0 300)
                                 (send self :decide-bin-place-area arm target-bin- grasp-style-))
                     :rotation-axis nil :move-palm-end t)
-              4000 (send (send self :get-robot-interface) :get-arm-controller arm :gripper nil :head t) 0
-              :move-arm arm))
+              4000 (send (send self :get-robot-interface)
+                         :get-arm-controller arm :gripper nil :head t)
+              0 :move-arm arm))
       (send (send self :get-robot-interface) :wait-interpolation)
       (setq dropped (not (send (send self :get-robot-interface) :graspingp arm grasp-style-)))
       (when moveit-p- (send self :delete-object-in-hand-scene arm))
@@ -371,9 +383,11 @@
                   2000 (send (send self :get-robot-interface) :get-arm-controller arm) 0)
             (progn
               (setq place-av
-                    (send (send self :get-robot) arm :move-end-pos #f(0 0 -250) :world :rotation-axis nil))
+                    (send (send self :get-robot) arm :move-end-pos #f(0 0 -250)
+                          :world :rotation-axis nil))
               (if place-av
-                (send (send self :get-robot-interface) :angle-vector-raw place-av 2000 (send (send self :get-robot-interface) :get-arm-controller arm) 0))))
+                (send (send self :get-robot-interface) :angle-vector-raw place-av 2000
+                      (send (send self :get-robot-interface) :get-arm-controller arm) 0))))
           (send (send self :get-robot-interface) :wait-interpolation)
           (send (send self :get-robot-interface) :stop-grasp arm) ;; release object
           (when (eq grasp-style- :pinch)
@@ -395,7 +409,8 @@
           (send (send self :get-robot-interface) :wait-interpolation)
           (when moveit-p- (send self :add-bin-scene target-bin-))))))
   (:return-from-place-object (arm)
-    (send self :arc-reset-pose arm 3000 (send (send self :get-robot-interface) :get-arm-controller arm) 0 :move-arm arm)
+    (send self :arc-reset-pose arm 3000
+          (send (send self :get-robot-interface) :get-arm-controller arm) 0 :move-arm arm)
     (send (send self :get-robot-interface) :wait-interpolation)
     (if (eq grasp-style- :pinch)
       (send self :resolve-collision-between-fingers arm))
@@ -418,5 +433,6 @@
     (unless (boundp '*ti*)
       (setq *ti* (instance jsk_arc2017_baxter::stow-interface :init :moveit moveit))
       (send *ti* :set-robot-interface *ri*))
-    (send (send *ti* :get-robot) :angle-vector (send (send *ti* :get-robot-interface) :state :potentio-vector))
+    (send (send *ti* :get-robot) :angle-vector
+          (send (send *ti* :get-robot-interface) :state :potentio-vector))
     (send (send *ti* :get-robot-interface) :calib-grasp :arms)))
