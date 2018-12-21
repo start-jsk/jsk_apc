@@ -23,6 +23,7 @@
           orders-
           postponed-objects-
           rack-leg-cubes-
+          robot-
           robot-interface-
           tote-cubes-
           tote-movable-regions-
