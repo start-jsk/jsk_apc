@@ -1,9 +1,3 @@
-# waiting for https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/350
-- git:
-    local-name: jsk-ros-pkg/jsk_pr2eus
-    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
-    version: f6ffb61fa5609e9ffc4d6457e0480a29bdd2b365
-
 - git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
