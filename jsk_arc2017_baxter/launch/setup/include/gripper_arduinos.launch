@@ -53,4 +53,7 @@
     </node>
   </group>
 
+  <!-- kill if topic is not published several seconds -->
+  <node name="check_arduino" pkg="jsk_arc2017_baxter" type="check_arduino.py" />
+
 </launch>
