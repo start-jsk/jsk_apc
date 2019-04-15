@@ -20,7 +20,9 @@
   </group>
 
   <!-- weight scale -->
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/scale.launch" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/scale.launch">
+    <arg name="machine" value="c3" />
+  </include>
 
   <arg name="LEFT_CAMERA_INFO" if="$(arg stereo)" value="/left_hand_camera/fused/rgb/camera_info" />
   <arg name="LEFT_INPUT_CLOUD" if="$(arg stereo)" value="/left_hand_camera/fused/depth_registered/points" />

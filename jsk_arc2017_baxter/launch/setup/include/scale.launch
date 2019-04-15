@@ -1,27 +1,29 @@
 <launch>
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
+  <arg name="machine" default="c3" />
   <node name="scale0" pkg="jsk_arc2017_common" type="ekew_i_driver.py" respawn="true"
-        machine="c2">
+        machine="$(arg machine)">
     <rosparam>
       port: /dev/scale0
       timeout: 1
     </rosparam>
   </node>
   <node name="scale1" pkg="jsk_arc2017_common" type="ekew_i_driver.py" respawn="true"
-        machine="c2">
+        machine="$(arg machine)">
     <rosparam>
       port: /dev/scale1
       timeout: 1
     </rosparam>
   </node>
   <node name="scale2" pkg="jsk_arc2017_common" type="ekew_i_driver.py" respawn="true"
-        machine="c2">
+        machine="$(arg machine)">
     <rosparam>
       port: /dev/scale2
       timeout: 1
     </rosparam>
   </node>
   <node name="scale3" pkg="jsk_arc2017_common" type="ekew_i_driver.py" respawn="true"
-        machine="c2">
+        machine="$(arg machine)">
     <rosparam>
       port: /dev/scale3
       timeout: 1
