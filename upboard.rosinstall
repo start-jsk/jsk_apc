@@ -1,0 +1,8 @@
+- git:
+    local-name: start-jsk/jsk_apc 
+    uri: https://github.com/start-jsk/jsk_apc.git
+    version: master
+- git:
+    local-name: FA-I-sensor/force_proximity_ros
+    uri: https://github.com/knorth55/FA-I-sensor.git
+    version: jsk_apc
