@@ -134,7 +134,14 @@ $ echo "rossetip" >> ~/.bashrc
 $ echo "rossetmaster baxter" >> ~/.bashrc
 $ source ~/.bashrc
 ```
-3. Create `~/env-loader.sh`:
+3. Create udev rules:
+```sh
+# baxter-c2
+$ rosrun jsk_arc2017_baxter create_udev_rules
+# baxter-c3
+$ rosrun jsk_arc2017_common create_udev_rules
+```
+4. Create `~/env-loader.sh`:
 ```sh
 #!/bin/bash
 
