@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="machine" dafault="c2" />
+  <arg name="machine" default="c2" />
   <arg name="launch_right" default="true" />
   <arg name="launch_left" default="true" />
 
