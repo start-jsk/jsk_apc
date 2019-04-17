@@ -113,3 +113,29 @@ Host baxter
   HostName baxter.jsk.imi.i.u-tokyo.ac.jp
   User ruser  # password: rethink
 ```
+
+**Setup UP Board**
+
+Inside UP Board...
+1. [Install ros-kinetic-ros-base and setup environment](http://wiki.ros.org/kinetic/Installation/Ubuntu).
+2. Build catkin workspace for jsk_apc:
+
+```sh
+$ source /opt/ros/kinetic/setup.bash
+$ mkdir -p ~/ros/kinetic/src && cd ~/ros/kinetic/src
+$ wstool init . https://raw.githubusercontent.com/start-jsk/jsk_apc/master/upboard.rosinstall
+$ wstool merge -t . https://raw.githubusercontent.com/start-jsk/jsk_apc/master/upboard.rosinstall.kinetic
+$ wstool update
+$ sudo apt install python-pip
+$ rosdep install -y -r --from-paths . --ignore-src
+$ sudo apt install python-catkin-tools
+$ cd .. && catkin build
+$ echo 'source $HOME/ros/kinetic/devel/setup.bash' >> ~/.bashrc
+$ echo "rossetip" >> ~/.bashrc
+$ echo "rossetmaster baxter" >> ~/.bashrc
+$ source ~/.bashrc
+```
+
+From main PC...
+1. `ssh -oHostKeyAlgorithms='ssh-rsa' baxter@<UP Board Host Name>.jsk.imi.i.u-tokyo.ac.jp`
+2. Add main PC's ssh public key to `~/.ssh/authorized_keys` on UP Board.
