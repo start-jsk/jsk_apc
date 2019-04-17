@@ -153,6 +153,13 @@ exec "$@"
 ```
 and `chmod +x ~/env-loader.sh`
 
+5. Setup time synchronization
+```sh
+sudo apt install ntp
+# Set the same configuration as other PCs
+sudo vi /etc/ntp.conf
+```
+
 From main PC...
 1. `ssh -oHostKeyAlgorithms='ssh-rsa' baxter@<UP Board Host Name>.jsk.imi.i.u-tokyo.ac.jp`
 2. Add main PC's ssh public key to `~/.ssh/authorized_keys` on UP Board.
