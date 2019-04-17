@@ -3,6 +3,10 @@
     uri: https://github.com/RethinkRobotics-release/baxter_common-release/archive/release/indigo/baxter_core_msgs/1.2.0-0.tar.gz
     version: baxter_common-release-release-indigo-baxter_core_msgs-1.2.0-0
 - tar:
+    local-name: RethinkRobotics/baxter_description
+    uri: https://github.com/RethinkRobotics-release/baxter_common-release/archive/release/indigo/baxter_description/1.2.0-0.tar.gz
+    version: baxter_common-release-release-indigo-baxter_description-1.2.0-0
+- tar:
     local-name: RethinkRobotics/baxter_examples
     uri: https://github.com/RethinkRobotics-release/baxter_examples-release/archive/release/indigo/baxter_examples/1.2.0-0.tar.gz
     version: baxter_examples-release-release-indigo-baxter_examples-1.2.0-0
@@ -18,6 +22,10 @@
     local-name: RethinkRobotics/baxter_tools
     uri: https://github.com/RethinkRobotics-release/baxter_tools-release/archive/release/indigo/baxter_tools/1.2.0-0.tar.gz
     version: baxter_tools-release-release-indigo-baxter_tools-1.2.0-0
+- tar:
+    local-name: RethinkRobotics/rethink_ee_description
+    uri: https://github.com/RethinkRobotics-release/baxter_common-release/archive/release/indigo/rethink_ee_description/1.2.0-0.tar.gz
+    version: baxter_common-release-release-indigo-rethink_ee_description-1.2.0-0
 - tar:
     local-name: jsk_3rdparty/rostwitter
     uri: https://github.com/tork-a/jsk_3rdparty-release/archive/release/indigo/rostwitter/2.1.10-0.tar.gz
