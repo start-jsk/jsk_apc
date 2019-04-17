@@ -23,10 +23,12 @@
     <arg name="launch_left" value="$(arg launch_left)" />
     <arg name="launch_right" value="$(arg launch_right)" />
     <arg name="respawn" value="$(arg respawn_arduino)" />
+    <arg name="machine" value="c2" />
   </include>
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_dxl_controller.launch">
     <arg name="launch_left" value="$(arg launch_left)" />
     <arg name="launch_right" value="$(arg launch_right)" />
+    <arg name="machine" value="c2" />
   </include>
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/gripper_v6_ros_control.launch">
     <arg name="launch_left" value="$(arg launch_left)" />

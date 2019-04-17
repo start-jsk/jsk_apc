@@ -1,14 +1,17 @@
 <launch>
 
+  <arg name="machine" default="c2" />
   <arg name="launch_left" default="true" />
   <arg name="launch_right" default="true" />
   <arg name="respawn" default="true" />
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
 
   <!-- Arduino -->
   <node name="rosserial_node_0"
         pkg="rosserial_python" type="serial_node.py"
         respawn="$(arg respawn)"
-        machine="c2">
+        machine="$(arg machine)">
     <param name="port" type="string" value="/dev/arduino0" />
     <param name="baud" value="115200" />
   </node>
@@ -16,7 +19,7 @@
   <node name="rosserial_node_1"
         pkg="rosserial_python" type="serial_node.py"
         respawn="$(arg respawn)"
-        machine="c2">
+        machine="$(arg machine)">
     <param name="port" type="string" value="/dev/arduino1" />
     <param name="baud" value="115200" />
   </node>
@@ -24,7 +27,7 @@
   <node name="rosserial_node_2"
         pkg="rosserial_python" type="serial_node.py"
         respawn="$(arg respawn)"
-        machine="c2">
+        machine="$(arg machine)">
     <param name="port" type="string" value="/dev/arduino2" />
     <param name="baud" value="115200" />
   </node>
@@ -33,7 +36,7 @@
   <group if="$(arg launch_right)">
     <node name="rgripper_sensors_republisher"
           pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py"
-          machine="c2">
+          machine="$(arg machine)">
       <remap from="~input" to="/rgripper_sensors" />
       <remap from="~proximity_array" to="/gripper_front/limb/right/proximity_array" />
       <remap from="~pressure/state" to="/gripper_front/limb/right/pressure/state" />
@@ -44,7 +47,7 @@
   <group if="$(arg launch_left)">
     <node name="lgripper_sensors_republisher"
           pkg="jsk_arc2017_baxter" type="republish_gripper_sensor_states.py"
-          machine="c2">
+          machine="$(arg machine)">
       <remap from="~input" to="/lgripper_sensors" />
       <remap from="~proximity_array" to="/gripper_front/limb/left/proximity_array" />
       <remap from="~pressure/state" to="/gripper_front/limb/left/pressure/state" />
@@ -54,6 +57,6 @@
   </group>
 
   <!-- kill if topic is not published several seconds -->
-  <node name="check_arduino" pkg="jsk_arc2017_baxter" type="check_arduino.py" machine="c2" output="screen" />
+  <node name="check_arduino" pkg="jsk_arc2017_baxter" type="check_arduino.py" machine="$(arg machine)" output="screen" />
 
 </launch>
