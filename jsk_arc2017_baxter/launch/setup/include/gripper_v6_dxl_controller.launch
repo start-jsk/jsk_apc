@@ -1,13 +1,16 @@
 <launch>
 
+  <arg name="machine" dafault="c2" />
   <arg name="launch_right" default="true" />
   <arg name="launch_left" default="true" />
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
 
   <!-- right gripper -->
   <group ns="gripper_front/limb/right/dxl" if="$(arg launch_right)">
     <!-- Start the Dynamixel servo controller manager -->
     <node name="controller_manager" pkg="dynamixel_controllers" type="controller_manager.py" respawn="true" output="screen"
-          machine="c2">
+          machine="$(arg machine)">
       <rosparam>
         namespace: dxl_manager
         serial_ports:
@@ -31,11 +34,11 @@
                 finger_yaw_joint_controller
                 finger_tendon_controller"
           output="screen"
-          machine="c2" />
+          machine="$(arg machine)" />
     <node name="check_gripper_state"
           pkg="jsk_arc2017_baxter" type="check-gripper-state.l"
           output="screen" respawn="true"
-          machine="c2">
+          machine="$(arg machine)">
       <param name="target_node_name" value="/gripper_front/limb/right/dxl/controller_manager" />
     </node>
 
@@ -47,7 +50,7 @@
     <node name="controller_manager"
           pkg="dynamixel_controllers" type="controller_manager.py"
           respawn="true" output="screen"
-          machine="c2">
+          machine="$(arg machine)">
       <rosparam>
         namespace: dxl_manager
         serial_ports:
@@ -71,11 +74,11 @@
                 finger_yaw_joint_controller
                 finger_tendon_controller"
           output="screen"
-          machine="c2" />
+          machine="$(arg machine)" />
     <node name="check_gripper_state"
           pkg="jsk_arc2017_baxter" type="check-gripper-state.l"
           output="screen" respawn="true"
-          machine="c2">
+          machine="$(arg machine)">
       <param name="target_node_name" value="/gripper_front/limb/left/dxl/controller_manager" />
     </node>
 
