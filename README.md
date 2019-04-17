@@ -119,7 +119,6 @@ Host baxter
 Inside UP Board...
 1. [Install ros-kinetic-ros-base and setup environment](http://wiki.ros.org/kinetic/Installation/Ubuntu).
 2. Build catkin workspace for jsk_apc:
-
 ```sh
 $ source /opt/ros/kinetic/setup.bash
 $ mkdir -p ~/ros/kinetic/src && cd ~/ros/kinetic/src
@@ -135,6 +134,17 @@ $ echo "rossetip" >> ~/.bashrc
 $ echo "rossetmaster baxter" >> ~/.bashrc
 $ source ~/.bashrc
 ```
+3. Create `~/env-loader.sh`:
+```sh
+#!/bin/bash
+
+. $HOME/ros/kinetic/devel/setup.bash
+export ROSCONSOLE_FORMAT='[${severity}] [${time}]: [${node}] [${function}] ${message}'
+rossetip
+rossetmaster baxter
+exec "$@"
+```
+and `chmod +x ~/env-loader.sh`
 
 From main PC...
 1. `ssh -oHostKeyAlgorithms='ssh-rsa' baxter@<UP Board Host Name>.jsk.imi.i.u-tokyo.ac.jp`
