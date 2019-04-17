@@ -1,9 +1,6 @@
 <launch>
 
-  <arg name="define_machine" default="false" />
-  <group if="$(arg define_machine)">
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
-  </group>
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
 
   <!-- adjust gravity compensation for gripper-v6 -->
   <node pkg="rostopic" type="rostopic" name="adjust_compensation_right"
