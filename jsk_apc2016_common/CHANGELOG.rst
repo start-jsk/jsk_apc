@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.2.1 (2019-04-18)
+------------------
 * Improve visualization (alpha: 0.7, tile_image)
 * Contributors: Kentaro Wada
 

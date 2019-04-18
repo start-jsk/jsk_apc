@@ -2,8 +2,8 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.2.1 (2019-04-18)
+------------------
 * add baxter_moveit_config depend in jsk_2016_01_baxter_apc
 * remove roseus_mongo from jsk_2016_01_baxter_apc
 * update load-ros-manifest for baxter-interface.l

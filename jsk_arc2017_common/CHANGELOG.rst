@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.2.1 (2019-04-18)
+------------------
 * ignore fcn32s.npz
 * Add WeightChangeDetector to tell weight change without candidates
 * Fix path of dataset and download raw data automatically
