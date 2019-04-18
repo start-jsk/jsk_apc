@@ -2,6 +2,14 @@
 Changelog for package jsk_2016_01_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add baxter_moveit_config depend in jsk_2016_01_baxter_apc
+* remove roseus_mongo from jsk_2016_01_baxter_apc
+* update load-ros-manifest for baxter-interface.l
+* use smaller collision head
+* Contributors: Shingo Kitagawa
+
 4.2.0 (2017-11-01)
 ------------------
 

@@ -2,6 +2,87 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove define_machine arg
+* fix typo
+* use machine as args
+* use c3 for scale launch
+* add baxter-c3 for scale
+* run check_arduino node in c2
+* fix typo in check_arduino.py
+* add check_arduino to kill not working arduino
+* add finger arg for xacro
+* add baxter_moveit_config as run_depend
+* update object-index comment
+* add object-index key args in :pick-object-in-movable-region
+* Option to customize shelf locations
+* Use if instead of null
+* Fix :recognize-object state to return t or nil
+* Make it slower to send avs for smoother motion
+  I found scale 5.0 is too fast.
+* Option not avoiding tote after :pick-object
+* Option to customize tote and cardboard_boxes locations
+* Return recognized timestamp in :recognize-target-object
+* Add if-blocks to use only the single arm
+  **Usage**
+  ```bash
+  roslaunch jsk_arc2017_baxter baxter.launch launch_left:=false respawn_arduino:=false
+  ```
+* Add :move-head option to :pick-object of stow-interface
+  In current ARC workspace moving head is not so necessary.
+* Add :use-scale option to :pick-object of stow-interface
+* Remove head_pan rotation while picking
+* transmission_interface::TransmissionSharedPtr = TransmissionPtr
+* Re-calibrate finger tendon winder
+* use macro for indigo build
+* use SharedPtr for transMIssion_interface 0.13.3 and above
+  TransmissionPtr -> transmission_interface::TransmissionSharedPtr
+* Don't record right eye depth to avoid conflicts
+* Specify axis camera with hostname instead of ip address
+* Re-calibrate right vacuum pad tendon winder
+* clean up ik->nearest-pose
+* fix typo in baxter.l
+* Place ompl_planning.yaml to each robot
+* Change URDF and SRDF robot name to baxter to avoid euslisp error
+* Fix robot name in xacro
+* Refactor moveit config and launch
+* Add disable_collisions for cylindrical grasping
+* Add sanity check of baxterlgv7 grippers
+* Add moveit for baxterlgv7
+* Add baxterlgv7.launch without moveit and gripper sanity check
+* Ignore IK fail when placing
+* Change palm coords name
+* Set other palm coordinates instead of transforming
+* Fix palm endpoint of left gripper_v7
+* Add test of *ri* hand interface
+* Remove speak test as it's tested in upstream
+* Add test of baxterlgv7.l
+* Add test of baxter-interface and baxterlgv7-interface
+* Adjust :start-grasp and :stop-grasp to baxterlgv7
+* Enable to move gripper of baxterlgv7
+* Copy baxter interface to baxterlgv7 interface
+* Calibrate vacuum pad joint in left gripper_v7
+* Avoid name clashes of properties in baxter
+* Avoid name clashes of properties in baxterlgv7
+* Use tendon transmission and fix hardwareInterface for real robot
+* Build and export transmission library
+* Add srcs to describe tendon transmission
+* Add headers to describe tendon transmission
+* Fix transmission in left gripper_v7 urdf except finger tendon
+* Add euslisp model of baxter with left gripper_v7
+* Fix collision of left gripper_v7
+* Use M_PI as joint limits in left gripper_v7
+* Add urdf of baxter with left gripper_v7
+* Add left gripper_v7 meshes
+* refactor codes in stow-interface.l
+* add/delete-tote-scene supports :arms
+* remove sleep in moveit methods
+  pr2eus_moveit uses service call, which do not need sleep.
+* remove unused arm args in recognize-bboxes for stow
+* Fix *ri* :speak method according to the upstream change
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa, Yuto Uchimi
+
 4.2.0 (2017-11-01)
 ------------------
 * Adjust right hand astra camera

@@ -2,6 +2,23 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* ignore fcn32s.npz
+* Add WeightChangeDetector to tell weight change without candidates
+* Fix path of dataset and download raw data automatically
+* Update for updated Object.msg
+* Flip model's axis to make them face to z
+* Object 3d annotation to multi-view log data
+* Update candidates_publisher.py
+* Update candidates_publisher.py
+* Fix unreasonable ~json_dir param to candidates_publisher
+* Skip empty bin while visualizing JSON
+* Don't ignore fcn32s.npz to remove it by git clean
+* Modify weight of poland_spring_water
+* use timer in candidates_publisher
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa, Yuto Uchimi
+
 4.2.0 (2017-11-01)
 ------------------
 * Add README
