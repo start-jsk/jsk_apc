@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
     hardware_interface
     transmission_interface
     controller_manager
+    dynamixel_controllers
     dynamixel_msgs
     actionlib_msgs
 )
