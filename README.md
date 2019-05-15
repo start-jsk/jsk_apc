@@ -56,7 +56,7 @@ Installation
 
 ```sh
 $ mkdir -p ~/ros/ws_jsk_apc/src && cd ~/ros/ws_jsk_apc/src
-$ wstool init . https://raw.githubusercontent.com/start-jsk/jsk_apc/master/fc.rosinstall
+$ wstool init . https://raw.githubusercontent.com/start-jsk/jsk_apc/master/fc.rosinstall.${ROS_DISTRO}
 $ cd ..
 $ rosdep install -y -r --from-paths .
 $ sudo apt-get install python-catkin-tools ros-indigo-jsk-tools
