@@ -1,0 +1,64 @@
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
+- git:
+    local-name: FOR_ASTRA/openni2_camera
+    uri: https://github.com/ros-drivers/openni2_camera.git
+    version: indigo-devel
+- git:
+    local-name: start-jsk/jsk_apc
+    uri: https://github.com/start-jsk/jsk_apc.git
+    version: master
+- git:
+    local-name: FOR_PCL1.8/octomap_mapping
+    uri: https://github.com/OctoMap/octomap_mapping.git
+    version: 0.6.3
+- tar:
+    local-name: FOR_PCL1.8/pcl_conversions
+    uri: https://github.com/ros-gbp/pcl_conversions-release/archive/release/kinetic/pcl_conversions/0.2.1-0.tar.gz
+    version: pcl_conversions-release-release-kinetic-pcl_conversions-0.2.1-0
+- git:
+    local-name: FOR_PCL1.8/perception_pcl
+    uri: https://github.com/ros-perception/perception_pcl.git
+    version: 1.4.4
+- git:
+    local-name: RethinkRobotics/baxter_common
+    uri: https://github.com/knorth55/baxter_common.git
+    version: jsk_apc
+- git:
+    local-name: RethinkRobotics/baxter_interface
+    uri: https://github.com/wkentaro/baxter_interface.git
+    version: jsk_apc
+- git:
+    local-name: RethinkRobotics/baxter_examples
+    uri: https://github.com/RethinkRobotics/baxter_examples.git
+    version: v1.2.0
+- git:
+    local-name: RethinkRobotics/baxter_tools
+    uri: https://github.com/RethinkRobotics/baxter_tools.git
+    version: v1.2.0
+- git:
+    local-name: RethinkRobotics/baxter_simulator
+    uri: https://github.com/RethinkRobotics/baxter_simulator.git
+    version: kinetic-devel
+- git:
+    local-name: FOR_GRIPPER_V5/dynamixel_motor
+    uri: https://github.com/pazeshun/dynamixel_motor.git
+    version: gripper-v6-devel
+- git:
+    local-name: FA-I-sensor/force_proximity_ros
+    uri: https://github.com/knorth55/FA-I-sensor.git
+    version: jsk_apc
+- tar:
+    local-name: ros-planning/moveit_robots/baxter_moveit_config
+    uri: https://github.com/ros-gbp/moveit_robots-release/archive/release/indigo/baxter_moveit_config/1.0.7-0.tar.gz
+    version: moveit_robots-release-release-indigo-baxter_moveit_config-1.0.7-0
