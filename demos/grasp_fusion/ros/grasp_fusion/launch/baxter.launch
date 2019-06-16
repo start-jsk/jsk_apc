@@ -1,0 +1,9 @@
+<launch>
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/baxter.launch">
+    <arg name="pick" value="false" />
+    <arg name="SHELF_CONFIG_FILE" value="$(find grasp_fusion)/config/stow_task/shelf_marker.yaml" />
+    <arg name="TOTE_CONFIG_FILE" value="$(find grasp_fusion)/config/stow_task/tote_marker.yaml" />
+  </include>
+
+</launch>

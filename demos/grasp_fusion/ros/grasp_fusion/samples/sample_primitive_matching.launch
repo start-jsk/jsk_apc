@@ -1,0 +1,165 @@
+<launch>
+
+  <arg name="gui" default="true" />
+
+  <include file="$(find grasp_fusion)/samples/include/play_rosbag.launch">
+  </include>
+
+  <arg name="LEFT_MANAGER" value="/left_hand_camera/left/left_nodelet_manager" />
+  <arg name="LEFT_CAMERA_INFO" value="/left_hand_camera/fused/rgb/camera_info" />
+  <arg name="LEFT_INPUT_CLOUD" value="/left_hand_camera/fused/depth_registered/points" />
+  <arg name="LEFT_INPUT_DEPTH" value="/left_hand_camera/fused/depth_registered/image_rect" />
+  <arg name="LEFT_INPUT_IMAGE" value="/left_hand_camera/left/rgb/image_rect_color" />
+  <arg name="VOXEL_SIZE" value="0.002" />
+  <arg name="HEIGHTMAP_TF_FRAME" value="left_hand_heightmap_frame" />
+
+  <group ns="left_hand_camera">
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_pcl_utils/BoundingBoxArrayToBoundingBox">
+      <remap from="~input" to="/transformable_tote_markers/output/boxes" />
+      <rosparam>
+        index: 0
+      </rosparam>
+    </node>
+
+    <!-- Heightmap Generation -->
+    <include file="$(find grasp_fusion)/launch/include/get_heightmap.launch">
+      <arg name="INPUT_BBOX" value="bbox_array_to_bbox/output" />
+      <arg name="BBOX_TF_FRAME" value="left_hand_heightmap_bbox" />
+      <arg name="VOXEL_SIZE" value="$(arg VOXEL_SIZE)" />
+      <arg name="HEIGHTMAP_TRANS" value="-0.2 0.3 -0.1 -1.5707963267948966 0 0" />
+      <arg name="HEIGHTMAP_TF_FRAME" value="$(arg HEIGHTMAP_TF_FRAME)" />
+      <arg name="INPUT_RGB" value="$(arg LEFT_INPUT_IMAGE)" />
+      <arg name="INPUT_DEPTH" value="$(arg LEFT_INPUT_DEPTH)" />
+      <arg name="CAMERA_INFO" value="$(arg LEFT_CAMERA_INFO)" />
+    </include>
+
+    <!-- Affordance Segmentation -->
+    <node name="suction_affordance_segmentation"
+          pkg="grasp_fusion" type="affordance_segmentation.py"
+          clear_params="true">
+      <remap from="~input/rgb" to="get_heightmap/output/rgb" />
+      <remap from="~input/depth" to="get_heightmap/output/depth" />
+      <rosparam subst_value="true">
+        affordance: suction
+      </rosparam>
+    </node>
+    <node name="pinch_affordance_segmentation"
+          pkg="grasp_fusion" type="affordance_segmentation.py"
+          clear_params="true">
+      <remap from="~input/rgb" to="get_heightmap/output/rgb" />
+      <remap from="~input/depth" to="get_heightmap/output/depth" />
+      <rosparam subst_value="true">
+        affordance: pinch
+      </rosparam>
+    </node>
+
+    <!-- Instance Segmentation -->
+    <node name="attention_clipper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="indices_to_mask"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/PointIndicesToMaskImage $(arg LEFT_MANAGER)">
+      <remap from="~input" to="attention_clipper/output/point_indices" />
+      <remap from="~input/image" to="$(arg LEFT_INPUT_IMAGE)" />
+    </node>
+    <node name="dilate_mask"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_perception/DilateMaskImage $(arg LEFT_MANAGER)">
+      <remap from="~input" to="indices_to_mask/output" />
+      <rosparam subst_value="true">
+        method: 2
+        size: 8
+        iterations: 4
+      </rosparam>
+    </node>
+    <node name="apply_mask"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_perception/ApplyMaskImage $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_INPUT_IMAGE)" />
+      <remap from="~input/mask" to="dilate_mask/output" />
+      <rosparam subst_value="true">
+        clip: false
+      </rosparam>
+    </node>
+    <node name="mask_rcnn_instance_segmentation"
+          pkg="grasp_fusion" type="mask_rcnn_instance_segmentation.py"
+          clear_params="true">
+      <!-- <remap from="~input" to="$(arg LEFT_INPUT_IMAGE)" /> -->
+      <remap from="~input" to="apply_mask/output" />
+      <rosparam subst_value="true">
+        gpu: 0
+        fg_class_names:
+          - object
+        pretrained_model: $(env HOME)/data/grasp_fusion_lib/grasp_fusion/models/instance_segmentation_model.npz
+      </rosparam>
+    </node>
+    <node name="get_heightmap_label"
+          pkg="grasp_fusion" type="get_heightmap.py"
+          clear_params="true">
+      <remap from="~input/label" to="mask_rcnn_instance_segmentation/output/label_ins" />
+      <remap from="~input/depth" to="$(arg LEFT_INPUT_DEPTH)" />
+      <remap from="~input/camera_info" to="$(arg LEFT_CAMERA_INFO)" />
+      <rosparam subst_value="true">
+        bg_label: -1
+        heightmap_frame: $(arg HEIGHTMAP_TF_FRAME)
+        voxel_size: $(arg VOXEL_SIZE)
+      </rosparam>
+    </node>
+
+    <!-- Sole Affordance Segmentation -->
+    <node name="pinch_sole_affordance_segmentation"
+          pkg="grasp_fusion" type="sole_affordance_segmentation.py"
+          clear_params="true">
+      <remap from="~input/rgb" to="get_heightmap/output/rgb" />
+      <remap from="~input/depth" to="get_heightmap/output/depth" />
+      <remap from="~input/label_ins" to="get_heightmap_label/output/label" />
+      <rosparam subst_value="true">
+        affordance: pinch
+      </rosparam>
+    </node>
+
+    <!-- Primitive Matching -->
+    <node name="primitive_matching"
+          pkg="grasp_fusion" type="primitive_matching.py" output="screen">
+      <remap from="~input/rgb" to="get_heightmap/output/rgb" />
+      <remap from="~input/depth" to="get_heightmap/output/depth" />
+      <remap from="~input/label_instance" to="get_heightmap_label/output/label" />
+      <remap from="~input/prob_pinch_affordance" to="pinch_affordance_segmentation/output/prob" />
+      <remap from="~input/prob_pinch_sole_affordance" to="pinch_sole_affordance_segmentation/output/prob" />
+      <remap from="~input/prob_suction_affordance" to="suction_affordance_segmentation/output/prob" />
+      <rosparam subst_value="true">
+        instance_bg_label: -1
+        heightmap_frame: $(arg HEIGHTMAP_TF_FRAME)
+        voxel_size: $(arg VOXEL_SIZE)
+        cluster_tolerance: 0.02
+        cluster_max_size: 0.2
+        cluster_min_size: 0.001
+        prob_threshold: 0.5
+        reliable_pts_ratio: 1
+        primitive_dir: $(find grasp_fusion)/config/primitives
+      </rosparam>
+    </node>
+    <group if="$(arg gui)">
+      <node name="image_view"
+            pkg="image_view" type="image_view"
+            clear_params="true">
+        <remap from="image" to="primitive_matching/output/debug" />
+      </node>
+      <node name="rviz"
+            pkg="rviz" type="rviz"
+            args="-d $(find grasp_fusion)/samples/rvizconfig/primitive_matching.rviz">
+      </node>
+    </group>
+  </group>
+
+</launch>

@@ -1,0 +1,7 @@
+shapes:
+  - points:
+      - [62.24, -15.0]
+      - [62.24, 15.0]
+    affordance: pinch
+    order: 0
+label: pinch30

@@ -1,0 +1,49 @@
+<launch>
+  <arg name="filename" />
+  <node name="rosbag_record"
+        pkg="rosbag" type="record"
+        args="-b 0
+              /tf
+              /tf_static
+              /robot/joint_states
+
+              /transformable_bin_markers/output/boxes
+              /transformable_tote_markers/output/boxes
+
+              /lgripper_sensors
+              /rgripper_sensors
+
+              /vacuum_gripper/limb/left/state
+              /vacuum_gripper/limb/left
+              /vacuum_gripper/limb/right/state
+              /vacuum_gripper/limb/right
+
+              /scale0/output
+              /scale1/output
+              /scale2/output
+              /scale3/output
+
+              /left_hand_camera/left/rgb/camera_info
+              /left_hand_camera/left/rgb/image_raw/compressed
+              /left_hand_camera/left/depth/camera_info
+              /left_hand_camera/left/depth/image_raw/compressedDepth
+              /left_hand_camera/right/rgb/camera_info
+              /left_hand_camera/right/rgb/image_raw/compressed
+
+              /left_hand_camera/primitive_matching/output/debug
+              /left_hand_camera/primitive_matching/output/pinch120/poses
+              /left_hand_camera/primitive_matching/output/pinch120/boxes
+              /left_hand_camera/primitive_matching/output/pinch120_suc/poses
+              /left_hand_camera/primitive_matching/output/pinch120_suc/boxes
+              /left_hand_camera/primitive_matching/output/suction/poses
+              /left_hand_camera/primitive_matching/output/suction/boxes
+              /left_hand_camera/primitive_matching/output/suc_then_pinch120/poses
+              /left_hand_camera/primitive_matching/output/suc_then_pinch120/boxes
+              /selected_box/left
+              /selected_pose/left -O $(arg filename)">
+              <!-- FIXME: IR sensors conflicts.
+              /left_hand_camera/right/depth/camera_info
+              /left_hand_camera/right/depth/image_raw/compressedDepth
+              -->
+    </node>
+  </launch>

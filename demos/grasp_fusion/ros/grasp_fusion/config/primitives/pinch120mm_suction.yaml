@@ -1,0 +1,11 @@
+shapes:
+  - points:
+      - [62.24, -60.0]
+      - [62.24, 60.0]
+    affordance: pinch
+    order: 0
+  - points:
+      - [0.0, 0.0]
+    affordance: suction
+    order: 0
+label: pinch120_suc

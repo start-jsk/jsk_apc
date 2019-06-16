@@ -1,0 +1,31 @@
+<launch>
+
+  <arg name="affordance" doc="suction or pinch" />
+
+  <arg name="gui" default="true" />
+
+  <include file="$(find grasp_fusion)/samples/include/play_rosbag.launch">
+  </include>
+
+  <include file="$(find grasp_fusion)/launch/get_heightmap_standalone.launch">
+  </include>
+
+  <node name="affordance_segmentation"
+        pkg="grasp_fusion" type="affordance_segmentation.py"
+        clear_params="true">
+    <remap from="~input/rgb" to="get_heightmap/output/rgb" />
+    <remap from="~input/depth" to="get_heightmap/output/depth" />
+    <rosparam subst_value="true">
+      affordance: $(arg affordance)
+    </rosparam>
+  </node>
+
+  <group if="$(arg gui)">
+    <node name="image_view"
+          pkg="image_view" type="image_view"
+          clear_params="true">
+      <remap from="image" to="affordance_segmentation/output/viz" />
+    </node>
+  </group>
+
+</launch>

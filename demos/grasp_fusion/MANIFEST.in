@@ -1,0 +1,4 @@
+include requirements.txt
+recursive-include grasp_fusion_lib *.c
+recursive-include grasp_fusion_lib *.h
+recursive-include grasp_fusion_lib *.pyx

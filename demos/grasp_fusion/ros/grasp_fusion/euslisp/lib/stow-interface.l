@@ -1,0 +1,429 @@
+#!/usr/bin/env roseus
+
+(require "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
+(require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
+(require "package://grasp_fusion/euslisp/lib/arc-interface.l")
+
+(ros::load-ros-manifest "jsk_arc2017_baxter")
+
+(unless (find-package "GRASP_FUSION")
+  (make-package "GRASP_FUSION"))
+
+(defclass grasp_fusion::stow-interface
+  :super grasp_fusion::arc-interface
+  :slots (grasp-style-
+          moveit-p-
+          picking-fail-count-
+          prev-target-obj-
+          recognize-fail-count-
+          scale-candidates-
+          scale-state-
+          start-picking-fail-count-
+          start-time-
+          target-bin-
+          target-index-
+          target-obj-
+          trial-fail-count-))
+
+(defmethod grasp_fusion::stow-interface
+  (:init (&key (moveit nil))
+    (send-super :init)
+    (setq picking-fail-count- 0)
+    (setq recognize-fail-count- 0)
+    (setq start-picking-fail-count- 0)
+    (setq target-index- 0)
+    (setq trial-fail-count- 0)
+    (setq moveit-p- moveit)
+    (setq grasp-style- nil))
+  (:recognize-bboxes ()
+    (ros::ros-info "[main] recognizing bin boxes")
+    (send self :recognize-bin-boxes :stamp (ros::time-now))
+    (ros::ros-info "[main] recognizing tote")
+    (send self :recognize-tote-boxes :stamp (ros::time-now))
+    ;; XXX: movable region will be set in :pick-object
+    ;; (send self :set-movable-region-for-tote arm :offset (list 100 80 0))
+    )
+  (:wait-for-user-input (arm)
+    (let (can-start)
+      (when moveit-p-
+        (send self :add-shelf-scene)
+        (send self :add-tote-scene arm))
+      (ros::ros-info "[:wait-for-user-input] wait for user input to start: ~a" arm)
+      (ros::wait-for-service "/rviz/yes_no_button")
+      (setq can-start
+            (send (ros::service-call "/rviz/yes_no_button"
+                                     (instance jsk_gui_msgs::YesNoRequest))
+                  :yes))
+      (ros::ros-info "[:wait-for-user-input] received user input: ~a" arm)
+      (setq start-time- (ros::time-now))
+      can-start))
+  (:calib-prismatic-joint (arm &key (timeout 10))
+    (send *ri* :start-prismatic-calib arm)
+    (let ((time-count 1))
+      (while (and (send *ri* :prismatic-calibratingp arm)
+                  (> (* timeout 10) time-count))
+        (unix::usleep (* 100 1000))
+        (incf time-count))
+      (if (send *ri* :prismatic-calibratingp arm) nil t)))
+  (:recognize-object (arm &key (trial-times 10) (use-euc-cl nil))
+    (let (is-recognized recognition-count)
+      (setq trial-fail-count- 0)
+      (setq grasp-style- nil)
+      (send *ri* :move-hand arm
+            (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000 :wait nil)
+      (ros::ros-info "[main] Recognizing objects in tote")
+      (unless (> start-picking-fail-count- 0)
+        (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
+        (send self :move-arm-body->tote-overlook-pose arm)
+        (send *ri* :wait-interpolation))
+      ;; Reset instance mapping
+      (ros::service-call
+        (format nil "~a_hand_camera/mask_rcnn_instance_segmentation/reset"
+                (arm2str arm))
+        (instance std_srvs::EmptyRequest :init))
+      ;; Reset prob
+      (ros::service-call
+        (format nil "~a_hand_camera/suction_affordance_segmentation/reset"
+                (arm2str arm))
+        (instance std_srvs::EmptyRequest :init))
+      (ros::service-call
+        (format nil "~a_hand_camera/pinch_affordance_segmentation/reset"
+                (arm2str arm))
+        (instance std_srvs::EmptyRequest :init))
+      (setq recognition-count 1)
+      (let ((stamp (ros::time-now)) target-index)
+        (while (null (or (> recognition-count trial-times) is-recognized))
+          (setq is-recognized
+            (progn
+              ;; Calling empty service causes segmentation fault
+              ;; (ros::service-call
+              ;;   (format nil "/~a_hand_camera/image_buffer/save" (arm2str arm))
+              ;;   (instance std_srvs::TriggerRequest :init))
+              (send self :recognize-target-object arm
+                    :stamp (ros::time-now) :use-euc-cl use-euc-cl)))
+          (incf recognition-count)))
+      is-recognized))
+  (:return-from-recognize-object (arm)
+    (setq start-picking-fail-count- 0)
+    (ros::ros-info "[main] arm: ~a, failed to recognize object in tote" arm)
+    (send *ri* :angle-vector-sequence-raw
+          (list (send *baxter* :fold-to-keep-object arm)
+                (send *baxter* :arc-reset-pose arm))
+          :fast (send *ri* :get-arm-controller arm) 0 :scale 3.0)
+    (send *ri* :wait-interpolation))
+  (:check-recognize-fail-count (arm &key (count-limit 2))
+    (incf recognize-fail-count-)
+    (ros::ros-info "[main] arm: ~a, recognize fail count: ~a" arm recognize-fail-count-)
+    (let (recognize-failp)
+      (setq recognize-failp (null (> count-limit recognize-fail-count-)))
+      (if recognize-failp (setq recognize-fail-count- 0))
+      recognize-failp))
+  (:check-can-start-picking (arm)
+    (let (style-and-idx)
+      ;; first trial: trial-time = 1
+      (setq style-and-idx (send self :get-grasp-style arm grasp-style- 0))
+      (setq grasp-style- (car style-and-idx))
+      (setq target-index- (cadr style-and-idx))
+      (ros::ros-info-green
+        "arm: ~a, grasp-style: ~a, trial-time: ~a, target-index: ~a"
+        (arm2str arm) (symbol2str grasp-style-) (+ trial-fail-count- 1) target-index-)
+      (when grasp-style-
+        (setq start-picking-fail-count- 0))
+      (if grasp-style- t nil)))
+  (:check-start-picking-fail-count (arm &key (count-limit 2))
+    (incf start-picking-fail-count-)
+    (ros::ros-info "[main] arm: ~a, start picking fail count: ~a" arm start-picking-fail-count-)
+    (when (> start-picking-fail-count- 1)
+      (return-from :check-start-picking-fail-count t))
+    (let (start-picking-failp)
+      (setq start-picking-failp (null (> count-limit start-picking-fail-count-)))
+      (when start-picking-failp
+        (setq start-picking-fail-count- 0))
+      start-picking-failp))
+  (:change-grasp-style (arm)
+    (incf trial-fail-count-)
+    (send *ri* :stop-grasp arm)
+    (let (style-and-idx next-style next-idx)
+      ;; try another grasp style
+      (setq style-and-idx (send self :get-grasp-style arm grasp-style- (+ target-index- 1)))
+      (setq next-style (car style-and-idx))
+      (setq next-idx (cadr style-and-idx))
+      (ros::ros-info-green
+        "arm: ~a, next grasp-style: ~a, trial-time: ~a, next-index: ~a"
+        (arm2str arm) (symbol2str next-style) (+ trial-fail-count- 1) next-idx)
+      (if next-style
+        (progn
+          (setq grasp-style- next-style)
+          (setq target-index- next-idx)
+          t)
+        (progn
+          (setq trial-fail-count- 0)
+          (setq target-index- 0)
+          nil))))
+  (:pick-object
+    (arm &key (use-scale t) (move-head t) (avoid-tote t) (lift-full t))
+    (send *ri* :speak
+          (format nil "~a arm is picking" (arm2str arm)))
+    (let (pick-result graspingp)
+      (setq recognize-fail-count- 0)
+      (when moveit-p- (send self :delete-tote-scene arm))
+      (if (eq grasp-style- :suction)
+        (send self :set-movable-region-for-tote arm :offset (list 40 40 0))
+        (send self :set-movable-region-for-tote arm :offset (list 40 40 0)))
+      (when use-scale (send self :reset-scale arm))
+      (when move-head (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70)))
+      (setq pick-result
+            (send self :pick-object-in-tote arm
+                  :n-trial 1
+                  :n-trial-same-pos 1
+                  :do-stop-grasp nil
+                  :grasp-style grasp-style-
+                  :target-index target-index-))
+      (when moveit-p- (send self :add-tote-scene arm))
+      (unless avoid-tote (return-from :pick-object (send *ri* :graspingp arm)))
+      ;; Don't trust pressure sensor
+      ;; (unless (or (eq pick-result :ik-failed) (eq pick-result :plan-failed))
+      ;;   (setq graspingp (send *ri* :graspingp arm grasp-style-))
+      ;;   (unless graspingp (return-from :pick-object nil))
+      ;;   )
+      (let (end-pos)
+        (if (eq grasp-style- :suction)
+          (progn
+            (send self :ik->tote-center arm
+                  :offset (if lift-full #f(0 0 300) #f(0 0 0))
+                  :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
+                  :rotation-axis t :use-gripper t)
+            (setq end-pos (send (send *baxter* arm :end-coords :copy-worldcoords) :worldpos))
+            (send *baxter* :rotate-wrist-ik arm
+                  (make-coords :pos end-pos
+                               :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
+                  :rotate-axis t))
+          (progn
+            (send self :ik->tote-center arm
+                  :offset (if lift-full #f(0 0 400) #f(0 0 40))
+                  :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0)
+                  :rotation-axis t :move-palm-end t)
+            (setq end-pos (send (send *baxter* arm :palm-endpoint :copy-worldcoords) :worldpos))
+            (send *baxter* :rotate-wrist-ik arm
+                  (make-coords :pos end-pos
+                               :rpy (float-vector (if (eq arm :larm) -pi/2 pi/2) 0 0))
+                  :move-palm-end t
+                  :rotate-axis t)))
+        (send *ri* :angle-vector-raw (send *baxter* :angle-vector) 3000
+              (send *ri* :get-arm-controller arm :gripper nil) 0)
+        (send *ri* :wait-interpolation))
+      (if (or (eq pick-result :ik-failed) (eq pick-result :plan-failed))
+        (return-from :pick-object nil))
+      (unless use-scale (return-from :pick-object (send *ri* :graspingp arm)))
+      ;; Don't trust pressure sensor
+      ;; (setq graspingp (send *ri* :graspingp arm grasp-style-))
+      ;; (ros::ros-info "[main] arm: ~a graspingp: ~a" arm graspingp)
+      ;; graspingp))
+      (setq scale-state-
+            (send self :get-scale-state arm :stamp (ros::time-now)))
+      ;; If scale value isn't changed, we don't have to verify-object and return-object
+      (if (eq scale-state- :no-change)
+        (progn
+          (ros::ros-info-green "[main] arm ~a: grasping nothing is detected by scale" arm)
+          nil)
+        t)))
+  (:return-from-pick-object (arm)
+    (ros::ros-info "[main] arm: ~a return from pick-object to arc-reset-pose" arm)
+    (send *ri* :angle-vector-sequence-raw
+          (list (send *baxter* :avoid-shelf-pose arm (if (eq arm :larm) :d :f))
+                (send *baxter* :arc-reset-pose arm))
+          :fast (send *ri* :get-arm-controller arm :gripper (eq grasp-style- :suction))
+          0 :scale 3.0)
+    (send *ri* :wait-interpolation)
+    (if (not (eq grasp-style- :suction))
+      (send self :resolve-collision-between-fingers arm)))
+  (:verify-object (arm)
+    ;: Object class name is unknown
+    ;; (let ((stamp (ros::time-now)))
+    ;;   (when (eq scale-candidates- :timeout)
+    ;;     (ros::ros-error "subscribed weight candidates, but timeout")
+    ;;     (return-from :verify-object nil))
+    ;;   (ros::ros-info-green "[main] arm ~a: scale candidates ~a" arm scale-candidates-)
+    ;;   (unless scale-candidates- (return-from :verify-object nil))
+    ;;   (when (eq (length scale-candidates-) 1)
+    ;;     (setq target-obj- (car scale-candidates-))
+    ;;     (return-from :verify-object t))
+    ;;   (if (find target-obj- scale-candidates- :test #'string=)
+    ;;     t  ;; scale can classify the grasped object
+    ;;     (progn  ;; scale narrows down candidate objects
+    ;;       (let* ((task-duration (- (send (ros::time-now) :to-sec) (send start-time- :to-sec)))
+    ;;              (proba-thre (- 0.80 (* (/ 0.2 900.0) task-duration)))
+    ;;              msg new-order)
+    ;;         (setq msg
+    ;;           (one-shot-subscribe
+    ;;             (format nil "/~a_hand_camera/probability_image_classifier/output" (arm2str arm))
+    ;;             jsk_recognition_msgs::ClassificationResult
+    ;;             :timeout 15000
+    ;;             :after-stamp stamp))
+    ;;         (unless msg (return-from :verify-object nil))
+    ;;         (ros::ros-info-blue "classifier result: arm ~a, object ~a, proba ~a"
+    ;;                             (arm2str arm) (car (send msg :label_names))
+    ;;                             (elt (send msg :label_proba) 0))
+    ;;         (ros::ros-info-cyan "task time: ~A [s], arm ~A, classifier threshold: ~A"
+    ;;                             task-duration (arm2str arm) proba-thre)
+    ;;         (if (> (elt (send msg :label_proba) 0) proba-thre)
+    ;;             (setq target-obj- (car (send msg :label_names)))
+    ;;           (return-from :verify-object nil))
+    ;;         (ros::ros-info-blue "[~a] [main] :verify-object, overwrite target, target-obj: ~a"
+    ;;                             (ros::get-name) target-obj-)
+    ;;         t)))))
+    (when (eq scale-state- :timeout)
+      (ros::ros-error "subscribed weight candidates, but timeout")
+      (return-from :verify-object nil))
+    t)
+  (:check-picking-fail-count (arm &key (count-limit 2))
+    (incf picking-fail-count-)
+    (ros::ros-info "[main] arm: ~a, picking fail count: ~a" arm picking-fail-count-)
+    (let (picking-failp)
+      (setq picking-failp (null (> count-limit picking-fail-count-)))
+      (if picking-failp (setq picking-fail-count- 0))
+      picking-failp))
+  (:set-target-bin (arm)
+    (setq picking-fail-count- 0)
+    (setq target-bin- (send self :get-stowing-target-bin arm))
+    (if (eq target-bin- :tote)
+      (progn
+        (ros::ros-info "[main] unable to recognize, return to tote")
+        nil)
+      (progn
+        (ros::set-param (format nil "~a_hand/target_bin" (arm2str arm)) (symbol2str target-bin-))
+        (ros::ros-info "[main] target-bin: ~a" target-bin-)
+        t)))
+  (:return-object (arm)
+    (when moveit-p- (send self :delete-tote-scene arm))
+    (let ((offset (send self :decide-tote-return-area arm)))
+      ;; (setq offset (send self :decide-tote-return-area arm))
+      ;; (ros::ros-info "return object to tote: arm, ~A, offset ~A" (arm2str arm) offset)
+      (if (eq grasp-style- :suction)
+        (send *ri* :angle-vector-raw
+              (send self :ik->tote-center arm
+                    :offset offset
+                    :rotation-axis :z :use-gripper t)
+              :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+        (send *ri* :angle-vector-raw
+              (send self :ik->tote-center arm
+                    :offset offset
+                    :rotation-axis :z :move-palm-end t)
+            :fast (send *ri* :get-arm-controller arm :gripper nil) 0 :scale 5.0)))
+    (send *ri* :wait-interpolation)
+    (send *ri* :stop-grasp arm)
+    (when (not (eq grasp-style- :suction))
+      (send *ri* :stop-grasp arm :pinch)
+      (send *baxter* :rotate-gripper arm 90 :relative nil))
+    (send self :spin-off-by-wrist arm :times 3)
+    (send *ri* :wait-interpolation)
+    (ros::ros-info "[main] ~a, return object in tote" arm)
+    (send *ri* :angle-vector-raw
+          (send *baxter* arm :move-end-pos #f(0 0 200) :world :rotation-axis :z)
+          :fast (send *ri* :get-arm-controller arm) 0 :scale 5.0)
+    (send *ri* :wait-interpolation)
+    (when moveit-p- (send self :add-tote-scene arm))
+    (send self :arc-reset-pose arm 3000 (send *ri* :get-arm-controller arm) 0 :move-arm arm)
+    (send *ri* :wait-interpolation)
+    (if (not (eq grasp-style- :suction))
+      (send self :resolve-collision-between-fingers arm)))
+  (:place-object (arm)
+    (let (dropped place-av)
+      (send *ri* :speak
+            (format nil "~a arm is placing an object into bin ~a."
+                    (arm2str arm) target-bin-))
+      (ros::ros-info "[main] ~a, place object in bin ~a" arm target-bin-)
+      (when moveit-p- (send self :add-object-in-hand-scene arm "object"))
+      (send *baxter* :head_pan :joint-angle (if (eq arm :larm) -70 70))
+      (if (eq grasp-style- :suction)
+        (send *ri* :angle-vector
+              (send self :ik->bin-center arm target-bin-
+                    :offset (v+ #f(0 0 300)
+                                (send self :decide-bin-place-area arm target-bin- grasp-style-))
+                    :rotation-axis :z :use-gripper t)
+              4000 (send *ri* :get-arm-controller arm :head t) 0
+              :move-arm arm)
+        (send *ri* :angle-vector
+              (send self :ik->bin-center arm target-bin-
+                    :offset (v+ #f(0 0 300)
+                                (send self :decide-bin-place-area arm target-bin- grasp-style-))
+                    :rotation-axis nil :move-palm-end t)
+              4000 (send *ri* :get-arm-controller arm :gripper nil :head t) 0
+              :move-arm arm))
+      (send *ri* :wait-interpolation)
+      (setq dropped
+            (not (send *ri* :graspingp arm (if (eq grasp-style- :suction) :suction :pinch))))
+      (when moveit-p- (send self :delete-object-in-hand-scene arm))
+      (if dropped
+        (progn
+          (send *ri* :speak
+                (format nil "~a arm dropped an object to somewhere."
+                        (arm2str arm)))
+          (ros::ros-error "[main] arm ~a: dropped object" arm)
+          (send *ri* :stop-grasp arm)
+          (when (not (eq grasp-style- :suction))
+            (send *ri* :stop-grasp arm :pinch)
+            (send *baxter* :rotate-gripper arm 90 :relative nil))
+          ;; we assume object is dropped, but it can be just a mis-detection of grasp
+          (send self :spin-off-by-wrist arm :times 3)
+          (send *ri* :wait-interpolation))
+        (progn
+          (ros::ros-info-green "[main] arm ~a: place an object in bin ~a"
+                               arm target-bin-)
+          (when moveit-p- (send self :delete-bin-scene target-bin-))
+          (if (eq grasp-style- :suction)
+            (send *ri* :angle-vector-raw
+                  (send *baxter* arm :move-end-pos #f(0 0 -300) :world
+                        :rotation-axis :z
+                        :use-gripper t)
+                  2000 (send *ri* :get-arm-controller arm) 0)
+            (progn
+              (setq place-av
+                    (send *baxter* arm :move-end-pos #f(0 0 -250) :world :rotation-axis nil))
+              (if place-av
+                (send *ri* :angle-vector-raw place-av 2000 (send *ri* :get-arm-controller arm) 0))))
+          (send *ri* :wait-interpolation)
+          (send *ri* :stop-grasp arm) ;; release object
+          (when (not (eq grasp-style- :suction))
+            (send *ri* :stop-grasp arm :pinch)
+            (send *baxter* :rotate-gripper arm 90 :relative nil)) ;; release object
+          (send self :spin-off-by-wrist arm :times 5)
+          (send *ri* :wait-interpolation)
+          (if (eq grasp-style- :suction)
+            (send *ri* :angle-vector-raw
+                  (send *baxter* arm :move-end-pos #f(0 0 300) :world
+                        :rotation-axis :z
+                        :use-gripper t)
+                  2000 (send *ri* :get-arm-controller arm) 0)
+            (if place-av
+                (send *ri* :angle-vector-raw
+                      (send *baxter* arm :move-end-pos #f(0 0 250) :world
+                            :rotation-axis nil)
+                      2000 (send *ri* :get-arm-controller arm) 0)))
+          (send *ri* :wait-interpolation)
+          (when moveit-p- (send self :add-bin-scene target-bin-))))))
+  (:return-from-place-object (arm)
+    (send self :arc-reset-pose arm 3000 (send *ri* :get-arm-controller arm) 0 :move-arm arm)
+    (send *ri* :wait-interpolation)
+    (if (not (eq grasp-style- :suction))
+      (send self :resolve-collision-between-fingers arm))
+    (setq grasp-style- nil)))
+
+
+(defun grasp_fusion::stow-init (&key (ctype :default-controller) (moveit nil))
+  (let (mvit-env mvit-rb)
+    (when moveit
+      (setq mvit-env (instance jsk_arc2017_baxter::baxter-moveit-environment))
+      (setq mvit-rb (instance jsk_arc2017_baxter::baxter-robot :init)))
+    (unless (boundp '*ri*)
+      (setq *ri* (instance jsk_arc2017_baxter::baxter-interface :init :type ctype
+                           :moveit-environment mvit-env
+                           :moveit-robot mvit-rb)))
+    (unless (boundp '*baxter*)
+      (setq *baxter* (instance jsk_arc2017_baxter::baxter-robot :init)))
+    (unless (boundp '*co*)
+      (setq *co* (when moveit (instance collision-object-publisher :init))))
+    (unless (boundp '*ti*)
+      (setq *ti* (instance grasp_fusion::stow-interface :init :moveit moveit)))
+    (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
+    (send *ri* :calib-grasp :arms)))

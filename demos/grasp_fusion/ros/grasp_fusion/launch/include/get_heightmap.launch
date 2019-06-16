@@ -1,0 +1,48 @@
+<launch>
+
+  <arg name="INPUT_BBOX" />
+  <arg name="BBOX_TF_FRAME" />
+  <arg name="VOXEL_SIZE" />
+  <arg name="HEIGHTMAP_TRANS" />
+  <arg name="HEIGHTMAP_TF_FRAME" />
+  <arg name="INPUT_RGB" />
+  <arg name="INPUT_DEPTH" />
+  <arg name="CAMERA_INFO" />
+
+  <node name="bbox_to_tf"
+        pkg="grasp_fusion" type="bounding_box_to_tf.py">
+    <remap from="~input" to="$(arg INPUT_BBOX)" />
+    <rosparam subst_value="true">
+      tf_frame: $(arg BBOX_TF_FRAME)
+    </rosparam>
+  </node>
+  <node name="heightmap_frame_publisher"
+        pkg="tf" type="static_transform_publisher"
+        args="$(arg HEIGHTMAP_TRANS) $(arg BBOX_TF_FRAME) $(arg HEIGHTMAP_TF_FRAME) 20" />
+  <node name="get_heightmap"
+        pkg="grasp_fusion" type="get_heightmap.py" respawn="true">
+    <remap from="~input/rgb" to="$(arg INPUT_RGB)" />
+    <remap from="~input/depth" to="$(arg INPUT_DEPTH)" />
+    <remap from="~input/camera_info" to="$(arg CAMERA_INFO)" />
+    <rosparam subst_value="true">
+      heightmap_frame: $(arg HEIGHTMAP_TF_FRAME)
+      voxel_size: $(arg VOXEL_SIZE)
+    </rosparam>
+  </node>
+
+  <group ns="get_heightmap/output">
+    <node name="depth_view"
+          pkg="image_view" type="image_view"
+          clear_params="true">
+      <remap from="image" to="depth" />
+      <remap from="~output" to="depth_view" />
+      <rosparam subst_value="true">
+        min_image_value: 0
+        max_image_value: 0.3
+        colormap: 2
+        gui: false
+      </rosparam>
+    </node>
+  </group>
+
+</launch>

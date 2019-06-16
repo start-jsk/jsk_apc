@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <name>grasp_fusion</name>
+  <version>0.0.2</version>
+  <description>Predict and execute simultaneous suction and pinch.</description>
+
+  <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+  <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
+
+  <license>MIT</license>
+  <url type="repository">https://github.com/wkentaro/ros_grasp_fusion_lib</url>
+  <url type="bugtracker">https://github.com/wkentaro/ros_grasp_fusion_lib/issues</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>jsk_arc2017_baxter</run_depend>
+  <run_depend>jsk_pcl_ros_utils</run_depend>
+  <run_depend>jsk_perception</run_depend>
+
+  <test_depend>roslint</test_depend>
+</package>

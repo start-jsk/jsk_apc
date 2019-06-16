@@ -1,0 +1,22 @@
+<launch>
+
+  <node name="bbox_array_to_bbox"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_pcl_utils/BoundingBoxArrayToBoundingBox">
+    <remap from="~input" to="/transformable_tote_markers/output/boxes" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <include file="$(find grasp_fusion)/launch/include/get_heightmap.launch">
+    <arg name="INPUT_BBOX" value="bbox_array_to_bbox/output" />
+    <arg name="BBOX_TF_FRAME" value="left_hand_heightmap_bbox" />
+    <arg name="VOXEL_SIZE" value="0.002" />
+    <arg name="HEIGHTMAP_TRANS" value="-0.2 0.3 -0.1 -1.5707963267948966 0 0" />
+    <arg name="HEIGHTMAP_TF_FRAME" value="left_hand_heightmap_frame" />
+    <arg name="INPUT_RGB" value="/left_hand_camera/fused/rgb/image_rect_color" />
+    <arg name="INPUT_DEPTH" value="/left_hand_camera/fused/depth_registered/image_rect" />
+    <arg name="CAMERA_INFO" value="/left_hand_camera/fused/rgb/camera_info" />
+  </include>
+
+</launch>
