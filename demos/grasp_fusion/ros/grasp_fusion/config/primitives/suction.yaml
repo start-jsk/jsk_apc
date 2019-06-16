@@ -1,0 +1,6 @@
+shapes:
+  - points:
+      - [0.0, 0.0]
+    affordance: suction
+    order: 0
+label: suction

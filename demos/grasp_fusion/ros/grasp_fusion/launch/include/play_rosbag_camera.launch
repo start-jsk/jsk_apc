@@ -1,0 +1,140 @@
+<launch>
+  <arg name="filename" />
+  <arg name="rviz" default="false" />
+  <param name="/use_sim_time" value="true" />
+  <node name="rosbag_play"
+        pkg="rosbag" type="play"
+        args="$(arg filename) --clock --loop">
+  </node>
+
+  <!-- cameras >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+  <!-- FIXME: Make calib params common to jsk_arc2017_baxter -->
+  <!-- <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch"> -->
+  <include file="$(find grasp_fusion)/launch/include/stereo_astra_hand.launch">
+    <arg name="load_driver" value="false" />
+    <arg name="pick" value="false" />
+  </include>
+
+  <!-- left_hand_camera -->
+  <group ns="/left_hand_camera/left/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/left/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/right/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/right/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/left/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <!-- right_hand_camera -->
+  <group ns="/right_hand_camera/left/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/right/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/right/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+
+  <!-- cameras <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+
+  <group if="$(arg rviz)">
+    <param name="/robot_description"
+           command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxter.xacro" />
+    <node name="rviz"
+          pkg="rviz" type="rviz"
+          args="-d $(find grasp_fusion)/rvizconfig/stow.rviz">
+    </node>
+  </group>
+
+  <group ns="left_hand_camera" if="$(arg rviz)">
+    <arg name="LEFT_CAMERA_INFO" value="/left_hand_camera/fused/rgb/camera_info" />
+    <arg name="LEFT_INPUT_CLOUD" value="/left_hand_camera/fused/depth_registered/points" />
+    <arg name="LEFT_MANAGER" value="/left_hand_camera/left/left_nodelet_manager" />
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_pcl_utils/BoundingBoxArrayToBoundingBox">
+      <remap from="~input" to="/transformable_tote_markers/output/boxes" />
+      <rosparam>
+        index: 0
+      </rosparam>
+    </node>
+    <node name="attention_clipper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="extract_indices"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~indices" to="attention_clipper/output/point_indices" />
+      <rosparam>
+        keep_organized: true
+        approximate_sync: true
+        max_queue_size: 100
+      </rosparam>
+    </node>
+    <node name="passthrough_points"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_topic_tools/Passthrough $(arg LEFT_MANAGER)">
+      <remap from="~input" to="extract_indices/output" />
+      <rosparam subst_value="true">
+        default_duration: 2
+      </rosparam>
+    </node>
+  </group>
+
+</launch>
