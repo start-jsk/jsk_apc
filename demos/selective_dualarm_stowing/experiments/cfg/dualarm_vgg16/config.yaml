@@ -1,0 +1,11 @@
+batch_size: 10
+cross_validation: True
+interval_eval: 1000
+interval_save: 5000
+max_iter: 5000
+resize_rate: 0.5
+resume: False
+random_state: 1234
+test_size: 0.1
+threshold: 0.5
+with_damage: False

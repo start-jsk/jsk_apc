@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package>
+  <name>selective_dualarm_stowing</name>
+  <version>0.0.0</version>
+  <description>Selective Dualarm Stowing</description>
+
+  <maintainer email="s-kitagawa@jsk.imi.u-tokyo.ac.jp">Shingo Kitagawa</maintainer>
+
+  <license>BSD</license>
+
+  <author email="s-kitagawa@jsk.imi.u-tokyo.ac.jp">Shingo Kitagawa</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>jsk_2015_01_baxter_apc</run_depend>
+  <run_depend>jsk_2016_01_baxter_apc</run_depend>
+  <run_depend>jsk_data</run_depend>
+  <run_depend>jsk_perception</run_depend>
+  <run_depend>jsk_pcl_ros</run_depend>
+  <run_depend>jsk_topic_tools</run_depend>
+  <run_depend>jsk_recognition_msgs</run_depend>
+  <run_depend>jsk_rqt_plugins</run_depend>
+  <run_depend>message_filters</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+
+  <export>
+  </export>
+</package>
