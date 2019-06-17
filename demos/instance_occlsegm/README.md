@@ -11,8 +11,22 @@
     |
     <a href="https://drive.google.com/uc?id=1WPfzFz6F7RGPuBzV9zIECNbUissyQPqU">Supplimentary</a>
   </p>
+  <h3>Instance Segmentation of Visible and Occluded Regions for Finding and Picking Target from a Pile of Objects (IROS2018)</h3>
+  <h4>Kentaro Wada, Shingo Kitagawa, Kei Okada, Masayuki Inaba</h4>
+  <p>
+    <a href="https://drive.google.com/uc?id=1cUFCXTekorW8uCx54-QrGuOli5NM5udR">Paper</a>
+    |
+    <a href="https://www.youtube.com/watch?v=tNLtXb04i3w">Video</a>
+    |
+    <a href="https://drive.google.com/uc?id=16M2gwKRVdCEt4T5m3qZIFLc55N8L4PfE">Slides</a>
+    |
+    <a href="https://drive.google.com/uc?id=16aUCT455dJxIB8GRHC3fxiXeW8yif0fl">Poster</a>
+  </p>
   <a href="https://www.youtube.com/watch?v=bRTI0whWkq8">
     <img src=".readme/20180922_icra2019.gif" height="300px" />
+  </a>
+  <a href="https://www.youtube.com/watch?v=tNLtXb04i3w">
+    <img src=".readme/20180713_iros2018.gif" height="300px" />
   </a>
 </div>
 
