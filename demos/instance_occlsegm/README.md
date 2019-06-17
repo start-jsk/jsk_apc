@@ -17,36 +17,6 @@
 </div>
 
 
-<!-- !!ADVANCED USAGE!!
-## Installation
-
-```bash
-git clone https://github.com/wkentaro/instance-occlsegm.git && cd instance-occlsegm
-make install  # Python3
-# make install2  # Python2
-
-# or
-
-pip install git+https://github.com/wkentaro/instance-occlsegm.git
-```
-
-
-## Usage
-
-```bash
-source .anaconda/bin/activate
-python -c 'import instance_occlsegm_lib'
-```
-
-
-## Testing
-
-```bash
-make lint
-make test
-```
--->
-
 ## Installation
 
 ### For Examples
@@ -60,9 +30,7 @@ cd src
 
 cd ~/catkin_ws
 source /opt/ros/kinetic/setup.zsh
-catkin build grasp_fusion
-
-catkin build grasp_fusion --no-deps
+catkin build instance_occlsegm --no-deps
 ```
 
 ### For Full Demonstration
@@ -81,7 +49,7 @@ wstool update -j -1
 
 cd ~/catkin_ws
 source /opt/ros/kinetic/setup.zsh
-catkin build grasp_fusion
+catkin build instance_occlsegm
 ```
 
 ## Example
@@ -153,29 +121,6 @@ The real-world dataset annotated by human can be downloaded from following links
 ### With ROS
 
 ```bash
-# install python library
-sudo -H pip install git+https://github.com/wkentaro/instance-occlsegm.git
-
-# create catkin workspace
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws
-git clone https://github.com/wkentaro/instance-occlsegm.git
-cd src
-ln -s ../instance_occlsegm_lib/ros/instance-occlsegm .
-
-git clone https://github.com/start-jsk/jsk_apc.git
-
-wstool init
-cat jsk_apc/.travis.rosinstall >> .rosinstall
-cat jsk_apc/.travis.rosinstall.kinetic >> .rosinstall
-wstool update -j -1
-
-cd ~/catkin_ws
-source /opt/ros/kinetic/setup.zsh
-catkin build
-```
-
-```bash
 # Find occluded target and plan the next target
 roslaunch instance_occlsegm sample_panoptic_segmentation.launch
 ```
@@ -218,4 +163,29 @@ roscd instance_occlsegm/euslisp
   booktitle={{Proceedings of the IEEE/RSJ International Conference on Robotics and Intelligent Systems (IROS)}},
   year={2018},
 }
+```
+
+---
+
+## Advanced Usage (At Your Own Risk)
+
+### Installation
+
+```bash
+make install  # Python3
+# make install2  # Python2
+```
+
+### Usage
+
+```bash
+source .anaconda/bin/activate
+python -c 'import instance_occlsegm_lib'
+```
+
+### Testing
+
+```bash
+make lint
+make test
 ```
