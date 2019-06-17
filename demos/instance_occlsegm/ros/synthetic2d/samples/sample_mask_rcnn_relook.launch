@@ -1,0 +1,34 @@
+<launch>
+
+  <arg name="gui" default="true" />
+
+  <node name="image_publisher"
+        pkg="jsk_perception" type="image_publisher.py"
+        clear_params="true">
+    <rosparam subst_value="true">
+      file_name: $(find synthetic2d)/samples/data/test/0000/00000000.jpg
+    </rosparam>
+  </node>
+
+  <node name="mask_rcnn_relook"
+        pkg="synthetic2d" type="mask_rcnn_relook.py"
+        clear_params="true">
+    <remap from="~input" to="image_publisher/output" />
+    <rosparam subst_value="true">
+      gpu: 0
+      nms_thresh: 0.3
+      score_thresh: 0.05
+      context: '0,34,14,7,33,28'
+      target: 0
+    </rosparam>
+  </node>
+
+  <group if="$(arg gui)">
+    <node name="image_view0"
+          pkg="image_view" type="image_view"
+          clear_params="true">
+      <remap from="image" to="mask_rcnn_relook/output/viz" />
+    </node>
+  </group>
+
+</launch>

@@ -1,0 +1,68 @@
+<launch>
+
+  <!-- Visualization -->
+
+  <node name="tile_image"
+        pkg="jsk_perception" type="tile_image.py"
+        clear_params="true">
+    <rosparam subst_value="true">
+      input_topics:
+        - /right_hand_camera/left/rgb/image_rect_color
+        - /right_hand_camera/fused/depth_registered/image_rect_view
+    </rosparam>
+  </node>
+  <node name="image_view"
+        pkg="image_view" type="image_view"
+        clear_params="true">
+    <remap from="image" to="tile_image/output" />
+  </node>
+
+  <!-- Saver -->
+
+  <group ns="right_hand_camera">
+    <node name="tf_to_transform"
+          pkg="jsk_topic_tools" type="tf_to_transform.py">
+      <rosparam>
+        parent_frame_id: base
+        child_frame_id: right_hand_camera_left_rgb_optical_frame
+        duration: 1
+        rate: 30
+      </rosparam>
+    </node>
+  </group>
+
+  <node name="data_collection_server"
+        pkg="jsk_data" type="data_collection_server.py"
+        clear_params="true">
+    <rosparam subst_value="true">
+      method: request
+      message_filters: true
+      approximate_sync: true
+      slop: 0.1
+      queue_size: 50
+      save_dir: ~/.ros/instance_occlsegm
+      topics:
+        - name: /right_hand_camera/left/rgb/camera_info
+          msg_class: sensor_msgs/CameraInfo
+          fname: camera_info.yaml
+          savetype: YAML
+        - name: /right_hand_camera/tf_to_transform/output
+          msg_class: geometry_msgs/TransformStamped
+          fname: tf_camera_rgb_from_base.yaml
+          savetype: YAML
+        - name: /right_hand_camera/left/rgb/image_rect_color
+          msg_class: sensor_msgs/Image
+          fname: image.jpg
+          savetype: ColorImage
+        - name: /right_hand_camera/fused/depth_registered/image_rect_view
+          msg_class: sensor_msgs/Image
+          fname: depth_viz.jpg
+          savetype: ColorImage
+        - name: /right_hand_camera/fused/depth_registered/image_rect
+          msg_class: sensor_msgs/Image
+          fname: depth.npz
+          savetype: DepthImage
+    </rosparam>
+  </node>
+
+</launch>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>synthetic2d</name>
+  <version>0.0.2</version>
+  <description>Learning from Image Synthesis on 2D Image.</description>
+
+  <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
+  <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
+
+  <license>MIT</license>
+  <url type="repository">https://github.com/wkentaro/jsk_apc</url>
+  <url type="bugtracker">https://github.com/wkentaro/jsk_apc/issues</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>dynamic_reconfigure</build_depend>
+
+  <run_depend>dynamic_reconfigure</run_depend>
+  <run_depend>image_view</run_depend>
+  <run_depend>jsk_perception</run_depend>
+  <run_depend>message_runtime</run_depend>
+</package>

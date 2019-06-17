@@ -1,0 +1,88 @@
+auto_save: true
+store_data: false
+keep_prev: false
+
+flags:
+  - skip
+file_search: image.jpg
+labels:
+  - '-1: __ignore__'
+  - '00: _background_'
+  - '01: avery_binder'
+  - '02: balloons'
+  - '03: band_aid_tape'
+  - '04: bath_sponge'
+  - '05: black_fashion_gloves'
+  - '06: burts_bees_baby_wipes'
+  - '07: colgate_toothbrush_4pk'
+  - '08: composition_book'
+  - '09: crayons'
+  - '10: duct_tape'
+  - '11: epsom_salts'
+  - '12: expo_eraser'
+  - '13: fiskars_scissors'
+  - '14: flashlight'
+  - '15: glue_sticks'
+  - '16: hand_weight'
+  - '17: hanes_socks'
+  - '18: hinged_ruled_index_cards'
+  - '19: ice_cube_tray'
+  - '20: irish_spring_soap'
+  - '21: laugh_out_loud_jokes'
+  - '22: marbles'
+  - '23: measuring_spoons'
+  - '24: mesh_cup'
+  - '25: mouse_traps'
+  - '26: pie_plates'
+  - '27: plastic_wine_glass'
+  - '28: poland_spring_water'
+  - '29: reynolds_wrap'
+  - '30: robots_dvd'
+  - '31: robots_everywhere'
+  - '32: scotch_sponges'
+  - '33: speed_stick'
+  - '34: table_cloth'
+  - '35: tennis_ball_container'
+  - '36: ticonderoga_pencils'
+  - '37: tissue_box'
+  - '38: toilet_brush'
+  - '39: white_facecloth'
+  - '40: windex'
+sort_labels: true
+validate_label: exact
+
+show_label_text_field: true
+label_completion: contains
+
+epsilon: 5.0
+
+shortcuts:
+  close: Ctrl+W
+  open: Ctrl+O
+  open_dir: Ctrl+U
+  quit: Ctrl+Q
+  save: Ctrl+S
+  save_as: Ctrl+Shift+S
+
+  open_next: D
+  open_prev: A
+
+  zoom_in: Ctrl++
+  zoom_out: Ctrl+-
+  zoom_to_original: Ctrl+0
+  fit_window: Ctrl+F
+  fit_width: Ctrl+Shift+F
+
+  add_point: Ctrl+Shift+P
+  create_polygon: Ctrl+N
+  create_rectangle: Ctrl+R
+  create_line: null
+  create_point: null
+  edit_polygon: Ctrl+J
+  delete_polygon: Delete
+  duplicate_polygon: Ctrl+D
+  undo: Ctrl+Z
+  undo_last_point: [Ctrl+Z, Backspace]
+  edit_label: Ctrl+E
+  edit_line_color: Ctrl+L
+  edit_fill_color: Ctrl+Shift+L

@@ -1,0 +1,143 @@
+<launch>
+
+  <arg name="gui" default="true" />
+  <arg name="load_driver" default="true" />
+  <arg name="left" default="true" />
+  <arg name="baseline" default="false" />
+
+  <arg name="right" value="false" if="$(arg left)" />
+  <arg name="right" value="true" unless="$(arg left)" />
+
+  <arg name="left_or_right" value="left" if="$(arg left)" />
+  <arg name="left_or_right" value="right" unless="$(arg left)" />
+
+  <arg name="MANAGER" value="/$(arg left_or_right)_hand_camera/left/left_nodelet_manager" />
+  <arg name="INPUT_IMAGE" value="/$(arg left_or_right)_hand_camera/left/rgb/image_rect_color" />
+
+  <include file="$(find synthetic2d)/launch/include/setup_for_stow.launch">
+    <arg name="load_driver" value="$(arg load_driver)" />
+    <arg name="right" value="$(arg right)" />
+    <arg name="left" value="$(arg left)" />
+  </include>
+
+  <group ns="$(arg left_or_right)_hand_camera">
+
+    <!--
+    <node name="spam_point_indices_to_mask_image"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/PointIndicesToMaskImage $(arg MANAGER)">
+      <remap from="~input" to="/$(arg left_or_right)_hand_camera/attention_clipper_tote/output/point_indices" />
+      <rosparam subst_value="true">
+        static_image_size: true
+        height: 480
+        width: 640
+      </rosparam>
+    </node>
+    -->
+
+    <!--
+    00: avery_binder
+    01: balloons
+    02: band_aid_tape
+    03: bath_sponge
+    04: black_fashion_gloves
+    05: burts_bees_baby_wipes
+    06: colgate_toothbrush_4pk
+    07: composition_book
+    08: crayons
+    09: duct_tape
+    10: epsom_salts
+    11: expo_eraser
+    12: fiskars_scissors
+    13: flashlight
+    14: glue_sticks
+    15: hand_weight
+    16: hanes_socks
+    17: hinged_ruled_index_cards
+    18: ice_cube_tray
+    19: irish_spring_soap
+    20: laugh_out_loud_jokes
+    21: marbles
+    22: measuring_spoons
+    23: mesh_cup
+    24: mouse_traps
+    25: pie_plates
+    26: plastic_wine_glass
+    27: poland_spring_water
+    28: reynolds_wrap
+    29: robots_dvd
+    30: robots_everywhere
+    31: scotch_sponges
+    32: speed_stick
+    33: table_cloth
+    34: tennis_ball_container
+    35: ticonderoga_pencils
+    36: tissue_box
+    37: toilet_brush
+    38: white_facecloth
+    39: windex
+    -->
+
+    <node name="point_cloud_to_mask"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/PointCloudToMaskImage $(arg MANAGER)">
+      <remap from="~input" to="extract_indices_tote/output" />
+    </node>
+    <node name="concave_hull_mask"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_perception/ConcaveHullMaskImage $(arg MANAGER)">
+      <remap from="~input" to="point_cloud_to_mask/output" />
+    </node>
+
+    <node name="mask_rcnn_relook"
+          pkg="instance_occlsegm" type="panoptic_segmentation.py"
+          clear_params="true" output="screen">
+      <!-- <remap from="~input" to="spam_apply_mask_image/output" /> -->
+      <remap from="~input" to="$(arg INPUT_IMAGE)" />
+      <remap from="~input/mask" to="concave_hull_mask/output" />
+      <rosparam subst_value="true">
+        baseline: $(arg baseline)
+        gpu: 0
+        nms_thresh: 0.3
+        # # discriminate
+        # score_thresh: 0.01
+        # target: 25
+        # context: '0,5,7,16,25'
+        # target: 7
+        # context: '7,34'
+        # target: 33
+        # context: '33,32'
+        # target: 20
+        # context: '35,20'
+        # target: 7
+        # context: '7,16,18,29'
+
+        # # undiscriminate
+        score_thresh: 0.5
+      </rosparam>
+    </node>
+
+    <include file="$(find synthetic2d)/launch/include/mask_to_bbox.launch">
+      <arg name="MANAGER" value="$(arg MANAGER)" />
+      <arg name="INPUT_MASK" value="/$(arg left_or_right)_hand_camera/mask_rcnn_relook/output/target_mask" />
+      <arg name="INPUT_CLOUD" value="/$(arg left_or_right)_hand_camera/extract_indices_tote/output" />
+    </include>
+
+    <group ns="place">
+      <include file="$(find synthetic2d)/launch/include/mask_to_bbox.launch">
+        <arg name="MANAGER" value="$(arg MANAGER)" />
+        <arg name="INPUT_MASK" value="/$(arg left_or_right)_hand_camera/mask_rcnn_relook/output/place_mask" />
+        <arg name="INPUT_CLOUD" value="/$(arg left_or_right)_hand_camera/extract_indices_tote/output" />
+      </include>
+    </group>
+
+    <group if="$(arg gui)">
+      <node name="image_view0"
+            pkg="image_view" type="image_view"
+            clear_params="true">
+        <remap from="image" to="mask_rcnn_relook/output/viz" />
+      </node>
+    </group>
+  </group>
+
+</launch>
