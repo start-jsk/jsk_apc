@@ -1,0 +1,4 @@
+include requirements.txt
+recursive-include instance_occlsegm_lib *.c
+recursive-include instance_occlsegm_lib *.h
+recursive-include instance_occlsegm_lib *.pyx

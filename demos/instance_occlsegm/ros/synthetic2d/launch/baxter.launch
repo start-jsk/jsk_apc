@@ -1,0 +1,8 @@
+<launch>
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/baxter.launch">
+    <arg name="pick" value="false" />
+    <arg name="TOTE_CONFIG_FILE" value="$(find synthetic2d)/config/stow_task/tote_marker.yaml" />
+  </include>
+
+</launch>
