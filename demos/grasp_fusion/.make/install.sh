@@ -45,7 +45,7 @@ sed -i -e 's/ENABLE_USER_SITE = None/ENABLE_USER_SITE = False/g' $ROOT/.anaconda
 
 # Install Requirements {{
 
-echo_bold "==> Installing requirements for mvtk"
+echo_bold "==> Installing requirements for grasp_fusion_lib"
 
 # if [ "$PYTHONVERSION" = "2" ]; then
 #   conda install -y pyqt
@@ -57,16 +57,16 @@ pip install -r requirements.txt
 
 # }} Install Requirements
 
-# Install mvtk
-echo_bold "==> Installing mvtk"
+# Install grasp_fusion_lib
+echo_bold "==> Installing grasp_fusion_lib"
 pip install -e .
 
 set +e
 
-echo_bold "\nAll is well! You can start using mvtk!
+echo_bold "\nAll is well! You can start using grasp_fusion_lib!
 
   $ source $ROOT/.anaconda/bin/activate
-  $ python -c 'import mvtk'
+  $ python -c 'import grasp_fusion_lib'
 
 You may also want to install following requirements:
 
