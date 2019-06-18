@@ -24,6 +24,9 @@ env:
     - USE_DEB=false
     - USE_DOCKER=true
     - USE_TRAVIS=true
+
+    # XXX: Hotfix of https://github.com/start-jsk/jsk_apc/pull/2686#issuecomment-503178976
+    - BEFORE_SCRIPT='sudo -H pip install -U gdown'
   matrix:
     - ROS_DISTRO=indigo
     - ROS_DISTRO=kinetic
