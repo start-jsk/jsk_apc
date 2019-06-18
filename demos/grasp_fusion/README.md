@@ -21,7 +21,8 @@
 
 ### Recommended
 
-[Install jsk_apc](https://github.com/start-jsk/jsk_apc/tree/master#installation).
+1. [Install whole jsk_apc](https://github.com/start-jsk/jsk_apc/tree/master#installation)
+2. `catkin build grasp_fusion` just in case
 
 ### Minimum (Some features may not work)
 
