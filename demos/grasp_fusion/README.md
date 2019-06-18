@@ -19,7 +19,13 @@
 
 ## Installation
 
-### For Examples
+### Recommended
+
+[Install jsk_apc](https://github.com/start-jsk/jsk_apc/tree/master#installation).
+
+### Minimum (Some features may not work)
+
+#### For Examples
 
 ```bash
 # create catkin workspace
@@ -30,12 +36,10 @@ cd src
 
 cd ~/catkin_ws
 source /opt/ros/kinetic/setup.zsh
-catkin build grasp_fusion
-
 catkin build grasp_fusion --no-deps
 ```
 
-### For Full Demonstration
+#### For Full Demonstration
 
 ```bash
 # create catkin workspace
