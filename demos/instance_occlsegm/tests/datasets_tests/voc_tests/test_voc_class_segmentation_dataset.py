@@ -1,7 +1,6 @@
 # Disable this test because it's too slow
 #
 # import numpy as np
-# import pytest
 #
 # import instance_occlsegm_lib
 #

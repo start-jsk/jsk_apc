@@ -2,12 +2,9 @@ import os.path as osp
 import shutil
 import tempfile
 
-import pytest
-
 import instance_occlsegm_lib
 
 
-@pytest.mark.httpaccess
 def test_download():
     tmp_dir = tempfile.mkdtemp()
 
