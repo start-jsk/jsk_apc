@@ -123,23 +123,6 @@ def imgplot(img, title=None):
         plt.title(title)
 
 
-def meshplot(verts, faces=None, ax=None, **kwargs):
-    if ax is None:
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1, projection='3d')
-    if faces is not None:
-        tri = Poly3DCollection(verts[faces, :])
-        tri.set_alpha(0.2)
-        tri.set_color('grey')
-        ax.add_collection3d(tri)
-    ax.plot(verts[:, 0], verts[:, 1], verts[:, 2], **kwargs)
-
-
-def plot_mesh(verts, faces):
-    warnings.warn('`plot_mesh` is deprecated. Please use `meshplot` instead.')
-    return meshplot(verts, faces)
-
-
 def show():
     return plt.show()
 
