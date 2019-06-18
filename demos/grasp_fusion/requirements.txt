@@ -10,7 +10,6 @@ matplotlib
 numpy
 pathlib2
 Pillow
-pycocotools
 PyYaml
 scipy>=1.0.0
 scikit-image
