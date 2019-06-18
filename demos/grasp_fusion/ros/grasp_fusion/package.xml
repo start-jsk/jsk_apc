@@ -13,9 +13,15 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>catkin_virtualenv</build_depend>
+
   <run_depend>jsk_arc2017_baxter</run_depend>
   <run_depend>jsk_pcl_ros_utils</run_depend>
   <run_depend>jsk_perception</run_depend>
 
   <test_depend>roslint</test_depend>
+
+  <export>
+    <pip_requirements>requirements.txt</pip_requirements>
+  </export>
 </package>

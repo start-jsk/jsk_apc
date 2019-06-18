@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(grasp_fusion)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED catkin_virtualenv)
 
 catkin_python_setup()
 
@@ -26,6 +26,8 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+catkin_generate_virtualenv()
+
 ###########
 ## Build ##
 ###########
@@ -39,12 +41,25 @@ include_directories(
 ## Install ##
 #############
 
+catkin_install_python(
+  PROGRAMS
+  node_scripts/affordance_segmentation.py
+  node_scripts/bounding_box_to_tf.py
+  node_scripts/get_heightmap.py
+  node_scripts/mask_rcnn_instance_segmentation.py
+  node_scripts/primitive_matching.py
+  node_scripts/sole_affordance_segmentation.py
+  node_scripts/weight_change_detector.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 install(DIRECTORY euslisp node_scripts scripts
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         USE_SOURCE_PERMISSIONS)
 install(DIRECTORY config launch samples
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         USE_SOURCE_PERMISSIONS)
+install(FILES requirements.txt
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 #############
 ## Testing ##
@@ -57,5 +72,5 @@ if(CATKIN_ENABLE_TESTING)
   roslint_python(tests)
   roslint_add_test()
 
-  catkin_add_nosetests(tests)
+  catkin_add_nosetests(tests DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv)
 endif()
