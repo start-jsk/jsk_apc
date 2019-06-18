@@ -12,54 +12,6 @@ import PIL.Image
 import skimage.io
 
 
-def load_pcd(filename):
-    """Load xyz PCD file.
-
-    Parameters
-    ----------
-    filename: str
-        PCD filename.
-    """
-    points = []
-    n_points = None
-    with open(filename, 'r') as f:
-        for line in f.readlines():
-            if line.startswith('#'):
-                continue
-
-            meta_fields = [
-                'VERSION',
-                'FIELDS',
-                'SIZE',
-                'TYPE',
-                'COUNT',
-                'WIDTH',
-                'HEIGHT',
-                'VIEWPOINT',
-                'POINTS',
-                'DATA',
-            ]
-            meta = line.strip().split(' ')
-            meta_header, meta_contents = meta[0], meta[1:]
-            if meta_header == 'FIELDS':
-                assert meta_contents == ['x', 'y', 'z']
-            elif meta_header == 'POINTS':
-                n_points = int(meta_contents[0])
-            if meta_header in meta_fields:
-                continue
-
-            x, y, z = map(float, line.split(' '))
-            points.append((x, y, z))
-
-    points = np.array(points)
-
-    if n_points is not None:
-        assert len(points) == n_points
-        assert points.shape[1] == 3
-
-    return points
-
-
 def load_off(filename):
     """Load OFF file.
 
@@ -158,16 +110,6 @@ def _get_tile_shape(num):
     return x_num, y_num
 
 
-def tileplot(plot, args_lst, shape=None):
-    if shape is None:
-        shape = _get_tile_shape(len(args_lst))
-
-    x_num, y_num = shape
-    for i, args in enumerate(args_lst):
-        plt.subplot(x_num, y_num, i + 1)
-        plot(*args)
-
-
 def imgplot(img, title=None):
     if img.ndim == 2:
         if np.issubdtype(img.dtype, np.floating):
@@ -179,32 +121,6 @@ def imgplot(img, title=None):
         plt.imshow(img)
     if title is not None:
         plt.title(title)
-
-
-def tileimg(imgs, shape=None):
-    return tileplot(imgplot, [(img,) for img in imgs], shape=shape)
-
-
-def plot_tile(imgs, shape=None):
-    warnings.warn('`plot_tile` is deprecated. Please use `tileimg` instead.')
-    return tileplot(imgplot, [(img,) for img in imgs], shape=shape)
-
-
-def meshplot(verts, faces=None, ax=None, **kwargs):
-    if ax is None:
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1, projection='3d')
-    if faces is not None:
-        tri = Poly3DCollection(verts[faces, :])
-        tri.set_alpha(0.2)
-        tri.set_color('grey')
-        ax.add_collection3d(tri)
-    ax.plot(verts[:, 0], verts[:, 1], verts[:, 2], **kwargs)
-
-
-def plot_mesh(verts, faces):
-    warnings.warn('`plot_mesh` is deprecated. Please use `meshplot` instead.')
-    return meshplot(verts, faces)
 
 
 def show():
