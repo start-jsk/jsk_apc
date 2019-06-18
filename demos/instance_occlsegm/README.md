@@ -42,6 +42,9 @@ cd ~/catkin_ws
 git clone https://github.com/start-jsk/jsk_apc.git
 cd src
 
+rosdep install --from-path . -i -y -r
+sudo -H pip install cupy-cuda101  # CUDA10.1, cupy-cuda92 for 9.2
+
 cd ~/catkin_ws
 source /opt/ros/kinetic/setup.zsh
 catkin build instance_occlsegm --no-deps
@@ -60,6 +63,9 @@ wstool init
 cat jsk_apc/.travis.rosinstall >> .rosinstall
 cat jsk_apc/.travis.rosinstall.kinetic >> .rosinstall
 wstool update -j -1
+
+rosdep install --from-path . -i -y -r
+sudo -H pip install cupy-cuda101  # CUDA10.1, cupy-cuda92 for 9.2
 
 cd ~/catkin_ws
 source /opt/ros/kinetic/setup.zsh

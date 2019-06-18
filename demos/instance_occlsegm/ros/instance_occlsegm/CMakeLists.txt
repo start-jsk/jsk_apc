@@ -7,7 +7,7 @@ project(instance_occlsegm)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED catkin_virtualenv)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -105,6 +105,8 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+catkin_generate_virtualenv()
+
 ###########
 ## Build ##
 ###########
@@ -149,6 +151,14 @@ include_directories(
 #############
 ## Install ##
 #############
+
+catkin_install_python(
+  PROGRAMS
+  nodes/panoptic_segmentation.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+install(FILES requirements.txt
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 # all install targets should use catkin DESTINATION variables
 # See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
@@ -198,5 +208,5 @@ if(CATKIN_ENABLE_TESTING)
   roslint_python(tests)
   roslint_add_test()
 
-  catkin_add_nosetests(tests)
+  catkin_add_nosetests(tests DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv)
 endif()
