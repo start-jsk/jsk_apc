@@ -2,8 +2,6 @@
 
 from . import apc
 
-from . import coco
-
 from . import voc
 
 from .utils import view_dataset
