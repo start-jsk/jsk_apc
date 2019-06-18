@@ -2,12 +2,9 @@ import os.path as osp
 import shutil
 import tempfile
 
-import pytest
-
 import grasp_fusion_lib
 
 
-@pytest.mark.httpaccess
 def test_extractall():
     tmp_dir = tempfile.mkdtemp()
 
