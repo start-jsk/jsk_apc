@@ -597,14 +597,18 @@
               (ros::ros-info "[:wait-interpolation-until] interpolatingp becomes t")
               (return))
             (unix::usleep 1000))
-          (when (and (member :inf-wait-interpolatingp args) (not in-dotimes-p))
-            (ros::ros-error "[:wait-interpolation-until] interpolatingp is nil in dotimes")
-            (ros::ros-error "[:wait-interpolation-until] Escalate to while")
-            (while t
-              (when (send self :interpolatingp)
-                (ros::ros-info "[:wait-interpolation-until] interpolatingp becomes t")
-                (return))
-              (unix::usleep 1000)))
+          (if (not (member :inf-wait-interpolatingp args))
+            (unless in-dotimes-p
+              (ros::ros-info "[:wait-interpolation-until] interpolatingp remains nil")
+              (return-from :wait-interpolation-until nil))
+            (unless in-dotimes-p
+              (ros::ros-error "[:wait-interpolation-until] interpolatingp is nil in dotimes")
+              (ros::ros-error "[:wait-interpolation-until] Escalate to while")
+              (while t
+                (when (send self :interpolatingp)
+                  (ros::ros-info "[:wait-interpolation-until] interpolatingp becomes t")
+                  (return))
+                (unix::usleep 1000))))
           (setq ready-tm (ros::time-now))
           (while (send self :interpolatingp)
             (when (reduce #'(lambda (x y) (or x y)) (mapcar #'funcall conds))
