@@ -1,8 +1,9 @@
 ARG ROS_DISTRO
 ARG UBUNTU_VERSION
-ARG TESTING
 FROM osrf/ros:${ROS_DISTRO}-desktop-${UBUNTU_VERSION}
 
+ARG ROS_DISTRO
+ARG TESTING
 RUN echo "deb http://packages.ros.org/ros-testing/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
 
 RUN apt-get update && apt-get install -y wget git
