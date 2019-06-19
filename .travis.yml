@@ -44,7 +44,7 @@ after_script:
   # trigger the build of the docker image
   # If the test fails, new docker image can be helpful,
   # so it should be triggered at both after_success and failure.
-  - curl -X POST https://registry.hub.docker.com/u/jskrobotics/jsk_apc/trigger/c4af5c9a-cf54-45b1-8beb-ccba5a102a1f/
+  - curl -X POST https://cloud.docker.com/api/build/v1/source/b8f36869-f545-4ef0-adb0-d677752668f3/trigger/dfc40dc9-fd0c-4f49-8ec6-14cd41322921/call/
 
 notifications:
   email:
