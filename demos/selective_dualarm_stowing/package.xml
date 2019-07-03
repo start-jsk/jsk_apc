@@ -13,7 +13,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <run_depend>cv_bridge</run_depend>
-  <run_depend>jsk_2015_01_baxter_apc</run_depend>
+  <run_depend>jsk_2015_05_baxter_apc</run_depend>
   <run_depend>jsk_2016_01_baxter_apc</run_depend>
   <run_depend>jsk_data</run_depend>
   <run_depend>jsk_perception</run_depend>
