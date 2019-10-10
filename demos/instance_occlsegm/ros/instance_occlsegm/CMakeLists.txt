@@ -105,7 +105,15 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
-catkin_generate_virtualenv()
+catkin_generate_virtualenv(
+  EXTRA_PIP_ARGS
+    --upgrade
+    --upgrade-strategy=eager
+    # '--upgrade-strategy=only-if-needed' does not work in following case:
+    # python-dateutil is required by matplotlib.
+    # It is satisfied and skipped as python-dateutil 2.4.2 is already installed.
+    # Later, panda require python-dateutil>=2.5.0, but pip does not execute upgrading.
+)
 
 ###########
 ## Build ##
