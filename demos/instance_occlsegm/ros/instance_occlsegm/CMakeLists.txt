@@ -107,6 +107,7 @@ catkin_package(
 
 catkin_generate_virtualenv(
   EXTRA_PIP_ARGS
+    -qqq  # Suppress log not to exceed maximum length in travis test
     --upgrade
     --upgrade-strategy=eager
     # '--upgrade-strategy=only-if-needed' does not work in following case:
