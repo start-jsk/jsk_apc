@@ -8,10 +8,11 @@ import grasp_fusion_lib
 def test_extractall():
     tmp_dir = tempfile.mkdtemp()
 
-    url = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCdevkit_18-May-2011.tar'  # NOQA
+    url = 'https://drive.google.com/uc?id=1qmgz4dY1i_2NiAEgmsPRKNc7K7u-9WRa'  # NOQA
+    md5 = '9ad4c3db5b52178819c083582f0a7f87'
     path = osp.join(tmp_dir, 'VOCdevkit_18-May-2011.tar')
     print('==> Downloading from {}'.format(url))
-    grasp_fusion_lib.data.download(url=url, path=path, quiet=True)
+    grasp_fusion_lib.data.download(url=url, path=path, md5=md5, quiet=True)
 
     print('==> Extracting {}'.format(path))
     files = grasp_fusion_lib.data.extractall(path, to=osp.dirname(path))
