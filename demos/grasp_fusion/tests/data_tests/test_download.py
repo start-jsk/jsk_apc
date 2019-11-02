@@ -17,6 +17,7 @@ def test_download():
             url=url,
             path=path,
             md5='cb31a703b96c1ab2f80d164e9676fe7d',
+            quiet=True,
         )
 
     print('File content of {}'.format(path))
