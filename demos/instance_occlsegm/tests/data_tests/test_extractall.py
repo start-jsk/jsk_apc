@@ -8,8 +8,8 @@ import instance_occlsegm_lib
 def test_extractall():
     tmp_dir = tempfile.mkdtemp()
 
-    url = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCdevkit_18-May-2011.tar'  # NOQA
-    path = osp.join(tmp_dir, 'VOCdevkit_18-May-2011.tar')
+    url = 'https://github.com/github/hub/archive/v2.12.8.zip'
+    path = osp.join(tmp_dir, 'hub.zip')
     print('==> Downloading from {}'.format(url))
     instance_occlsegm_lib.data.download(url=url, path=path, quiet=True)
 
