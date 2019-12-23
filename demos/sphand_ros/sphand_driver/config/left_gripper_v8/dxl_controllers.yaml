@@ -1,0 +1,57 @@
+prismatic_joint_controller:
+  controller:
+    package: sphand_driver
+    module: calib_required_joint_controller
+    type: CalibRequiredJointController
+  joint_name: left_gripper_prismatic_joint_motor
+  joint_speed: 5.5
+  joint_torque_limit: 0.4
+  calib_speed: 1.0
+  calib_torque_limit: 0.28
+  detect_limit_load: 0.22
+  is_multiturn: true
+  motor:
+    id: 1
+    init: 0
+    min: 0
+    max: 4840
+vacuum_pad_tendon_controller:
+  controller:
+    package: dynamixel_controllers
+    module: joint_position_controller
+    type: JointPositionController
+  joint_name: left_gripper_vacuum_pad_tendon_winder
+  joint_speed: 5.5
+  joint_torque_limit: 0.4
+  motor:
+    id: 4
+    init: 330
+    min: 0
+    max: 910
+finger_yaw_joint_controller:
+  controller:
+    package: dynamixel_controllers
+    module: joint_position_controller
+    type: JointPositionController
+  joint_name: left_gripper_finger_yaw_joint_motor
+  joint_speed: 5.5
+  joint_torque_limit: 0.2
+  motor:
+    id: 2
+    init: 250
+    min: 250
+    max: 730
+finger_tendon_controller:
+  controller:
+    package: dynamixel_controllers
+    module: joint_position_controller
+    type: JointPositionController
+  joint_name: left_gripper_finger_tendon_winder
+  joint_speed: 5.5
+  joint_torque_limit: 0.99
+  ignored_errors: ['DXL_OVERLOAD_ERROR']
+  motor:
+    id: 3
+    init: 4000
+    min: 4000
+    max: 288

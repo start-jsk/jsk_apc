@@ -1,0 +1,93 @@
+<launch>
+
+  <arg name="left_gripper" default="true" />
+  <arg name="gripper_only" default="false"/>
+  <arg name="gazebo" default="false" />
+
+  <!-- For testing gripper only -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxter.xacro"
+         if="$(arg gripper_only)"/>
+
+  <!-- left gripper -->
+  <group ns="gripper_front/limb/left" if="$(arg left_gripper)">
+    <!-- Start the loop node -->
+    <node name="loop" pkg="sphand_driver" type="gripper_v8_loop_node" required="true" output="screen">
+      <rosparam file="$(find sphand_driver)/config/left_gripper_v8/loop.yaml" command="load"/>
+      <remap from="joint_states" to="/robot/joint_states"/>
+      <remap from="vacuum" to="/vacuum_gripper/limb/left"/>
+    </node>
+
+    <!-- Start the joint state controller -->
+    <rosparam file="$(find sphand_driver)/config/left_gripper_v7/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller">
+    </node>
+
+    <!-- Start the joint trajectory controller -->
+    <rosparam file="$(find sphand_driver)/config/left_gripper_v7/joint_trajectory_controller.yaml" command="load" unless="$(arg gazebo)" />
+    <node name="joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" unless="$(arg gazebo)"
+          args="vacuum_gripper
+                hand" />
+
+    <node name="tof_average" pkg="sphand_driver" type="tof_average.py" output="screen">
+      <remap from="~input" to="tof_proximities"/>
+      <rosparam>
+        queue_size: 10
+      </rosparam>
+    </node>
+    <node name="tof_low_pass_filter" pkg="sphand_driver" type="tof_low_pass_filter.py" output="screen">
+      <remap from="~input" to="tof_proximities"/>
+      <rosparam>
+        # input_coeff: 0.8  # Min and max in stable state are almost the same as original
+        # input_coeff: 0.3  # Min and max in stable state are almost the same as average, but trackability is better than average
+        input_coeff: 0.3
+      </rosparam>
+    </node>
+    <node name="intensity_prox_calibrator" pkg="sphand_driver" type="intensity_prox_calibrator.py" output="screen">
+      <remap from="~input/intensity" to="intensity_proximities"/>
+      <remap from="~input/tof" to="tof_low_pass_filter/output"/>
+      <rosparam>
+        i_height_from_tof: [6.0, 6.0, 6.0, 6.0, 0.0, 0.0, 0.0, 0.0]
+        use_i_average: true
+        i_valid_min: 20
+        i_valid_max: 1000
+        i_valid_max_dist: 60
+        tof_valid_min: 45
+        # rubber_thickness: [4.5, 4.5, 4.5, 4.5, 5.67, 5.67, 5.67, 5.67]
+      </rosparam>
+    </node>
+    <node name="force_estimator" pkg="sphand_driver" type="force_estimator.py" output="screen">
+      <remap from="~input" to="intensity_prox_calibrator/output"/>
+      <rosparam>
+        rubber_thickness: [4.5, 4.5, 4.5, 4.5, 5.67, 5.67, 5.67, 5.67]
+        rubber_stiffness: [15.31, 15.31, 15.31, 15.31, 15.31, 15.31, 15.31, 15.31]
+      </rosparam>
+    </node>
+  </group>
+
+  <!-- right gripper -->
+  <group ns="gripper_front/limb/right" unless="$(arg left_gripper)">
+    <!-- Start the loop node -->
+    <node name="loop" pkg="sphand_driver" type="gripper_v8_loop_node" required="true" output="screen">
+      <rosparam file="$(find sphand_driver)/config/right_gripper_v8/loop.yaml" command="load"/>
+    </node>
+
+    <!-- Start the joint state controller -->
+    <!--
+    <rosparam file="$(find sphand_driver)/config/left_gripper_v7/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller">
+    </node>
+    -->
+
+    <!-- Start the joint trajectory controller -->
+    <!--
+    <rosparam file="$(find sphand_driver)/config/right_gripper_v7/joint_trajectory_controller.yaml" command="load" unless="$(arg gazebo)" />
+    <node name="joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" unless="$(arg gazebo)"
+          args="vacuum_gripper
+                hand" />
+    -->
+  </group>
+
+</launch>

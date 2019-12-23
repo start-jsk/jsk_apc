@@ -1,0 +1,4 @@
+# Change permission of gpio
+# Based on 2nd answer in https://stackoverflow.com/questions/30938991/access-gpio-sys-class-gpio-as-non-root
+# Checked with method described in https://tool-lab.com/2013/12/raspi-gpio-controlling-command-1/
+SUBSYSTEM=="gpio*", PROGRAM="/bin/sh -c 'find -L /sys/class/gpio/ -maxdepth 2 -exec chmod 777 {} \; || true'"

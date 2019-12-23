@@ -1,0 +1,2 @@
+# Create symlink /dev/dxhub
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{product}=="E104", MODE="0666", SYMLINK+="dxhub"

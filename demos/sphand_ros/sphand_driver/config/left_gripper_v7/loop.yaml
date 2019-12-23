@@ -1,0 +1,36 @@
+# Actuators
+actuator_names:
+  - left_gripper_prismatic_joint_motor
+  - left_gripper_vacuum_pad_tendon_winder
+  - left_gripper_finger_yaw_joint_motor
+  - left_gripper_finger_tendon_winder
+controller_names:
+  - prismatic_joint_controller
+  - vacuum_pad_tendon_controller
+  - finger_yaw_joint_controller
+  - finger_tendon_controller
+
+vacuum_pad_motion_limit_config:
+  # Lower limit of prismatic joint for free motion of vacuum pad
+  prismatic_joint_threshold: 0.36
+  # Upper angle limit of vacuum pad joint
+  upper_angle_limit: 0
+
+# Flex sensors
+flex_names:
+  - right
+  - left
+flex_thresholds:
+  - 3260
+  - 3450
+wind_offset_flex:
+  - 0.5
+  - 0.5
+
+# Proximity sensors
+proximity_sensor_num: 3
+
+# FIXME: As dynamixel_controllers cannot run at over 27 Hz, command publish rate should be
+#        less than 27 Hz, otherwise motor command will be delayed due to infinite queue of
+#        ros subscribers in dynamixel_controllers
+control_rate: 25

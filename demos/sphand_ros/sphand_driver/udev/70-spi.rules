@@ -1,0 +1,2 @@
+# Change permission of spidev2.0 and spidev2.1
+KERNEL=="spidev2.[0-1]*", MODE="0666"

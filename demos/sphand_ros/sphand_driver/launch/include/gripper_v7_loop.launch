@@ -1,0 +1,58 @@
+<launch>
+
+  <arg name="left_gripper" default="true" />
+  <arg name="gripper_only" default="false"/>
+  <arg name="gazebo" default="false" />
+
+  <!-- For testing gripper only -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxter.xacro"
+         if="$(arg gripper_only)"/>
+
+  <!-- left gripper -->
+  <group ns="gripper_front/limb/left" if="$(arg left_gripper)">
+    <!-- Start the loop node -->
+    <node name="loop" pkg="sphand_driver" type="gripper_v7_loop_node" required="true" output="screen">
+      <rosparam file="$(find sphand_driver)/config/left_gripper_v7/loop.yaml" command="load"/>
+      <remap from="joint_states" to="/robot/joint_states"/>
+      <remap from="vacuum" to="/vacuum_gripper/limb/left"/>
+    </node>
+
+    <!-- Start the joint state controller -->
+    <rosparam file="$(find sphand_driver)/config/left_gripper_v7/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller">
+    </node>
+
+    <!-- Start the joint trajectory controller -->
+    <rosparam file="$(find sphand_driver)/config/left_gripper_v7/joint_trajectory_controller.yaml" command="load" unless="$(arg gazebo)" />
+    <node name="joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" unless="$(arg gazebo)"
+          args="vacuum_gripper
+                hand" />
+  </group>
+
+  <!-- right gripper -->
+  <group ns="gripper_front/limb/right" unless="$(arg left_gripper)">
+    <!-- Start the loop node -->
+    <node name="loop" pkg="sphand_driver" type="gripper_v7_loop_node" required="true" output="screen">
+      <rosparam file="$(find sphand_driver)/config/right_gripper_v7/loop.yaml" command="load"/>
+    </node>
+
+    <!-- Start the joint state controller -->
+    <!--
+    <rosparam file="$(find sphand_driver)/config/left_gripper_v7/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller">
+    </node>
+    -->
+
+    <!-- Start the joint trajectory controller -->
+    <!--
+    <rosparam file="$(find sphand_driver)/config/right_gripper_v7/joint_trajectory_controller.yaml" command="load" unless="$(arg gazebo)" />
+    <node name="joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" unless="$(arg gazebo)"
+          args="vacuum_gripper
+                hand" />
+    -->
+  </group>
+
+</launch>

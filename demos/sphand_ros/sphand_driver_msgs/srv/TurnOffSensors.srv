@@ -1,0 +1,4 @@
+uint64[] sensor_ids
+---
+bool success
+string message

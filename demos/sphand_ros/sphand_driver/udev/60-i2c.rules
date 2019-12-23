@@ -1,0 +1,5 @@
+# Change permission of i2c devices.
+# i2c-1 is used in old UP Board (with Ubuntu 14.04, kernel 4.2.0-3-upboard),
+# and i2c-5 is used in new UP Board (with Ubuntu 16.04, kernel 4.15.0 for UP).
+# See https://web.archive.org/web/20180603231959/https://wiki.up-community.org/Pinout and https://web.archive.org/web/20190524213430/https://wiki.up-community.org/Pinout
+KERNEL=="i2c-*", MODE="0666"
