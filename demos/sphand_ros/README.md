@@ -37,24 +37,7 @@ Details are on [GitHub page](https://github.com/intel-iot-devkit/mraa).
 
 ### Install sphand_ros and its dependencies
 
-```bash
-mkdir -p ~/apc_ws/src
-cd ~/apc_ws/src
-git clone https://github.com/pazeshun/sphand_ros.git
-ln -s sphand_ros/fc.rosinstall .rosinstall
-wstool update
-cd JSK_APC_WS
-# `ln -s jsk_apc/.travis.rosinstall .rosinstall` is better, but .travis.rosinstall.$ROS_DISTRO is also needed
-cp jsk_apc/.travis.rosinstall .rosinstall
-wstool merge jsk_apc/.travis.rosinstall.$ROS_DISTRO
-wstool update
-cd ~/apc_ws/src
-rosdep install -y -r --from-paths . --ignore-src
-sudo apt-get install python-catkin-tools
-cd ..
-catkin build
-source ~/apc_ws/devel/setup.bash
-```
+Follow "Build catkin workspace for jsk_apc" in <https://github.com/start-jsk/jsk_apc/blob/master/README.md>.
 
 ### Setup I<sup>2</sup>C, SPI and DXHUB
 
