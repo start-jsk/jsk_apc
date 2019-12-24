@@ -3,21 +3,7 @@
 
 ## Installation
 
-First, [install jsk_apc](https://github.com/start-jsk/jsk_apc#installation).
-
-```bash
-source ~/ros/ws_jsk_apc/devel/setup.bash  # source jsk_apc workspace
-
-WS=~/ros_mvtk/src
-mkdir -p $WS
-cd $WS
-
-wstool init
-wstool set ros_mvtk https://github.com/wkentaro/ros_mvtk.git --git -vmaster -y -u
-
-cd ..
-catkin build
-```
+[Install jsk_apc](https://github.com/start-jsk/jsk_apc#installation).
 
 
 ## Nodes
@@ -25,10 +11,10 @@ catkin build
 ### fcn_object_segmentation.py
 
 ```bash
-roslaunch sample_fcn_object_segmentation.launch
+roslaunch grasp_prediction_arc2017 sample_fcn_object_segmentation.launch
 ```
 
-![](samples/images/fcn_object_segmentation.jpg)
+![](ros/grasp_prediction_arc2017/samples/images/fcn_object_segmentation.jpg)
 
 
 ## ARC2017 demonstration
