@@ -1,0 +1,173 @@
+<launch>
+
+  <!-- args -->
+
+  <arg name="gui" default="true" />
+  <arg name="GPU" default="0" />
+
+  <include file="$(find grasp_prediction_arc2017)/launch/play_rosbag.launch" />
+
+  <!-- processing -->
+
+  <node name="fcn_object_segmentation"
+        pkg="grasp_prediction_arc2017" type="fcn_object_segmentation.py">
+    <remap from="~input" to="/right_hand_camera/left/rgb/image_rect_color" />
+    <rosparam subst_value="true">
+      model_name: fcn32s
+      n_class: 33
+      model_file: $(optenv HOME)/data/mvtk/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz
+      class_agnostic: true
+      gpu: $(arg GPU)
+      thresh_class_prob: 0.5
+      thresh_suction_prob: 0.7
+    </rosparam>
+  </node>
+
+  <arg name="MANAGER" value="nodelet_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager" />
+
+  <node name="label_to_mask_class"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/LabelToMaskImage $(arg MANAGER)">
+    <remap from="~input" to="fcn_object_segmentation/output/label_class" />
+    <rosparam>
+      label_value: 24
+    </rosparam>
+  </node>
+
+  <node name="label_to_mask_suction"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/LabelToMaskImage $(arg MANAGER)">
+    <remap from="~input" to="fcn_object_segmentation/output/label_suction" />
+    <rosparam>
+      label_value: 1
+    </rosparam>
+  </node>
+
+  <node name="multiply_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/MultiplyMaskImage $(arg MANAGER)">
+    <remap from="~input/src1" to="label_to_mask_class/output" />
+    <remap from="~input/src2" to="label_to_mask_suction/output" />
+  </node>
+
+  <node name="mask_to_indices"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/MaskImageToPointIndices $(arg MANAGER)">
+    <remap from="~input" to="multiply_mask/output" />
+  </node>
+
+  <node name="extract_indices"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="/right_hand_camera/fused/depth_registered/points" />
+    <remap from="~indices" to="mask_to_indices/output" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 30
+    </rosparam>
+  </node>
+
+  <node name="euclidean_clustering"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/EuclideanClustering $(arg MANAGER)">
+    <remap from="~input" to="extract_indices/output" />
+  </node>
+
+  <node name="cluster_indices_decomposer"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg MANAGER)">
+    <remap from="~input" to="extract_indices/output" />
+    <remap from="~target" to="euclidean_clustering/output" />
+    <rosparam>
+      approximate_sync: false
+      queue_size: 30
+    </rosparam>
+  </node>
+
+  <node name="bboxes_to_bbox"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg MANAGER)">
+    <remap from="~input" to="cluster_indices_decomposer/boxes" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+
+  <node name="poses_to_pose"
+        pkg="jsk_recognition_utils" type="pose_array_to_pose.py">
+    <remap from="~input" to="cluster_indices_decomposer/centroid_pose_array" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+
+  <!-- visualization -->
+
+  <node name="label_image_decomposer_class"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="/right_hand_camera/left/rgb/image_rect_color" />
+    <remap from="~input/label" to="/fcn_object_segmentation/output/label_class" />
+    <rosparam>
+      alpha: 0.5
+      queue_size: 50
+    </rosparam>
+  </node>
+
+  <node name="label_image_decomposer_suction"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="/right_hand_camera/left/rgb/image_rect_color" />
+    <remap from="~input/label" to="/fcn_object_segmentation/output/label_suction" />
+    <rosparam>
+      alpha: 0.7
+      queue_size: 50
+    </rosparam>
+  </node>
+
+  <node name="image_view_prob_suction"
+        pkg="image_view" type="image_view">
+    <remap from="image" to="fcn_object_segmentation/output/prob_suction" />
+    <remap from="~output" to="fcn_object_segmentation/output/prob_suction_view" />
+    <rosparam>
+      gui: false
+      min_image_value: 0
+      max_image_value: 1
+      colormap: 2  # JET
+    </rosparam>
+  </node>
+  <node name="overlay_color_on_mono_prob_suction"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/OverlayImageColorOnMono $(arg MANAGER)">
+    <remap from="~input/color" to="fcn_object_segmentation/output/prob_suction_view" />
+    <remap from="~input/mono" to="/right_hand_camera/left/rgb/image_rect_color" />
+    <rosparam>
+      color_alpha: 0.7
+      queue_size: 50
+    </rosparam>
+  </node>
+
+  <!-- gui -->
+
+  <group if="$(arg gui)">
+    <node name="$(anon rviz)"
+          pkg="rviz" type="rviz"
+          args="-d $(find grasp_prediction_arc2017)/samples/config/fcn_object_segmentation.rviz">
+    </node>
+  </group>
+
+  <!-- test -->
+
+  <test test-name="test_fcn_object_segmentation"
+        name="test_fcn_object_segmentation"
+        pkg="jsk_tools" type="test_topic_published.py"
+        time-limit="60">
+    <rosparam>
+      topic_0: /fcn_object_segmentation/output/label_class
+      timeout_0: 30
+      topic_1: /fcn_object_segmentation/output/label_suction
+      timeout_1: 30
+    </rosparam>
+  </test>
+
+</launch>

@@ -1,0 +1,190 @@
+<launch>
+
+  <arg name="load_driver" default="true" />
+  <arg name="launch_scale" default="true" />
+  <arg name="launch_left" default="true" />
+  <arg name="launch_right" default="false" />
+
+  <!-- get machine tag -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" if="$(arg launch_scale)" />
+
+  <!-- hand mounted camera -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+    <arg name="load_driver" value="$(arg load_driver)" />
+    <arg name="launch_left_hand_stereo" value="false" />
+    <arg name="launch_right_hand_stereo" value="$(arg launch_right)" />
+    <arg name="pick" value="true" />
+  </include>
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_gripper_v7.launch">
+    <arg name="launch_left_hand_stereo" value="$(arg launch_left)" />
+  </include>
+
+  <!-- weight scale -->
+  <!--
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/scale.launch" if="$(arg launch_scale)" />
+  -->
+
+  <arg name="LEFT_CAMERA_INFO" value="/left_hand_camera/fused/rgb/camera_info" />
+  <arg name="LEFT_INPUT_CLOUD" value="/left_hand_camera/fused/depth_registered/points" />
+  <arg name="LEFT_INPUT_IMAGE" value="/left_hand_camera/left/rgb/image_rect_color" />
+  <arg name="LEFT_MANAGER" value="/left_hand_camera/left/left_nodelet_manager" />
+  <arg name="RIGHT_CAMERA_INFO" value="/right_hand_camera/fused/rgb/camera_info" />
+  <arg name="RIGHT_INPUT_CLOUD" value="/right_hand_camera/fused/depth_registered/points" />
+  <arg name="RIGHT_INPUT_IMAGE" value="/right_hand_camera/left/rgb/image_rect_color" />
+  <arg name="RIGHT_MANAGER" value="/right_hand_camera/left/left_nodelet_manager" />
+
+  <!-- Launch pipeline for 3D object segmentation. -->
+  <!-- for left hand camera -->
+  <group ns="left_hand_camera" if="$(arg launch_left)">
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg LEFT_MANAGER)">
+      <remap from="~input" to="/transformable_bin_markers/output/boxes" />
+      <rosparam>
+        index: 0
+      </rosparam>
+    </node>
+    <node name="attention_clipper_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="extract_indices_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
+      <rosparam>
+        keep_organized: true
+        approximate_sync: true
+        max_queue_size: 100
+      </rosparam>
+    </node>
+    <include file="$(find grasp_prediction_arc2017)/launch/object_segmentation_3d.launch">
+      <arg name="NODELET_MANAGER" value="$(arg LEFT_MANAGER)" />
+      <arg name="INPUT_IMAGE" value="$(arg LEFT_INPUT_IMAGE)"/>
+      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
+      <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
+      <arg name="FIXED_FRAME" value="base" />
+      <arg name="MODEL_NAME" value="fcn8s_at_once" />
+      <arg name="N_CLASS" value="19" />
+      <arg name="CLASS_AGNOSTIC" value="false" />
+      <arg name="MODEL_FILE" value="$(optenv HOME)/data/master_thesis/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz" />
+      <arg name="GPU" value="0" />
+      <arg name="ALIGN_WITH_SURFACE" value="true" />
+      <arg name="USE_PCA" value="true" />
+      <arg name="USE_TOPIC" value="true" />
+      <arg name="SELECT_LARGEST" value="true" />
+      <arg name="IGNORE_LABELS" value="[0, 41]" />
+      <arg name="THRESH_SUCTION_PROB" value="0.5" />
+    </include>
+
+    <!-- weight object classifier -->
+    <!--
+    <node name="weight_candidates_refiner"
+          pkg="jsk_arc2017_common" type="weight_candidates_refiner.py">
+      <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 10
+        input_topics:
+          - /scale0/output
+          - /scale1/output
+          - /scale2/output
+          - /scale3/output
+        error: 10.0
+      </rosparam>
+    </node>
+
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
+      <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
+      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output" />
+      <arg name="INPUT_INFO" value="left/rgb/camera_info" />
+      <arg name="INPUT_PROBA_IMAGE" value="fcn_object_segmentation/output/proba_image" />
+      <arg name="NODELET_MANAGER" value="left/left_nodelet_manager" />
+    </include>
+    -->
+  </group>
+  <!-- for right hand camera -->
+  <group ns="right_hand_camera" if="$(arg launch_right)">
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg RIGHT_MANAGER)">
+      <remap from="~input" to="/transformable_bin_markers/output/boxes" />
+      <rosparam>
+        index: 2
+      </rosparam>
+    </node>
+    <node name="attention_clipper_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg RIGHT_MANAGER)">
+      <remap from="~input" to="$(arg RIGHT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg RIGHT_INPUT_CLOUD)" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="extract_indices_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg RIGHT_MANAGER)">
+      <remap from="~input" to="$(arg RIGHT_INPUT_CLOUD)" />
+      <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
+      <rosparam>
+        keep_organized: true
+        approximate_sync: true
+        max_queue_size: 100
+      </rosparam>
+    </node>
+    <include file="$(find grasp_prediction_arc2017)/launch/object_segmentation_3d.launch">
+      <arg name="NODELET_MANAGER" value="$(arg RIGHT_MANAGER)" />
+      <arg name="INPUT_IMAGE" value="$(arg RIGHT_INPUT_IMAGE)"/>
+      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
+      <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
+      <arg name="FIXED_FRAME" value="base" />
+      <arg name="MODEL_NAME" value="fcn8s_at_once" />
+      <arg name="N_CLASS" value="19" />
+      <arg name="CLASS_AGNOSTIC" value="false" />
+      <arg name="MODEL_FILE" value="$(optenv HOME)/data/master_thesis/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz" />
+      <arg name="GPU" value="0" />
+      <arg name="ALIGN_WITH_SURFACE" value="true" />
+      <arg name="USE_PCA" value="true" />
+      <arg name="USE_TOPIC" value="true" />
+      <arg name="SELECT_LARGEST" value="true" />
+      <arg name="IGNORE_LABELS" value="[0, 41]" />
+      <arg name="THRESH_SUCTION_PROB" value="0.5" />
+    </include>
+
+    <!-- weight object classifier -->
+    <!--
+    <node name="weight_candidates_refiner"
+          pkg="jsk_arc2017_common" type="weight_candidates_refiner.py">
+      <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 10
+        input_topics:
+          - /scale0/output
+          - /scale1/output
+          - /scale2/output
+          - /scale3/output
+        error: 10.0
+      </rosparam>
+    </node>
+
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
+      <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
+      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output" />
+      <arg name="INPUT_INFO" value="left/rgb/camera_info" />
+      <arg name="INPUT_PROBA_IMAGE" value="fcn_object_segmentation/output/proba_image" />
+      <arg name="NODELET_MANAGER" value="left/left_nodelet_manager" />
+    </include>
+    -->
+  </group>
+
+</launch>

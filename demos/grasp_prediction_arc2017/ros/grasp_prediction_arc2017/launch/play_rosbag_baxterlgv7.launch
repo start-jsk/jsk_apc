@@ -1,0 +1,125 @@
+<launch>
+
+  <!--
+  NOTE: Following operations are needed to run recognition properly
+        - setting target object by re-configure label_to_mask/label_value
+        - running candidates_publisher by launching pick_book.launch
+        - reducing candidates by calling /json_saver/update_json when an object is picked
+  -->
+
+  <!-- play rosbag -->
+
+  <arg name="filename" />
+  <param name="/use_sim_time" value="true" />
+  <node name="rosbag_play"
+        pkg="rosbag" type="play"
+        args="$(arg filename) --clock --loop">
+  </node>
+
+  <!-- necessary setups from baxterlgv7.launch -->
+
+  <arg name="set_baxter_params" default="true" />
+  <group if="$(arg set_baxter_params)">
+    <!-- custom baxter params -->
+    <param name="/robot_description"
+           command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxterlgv7.xacro" />
+  </group>
+  <arg name="setup_source_location" default="true" />
+  <arg name="book_picking" default="true" />
+  <arg name="pick" default="true" />
+  <group if="$(arg setup_source_location)">
+    <!-- picking source location: shelf/tote -->
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml" unless="$(arg book_picking)">
+      <arg name="pick" value="$(arg pick)" />
+    </include>
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_book_picking_location.xml" if="$(arg book_picking)" />
+  </group>
+
+  <!-- cameras >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+  <arg name="launch_setup" default="true" />
+  <group unless="$(arg launch_setup)">
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+      <arg name="load_driver" value="false" />
+      <arg name="launch_left_hand_stereo" value="false" />
+      <arg name="pick" value="$(arg pick)" />
+    </include>
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_gripper_v7.launch" />
+  </group>
+  <group if="$(arg launch_setup)">
+    <include file="$(find grasp_prediction_arc2017)/launch/setup_for_pick_baxterlgv7.launch">
+      <arg name="load_driver" value="false" />
+      <arg name="launch_scale" value="false" />
+    </include>
+  </group>
+
+  <!-- left_hand_camera -->
+  <group ns="/left_hand_camera/left/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/left/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/right/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/right/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/left/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <!-- right_hand_camera -->
+  <group ns="/right_hand_camera/left/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/right/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/right/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+
+  <!-- cameras <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+
+</launch>

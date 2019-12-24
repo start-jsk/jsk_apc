@@ -1,0 +1,89 @@
+<launch>
+
+  <!-- play rosbag -->
+
+  <arg name="filename" default="$(optenv HOME)/data/mvtk/grasp_prediction_arc2017/rosbags/arc2017_pick_red_composition_book.bag" />
+  <param name="/use_sim_time" value="true" />
+  <node name="rosbag_play"
+        pkg="rosbag" type="play"
+        args="$(arg filename) --clock --loop">
+  </node>
+
+  <!-- cameras >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+  <arg name="pick" default="true" />
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+    <arg name="pick" value="$(arg pick)" />
+    <arg name="load_driver" value="false" />
+  </include>
+
+  <!-- left_hand_camera -->
+  <group ns="/left_hand_camera/left/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/left/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/right/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/left_hand_camera/right/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/left/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <!-- right_hand_camera -->
+  <group ns="/right_hand_camera/left/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/right/rgb">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+  <group ns="/right_hand_camera/right/depth">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressedDepth raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
+
+  <!-- cameras <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
+
+</launch>
