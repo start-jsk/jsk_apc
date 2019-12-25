@@ -19,4 +19,4 @@ tmux new-session -d -s gripper -n roslaunch "script -f /tmp/supervisor/launch_lo
 ## Using pipe-pane like following does not work when -d is specified in new-session:
 ## tmux pipe-pane -o -t gripper:roslaunch.0 "cat > /tmp/supervisor/launch_logger_fifo"
 ## capture-pane works, but it only captures current state and does not know which line is new
-tmux send-keys -t gripper:roslaunch.0 "source ~/apc_ws/devel/setup.bash && rossetip && rossetmaster baxter && roslaunch sphand_driver setup_gripper_v8.launch left_gripper:=true" Enter
+tmux send-keys -t gripper:roslaunch.0 "source ~/ros/ws_jsk_apc/devel/setup.bash && rossetip && rossetmaster baxter && roslaunch sphand_driver setup_gripper_v8.launch left_gripper:=true" Enter
