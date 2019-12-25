@@ -12,7 +12,7 @@ import skimage.io
 import skimage.util
 import tqdm
 
-import mvtk
+import grasp_fusion_lib
 
 
 class FCNTrainer(object):
@@ -146,8 +146,8 @@ class FCNTrainer(object):
                     viz_suc = np.hstack([
                         viz_suc,
                         np.vstack([
-                            mvtk.image.colorize_heatmap(hst),
-                            mvtk.image.colorize_heatmap(hsp),
+                            grasp_fusion_lib.image.colorize_heatmap(hst),
+                            grasp_fusion_lib.image.colorize_heatmap(hsp),
                         ]),
                     ])
                     viz = np.hstack((viz_cls, viz_suc))

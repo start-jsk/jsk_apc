@@ -6,10 +6,10 @@ import chainer
 import cv2
 import numpy as np
 
-import mvtk
-from mvtk.datasets.apc.arc2017 import class_names_arc2017
-from mvtk.datasets.apc.arc2017 import JskARC2017DatasetV3
-from mvtk.datasets.apc.arc2017 import load_item_data
+import grasp_fusion_lib
+from grasp_fusion_lib.datasets.apc.arc2017 import class_names_arc2017
+from grasp_fusion_lib.datasets.apc.arc2017 import JskARC2017DatasetV3
+from grasp_fusion_lib.datasets.apc.arc2017 import load_item_data
 
 
 def get_shelf_data_hasegawa_iros2018():
@@ -57,7 +57,9 @@ class ItemDataDataset(chainer.dataset.DatasetMixin):
         # shelf templates
         self._dataset = JskARC2017DatasetV3(split=self.split)
         if self.project == 'wada_icra2018':
-            from mvtk.datasets.apc.arc2017.jsk import get_shelf_data
+            from grasp_fusion_lib.datasets.apc.arc2017.jsk import (
+                get_shelf_data
+            )
             get_shelf_data_func = get_shelf_data
         elif (self.project == 'hasegawa_iros2018' or
               self.project == 'hasegawa_master_thesis'):
@@ -82,7 +84,7 @@ class ItemDataDataset(chainer.dataset.DatasetMixin):
             lbl_shelf = self.shelf_lbl[index_shelf]
 
         mask_labeled = lbl_shelf != -1
-        x1, y1, x2, y2 = mvtk.image.mask_to_bbox(mask_labeled)
+        x1, y1, x2, y2 = grasp_fusion_lib.image.mask_to_bbox(mask_labeled)
         img_shelf = img_shelf[y1:y2, x1:x2]
         lbl_shelf = lbl_shelf[y1:y2, x1:x2]
 
@@ -108,21 +110,21 @@ class ItemDataDataset(chainer.dataset.DatasetMixin):
         object_data = copy.deepcopy(self.object_data)
         random_state.shuffle(object_data)
         if self.project == 'wada_icra2018':
-            object_data = mvtk.aug.augment_object_data(
+            object_data = grasp_fusion_lib.aug.augment_object_data(
                 object_data, random_state)
         elif (self.project == 'hasegawa_iros2018' or
               self.project == 'hasegawa_master_thesis'):
-            object_data = mvtk.aug.augment_object_data(
+            object_data = grasp_fusion_lib.aug.augment_object_data(
                 object_data, random_state, scale=(0.15, 0.8))
-        stacked = mvtk.aug.stack_objects(
+        stacked = grasp_fusion_lib.aug.stack_objects(
             img_shelf, lbl_shelf, object_data,
             region_label=0, random_state=random_state)
         if self.project == 'wada_icra2018':
-            stacked = next(mvtk.aug.augment_object_data(
+            stacked = next(grasp_fusion_lib.aug.augment_object_data(
                 [stacked], random_state, fit_output=False))
         elif (self.project == 'hasegawa_iros2018' or
               self.project == 'hasegawa_master_thesis'):
-            stacked = next(mvtk.aug.augment_object_data(
+            stacked = next(grasp_fusion_lib.aug.augment_object_data(
                 [stacked], random_state, fit_output=False,
                 scale=(0.15, 0.8)))
         return stacked['img'], stacked['lbl'], stacked['lbl_suc']
@@ -160,10 +162,10 @@ if __name__ == '__main__':
 
     def visualize_func(dataset, index):
         img, lbl, lbl_suc = dataset[index]
-        lbl_viz = mvtk.datasets.visualize_label(
+        lbl_viz = grasp_fusion_lib.datasets.visualize_label(
             lbl, img, class_names=dataset.class_names)
-        lbl_suc_viz = mvtk.datasets.visualize_label(
+        lbl_suc_viz = grasp_fusion_lib.datasets.visualize_label(
             lbl_suc, img, class_names=['no_suction', 'suction'])
         return np.hstack((img, lbl_viz, lbl_suc_viz))
 
-    mvtk.datasets.view_dataset(dataset, visualize_func)
+    grasp_fusion_lib.datasets.view_dataset(dataset, visualize_func)
