@@ -8,7 +8,9 @@ from jsk_topic_tools import ConnectionBasedTransport
 import rospy
 from sensor_msgs.msg import Image
 
-from mvtk.contrib.grasp_prediction_arc2017 import models
+from grasp_prediction_arc2017_lib.contrib.grasp_prediction_arc2017 import (
+    models
+)
 
 
 class FCNObjectSegmentation(ConnectionBasedTransport):
@@ -37,7 +39,7 @@ class FCNObjectSegmentation(ConnectionBasedTransport):
         chainer.global_config.train = False
         self.gpu = rospy.get_param('~gpu')
 
-        # model_file = osp.expanduser('~/data/mvtk/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz')  # NOQA
+        # model_file = osp.expanduser('~/data/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz')  # NOQA
         # model_file = osp.expanduser('~/data/iros2018/system_inputs/ForItemDataBooks3/FCN32s_180215_210043_iter00050000.npz')  # NOQA
         model_file = rospy.get_param('~model_file')
         chainer.serializers.load_npz(model_file, self.model)

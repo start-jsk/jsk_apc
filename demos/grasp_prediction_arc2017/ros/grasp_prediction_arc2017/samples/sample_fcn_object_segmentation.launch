@@ -15,7 +15,7 @@
     <rosparam subst_value="true">
       model_name: fcn32s
       n_class: 33
-      model_file: $(optenv HOME)/data/mvtk/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz
+      model_file: $(optenv HOME)/data/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz
       class_agnostic: true
       gpu: $(arg GPU)
       thresh_class_prob: 0.5

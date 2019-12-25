@@ -2,7 +2,7 @@
 
   <!-- play rosbag -->
 
-  <arg name="filename" default="$(optenv HOME)/data/mvtk/grasp_prediction_arc2017/rosbags/arc2017_pick_red_composition_book.bag" />
+  <arg name="filename" default="$(optenv HOME)/data/grasp_prediction_arc2017/rosbags/arc2017_pick_red_composition_book.bag" />
   <param name="/use_sim_time" value="true" />
   <node name="rosbag_play"
         pkg="rosbag" type="play"

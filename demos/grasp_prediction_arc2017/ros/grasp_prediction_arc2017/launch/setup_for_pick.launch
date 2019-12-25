@@ -81,7 +81,7 @@
       <arg name="MODEL_NAME" value="fcn32s" />
       <arg name="N_CLASS" value="33" />
       <arg name="CLASS_AGNOSTIC" value="true" />
-      <arg name="MODEL_FILE" value="$(optenv HOME)/data/mvtk/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz" />
+      <arg name="MODEL_FILE" value="$(optenv HOME)/data/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz" />
       <arg name="GPU" value="0" />
       <arg name="USE_PCA" value="true" />
       <arg name="USE_TOPIC" value="true" />
@@ -153,7 +153,7 @@
       <arg name="MODEL_NAME" value="fcn32s" />
       <arg name="N_CLASS" value="33" />
       <arg name="CLASS_AGNOSTIC" value="true" />
-      <arg name="MODEL_FILE" value="$(optenv HOME)/data/mvtk/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz" />
+      <arg name="MODEL_FILE" value="$(optenv HOME)/data/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz" />
       <arg name="GPU" value="0" />
       <arg name="USE_PCA" value="true" />
       <arg name="USE_TOPIC" value="true" />
