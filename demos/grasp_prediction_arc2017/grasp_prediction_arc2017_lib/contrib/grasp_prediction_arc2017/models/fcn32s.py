@@ -148,7 +148,7 @@ class FCN32s(chainer.Chain):
             assert not chainer.config.train
             return
 
-        if chainer.config.train:  # used at train.
+        if not self.class_agnostic and chainer.config.train:  # used at train.
             # n_class, 2, N * H * W -> 2, N * H * W
             upscore_suc = upscore_suc[
                 t_cls.array.reshape(-1), :, np.arange(N * H * W)]

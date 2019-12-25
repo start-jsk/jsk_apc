@@ -43,9 +43,11 @@ def main():
     if args.project == 'wada_icra2018':
         item_data_dir = datasets.item_data.pick_re_experiment()
         bg_from_dataset_ratio = 0.7
+        class_agnostic = True
     elif args.project == 'hasegawa_iros2018':
         item_data_dir = osp.expanduser('~/data/iros2018/datasets/ItemDataBooks3')  # NOQA
         bg_from_dataset_ratio = 0
+        class_agnostic = False
     else:
         raise ValueError
 
@@ -84,7 +86,7 @@ def main():
 
     n_class = len(dataset_train.class_names)
 
-    model = models.FCN32s(n_class=n_class)
+    model = models.FCN32s(n_class=n_class, class_agnostic=class_agnostic)
 
     # pretrained_model -> model
     pretrained_model_file = osp.expanduser('~/data/arc2017/models/fcn32s_cfg012_arc2017_iter00140000_20170729.npz')  # NOQA
