@@ -8,11 +8,12 @@
   <author email="www.kentaro.wada@gmail.com">Kentaro Wada</author>
 
   <license>MIT</license>
-  <url type="repository">https://github.com/wkentaro/ros_mvtk</url>
-  <url type="bugtracker">https://github.com/wkentaro/ros_mvtk/issues</url>
+  <url type="repository">https://github.com/start-jsk/jsk_apc</url>
+  <url type="bugtracker">https://github.com/start-jsk/jsk_apc/issues</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>grasp_fusion</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>image_view</run_depend>
   <run_depend>jsk_arc2017_baxter</run_depend>
