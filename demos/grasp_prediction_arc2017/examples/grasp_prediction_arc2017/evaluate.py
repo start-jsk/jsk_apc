@@ -11,9 +11,11 @@ import numpy as np
 import skimage.io
 import tqdm
 
-import mvtk
-from mvtk.contrib.grasp_prediction_arc2017 import datasets
-from mvtk.contrib.grasp_prediction_arc2017 import models
+import grasp_fusion_lib
+from grasp_prediction_arc2017_lib.contrib.grasp_prediction_arc2017 import (
+    datasets,
+    models,
+)
 
 
 def main():
@@ -86,10 +88,10 @@ def main():
     if not osp.exists(out_dir):
         os.makedirs(out_dir)
     for i in range(len(imgs)):
-        viz_cls = mvtk.datasets.visualize_segmentation(
+        viz_cls = grasp_fusion_lib.datasets.visualize_segmentation(
             imgs[i], lbl_trues[i], lbl_preds[i],
             class_names=dataset.class_names)
-        viz_suc = mvtk.datasets.visualize_segmentation(
+        viz_suc = grasp_fusion_lib.datasets.visualize_segmentation(
             imgs[i], lbl_suc_trues[i], lbl_suc_preds[i],
             class_names=['no_suction', 'suction'])
         viz = np.hstack([viz_cls, viz_suc])

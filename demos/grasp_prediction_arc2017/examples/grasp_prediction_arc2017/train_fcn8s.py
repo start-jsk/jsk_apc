@@ -10,10 +10,12 @@ import chainer
 from chainer import cuda
 import fcn
 
-import mvtk
-from mvtk.contrib.grasp_prediction_arc2017 import datasets
-from mvtk.contrib.grasp_prediction_arc2017 import models
-from mvtk.contrib.grasp_prediction_arc2017 import trainers
+import grasp_fusion_lib
+from grasp_prediction_arc2017_lib.contrib.grasp_prediction_arc2017 import (
+    datasets,
+    models,
+    trainers,
+)
 
 
 here = osp.dirname(osp.abspath(__file__))
@@ -91,7 +93,7 @@ def main():
 
     # pretrained_model -> model
     pretrained_model_file = osp.expanduser('~/data/arc2017/models/fcn32s_cfg012_arc2017_iter00140000_20170729.npz')  # NOQA
-    mvtk.data.download(
+    grasp_fusion_lib.data.download(
         url='https://drive.google.com/uc?id=1xkFzn43ZQtw3f-GdB_aDrYMp1mbzQ5B3',
         path=pretrained_model_file,  # NOQA
         md5='2cd21b3b542008d08aee5403a04569bf',
