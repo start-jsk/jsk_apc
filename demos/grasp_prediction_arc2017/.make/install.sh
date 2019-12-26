@@ -72,6 +72,6 @@ echo_bold "\nAll is well! You can start using grasp_prediction_arc2017_lib!
 
 You may also want to install following requirements:
 
-  $ pip install cupy-cuda91  # cupy, cupy-cuda80 or cupy-cuda90
+  $ pip install cupy-cuda92  # cupy, cupy-cuda80, cupy-cuda90, or ...
   $ pip install chainermn
 "

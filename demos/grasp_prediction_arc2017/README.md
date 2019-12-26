@@ -3,17 +3,64 @@
 
 ## Installation
 
+### With ROS
+
 [Install jsk_apc](https://github.com/start-jsk/jsk_apc#installation).
 
+### (At Your Own Risk) Without ROS (Use Anaconda)
 
-## Nodes
+```bash
+make install  # Python3
+# make install2  # Python2
+```
 
-### fcn_object_segmentation.py
+##### Usage
+
+```bash
+source .anaconda/bin/activate
+python -c 'import grasp_prediction_arc2017_lib'
+```
+
+##### Testing
+
+```bash
+make lint
+```
+
+
+## Examples
+
+### Without ROS
+
+First, you must activate python environment:
+```bash
+source ~/ros/ws_jsk_apc/devel/.private/grasp_prediction_arc2017/share/grasp_prediction_arc2017/venv/bin/activate
+# If you want to use Anaconda environment:
+# source .anaconda/bin/activate
+```
+
+##### Training CNNs
+
+###### Requirements
+
+- cupy
+  ```bash
+  pip install cupy-cuda92  # cupy, cupy-cuda80, cupy-cuda90, or ...
+  ```
+
+###### Object label and grasp affordance segmentation with ARC2017 dataset
+
+```bash
+cd examples/grasp_prediction_arc2017
+./train_fcn32s.py -g 0 -d -p wada_icra2018
+```
+
+
+### With ROS
 
 ```bash
 roslaunch grasp_prediction_arc2017 sample_fcn_object_segmentation.launch
 ```
-
 ![](ros/grasp_prediction_arc2017/samples/images/fcn_object_segmentation.jpg)
 
 
