@@ -55,6 +55,13 @@ cd examples/grasp_prediction_arc2017
 ./train_fcn32s.py -g 0 -d -p wada_icra2018
 ```
 
+###### Object label and grasp affordance segmentation with book dataset (Hasegawa IROS2018)
+
+```bash
+cd examples/grasp_prediction_arc2017
+./train_fcn8s.py -g 0 -d -p hasegawa_iros2018
+```
+
 
 ### With ROS
 

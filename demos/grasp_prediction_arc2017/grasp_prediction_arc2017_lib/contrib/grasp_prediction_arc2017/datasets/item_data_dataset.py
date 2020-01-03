@@ -14,8 +14,14 @@ from grasp_fusion_lib.datasets.apc.arc2017 import load_item_data
 
 def get_shelf_data_hasegawa_iros2018():
     import skimage.io
-    img = skimage.io.imread(osp.expanduser(
-        '~/data/iros2018/datasets/table/image.jpg'))
+    path = osp.expanduser('~/data/hasegawa_iros2018/item_data/table/image.jpg')
+    if not osp.exists(path):
+        grasp_fusion_lib.data.download(
+            url='https://drive.google.com/uc?id=15e24rM1ibVO9GTz9VUmzF2abppsudFpU',  # NOQA
+            path=path,
+            md5='3b32a48aa265e7896417af34a501ec9b',
+        )
+    img = skimage.io.imread(path)
     lbl = np.ones(img.shape[:2], dtype=np.int32) * 41
     return [img], [lbl]
 
@@ -141,11 +147,14 @@ if __name__ == '__main__':
                         help='project name')
     args = parser.parse_args()
 
+    from grasp_prediction_arc2017_lib.contrib.grasp_prediction_arc2017 import (
+        datasets,
+    )
     if args.project == 'wada_icra2018':
-        item_data_dir = osp.expanduser('~/data/arc2017/item_data/pick_re-experiment')  # NOQA
+        item_data_dir = datasets.item_data.pick_re_experiment()
         bg_from_dataset_ratio = 0.7
     elif args.project == 'hasegawa_iros2018':
-        item_data_dir = osp.expanduser('~/data/iros2018/datasets/ItemDataBooks6')  # NOQA
+        item_data_dir = datasets.item_data.hasegawa_iros2018()
         bg_from_dataset_ratio = 0
     elif args.project == 'hasegawa_master_thesis':
         item_data_dir = osp.expanduser('~/data/master_thesis/datasets/ItemDataBooks8')  # NOQA

@@ -46,7 +46,7 @@ def main():
         item_data_dir = datasets.item_data.pick_re_experiment()
         bg_from_dataset_ratio = 0.7
     elif args.project == 'hasegawa_iros2018':
-        item_data_dir = osp.expanduser('~/data/iros2018/datasets/ItemDataBooks6')  # NOQA
+        item_data_dir = datasets.item_data.hasegawa_iros2018()
         bg_from_dataset_ratio = 0
     elif args.project == 'hasegawa_master_thesis':
         item_data_dir = osp.expanduser('~/data/master_thesis/datasets/ItemDataBooks8')  # NOQA
