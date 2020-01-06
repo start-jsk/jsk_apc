@@ -9,14 +9,10 @@
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" if="$(arg launch_scale)" />
 
   <!-- hand mounted camera -->
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+  <include file="$(find grasp_prediction_arc2017)/launch/include/stereo_astra_hand_baxterlgv7.launch">
     <arg name="load_driver" value="$(arg load_driver)" />
-    <arg name="launch_left_hand_stereo" value="false" />
-    <arg name="launch_right_hand_stereo" value="$(arg launch_right)" />
-    <arg name="pick" value="true" />
-  </include>
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_gripper_v7.launch">
     <arg name="launch_left_hand_stereo" value="$(arg launch_left)" />
+    <arg name="launch_right_hand_stereo" value="$(arg launch_right)" />
   </include>
 
   <!-- weight scale -->
