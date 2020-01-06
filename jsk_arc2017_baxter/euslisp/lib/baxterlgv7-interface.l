@@ -128,7 +128,18 @@
                                 (arm2str arm) (symbol2str side))
                         std_msgs::UInt16
                         #'send self :set-finger-flex arm side
-                        :groupname groupname)))
+                        :groupname groupname)
+        ;; publish used proximity value for rosbag
+        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+                                (arm2str arm) (symbol2str side)) std_msgs::Float64)
+        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/init/~a"
+                                (arm2str arm) (symbol2str side)) std_msgs::Float64)
+        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/result/~a"
+                                (arm2str arm) (symbol2str side)) std_msgs::Float64)))
+    ;; publish used proximity value for rosbag
+    (ros::advertise "/from_main/limb/left/used_proximity/raw/palm" std_msgs::Float64)
+    (ros::advertise "/from_main/limb/left/used_proximity/init/palm" std_msgs::Float64)
+    (ros::advertise "/from_main/limb/left/used_proximity/result/palm" std_msgs::Float64)
     (if mvit-rb (setq moveit-robot mvit-rb))
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot))))
   ;; Overwrite super class's :rarm-controller
@@ -209,7 +220,9 @@
   (:set-proximities
     (arm msg)
     (sethash :left (gethash arm proximities-) (send (elt (send msg :proximities) 0) :average))
-    (sethash :right (gethash arm proximities-) (send (elt (send msg :proximities) 1) :average)))
+    (sethash :right (gethash arm proximities-) (send (elt (send msg :proximities) 1) :average))
+    (if (eq arm :larm)
+      (sethash :palm (gethash arm proximities-) (send (elt (send msg :proximities) 2) :average))))
 
   ;; Hand interface
   ;; based on naoqi-interface and fetch-interface
@@ -265,18 +278,53 @@
     (send self :spin-once)
     (let ((l-init (gethash :left (gethash arm proximity-init-values-)))
           (r-init (gethash :right (gethash arm proximity-init-values-)))
+          (p-init (gethash :palm (gethash arm proximity-init-values-)))
           (l (gethash :left (gethash arm proximities-)))
-          (r (gethash :right (gethash arm proximities-))))
+          (r (gethash :right (gethash arm proximities-)))
+          (p (gethash :palm (gethash arm proximities-)))
+          raw-msg init-msg res-msg val)
       (if (null raw)
         (cond
           ;; for sparkfun proximity sensor
           ((eq side :left)
-           (/ (- l l-init) (expt (/ l-init 2500.0) 1.5)))
+           (setq val (/ (- l l-init) (expt (/ l-init 2500.0) 1.5)))
+           (setq raw-msg (instance std_msgs::Float64 :init :data l))
+           (setq init-msg (instance std_msgs::Float64 :init :data l-init))
+           (setq res-msg (instance std_msgs::Float64 :init :data val)))
           ((eq side :right)
-           (/ (- r r-init) (expt (/ r-init 2500.0) 1.5))))
+           (setq val (/ (- r r-init) (expt (/ r-init 2500.0) 1.5)))
+           (setq raw-msg (instance std_msgs::Float64 :init :data r))
+           (setq init-msg (instance std_msgs::Float64 :init :data r-init))
+           (setq res-msg (instance std_msgs::Float64 :init :data val)))
+          ((eq side :palm)
+           (setq val (/ (- p p-init) (expt (/ p-init 2500.0) 1.5)))
+           (setq raw-msg (instance std_msgs::Float64 :init :data p))
+           (setq init-msg (instance std_msgs::Float64 :init :data p-init))
+           (setq res-msg (instance std_msgs::Float64 :init :data val))))
         (cond
-          ((eq side :left) l)
-          ((eq side :right) r)))))
+          ((eq side :left)
+           (setq val l)
+           (setq raw-msg (instance std_msgs::Float64 :init :data l)))
+          ((eq side :right)
+           (setq val r)
+           (setq raw-msg (instance std_msgs::Float64 :init :data r)))
+          ((eq side :palm)
+           (setq val p)
+           (setq raw-msg (instance std_msgs::Float64 :init :data p)))))
+      ;; publish used proximity value for rosbag
+      (if raw-msg
+        (ros::publish
+          (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+                  (arm2str arm) (symbol2str side)) raw-msg))
+      (if init-msg
+        (ros::publish
+          (format nil "/from_main/limb/~a/used_proximity/init/~a"
+                  (arm2str arm) (symbol2str side)) init-msg))
+      (if res-msg
+        (ros::publish
+          (format nil "/from_main/limb/~a/used_proximity/result/~a"
+                  (arm2str arm) (symbol2str side)) res-msg))
+      val))
   (:get-real-finger-av (arm)
     (send self :update-robot-state :wait-until-update t)
     (if (eq arm :rarm)
@@ -501,13 +549,16 @@
       (error ":wait-interpolation-until set arm for first arg~%"))
     (let (conds r-init-flex l-init-flex init-load r-flex l-flex
                 finger-load prismatic-load flex-thre-offset
-                r-proximity l-proximity)
+                r-proximity l-proximity p-proximity palm-prox-range)
       (setq r-init-flex (send self :get-finger-flex arm :right))
       (setq l-init-flex (send self :get-finger-flex arm :left))
       (setq init-load (send self :get-finger-load arm))
       (setq flex-thre-offset
             (if (member :flex-thre-offset args)
               (cadr (member :flex-thre-offset args)) nil))
+      (setq palm-prox-range
+            (if (member :palm-prox-range args)
+              (cadr (member :palm-prox-range args)) nil))
       (ros::ros-info
         "[:wait-interpolation-until] Init flex:  r: ~a l: ~a" r-init-flex l-init-flex)
       (ros::ros-info "[:wait-interpolation-until] Init load: ~a" init-load)
@@ -608,41 +659,38 @@
                   t)
                 nil))
           conds))
+      (when (member :palm-proximity args)
+        (ros::ros-info "[:wait-interpolation-until] Prepare for palm proximity")
+        (pushback
+          #'(lambda ()
+              (setq p-proximity (send self :get-proximity arm :palm))
+              (if (if (null palm-prox-range)
+                    (> p-proximity proximity-threshold-)
+                    (or (if (elt palm-prox-range 0) (< p-proximity (elt palm-prox-range 0)) nil)
+                        (if (elt palm-prox-range 1) (> p-proximity (elt palm-prox-range 1)) nil)))
+                (progn
+                  (ros::ros-info "[:wait-interpolation-until] Detected palm proximity. p: ~a"
+                                 p-proximity)
+                  t)
+                nil))
+          conds))
       ;; wait for :interpolatingp
-      (let ((finish-p nil) (in-dotimes-p nil) ready-tm)
-        (while (not finish-p)
-          (ros::ros-info "[:wait-interpolation-until] Waiting for interpolatingp")
-          (dotimes (x 100)
-            (when (setq in-dotimes-p (send self :interpolatingp))
-              (ros::ros-info "[:wait-interpolation-until] interpolatingp becomes t")
-              (return))
-            (unix::usleep 1000))
-          (if (not (member :inf-wait-interpolatingp args))
-            (unless in-dotimes-p
-              (ros::ros-info "[:wait-interpolation-until] interpolatingp remains nil")
-              (return-from :wait-interpolation-until nil))
-            (unless in-dotimes-p
-              (ros::ros-error "[:wait-interpolation-until] interpolatingp is nil in dotimes")
-              (ros::ros-error "[:wait-interpolation-until] Escalate to while")
-              (while t
-                (when (send self :interpolatingp)
-                  (ros::ros-info "[:wait-interpolation-until] interpolatingp becomes t")
-                  (return))
-                (unix::usleep 1000))))
-          (setq ready-tm (ros::time-now))
-          (while (send self :interpolatingp)
-            (when (reduce #'(lambda (x y) (or x y)) (mapcar #'funcall conds))
-              (ros::ros-info "[:wait-interpolation-until] Cancel angle vector: ~a" arm)
-              (send self :cancel-angle-vector
-                    :controller-type (send self :get-arm-controller arm))
-              (setq finish-p t))
-            (unix::usleep 1000))
-          (if (and (not finish-p)
-                   (< (send (ros::time- (ros::time-now) ready-tm) :to-sec) 0.1))
-            (progn
-              (ros::ros-error "[:wait-interpolation-until] interpolatingp becomes nil too early")
-              (ros::ros-error "[:wait-interpolation-until] strange behavior, waiting again"))
-            (setq finish-p t))))))
+      (dotimes (x 100)
+        (if (if (member :hand args)
+              (send self :hand-interpolatingp arm)
+              (send self :interpolatingp))
+          (return))
+        (unix::usleep 1000))
+      (while (if (member :hand args)
+               (send self :hand-interpolatingp arm)
+               (send self :interpolatingp))
+        (when (reduce #'(lambda (x y) (or x y)) (mapcar #'funcall conds))
+          (ros::ros-info "[:wait-interpolation-until] Cancel angle vector: ~a" arm)
+          (if (member :hand args)
+            (send self :cancel-move-hand arm)
+            (send self :cancel-angle-vector
+                  :controller-type (send self :get-arm-controller arm))))
+        (unix::usleep 1000))))
   (:calib-pressure-threshold
     (&optional (arm :arms))
     (send self :start-grasp arm)
@@ -669,6 +717,9 @@
                (send self :get-proximity l/r :left :raw t))
       (sethash :right (gethash l/r proximity-init-values-)
                (send self :get-proximity l/r :right :raw t))
+      (if (eq l/r :larm)
+        (sethash :palm (gethash l/r proximity-init-values-)
+                 (send self :get-proximity l/r :palm :raw t)))
       ;; TODO: decide proper threshold 100 -> ???
       (setq proximity-threshold- 100)))
   )
