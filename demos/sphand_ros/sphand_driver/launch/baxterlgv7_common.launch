@@ -1,0 +1,63 @@
+<launch>
+
+  <arg name="debug" default="false" />
+  <arg name="moveit" default="true" />
+
+  <!-- get machine tag -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
+
+  <!-- custom baxter params -->
+  <param name="/robot_description"
+         command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxterlgv7.xacro" />
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="joint_states" to="/robot/joint_states"/>
+  </node>
+  <rosparam param="/baxter_joint_trajectory"
+            file="$(find jsk_2015_05_baxter_apc)/config/baxter_joint_trajectory.yaml"/>
+
+  <!-- right gripper-v6 and vacuum cleaners -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_gripper_baxterlgv7.launch" />
+
+  <!-- voice -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/sound_play.launch" />
+
+  <!-- baxter startup -->
+  <include file="$(find jsk_baxter_startup)/baxter.launch">
+    <arg name="launch_servo" value="true"/>
+    <arg name="launch_joint_trajectory" value="true"/>
+    <arg name="sanity_check_joint_trajectory" value="true" />
+    <arg name="launch_gripper_action" value="false"/>
+    <arg name="launch_openni" value="false"/>
+    <arg name="launch_kinect2" value="false"/>
+    <arg name="launch_voice_echo" value="true"/>
+    <arg name="launch_moveit" value="false"/>
+    <arg name="launch_teleop" value="false"/>
+    <arg name="launch_tweet" value="false"/>
+    <arg name="launch_mongodb" value="false"/>
+    <arg name="launch_wrench" value="false"/>
+    <arg name="launch_time_signal" value="false"/>
+    <arg name="start_openni" value="false"/>
+    <arg name="USER_NAME" value="false"/>
+  </include>
+
+
+  <node name="desktop_bg_publisher"
+        pkg="jsk_perception" type="image_publisher.py">
+    <rosparam subst_value="true">
+      file_name: $(find jsk_apc2016_common)/resource/wallpapers/wallpaper_black.png
+    </rosparam>
+  </node>
+  <node name="xdisplay_image_topic"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/desktop_bg_publisher/output" />
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/moveit/baxterlgv7/baxterlgv7_moveit.launch" if="$(arg moveit)">
+    <arg name="load_robot_description" value="false" />
+    <arg name="debug" value="$(arg debug)" />
+  </include>
+
+  <!-- axis camera -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/axis_camera.launch" />
+
+</launch>
