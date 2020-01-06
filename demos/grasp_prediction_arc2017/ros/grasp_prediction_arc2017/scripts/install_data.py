@@ -8,7 +8,6 @@ import jsk_data
 
 def main():
     path = osp.expanduser('~/data/grasp_prediction_arc2017/rosbags/arc2017_pick_red_composition_book.bag')  # NOQA
-    os.makedirs(osp.dirname(path))
     jsk_data.download_data(
         pkg_name='grasp_prediction_arc2017',
         path=path,
@@ -17,7 +16,6 @@ def main():
     )
 
     path = osp.expanduser('~/data/grasp_prediction_arc2017/logs/fcn32s_CFG-000_VCS-2400e9e_TIME-20170827-233211/models/FCN32s_iter00044000.npz')  # NOQA
-    os.makedirs(osp.dirname(path))
     jsk_data.download_data(
         pkg_name='grasp_prediction_arc2017',
         path=path,
