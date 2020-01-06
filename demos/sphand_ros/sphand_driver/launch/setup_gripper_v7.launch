@@ -21,7 +21,7 @@
         unless="$(arg left_gripper)"/>
 
   <!-- camera -->
-  <include file="$(find sphand_driver)/launch/include/astra.launch">
+  <include file="$(find sphand_driver)/launch/include/stereo_astra_local.launch">
     <arg name="left_gripper" value="$(arg left_gripper)" />
   </include>
 
