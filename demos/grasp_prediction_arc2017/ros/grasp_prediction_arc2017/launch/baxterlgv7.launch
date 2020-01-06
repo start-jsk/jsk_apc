@@ -1,0 +1,7 @@
+<launch>
+
+  <include file="$(find sphand_driver)/launch/baxterlgv7_common.launch" />
+
+  <include file="$(find grasp_prediction_arc2017)/launch/include/setup_book_picking_location.xml" />
+
+</launch>

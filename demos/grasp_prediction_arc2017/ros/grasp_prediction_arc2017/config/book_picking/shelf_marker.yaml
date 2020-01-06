@@ -1,0 +1,6 @@
+boxes:
+- dimensions: [0.4, 0.35, 0.2]
+  frame_id: base
+  name: bin_A
+  orientation: [0.0, 0.0, 0.0, 1.0]
+  position: [0.6423270106315613, 0.24667036533355713, -0.3319999873638153]
