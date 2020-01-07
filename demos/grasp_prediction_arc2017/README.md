@@ -83,13 +83,7 @@ roslaunch jsk_arc2017_baxter pick.launch json_dir:=<json_dir>
 ## Hasegawa IROS2018 Demo: Pick and Insert Books
 
 ```bash
-roscd jsk_apc
-git remote add pazeshun https://github.com/pazeshun/jsk_apc.git
-git fetch pazeshun
-git checkout baxterlgv7-book-picking
-catkin build
-
-roslaunch jsk_arc2017_baxter baxterlgv7.launch book_picking:=true
-roslaunch grasp_prediction_arc2017 setup_for_pick_baxterlgv7.launch
-roslaunch jsk_arc2017_baxter pick_book.launch json_dir:=<json_dir>
+roslaunch grasp_prediction_arc2017 baxterlgv7.launch
+roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch
+roslaunch grasp_prediction_arc2017 book_picking.launch json_dir:=<json_dir>
 ```
