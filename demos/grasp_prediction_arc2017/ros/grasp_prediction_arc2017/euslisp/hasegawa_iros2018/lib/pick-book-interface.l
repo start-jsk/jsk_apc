@@ -2,15 +2,17 @@
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
-(require "package://jsk_arc2017_baxter/euslisp/lib/pick-book-base-interface.l")
+(require "package://grasp_prediction_arc2017/euslisp/hasegawa_iros2018/lib/pick-book-base-interface.l")
 
-(ros::load-ros-manifest "jsk_arc2017_baxter")
 
-(unless (find-package "JSK_ARC2017_BAXTER")
-  (make-package "JSK_ARC2017_BAXTER"))
+(ros::load-ros-package "jsk_gui_msgs")
+(ros::load-ros-package "std_srvs")
 
-(defclass jsk_arc2017_baxter::pick-book-interface
-  :super jsk_arc2017_baxter::pick-book-base-interface
+(unless (find-package "GRASP_PREDICTION_ARC2017")
+  (make-package "GRASP_PREDICTION_ARC2017"))
+
+(defclass grasp_prediction_arc2017::pick-book-interface
+  :super grasp_prediction_arc2017::pick-book-base-interface
   :slots (grasp-style-
           label-names-
           moveit-p-
@@ -26,7 +28,7 @@
           target-obj-
           tried-directions-))
 
-(defmethod jsk_arc2017_baxter::pick-book-interface
+(defmethod grasp_prediction_arc2017::pick-book-interface
   (:init (&key (moveit nil))
     (send-super :init)
     (setq picking-fail-count- 0)
@@ -432,7 +434,7 @@
       (setq grasp-style- nil))))
 
 
-(defun jsk_arc2017_baxter::pick-book-init (&key (ctype :default-controller) (moveit nil))
+(defun grasp_prediction_arc2017::pick-book-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
     (when moveit
       (setq mvit-env (instance jsk_arc2017_baxter::baxterlgv7-moveit-environment))
@@ -446,6 +448,6 @@
     (unless (boundp '*co*)
       (setq *co* (when moveit (instance collision-object-publisher :init))))
     (unless (boundp '*ti*)
-      (setq *ti* (instance jsk_arc2017_baxter::pick-book-interface :init :moveit moveit)))
+      (setq *ti* (instance grasp_prediction_arc2017::pick-book-interface :init :moveit moveit)))
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (send *ri* :calib-grasp :arms)))

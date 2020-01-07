@@ -4,12 +4,18 @@
 (require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
 (require "package://jsk_arc2017_baxter/euslisp/lib/baxterlgv7-interface.l")
 
-(ros::load-ros-manifest "jsk_arc2017_baxter")
 
-(unless (find-package "JSK_ARC2017_BAXTER")
-  (make-package "JSK_ARC2017_BAXTER"))
+(ros::load-ros-package "geometry_msgs")
+(ros::load-ros-package "jsk_arc2017_baxter")
+(ros::load-ros-package "jsk_arc2017_common")
+(ros::load-ros-package "jsk_gui_msgs")
+(ros::load-ros-package "jsk_recognition_msgs")
+(ros::load-ros-package "std_srvs")
 
-(defclass jsk_arc2017_baxter::pick-book-base-interface
+(unless (find-package "GRASP_PREDICTION_ARC2017")
+  (make-package "GRASP_PREDICTION_ARC2017"))
+
+(defclass grasp_prediction_arc2017::pick-book-base-interface
   :super propertied-object
   :slots (attached-objects-
           bbox-volume-threshold-
@@ -32,7 +38,7 @@
           gripper-dims-
           ))
 
-(defmethod jsk_arc2017_baxter::pick-book-base-interface
+(defmethod grasp_prediction_arc2017::pick-book-base-interface
   (:init ()
     ;; initialize slots
     (setq bbox-volume-threshold- 0.01) ;; [m^3]
@@ -2099,7 +2105,7 @@
                (+ (gethash target-bin bin-object-volumes-) obj-bbox-volume))
       target-bin)))
 
-(defun jsk_arc2017_baxter::pick-book-base-init (&key (ctype :default-controller) (moveit nil))
+(defun grasp_prediction_arc2017::pick-book-base-init (&key (ctype :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
     (when moveit
       (setq mvit-env (instance jsk_arc2017_baxter::baxterlgv7-moveit-environment))
@@ -2113,6 +2119,6 @@
     (unless (boundp '*co*)
       (setq *co* (when moveit (instance collision-object-publisher :init))))
     (unless (boundp '*ti*)
-      (setq *ti* (instance jsk_arc2017_baxter::pick-book-base-interface :init)))
+      (setq *ti* (instance grasp_prediction_arc2017::pick-book-base-interface :init)))
     (send *baxter* :angle-vector (send *ri* :state :potentio-vector))
     (send *ri* :calib-grasp :arms)))

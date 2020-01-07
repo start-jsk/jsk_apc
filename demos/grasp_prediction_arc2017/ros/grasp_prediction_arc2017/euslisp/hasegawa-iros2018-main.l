@@ -2,7 +2,7 @@
 
 (ros::roseus "robot_main")
 
-(require "package://jsk_arc2017_baxter/euslisp/lib/pick-book-interface.l")
+(require "package://grasp_prediction_arc2017/euslisp/hasegawa_iros2018/lib/pick-book-interface.l")
 ;; smach
 (require :state-machine "package://roseus_smach/src/state-machine.l")
 (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
@@ -146,7 +146,7 @@
 
 
 (defun pick-book-init (&key (ctype :default-controller) (calib-pressure t) (moveit nil))
-  (jsk_arc2017_baxter::pick-book-init :ctype ctype :moveit moveit)
+  (grasp_prediction_arc2017::pick-book-init :ctype ctype :moveit moveit)
   (when moveit
     (send *ti* :wipe-all-scene)
     (send *ti* :add-workspace-scene)
@@ -176,5 +176,5 @@
   (exec-state-machine *sm* nil :root-name (format nil "SM_~a_ROOT" (string-upcase (arm2str arm))) :hz 2.0))
 
 (warn "~% Commands ~%")
-(warn "(pick-book-init)           : initialize *ti*~%")
-(warn "(pick-book-mainloop :rarm) : start the mainloop~%~%")
+(warn "(pick-book-init :ctype :larm-head-controller :moveit t) : initialize *ti*~%")
+(warn "(pick-book-mainloop :larm)                              : start the mainloop~%~%")
