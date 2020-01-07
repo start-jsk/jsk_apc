@@ -81,6 +81,7 @@
           object_x: 0.1
           object_y: 0.1
           object_z: 0.1
+          # Objects are located at a distance of 75cm from cameras, so hand_to_depth params are optimized for it
           initial_x: -0.066
           initial_y: -0.080
           initial_z: -0.003
