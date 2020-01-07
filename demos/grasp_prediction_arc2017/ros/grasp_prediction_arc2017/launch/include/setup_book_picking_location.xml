@@ -12,7 +12,7 @@
         pkg="jsk_interactive_marker" type="transformable_markers_client.py">
     <remap from="~server" to="transformable_interactive_server" />
     <rosparam subst_value="true">
-      config_file: $(find grasp_prediction_arc2017)/config/book_picking/shelf_marker.yaml
+      config_file: $(find grasp_prediction_arc2017)/config/hasegawa_iros2018/shelf_marker.yaml
       config_auto_save: true  <!-- Use true to save config updated on rviz -->
     </rosparam>
   </node>
@@ -21,7 +21,7 @@
         pkg="jsk_interactive_marker" type="transformable_markers_client.py">
     <remap from="~server" to="transformable_interactive_server" />
     <rosparam subst_value="true">
-      config_file: $(find grasp_prediction_arc2017)/config/book_picking/cardboard_marker.yaml
+      config_file: $(find grasp_prediction_arc2017)/config/hasegawa_iros2018/cardboard_marker.yaml
       config_auto_save: true  <!-- Use true to save config updated on rviz -->
     </rosparam>
   </node>

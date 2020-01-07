@@ -82,6 +82,14 @@ roslaunch jsk_arc2017_baxter pick.launch json_dir:=<json_dir>
 
 ## Hasegawa IROS2018 Demo: Pick and Insert Books
 
+### Setup
+
+```bash
+rosrun grasp_prediction_arc2017 setup_jsk_arc2017_common.bash ~/data/hasegawa_iros2018/system_inputs/ForItemDataBooks6/objects `rospack find grasp_prediction_arc2017`/config/hasegawa_iros2018/ForItemDataBooks6
+```
+
+### Execution
+
 ```bash
 roslaunch grasp_prediction_arc2017 baxterlgv7.launch
 roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch

@@ -1,0 +1,52 @@
+alpha_cubic_sport_wallet:
+  edge: 1
+  suction: 1
+  pinch: 3
+casemate_green_binder:
+  edge: 1
+  suction: 1
+  pinch: 3
+casemate_purple_binder:
+  edge: 1
+  suction: 1
+  pinch: 3
+composition_book:
+  edge: 1
+  suction: 1
+  pinch: 3
+galaxy_s5_with_cover:
+  edge: 1
+  suction: 1
+  pinch: 3
+gurdians_galaxy:
+  edge: 1
+  suction: 1
+  pinch: 3
+hinged_ruled_index_cards:
+  edge: 1
+  suction: 1
+  pinch: 3
+laugh_out_loud_jokes:
+  edge: 1
+  suction: 1
+  pinch: 3
+mark_twine_book:
+  edge: 1
+  suction: 1
+  pinch: 3
+red-black_composition_book:
+  edge: 1
+  suction: 1
+  pinch: 3
+rsj_journal:
+  edge: 1
+  suction: 1
+  pinch: 3
+studio_c_binder_blue:
+  edge: 1
+  suction: 1
+  pinch: 3
+studio_c_binder_pink:
+  edge: 1
+  suction: 1
+  pinch: 3
