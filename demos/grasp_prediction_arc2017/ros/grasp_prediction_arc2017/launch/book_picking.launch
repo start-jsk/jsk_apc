@@ -1,0 +1,175 @@
+<launch>
+
+  <!-- ============================================================================= -->
+  <!-- Arguments                                                                     -->
+  <!-- ============================================================================= -->
+
+  <arg name="json_dir" />
+
+  <arg name="main" default="true" />
+  <arg name="rviz" default="true" />
+  <arg name="moveit" default="true" />
+  <arg name="data_collection" default="true" />
+
+  <arg name="smach_viewer" default="false" />
+  <arg name="rosbag" default="false" />
+
+  <!-- ============================================================================= -->
+  <!-- Sanity Check                                                                  -->
+  <!-- ============================================================================= -->
+
+  <!--
+  <param name="sanity_check_for_setup_for_pick"
+         command="rosrun jsk_arc2017_baxter sanity_check_for_setup_for_pick.py" />
+  -->
+
+  <!-- ============================================================================= -->
+  <!-- Nodes                                                                         -->
+  <!-- ============================================================================= -->
+
+  <!-- set bin_contents rosparam -->
+  <node name="set_bin_contents"
+        pkg="jsk_arc2017_common" type="set_location_in_rosparam.py">
+    <remap from="~param" to="/bin_contents" />
+    <rosparam subst_value="true">
+      location: bins
+      json_dir: $(arg json_dir)
+    </rosparam>
+  </node>
+
+  <!-- work order data -->
+  <node name="strategic_work_order"
+        pkg="grasp_prediction_arc2017" type="work_order_publisher_book_picking.py"
+        respawn="true">
+    <rosparam subst_value="true">
+      json_dir: $(arg json_dir)
+    </rosparam>
+  </node>
+
+  <!-- state_server -->
+  <node name="state_server"
+        pkg="grasp_prediction_arc2017" type="state_server_book_picking.py">
+    <rosparam>
+      is_pick: true
+    </rosparam>
+  </node>
+
+  <!-- json_saver -->
+  <node name="json_saver"
+        pkg="grasp_prediction_arc2017" type="json_saver_book_picking.py">
+    <rosparam subst_value="true">
+      json_dir: $(arg json_dir)
+      output_dir: $(find jsk_arc2017_baxter)/output/pick_task
+    </rosparam>
+  </node>
+  <node name="visualize_json"
+        pkg="jsk_arc2017_common" type="visualize_json.py">
+    <remap from="~input/json_dir" to="json_saver/output/json_dir" />
+    <rosparam>
+      types:
+        - item_location
+        - order
+    </rosparam>
+  </node>
+  <node name="xdisplay_image_topic"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/visualize_json/output/item_location_viz" />
+
+  <!-- candidates publisher -->
+  <group ns="left_hand_camera">
+    <node name="candidates_publisher"
+        pkg="jsk_arc2017_common" type="candidates_publisher.py" >
+      <remap from="~input/json_dir" to="/json_saver/output/json_dir" />
+      <remap from="~label_names" to="label_names" />
+      <rosparam>
+        target_location: bin_A
+      </rosparam>
+    </node>
+  </group>
+  <group ns="right_hand_camera">
+    <node name="candidates_publisher"
+        pkg="jsk_arc2017_common" type="candidates_publisher.py" >
+      <remap from="~input/json_dir" to="/json_saver/output/json_dir" />
+      <remap from="~label_names" to="label_names" />
+      <rosparam>
+        target_location: bin_C
+      </rosparam>
+    </node>
+  </group>
+
+  <!-- grasp style server -->
+  <node name="grasp_style_server"
+        pkg="grasp_prediction_arc2017" type="grasp_style_server_book_picking.py">
+    <rosparam>
+      max_trial: 1
+    </rosparam>
+  </node>
+
+  <!-- smach viewer -->
+  <node pkg="smach_viewer" type="smach_viewer.py" name="smach_viewer" if="$(arg smach_viewer)"/>
+
+  <!-- parameter -->
+  <param name="/left_hand/target_bin" value="" />
+  <param name="/right_hand/target_bin" value="" />
+
+  <node name="rqt_yn_btn"
+        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+    <remap from="~" to="/rviz/yes_no_button" />
+  </node>
+  <group if="$(arg rviz)">
+    <node name="rviz"
+          pkg="rviz" type="rviz"
+          args="-d $(find grasp_prediction_arc2017)/rvizconfig/book_picking.rviz">
+    </node>
+  </group>
+
+  <!-- robot main -->
+  <group if="$(arg main)">
+    <node if="$(arg moveit)" pkg="grasp_prediction_arc2017" type="hasegawa-iros2018-main.l" name="left_hand_main"
+          args="&quot;(progn (pick-book-init :ctype :larm-head-controller :moveit t) (pick-book-mainloop :larm))&quot;"
+          respawn="true" output="screen">
+      <env name="DISPLAY" value="" />
+      <rosparam subst_value="true">
+        data_collection: $(arg data_collection)
+      </rosparam>
+    </node>
+    <node unless="$(arg moveit)" pkg="grasp_prediction_arc2017" type="hasegawa-iros2018-main.l" name="left_hand_main"
+          args="&quot;(progn (pick-book-init :ctype :larm-head-controller :moveit nil) (pick-book-mainloop :larm))&quot;"
+          respawn="true" output="screen">
+      <env name="DISPLAY" value="" />
+      <rosparam subst_value="true">
+        data_collection: $(arg data_collection)
+      </rosparam>
+    </node>
+  </group>
+
+  <!-- visualization -->
+  <node name="rosconsole_overlay_text"
+        pkg="jsk_rviz_plugins" type="rosconsole_overlay_text.py">
+    <rosparam>
+      nodes:
+        - /left_hand_main
+        - /right_hand_main
+      exclude_regexes:
+        - .*follow_joint_trajectory.*
+        - .*:joint-angle.*
+        - .*:wait-interpolation-until.*
+        - ^;;.*
+        - .*if you do not have gripper,.*
+    </rosparam>
+  </node>
+
+  <group if="$(arg rosbag)">
+    <arg name="rosbag_filename" />
+    <include file="$(find grasp_prediction_arc2017)/launch/include/record_rosbag_baxterlgv7.launch">
+      <arg name="filename" value="$(arg rosbag_filename)" />
+    </include>
+  </group>
+
+  <group if="$(arg data_collection)">
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/data_collection_server.launch">
+      <arg name="pick" value="true" />
+    </include>
+  </group>
+
+</launch>
