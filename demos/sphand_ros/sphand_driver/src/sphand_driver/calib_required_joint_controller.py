@@ -51,7 +51,11 @@ class CalibRequiredJointController(JointPositionController):
         # Initialize joint position
 
         self.motor_states_for_init = {}
-        motor_states_sub_for_init = rospy.Subscriber('motor_states/%s' % self.port_namespace, MotorStateList, self.get_motor_states_for_init)
+        motor_states_sub_for_init = rospy.Subscriber(
+                'motor_states/%s' % self.port_namespace,
+                MotorStateList,
+                self.get_motor_states_for_init
+        )
         self.set_speed(0.0)
         # Backup current angle limits
         prev_limits = self.__get_angle_limits()
@@ -72,7 +76,8 @@ class CalibRequiredJointController(JointPositionController):
         while not rospy.is_shutdown():
             try:
                 init_pos = self.motor_states_for_init['position']
-                if abs(self.motor_states_for_init['load']) > self.detect_limit_load:
+                if abs(self.motor_states_for_init['load']) > \
+                        self.detect_limit_load:
                     break
             except KeyError:
                 pass
@@ -123,7 +128,8 @@ class CalibRequiredJointController(JointPositionController):
         return self.dxl_io.get_angle_limits(self.motor_id)
 
     def get_motor_states_for_init(self, state_list):
-        state = filter(lambda state: state.id == self.motor_id, state_list.motor_states)
+        state = filter(lambda state: state.id == self.motor_id,
+                       state_list.motor_states)
         if state:
             state = state[0]
             self.motor_states_for_init['position'] = state.position

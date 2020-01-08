@@ -113,7 +113,7 @@ endif()
 
 if(CATKIN_ENABLE_TESTING)
   find_package(roslint REQUIRED)
-  roslint_python(node_scripts)
+  roslint_python()
   roslint_add_test()
   find_package(rostest REQUIRED)
   add_rostest(test/test_baxterlgv8_interface.test)
