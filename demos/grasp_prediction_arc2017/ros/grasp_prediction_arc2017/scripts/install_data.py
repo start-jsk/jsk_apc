@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import os
 import os.path as osp
 
 import jsk_data
@@ -37,6 +36,23 @@ def main():
         path=path,
         url='https://drive.google.com/uc?id=1dvC_QRtathHrg_PseCNkSiXwWmiT9IB_',
         md5='d25bff88acc16313210237da4f6367c4',
+        extract=True,
+    )
+
+    path = osp.expanduser('~/data/hasegawa_master_thesis/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz')  # NOQA
+    jsk_data.download_data(
+        pkg_name='grasp_prediction_arc2017',
+        path=path,
+        url='https://drive.google.com/uc?id=1aWZtdjzCbY-twwSl2jvRqEG-WCZ5w_nN',
+        md5='e69d820303eab201c351fd2544f3c369',
+    )
+
+    path = osp.expanduser('~/data/hasegawa_master_thesis/system_inputs/ForItemDataBooks8/objects.zip')  # NOQA
+    jsk_data.download_data(
+        pkg_name='grasp_prediction_arc2017',
+        path=path,
+        url='https://drive.google.com/uc?id=1fegicVlwiTX9iNuZFR2nH-DgLGW7jLaJ',
+        md5='d4084a432f22b884d2a67eb6e1ef16fc',
         extract=True,
     )
 
