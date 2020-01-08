@@ -25,29 +25,18 @@
            command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxterlgv7.xacro" />
   </group>
   <arg name="setup_source_location" default="true" />
-  <arg name="book_picking" default="true" />
-  <arg name="pick" default="true" />
-  <group if="$(arg setup_source_location)">
-    <!-- picking source location: shelf/tote -->
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_source_location.xml" unless="$(arg book_picking)">
-      <arg name="pick" value="$(arg pick)" />
-    </include>
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/setup_book_picking_location.xml" if="$(arg book_picking)" />
-  </group>
+  <include file="$(find grasp_prediction_arc2017)/launch/include/setup_book_picking_location.xml" if="$(arg setup_source_location)" />
 
   <!-- cameras >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
 
   <arg name="launch_setup" default="true" />
   <group unless="$(arg launch_setup)">
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+    <include file="$(find grasp_prediction_arc2017)/launch/include/stereo_astra_hand_baxterlgv7.launch">
       <arg name="load_driver" value="false" />
-      <arg name="launch_left_hand_stereo" value="false" />
-      <arg name="pick" value="$(arg pick)" />
     </include>
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_gripper_v7.launch" />
   </group>
   <group if="$(arg launch_setup)">
-    <include file="$(find grasp_prediction_arc2017)/launch/setup_for_pick_baxterlgv7.launch">
+    <include file="$(find grasp_prediction_arc2017)/launch/setup_for_book_picking.launch">
       <arg name="load_driver" value="false" />
       <arg name="launch_scale" value="false" />
     </include>
