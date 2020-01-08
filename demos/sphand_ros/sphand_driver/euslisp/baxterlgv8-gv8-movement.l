@@ -1,4 +1,4 @@
-(require "package://jsk_arc2017_baxter/euslisp/lib/baxterlgv8-interface.l")
+(require "package://sphand_driver/euslisp/lib/baxterlgv8-interface.l")
 
 
 ;; ---------------
@@ -9,7 +9,7 @@
 
 (defun demo-init
   (&key (type :lgripper-controller))
-  (jsk_arc2017_baxter::baxterlgv8-init :type type)
+  (sphand_driver::baxterlgv8-init :type type)
   (send *ri* :move-hand *arm*
         (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1500)
   (send *ri* :move-hand *arm*

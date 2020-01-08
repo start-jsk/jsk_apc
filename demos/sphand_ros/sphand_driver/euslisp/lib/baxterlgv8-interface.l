@@ -1,17 +1,23 @@
 ;; -*- mode: lisp;-*-
 
-(require "package://jsk_arc2017_baxter/euslisp/lib/baxterlgv8.l")
+(require "package://jsk_arc2017_baxter/euslisp/lib/baxterlgv7.l")
 (require "package://baxtereus/baxter-interface.l")
 (require "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
 
 
-(ros::load-ros-manifest "jsk_arc2017_baxter")
+(ros::load-ros-package "control_msgs")
+(ros::load-ros-package "dynamixel_msgs")
+(ros::load-ros-package "sphand_driver_msgs")
+(ros::load-ros-package "std_msgs")
+(ros::load-ros-package "std_srvs")
+(ros::load-ros-package "trajectory_msgs")
+(ros::load-ros-package "vl53l0x_mraa_ros")
 
-(unless (find-package "JSK_ARC2017_BAXTER")
-  (make-package "JSK_ARC2017_BAXTER"))
+(unless (find-package "SPHAND_DRIVER")
+  (make-package "SPHAND_DRIVER"))
 
-(defclass jsk_arc2017_baxter::baxterlgv8-interface
+(defclass sphand_driver::baxterlgv8-interface
   :super baxter-interface
   :slots (rarm-pressure-threshold-
           larm-pressure-threshold-
@@ -27,12 +33,12 @@
           i-proximities-
           tof-proximities-))
 
-(defmethod jsk_arc2017_baxter::baxterlgv8-interface
+(defmethod sphand_driver::baxterlgv8-interface
   (:init
     (&rest args &key
            ((:moveit-environment mvit-env)
-            (instance jsk_arc2017_baxter::baxterlgv8-moveit-environment))
-           ((:moveit-robot mvit-rb) (instance jsk_arc2017_baxter::baxterlgv8-robot :init))
+            (instance sphand_driver::baxterlgv8-moveit-environment))
+           ((:moveit-robot mvit-rb) (instance jsk_arc2017_baxter::baxterlgv7-robot :init))
            &allow-other-keys)
     ;; initialize controllers
     (send-super* :init :joint-states-queue-size 3
@@ -85,7 +91,7 @@
                (instance ros::simple-action-client :init
                          (format nil "/gripper_front/limb/~a/dxl/prismatic_joint_controller/calib"
                                  (arm2str arm))
-                         jsk_arc2017_baxter::CalibJointAction
+                         sphand_driver_msgs::CalibJointAction
                          :groupname groupname))
       ;; check if action is respond
       (unless
@@ -338,7 +344,7 @@
     (> (aref (send self :get-real-finger-av arm) 1) 30))
   (:start-prismatic-calib (arm)
     (send (gethash arm prismatic-calib-actions-)
-          :send-goal (instance jsk_arc2017_baxter::CalibJointActionGoal :init)))
+          :send-goal (instance sphand_driver_msgs::CalibJointActionGoal :init)))
   (:prismatic-calibratingp (arm)
     (send self :spin-once)
     (eq (send (gethash arm prismatic-calib-actions-) :get-state) ros::*simple-goal-state-active*))
@@ -849,10 +855,10 @@
         (ros::ros-error "~a" (send res :message)))))
   )
 
-(defclass jsk_arc2017_baxter::baxterlgv8-moveit-environment
+(defclass sphand_driver::baxterlgv8-moveit-environment
   :super moveit-environment)
-(defmethod jsk_arc2017_baxter::baxterlgv8-moveit-environment
-  (:init (&key ((:robot rb) (instance jsk_arc2017_baxter::baxterlgv8-robot :init)) &rest args)
+(defmethod sphand_driver::baxterlgv8-moveit-environment
+  (:init (&key ((:robot rb) (instance jsk_arc2017_baxter::baxterlgv7-robot :init)) &rest args)
          (send-super* :init :robot rb :frame-id "world" args))
   (:default-configuration ()
    (list (list :rarm
@@ -875,17 +881,17 @@
                (cons :joint-list (append (send robot :larm :joint-list)
                                          (send robot :rarm :joint-list)))))))
 
-(defun jsk_arc2017_baxter::baxterlgv8-init
+(defun sphand_driver::baxterlgv8-init
   (&key (type :default-controller) (moveit nil))
   (let (mvit-env mvit-rb)
     (when moveit
-      (setq mvit-env (instance jsk_arc2017_baxter::baxterlgv8-moveit-environment))
-      (setq mvit-rb (instance jsk_arc2017_baxter::baxterlgv8-robot :init)))
+      (setq mvit-env (instance sphand_driver::baxterlgv8-moveit-environment))
+      (setq mvit-rb (instance jsk_arc2017_baxter::baxterlgv7-robot :init)))
     (when (not (boundp '*ri*))
-      (setq *ri* (instance jsk_arc2017_baxter::baxterlgv8-interface :init
+      (setq *ri* (instance sphand_driver::baxterlgv8-interface :init
                            :type type
                            :moveit-environment mvit-env
                            :moveit-robot mvit-rb)))
     (when (not (boundp '*baxter*))
-      (setq *baxter* (instance jsk_arc2017_baxter::baxterlgv8-robot :init))
+      (setq *baxter* (instance jsk_arc2017_baxter::baxterlgv7-robot :init))
       (send *baxter* :angle-vector (send *ri* :state :potentio-vector)))))
