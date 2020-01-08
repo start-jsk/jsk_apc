@@ -2,9 +2,9 @@
 
 Packages which provide ROS tools for the Suction Pinching Hand after Ver.7.0.
 
-## Installation
+## Installation to UP Board
 
-### Install Ubuntu and ROS to UP Board
+### Install Ubuntu and ROS
 
 #### Ubuntu 14.04 and ROS Indigo
 
@@ -145,7 +145,7 @@ I2C Block Read                   yes
 In new UP Board, `/dev/i2c-5` is used, but `i2cdetect -F 1` is checked in auto-starting script for backward compatibility.
 See <https://github.com/pazeshun/sphand_ros/issues/12> for background.
 
-## Usage
+## Usage on UP Board
 
 ### How to restart roslaunch
 
