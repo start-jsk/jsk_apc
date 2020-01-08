@@ -2,7 +2,7 @@
 
 (ros::roseus "robot_main")
 
-(require "package://jsk_arc2017_baxter/euslisp/lib/pick-book-interface.l")
+(require "package://grasp_prediction_arc2017/euslisp/hasegawa_master_thesis/lib/pick-book-interface.l")
 ;; smach
 (require :state-machine "package://roseus_smach/src/state-machine.l")
 (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
@@ -49,7 +49,7 @@
                            (list #f(0 1 0) #f(-1 0 0) #f(0 -1 0))
                            (list #f(1 0 0) #f(-1 0 0) #f(0 -1 0))
                            (list #f(1 0 0) #f(0 1 0) #f(0 -1 0))
-                           ;; enable this when suction point can be ignored
+                           ;; uncomment the following if you want to try correct edge at last
                            ;; (list #f(1 0 0) #f(0 1 0) #f(-1 0 0))
                            )))
                  (ros::ros-info "start ~a picking" (arm2str *arm*))
@@ -93,7 +93,7 @@
             (:pick-object
               '(lambda (userdata)
                  (send *ti* :update-state *arm* :pick-object)
-                 ;; enable this when suction point can be ignored
+                 ;; uncomment the following if you want to try correct edge at last
                  ;; (when (= (length *skip-dirs*) 4)
                  (when (= (length *skip-dirs*) 3)
                    (send *ti* :set-val 'tried-directions- (pop *skip-dirs*)))
@@ -130,7 +130,7 @@
 
 (defun pick-book-eval-init (&key (ctype :default-controller) (calib-pressure t) (moveit nil))
   (setq *moveit* moveit)
-  (jsk_arc2017_baxter::pick-book-init :ctype ctype :moveit moveit)
+  (grasp_prediction_arc2017::pick-book-init :ctype ctype :moveit moveit)
   (when moveit
     (send *ti* :wipe-all-scene)
     (send *ti* :add-workspace-scene)
@@ -161,5 +161,6 @@
   (exec-state-machine *sm* nil :root-name (format nil "SM_~a_ROOT" (string-upcase (arm2str arm))) :hz 2.0))
 
 (warn "~% Commands ~%")
-(warn "(pick-book-eval-init)           : initialize *ti*~%")
-(warn "(pick-book-eval-mainloop :rarm) : start the mainloop~%~%")
+(warn "(pick-book-eval-init :ctype :larm-head-controller :moveit t) : initialize *ti*~%")
+(warn "(pick-book-eval-mainloop :larm)                              : start the mainloop~%")
+(warn "(pick-book-eval-mainloop :larm :ignore-suction-pt t)         : start the mainloop ignoring suction point~%~%")
