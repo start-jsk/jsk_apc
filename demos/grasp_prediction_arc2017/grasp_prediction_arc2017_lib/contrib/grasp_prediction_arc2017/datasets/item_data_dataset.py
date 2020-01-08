@@ -157,7 +157,7 @@ if __name__ == '__main__':
         item_data_dir = datasets.item_data.hasegawa_iros2018()
         bg_from_dataset_ratio = 0
     elif args.project == 'hasegawa_master_thesis':
-        item_data_dir = osp.expanduser('~/data/master_thesis/datasets/ItemDataBooks8')  # NOQA
+        item_data_dir = datasets.item_data.hasegawa_master_thesis()
         bg_from_dataset_ratio = 0
     else:
         raise ValueError

@@ -45,7 +45,7 @@ source ~/ros/ws_jsk_apc/devel/.private/grasp_prediction_arc2017/share/grasp_pred
 
 - cupy
   ```bash
-  pip install cupy-cuda92  # cupy, cupy-cuda80, cupy-cuda90, or ...
+  pip install cupy-cuda92  # or cupy, cupy-cuda80, cupy-cuda90, ...
   ```
 
 ###### Object label and grasp affordance segmentation with ARC2017 dataset
@@ -55,11 +55,11 @@ cd examples/grasp_prediction_arc2017
 ./train_fcn32s.py -g 0 -d -p wada_icra2018
 ```
 
-###### Object label and grasp affordance segmentation with book dataset (Hasegawa IROS2018)
+###### Object label and grasp affordance segmentation with book dataset
 
 ```bash
 cd examples/grasp_prediction_arc2017
-./train_fcn8s.py -g 0 -d -p hasegawa_iros2018
+./train_fcn8s.py -g 0 -d -p hasegawa_iros2018  # or hasegawa_master_thesis
 ```
 
 
