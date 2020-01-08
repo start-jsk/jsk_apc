@@ -161,7 +161,8 @@
 
   <group if="$(arg rosbag)">
     <arg name="rosbag_filename" />
-    <include file="$(find grasp_prediction_arc2017)/launch/include/record_rosbag_baxterlgv7.launch">
+    <arg name="robot" />
+    <include file="$(find grasp_prediction_arc2017)/launch/include/record_rosbag_$(arg robot).launch">
       <arg name="filename" value="$(arg rosbag_filename)" />
     </include>
   </group>
