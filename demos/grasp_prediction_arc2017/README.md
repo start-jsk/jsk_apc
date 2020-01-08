@@ -95,3 +95,27 @@ roslaunch grasp_prediction_arc2017 baxterlgv7.launch
 roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch hasegawa_iros2018:=true
 roslaunch grasp_prediction_arc2017 book_picking.launch json_dir:=`rospack find grasp_prediction_arc2017`/json_dirs/hasegawa_iros2018/ForItemDataBooks6/layout1
 ```
+
+
+## Hasegawa Master Thesis Demo: Grasp Books with Low Lifting
+
+### Setup
+
+```bash
+rosrun grasp_prediction_arc2017 setup_jsk_arc2017_common.bash ~/data/hasegawa_master_thesis/system_inputs/ForItemDataBooks8/objects `rospack find grasp_prediction_arc2017`/config/hasegawa_master_thesis/ForItemDataBooks8
+```
+
+### Execution
+
+```bash
+# Experiments of Grasp Stability
+roslaunch grasp_prediction_arc2017 baxterlgv7.launch
+roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch hasegawa_master_thesis:=true
+roslaunch grasp_prediction_arc2017 book_picking.launch main:=false json_dir:=`rospack find grasp_prediction_arc2017`/json_dirs/hasegawa_master_thesis/ForItemDataBooks8/each_obj/alpha_cubic_sport_wallet
+roseus `rospack find grasp_prediction_arc2017`/euslisp/hasegawa_master_thesis/pick-book-eval.l
+
+# In Euslisp Interpreter
+(pick-book-eval-init :ctype :larm-head-controller :moveit t)
+(pick-book-eval-mainloop :larm)
+## Please see warn messages and source codes for optional settings
+```
