@@ -1,0 +1,23 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "galaxy_s5_with_cover"
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "1AD",
+            "contents": []
+        },
+        {
+            "size_id": "1A5",
+            "contents": []
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "alpha_cubic_sport_wallet"
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "1AD",
+            "contents": []
+        },
+        {
+            "size_id": "1A5",
+            "contents": []
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}

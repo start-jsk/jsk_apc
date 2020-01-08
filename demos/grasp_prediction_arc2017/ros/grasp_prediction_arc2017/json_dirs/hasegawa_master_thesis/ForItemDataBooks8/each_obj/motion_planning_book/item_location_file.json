@@ -1,0 +1,23 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "motion_planning_book"
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "1AD",
+            "contents": []
+        },
+        {
+            "size_id": "1A5",
+            "contents": []
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}
