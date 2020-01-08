@@ -92,6 +92,6 @@ rosrun grasp_prediction_arc2017 setup_jsk_arc2017_common.bash ~/data/hasegawa_ir
 
 ```bash
 roslaunch grasp_prediction_arc2017 baxterlgv7.launch
-roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch
+roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch hasegawa_iros2018:=true
 roslaunch grasp_prediction_arc2017 book_picking.launch json_dir:=`rospack find grasp_prediction_arc2017`/json_dirs/hasegawa_iros2018/ForItemDataBooks6/layout1
 ```
