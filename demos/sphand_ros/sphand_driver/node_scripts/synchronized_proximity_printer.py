@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Usage:
-# rosrun jsk_arc2017_baxter synchronized_proximity_printer.py \
+# rosrun sphand_driver synchronized_proximity_printer.py \
 #   ~input/tof:=/gripper_front/limb/left/tof_low_pass_filter/output \
 #   ~input/prox:=/gripper_front/limb/left/intensity_prox_calibrator/output \
 #   > test.log
