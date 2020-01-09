@@ -24,6 +24,7 @@
   <run_depend>rqt_gui</run_depend>
   <run_depend>rosbag</run_depend>
   <run_depend>rviz</run_depend>
+  <run_depend>sphand_driver</run_depend>
   <run_depend>stereo_image_proc</run_depend>
   <run_depend>tf</run_depend>
 
