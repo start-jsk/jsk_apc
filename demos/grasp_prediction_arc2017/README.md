@@ -1,6 +1,9 @@
 # grasp_prediction_arc2017
 
 
+- Object label and grasp affordance segmentation learned with instance image stacking
+- Picking folded objects (e.g., books) with the Suction Pinching Hand
+
 ## Installation
 
 ### With ROS
@@ -17,6 +20,7 @@ make install  # Python3
 ##### Usage
 
 ```bash
+# Don't do the following with soursing ROS setup.*sh
 source .anaconda/bin/activate
 python -c 'import grasp_prediction_arc2017_lib'
 ```
@@ -35,8 +39,8 @@ make lint
 First, you must activate python environment:
 ```bash
 source ~/ros/ws_jsk_apc/devel/.private/grasp_prediction_arc2017/share/grasp_prediction_arc2017/venv/bin/activate
-# If you want to use Anaconda environment:
-# source .anaconda/bin/activate
+# Or if you want to use Anaconda environment:
+# source .anaconda/bin/activate  # Don't do this with soursing ROS setup.*sh
 ```
 
 ##### Training CNNs
@@ -85,6 +89,14 @@ instead of
 roslaunch jsk_arc2017_baxter setup_for_pick.launch
 ```
 
+### Video (Click Below)
+
+<div align="center">
+  <a href="https://drive.google.com/uc?id=1uf-zMi3m2YtnAub4POBR8EAiStW7QDkv">
+    <img src="https://drive.google.com/uc?export=view&id=1xS8fuoIn_dhBCr5xd9BIjtDbqwyQxl6s" />
+  </a>
+</div>
+
 
 ## Hasegawa IROS2018 Demo: Pick and Insert Books
 
@@ -100,6 +112,29 @@ rosrun grasp_prediction_arc2017 install_hasegawa_iros2018
 roslaunch grasp_prediction_arc2017 baxterlgv7.launch
 roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch hasegawa_iros2018:=true
 roslaunch grasp_prediction_arc2017 book_picking.launch json_dir:=`rospack find grasp_prediction_arc2017`/json_dirs/hasegawa_iros2018/ForItemDataBooks6/layout1
+```
+
+### Video (Click Below)
+
+<div align="center">
+  <a href="https://drive.google.com/uc?id=1MBwzwkSWH23wujnzDtNFKRULViJP-ZEy">
+    <img src="https://drive.google.com/uc?export=view&id=1lEVKdUM9_08XlVqKk-OStBnb-hpNcwgN" />
+  </a>
+</div>
+
+### Citation
+
+```
+@INPROCEEDINGS{hasegawa2018detecting,
+  author={S. {Hasegawa} and K. {Wada} and K. {Okada} and M. {Inaba}},
+  booktitle={2018 IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  title={Detecting and Picking of Folded Objects with a Multiple Sensor Integrated Robot Hand},
+  year={2018},
+  pages={1138-1145},
+  doi={10.1109/IROS.2018.8593398},
+  ISSN={2153-0866},
+  month={Oct.}
+}
 ```
 
 
