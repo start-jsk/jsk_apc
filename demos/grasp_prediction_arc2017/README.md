@@ -73,10 +73,16 @@ roslaunch grasp_prediction_arc2017 sample_fcn_object_segmentation.launch
 
 ## ARC2017 demonstration
 
+In [execution flow of pick task imitating ARC2017 competition](https://jsk-apc.readthedocs.io/en/latest/jsk_arc2017_baxter/arc2017_pick_trial.html#with-environment-imitating-arc2017-pick-competition), execute
+
 ```bash
-roslaunch jsk_arc2017_baxter baxter.launch
 roslaunch grasp_prediction_arc2017 setup_for_pick.launch
-roslaunch jsk_arc2017_baxter pick.launch json_dir:=<json_dir>
+```
+
+instead of
+
+```bash
+roslaunch jsk_arc2017_baxter setup_for_pick.launch
 ```
 
 
