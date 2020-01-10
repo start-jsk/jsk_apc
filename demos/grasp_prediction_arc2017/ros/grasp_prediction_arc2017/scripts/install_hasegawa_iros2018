@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -x
+
+rosrun grasp_prediction_arc2017 download_hasegawa_iros2018.py
+
+objects_dir=~/data/hasegawa_iros2018_ros/system_inputs/ForItemDataBooks6/objects
+config_dir=$(rospack find grasp_prediction_arc2017)/config/hasegawa_iros2018/ForItemDataBooks6
+
+ln -sf $objects_dir/* $(rospack find jsk_arc2017_common)/data/objects/
+ln -sf $config_dir/label_names.yaml $(rospack find jsk_arc2017_common)/config/
+ln -sf $config_dir/object_graspability.yaml $(rospack find jsk_arc2017_common)/config/
+ln -sf $config_dir/object_weights.yaml $(rospack find jsk_arc2017_common)/config/
+
+set +x

@@ -85,7 +85,7 @@ roslaunch jsk_arc2017_baxter pick.launch json_dir:=<json_dir>
 ### Setup
 
 ```bash
-rosrun grasp_prediction_arc2017 setup_jsk_arc2017_common.bash ~/data/hasegawa_iros2018/system_inputs/ForItemDataBooks6/objects `rospack find grasp_prediction_arc2017`/config/hasegawa_iros2018/ForItemDataBooks6
+rosrun grasp_prediction_arc2017 install_hasegawa_iros2018
 ```
 
 ### Execution
@@ -102,7 +102,7 @@ roslaunch grasp_prediction_arc2017 book_picking.launch json_dir:=`rospack find g
 ### Setup
 
 ```bash
-rosrun grasp_prediction_arc2017 setup_jsk_arc2017_common.bash ~/data/hasegawa_mthesis/system_inputs/ForItemDataBooks8/objects `rospack find grasp_prediction_arc2017`/config/hasegawa_mthesis/ForItemDataBooks8
+rosrun grasp_prediction_arc2017 install_hasegawa_mthesis
 ```
 
 ### Execution

@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 
-if [ $# -ne 2 ]; then
-  echo "Please specify two arguments: objects_dir and config_dir"
-  exit 1
-fi
-
 set -x
 
-objects_dir=$1
-config_dir=$2
+rosrun grasp_prediction_arc2017 download_hasegawa_mthesis.py
+
+objects_dir=~/data/hasegawa_mthesis_ros/system_inputs/ForItemDataBooks8/objects
+config_dir=$(rospack find grasp_prediction_arc2017)/config/hasegawa_mthesis/ForItemDataBooks8
 
 ln -sf $objects_dir/* $(rospack find jsk_arc2017_common)/data/objects/
 ln -sf $config_dir/label_names.yaml $(rospack find jsk_arc2017_common)/config/
