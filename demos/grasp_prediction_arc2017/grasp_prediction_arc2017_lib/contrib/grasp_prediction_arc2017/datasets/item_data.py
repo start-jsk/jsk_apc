@@ -26,9 +26,9 @@ def hasegawa_iros2018():
     return osp.splitext(path)[0]
 
 
-def hasegawa_master_thesis():
+def hasegawa_mthesis():
     path = osp.expanduser(
-        '~/data/hasegawa_master_thesis/item_data/ItemDataBooks8.zip')
+        '~/data/hasegawa_mthesis/item_data/ItemDataBooks8.zip')
     grasp_fusion_lib.data.download(
         url='https://drive.google.com/uc?id=1Tln2FBNct6OzT-uZhL3YGQ3Y_eLD41xh',
         path=path,

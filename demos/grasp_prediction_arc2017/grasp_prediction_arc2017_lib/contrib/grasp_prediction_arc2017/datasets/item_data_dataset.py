@@ -41,7 +41,7 @@ class ItemDataDataset(chainer.dataset.DatasetMixin):
         if self.project == 'wada_icra2018':
             object_names, self.object_data = load_item_data(item_data_dir)
         elif (self.project == 'hasegawa_iros2018' or
-              self.project == 'hasegawa_master_thesis'):
+              self.project == 'hasegawa_mthesis'):
             object_names, self.object_data = load_item_data(
                 item_data_dir, target_size=360)
         else:
@@ -68,7 +68,7 @@ class ItemDataDataset(chainer.dataset.DatasetMixin):
             )
             get_shelf_data_func = get_shelf_data
         elif (self.project == 'hasegawa_iros2018' or
-              self.project == 'hasegawa_master_thesis'):
+              self.project == 'hasegawa_mthesis'):
             get_shelf_data_func = get_shelf_data_hasegawa_iros2018
         self.shelf_img, self.shelf_lbl = get_shelf_data_func()
 
@@ -119,7 +119,7 @@ class ItemDataDataset(chainer.dataset.DatasetMixin):
             object_data = grasp_fusion_lib.aug.augment_object_data(
                 object_data, random_state)
         elif (self.project == 'hasegawa_iros2018' or
-              self.project == 'hasegawa_master_thesis'):
+              self.project == 'hasegawa_mthesis'):
             object_data = grasp_fusion_lib.aug.augment_object_data(
                 object_data, random_state, scale=(0.15, 0.8))
         stacked = grasp_fusion_lib.aug.stack_objects(
@@ -129,7 +129,7 @@ class ItemDataDataset(chainer.dataset.DatasetMixin):
             stacked = next(grasp_fusion_lib.aug.augment_object_data(
                 [stacked], random_state, fit_output=False))
         elif (self.project == 'hasegawa_iros2018' or
-              self.project == 'hasegawa_master_thesis'):
+              self.project == 'hasegawa_mthesis'):
             stacked = next(grasp_fusion_lib.aug.augment_object_data(
                 [stacked], random_state, fit_output=False,
                 scale=(0.15, 0.8)))
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--project',
                         choices=['wada_icra2018',
                                  'hasegawa_iros2018',
-                                 'hasegawa_master_thesis'],
+                                 'hasegawa_mthesis'],
                         help='project name')
     args = parser.parse_args()
 
@@ -156,8 +156,8 @@ if __name__ == '__main__':
     elif args.project == 'hasegawa_iros2018':
         item_data_dir = datasets.item_data.hasegawa_iros2018()
         bg_from_dataset_ratio = 0
-    elif args.project == 'hasegawa_master_thesis':
-        item_data_dir = datasets.item_data.hasegawa_master_thesis()
+    elif args.project == 'hasegawa_mthesis':
+        item_data_dir = datasets.item_data.hasegawa_mthesis()
         bg_from_dataset_ratio = 0
     else:
         raise ValueError

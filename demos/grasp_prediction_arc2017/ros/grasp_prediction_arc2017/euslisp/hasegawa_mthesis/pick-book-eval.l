@@ -2,7 +2,7 @@
 
 (ros::roseus "robot_main")
 
-(require "package://grasp_prediction_arc2017/euslisp/hasegawa_master_thesis/lib/pick-book-interface.l")
+(require "package://grasp_prediction_arc2017/euslisp/hasegawa_mthesis/lib/pick-book-interface.l")
 ;; smach
 (require :state-machine "package://roseus_smach/src/state-machine.l")
 (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")

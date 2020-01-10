@@ -39,7 +39,7 @@ def main():
         extract=True,
     )
 
-    path = osp.expanduser('~/data/hasegawa_master_thesis/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz')  # NOQA
+    path = osp.expanduser('~/data/hasegawa_mthesis/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz')  # NOQA
     jsk_data.download_data(
         pkg_name='grasp_prediction_arc2017',
         path=path,
@@ -47,7 +47,7 @@ def main():
         md5='e69d820303eab201c351fd2544f3c369',
     )
 
-    path = osp.expanduser('~/data/hasegawa_master_thesis/system_inputs/ForItemDataBooks8/objects.zip')  # NOQA
+    path = osp.expanduser('~/data/hasegawa_mthesis/system_inputs/ForItemDataBooks8/objects.zip')  # NOQA
     jsk_data.download_data(
         pkg_name='grasp_prediction_arc2017',
         path=path,

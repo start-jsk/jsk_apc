@@ -7,9 +7,9 @@
 
   <!-- project input to select model -->
   <arg name="hasegawa_iros2018" default="false" />
-  <arg name="hasegawa_master_thesis" default="false" />
+  <arg name="hasegawa_mthesis" default="false" />
   <arg name="MODEL_FILE" if="$(arg hasegawa_iros2018)" value="$(optenv HOME)/data/hasegawa_iros2018/system_inputs/ForItemDataBooks6/FCN8sAtOnce_180720_130702_iter00060000.npz" />
-  <arg name="MODEL_FILE" if="$(arg hasegawa_master_thesis)" value="$(optenv HOME)/data/hasegawa_master_thesis/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz" />
+  <arg name="MODEL_FILE" if="$(arg hasegawa_mthesis)" value="$(optenv HOME)/data/hasegawa_mthesis/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz" />
 
   <!-- get machine tag -->
   <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" if="$(arg launch_scale)" />

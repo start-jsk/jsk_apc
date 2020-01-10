@@ -2,7 +2,7 @@
 
 (require "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
 (require "package://jsk_2016_01_baxter_apc/euslisp/lib/util.l")
-(require "package://grasp_prediction_arc2017/euslisp/hasegawa_master_thesis/lib/pick-book-base-interface.l")
+(require "package://grasp_prediction_arc2017/euslisp/hasegawa_mthesis/lib/pick-book-base-interface.l")
 
 
 (ros::load-ros-package "jsk_gui_msgs")

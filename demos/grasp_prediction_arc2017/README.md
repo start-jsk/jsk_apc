@@ -59,7 +59,7 @@ cd examples/grasp_prediction_arc2017
 
 ```bash
 cd examples/grasp_prediction_arc2017
-./train_fcn8s.py -g 0 -d -p hasegawa_iros2018  # or hasegawa_master_thesis
+./train_fcn8s.py -g 0 -d -p hasegawa_iros2018  # or hasegawa_mthesis
 ```
 
 
@@ -102,7 +102,7 @@ roslaunch grasp_prediction_arc2017 book_picking.launch json_dir:=`rospack find g
 ### Setup
 
 ```bash
-rosrun grasp_prediction_arc2017 setup_jsk_arc2017_common.bash ~/data/hasegawa_master_thesis/system_inputs/ForItemDataBooks8/objects `rospack find grasp_prediction_arc2017`/config/hasegawa_master_thesis/ForItemDataBooks8
+rosrun grasp_prediction_arc2017 setup_jsk_arc2017_common.bash ~/data/hasegawa_mthesis/system_inputs/ForItemDataBooks8/objects `rospack find grasp_prediction_arc2017`/config/hasegawa_mthesis/ForItemDataBooks8
 ```
 
 ### Execution
@@ -110,9 +110,9 @@ rosrun grasp_prediction_arc2017 setup_jsk_arc2017_common.bash ~/data/hasegawa_ma
 ```bash
 # Experiments of Grasp Stability
 roslaunch grasp_prediction_arc2017 baxterlgv7.launch
-roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch hasegawa_master_thesis:=true
-roslaunch grasp_prediction_arc2017 book_picking.launch main:=false json_dir:=`rospack find grasp_prediction_arc2017`/json_dirs/hasegawa_master_thesis/ForItemDataBooks8/each_obj/alpha_cubic_sport_wallet
-roseus `rospack find grasp_prediction_arc2017`/euslisp/hasegawa_master_thesis/pick-book-eval.l
+roslaunch grasp_prediction_arc2017 setup_for_book_picking.launch hasegawa_mthesis:=true
+roslaunch grasp_prediction_arc2017 book_picking.launch main:=false json_dir:=`rospack find grasp_prediction_arc2017`/json_dirs/hasegawa_mthesis/ForItemDataBooks8/each_obj/alpha_cubic_sport_wallet
+roseus `rospack find grasp_prediction_arc2017`/euslisp/hasegawa_mthesis/pick-book-eval.l
 
 # In Euslisp Interpreter
 (pick-book-eval-init :ctype :larm-head-controller :moveit t)

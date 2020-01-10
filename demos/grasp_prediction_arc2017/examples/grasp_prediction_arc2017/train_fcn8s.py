@@ -31,7 +31,7 @@ def main():
     parser.add_argument('-p', '--project',
                         choices=['wada_icra2018',
                                  'hasegawa_iros2018',
-                                 'hasegawa_master_thesis'],
+                                 'hasegawa_mthesis'],
                         help='project name')
     args = parser.parse_args()
 
@@ -48,8 +48,8 @@ def main():
     elif args.project == 'hasegawa_iros2018':
         item_data_dir = datasets.item_data.hasegawa_iros2018()
         bg_from_dataset_ratio = 0
-    elif args.project == 'hasegawa_master_thesis':
-        item_data_dir = datasets.item_data.hasegawa_master_thesis()
+    elif args.project == 'hasegawa_mthesis':
+        item_data_dir = datasets.item_data.hasegawa_mthesis()
         bg_from_dataset_ratio = 0
     else:
         raise ValueError
