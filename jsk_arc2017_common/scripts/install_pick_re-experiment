@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -x
+
+rosrun jsk_arc2017_common download_pick_re-experiment.py
+
+system_inputs=~/data/arc2017/system_inputs_jsons/pick_re-experiment/system_inputs
+
+ln -sf $system_inputs/objects/* $(rospack find jsk_arc2017_common)/data/objects/
+ln -sf $system_inputs/*.yaml $(rospack find jsk_arc2017_common)/config/
+ln -sf $system_inputs/FCN32s_iter00004800.npz $(rospack find jsk_arc2017_common)/data/models/fcn32s.npz
+
+set +x
