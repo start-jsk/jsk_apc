@@ -10,9 +10,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>libmraa1</depend>
-  <depend>libmraa-dev</depend>
-  <depend>mraa-tools</depend>
   <depend>roscpp</depend>
   <depend>std_msgs</depend>
 
