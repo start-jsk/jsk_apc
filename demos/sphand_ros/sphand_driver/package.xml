@@ -1,19 +1,12 @@
 <?xml version="1.0"?>
 <package>
   <name>sphand_driver</name>
-  <version>0.0.0</version>
-  <description>The sphand_driver package</description>
+  <version>0.0.1</version>
+  <description>ROS driver for the Suction Pinching Hand after Ver.7.0.</description>
 
-  <!-- One maintainer tag required, multiple allowed, one person per tag -->
-  <!-- Example:  -->
-  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="pazeshun@todo.todo">pazeshun</maintainer>
+  <maintainer email="pazeshun3684@gmail.com">Shun Hasegawa</maintainer>
 
-
-  <!-- One license tag required, multiple allowed, one license per tag -->
-  <!-- Commonly used license strings: -->
-  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>TODO</license>
+  <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
 
@@ -45,6 +38,7 @@
   <run_depend>geometry_msgs</run_depend>
   <run_depend>hardware_interface</run_depend>
   <run_depend>joint_state_controller</run_depend>
+  <!-- TODO: Remove dependency to jsk_arc2017_baxter (task-specific package) -->
   <run_depend>jsk_arc2017_baxter</run_depend>
   <run_depend>libmraa1</run_depend>
   <run_depend>libmraa-dev</run_depend>
