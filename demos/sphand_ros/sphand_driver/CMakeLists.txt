@@ -10,7 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
   dynamixel_msgs
   force_proximity_ros
   hardware_interface
-  message_generation
   roscpp
   sphand_driver_msgs
   std_msgs
@@ -49,7 +48,6 @@ if(${mraa_FOUND})
     dynamixel_msgs
     force_proximity_ros
     hardware_interface
-    message_runtime
     roscpp
     sphand_driver_msgs
     std_msgs
@@ -68,7 +66,6 @@ else()
     dynamixel_msgs
     force_proximity_ros
     hardware_interface
-    message_runtime
     roscpp
     sphand_driver_msgs
     std_msgs
