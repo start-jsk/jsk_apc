@@ -55,10 +55,10 @@ include_directories(
 ## Install ##
 #############
 
-install(DIRECTORY nodes scripts
+install(DIRECTORY euslisp nodes scripts
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         USE_SOURCE_PERMISSIONS)
-install(DIRECTORY samples launch
+install(DIRECTORY config samples launch
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         USE_SOURCE_PERMISSIONS)
 install(FILES requirements.txt
