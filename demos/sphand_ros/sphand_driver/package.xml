@@ -44,6 +44,12 @@
   <run_depend>transmission_interface</run_depend>
   <run_depend>vl53l0x_mraa_ros</run_depend>
 
+  <!-- TODO: Remove dependency to jsk_apc2016_common (task-specific package) -->
+  <test_depend>jsk_apc2016_common</test_depend>
+  <test_depend>jsk_tools</test_depend>
+  <test_depend>roslint</test_depend>
+  <test_depend>rostest</test_depend>
+
   <export>
   </export>
 </package>
