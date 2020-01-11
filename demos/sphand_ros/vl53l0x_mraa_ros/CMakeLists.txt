@@ -94,7 +94,19 @@ endif()
 ## Install ##
 #############
 
-# XXX
+if(${mraa_FOUND})
+  # Mark executables and/or libraries for installation
+  install(TARGETS vl53l0x_mraa single_vl53l0x_ros
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )
+
+  # Mark cpp header files for installation
+  install(DIRECTORY include/${PROJECT_NAME}/
+    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  )
+endif()
 
 #############
 ## Testing ##

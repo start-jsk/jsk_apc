@@ -102,7 +102,21 @@ endif()
 ## Install ##
 #############
 
-# XXX
+# Mark executables and/or libraries for installation
+if(${mraa_FOUND})
+  install(TARGETS gripper_v7_loop_node gripper_v8_loop_node
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )
+endif()
+
+# Mark other files for installation (e.g. launch and bag files, etc.)
+install(DIRECTORY
+  camera_info config euslisp launch node_scripts scripts supervisor udev
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS
+)
 
 #############
 ## Testing ##
