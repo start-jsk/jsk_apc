@@ -1,0 +1,123 @@
+<launch>
+
+  <arg name="load_driver" default="true" />
+  <arg name="rviz" default="true" />
+
+  <!-- hand mounted camera -->
+  <include file="$(find baxter_paper_filing)/launch/include/stereo_astra_hand.launch">
+    <arg name="load_driver" value="$(arg load_driver)" />
+  </include>
+
+  <arg name="LEFT_CAMERA_INFO" value="/left_hand_camera/fused/rgb/camera_info" />
+  <arg name="LEFT_INPUT_CLOUD" value="/left_hand_camera/fused/depth_registered/points" />
+  <arg name="LEFT_INPUT_IMAGE" value="/left_hand_camera/left/rgb/image_rect_color" />
+  <arg name="LEFT_MANAGER" value="/left_hand_camera/left/left_nodelet_manager" />
+  <arg name="RIGHT_CAMERA_INFO" value="/right_hand_camera/fused/rgb/camera_info" />
+  <arg name="RIGHT_INPUT_CLOUD" value="/right_hand_camera/fused/depth_registered/points" />
+  <arg name="RIGHT_INPUT_IMAGE" value="/right_hand_camera/left/rgb/image_rect_color" />
+  <arg name="RIGHT_MANAGER" value="/right_hand_camera/left/left_nodelet_manager" />
+
+  <!-- FIXME: As "Bond broken" occurs too frequently, respawn is added to all nodelet nodes -->
+  <group ns="left_hand_camera">
+    <node name="get_recog_box_on_table"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg LEFT_MANAGER)"
+          respawn="true">
+      <remap from="~input" to="/publish_table_boxes/output" />
+      <rosparam>
+        index: 1
+      </rosparam>
+    </node>
+    <node name="attention_clipper_on_table"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg LEFT_MANAGER)"
+          respawn="true">
+      <remap from="~input" to="$(arg LEFT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~input/box" to="get_recog_box_on_table/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="extract_indices_on_table"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg LEFT_MANAGER)"
+          respawn="true">
+      <remap from="~input" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~indices" to="attention_clipper_on_table/output/point_indices" />
+      <rosparam>
+        keep_organized: true
+        approximate_sync: true
+        max_queue_size: 100
+      </rosparam>
+    </node>
+    <node name="hsi_filter_paper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/HSIColorFilter $(arg LEFT_MANAGER)"
+          respawn="true">
+      <remap from="~input" to="extract_indices_on_table/output" />
+      <rosparam>
+        use_indices: false
+        keep_organized: true
+        h_limit_max: -108
+        h_limit_min: -128
+        s_limit_max: 50
+        s_limit_min: 10
+        i_limit_max: 255
+        i_limit_min: 200
+      </rosparam>
+    </node>
+    <node name="resize_points_publisher_paper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ResizePointsPublisher $(arg LEFT_MANAGER)"
+          respawn="true">
+      <remap from="~input" to="hsi_filter_paper/output" />
+      <rosparam>
+        step_x: 2
+        step_y: 2
+      </rosparam>
+    </node>
+    <node name="euclidean_clustering_paper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/EuclideanClustering $(arg LEFT_MANAGER)"
+          respawn="true">
+      <remap from="~input" to="resize_points_publisher_paper/output" />
+      <rosparam>
+        min_size: 10
+        max_size: 25000
+        tolerance: 0.01
+      </rosparam>
+    </node>
+    <node name="cluster_indices_decomposer_paper"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg LEFT_MANAGER)"
+          respawn="true">
+      <remap from="~input" to="resize_points_publisher_paper/output" />
+      <remap from="~target" to="euclidean_clustering_paper/output" />
+      <rosparam subst_value="true">
+        approximate_sync: false
+        queue_size: 100
+        sort_by: -cloud_size
+        align_boxes: true
+        align_boxes_with_plane: false
+        target_frame_id: table_bottom_right_frame
+        force_to_flip_z_axis: false
+      </rosparam>
+    </node>
+  </group>  <!-- ns="left_hand_camera" -->
+
+  <!-- Visualization -->
+  <group if="$(arg rviz)">
+    <node name="rviz"
+          pkg="rviz" type="rviz"
+          args="-d $(find baxter_paper_filing)/rvizconfig/paper_filing.rviz">
+    </node>
+    <node name="relay_left_finger_dist"
+          pkg="topic_tools" type="relay_field"
+          args="/gripper_front/limb/left/intensity_prox_calibrator/output /viz/left_finger_dist std_msgs/Float32 'data: m.data[1].distance'" />
+    <node name="relay_right_finger_dist"
+          pkg="topic_tools" type="relay_field"
+          args="/gripper_front/limb/left/intensity_prox_calibrator/output /viz/right_finger_dist std_msgs/Float32 'data: m.data[3].distance'" />
+  </group>
+
+</launch>

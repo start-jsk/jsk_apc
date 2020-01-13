@@ -1,0 +1,7 @@
+<launch>
+
+  <include file="$(find sphand_driver)/launch/baxterlgv7_common.launch" />
+
+  <include file="$(find baxter_paper_filing)/launch/include/setup_paper_location.xml" />
+
+</launch>
