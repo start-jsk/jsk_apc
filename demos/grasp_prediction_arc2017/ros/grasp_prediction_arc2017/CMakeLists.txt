@@ -41,11 +41,6 @@ catkin_generate_virtualenv(
 ## Build ##
 ###########
 
-catkin_install_python(
-  PROGRAMS
-  nodes/fcn_object_segmentation.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
 include_directories(
 # include
 # ${catkin_INCLUDE_DIRS}
@@ -55,10 +50,21 @@ include_directories(
 ## Install ##
 #############
 
-install(DIRECTORY euslisp nodes scripts
+# Mark Python executables for installation
+# See http://docs.ros.org/melodic/api/catkin/html/howto/format1/installing_python.html
+catkin_install_python(PROGRAMS
+  nodes/grasp_style_server_book_picking.py
+  nodes/json_saver_book_picking.py
+  nodes/state_server_book_picking.py
+  nodes/work_order_publisher_book_picking.py
+  nodes/fcn_object_segmentation.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY scripts
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         USE_SOURCE_PERMISSIONS)
-install(DIRECTORY config samples launch
+install(DIRECTORY config euslisp launch samples
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         USE_SOURCE_PERMISSIONS)
 install(FILES requirements.txt
