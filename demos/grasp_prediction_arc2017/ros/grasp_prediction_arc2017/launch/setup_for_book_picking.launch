@@ -1,7 +1,6 @@
 <launch>
 
   <arg name="load_driver" default="true" />
-  <arg name="launch_scale" default="true" />
   <arg name="launch_left" default="true" />
   <arg name="launch_right" default="false" />
 
@@ -11,20 +10,12 @@
   <arg name="MODEL_FILE" if="$(arg hasegawa_iros2018)" value="$(optenv HOME)/data/hasegawa_iros2018_ros/system_inputs/ForItemDataBooks6/FCN8sAtOnce_180720_130702_iter00060000.npz" />
   <arg name="MODEL_FILE" if="$(arg hasegawa_mthesis)" value="$(optenv HOME)/data/hasegawa_mthesis_ros/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz" />
 
-  <!-- get machine tag -->
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" if="$(arg launch_scale)" />
-
   <!-- hand mounted camera -->
   <include file="$(find grasp_prediction_arc2017)/launch/include/stereo_astra_hand_baxterlgv7.launch">
     <arg name="load_driver" value="$(arg load_driver)" />
     <arg name="launch_left_hand_stereo" value="$(arg launch_left)" />
     <arg name="launch_right_hand_stereo" value="$(arg launch_right)" />
   </include>
-
-  <!-- weight scale -->
-  <!--
-  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/scale.launch" if="$(arg launch_scale)" />
-  -->
 
   <arg name="LEFT_CAMERA_INFO" value="/left_hand_camera/fused/rgb/camera_info" />
   <arg name="LEFT_INPUT_CLOUD" value="/left_hand_camera/fused/depth_registered/points" />
@@ -85,32 +76,6 @@
       <arg name="IGNORE_LABELS" value="[0, 41]" />
       <arg name="THRESH_SUCTION_PROB" value="0.5" />
     </include>
-
-    <!-- weight object classifier -->
-    <!--
-    <node name="weight_candidates_refiner"
-          pkg="jsk_arc2017_common" type="weight_candidates_refiner.py">
-      <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
-      <rosparam>
-        approximate_sync: true
-        queue_size: 10
-        input_topics:
-          - /scale0/output
-          - /scale1/output
-          - /scale2/output
-          - /scale3/output
-        error: 10.0
-      </rosparam>
-    </node>
-
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
-      <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
-      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output" />
-      <arg name="INPUT_INFO" value="left/rgb/camera_info" />
-      <arg name="INPUT_PROBA_IMAGE" value="fcn_object_segmentation/output/proba_image" />
-      <arg name="NODELET_MANAGER" value="left/left_nodelet_manager" />
-    </include>
-    -->
   </group>
   <!-- for right hand camera -->
   <group ns="right_hand_camera" if="$(arg launch_right)">
@@ -161,32 +126,6 @@
       <arg name="IGNORE_LABELS" value="[0, 41]" />
       <arg name="THRESH_SUCTION_PROB" value="0.5" />
     </include>
-
-    <!-- weight object classifier -->
-    <!--
-    <node name="weight_candidates_refiner"
-          pkg="jsk_arc2017_common" type="weight_candidates_refiner.py">
-      <remap from="~input/candidates" to="candidates_publisher/output/candidates" />
-      <rosparam>
-        approximate_sync: true
-        queue_size: 10
-        input_topics:
-          - /scale0/output
-          - /scale1/output
-          - /scale2/output
-          - /scale3/output
-        error: 10.0
-      </rosparam>
-    </node>
-
-    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/grasped_region_classifier.launch" >
-      <arg name="INPUT_CANDIDATES" value="weight_candidates_refiner/output/candidates/picked" />
-      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output" />
-      <arg name="INPUT_INFO" value="left/rgb/camera_info" />
-      <arg name="INPUT_PROBA_IMAGE" value="fcn_object_segmentation/output/proba_image" />
-      <arg name="NODELET_MANAGER" value="left/left_nodelet_manager" />
-    </include>
-    -->
   </group>
 
 </launch>

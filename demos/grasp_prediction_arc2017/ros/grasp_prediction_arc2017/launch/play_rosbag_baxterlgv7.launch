@@ -38,7 +38,6 @@
   <group if="$(arg launch_setup)">
     <include file="$(find grasp_prediction_arc2017)/launch/setup_for_book_picking.launch">
       <arg name="load_driver" value="false" />
-      <arg name="launch_scale" value="false" />
     </include>
   </group>
 
