@@ -102,20 +102,39 @@ endif()
 ## Install ##
 #############
 
-# Mark executables and/or libraries for installation
+# Mark executables for installation
+# See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
 if(${mraa_FOUND})
   install(TARGETS gripper_v7_loop_node gripper_v8_loop_node
-    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   )
 endif()
 
+# Mark Python executables for installation
+# See http://docs.ros.org/melodic/api/catkin/html/howto/format1/installing_python.html
+catkin_install_python(PROGRAMS
+  node_scripts/check_tof_min_max.py
+  node_scripts/force_estimator.py
+  node_scripts/intensity_prox_calibrator.py
+  node_scripts/synchronized_proximity_printer.py
+  node_scripts/tof_average.py
+  node_scripts/tof_low_pass_filter.py
+  scripts/format_printed_prox_to_csv
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 # Mark other files for installation (e.g. launch and bag files, etc.)
+# See http://docs.ros.org/melodic/api/catkin/html/howto/format1/installing_other.html
 install(DIRECTORY
-  camera_info config euslisp launch node_scripts scripts supervisor udev
+  camera_info config euslisp launch supervisor udev
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS
+)
+install(PROGRAMS
+  scripts/create_supervisor_conf
+  scripts/create_udev_rules
+  scripts/launch_left_gripper.sh
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 #############

@@ -95,14 +95,22 @@ endif()
 #############
 
 if(${mraa_FOUND})
-  # Mark executables and/or libraries for installation
-  install(TARGETS vl53l0x_mraa single_vl53l0x_ros
+  # Mark libraries for installation
+  # See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
+  install(TARGETS vl53l0x_mraa
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+  )
+
+  # Mark executables for installation
+  # See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
+  install(TARGETS single_vl53l0x_ros
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   )
 
   # Mark cpp header files for installation
+  # See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
   install(DIRECTORY include/${PROJECT_NAME}/
     DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   )
