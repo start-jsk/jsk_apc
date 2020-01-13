@@ -1,0 +1,47 @@
+<launch>
+  <arg name="filename" />
+  <node name="rosbag_record"
+        pkg="rosbag" type="record"
+        args="-b 0
+              /tf
+              /tf_static
+              /robot/joint_states
+
+              /lgripper_sensors
+              /rgripper_sensors
+
+              /vacuum_gripper/limb/left/state
+              /vacuum_gripper/limb/left
+              /vacuum_gripper/limb/right/state
+              /vacuum_gripper/limb/right
+
+              /left_hand_camera/left/rgb/camera_info
+              /left_hand_camera/left/rgb/image_raw/compressed
+              /left_hand_camera/left/depth/camera_info
+              /left_hand_camera/left/depth/image_raw
+              /left_hand_camera/right/rgb/camera_info
+              /left_hand_camera/right/rgb/image_raw/compressed
+
+              /gripper_front/limb/left/intensity_proximities
+              /gripper_front/limb/left/tof_proximities
+              /gripper_front/limb/left/tof_average/output
+              /gripper_front/limb/left/tof_low_pass_filter/output
+              /gripper_front/limb/left/intensity_prox_calibrator/output -O $(arg filename)">
+              <!-- FIXME: IR sensors conflicts.
+              /left_hand_camera/right/depth/camera_info
+              /left_hand_camera/right/depth/image_raw/compressedDepth
+              /right_hand_camera/right/depth/camera_info
+              /right_hand_camera/right/depth/image_raw/compressedDepth
+              -->
+              <!-- FIXME: creating compressedDepth is heavy and slow
+              /left_hand_camera/left/depth/image_raw/compressedDepth
+
+              /right_hand_camera/left/rgb/camera_info
+              /right_hand_camera/left/rgb/image_raw/compressed
+              /right_hand_camera/left/depth/camera_info
+              /right_hand_camera/left/depth/image_raw/compressedDepth
+              /right_hand_camera/right/rgb/camera_info
+              /right_hand_camera/right/rgb/image_raw/compressed
+              -->
+  </node>
+</launch>
