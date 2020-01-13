@@ -38,6 +38,7 @@ Details are on [GitHub page](https://github.com/intel-iot-devkit/mraa).
 ### Install sphand_ros and its dependencies
 
 Follow "Build catkin workspace for jsk_apc" in <https://github.com/start-jsk/jsk_apc/blob/master/README.md>.
+Add `--ignore-src` option to `rosdep install` to reduce disk usage.
 
 ### Setup I<sup>2</sup>C, SPI and DXHUB
 
