@@ -162,7 +162,7 @@
   <group if="$(arg rosbag)">
     <arg name="rosbag_filename" />
     <arg name="robot" />
-    <include file="$(find grasp_prediction_arc2017)/launch/include/record_rosbag_$(arg robot).launch">
+    <include file="$(find sphand_driver)/launch/record_rosbag_$(arg robot).launch">
       <arg name="filename" value="$(arg rosbag_filename)" />
     </include>
   </group>
