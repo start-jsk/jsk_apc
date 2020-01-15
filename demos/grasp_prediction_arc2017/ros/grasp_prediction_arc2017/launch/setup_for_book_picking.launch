@@ -8,7 +8,9 @@
   <arg name="hasegawa_iros2018" default="false" />
   <arg name="hasegawa_mthesis" default="false" />
   <arg name="MODEL_FILE" if="$(arg hasegawa_iros2018)" value="$(optenv HOME)/data/hasegawa_iros2018_ros/system_inputs/ForItemDataBooks6/FCN8sAtOnce_180720_130702_iter00060000.npz" />
+  <arg name="N_CLASS" if="$(arg hasegawa_iros2018)" value="14" />
   <arg name="MODEL_FILE" if="$(arg hasegawa_mthesis)" value="$(optenv HOME)/data/hasegawa_mthesis_ros/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz" />
+  <arg name="N_CLASS" if="$(arg hasegawa_mthesis)" value="19" />
 
   <!-- hand mounted camera -->
   <include file="$(find grasp_prediction_arc2017)/launch/include/stereo_astra_hand_baxterlgv7.launch">
@@ -65,7 +67,7 @@
       <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
       <arg name="FIXED_FRAME" value="base" />
       <arg name="MODEL_NAME" value="fcn8s_at_once" />
-      <arg name="N_CLASS" value="19" />
+      <arg name="N_CLASS" value="$(arg N_CLASS)" />
       <arg name="CLASS_AGNOSTIC" value="false" />
       <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
       <arg name="GPU" value="0" />
@@ -115,7 +117,7 @@
       <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
       <arg name="FIXED_FRAME" value="base" />
       <arg name="MODEL_NAME" value="fcn8s_at_once" />
-      <arg name="N_CLASS" value="19" />
+      <arg name="N_CLASS" value="$(arg N_CLASS)" />
       <arg name="CLASS_AGNOSTIC" value="false" />
       <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
       <arg name="GPU" value="0" />
