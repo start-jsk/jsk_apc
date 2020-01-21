@@ -36,6 +36,7 @@ class IntensityProxCalibrator(object):
             self.rubber_t = np.array(self.rubber_t)
         self.i_raw = None
         self.i_diff_from_init = None
+        self.tof_dist = None
         self.i_diff_queue = []
         self.i_tms_queue = []
 
@@ -87,24 +88,38 @@ class IntensityProxCalibrator(object):
                 distance
             )
 
+        # Create distance combined with ToF output
+        tof_d_from_i = self.tof_dist - self.i_height_from_tof
+        dist_combined = np.where(
+            ((distance == np.inf) |
+             ((tof_d_from_i > self.i_valid_max_dist) &
+              (self.i_diff_from_init < self.i_valid_min))),
+            tof_d_from_i,
+            distance
+        )
+
         # Publish calibrated info
         pub_msg = IntensityProxCalibInfoArray()
         pub_msg.header.stamp = msg.header.stamp
-        for p, dist, diff, const, init in zip(msg.proximities,
-                                              distance,
-                                              self.i_diff_from_init,
-                                              self.i_prop_const,
-                                              self.i_init_value):
+        for p, dist, diff, const, init, dist_c in zip(msg.proximities,
+                                                      distance,
+                                                      self.i_diff_from_init,
+                                                      self.i_prop_const,
+                                                      self.i_init_value,
+                                                      dist_combined):
             info = IntensityProxCalibInfo()
             info.header.stamp = p.header.stamp
             info.distance = dist
             info.diff_from_init = diff
             info.prop_const = const
             info.init_value = init
+            info.distance_combined = dist_c
             pub_msg.data.append(info)
         self.pub_i_calib.publish(pub_msg)
 
     def _tof_cb(self, msg):
+        self.tof_dist = np.array([e.data.range_millimeter for e in msg.array],
+                                 dtype=np.float64)
         if self.i_diff_from_init is None:
             rospy.logwarn_throttle(
                 10, 'Prox diff_from_init is not set, so skipping')

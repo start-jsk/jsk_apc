@@ -15,6 +15,8 @@ add_message_files(
   FILES
   IntensityProxCalibInfo.msg
   IntensityProxCalibInfoArray.msg
+  IntensityProxCalibInfoOld.msg
+  IntensityProxCalibInfoOldArray.msg
   ProximityStampedArray.msg
 )
 

@@ -119,6 +119,7 @@ catkin_install_python(PROGRAMS
   node_scripts/synchronized_proximity_printer.py
   node_scripts/tof_average.py
   node_scripts/tof_low_pass_filter.py
+  node_scripts/update_intensity_prox_calib_info.py
   scripts/format_printed_prox_to_csv
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
