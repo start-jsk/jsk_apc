@@ -296,6 +296,13 @@
         (ros::ros-error "Cannot get specified proximity")
         (return-from :get-i-prox-distance nil))
       (send msg :distance)))
+  (:get-distance-combined (arm side)
+    (send self :spin-once)
+    (let ((msg (gethash side (gethash arm i-proximities-))))
+      (unless msg
+        (ros::ros-error "Cannot get specified proximity")
+        (return-from :get-distance-combined nil))
+      (send msg :distance_combined)))
   (:get-tof-proximity (arm side &key (full-msg nil) (after-stamp))
     (send self :spin-once)
     (let ((msg (gethash side (gethash arm tof-proximities-))))
