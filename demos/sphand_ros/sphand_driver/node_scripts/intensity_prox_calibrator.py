@@ -93,7 +93,8 @@ class IntensityProxCalibrator(object):
         dist_combined = np.where(
             ((distance == np.inf) |
              ((tof_d_from_i > self.i_valid_max_dist) &
-              (self.i_diff_from_init < self.i_valid_min))),
+              (self.i_diff_from_init <
+               ((self.i_valid_min + self.i_valid_max) / 2.0)))),
             tof_d_from_i,
             distance
         )
