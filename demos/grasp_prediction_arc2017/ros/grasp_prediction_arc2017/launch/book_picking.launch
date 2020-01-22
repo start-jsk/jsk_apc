@@ -86,16 +86,6 @@
       </rosparam>
     </node>
   </group>
-  <group ns="right_hand_camera">
-    <node name="candidates_publisher"
-        pkg="jsk_arc2017_common" type="candidates_publisher.py" >
-      <remap from="~input/json_dir" to="/json_saver/output/json_dir" />
-      <remap from="~label_names" to="label_names" />
-      <rosparam>
-        target_location: bin_C
-      </rosparam>
-    </node>
-  </group>
 
   <!-- grasp style server -->
   <node name="grasp_style_server"
@@ -110,7 +100,6 @@
 
   <!-- parameter -->
   <param name="/left_hand/target_bin" value="" />
-  <param name="/right_hand/target_bin" value="" />
 
   <node name="rqt_yn_btn"
         pkg="jsk_rqt_plugins" type="rqt_yn_btn">
@@ -149,7 +138,6 @@
     <rosparam>
       nodes:
         - /left_hand_main
-        - /right_hand_main
       exclude_regexes:
         - .*follow_joint_trajectory.*
         - .*:joint-angle.*
