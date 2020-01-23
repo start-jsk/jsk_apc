@@ -55,6 +55,11 @@
         <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg l_hand_stereo_devices)_left.yaml" />
         <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg l_hand_l_camera_device_id).yaml" />
       </include>
+      <!-- FIXME: When subscribing compressedDepth on kinetic, hz of image_raw drops. -->
+      <!--        This is because load of CPU processing camera becomes too high.     -->
+      <!--        To avoid this on baxter-c1, png_level should be under 6.            -->
+      <!--        CPU: Intel(R) Core(TM) i7-6850K CPU @ 3.60GHz                       -->
+      <param name="left/depth/image_raw/compressedDepth/png_level" value="5" />
       <node name="marker_6dof_left_tf_depth_to_rgb"
             pkg="jsk_interactive_marker" type="marker_6dof">
         <rosparam>
@@ -299,6 +304,11 @@
         <arg name="rgb_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/stereo_rgb_$(arg r_hand_stereo_devices)_left.yaml" />
         <arg name="depth_camera_info_url" value="file://$(find jsk_arc2017_baxter)/data/camera_info/depth_$(arg r_hand_l_camera_device_id).yaml" />
       </include>
+      <!-- FIXME: When subscribing compressedDepth on kinetic, hz of image_raw drops. -->
+      <!--        This is because load of CPU processing camera becomes too high.     -->
+      <!--        To avoid this on baxter-c1, png_level should be under 6.            -->
+      <!--        CPU: Intel(R) Core(TM) i7-6850K CPU @ 3.60GHz                       -->
+      <param name="left/depth/image_raw/compressedDepth/png_level" value="5" />
       <node name="marker_6dof_left_tf_depth_to_rgb"
             pkg="jsk_interactive_marker" type="marker_6dof">
         <rosparam>
