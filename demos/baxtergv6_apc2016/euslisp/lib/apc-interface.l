@@ -1106,7 +1106,8 @@
       (ros::ros-info "[:try-to-suction-front-object] arm:~a start vacuum gripper" arm)
       (send *ri* :start-grasp arm)
       ;; suction: prismatic-based approach
-      (send *baxter* :slide-gripper arm (send (send *baxter* arm :gripper-x) :max-angle) :relative nil)
+      (send *baxter* :slide-gripper arm
+            (send (send *baxter* arm :gripper-x) :max-angle) :relative nil)
       (send *baxter* arm :inverse-kinematics
             (send (send obj-coords :copy-worldcoords) :locate offset :local)
             :use-gripper t
@@ -1135,7 +1136,9 @@
         ;; so currently we only check :grasp (suction pressure).
         (send *ri* :wait-interpolation-until arm :grasp)
 
-        (send *baxter* :slide-gripper arm (send (send *baxter* arm :gripper-x) :max-angle) :relative nil)  ;; maximum angle of prismatic joint
+        (send *baxter* :slide-gripper arm
+              (send (send *baxter* arm :gripper-x) :max-angle)
+              :relative nil)  ;; maximum angle of prismatic joint
         (send *ri* :angle-vector-raw (send *baxter* :angle-vector)
               3000 (send *ri* :get-arm-controller arm) 0)
         (send *ri* :wait-interpolation-until arm :grasp :prismatic-loaded)
