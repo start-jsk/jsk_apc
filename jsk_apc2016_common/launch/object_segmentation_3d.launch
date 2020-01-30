@@ -9,6 +9,7 @@
   <arg name="BACKEND" default="chainer" />
   <arg name="MODEL_NAME" default="fcn32s" />
   <arg name="MODEL_FILE" default="$(find jsk_apc2016_common)/trained_data/fcn32s_v2_148000.chainermodel"/>
+  <arg name="PROBA_THRESHOLD" default="0.0" />
   <arg name="LABEL_YAML" default="$(find jsk_apc2016_common)/config/label_names.yaml"/>
   <arg name="SELECT_LARGEST" default="false" />
   <arg name="USE_PCA" default="false" />
@@ -24,6 +25,7 @@
       backend: $(arg BACKEND)
       model_name: $(arg MODEL_NAME)
       model_file: $(arg MODEL_FILE)
+      proba_threshold: $(arg PROBA_THRESHOLD)
     </rosparam>
     <remap from="~target_names" to="label_names" />
   </node>
