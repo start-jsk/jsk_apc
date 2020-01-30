@@ -1,0 +1,96 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "cherokee_easy_tee_shirt",
+                "clorox_utility_brush",
+                "cloud_b_plush_bear",
+                "command_hooks",
+                "cool_shot_glue_sticks",
+                "dove_beauty_bar",
+                "dr_browns_bottle_brush",
+                "easter_turtle_sippy_cup",
+                "elmers_washable_no_run_school_glue"
+            ]
+        },
+        {
+            "bin_id": "B",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "C",
+            "contents": [
+                "barkely_hide_bones",
+                "creativity_chenille_stems",
+                "woods_extension_cord",
+                "jane_eyre_dvd",
+                "kyjen_squeakin_eggs_plush_puppies",
+                "safety_first_outlet_plugs"
+            ]
+        },
+        {
+            "bin_id": "D",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "E",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "F",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "G",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "H",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "I",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "J",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "K",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "L",
+            "contents": [
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "1AD",
+            "contents": []
+        },
+        {
+            "size_id": "1A5",
+            "contents": []
+        },
+        {
+            "size_id": "K3",
+            "contents": []
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}

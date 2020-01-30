@@ -1,0 +1,29 @@
+{
+    "orders": [
+        {
+            "contents": [
+                "hanes_tube_socks",
+                "barkely_hide_bones"
+            ],
+            "size_id": "1AD"
+        },
+        {
+            "contents": [
+                "cherokee_easy_tee_shirt",
+                "clorox_utility_brush",
+                "command_hooks"
+            ],
+            "size_id": "1A5"
+        },
+        {
+            "contents": [
+                "cool_shot_glue_sticks",
+                "creativity_chenille_stems",
+                "dove_beauty_bar",
+                "dr_browns_bottle_brush",
+                "easter_turtle_sippy_cup"
+            ],
+            "size_id": "K3"
+        }
+    ]
+}

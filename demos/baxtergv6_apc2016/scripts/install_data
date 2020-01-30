@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -x
+
+rosrun baxtergv6_apc2016 download_data.py
+
+objects_dir=$(rospack find baxtergv6_apc2016)/data/objects
+models_dir=$(rospack find baxtergv6_apc2016)/data/models
+config_dir=$(rospack find baxtergv6_apc2016)/config
+
+ln -sf $objects_dir/* $(rospack find jsk_arc2017_common)/data/objects/
+ln -sf $models_dir/fcn32s_v2_148000.npz $(rospack find jsk_arc2017_common)/data/models/fcn32s.npz
+ln -sf $config_dir/label_names.yaml $(rospack find jsk_arc2017_common)/config/
+ln -sf $config_dir/object_graspability.yaml $(rospack find jsk_arc2017_common)/config/
+ln -sf $config_dir/object_weights.yaml $(rospack find jsk_arc2017_common)/config/
+ln -sf $config_dir/left_gripper_v6/gripper_mass.yaml $(rospack find jsk_arc2017_baxter)/robots/left_gripper_v6
+ln -sf $config_dir/right_gripper_v6/gripper_mass.yaml $(rospack find jsk_arc2017_baxter)/robots/right_gripper_v6
+
+set +x
