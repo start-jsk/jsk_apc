@@ -296,6 +296,13 @@
         (ros::ros-error "Cannot get specified proximity")
         (return-from :get-i-prox-distance nil))
       (send msg :distance)))
+  (:get-i-prox-prop-const (arm side)
+    (send self :spin-once)
+    (let ((msg (gethash side (gethash arm i-proximities-))))
+      (unless msg
+        (ros::ros-error "Cannot get specified proximity")
+        (return-from :get-i-prox-prop-const nil))
+      (send msg :prop_const)))
   (:get-distance-combined (arm side)
     (send self :spin-once)
     (let ((msg (gethash side (gethash arm i-proximities-))))
