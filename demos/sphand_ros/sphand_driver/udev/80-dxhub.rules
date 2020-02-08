@@ -1,2 +1,3 @@
 # Create symlink /dev/dxhub
 SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{product}=="E104", MODE="0666", SYMLINK+="dxhub"
+SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTRS{idVendor}=="0403", ATTRS{product}=="E104", ATTR{latency_timer}="1"

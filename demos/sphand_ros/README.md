@@ -73,7 +73,7 @@ See <https://github.com/pazeshun/sphand_ros/issues/11> for more details.
 
 ### Setup dynamixel motors
 
-1. Unite baudrate to 57600 by `rosrun dynamixel_driver set_servo_config.py`
+1. Unite baudrate to 1000000 by `rosrun dynamixel_driver set_servo_config.py`
 2. Set unique ID by `rosrun dynamixel_driver change_id.py`
 3. Disable Overload Error in Alarm LED and Alarm Shutdown of finger\_tendon\_winder by following
 ```
@@ -86,7 +86,7 @@ In [2]: roslib.load_manifest('dynamixel_driver')
 
 In [3]: from dynamixel_driver import dynamixel_io
 
-In [4]: dxl_io = dynamixel_io.DynamixelIO("/dev/dxhub", 57600)
+In [4]: dxl_io = dynamixel_io.DynamixelIO("/dev/dxhub", 1000000)
 
 In [5]: dxl_io.write(3, 17, (4,))  # Please check Alarm LED address is 17
 
