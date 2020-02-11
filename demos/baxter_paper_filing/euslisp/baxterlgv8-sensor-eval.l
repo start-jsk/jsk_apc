@@ -65,17 +65,18 @@
   (send *ri* :wait-interpolation)
   (send *ri* :enable-flex-reflex :larm nil)
   (turn-off-needless-sensors))
-(defun pick-paper (&key (intensity nil) (calib-to-black nil))
+(defun pick-paper (&key (intensity nil) (calib-to-black nil) (h-offset 0))
   (send *ri* :calib-proximity-threshold :larm)
   (send *ri* :reset-i-prox-calib :larm)
-  (send *ri* :angle-vector (send *baxter* :larm :move-end-pos #f(0 0 -200) :world) 3000)
+  (send *ri* :angle-vector
+        (send *baxter* :larm :move-end-pos (float-vector 0 0 (+ -200 h-offset)) :world) 3000)
   (send *ri* :wait-interpolation)
   (unix::sleep 1)
   (send *ri* :move-hand :larm
         (send *baxter* :hand :larm :angle-vector (float-vector 0 72 72)) 1500)
   (send *ri* :move-hand :larm
         (send *baxter* :hand :larm :angle-vector (float-vector 0 90 90)) 1500 :wait nil)
-  (let (cancel-func paper-p l-prox r-prox l-thre r-thre)
+  (let (cancel-func stopped-p l-prox r-prox l-thre r-thre l-refl r-refl)
     (if intensity
       (progn
         (if calib-to-black
@@ -83,7 +84,7 @@
           (setq l-thre 1600 r-thre 800))
         (setq cancel-func
               #'(lambda ()
-                  (setq paper-p
+                  (setq stopped-p
                         (and
                           (>= (setq l-prox (send *ri* :get-i-proximity :larm :left-tip))
                               l-thre)
@@ -93,7 +94,9 @@
         (setq l-thre 25 r-thre 25)
         (setq cancel-func
               #'(lambda ()
-                  (setq paper-p
+                  (setq l-refl (send *ri* :get-i-reflectance-param :larm :left-tip))
+                  (setq r-refl (send *ri* :get-i-reflectance-param :larm :right-tip))
+                  (setq stopped-p
                         (and
                           (< (setq l-prox (send *ri* :get-i-prox-distance :larm :left-tip))
                              l-thre)
@@ -101,13 +104,18 @@
                              r-thre)))))))
     (send *ri* :wait-interpolation-until-funcs :larm (list cancel-func) :hand)
     (ros::ros-info "Final prox: l: ~a r: ~a" l-prox r-prox)
-    (if paper-p
-      (progn
-        (ros::ros-info "Paper is grasped. Shift to lifting")
-        (unix::sleep 1)
-        (send *ri* :angle-vector
-              (send *baxter* :larm :move-end-pos #f(0 0 110) :world)
-              3000 :larm-controller 0 :end-coords-interpolation t)
-        (send *ri* :wait-interpolation))
-      (progn
-        (ros::ros-error "Nothing is grasped")))))
+    (ros::ros-info "Final refl: l: ~a r: ~a" l-refl r-refl)
+    (if stopped-p
+      (ros::ros-info "Fingers stopped because they detected touching")
+      (ros::ros-error "Fingers did not stop"))
+    (if (or (< l-refl 10000.0) (< r-refl 10000.0) (> l-refl 2000000.0) (> r-refl 2000000.0))
+      (ros::ros-error "Nothing exists between fingers")
+      (ros::ros-info "Something exists between fingers"))
+    (ros::ros-info "Shift to lifting to check if touching detection was correct")
+    (unix::sleep 1)
+    (send *ri* :angle-vector
+          (send *baxter* :larm :move-end-pos #f(0 0 110) :world)
+          3000 :larm-controller 0 :end-coords-interpolation t)
+    (send *ri* :wait-interpolation)))
+(defun pick-paper-box (&rest args)
+  (apply #'pick-paper (append args (list :h-offset -40))))
