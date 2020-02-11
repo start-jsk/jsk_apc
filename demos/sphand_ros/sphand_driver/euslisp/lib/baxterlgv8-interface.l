@@ -296,13 +296,13 @@
         (ros::ros-error "Cannot get specified proximity")
         (return-from :get-i-prox-distance nil))
       (send msg :distance)))
-  (:get-i-prox-prop-const (arm side)
+  (:get-i-reflectance-param (arm side)
     (send self :spin-once)
     (let ((msg (gethash side (gethash arm i-proximities-))))
       (unless msg
         (ros::ros-error "Cannot get specified proximity")
-        (return-from :get-i-prox-prop-const nil))
-      (send msg :prop_const)))
+        (return-from :get-i-reflectance-param nil))
+      (send msg :reflectance_param)))
   (:get-distance-combined (arm side)
     (send self :spin-once)
     (let ((msg (gethash side (gethash arm i-proximities-))))
@@ -836,7 +836,7 @@
     (dolist (l/r (if (eq arm :arms) (list :rarm :larm) (list arm)))
       (if (eq l/r :larm)
         (let ((service-name
-                (format nil "/gripper_front/limb/~a/intensity_prox_calibrator/reset_i_prop_const"
+                (format nil "/gripper_front/limb/~a/intensity_prox_calibrator/reset_reflectance_param"
                         (arm2str l/r))) res)
           (ros::wait-for-service service-name)
           (setq res (ros::service-call service-name (instance std_srvs::TriggerRequest :init)))

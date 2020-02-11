@@ -27,7 +27,7 @@ class UpdateIntensityProxCalibInfo(object):
                 info_latest.header = info.header
                 info_latest.distance = info.distance
                 info_latest.diff_from_init = info.diff_from_init
-                info_latest.prop_const = info.prop_const
+                info_latest.reflectance_param = info.prop_const
                 info_latest.init_value = info.init_value
                 msg_latest.data.append(info_latest)
             self.publishers[topic_name].publish(msg_latest)

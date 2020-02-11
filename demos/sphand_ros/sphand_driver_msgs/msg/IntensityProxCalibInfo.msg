@@ -1,9 +1,13 @@
 Header header
+
+# Distance converted from intensity
 float64 distance
+
+# Intensity - init_value
 int64 diff_from_init
 
-# For debug
-float64 prop_const
+# Parameters of intensity sensor model
+float64 reflectance_param
 uint32 init_value
 
 # Distance combined with ToF output

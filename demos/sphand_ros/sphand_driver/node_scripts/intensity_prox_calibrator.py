@@ -14,9 +14,9 @@ import rospy
 class IntensityProxCalibrator(object):
 
     def __init__(self):
-        self.i_prop_const = rospy.get_param('~i_prop_const', None)
-        if self.i_prop_const is not None:
-            self.i_prop_const = np.array(self.i_prop_const)
+        self.i_refl_param = rospy.get_param('~i_reflectance_param', None)
+        if self.i_refl_param is not None:
+            self.i_refl_param = np.array(self.i_refl_param)
         self.i_init_value = rospy.get_param('~i_init_value', None)
         if self.i_init_value is not None:
             self.i_init_value = np.array(self.i_init_value)
@@ -49,8 +49,8 @@ class IntensityProxCalibrator(object):
             '~input/tof', RangingMeasurementDataStampedArray, self._tof_cb)
         self.init_srv = rospy.Service(
             '~set_init_proximities', Trigger, self._set_init_proximities)
-        self.reset_i_prop_const_srv = rospy.Service(
-            '~reset_i_prop_const', Trigger, self._reset_i_prop_const)
+        self.reset_refl_param_srv = rospy.Service(
+            '~reset_reflectance_param', Trigger, self._reset_refl_param)
 
     def _intensity_cb(self, msg):
         if self.use_i_average:
@@ -69,22 +69,22 @@ class IntensityProxCalibrator(object):
         while len(self.i_diff_queue) > self.i_queue_size_for_tof:
             self.i_diff_queue.pop(0)
             self.i_tms_queue.pop(0)
-        if self.i_prop_const is None:
-            rospy.logwarn_throttle(10, 'Prop const is not set, so skipping')
+        if self.i_refl_param is None:
+            rospy.logwarn_throttle(10, 'Refl. param is not set, so skipping')
             return
-        assert self.i_diff_from_init.shape == self.i_prop_const.shape
+        assert self.i_diff_from_init.shape == self.i_refl_param.shape
         diff_plus = self.i_diff_from_init.copy()
         diff_plus = diff_plus.astype(np.float64)
         diff_plus[diff_plus <= 0] = np.inf
-        distance = np.sqrt(self.i_prop_const / diff_plus)
+        distance = np.sqrt(self.i_refl_param / diff_plus)
         distance[distance == 0] = np.inf
 
         if self.rubber_t is not None:
             # If distance is under thickness
-            init_const = self.i_init_value * (self.rubber_t ** 2)
+            init_refl = self.i_init_value * (self.rubber_t ** 2)
             distance = np.where(
                 distance < self.rubber_t,
-                np.sqrt((self.i_prop_const + init_const) / self.i_raw),
+                np.sqrt((self.i_refl_param + init_refl) / self.i_raw),
                 distance
             )
 
@@ -102,17 +102,17 @@ class IntensityProxCalibrator(object):
         # Publish calibrated info
         pub_msg = IntensityProxCalibInfoArray()
         pub_msg.header.stamp = msg.header.stamp
-        for p, dist, diff, const, init, dist_c in zip(msg.proximities,
-                                                      distance,
-                                                      self.i_diff_from_init,
-                                                      self.i_prop_const,
-                                                      self.i_init_value,
-                                                      dist_combined):
+        for p, dist, diff, refl, init, dist_c in zip(msg.proximities,
+                                                     distance,
+                                                     self.i_diff_from_init,
+                                                     self.i_refl_param,
+                                                     self.i_init_value,
+                                                     dist_combined):
             info = IntensityProxCalibInfo()
             info.header.stamp = p.header.stamp
             info.distance = dist
             info.diff_from_init = diff
-            info.prop_const = const
+            info.reflectance_param = refl
             info.init_value = init
             info.distance_combined = dist_c
             pub_msg.data.append(info)
@@ -128,8 +128,8 @@ class IntensityProxCalibrator(object):
         assert len(self.i_diff_from_init) == len(msg.array)
         if self.i_height_from_tof is None:
             self.i_height_from_tof = np.zeros(len(msg.array))
-        if self.i_prop_const is None:
-            self.i_prop_const = np.zeros(len(msg.array))
+        if self.i_refl_param is None:
+            self.i_refl_param = np.zeros(len(msg.array))
         for i, data_st in enumerate(msg.array):
             for i_diff, i_tms in zip(self.i_diff_queue, self.i_tms_queue):
                 if abs((data_st.header.stamp - i_tms[i]).to_sec() -
@@ -145,7 +145,7 @@ class IntensityProxCalibrator(object):
                     continue
                 if tof_r > self.i_valid_max_dist + self.i_height_from_tof[i]:
                     continue
-                self.i_prop_const[i] = \
+                self.i_refl_param[i] = \
                     i_diff[i] * ((tof_r - self.i_height_from_tof[i]) ** 2)
 
     def _set_init_proximities(self, req):
@@ -156,10 +156,10 @@ class IntensityProxCalibrator(object):
             is_success = False
         return TriggerResponse(success=is_success)
 
-    def _reset_i_prop_const(self, req):
+    def _reset_refl_param(self, req):
         is_success = True
         if self.i_raw is not None:
-            self.i_prop_const = np.zeros(len(self.i_raw))
+            self.i_refl_param = np.zeros(len(self.i_raw))
         else:
             is_success = False
         return TriggerResponse(success=is_success)
