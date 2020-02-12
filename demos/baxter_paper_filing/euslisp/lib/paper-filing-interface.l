@@ -18,6 +18,10 @@
           paper-coords-
           paper-thre-l-
           paper-thre-r-
+          paper-refl-min-l-
+          paper-refl-min-r-
+          paper-refl-max-l-
+          paper-refl-max-r-
           ))
 
 (defmethod baxter_paper_filing::paper-filing-interface
@@ -31,7 +35,9 @@
     (sethash :rarm (gethash :pad-r gripper-dims-) 15)
     (setq paper-boxes- nil)
     (setq paper-coords- nil)
-    (setq paper-thre-l- 25 paper-thre-r- 25))
+    (setq paper-thre-l- 25 paper-thre-r- 25)
+    (setq paper-refl-min-l- 10000.0 paper-refl-min-r- 10000.0)
+    (setq paper-refl-max-l- 2000000.0 paper-refl-max-r- 2000000.0))
   (:bbox->cube (bbox)
     (let* ((dims (ros::tf-point->pos (send bbox :dimensions)))
            (bx (make-cube (elt dims 0) (elt dims 1) (elt dims 2))))
@@ -198,7 +204,8 @@
       (send *ri* :wait-interpolation)))
   (:grasp-paper ()
     (ros::ros-info "[:grasp-paper] Grasping paper...")
-    (let ((roll-jt-b (aref (send *ri* :get-real-finger-av :larm) 2)) tm-to-grasp l-dist r-dist)
+    (let ((roll-jt-b (aref (send *ri* :get-real-finger-av :larm) 2))
+          tm-to-grasp l-dist r-dist l-refl r-refl)
       (when (< roll-jt-b 110.0)
         (ros::ros-info "[:grasp-paper] roll-jt-b is ~a < 110, so initialize finger" roll-jt-b)
         ;; Turn off flex reflex
@@ -218,6 +225,8 @@
             (send *baxter* :hand :larm :angle-vector #f(77 90 180)) tm-to-grasp :wait nil)
       (send *ri* :wait-interpolation-until-funcs :larm
             (list #'(lambda ()
+                      (setq l-refl (send *ri* :get-i-reflectance-param :larm :left-tip))
+                      (setq r-refl (send *ri* :get-i-reflectance-param :larm :right-tip))
                       (and
                         (< (setq l-dist (send *ri* :get-i-prox-distance :larm :left-tip))
                            paper-thre-l-)
@@ -225,13 +234,19 @@
                            paper-thre-r-))))
             :hand)
       (ros::ros-info "[:grasp-paper] Final dist: l: ~a r: ~a" l-dist r-dist)
-      (if (and (< l-dist paper-thre-l-) (< r-dist paper-thre-r-))
-        (progn
-          (ros::ros-info "[:grasp-paper] Paper is grasped")
-          t)
+      (ros::ros-info "[:grasp-paper] Final refl: l: ~a r: ~a" l-refl r-refl)
+      (if (or (< l-refl paper-refl-min-l-) (< r-refl paper-refl-min-r-)
+              (> l-refl paper-refl-max-l-) (> r-refl paper-refl-max-r-))
         (progn
           (ros::ros-error "[:grasp-paper] Nothing is grasped")
-          nil))))
+          nil)
+        (progn
+          (ros::ros-info "[:grasp-paper] Paper is grasped")
+          (if (and (< l-dist paper-thre-l-) (< r-dist paper-thre-r-))
+            t
+            (progn
+              (ros::ros-error "[:grasp-paper] However, fingers did not stop")
+              nil))))))
   (:return-from-grasp-paper ()
     (ros::ros-info "[:return-from-grasp-paper] Returning from :grasp-paper...")
     (send *ri* :move-hand :larm
