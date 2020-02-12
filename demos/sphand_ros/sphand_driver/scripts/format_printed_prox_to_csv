@@ -35,7 +35,18 @@ def main():
             # elif 'init_value' in line:
             #     init = yaml.load(line, Loader=yaml.SafeLoader)['init_value']
             #     print(init + diff)
-                print(diff)
+                print('{},'.format(diff), end='')
+                cnt = cnt + 1
+        elif cnt == 3:
+            if 'prop_const' in line:
+                # Old msg
+                print(yaml.load(line,
+                                Loader=yaml.SafeLoader)['prop_const'])
+                cnt = 0
+            elif 'reflectance_param' in line:
+                # New msg
+                print(yaml.load(line,
+                                Loader=yaml.SafeLoader)['reflectance_param'])
                 cnt = 0
         line = f.readline()
     f.close()
