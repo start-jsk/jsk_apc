@@ -264,7 +264,7 @@
     (ros::ros-info "[:file-paper] Filing paper...")
     (send *ri* :angle-vector-raw
           (send *baxter* :larm :move-end-pos #f(0 0 150) :local)
-          :fast (send *ri* :get-arm-controller :larm) 0 :scale 6.0)
+          :fast (send *ri* :get-arm-controller :larm) 0 :scale 7.0)
     (send *ri* :wait-interpolation)
     (assert (send *baxter* :larm :move-end-pos #f(450 0 0) :local))
     (let (l-dist r-dist (thre-l (+ paper-thre-l- 10)) (thre-r (+ paper-thre-r- 10)))
