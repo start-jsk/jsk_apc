@@ -22,7 +22,7 @@
     <arg name="hand_to_depth_initial_x" value="0.081" />
     <arg name="hand_to_depth_initial_y" value="0.062" />
     <arg name="hand_to_depth_initial_z" value="0.015" />
-    <arg name="hand_to_depth_initial_ori" value="[0.009, 0.005, -0.713, 0.701]" />
+    <arg name="hand_to_depth_initial_ori" value="[-0.002, 0.000, -0.713, 0.702]" />
   </include>
 
 </launch>
