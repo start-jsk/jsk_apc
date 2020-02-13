@@ -26,8 +26,12 @@
     </include>
   </group>
   <group if="$(arg launch_setup)">
+    <arg name="rviz" default="true" />
+    <arg name="old_calib_msg" default="false" />
     <include file="$(find baxter_paper_filing)/launch/setup_for_paper_filing.launch">
       <arg name="load_driver" value="false" />
+      <arg name="rviz" value="$(arg rviz)" />
+      <arg name="old_calib_msg" value="$(arg old_calib_msg)" />
     </include>
   </group>
 

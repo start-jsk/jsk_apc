@@ -475,9 +475,9 @@ Visualization Manager:
       min value: -1
       show caption: true
       text size: 12
-      top: 470
+      top: 500
       update interval: 0.0399999991
-      width: 160
+      width: 170
     - Buffer length: 20
       Class: jsk_rviz_plugin/Plotter2D
       Enabled: true
@@ -500,9 +500,9 @@ Visualization Manager:
       min value: -1
       show caption: true
       text size: 12
-      top: 300
+      top: 100
       update interval: 0.0399999991
-      width: 160
+      width: 170
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
@@ -518,10 +518,12 @@ Visualization Manager:
         Grid: true
         LeftArm: false
         LeftFingerDistance: false
+        LeftFingerReflParam: true
         PaperBoxes: true
         PaperPoints: true
         PointsAroundTable: false
         RightFingerDistance: false
+        RightFingerReflParam: true
         TableBoxes: true
         Value: true
       Zoom Factor: 1
@@ -537,6 +539,56 @@ Visualization Manager:
       Transport Hint: raw
       Unreliable: false
       Value: true
+    - Buffer length: 20
+      Class: jsk_rviz_plugin/Plotter2D
+      Enabled: true
+      Name: LeftFingerReflParam
+      Show Value: true
+      Topic: /viz/left_finger_refl
+      Value: true
+      auto color change: false
+      auto scale: true
+      background color: 0; 0; 0
+      backround alpha: 0
+      border: true
+      foreground alpha: 0.699999988
+      foreground color: 25; 255; 240
+      height: 128
+      left: 1775
+      linewidth: 1
+      max color: 255; 0; 0
+      max value: 1
+      min value: -1
+      show caption: true
+      text size: 12
+      top: 670
+      update interval: 0.0399999991
+      width: 170
+    - Buffer length: 20
+      Class: jsk_rviz_plugin/Plotter2D
+      Enabled: true
+      Name: RightFingerReflParam
+      Show Value: true
+      Topic: /viz/right_finger_refl
+      Value: true
+      auto color change: false
+      auto scale: true
+      background color: 0; 0; 0
+      backround alpha: 0
+      border: true
+      foreground alpha: 0.699999988
+      foreground color: 25; 255; 240
+      height: 128
+      left: 1775
+      linewidth: 1
+      max color: 255; 0; 0
+      max value: 1
+      min value: -1
+      show caption: true
+      text size: 12
+      top: 270
+      update interval: 0.0399999991
+      width: 170
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

@@ -2,6 +2,7 @@
 
   <arg name="load_driver" default="true" />
   <arg name="rviz" default="true" />
+  <arg name="old_calib_msg" default="false" />
 
   <!-- hand mounted camera -->
   <include file="$(find baxter_paper_filing)/launch/include/stereo_astra_hand.launch">
@@ -112,12 +113,30 @@
           pkg="rviz" type="rviz"
           args="-d $(find baxter_paper_filing)/rvizconfig/paper_filing.rviz">
     </node>
+
+    <!-- Proximity sensors -->
+    <node name="update_intensity_prox_calib_info"
+          pkg="sphand_driver" type="update_intensity_prox_calib_info.py" if="$(arg old_calib_msg)" />
+    <arg name="calib_output" value="latest_type/output" if="$(arg old_calib_msg)" />
+    <arg name="calib_output" value="output" unless="$(arg old_calib_msg)" />
+    <!-- Distance -->
     <node name="relay_left_finger_dist"
           pkg="topic_tools" type="relay_field"
-          args="/gripper_front/limb/left/intensity_prox_calibrator/output /viz/left_finger_dist std_msgs/Float32 'data: m.data[1].distance'" />
+          args="/gripper_front/limb/left/intensity_prox_calibrator/$(arg calib_output) /viz/left_finger_dist std_msgs/Float32 'data: m.data[1].distance'"
+          respawn="true" />
     <node name="relay_right_finger_dist"
           pkg="topic_tools" type="relay_field"
-          args="/gripper_front/limb/left/intensity_prox_calibrator/output /viz/right_finger_dist std_msgs/Float32 'data: m.data[3].distance'" />
+          args="/gripper_front/limb/left/intensity_prox_calibrator/$(arg calib_output) /viz/right_finger_dist std_msgs/Float32 'data: m.data[3].distance'"
+          respawn="true" />
+    <!-- Reflectance param -->
+    <node name="relay_left_finger_refl"
+          pkg="topic_tools" type="relay_field"
+          args="/gripper_front/limb/left/intensity_prox_calibrator/$(arg calib_output) /viz/left_finger_refl std_msgs/Float32 'data: m.data[1].reflectance_param'"
+          respawn="true" />
+    <node name="relay_right_finger_refl"
+          pkg="topic_tools" type="relay_field"
+          args="/gripper_front/limb/left/intensity_prox_calibrator/$(arg calib_output) /viz/right_finger_refl std_msgs/Float32 'data: m.data[3].reflectance_param'"
+          respawn="true" />
   </group>
 
 </launch>
