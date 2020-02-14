@@ -65,7 +65,7 @@
   (send *ri* :wait-interpolation)
   (send *ri* :enable-flex-reflex :larm nil)
   (turn-off-needless-sensors))
-(defun pick-paper (&key (intensity nil) (calib-to-black nil) (h-offset 0))
+(defun pick-paper (&key (intensity nil) (h-offset 0))
   (send *ri* :calib-proximity-threshold :larm)
   (send *ri* :reset-i-prox-calib :larm)
   (send *ri* :angle-vector
@@ -79,9 +79,7 @@
   (let (cancel-func stopped-p l-prox r-prox l-thre r-thre l-refl r-refl)
     (if intensity
       (progn
-        (if calib-to-black
-          (setq l-thre 300 r-thre 150)
-          (setq l-thre 1600 r-thre 800))
+        (setq l-thre 840 r-thre 336)
         (setq cancel-func
               #'(lambda ()
                   (setq stopped-p
@@ -108,9 +106,10 @@
     (if stopped-p
       (ros::ros-info "Fingers stopped because they detected touching")
       (ros::ros-error "Fingers did not stop"))
-    (if (or (< l-refl 10000.0) (< r-refl 10000.0) (> l-refl 2000000.0) (> r-refl 2000000.0))
-      (ros::ros-error "Nothing exists between fingers")
-      (ros::ros-info "Something exists between fingers"))
+    (unless intensity
+      (if (or (< l-refl 10000.0) (< r-refl 10000.0) (> l-refl 2000000.0) (> r-refl 2000000.0))
+        (ros::ros-error "Nothing exists between fingers")
+        (ros::ros-info "Something exists between fingers")))
     (ros::ros-info "Shift to lifting to check if touching detection was correct")
     (unix::sleep 1)
     (send *ri* :angle-vector
