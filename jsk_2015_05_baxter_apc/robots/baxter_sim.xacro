@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="baxter">
-  <link name="world"/>
-  <joint name="fixed" type="fixed">
-    <parent link="world"/>
-    <child link="base"/>
-  </joint>
-  <xacro:include filename="$(find jsk_2015_05_baxter_apc)/robots/baxter.xacro" />
+  <xacro:arg name="gazebo" default="true"/>
+  <xacro:include filename="$(find jsk_2015_05_baxter_apc)/robots/baxter.xacro">
+    <xacro:arg name="gazebo" value="${gazebo}" />
+  </xacro:include>
   <xacro:include filename="$(find jsk_2015_05_baxter_apc)/robots/baxter.gazebo" />
 </robot>
