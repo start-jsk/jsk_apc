@@ -61,7 +61,14 @@
     -J baxter::left_w2 -0.0124707" />
 
   <!-- ros_control baxter launch file -->
-  <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch" />
+  <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch">
+    <arg name="right_electric_gripper" value="false"/>
+    <arg name="left_electric_gripper" value="false"/>
+    <arg name="grav_right_name" value="right_hand" />
+    <arg name="grav_left_name" value="left_hand" />
+    <arg name="right_tip_name" value="right_hand" />
+    <arg name="left_tip_name" value="left_hand" />
+  </include>
 
   <!-- kiva pod state tf and urdf param -->
   <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kiva_pod_state.launch" />
