@@ -5,6 +5,7 @@
 (require "package://jsk_2015_05_baxter_apc/euslisp/lib/util.l")
 
 (ros::load-ros-manifest "jsk_2015_05_baxter_apc")
+(ros::roseus-add-srvs "jsk_gui_msgs")
 
 (unless (find-package "JSK_2015_05_BAXTER_APC")
   (make-package "JSK_2015_05_BAXTER_APC"))
@@ -541,7 +542,7 @@
       (ros::wait-for-service "rqt_yn_btn")
       (while
         (not can-start)
-        (setq can-start (send (ros::service-call "rqt_yn_btn" (instance jsk_rqt_plugins::YesNoRequest)) :yes))
+        (setq can-start (send (ros::service-call "rqt_yn_btn" (instance jsk_gui_msgs::YesNoRequest)) :yes))
         )
       (ros::ros-info "[:wait-for-user-input-to-start] received user input: ~a" arm)
       ))
