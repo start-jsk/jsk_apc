@@ -1,11 +1,15 @@
 <launch>
 
+  <arg name="gazebo" default="false" />
   <arg name="NODELET_MANAGER" default="kinect2_head" />
 
-  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_head.launch">
+  <include file="$(find jsk_2015_05_baxter_apc)/launch/include/kinect2_head.launch"
+           unless="$(arg gazebo)">
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
   </include>
-
+  <node name="$(arg NODELET_MANAGER)"
+        pkg="jsk_topic_tools" type="standalone_complexed_nodelet"
+        respawn="true" output="screen" if="$(arg gazebo)" />
 
   <include file="$(find jsk_2015_05_baxter_apc)/launch/segmentation_in_bin_atof.launch">
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
