@@ -20,7 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
     pcl_ros
     cmake_modules
 )
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -127,7 +127,7 @@ catkin_package(
   message_filters
   sensor_msgs
   DEPENDS
-  Eigen
+  Eigen3
 )
 
 ###########
@@ -138,7 +138,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(include
   ${catkin_INCLUDE_DIRS}
-  ${Eigen_INCLUDE_DIRECTORIES}
+  ${Eigen3_INCLUDE_DIRECTORIES}
   )
 
 ## Declare a C++ library
@@ -168,7 +168,7 @@ add_dependencies(cloud_to_spatial_features ${${PROJECT_NAME}_EXPORTED_TARGETS} $
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(sib_topic_synchronizer ${catkin_LIBRARIES})
-target_link_libraries(cloud_to_spatial_features ${catkin_LIBRARIES} ${Eigen_LIBRARIES})
+target_link_libraries(cloud_to_spatial_features ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 
 # trained data
 add_custom_target(install_trained_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_trained_data.py)
