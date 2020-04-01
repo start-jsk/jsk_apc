@@ -24,9 +24,8 @@ env:
     - USE_DEB=false
     - USE_DOCKER=true
     - USE_TRAVIS=true
-
-    # XXX: Hotfix of https://github.com/start-jsk/jsk_apc/pull/2686#issuecomment-503178976
-    - BEFORE_SCRIPT='sudo -H pip install -U gdown'
+    # XXX: hotfix for chainer problem (https://github.com/chainer/chainer/issues/8545)
+    - BEFORE_SCRIPT='sudo -H pip install chainer==6.7.0'
   matrix:
     - ROS_DISTRO=indigo
     - ROS_DISTRO=kinetic
