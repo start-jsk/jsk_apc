@@ -24,7 +24,7 @@
 (defmethod jsk_2015_05_baxter_apc::baxter-interface
   (:init
     (&rest args)
-    (send-super* :init args)
+    (send-super* :init :moveit-environment nil :moveit-robot nil args)
     ;; change robot model in robot-interface class
     (send (send robot :rarm :end-coords)
           :newcoords (make-coords :pos #f(50 0 310)
