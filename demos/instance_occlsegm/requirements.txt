@@ -1,4 +1,4 @@
-chainer>=4.0.0
+chainer==6.7.0
 chainer-mask-rcnn>=0.5.13
 chainercv>=0.9.0
 # To install pycocotools (available version: 2.0.0), Cython should be installed in advance.
