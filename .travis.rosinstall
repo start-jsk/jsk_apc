@@ -6,3 +6,7 @@
     local-name: RethinkRobotics/baxter_common
     uri: https://github.com/knorth55/baxter_common.git
     version: jsk_apc
+- git:
+    local-name: locusrobotics/catkin_virtualenv
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: master
