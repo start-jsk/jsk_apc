@@ -17,8 +17,8 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y \
     python-wstool \
     python-pip
 
-RUN pip install 'pip<10' && \
-    pip install -U setuptools
+RUN pip install 'pip==9.0.3' && \
+    pip install 'setuptools==44.1.0'
 
 ARG ROS_DISTRO
 RUN cd ~ && \
