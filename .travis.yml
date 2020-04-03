@@ -30,7 +30,9 @@ env:
     - ROS_DISTRO=indigo
     - ROS_DISTRO=kinetic
     - ROS_DISTRO=melodic
-
+matrix:
+  allow_failures:
+    - env: ROS_DISTRO=indigo
 script:
   - export DOCKER_IMAGE="jskrobotics/jsk_apc:${ROS_DISTRO}-latest-testing"
   # build & test ROS packages
