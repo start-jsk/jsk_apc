@@ -8,8 +8,8 @@
     version: jsk_apc
 - git:
     local-name: RethinkRobotics/baxter_interface
-    uri: https://github.com/wkentaro/baxter_interface.git
-    version: jsk_apc
+    uri: https://github.com/RethinkRobotics/baxter_interface.git
+    version: v1.2.0
 - git:
     local-name: RethinkRobotics/baxter_examples
     uri: https://github.com/RethinkRobotics/baxter_examples.git
