@@ -53,6 +53,14 @@
     uri: https://github.com/turtlebot-release/turtlebot-release.git
     version: release/kinetic/turtlebot_description
 - git:
+    local-name: kobuki_description
+    uri: https://github.com/yujinrobot-release/kobuki-release.git
+    version: release/kinetic/kobuki_description
+- git:
+    local-name: create_description
+    uri: https://github.com/turtlebot-release/turtlebot_create-release.git
+    version: release/kinetic/create_description
+- git:
     local-name: dynamixel_msgs
     uri: https://github.com/arebgun/dynamixel_motor-release.git
     version: release/kinetic/dynamixel_msgs
