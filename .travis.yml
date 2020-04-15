@@ -34,7 +34,6 @@ env:
 matrix:
   allow_failures:
     - env: ROS_DISTRO=indigo
-    - env: ROS_DISTRO=melodic
 script:
   - export DOCKER_IMAGE="jskrobotics/jsk_apc:${ROS_DISTRO}-latest-testing"
   # build & test ROS packages
