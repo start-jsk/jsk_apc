@@ -61,6 +61,6 @@
     uri: https://github.com/turtlebot-release/turtlebot_create-release.git
     version: release/kinetic/create_description
 - git:
-    local-name: dynamixel_msgs
-    uri: https://github.com/arebgun/dynamixel_motor-release.git
-    version: release/kinetic/dynamixel_msgs
+    local-name: dynamixel_motor
+    uri: https://github.com/arebgun/dynamixel_motor.git
+    version: 0.4.1 
