@@ -1,4 +1,4 @@
-# not released yet in kinetic
+# not released yet in melodic 
 - git:
     local-name: baxter_simulator
     uri: https://github.com/RethinkRobotics/baxter_simulator.git
@@ -47,3 +47,12 @@
     local-name: baxter_interface
     uri: https://github.com/RethinkRobotics-release/baxter_interface-release/archive/release/indigo/baxter_interface/1.2.0-0.tar.gz
     version: baxter_interface-release-release-indigo-baxter_interface-1.2.0-0
+# waiting for release in melodic: https://github.com/turtlebot/turtlebot/issues/272
+- git:
+    local-name: turtlebot_description
+    uri: https://github.com/turtlebot-release/turtlebot-release.git
+    version: release/kinetic/turtlebot_description
+- git:
+    local-name: dynamixel_msgs
+    uri: https://github.com/arebgun/dynamixel_motor-release.git
+    version: release/kinetic/dynamixel_msgs
