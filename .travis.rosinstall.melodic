@@ -1,8 +1,9 @@
 # not released yet in melodic 
 - git:
-    local-name: baxter_simulator
-    uri: https://github.com/RethinkRobotics/baxter_simulator.git
-    version: kinetic-devel
+    local-name: RethinkRobotics/baxter_simulator
+    # https://github.com/RethinkRobotics/baxter_simulator/pull/130
+    uri: https://github.com/EmaroLab/baxter_simulator.git
+    version: master
 - tar:
     local-name: baxter_examples
     uri: https://github.com/RethinkRobotics-release/baxter_examples-release/archive/release/indigo/baxter_examples/1.2.0-0.tar.gz
