@@ -19,7 +19,7 @@ Installation
   # setup repos
   cd ~/ros/jsk_apc2015_sim/src
   wstool init
-  wstool merge https://github.com/start-jsk/jsk_apc/blob/master/sim.rosinstall.kinetic
+  wstool merge https://raw.githubusercontent.com/start-jsk/jsk_apc/master/sim.rosinstall.$ROS_DISTRO
   wstool update -j8
   # install depends
   rosdep install --from-path . -r -y
@@ -33,7 +33,7 @@ Demo
 .. code-block:: bash
 
   roslaunch jsk_2015_05_baxter_apc baxter_sim.launch
-  roslaunch jsk_2015_05_baxter_apc setup_head.launch
+  roslaunch jsk_2015_05_baxter_apc setup_head.launch gazebo:=true
   roslaunch jsk_2015_05_baxter_apc main.launch json:=$(rospack find jsk_apc2015_common)/json/f2.json
 
   # optional visualization
