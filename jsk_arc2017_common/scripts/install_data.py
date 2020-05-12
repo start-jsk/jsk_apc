@@ -49,20 +49,20 @@ def main():
     #     md5='a098399a456de29ef8d4feaa8ae795e9',
     # )
 
-    # dataset: v2
-    # augmentation: stack
-    download_data(
-        path='data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz',
-        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vS1VaWWVFNDVFQ1k',
-        md5='e4e07b66ebeaf6b33a79eb1b605ee3a3',
-    )
-    # dataset: v2 (improved)
-    # augmentation: stack
-    download_data(
-        path='data/models/fcn32s_arc2017_datasetv2_cfg003_20170721.npz',
-        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vNG5KcmxkWWN6Zk0',
-        md5='980d3c6f0b3ef5e541f4db5280233c33',
-    )
+    # # dataset: v2
+    # # augmentation: stack
+    # download_data(
+    #     path='data/models/fcn32s_arc2017_datasetv2_cfg003_20170612.npz',
+    #     url='https://drive.google.com/uc?id=0B9P1L--7Wd2vS1VaWWVFNDVFQ1k',
+    #     md5='e4e07b66ebeaf6b33a79eb1b605ee3a3',
+    # )
+    # # dataset: v2 (improved)
+    # # augmentation: stack
+    # download_data(
+    #     path='data/models/fcn32s_arc2017_datasetv2_cfg003_20170721.npz',
+    #     url='https://drive.google.com/uc?id=0B9P1L--7Wd2vNG5KcmxkWWN6Zk0',
+    #     md5='980d3c6f0b3ef5e541f4db5280233c33',
+    # )
 
     # # dataset: v2
     # # augmentation: stack
