@@ -28,7 +28,7 @@ env:
     - BEFORE_SCRIPT='sudo -H pip install chainer==6.7.0 gdown==3.10.1'
   matrix:
     - ROS_DISTRO=indigo
-    - ROS_DISTRO=indigo BUILD_PKGS="jsk_apc2015_common jsk_apc2016_common jsk_arc2017_common jsk_2015_05_baxter_apc jsk_2016_01_baxter_apc jsk_arc2017_baxter selective_dualarm_stowing"
+    - ROS_DISTRO=indigo BUILD_PKGS="jsk_apc2015_common jsk_apc2016_common jsk_arc2017_common jsk_2015_05_baxter_apc jsk_2016_01_baxter_apc jsk_arc2017_baxter selective_dualarm_stowing sphand_driver sphand_driver_msgs vl53l0x_mraa_ros"
     - ROS_DISTRO=kinetic
     - ROS_DISTRO=melodic
 matrix:

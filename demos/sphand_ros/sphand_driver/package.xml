@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<package>
+  <name>sphand_driver</name>
+  <version>0.0.1</version>
+  <description>ROS driver for the Suction Pinching Hand after Ver.7.0.</description>
+
+  <maintainer email="pazeshun3684@gmail.com">Shun Hasegawa</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>actionlib</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
+  <build_depend>baxter_core_msgs</build_depend>
+  <build_depend>controller_manager</build_depend>
+  <build_depend>dynamixel_controllers</build_depend>
+  <build_depend>dynamixel_msgs</build_depend>
+  <build_depend>force_proximity_ros</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sphand_driver_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>transmission_interface</build_depend>
+  <build_depend>vl53l0x_mraa_ros</build_depend>
+
+  <run_depend>actionlib</run_depend>
+  <run_depend>actionlib_msgs</run_depend>
+  <run_depend>baxter_core_msgs</run_depend>
+  <run_depend>controller_manager</run_depend>
+  <run_depend>dynamixel_controllers</run_depend>
+  <run_depend>dynamixel_msgs</run_depend>
+  <run_depend>force_proximity_ros</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>joint_state_controller</run_depend>
+  <!-- TODO: Remove dependency to jsk_arc2017_baxter (task-specific package) -->
+  <run_depend>jsk_arc2017_baxter</run_depend>
+  <run_depend>position_controllers</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>sphand_driver_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>transmission_interface</run_depend>
+  <run_depend>vl53l0x_mraa_ros</run_depend>
+
+  <!-- TODO: Remove dependency to jsk_apc2016_common (task-specific package) -->
+  <test_depend>jsk_apc2016_common</test_depend>
+  <test_depend>jsk_tools</test_depend>
+  <test_depend>roslint</test_depend>
+  <test_depend>rostest</test_depend>
+
+  <export>
+  </export>
+</package>

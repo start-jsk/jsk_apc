@@ -1,0 +1,10 @@
+<launch>
+
+  <arg name="gui" default="false" />
+  <env name="DISPLAY" value="" unless="$(arg gui)" />
+
+  <test test-name="test_baxterlgv8_interface"
+        name="test_baxterlgv8_interface" pkg="sphand_driver"
+        type="test-baxterlgv8-interface.l" time-limit="100" />
+
+</launch>

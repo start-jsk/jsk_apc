@@ -129,6 +129,14 @@ cd examples/grasp_fusion/primitive_matching
 
 ### With ROS
 
+#### Setup
+
+```bash
+rosrun grasp_fusion install_data.py
+```
+
+#### Execution
+
 ```bash
 roslaunch grasp_fusion sample_instance_segmentation.launch
 ```

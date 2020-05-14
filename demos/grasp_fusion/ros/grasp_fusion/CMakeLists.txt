@@ -5,7 +5,8 @@ find_package(catkin REQUIRED catkin_virtualenv)
 
 catkin_python_setup()
 
-add_custom_target(${PROJECT_NAME}_install_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_data.py)
+# add_custom_target(${PROJECT_NAME}_install_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_data.py)
+# Don't install data on build time to prevent build failure on travis due to googledrive access limit
 
 ################################################
 ## Declare ROS messages, services and actions ##

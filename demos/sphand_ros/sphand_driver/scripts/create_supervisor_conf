@@ -1,0 +1,30 @@
+#!/bin/bash
+
+echo ""
+echo "This script generates supervisor config for auto launching"
+echo "in /etc/supervisor/conf.d"
+echo ""
+
+# Get user who will launch sphand_driver
+echo -n "Which user do you want to launch sphand_driver? "
+read user_to_launch
+cut -d: -f1 /etc/passwd | grep $user_to_launch > /dev/null
+while [ $? -ne 0 ]
+do
+  echo -n "User $user_to_launch doesn't exist. Try again: "
+  read user_to_launch
+  cut -d: -f1 /etc/passwd | grep $user_to_launch > /dev/null
+done
+echo "Use $user_to_launch as user name in configs"
+
+# Config generation
+## check_i2cdetect
+sudo cp `rospack find sphand_driver`/supervisor/check_i2cdetect.conf /etc/supervisor/conf.d
+## launch_left_gripper
+sudo cp `rospack find sphand_driver`/supervisor/launch_left_gripper.conf /etc/supervisor/conf.d
+### Write user name in the config
+sudo sed -i -e "s/REPLACE_THIS_BY_NAME/$user_to_launch/g" /etc/supervisor/conf.d/launch_left_gripper.conf
+## launch_logger
+sudo cp `rospack find sphand_driver`/supervisor/launch_logger.conf /etc/supervisor/conf.d
+### Write user name in the config
+sudo sed -i -e "s/REPLACE_THIS_BY_NAME/$user_to_launch/g" /etc/supervisor/conf.d/launch_logger.conf
