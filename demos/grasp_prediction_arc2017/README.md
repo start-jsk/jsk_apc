@@ -132,6 +132,8 @@ roslaunch grasp_prediction_arc2017 book_picking.launch json_dir:=`rospack find g
 
 ### Citation
 
+[Webpage of the paper](https://ieeexplore.ieee.org/document/8593398)
+
 ```
 @INPROCEEDINGS{hasegawa2018detecting,
   author={S. {Hasegawa} and K. {Wada} and K. {Okada} and M. {Inaba}},
