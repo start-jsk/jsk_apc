@@ -69,6 +69,14 @@ cd examples/grasp_prediction_arc2017
 
 ### With ROS
 
+#### Setup
+
+```bash
+rosrun grasp_prediction_arc2017 install_data.py
+```
+
+#### Execution
+
 ```bash
 roslaunch grasp_prediction_arc2017 sample_fcn_object_segmentation.launch
 ```
