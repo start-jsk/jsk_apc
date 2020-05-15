@@ -30,6 +30,8 @@ roslaunch baxtergv6_apc2016 stow.launch json_dir:=$(rospack find baxtergv6_apc20
 
 ## Citation
 
+[Webpage of the paper](https://www.fujipress.jp/jrm/rb/robot003100020289/)
+
 ```
 @article{Hasegawa_2019jrm,
   title={A Three-Fingered Hand with a Suction Gripping System for Warehouse Automation},
