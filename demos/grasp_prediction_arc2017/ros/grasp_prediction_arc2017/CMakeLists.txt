@@ -68,8 +68,6 @@ install(DIRECTORY scripts
 install(DIRECTORY config euslisp launch samples
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         USE_SOURCE_PERMISSIONS)
-install(FILES requirements.txt
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 #############
 ## Testing ##
