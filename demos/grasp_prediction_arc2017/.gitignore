@@ -1,1 +1,11 @@
-../grasp_fusion/.gitignore
+*.py[cdo]
+*.so
+
+/.pytest_cache/
+/.cache/
+/*.egg-info/
+/build/
+/dist/
+
+# external modules
+/src/

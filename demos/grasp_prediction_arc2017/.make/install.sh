@@ -57,9 +57,7 @@ pip install -r requirements.txt
 
 # }} Install Requirements
 
-# Install grasp_fusion_lib & grasp_prediction_arc2017_lib
-echo_bold "==> Installing grasp_fusion_lib"
-pip install -e ../grasp_fusion
+# Install grasp_prediction_arc2017_lib
 echo_bold "==> Installing grasp_prediction_arc2017_lib"
 pip install -e .
 
