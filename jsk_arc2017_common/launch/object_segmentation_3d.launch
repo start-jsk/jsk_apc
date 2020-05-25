@@ -8,6 +8,7 @@
 
   <arg name="FIXED_FRAME" default="base" />
   <arg name="GPU" default="0" />
+  <arg name="PROBA_THRESHOLD" default="0.0" />
 
   <include file="$(find jsk_apc2016_common)/launch/object_segmentation_3d.launch">
     <arg name="NODELET_MANAGER" value="$(arg NODELET_MANAGER)" />
@@ -19,6 +20,7 @@
     <arg name="GPU" value="$(arg GPU)" />
     <arg name="MODEL_NAME" value="fcn32s" />
     <arg name="MODEL_FILE" value="$(find jsk_arc2017_common)/data/models/fcn32s.npz" />
+    <arg name="PROBA_THRESHOLD" value="$(arg PROBA_THRESHOLD)" />
     <arg name="LABEL_YAML" value="$(find jsk_arc2017_common)/config/label_names.yaml" />
     <arg name="USE_PCA" value="true" />
     <arg name="USE_TOPIC" value="true" />

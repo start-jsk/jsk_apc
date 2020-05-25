@@ -1,0 +1,94 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "cherokee_easy_tee_shirt",
+                "clorox_utility_brush",
+                "cloud_b_plush_bear",
+                "command_hooks",
+                "creativity_chenille_stems",
+                "dr_browns_bottle_brush",
+                "easter_turtle_sippy_cup",
+                "elmers_washable_no_run_school_glue",
+                "expo_dry_erase_board_eraser"
+            ]
+        },
+        {
+            "bin_id": "B",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "C",
+            "contents": [
+                "kleenex_tissue_box",
+                "kyjen_squeakin_eggs_plush_puppies",
+                "jane_eyre_dvd",
+                "woods_extension_cord"
+            ]
+        },
+        {
+            "bin_id": "D",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "E",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "F",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "G",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "H",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "I",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "J",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "K",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "L",
+            "contents": [
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "1AD",
+            "contents": []
+        },
+        {
+            "size_id": "1A5",
+            "contents": []
+        },
+        {
+            "size_id": "K3",
+            "contents": []
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}

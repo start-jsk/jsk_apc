@@ -1,0 +1,113 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "expo_eraser",
+                "glue_sticks",
+                "poland_spring_water",
+                "mouse_traps",
+                "crayons",
+                "laugh_out_loud_jokes",
+                "pie_plates",
+                "hinged_ruled_index_cards",
+                "windex",
+                "duct_tape"
+            ]
+        },
+        {
+            "bin_id": "B",
+            "contents": [
+                "balloons",
+                "measuring_spoons",
+                "hanes_socks",
+                "burts_bees_baby_wipes",
+                "irish_spring_soap",
+                "plastic_wine_glass",
+                "colgate_toothbrush_4pk",
+                "bath_sponge",
+                "mesh_cup",
+                "marbles",
+                "tennis_ball_container",
+                "table_cloth"
+            ]
+        },
+        {
+            "bin_id": "C",
+            "contents": [
+                "avery_binder",
+                "robots_dvd",
+                "reynolds_wrap",
+                "flashlight",
+                "tissue_box",
+                "ticonderoga_pencils",
+                "composition_book",
+                "ice_cube_tray",
+                "band_aid_tape",
+                "toilet_brush"
+            ]
+        },
+        {
+            "bin_id": "D",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "E",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "F",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "G",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "H",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "I",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "J",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "K",
+            "contents": [
+            ]
+        },
+        {
+            "bin_id": "L",
+            "contents": [
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "1AD",
+            "contents": []
+        },
+        {
+            "size_id": "1A5",
+            "contents": []
+        },
+        {
+            "size_id": "K3",
+            "contents": []
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}

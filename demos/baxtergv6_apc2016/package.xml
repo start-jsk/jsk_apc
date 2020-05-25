@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>baxtergv6_apc2016</name>
+  <version>0.0.1</version>
+  <description>Execute mimic APC2016 tasks with ARC2017 robot system</description>
+
+  <maintainer email="pazeshun3684@gmail.com">Shun Hasegawa</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>jsk_arc2017_baxter</exec_depend>
+
+  <test_depend>jsk_apc2016_common</test_depend>
+  <test_depend>jsk_tools</test_depend>
+  <test_depend>roslint</test_depend>
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,61 @@
+boxes:
+- dimensions: [0.218, 0.248, 0.37]
+  frame_id: base
+  name: bin_A
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, 0.28, 0.842]
+- dimensions: [0.218, 0.306, 0.37]
+  frame_id: base
+  name: bin_B
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, 0.0, 0.842]
+- dimensions: [0.218, 0.248, 0.37]
+  frame_id: base
+  name: bin_C
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, -0.28, 0.842]
+- dimensions: [0.218, 0.248, 0.37]
+  frame_id: base
+  name: bin_D
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, 0.28, 0.599]
+- dimensions: [0.218, 0.306, 0.37]
+  frame_id: base
+  name: bin_E
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, 0.0, 0.599]
+- dimensions: [0.218, 0.248, 0.37]
+  frame_id: base
+  name: bin_F
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, -0.28, 0.599]
+- dimensions: [0.218, 0.248, 0.37]
+  frame_id: base
+  name: bin_G
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, 0.28, 0.376]
+- dimensions: [0.218, 0.306, 0.37]
+  frame_id: base
+  name: bin_H
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, 0.0, 0.376]
+- dimensions: [0.218, 0.248, 0.37]
+  frame_id: base
+  name: bin_I
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, -0.28, 0.376]
+- dimensions: [0.218, 0.248, 0.37]
+  frame_id: base
+  name: bin_J
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, 0.28, 0.142]
+- dimensions: [0.218, 0.306, 0.37]
+  frame_id: base
+  name: bin_K
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, 0.0, 0.142]
+- dimensions: [0.218, 0.248, 0.37]
+  frame_id: base
+  name: bin_L
+  orientation: [0, -0.707107, 0, 0.707107]
+  position: [1.191, -0.28, 0.142]

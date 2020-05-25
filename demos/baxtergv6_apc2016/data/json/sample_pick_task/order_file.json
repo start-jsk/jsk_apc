@@ -1,0 +1,29 @@
+{
+    "orders": [
+        {
+            "contents": [
+                "ticonderoga_pencils",
+                "balloons"
+            ],
+            "size_id": "1AD"
+        },
+        {
+            "contents": [
+                "hanes_socks",
+                "toilet_brush",
+                "plastic_wine_glass"
+            ],
+            "size_id": "1A5"
+        },
+        {
+            "contents": [
+                "duct_tape",
+                "pie_plates",
+                "marbles",
+                "tissue_box",
+                "poland_spring_water"
+            ],
+            "size_id": "K3"
+        }
+    ]
+}
