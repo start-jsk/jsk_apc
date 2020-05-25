@@ -37,10 +37,15 @@ RUN rosdep update --include-eol-distros
 RUN for i in $(seq 3); do rosdep install --rosdistro ${ROS_DISTRO} -r -y -i --from-paths /opt/ros/${ROS_DISTRO}/share ~/ros/${ROS_DISTRO}/src; done
 
 ARG TESTING
+ARG ROS_DISTRO
 RUN if [ ${TESTING} = "true" ] ; then \
       rm -rf ~/ros; \
     else \
       . /opt/ros/${ROS_DISTRO}/setup.sh && \
       cd ~/ros/${ROS_DISTRO} && \
-      catkin build; \
+      if [ ${ROS_DISTRO} = "indigo" ]; then \
+        catkin build jsk_apc2015_common jsk_apc2016_common jsk_arc2017_common jsk_2015_05_baxter_apc jsk_2016_01_baxter_apc jsk_arc2017_baxter selective_dualarm_stowing sphand_driver sphand_driver_msgs vl53l0x_mraa_ros baxtergv6_apc2016;\
+      else \
+        catkin build; \
+      fi; \
     fi
