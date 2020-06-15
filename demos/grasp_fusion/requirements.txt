@@ -6,7 +6,7 @@ filelock
 gdown
 imageio==2.6.1
 imgaug>=0.2.7
-labelme>=2.9
+labelme>=4.0.0
 matplotlib
 numpy
 pathlib2

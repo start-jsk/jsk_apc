@@ -324,5 +324,5 @@ def _labelme_shapes_to_label(img_shape, shapes):
             label_value = len(label_name_to_value)
             label_name_to_value[label_name] = label_value
 
-    lbl = labelme.utils.shapes_to_label(img_shape, shapes, label_name_to_value)
+    lbl, _ = labelme.utils.shapes_to_label(img_shape, shapes, label_name_to_value)
     return lbl, label_name_to_value
