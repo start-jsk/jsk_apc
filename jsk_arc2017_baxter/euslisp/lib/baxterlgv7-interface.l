@@ -130,16 +130,16 @@
                         #'send self :set-finger-flex arm side
                         :groupname groupname)
         ;; publish used proximity value for rosbag
-        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+        (ros::advertise (format nil "/gripper_front/limb/~a/used_proximity/raw/~a"
                                 (arm2str arm) (symbol2str side)) std_msgs::Float64)
-        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/init/~a"
+        (ros::advertise (format nil "/gripper_front/limb/~a/used_proximity/init/~a"
                                 (arm2str arm) (symbol2str side)) std_msgs::Float64)
-        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/result/~a"
+        (ros::advertise (format nil "/gripper_front/limb/~a/used_proximity/result/~a"
                                 (arm2str arm) (symbol2str side)) std_msgs::Float64)))
     ;; publish used proximity value for rosbag
-    (ros::advertise "/from_main/limb/left/used_proximity/raw/palm" std_msgs::Float64)
-    (ros::advertise "/from_main/limb/left/used_proximity/init/palm" std_msgs::Float64)
-    (ros::advertise "/from_main/limb/left/used_proximity/result/palm" std_msgs::Float64)
+    (ros::advertise "/gripper_front/limb/left/used_proximity/raw/palm" std_msgs::Float64)
+    (ros::advertise "/gripper_front/limb/left/used_proximity/init/palm" std_msgs::Float64)
+    (ros::advertise "/gripper_front/limb/left/used_proximity/result/palm" std_msgs::Float64)
     (if mvit-rb (setq moveit-robot mvit-rb))
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot))))
   ;; Overwrite super class's :rarm-controller
@@ -314,15 +314,15 @@
       ;; publish used proximity value for rosbag
       (if raw-msg
         (ros::publish
-          (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+          (format nil "/gripper_front/limb/~a/used_proximity/raw/~a"
                   (arm2str arm) (symbol2str side)) raw-msg))
       (if init-msg
         (ros::publish
-          (format nil "/from_main/limb/~a/used_proximity/init/~a"
+          (format nil "/gripper_front/limb/~a/used_proximity/init/~a"
                   (arm2str arm) (symbol2str side)) init-msg))
       (if res-msg
         (ros::publish
-          (format nil "/from_main/limb/~a/used_proximity/result/~a"
+          (format nil "/gripper_front/limb/~a/used_proximity/result/~a"
                   (arm2str arm) (symbol2str side)) res-msg))
       val))
   (:get-real-finger-av (arm)

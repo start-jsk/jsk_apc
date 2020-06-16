@@ -130,11 +130,11 @@
                         #'send self :set-finger-flex arm side
                         :groupname groupname)
         ;; publish used proximity value for rosbag
-        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+        (ros::advertise (format nil "/gripper_front/limb/~a/used_proximity/raw/~a"
                                 (arm2str arm) (symbol2str side)) std_msgs::Float64)
-        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/init/~a"
+        (ros::advertise (format nil "/gripper_front/limb/~a/used_proximity/init/~a"
                                 (arm2str arm) (symbol2str side)) std_msgs::Float64)
-        (ros::advertise (format nil "/from_main/limb/~a/used_proximity/result/~a"
+        (ros::advertise (format nil "/gripper_front/limb/~a/used_proximity/result/~a"
                                 (arm2str arm) (symbol2str side)) std_msgs::Float64)))
     (if mvit-rb (setq moveit-robot mvit-rb))
     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot))))
@@ -276,43 +276,43 @@
           ((eq side :left)
            (setq val (/ (- l l-init) (expt (/ l-init 2500.0) 1.5)))
            (ros::publish
-             (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+             (format nil "/gripper_front/limb/~a/used_proximity/raw/~a"
                      (arm2str arm) (symbol2str side))
              (instance std_msgs::Float64 :init :data l))
            (ros::publish
-             (format nil "/from_main/limb/~a/used_proximity/init/~a"
+             (format nil "/gripper_front/limb/~a/used_proximity/init/~a"
                      (arm2str arm) (symbol2str side))
              (instance std_msgs::Float64 :init :data l-init))
            (ros::publish
-             (format nil "/from_main/limb/~a/used_proximity/result/~a"
+             (format nil "/gripper_front/limb/~a/used_proximity/result/~a"
                      (arm2str arm) (symbol2str side))
              (instance std_msgs::Float64 :init :data val))
            val)
           ((eq side :right)
            (setq val (/ (- r r-init) (expt (/ r-init 2500.0) 1.5)))
            (ros::publish
-             (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+             (format nil "/gripper_front/limb/~a/used_proximity/raw/~a"
                      (arm2str arm) (symbol2str side))
              (instance std_msgs::Float64 :init :data r))
            (ros::publish
-             (format nil "/from_main/limb/~a/used_proximity/init/~a"
+             (format nil "/gripper_front/limb/~a/used_proximity/init/~a"
                      (arm2str arm) (symbol2str side))
              (instance std_msgs::Float64 :init :data r-init))
            (ros::publish
-             (format nil "/from_main/limb/~a/used_proximity/result/~a"
+             (format nil "/gripper_front/limb/~a/used_proximity/result/~a"
                      (arm2str arm) (symbol2str side))
              (instance std_msgs::Float64 :init :data val))
            val))
         (cond
           ((eq side :left)
            (ros::publish
-             (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+             (format nil "/gripper_front/limb/~a/used_proximity/raw/~a"
                      (arm2str arm) (symbol2str side))
              (instance std_msgs::Float64 :init :data l))
            l)
           ((eq side :right)
            (ros::publish
-             (format nil "/from_main/limb/~a/used_proximity/raw/~a"
+             (format nil "/gripper_front/limb/~a/used_proximity/raw/~a"
                      (arm2str arm) (symbol2str side))
              (instance std_msgs::Float64 :init :data l))
            r)))))
