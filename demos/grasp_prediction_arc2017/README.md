@@ -49,7 +49,7 @@ source ~/ros/ws_jsk_apc/devel/.private/grasp_prediction_arc2017/share/grasp_pred
 
 - cupy
   ```bash
-  pip install cupy-cuda92  # or cupy, cupy-cuda80, cupy-cuda90, ...
+  pip install cupy-cuda92==6.7.0  # Please specify a package corresponding to your CUDA version (cupy-cuda90, cupy-cuda92, ...) and the same version as your chainer version (6.4.0, 6.7.0, ...)
   ```
 
 ###### Object label and grasp affordance segmentation with ARC2017 dataset
