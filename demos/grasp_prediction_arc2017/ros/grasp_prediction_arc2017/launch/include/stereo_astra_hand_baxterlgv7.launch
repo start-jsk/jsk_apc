@@ -1,0 +1,28 @@
+<launch>
+
+  <arg name="load_driver" default="true" />
+  <arg name="launch_left_hand_stereo" default="true" />
+  <arg name="launch_right_hand_stereo" default="true" />
+  <arg name="rviz" default="false" />
+  <arg name="fuse" default="true" />
+
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+    <arg name="load_driver" value="$(arg load_driver)" />
+    <arg name="launch_left_hand_stereo" value="false" />
+    <arg name="launch_right_hand_stereo" value="$(arg launch_right_hand_stereo)" />
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="fuse" value="$(arg fuse)" />
+    <arg name="pick" value="true" />
+  </include>
+  <include file="$(find sphand_driver)/launch/stereo_astra_remote.launch" if="$(arg launch_left_hand_stereo)">
+    <arg name="launch_left_hand_stereo" value="$(arg launch_left_hand_stereo)" />
+    <arg name="rviz" value="false" />
+    <arg name="fuse" value="$(arg fuse)" />
+    <!-- Books are located at a distance of 70cm from cameras, so hand_to_depth params are optimized for it -->
+    <arg name="hand_to_depth_initial_x" value="0.088" />
+    <arg name="hand_to_depth_initial_y" value="0.065" />
+    <arg name="hand_to_depth_initial_z" value="0.004" />
+    <arg name="hand_to_depth_initial_ori" value="[-0.012, -0.002, -0.697, 0.717]" />
+  </include>
+
+</launch>

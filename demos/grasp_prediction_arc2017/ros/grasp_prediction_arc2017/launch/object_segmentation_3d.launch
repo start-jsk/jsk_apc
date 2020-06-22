@@ -1,0 +1,423 @@
+<launch>
+
+  <arg name="NODELET_MANAGER" />
+  <arg name="INPUT_IMAGE" />
+  <arg name="INPUT_CLOUD" />
+  <arg name="INPUT_CANDIDATES" />
+  <arg name="FIXED_FRAME" />
+  <arg name="MODEL_NAME" />
+  <arg name="N_CLASS" />
+  <arg name="CLASS_AGNOSTIC" />
+  <arg name="MODEL_FILE" />
+  <arg name="GPU" default="0" />
+  <arg name="LABEL_YAML" default="$(find jsk_arc2017_common)/config/label_names.yaml"/>
+  <arg name="SELECT_LARGEST" default="false" />
+  <arg name="ALIGN_WITH_SURFACE" default="false" />
+  <arg name="USE_PCA" default="false" />
+  <arg name="USE_TOPIC" default="false" />
+  <arg name="IGNORE_LABELS" default="[]" />
+  <arg name="THRESH_SUCTION_PROB" default="0.7" />
+
+  <rosparam command="load" file="$(arg LABEL_YAML)" ns="label_names" />
+
+  <node name="fcn_object_segmentation"
+        pkg="grasp_prediction_arc2017" type="fcn_object_segmentation.py">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />  <!-- rgb timestamp -->
+    <remap from="~output/label_class" to="~output" />
+    <remap from="~output/prob_class" to="~output/proba_image" />
+    <rosparam subst_value="true">
+      model_name: $(arg MODEL_NAME)
+      n_class: $(arg N_CLASS)
+      model_file: $(arg MODEL_FILE)
+      gpu: $(arg GPU)
+      class_agnostic: $(arg CLASS_AGNOSTIC)
+      thresh_class_prob: 0.5
+      thresh_suction_prob: $(arg THRESH_SUCTION_PROB)
+    </rosparam>
+  </node>
+  <group if="$(arg USE_TOPIC)">
+    <node name="apply_context_to_label_proba"
+          pkg="jsk_perception" type="apply_context_to_label_probability"
+          clear_params="true">
+      <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
+      <remap from="~input/candidates" to="$(arg INPUT_CANDIDATES)" />
+      <rosparam>
+        use_topic: true
+      </rosparam>
+    </node>
+  </group>
+  <group unless="$(arg USE_TOPIC)">
+    <node name="apply_context_to_label_proba"
+          pkg="jsk_perception" type="apply_context_to_label_probability"
+          clear_params="true">
+      <remap from="~input" to="fcn_object_segmentation/output/proba_image" />
+      <rosparam>
+        use_topic: false
+      </rosparam>
+    </node>
+  </group>
+
+  <node name="resize_label"
+        pkg="nodelet" type="nodelet"
+        args="load image_proc/resize $(arg NODELET_MANAGER)">
+    <remap from="image" to="apply_context_to_label_proba/output/label" />
+    <rosparam>
+      interpolation: 0
+      scale_height: 0.5
+      scale_width: 0.5
+    </rosparam>
+  </node>
+
+  <!-- label -> cluster indices -->
+  <group if="$(arg SELECT_LARGEST)">
+    <node name="label_to_cluster_indices"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/LabelToClusterPointIndices $(arg NODELET_MANAGER)">
+      <remap from="~input" to="resize_label/image" />
+      <rosparam subst_value="true">
+        bg_label: -1
+        ignore_labels: $(arg IGNORE_LABELS)
+      </rosparam>
+    </node>
+    <node name="resize_points_publisher_label"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_pcl/ResizePointsPublisher">
+      <remap from="~input" to="$(arg INPUT_CLOUD)" />
+      <rosparam>
+        step_x: 2
+        step_y: 2
+      </rosparam>
+    </node>
+    <node name="cluster_indices_decomposer_label"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+      <remap from="~input" to="resize_points_publisher_label/output" />
+      <remap from="~target" to="label_to_cluster_indices/output" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 100
+        sort_by: -cloud_size
+      </rosparam>
+    </node>
+  </group>
+
+  <!-- label -> mask -> indices -> cloud -> resized cloud  -> cluster indices -->
+  <node name="label_to_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/LabelToMaskImage $(arg NODELET_MANAGER)">
+    <remap from="~input" to="apply_context_to_label_proba/output/label" />  <!-- rgb timestamp -->
+  </node>
+  <node name="mask_to_point_indices"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/MaskImageToPointIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="label_to_mask/output" />
+  </node>
+  <node name="extract_indices_target_label"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />  <!-- depth timestamp -->
+    <remap from="~indices" to="mask_to_point_indices/output" />  <!-- rgb timestamp -->
+    <rosparam>
+      approximate_sync: true
+      queue_size: 100
+      keep_organized: true
+    </rosparam>
+  </node>
+  <node name="resize_points_publisher_target"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ResizePointsPublisher $(arg NODELET_MANAGER)">
+    <remap from="~input" to="extract_indices_target_label/output" />  <!-- depth timestamp -->
+    <rosparam>
+      step_x: 2
+      step_y: 2
+    </rosparam>
+  </node>
+  <node name="euclidean_clustering"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/EuclideanClustering $(arg NODELET_MANAGER)">
+    <remap from="~input" to="resize_points_publisher_target/output" />  <!-- depth timestamp -->
+    <rosparam>
+      min_size: 10
+      max_size: 25000
+      tolerance: 0.05
+    </rosparam>
+  </node>
+  <group unless="$(arg ALIGN_WITH_SURFACE)">
+    <node name="cluster_indices_decomposer_target"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+      <remap from="~input" to="resize_points_publisher_target/output" />  <!-- depth timestamp -->
+      <remap from="~target" to="euclidean_clustering/output" />  <!-- depth timestamp -->
+      <remap from="~centroid_pose_array" to="~unused/centroid_pose_array" />
+      <rosparam subst_value="true">
+        approximate_sync: false
+        queue_size: 100
+        sort_by: -cloud_size
+        align_boxes: true
+        align_boxes_with_plane: false
+        use_pca: $(arg USE_PCA)
+        target_frame_id: $(arg FIXED_FRAME)
+      </rosparam>
+    </node>
+  </group>
+  <group if="$(arg ALIGN_WITH_SURFACE)">
+    <!-- cluster indices -> sorted cluster indices -> indices -> cloud -> plane -->
+    <node name="cluster_indices_decomposer_plane"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+      <remap from="~input" to="resize_points_publisher_target/output" />  <!-- depth timestamp -->
+      <remap from="~target" to="euclidean_clustering/output" />  <!-- depth timestamp -->
+      <rosparam>
+        approximate_sync: false
+        queue_size: 100
+        sort_by: -cloud_size
+      </rosparam>
+    </node>
+    <node name="cluster_indices_to_indices_plane"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/ClusterPointIndicesToPointIndices $(arg NODELET_MANAGER)">
+      <remap from="~input" to="cluster_indices_decomposer_plane/cluster_indices" />  <!-- depth timestamp -->
+      <rosparam>
+        index: 0
+      </rosparam>
+    </node>
+    <node name="extract_indices_plane"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg NODELET_MANAGER)">
+      <remap from="~input" to="resize_points_publisher_target/output" />  <!-- depth timestamp -->
+      <remap from="~indices" to="cluster_indices_to_indices_plane/output" />  <!-- depth timestamp -->
+      <rosparam>
+        approximate_sync: false
+        queue_size: 100
+        keep_organized: true
+      </rosparam>
+    </node>
+    <node name="plane_estimation"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/OrganizedMultiPlaneSegmentation $(arg NODELET_MANAGER)">
+      <remap from="~input" to="extract_indices_plane/output" />  <!-- depth timestamp -->
+      <rosparam>
+        min_size: 50
+        max_curvature: 0.01
+        estimate_normal: true
+        distance_threshold: 0.03
+      </rosparam>
+    </node>
+    <node name="add_area_likelihood_plane"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/PolygonArrayAreaLikelihood $(arg NODELET_MANAGER)">
+      <remap from="~input" to="plane_estimation/output_polygon" />
+      <rosparam>
+        # To put larger likelifood to larger area, set expected area sufficiently big
+        area: 100
+      </rosparam>
+    </node>
+    <node name="likelihood_filter_plane"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/PolygonArrayLikelihoodFilter $(arg NODELET_MANAGER)">
+      <remap from="~input_polygons" to="add_area_likelihood_plane/output" />
+      <remap from="~input_coefficients" to="plane_estimation/output_coefficients" />
+      <rosparam>
+        # Just sorting
+        threshold: 0
+      </rosparam>
+    </node>
+    <node name="extract_largest_plane"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/PolygonArrayUnwrapper $(arg NODELET_MANAGER)">
+      <remap from="~input_polygons" to="likelihood_filter_plane/output_polygons" />
+      <remap from="~input_coefficients" to="likelihood_filter_plane/output_coefficients" />
+      <rosparam>
+        # Largest plane
+        plane_index: 0
+      </rosparam>
+    </node>
+    <node name="wrap_largest_plane"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/PolygonArrayWrapper $(arg NODELET_MANAGER)">
+      <remap from="~input_polygon" to="extract_largest_plane/output_polygon" />
+      <remap from="~input_coefficients" to="extract_largest_plane/output_coefficients" />
+    </node>
+    <node name="cluster_indices_decomposer_target"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+      <remap from="~input" to="resize_points_publisher_target/output" />  <!-- depth timestamp -->
+      <remap from="~target" to="euclidean_clustering/output" />  <!-- depth timestamp -->
+      <remap from="~align_planes" to="wrap_largest_plane/output_polygons" />  <!-- depth timestamp -->
+      <remap from="~align_planes_coefficients" to="wrap_largest_plane/output_coefficients" />  <!-- depth timestamp -->
+      <remap from="~centroid_pose_array" to="~unused/centroid_pose_array" />
+      <rosparam subst_value="true">
+        approximate_sync: false
+        queue_size: 100
+        sort_by: -cloud_size
+        align_boxes: true
+        align_boxes_with_plane: true
+        use_pca: $(arg USE_PCA)
+      </rosparam>
+    </node>
+  </group>
+
+  <!-- suction point -->
+  <node name="label_to_mask_suction"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/LabelToMaskImage $(arg NODELET_MANAGER)">
+    <remap from="~input" to="fcn_object_segmentation/output/label_suction" />
+    <rosparam>
+      label_value: 1
+    </rosparam>
+  </node>
+  <node name="multiply_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/MultiplyMaskImage $(arg NODELET_MANAGER)">
+    <remap from="~input/src1" to="label_to_mask/output" />
+    <remap from="~input/src2" to="label_to_mask_suction/output" />
+  </node>
+  <node name="mask_to_point_indices_suction"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/MaskImageToPointIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="multiply_mask/output" />
+  </node>
+  <node name="extract_indices_target_label_suction"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />  <!-- depth timestamp -->
+    <remap from="~indices" to="mask_to_point_indices_suction/output" />  <!-- rgb timestamp -->
+    <rosparam>
+      approximate_sync: true
+      queue_size: 100
+      keep_organized: true
+    </rosparam>
+  </node>
+  <node name="resize_points_publisher_target_suction"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ResizePointsPublisher $(arg NODELET_MANAGER)">
+    <remap from="~input" to="extract_indices_target_label_suction/output" />  <!-- depth timestamp -->
+    <rosparam>
+      step_x: 2
+      step_y: 2
+    </rosparam>
+  </node>
+  <node name="euclidean_clustering_suction"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/EuclideanClustering $(arg NODELET_MANAGER)">
+    <remap from="~input" to="resize_points_publisher_target_suction/output" />  <!-- depth timestamp -->
+    <rosparam>
+      min_size: 0
+      max_size: 10000
+      tolerance: 0.05
+    </rosparam>
+  </node>
+  <group unless="$(arg ALIGN_WITH_SURFACE)">
+    <node name="cluster_indices_decomposer_target_suction"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+      <remap from="~input" to="resize_points_publisher_target_suction/output" />  <!-- depth timestamp -->
+      <remap from="~target" to="euclidean_clustering_suction/output" />  <!-- depth timestamp -->
+      <remap from="~boxes" to="~unused/boxes" />
+      <remap from="~centroid_pose_array" to="cluster_indices_decomposer_target/centroid_pose_array" />  <!-- XXX: a little hack -->
+      <rosparam subst_value="true">
+        approximate_sync: false
+        queue_size: 100
+        sort_by: -cloud_size
+        # TODO: needed below options?
+        align_boxes: true
+        align_boxes_with_plane: false
+        use_pca: $(arg USE_PCA)
+        target_frame_id: $(arg FIXED_FRAME)
+      </rosparam>
+    </node>
+  </group>
+  <group if="$(arg ALIGN_WITH_SURFACE)">
+    <node name="cluster_indices_decomposer_target_suction"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+      <remap from="~input" to="resize_points_publisher_target_suction/output" />  <!-- depth timestamp -->
+      <remap from="~target" to="euclidean_clustering_suction/output" />  <!-- depth timestamp -->
+      <remap from="~align_planes" to="wrap_largest_plane/output_polygons" />  <!-- depth timestamp -->
+      <remap from="~align_planes_coefficients" to="wrap_largest_plane/output_coefficients" />  <!-- depth timestamp -->
+      <remap from="~boxes" to="~unused/boxes" />
+      <remap from="~centroid_pose_array" to="cluster_indices_decomposer_target/centroid_pose_array" />  <!-- XXX: a little hack -->
+      <rosparam subst_value="true">
+        approximate_sync: false
+        queue_size: 100
+        sort_by: -cloud_size
+        align_boxes: true
+        # FIXME: z axis cannot be up when aligning with plane
+        # align_boxes_with_plane: true
+        align_boxes_with_plane: false
+        use_pca: $(arg USE_PCA)
+        target_frame_id: $(arg FIXED_FRAME)
+      </rosparam>
+    </node>
+  </group>
+
+  <!-- Visualization -->
+  <node name="label_image_decomposer"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/label" to="apply_context_to_label_proba/output/label" />
+    <remap from="~label_names" to="label_names" />
+    <rosparam>
+      alpha: 0.5
+      approximate_sync: true
+      queue_size: 100
+    </rosparam>
+  </node>
+  <node name="image_view_prob_suction"
+        pkg="image_view" type="image_view"
+        clear_params="true">
+    <remap from="image" to="fcn_object_segmentation/output/prob_suction" />
+    <remap from="~output" to="fcn_object_segmentation/output/prob_suction_view" />
+    <rosparam>
+      gui: false
+      min_image_value: 0
+      max_image_value: 1
+      colormap: 2  # JET
+    </rosparam>
+  </node>
+  <node name="overlay_color_on_mono_prob_suction"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/OverlayImageColorOnMono $(arg NODELET_MANAGER)">
+    <remap from="~input/color" to="fcn_object_segmentation/output/prob_suction_view" />
+    <remap from="~input/mono" to="$(arg INPUT_IMAGE)" />
+    <rosparam>
+      color_alpha: 0.7
+      queue_size: 100
+    </rosparam>
+  </node>
+  <node name="poses_to_pose_target0"
+        pkg="jsk_recognition_utils" type="pose_array_to_pose.py">
+    <remap from="~input" to="cluster_indices_decomposer_target/centroid_pose_array" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <node name="bboxes_to_bbox_target0"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg NODELET_MANAGER)">
+    <remap from="~input" to="cluster_indices_decomposer_target/boxes" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <node name="cluster_indices_to_indices_target0"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/ClusterPointIndicesToPointIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="cluster_indices_decomposer_target/cluster_indices" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <node name="extract_indices_target0"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="resize_points_publisher_target/output" />
+    <remap from="~indices" to="cluster_indices_to_indices_target0/output" />
+  </node>
+
+  <node name="image_view_overlay_color_on_mono_suction"
+        pkg="image_view" type="image_view">
+    <remap from="image" to="overlay_color_on_mono_prob_suction/output" />
+  </node>
+
+</launch>

@@ -1,0 +1,4 @@
+include requirements.txt
+recursive-include grasp_prediction_arc2017_lib *.c
+recursive-include grasp_prediction_arc2017_lib *.h
+recursive-include grasp_prediction_arc2017_lib *.pyx

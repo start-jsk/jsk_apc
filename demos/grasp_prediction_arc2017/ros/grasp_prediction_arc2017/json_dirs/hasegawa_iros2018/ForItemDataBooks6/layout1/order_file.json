@@ -1,0 +1,19 @@
+{
+    "orders": [
+        {
+            "contents": [
+                "alpha_cubic_sport_wallet",
+                "galaxy_s5_with_cover"
+            ],
+            "size_id": "1AD"
+        },
+        {
+            "contents": [
+                "composition_book",
+                "studio_c_binder_pink",
+                "studio_c_binder_blue"
+            ],
+            "size_id": "1A5"
+        }
+    ]
+}

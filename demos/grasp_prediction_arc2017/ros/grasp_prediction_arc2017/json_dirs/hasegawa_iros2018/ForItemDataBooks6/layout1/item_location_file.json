@@ -1,0 +1,27 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "alpha_cubic_sport_wallet",
+                "galaxy_s5_with_cover",
+                "composition_book",
+                "studio_c_binder_pink",
+                "studio_c_binder_blue"
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "1AD",
+            "contents": []
+        },
+        {
+            "size_id": "1A5",
+            "contents": []
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}

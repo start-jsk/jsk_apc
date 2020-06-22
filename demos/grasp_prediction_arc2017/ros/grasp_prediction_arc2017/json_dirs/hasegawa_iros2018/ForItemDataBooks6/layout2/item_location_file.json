@@ -1,0 +1,25 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": [
+                "composition_book",
+                "studio_c_binder_pink",
+                "studio_c_binder_blue"
+            ]
+        }
+    ],
+    "boxes": [
+        {
+            "size_id": "1AD",
+            "contents": []
+        },
+        {
+            "size_id": "1A5",
+            "contents": []
+        }
+    ],
+    "tote": {
+        "contents": []
+    }
+}

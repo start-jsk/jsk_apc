@@ -1,0 +1,133 @@
+<launch>
+
+  <arg name="load_driver" default="true" />
+  <arg name="launch_left" default="true" />
+  <arg name="launch_right" default="false" />
+
+  <!-- project input to select model -->
+  <arg name="hasegawa_iros2018" default="false" />
+  <arg name="hasegawa_mthesis" default="false" />
+  <arg name="MODEL_FILE" if="$(arg hasegawa_iros2018)" value="$(optenv HOME)/data/hasegawa_iros2018_ros/system_inputs/ForItemDataBooks6/FCN8sAtOnce_180720_130702_iter00060000.npz" />
+  <arg name="N_CLASS" if="$(arg hasegawa_iros2018)" value="14" />
+  <arg name="MODEL_FILE" if="$(arg hasegawa_mthesis)" value="$(optenv HOME)/data/hasegawa_mthesis_ros/system_inputs/ForItemDataBooks8/FCN8sAtOnce_190103_044240_iter00060000.npz" />
+  <arg name="N_CLASS" if="$(arg hasegawa_mthesis)" value="19" />
+
+  <!-- hand mounted camera -->
+  <include file="$(find grasp_prediction_arc2017)/launch/include/stereo_astra_hand_baxterlgv7.launch">
+    <arg name="load_driver" value="$(arg load_driver)" />
+    <arg name="launch_left_hand_stereo" value="$(arg launch_left)" />
+    <arg name="launch_right_hand_stereo" value="$(arg launch_right)" />
+  </include>
+
+  <arg name="LEFT_CAMERA_INFO" value="/left_hand_camera/fused/rgb/camera_info" />
+  <arg name="LEFT_INPUT_CLOUD" value="/left_hand_camera/fused/depth_registered/points" />
+  <arg name="LEFT_INPUT_IMAGE" value="/left_hand_camera/left/rgb/image_rect_color" />
+  <arg name="LEFT_MANAGER" value="/left_hand_camera/left/left_nodelet_manager" />
+  <arg name="RIGHT_CAMERA_INFO" value="/right_hand_camera/fused/rgb/camera_info" />
+  <arg name="RIGHT_INPUT_CLOUD" value="/right_hand_camera/fused/depth_registered/points" />
+  <arg name="RIGHT_INPUT_IMAGE" value="/right_hand_camera/left/rgb/image_rect_color" />
+  <arg name="RIGHT_MANAGER" value="/right_hand_camera/left/left_nodelet_manager" />
+
+  <!-- Launch pipeline for 3D object segmentation. -->
+  <!-- for left hand camera -->
+  <group ns="left_hand_camera" if="$(arg launch_left)">
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg LEFT_MANAGER)">
+      <remap from="~input" to="/transformable_bin_markers/output/boxes" />
+      <rosparam>
+        index: 0
+      </rosparam>
+    </node>
+    <node name="attention_clipper_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="extract_indices_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg LEFT_MANAGER)">
+      <remap from="~input" to="$(arg LEFT_INPUT_CLOUD)" />
+      <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
+      <rosparam>
+        keep_organized: true
+        approximate_sync: true
+        max_queue_size: 100
+      </rosparam>
+    </node>
+    <include file="$(find grasp_prediction_arc2017)/launch/object_segmentation_3d.launch">
+      <arg name="NODELET_MANAGER" value="$(arg LEFT_MANAGER)" />
+      <arg name="INPUT_IMAGE" value="$(arg LEFT_INPUT_IMAGE)"/>
+      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
+      <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
+      <arg name="FIXED_FRAME" value="base" />
+      <arg name="MODEL_NAME" value="fcn8s_at_once" />
+      <arg name="N_CLASS" value="$(arg N_CLASS)" />
+      <arg name="CLASS_AGNOSTIC" value="false" />
+      <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
+      <arg name="GPU" value="0" />
+      <arg name="ALIGN_WITH_SURFACE" value="true" />
+      <arg name="USE_PCA" value="true" />
+      <arg name="USE_TOPIC" value="true" />
+      <arg name="SELECT_LARGEST" value="true" />
+      <arg name="IGNORE_LABELS" value="[0, 41]" />
+      <arg name="THRESH_SUCTION_PROB" value="0.5" />
+    </include>
+  </group>
+  <!-- for right hand camera -->
+  <group ns="right_hand_camera" if="$(arg launch_right)">
+    <node name="bbox_array_to_bbox"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg RIGHT_MANAGER)">
+      <remap from="~input" to="/transformable_bin_markers/output/boxes" />
+      <rosparam>
+        index: 2
+      </rosparam>
+    </node>
+    <node name="attention_clipper_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/AttentionClipper $(arg RIGHT_MANAGER)">
+      <remap from="~input" to="$(arg RIGHT_CAMERA_INFO)" />
+      <remap from="~input/points" to="$(arg RIGHT_INPUT_CLOUD)" />
+      <remap from="~input/box" to="bbox_array_to_bbox/output" />
+      <rosparam subst_value="true">
+        use_multiple_attention: false
+      </rosparam>
+    </node>
+    <node name="extract_indices_target_bin"
+          pkg="nodelet" type="nodelet"
+          args="load jsk_pcl/ExtractIndices $(arg RIGHT_MANAGER)">
+      <remap from="~input" to="$(arg RIGHT_INPUT_CLOUD)" />
+      <remap from="~indices" to="attention_clipper_target_bin/output/point_indices" />
+      <rosparam>
+        keep_organized: true
+        approximate_sync: true
+        max_queue_size: 100
+      </rosparam>
+    </node>
+    <include file="$(find grasp_prediction_arc2017)/launch/object_segmentation_3d.launch">
+      <arg name="NODELET_MANAGER" value="$(arg RIGHT_MANAGER)" />
+      <arg name="INPUT_IMAGE" value="$(arg RIGHT_INPUT_IMAGE)"/>
+      <arg name="INPUT_CLOUD" value="extract_indices_target_bin/output"/>
+      <arg name="INPUT_CANDIDATES" value="candidates_publisher/output/candidates" />
+      <arg name="FIXED_FRAME" value="base" />
+      <arg name="MODEL_NAME" value="fcn8s_at_once" />
+      <arg name="N_CLASS" value="$(arg N_CLASS)" />
+      <arg name="CLASS_AGNOSTIC" value="false" />
+      <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
+      <arg name="GPU" value="0" />
+      <arg name="ALIGN_WITH_SURFACE" value="true" />
+      <arg name="USE_PCA" value="true" />
+      <arg name="USE_TOPIC" value="true" />
+      <arg name="SELECT_LARGEST" value="true" />
+      <arg name="IGNORE_LABELS" value="[0, 41]" />
+      <arg name="THRESH_SUCTION_PROB" value="0.5" />
+    </include>
+  </group>
+
+</launch>
