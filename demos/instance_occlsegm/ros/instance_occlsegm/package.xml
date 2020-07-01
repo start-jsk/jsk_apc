@@ -15,6 +15,7 @@
 
   <build_depend>catkin_virtualenv</build_depend>
 
+  <run_depend>python-tk</run_depend>  <!-- For 'import matplotlib.pyplot' -->
   <run_depend>synthetic2d</run_depend>
 
   <export>

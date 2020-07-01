@@ -19,6 +19,7 @@
   <run_depend>jsk_arc2017_baxter</run_depend>
   <run_depend>jsk_pcl_ros_utils</run_depend>
   <run_depend>jsk_perception</run_depend>
+  <run_depend>python-tk</run_depend>  <!-- For 'import matplotlib.pyplot' -->
 
   <test_depend>roslint</test_depend>
 
