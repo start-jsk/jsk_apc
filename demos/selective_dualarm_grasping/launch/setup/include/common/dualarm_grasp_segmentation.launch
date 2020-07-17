@@ -1,0 +1,178 @@
+<launch>
+
+  <arg name="INPUT_IMAGE" />
+  <arg name="INPUT_CLOUD" />
+  <arg name="LABEL_YAML" />
+  <arg name="MODEL_FILE" />
+  <arg name="INPUT_MASK" default=""/>
+  <arg name="SAMPLING" />
+  <arg name="DATA_COLLECTION" />
+  <arg name="FIXED_FRAME" />
+  <arg name="CAMERA_NAMESPACE" />
+
+  <arg name="GPU" default="0" />
+  <arg name="USE_PCA" default="false" />
+  <arg name="USE_MASK" default="true" />
+  <arg name="NODELET_MANAGER" default="dualarm_grasping_manager" />
+
+  <node name="dualarm_grasp_segmentation"
+        pkg="dualarm_grasping" type="dualarm_grasp_segmentation.py" if="$(arg USE_MASK)"
+        respawn="true" output="screen">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="$(arg INPUT_MASK)" />
+    <remap from="~tote_contents" to="/tote_contents" />
+    <rosparam subst_value="true">
+       gpu: $(arg GPU)
+       model_file: $(arg MODEL_FILE)
+       score_thresh: 0.5
+       grasp_thresh: 0.2
+       use_mask: true
+       queue_size: 100
+       approximate_sync: true
+       sampling: $(arg SAMPLING)
+       sampling_weighted: true
+       sampling_thresh: 0.7
+    </rosparam>
+    <rosparam command="load" file="$(arg LABEL_YAML)" />
+  </node>
+
+  <node name="dualarm_grasp_segmentation"
+        pkg="dualarm_grasping" type="dualarm_grasp_segmentation.py" unless="$(arg USE_MASK)"
+        respawn="true" output="screen">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~tote_contents" to="/tote_contents" />
+    <rosparam subst_value="true">
+       gpu: $(arg GPU)
+       model_file: $(arg MODEL_FILE)
+       score_thresh: 0.5
+       grasp_thresh: 0.2
+       use_mask: false
+       queue_size: 100
+       approximate_sync: true
+       sampling: $(arg SAMPLING)
+       sampling_weighted: true
+       sampling_thresh: 0.7
+    </rosparam>
+    <rosparam command="load" file="$(arg LABEL_YAML)" />
+  </node>
+
+  <node name="mask_to_point_indices"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/MaskImageToPointIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="dualarm_grasp_segmentation/output/grasp_mask" />
+  </node>
+
+  <node name="extract_indices"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="mask_to_point_indices/output" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 100
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node name="euclidean_clustering"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/EuclideanClustering $(arg NODELET_MANAGER)">
+    <remap from="~input" to="extract_indices/output" />
+    <rosparam>
+      min_size: 10
+      max_size: 10000
+      tolerance: 0.02
+    </rosparam>
+  </node>
+
+  <node name="cluster_indices_decomposer"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+    <remap from="~input" to="extract_indices/output" />
+    <remap from="~target" to="euclidean_clustering/output" />
+    <rosparam subst_value="true">
+      approximate_sync: false
+      queue_size: 100
+      sort_by: -cloud_size
+      align_boxes: true
+      align_boxes_with_plane: false
+      use_pca: $(arg USE_PCA)
+      target_frame_id: $(arg FIXED_FRAME)
+    </rosparam>
+  </node>
+
+  <node name="label_image_decomposer"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="dualarm_grasp_segmentation/debug/net_input" />
+    <remap from="~input/label" to="dualarm_grasp_segmentation/output/label" />
+    <rosparam command="load" file="$(arg LABEL_YAML)" />
+  </node>
+
+  <group ns="before_grasping">
+    <node name="data_collection"
+          pkg="jsk_data" type="data_collection_server.py"
+          output="screen" if="$(arg DATA_COLLECTION)" >
+      <rosparam subst_value="true" >
+        save_dir: ~/.ros/dualarm_grasping/recognition
+        timestamp_save_dir: false
+        slop: 5.0
+        topics:
+          - name: $(arg INPUT_IMAGE)
+            msg_class: sensor_msgs/Image
+            fname: input_image.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/$(arg INPUT_MASK)
+            msg_class: sensor_msgs/Image
+            fname: input_mask.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/debug/net_input
+            msg_class: sensor_msgs/Image
+            fname: net_input.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/label
+            msg_class: sensor_msgs/Image
+            fname: label.png
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/grasp_mask
+            msg_class: sensor_msgs/Image
+            fname: sampled_grasp_mask.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/single/mask
+            msg_class: sensor_msgs/Image
+            fname: single_grasp_mask.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/dual/mask
+            msg_class: sensor_msgs/Image
+            fname: dual_grasp_mask.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/grasp_class
+            msg_class: dualarm_grasping/GraspClassificationResult
+            fname: grasp_class.yaml
+            savetype: YAML
+      </rosparam>
+    </node>
+  </group>
+
+  <group ns="after_grasping">
+    <node name="data_collection"
+          pkg="jsk_data" type="data_collection_server.py"
+          output="screen" if="$(arg DATA_COLLECTION)" >
+      <rosparam subst_value="true" >
+        save_dir: ~/.ros/dualarm_grasping/result
+        timestamp_save_dir: false
+        slop: 2.0
+        params:
+          - key: /result
+            fname: result.txt
+            savetype: Text
+          - key: /tote_contents
+            fname: tote_contents.txt
+            savetype: YAML
+          - key: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/grasping_way
+            fname: grasping_way.txt
+            savetype: Text
+      </rosparam>
+    </node>
+  </group>
+
+</launch>
