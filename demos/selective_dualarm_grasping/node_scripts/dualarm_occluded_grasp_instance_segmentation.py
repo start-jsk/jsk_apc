@@ -446,9 +446,9 @@ class DualarmOccludedGraspInstanceSegmentation(ConnectionBasedTransport):
             target_ins_ids = []
             if self.target_grasp:
                 for ins_id in range(len(vis_ratio)):
-                    if label[ins_id] in self.target_ids and \
+                    if (label[ins_id] in self.target_ids and
                             (sg_ins_prob[ins_id] > 0 or
-                             dg_ins_prob[ins_id] > 0):
+                                dg_ins_prob[ins_id] > 0)):
                         target_ins_ids.append(ins_id)
             target_ins_ids = np.array(target_ins_ids, dtype=np.int32)
 

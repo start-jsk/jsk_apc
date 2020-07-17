@@ -201,9 +201,9 @@ class DualarmGraspSegmentation(ConnectionBasedTransport):
         sg_label_prob = sg_grasp.max(axis=(1, 2))
         sg_labels = sg_label_prob.argsort()[::-1]
         sg_label = None
-        for l in sg_labels:
-            if l not in self.giveup_labels['single']:
-                sg_label = l
+        for lbl in sg_labels:
+            if lbl not in self.giveup_labels['single']:
+                sg_label = lbl
                 break
         if sg_label == 0 or sg_label is None:
             sg_mask = cupy.zeros(sg_grasp.shape[1:], dtype=np.int32)
@@ -225,9 +225,9 @@ class DualarmGraspSegmentation(ConnectionBasedTransport):
         dg_label_prob = dg_grasp.max(axis=(1, 2))
         dg_labels = dg_label_prob.argsort()[::-1]
         dg_label = None
-        for l in dg_labels:
-            if l not in self.giveup_labels['dual']:
-                dg_label = l
+        for lbl in dg_labels:
+            if lbl not in self.giveup_labels['dual']:
+                dg_label = lbl
                 break
         if dg_label == 0 or dg_label is None:
             dg_mask = cupy.zeros(dg_grasp.shape[1:], dtype=np.int32)
