@@ -27,7 +27,7 @@ generate_messages(
   jsk_recognition_msgs
 )
 
-add_custom_target(${PROJECT_NAME}_install_models ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_models.py)
+# add_custom_target(${PROJECT_NAME}_install_models ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_models.py)
 
 generate_dynamic_reconfigure_options(
   cfg/DualarmGraspSegmentation.cfg
