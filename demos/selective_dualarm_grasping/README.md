@@ -47,6 +47,21 @@ roslaunch dualarm_grasping setup_occluded_picking.launch target_grasp:=true
 roseus euslisp/dualarm-grasp.l
 ```
 
+## Evaluation (Target Grasping)
+
+### Setup
+
+```bash
+roslaunch dualarm_grasping baxter.launch
+roslaunch dualarm_grasping setup_occluded_test.launch target_grasp:=true
+```
+
+### Main Program
+
+```bash
+roseus euslisp/test-grasp.l
+```
+
 ## Citation
 
 ```bib
@@ -99,7 +114,7 @@ roslaunch dualarm_grasping setup_picking.launch
 roseus euslisp/dualarm-grasp.l
 ```
 
-## Test
+## Evaluation 
 
 ### Setup
 
