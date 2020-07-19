@@ -1,0 +1,100 @@
+<launch>
+  <arg name="item" default="avery_binder" />
+  <arg name="before_sampling" default="false" />
+  <arg name="after_sampling" default="false" />
+  <arg name="pr2" default="false" />
+  <arg name="ROBOT" value="baxter" unless="$(arg pr2)" />
+  <arg name="ROBOT" value="pr2" if="$(arg pr2)" />
+
+  <arg name="MODEL_FILE"
+       value="$(find dualarm_grasping)/models/dualarm_occluded_grasp/self_anno/20181127_model_iter_54480.npz"
+       if="$(arg before_sampling)" />
+  <arg name="CONFIG_YAML"
+       value="$(find dualarm_grasping)/models/dualarm_occluded_grasp/self_anno/20181127_params.yaml"
+       if="$(arg before_sampling)" />
+
+  <arg name="MODEL_FILE"
+       value="$(find dualarm_grasping)/models/dualarm_occluded_grasp/self_anno/20181227_model_iter_4559.npz"
+       if="$(arg after_sampling)" />
+  <arg name="CONFIG_YAML"
+       value="$(find dualarm_grasping)/models/dualarm_occluded_grasp/self_anno/20181227_params.yaml"
+       if="$(arg after_sampling)" />
+
+  <arg name="LABEL_YAML" value="$(find dualarm_grasping)/yaml/dualarm_occluded_grasping_label_names.yaml" />
+  <arg name="TARGET_YAML" value="$(find dualarm_grasping)/yaml/dualarm_occluded_grasping_target_names.yaml"  />
+
+  <arg name="target_grasp" default="false" />
+  <arg name="load_driver" default="true" />
+  <arg name="TOTE_YAML" value="$(find dualarm_grasping)/config/$(arg ROBOT)/target_grasp/tote_marker.yaml" if="$(arg target_grasp)" />
+  <arg name="TOTE_YAML" value="$(find dualarm_grasping)/config/$(arg ROBOT)/tote_marker.yaml" unless="$(arg target_grasp)" />
+  <arg name="TARGET_TOTE_YAML" value="$(find dualarm_grasping)/config/$(arg ROBOT)/target_grasp/target_tote_marker.yaml" if="$(arg target_grasp)" />
+  <arg name="TARGET_TOTE_YAML" value="$(find dualarm_grasping)/config/$(arg ROBOT)/target_tote_marker.yaml" unless="$(arg target_grasp)" />
+
+  <group if="$(arg pr2)">
+    <!-- pr2 kinect remote -->
+    <include file="$(find dualarm_grasping)/launch/setup/include/pr2/kinect_head_remote.launch" />
+  </group>
+  <group unless="$(arg pr2)">
+    <!-- machine tag -->
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/baxter.machine" />
+    <!-- hand mounted camera -->
+    <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+      <arg name="load_driver" value="$(arg load_driver)" />
+      <arg name="pick" value="false" />
+    </include>
+  </group>
+
+  <!-- interactive marker -->
+  <node name="transformable_interactive_server"
+        pkg="jsk_interactive_marker" type="transformable_server_sample">
+    <rosparam subst_value="true">
+      display_interactive_manipulator: true
+      display_interactive_manipulator_only_selected: true
+      display_description_only_selected: true
+    </rosparam>
+  </node>
+
+  <node name="transformable_tote_markers"
+        pkg="jsk_interactive_marker" type="transformable_markers_client.py">
+    <remap from="~server" to="transformable_interactive_server" />
+    <rosparam subst_value="true">
+      config_file: $(arg TOTE_YAML)
+      config_auto_save: true
+    </rosparam>
+  </node>
+
+  <node name="transformable_target_tote_markers"
+        pkg="jsk_interactive_marker" type="transformable_markers_client.py">
+    <remap from="~server" to="transformable_interactive_server" />
+    <rosparam subst_value="true">
+      config_file: $(arg TARGET_TOTE_YAML)
+      config_auto_save: true
+    </rosparam>
+  </node>
+
+  <rosparam subst_value="true">
+    tote_contents:
+      - $(arg item)
+  </rosparam>
+
+  <node name="rqt_yn_btn"
+        pkg="jsk_rqt_plugins" type="rqt_yn_btn">
+    <remap from="~" to="/rviz/yes_no_button" />
+  </node>
+
+  <include file="$(find dualarm_grasping)/launch/setup/include/$(arg ROBOT)/recognition.launch">
+    <arg name="LABEL_YAML" value="$(arg LABEL_YAML)" />
+    <arg name="MODEL_FILE" value="$(arg MODEL_FILE)"/>
+    <arg name="CONFIG_YAML" value="$(arg CONFIG_YAML)"/>
+    <arg name="SAMPLING" value="false"/>
+    <arg name="DATA_COLLECTION" value="true"/>
+    <arg name="TARGET_GRASP" value="$(arg target_grasp)"/>
+    <arg name="TARGET_YAML" value="$(arg TARGET_YAML)"/>
+    <arg name="OCCLUDED" value="true" />
+  </include>
+
+  <node name="$(anon rviz)" pkg="rviz" type="rviz" args="-d $(find dualarm_grasping)/rvizconfig/$(arg ROBOT)/default_occluded.rviz" />
+
+  <node name="$(anon smach_viewer)" pkg="smach_viewer" type="smach_viewer.py" />
+
+</launch>

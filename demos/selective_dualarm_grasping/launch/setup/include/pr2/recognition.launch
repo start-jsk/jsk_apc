@@ -1,0 +1,34 @@
+<launch>
+  <arg name="LABEL_YAML" />
+  <arg name="MODEL_FILE" />
+  <arg name="SAMPLING" />
+  <arg name="DATA_COLLECTION" />
+  <arg name="CONFIG_YAML" default="" />
+  <arg name="TARGET_YAML" default=""/>
+  <arg name="TARGET_GRASP" default="false" />
+  <arg name="OCCLUDED" default="false" />
+
+
+  <arg name="MANAGER" value="/kinect_head_remote/head_nodelet_manager" />
+  <arg name="INPUT_CLOUD" value="/kinect_head_remote//depth_registered/points" />
+  <arg name="INPUT_IMAGE" value="/kinect_head_remote/rgb/image_rect_color" />
+
+  <group ns="kinect_head_remote">
+    <include file="$(find dualarm_grasping)/launch/setup/include/common/recognition.launch">
+      <arg name="LABEL_YAML" value="$(arg LABEL_YAML)" />
+      <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
+      <arg name="SAMPLING" value="$(arg SAMPLING)" />
+      <arg name="DATA_COLLECTION" value="$(arg DATA_COLLECTION)" />
+      <arg name="CONFIG_YAML" value="$(arg CONFIG_YAML)" />
+      <arg name="TARGET_YAML" value="$(arg TARGET_YAML)" />
+      <arg name="TARGET_GRASP" value="$(arg TARGET_GRASP)" />
+      <arg name="OCCLUDED" value="$(arg OCCLUDED)" />
+      <arg name="MANAGER" value="$(arg MANAGER)" />
+      <arg name="INPUT_CLOUD" value="$(arg INPUT_CLOUD)" />
+      <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)" />
+      <arg name="FIXED_FRAME" value="base_link"/>
+      <arg name="CAMERA_NAMESPACE" value="/kinect_head_remote"/>
+    </include>
+  </group>  <!-- ns="kinect_head_remote" -->
+
+</launch>

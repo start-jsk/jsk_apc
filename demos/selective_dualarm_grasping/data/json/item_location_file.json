@@ -1,0 +1,30 @@
+{
+    "bins": [
+        {
+            "bin_id": "A",
+            "contents": []
+        },
+        {
+            "bin_id": "B",
+            "contents": []
+        },
+        {
+            "bin_id": "C",
+            "contents": []
+        }
+    ],
+    "boxes": [],
+    "tote": {
+        "contents": [
+            "avery_binder",
+            "composition_book",
+            "hanes_socks",
+            "ice_cube_tray",
+            "reynolds_wrap",
+            "robots_dvd",
+            "scotch_sponges",
+            "table_cloth",
+            "toilet_brush"
+        ]
+    }
+}

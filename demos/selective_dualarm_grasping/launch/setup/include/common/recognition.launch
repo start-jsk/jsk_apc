@@ -1,0 +1,91 @@
+<launch>
+  <arg name="LABEL_YAML" />
+  <arg name="MODEL_FILE" />
+  <arg name="SAMPLING" />
+  <arg name="DATA_COLLECTION" />
+  <arg name="CONFIG_YAML" />
+  <arg name="TARGET_YAML" />
+  <arg name="TARGET_GRASP" />
+  <arg name="OCCLUDED" />
+  <arg name="MANAGER" />
+  <arg name="INPUT_CLOUD" />
+  <arg name="INPUT_IMAGE" />
+  <arg name="FIXED_FRAME" />
+  <arg name="CAMERA_NAMESPACE" />
+
+  <rosparam command="load" file="$(find jsk_arc2017_common)/config/label_names.yaml" ns="label_names" />
+  <node name="bbox_array_to_bbox"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg MANAGER)">
+    <remap from="~input" to="/transformable_tote_markers/output/boxes" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <node name="attention_clipper_tote"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
+    <remap from="~input/points" to="$(arg INPUT_CLOUD)" />
+    <remap from="~input/box" to="bbox_array_to_bbox/output" />
+    <rosparam>
+      use_multiple_attention: false
+    </rosparam>
+  </node>
+  <node name="extract_indices_tote"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="attention_clipper_tote/output/point_indices" />
+    <rosparam>
+      keep_organized: true
+      approximate_sync: true
+      max_queue_size: 100
+    </rosparam>
+  </node>
+
+  <node name="indices_to_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/PointIndicesToMaskImage $(arg MANAGER)" >
+      <remap from="~input" to="attention_clipper_tote/output/point_indices" />
+      <remap from="~input/image" to="$(arg INPUT_IMAGE)" />
+      <rosparam>
+        approximate_sync: true
+        queue_size: 100
+      </rosparam>
+  </node>
+
+  <!-- mask_rcnn -->
+  <include file="$(find dualarm_grasping)/launch/setup/include/common/dualarm_occluded_grasp_instance_segmentation.launch"
+           if="$(arg OCCLUDED)">
+    <arg name="NODELET_MANAGER" value="$(arg MANAGER)" />
+    <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)"/>
+    <arg name="INPUT_CLOUD" value="extract_indices_tote/output"/>
+    <arg name="INPUT_MASK" value="indices_to_mask/output" />
+    <arg name="USE_MASK" value="true" />
+    <arg name="LABEL_YAML" value="$(arg LABEL_YAML)" />
+    <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
+    <arg name="CONFIG_YAML" value="$(arg CONFIG_YAML)" />
+    <arg name="SAMPLING" value="$(arg SAMPLING)" />
+    <arg name="DATA_COLLECTION" value="$(arg DATA_COLLECTION)" />
+    <arg name="TARGET_YAML" value="$(arg TARGET_YAML)" />
+    <arg name="TARGET_GRASP" value="$(arg TARGET_GRASP)" />
+    <arg name="FIXED_FRAME" value="$(arg FIXED_FRAME)" />
+    <arg name="CAMERA_NAMESPACE" value="$(arg CAMERA_NAMESPACE)"/>
+  </include>
+
+  <!-- fcn -->
+  <include file="$(find dualarm_grasping)/launch/setup/include/common/dualarm_grasp_segmentation.launch"
+           unless="$(arg OCCLUDED)">
+    <arg name="NODELET_MANAGER" value="$(arg MANAGER)" />
+    <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)"/>
+    <arg name="INPUT_CLOUD" value="extract_indices_tote/output"/>
+    <arg name="INPUT_MASK" value="indices_to_mask/output" />
+    <arg name="USE_MASK" value="true" />
+    <arg name="LABEL_YAML" value="$(arg LABEL_YAML)" />
+    <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
+    <arg name="SAMPLING" value="$(arg SAMPLING)" />
+    <arg name="DATA_COLLECTION" value="$(arg DATA_COLLECTION)" />
+    <arg name="FIXED_FRAME" value="$(arg FIXED_FRAME)" />
+    <arg name="CAMERA_NAMESPACE" value="$(arg CAMERA_NAMESPACE)"/>
+  </include>
+</launch>

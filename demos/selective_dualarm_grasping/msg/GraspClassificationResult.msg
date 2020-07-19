@@ -1,0 +1,4 @@
+Header header
+string style
+bool is_target
+jsk_recognition_msgs/ClassificationResult classification

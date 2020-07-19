@@ -1,0 +1,64 @@
+<launch>
+
+  <arg name="filename" default="$(find dualarm_grasping)/test_data/00.jpg" />
+  <arg name="use_mask" default="true" />
+
+  <node name="image_publisher"
+        pkg = "jsk_perception" type="image_publisher.py" >
+    <rosparam subst_value="true">
+      file_name: $(arg filename)
+      publish_info: false
+      encoding: bgr8
+    </rosparam>
+  </node>
+
+  <node name="mask_image_generator"
+        pkg="jsk_perception" type="mask_image_generator" if="$(arg use_mask)" >
+    <remap from="~input" to="image_publisher/output" />
+    <rosparam>
+      offset_x: 0
+      offset_y: 0
+      width: 640
+      height: 480
+    </rosparam>
+  </node>
+
+  <node name="dualarm_grasp_segmentation"
+        pkg="dualarm_grasping" type="dualarm_grasp_segmentation.py"
+        if="$(arg use_mask)" >
+    <remap from="~input" to="image_publisher/output" />
+    <remap from="~input/mask" to="mask_image_generator/output" />
+    <rosparam subst_value="true">
+       gpu: 0
+       model_file: $(find dualarm_grasping)/models/dualarm_grasp/self_anno/201802220906_iter00200000.npz
+       score_thresh: 0.5
+       use_mask: true
+       approximate_sync: true
+       queue_size: 100
+    </rosparam>
+    <rosparam command="load" file="$(find dualarm_grasping)/yaml/label_names.yaml" />
+  </node>
+
+  <node name="dualarm_grasp_segmentation"
+        pkg="dualarm_grasping" type="dualarm_grasp_segmentation.py"
+        unless="$(arg use_mask)" >
+    <remap from="~input" to="image_publisher/output" />
+    <rosparam subst_value="true">
+       gpu: 0
+       model_file: $(find dualarm_grasping)/models/dualarm_grasp/self_anno/201802220906_iter00200000.npz
+       score_thresh: 0.5
+       use_mask: false
+       approximate_sync: true
+       queue_size: 100
+    </rosparam>
+    <rosparam command="load" file="$(find dualarm_grasping)/yaml/label_names.yaml" />
+  </node>
+
+  <node name="label_image_decomposer"
+        pkg="jsk_perception" type="label_image_decomposer.py">
+    <remap from="~input" to="dualarm_grasp_segmentation/debug/net_input" />
+    <remap from="~input/label" to="dualarm_grasp_segmentation/output/label" />
+    <rosparam command="load" file="$(find dualarm_grasping)/yaml/label_names.yaml" />
+  </node>
+
+</launch>

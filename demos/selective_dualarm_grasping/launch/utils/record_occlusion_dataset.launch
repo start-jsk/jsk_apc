@@ -1,0 +1,114 @@
+<launch>
+  <arg name="TOTE_YAML" value="$(find dualarm_grasping)/config/baxter/occlusion_dataset/tote_marker.yaml" />
+  <arg name="MANAGER" value="/right_hand_camera/left/left_nodelet_manager" />
+
+  <!-- hand mounted camera -->
+  <include file="$(find jsk_arc2017_baxter)/launch/setup/include/stereo_astra_hand.launch">
+    <arg name="load_driver" value="true" />
+    <arg name="pick" value="false" />
+  </include>
+
+  <!-- interactive marker -->
+  <node name="transformable_interactive_server"
+        pkg="jsk_interactive_marker" type="transformable_server_sample">
+    <rosparam subst_value="true">
+      display_interactive_manipulator: true
+      display_interactive_manipulator_only_selected: true
+      display_description_only_selected: true
+    </rosparam>
+  </node>
+  <node name="transformable_tote_markers"
+        pkg="jsk_interactive_marker" type="transformable_markers_client.py">
+    <remap from="~server" to="transformable_interactive_server" />
+    <rosparam subst_value="true">
+      config_file: $(arg TOTE_YAML)
+      config_auto_save: true
+    </rosparam>
+  </node>
+
+  <node name="bbox_array_to_bbox"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/BoundingBoxArrayToBoundingBox $(arg MANAGER)">
+    <remap from="~input" to="/transformable_tote_markers/output/boxes" />
+    <rosparam>
+      index: 0
+    </rosparam>
+  </node>
+  <node name="attention_clipper_tote"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/AttentionClipper $(arg MANAGER)">
+    <remap from="~input/points" to="/right_hand_camera/fused/depth_registered/points" />
+    <remap from="~input/box" to="bbox_array_to_bbox/output" />
+    <rosparam>
+      use_multiple_attention: false
+    </rosparam>
+  </node>
+  <node name="extract_indices_tote"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg MANAGER)">
+    <remap from="~input" to="/right_hand_camera/fused/depth_registered/points" />
+    <remap from="~indices" to="attention_clipper_tote/output/point_indices" />
+    <rosparam>
+      keep_organized: true
+      approximate_sync: true
+      max_queue_size: 100
+    </rosparam>
+  </node>
+  <node name="indices_to_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/PointIndicesToMaskImage $(arg MANAGER)" >
+    <remap from="~input" to="attention_clipper_tote/output/point_indices" />
+    <remap from="~input/image" to="/right_hand_camera/left/rgb/image_rect_color" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 100
+    </rosparam>
+  </node>
+  <node name="convex_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ConvexHullMaskImage $(arg MANAGER)" >
+    <remap from="~input" to="indices_to_mask/output" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 100
+    </rosparam>
+  </node>
+
+  <node name="apply_mask"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ApplyMaskImage $(arg MANAGER)" >
+    <remap from="~input" to="/right_hand_camera/left/rgb/image_rect_color" />
+    <remap from="~input/mask" to="convex_mask/output" />
+    <rosparam>
+      clip: false
+      approximate_sync: true
+      queue_size: 100
+    </rosparam>
+  </node>
+
+  <node name="data_collection"
+        pkg="jsk_data" type="data_collection_server.py" output="screen">
+    <rosparam subst_value="true" >
+      save_dir: ~/.ros/dualarm_grasping/occlusion_dataset/00
+      timestamp_save_dir: true 
+      slop: 3.0
+      topics:
+        - name: /right_hand_camera/left/rgb/image_rect_color 
+          msg_class: sensor_msgs/Image
+          fname: rgb.png
+          savetype: ColorImage
+        - name: /convex_mask/output 
+          msg_class: sensor_msgs/Image
+          fname: mask.png
+          savetype: ColorImage
+        - name: /apply_mask/output 
+          msg_class: sensor_msgs/Image
+          fname: masked_rgb.png
+          savetype: ColorImage
+    </rosparam>
+  </node>
+
+  <node name="$(anon rviz)" pkg="rviz" type="rviz"
+        args="-d $(find dualarm_grasping)/rvizconfig/baxter/default_occlusion_dataset.rviz" />
+
+</launch>

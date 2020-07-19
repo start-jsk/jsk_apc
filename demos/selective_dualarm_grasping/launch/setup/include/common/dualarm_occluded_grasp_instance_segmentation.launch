@@ -1,0 +1,292 @@
+<launch>
+
+  <arg name="INPUT_IMAGE" />
+  <arg name="INPUT_CLOUD" />
+  <arg name="LABEL_YAML" />
+  <arg name="TARGET_YAML" />
+  <arg name="MODEL_FILE" />
+  <arg name="CONFIG_YAML" />
+  <arg name="INPUT_MASK" default="" />
+  <arg name="SAMPLING" />
+  <arg name="DATA_COLLECTION" />
+  <arg name="FIXED_FRAME" />
+  <arg name="CAMERA_NAMESPACE" />
+
+  <arg name="GPU" default="0" />
+  <arg name="USE_PCA" default="false" />
+  <arg name="USE_MASK" default="true" />
+  <arg name="TARGET_GRASP" default="false" />
+  <arg name="NODELET_MANAGER" default="dualarm_grasping_manager" />
+
+  <node name="dualarm_grasp_segmentation"
+        pkg="dualarm_grasping" type="dualarm_occluded_grasp_instance_segmentation.py"
+        if="$(arg USE_MASK)" respawn="true" output="screen">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="$(arg INPUT_MASK)" />
+    <remap from="~tote_contents" to="/tote_contents" />
+    <rosparam subst_value="true">
+       gpu: $(arg GPU)
+       model_file: $(arg MODEL_FILE)
+       use_mask: true
+       queue_size: 100
+       approximate_sync: true
+       score_thresh: 0.5
+       grasp_thresh: 0.3
+       nms_thresh: 0.3
+       vis_thresh: 0.8
+       sampling: $(arg SAMPLING)
+       sampling_thresh: 0.7
+       sampling_weighted: true
+       config_yaml: $(arg CONFIG_YAML)
+       target_grasp: $(arg TARGET_GRASP)
+    </rosparam>
+    <rosparam command="load" file="$(arg LABEL_YAML)" />
+    <rosparam command="load" file="$(arg TARGET_YAML)" />
+  </node>
+
+  <node name="dualarm_grasp_segmentation"
+        pkg="dualarm_grasping" type="dualarm_occluded_grasp_instance_segmentation.py"
+        unless="$(arg USE_MASK)" respawn="true" output="screen">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~tote_contents" to="/tote_contents" />
+    <rosparam subst_value="true">
+       gpu: $(arg GPU)
+       model_file: $(arg MODEL_FILE)
+       use_mask: false
+       queue_size: 100
+       approximate_sync: true
+       score_thresh: 0.5
+       grasp_thresh: 0.3
+       nms_thresh: 0.3
+       vis_thresh: 0.8
+       sampling: $(arg SAMPLING)
+       sampling_thresh: 0.7
+       sampling_weighted: true
+       config_yaml: $(arg CONFIG_YAML)
+       target_grasp: $(arg TARGET_GRASP)
+    </rosparam>
+    <rosparam command="load" file="$(arg LABEL_YAML)" />
+    <rosparam command="load" file="$(arg TARGET_YAML)" />
+  </node>
+
+  <node name="mask_to_point_indices"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/MaskImageToPointIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="dualarm_grasp_segmentation/output/grasp_mask" />
+  </node>
+
+  <node name="extract_indices"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ExtractIndices $(arg NODELET_MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <remap from="~indices" to="mask_to_point_indices/output" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 100
+      keep_organized: true
+    </rosparam>
+  </node>
+
+  <node name="euclidean_clustering"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/EuclideanClustering $(arg NODELET_MANAGER)">
+    <remap from="~input" to="extract_indices/output" />
+    <rosparam>
+      min_size: 10
+      max_size: 10000
+      tolerance: 0.02
+    </rosparam>
+  </node>
+
+  <node name="cluster_indices_decomposer"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg NODELET_MANAGER)">
+    <remap from="~input" to="extract_indices/output" />
+    <remap from="~target" to="euclidean_clustering/output" />
+    <rosparam subst_value="true">
+      approximate_sync: false
+      queue_size: 100
+      sort_by: -cloud_size
+      align_boxes: true
+      align_boxes_with_plane: false
+      use_pca: $(arg USE_PCA)
+      target_frame_id: $(arg FIXED_FRAME)
+    </rosparam>
+  </node>
+
+  <group ns="before_grasping">
+    <node name="data_collection"
+          pkg="jsk_data" type="data_collection_server.py"
+          output="screen" if="$(arg DATA_COLLECTION)" >
+      <rosparam subst_value="true" >
+        save_dir: ~/.ros/dualarm_grasping/recognition
+        timestamp_save_dir: false
+        slop: 5.0
+        topics:
+          - name: $(arg INPUT_IMAGE)
+            msg_class: sensor_msgs/Image
+            fname: input_image.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/$(arg INPUT_MASK)
+            msg_class: sensor_msgs/Image
+            fname: input_mask.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/debug/net_input
+            msg_class: sensor_msgs/Image
+            fname: net_input.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/vis/labels
+            msg_class: jsk_recognition_msgs/LabelArray
+            fname: vis_labels.yaml
+            savetype: YAML
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/vis/cls_label
+            msg_class: sensor_msgs/Image
+            fname: vis_cls_label.npz
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/vis/ins_label
+            msg_class: sensor_msgs/Image
+            fname: vis_ins_label.npz
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/occ/labels
+            msg_class: jsk_recognition_msgs/LabelArray
+            fname: occ_labels.yaml
+            savetype: YAML
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/occ/cls_label
+            msg_class: sensor_msgs/Image
+            fname: occ_cls_label.npz
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/occ/ins_label
+            msg_class: sensor_msgs/Image
+            fname: occ_ins_label.npz
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/single/labels
+            msg_class: jsk_recognition_msgs/LabelArray
+            fname: single_labels.yaml
+            savetype: YAML
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/single/cls_label
+            msg_class: sensor_msgs/Image
+            fname: single_cls_label.npz
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/single/ins_label
+            msg_class: sensor_msgs/Image
+            fname: single_ins_label.npz
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/dual/labels
+            msg_class: jsk_recognition_msgs/LabelArray
+            fname: dual_labels.yaml
+            savetype: YAML
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/dual/cls_label
+            msg_class: sensor_msgs/Image
+            fname: dual_cls_label.npz
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/dual/ins_label
+            msg_class: sensor_msgs/Image
+            fname: dual_ins_label.npz
+            savetype: LabelImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/rects
+            msg_class: jsk_recognition_msgs/RectArray
+            fname: rects.yaml
+            savetype: YAML
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/class
+            msg_class: jsk_recognition_msgs/ClassificationResult
+            fname: class.yaml
+            savetype: YAML
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/grasp_mask
+            msg_class: sensor_msgs/Image
+            fname: grasp_mask.png
+            savetype: ColorImage
+          - name: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/output/grasp_class
+            msg_class: dualarm_grasping/GraspClassificationResult
+            fname: grasp_class.yaml
+            savetype: YAML
+      </rosparam>
+    </node>
+  </group>
+
+  <group ns="after_grasping">
+    <node name="data_collection"
+          pkg="jsk_data" type="data_collection_server.py"
+          output="screen" if="$(arg DATA_COLLECTION)" >
+      <rosparam subst_value="true" >
+        save_dir: ~/.ros/dualarm_grasping/result
+        timestamp_save_dir: false
+        slop: 2.0
+        params:
+          - key: /result
+            fname: result.txt
+            savetype: Text
+          - key: /tote_contents
+            fname: tote_contents.txt
+            savetype: YAML
+          - key: $(arg CAMERA_NAMESPACE)/dualarm_grasp_segmentation/grasping_way
+            fname: grasping_way.txt
+            savetype: Text
+      </rosparam>
+    </node>
+  </group>
+
+  <!-- visualization -->
+  <node name="image_cluster_indices_decomposer_vis"
+        pkg="jsk_perception" type="image_cluster_indices_decomposer.py"
+        clear_params="true">
+    <remap from="~input" to="dualarm_grasp_segmentation/debug/net_input" />
+    <remap from="~input/cluster_indices"
+           to="dualarm_grasp_segmentation/output/vis/cluster_indices" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 200
+    </rosparam>
+  </node>
+  <node name="image_cluster_indices_decomposer_occ"
+        pkg="jsk_perception" type="image_cluster_indices_decomposer.py"
+        clear_params="true">
+    <remap from="~input" to="dualarm_grasp_segmentation/debug/net_input" />
+    <remap from="~input/cluster_indices"
+           to="dualarm_grasp_segmentation/output/occ/cluster_indices" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 200
+    </rosparam>
+  </node>
+  <node name="image_cluster_indices_decomposer_single"
+        pkg="jsk_perception" type="image_cluster_indices_decomposer.py"
+        clear_params="true">
+    <remap from="~input" to="dualarm_grasp_segmentation/debug/net_input" />
+    <remap from="~input/cluster_indices"
+           to="dualarm_grasp_segmentation/output/single/cluster_indices" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 200
+    </rosparam>
+  </node>
+  <node name="image_cluster_indices_decomposer_dual"
+        pkg="jsk_perception" type="image_cluster_indices_decomposer.py"
+        clear_params="true">
+    <remap from="~input" to="dualarm_grasp_segmentation/debug/net_input" />
+    <remap from="~input/cluster_indices"
+           to="dualarm_grasp_segmentation/output/dual/cluster_indices" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 200
+    </rosparam>
+  </node>
+  <node name="tile_image"
+        pkg="jsk_perception" type="tile_image.py"
+        clear_params="true">
+    <rosparam subst_value="true">
+      input_topics:
+        - $(arg INPUT_IMAGE)
+        - image_cluster_indices_decomposer_vis/output
+        - image_cluster_indices_decomposer_occ/output
+        - image_cluster_indices_decomposer_single/output
+        - image_cluster_indices_decomposer_dual/output
+        - dualarm_grasp_segmentation/output/grasp_mask
+      draw_topic_name: true
+      font_scale: 0.6
+      font_thickness: 1
+      approximate_sync: true 
+      no_sync: true
+    </rosparam>
+  </node>
+
+</launch>

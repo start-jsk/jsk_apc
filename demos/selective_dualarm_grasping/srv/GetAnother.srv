@@ -1,0 +1,4 @@
+string style
+int8 label
+---
+bool success

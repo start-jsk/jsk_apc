@@ -1,0 +1,55 @@
+<launch>
+  <arg name="LABEL_YAML" />
+  <arg name="MODEL_FILE" />
+  <arg name="SAMPLING" />
+  <arg name="DATA_COLLECTION" />
+  <arg name="CONFIG_YAML" default="" />
+  <arg name="TARGET_YAML" default=""/>
+  <arg name="TARGET_GRASP" default="false" />
+  <arg name="OCCLUDED" default="false" />
+
+  <arg name="LEFT_MANAGER" value="/left_hand_camera/left/left_nodelet_manager" />
+  <arg name="LEFT_INPUT_CLOUD" value="/left_hand_camera/fused/depth_registered/points" />
+  <arg name="LEFT_INPUT_IMAGE" value="/left_hand_camera/left/rgb/image_rect_color" />
+
+  <arg name="RIGHT_MANAGER" value="/right_hand_camera/left/left_nodelet_manager" />
+  <arg name="RIGHT_INPUT_CLOUD" value="/right_hand_camera/fused/depth_registered/points" />
+  <arg name="RIGHT_INPUT_IMAGE" value="/right_hand_camera/left/rgb/image_rect_color" />
+
+  <group ns="left_hand_camera">
+    <include file="$(find dualarm_grasping)/launch/setup/include/common/recognition.launch">
+      <arg name="LABEL_YAML" value="$(arg LABEL_YAML)" />
+      <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
+      <arg name="SAMPLING" value="$(arg SAMPLING)" />
+      <arg name="DATA_COLLECTION" value="$(arg DATA_COLLECTION)" />
+      <arg name="CONFIG_YAML" value="$(arg CONFIG_YAML)" />
+      <arg name="TARGET_YAML" value="$(arg TARGET_YAML)" />
+      <arg name="TARGET_GRASP" value="$(arg TARGET_GRASP)" />
+      <arg name="OCCLUDED" value="$(arg OCCLUDED)" />
+      <arg name="MANAGER" value="$(arg LEFT_MANAGER)" />
+      <arg name="INPUT_CLOUD" value="$(arg LEFT_INPUT_CLOUD)" />
+      <arg name="INPUT_IMAGE" value="$(arg LEFT_INPUT_IMAGE)" />
+      <arg name="FIXED_FRAME" value="base"/>
+      <arg name="CAMERA_NAMESPACE" value="/left_hand_camera"/>
+    </include>
+  </group>  <!-- ns="left_hand_camera" -->
+
+  <group ns="right_hand_camera">
+    <include file="$(find dualarm_grasping)/launch/setup/include/common/recognition.launch">
+      <arg name="LABEL_YAML" value="$(arg LABEL_YAML)" />
+      <arg name="MODEL_FILE" value="$(arg MODEL_FILE)" />
+      <arg name="SAMPLING" value="$(arg SAMPLING)" />
+      <arg name="DATA_COLLECTION" value="$(arg DATA_COLLECTION)" />
+      <arg name="CONFIG_YAML" value="$(arg CONFIG_YAML)" />
+      <arg name="TARGET_YAML" value="$(arg TARGET_YAML)" />
+      <arg name="TARGET_GRASP" value="$(arg TARGET_GRASP)" />
+      <arg name="OCCLUDED" value="$(arg OCCLUDED)" />
+      <arg name="MANAGER" value="$(arg RIGHT_MANAGER)" />
+      <arg name="INPUT_CLOUD" value="$(arg RIGHT_INPUT_CLOUD)" />
+      <arg name="INPUT_IMAGE" value="$(arg RIGHT_INPUT_IMAGE)" />
+      <arg name="FIXED_FRAME" value="base"/>
+      <arg name="CAMERA_NAMESPACE" value="/right_hand_camera"/>
+    </include>
+  </group>  <!-- ns="right_hand_camera" -->
+
+</launch>
