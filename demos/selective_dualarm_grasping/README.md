@@ -1,6 +1,12 @@
 # Advanced Robotics 2020: Selective dual-arm occluded grasping
 
-## Sampling 
+## Download models
+
+```bash
+rosrun dualarm_grasping install_models.py
+```
+
+## Sampling
 
 ### Setup
 
@@ -82,7 +88,13 @@ roseus euslisp/test-grasp.l
 
 # IROS2018: Selective dual-arm grasping
 
-## Sampling 
+## Download models
+
+```bash
+rosrun dualarm_grasping install_models.py
+```
+
+## Sampling
 
 ### Setup
 
@@ -114,7 +126,7 @@ roslaunch dualarm_grasping setup_picking.launch
 roseus euslisp/dualarm-grasp.l
 ```
 
-## Evaluation 
+## Evaluation
 
 ### Setup
 
