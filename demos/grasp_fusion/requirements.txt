@@ -9,6 +9,7 @@ imgaug>=0.2.7
 labelme>=4.0.0
 matplotlib
 numpy
+opencv-python==4.2.0.32
 pathlib2
 Pillow
 PyYaml
