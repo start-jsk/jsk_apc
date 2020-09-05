@@ -13,6 +13,7 @@ imgaug>=0.2.7
 labelme>=2.9
 matplotlib
 numpy
+opencv-python==4.2.0.32
 pathlib2
 Pillow
 pycocotools
