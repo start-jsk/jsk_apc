@@ -250,7 +250,7 @@
               (list (instance trajectory_msgs::JointTrajectoryPoint
                               :init
                               :positions (mapcar #'deg2rad av-list)
-                              :time_from_start (ros::time (/ tm 1000)))))
+                              :time_from_start (ros::time (/ tm 1000.0)))))
         (send goal :goal :trajectory traj)
         (send (gethash arm hand-actions-) :send-goal goal)
         (setq res (send (gethash arm hand-actions-) :get-result))
