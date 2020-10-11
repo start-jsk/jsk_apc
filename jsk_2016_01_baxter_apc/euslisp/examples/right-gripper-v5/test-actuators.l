@@ -11,9 +11,9 @@
   (&key (ctype :rgripper-controller))
   (jsk_2016_01_baxter_apc::baxterrgv5-init :ctype ctype)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1500)
+        (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1000)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500)
+        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000)
   (send *baxter* :rotate-gripper *arm* 0 :relative nil)
   (send *baxter* :slide-gripper *arm* 0 :relative nil)
   (send *ri* :angle-vector (send *baxter* :angle-vector))
@@ -24,23 +24,23 @@
 (defun solidity-main ()
   ;; test of abduction/adduction
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1500)
+        (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1000)
   (unix::sleep 2)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500)
+        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000)
   (unix::sleep 2)
   ;; test of closing fingers
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pose *arm* :opposed :angle 130) 1500)
+        (send *baxter* :hand-grasp-pose *arm* :opposed :angle 130) 1000)
   (unix::sleep 1)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500)
+        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000)
   (unix::sleep 1)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pose *arm* :opposed :angle 130) 1500)
+        (send *baxter* :hand-grasp-pose *arm* :opposed :angle 130) 1000)
   (unix::sleep 1)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500)
+        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000)
   ;; test of prismatic joint
   (send *baxter* :slide-gripper *arm* 100 :relative nil)
   (send *ri* :angle-vector (send *baxter* :angle-vector) :fast nil 0)

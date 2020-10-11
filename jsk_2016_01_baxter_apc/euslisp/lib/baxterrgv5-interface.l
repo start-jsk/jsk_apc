@@ -976,7 +976,7 @@
                     (send *baxter* :hand-grasp-pose arm _grasp-style :angle 120))
                   )
             (send self :move-hand arm
-                  (send *baxter* :hand arm :angle-vector) 1500)
+                  (send *baxter* :hand arm :angle-vector) 1000)
             ;; move in front of bin entrance
             (send self :angle-vector-sequence avs-before-approach
                   :fast nil 0 :scale 5.0)
@@ -1413,10 +1413,10 @@
       ;; open fingers
       (send *baxter* :hand-grasp-pre-pose arm :cylindrical)
       (send self :move-hand arm
-            (send *baxter* :hand arm :angle-vector) 1500)
+            (send *baxter* :hand arm :angle-vector) 1000)
       (send *baxter* :hand-grasp-pre-pose arm :opposed)
       (send self :move-hand arm
-            (send *baxter* :hand arm :angle-vector) 1500)
+            (send *baxter* :hand arm :angle-vector) 1000)
       ;; initialize _last-av-before-approach
       (setq _last-av-before-approach (send *baxter* :angle-vector))
       ;; initialize _grasp-style
@@ -1487,7 +1487,7 @@
           (send *baxter* :hand-grasp-pre-pose arm :opposed)
           (send *baxter* :hand-grasp-pre-pose arm _grasp-style))
         (send self :move-hand arm
-              (send *baxter* :hand arm :angle-vector) 1500)
+              (send *baxter* :hand arm :angle-vector) 1000)
         (send self :wait-interpolation)
         (unix::sleep 1)
         ;; second grasp
@@ -1507,7 +1507,7 @@
               ((eq _grasp-style :cylindrical)
                (send *baxter* :hand-grasp-pose arm _grasp-style)
                (send self :move-hand arm
-                     (send *baxter* :hand arm :angle-vector) 1500)
+                     (send *baxter* :hand arm :angle-vector) 1000)
                (let (avs)
                  (if (send *baxter* arm :move-end-pos #f(0 0 50) :world)
                    (pushback (send *baxter* :angle-vector) avs))
@@ -1535,7 +1535,7 @@
                (send self :wait-interpolation)
                (send *baxter* :hand-grasp-pose arm _grasp-style)
                (send self :move-hand arm
-                     (send *baxter* :hand arm :angle-vector) 1500)
+                     (send *baxter* :hand arm :angle-vector) 1000)
                (if (send *baxter* arm :move-end-pos #f(0 0 50) :world)
                  (send self :angle-vector-sequence
                        (list (send *baxter* :angle-vector))
@@ -1953,10 +1953,10 @@
       ;; fold fingers to avoid collision to shelf
       (send *baxter* :hand-grasp-pre-pose arm :cylindrical)
       (send self :move-hand arm
-            (send *baxter* :hand arm :angle-vector) 1500)
+            (send *baxter* :hand arm :angle-vector) 1000)
       (send *baxter* :hand-grasp-pose arm :cylindrical)
       (send self :move-hand arm
-            (send *baxter* :hand arm :angle-vector) 1500)
+            (send *baxter* :hand arm :angle-vector) 1000)
       )
     (let (avs)
       (pushback (send *baxter* :avoid-shelf-pose arm bin) avs)

@@ -12,9 +12,9 @@
   (jsk_2016_01_baxter_apc::baxterrgv5-init :ctype ctype)
   (send *ri* :gripper-servo-on)
   (send *ri* :move-hand :rarm
-        (send *baxter* :hand-grasp-pre-pose :rarm :cylindrical) 1500)
+        (send *baxter* :hand-grasp-pre-pose :rarm :cylindrical) 1000)
   (send *ri* :move-hand :rarm
-        (send *baxter* :hand-grasp-pre-pose :rarm :opposed) 1500)
+        (send *baxter* :hand-grasp-pre-pose :rarm :opposed) 1000)
   (send *baxter* :fold-pose-back)
   ;; view kiva pose
   (send *baxter* :larm :shoulder-y :joint-angle 70)
@@ -195,9 +195,9 @@
                   (send *ri* :wait-interpolation)
                   ;; open fingers
                   (send *ri* :move-hand arm
-                        (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1500)
+                        (send *baxter* :hand-grasp-pre-pose arm :cylindrical) 1000)
                   (send *ri* :move-hand arm
-                        (send *baxter* :hand-grasp-pre-pose arm :opposed) 1500)
+                        (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)
                   (send *ri* :angle-vector-sequence
                         (list (send *baxter* :fold-pose-back arm))
                         :fast nil 0 :scale 5.0)
@@ -284,7 +284,7 @@
               ;; gripper-v5
               (send *ri* :move-hand arm
                     (send *baxter* :hand-grasp-pre-pose arm (send *ri* :get-val '_grasp-style))
-                    1500)
+                    1000)
               (send *baxter* :slide-gripper arm 100 :relative nil)
               (send *ri* :send-av 1000)
               (send *ri* :wait-interpolation)
@@ -292,7 +292,7 @@
               (send *ri* :send-av 1000)
               (send *ri* :wait-interpolation)
               (send *ri* :move-hand arm
-                    (send *baxter* :hand-grasp-pre-pose arm :opposed) 1500)
+                    (send *baxter* :hand-grasp-pre-pose arm :opposed) 1000)
               (send *ri* :spin-off-by-wrist arm :times 5)
               )
             (send *ri* :spin-off-by-wrist arm :times 20)
