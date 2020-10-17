@@ -1,0 +1,12 @@
+alpha:
+    single: 1.0
+    dual: 1.0
+dataset_class: 'SemanticRealAnnotatedDatasetV2'
+frequency_balancing: True
+use_grasp_loss: False
+train_as_fcn: True
+model: 'dualarm_grasp_fcn32s'
+lr: 1.0e-5
+max_iter: 12000
+random_state: 1234
+weight_decay: 0.0005

@@ -1,5 +1,16 @@
 # Advanced Robotics 2020: Selective dual-arm occluded grasping
 
+## Install `grasp_data_generator`
+
+```bash
+cd ../grasp_data_generator
+pip install --user -e .
+```
+
+## Train initial model (optional)
+
+Please read [grasp_data_generator](../grasp_data_generator/README.md) for more information.
+
 ## Download models
 
 ```bash

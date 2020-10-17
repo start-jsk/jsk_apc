@@ -1,0 +1,12 @@
+alpha:
+    single: 1.0
+    dual: 1.0
+alpha_graspable: 10.0
+dataset_class: 'FinetuningDualarmGraspDatasetV1'
+frequency_balancing: True
+model: 'dualarm_grasp_fcn32s'
+pretrained_modelpath: '20180222/DualarmGraspFCN32s_iter00200000.npz'
+lr: 1.0e-6
+max_iter: 200000
+random_state: 1234
+weight_decay: 0.0005
