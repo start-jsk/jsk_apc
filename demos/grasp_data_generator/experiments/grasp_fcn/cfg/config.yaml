@@ -1,0 +1,6 @@
+model: 'grasp_fcn32s'
+lr: 1.0e-5
+max_iter: 100000
+weight_decay: 0.0005
+alpha: 1.0
+random_state: 1234

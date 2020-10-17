@@ -1,0 +1,14 @@
+chainer
+chainer_mask_rcnn
+chainercv
+chainermn
+cupy
+cython
+fcn
+imgaug
+matplotlib
+numpy
+pyyaml
+scipy
+scikit-image
+six
