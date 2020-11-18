@@ -85,7 +85,7 @@ cd examples/instance_occlsegm/instance_occlusion_segmentation
 
 ```bash
 # Dataset for semantic (image-level) occlusion segmentation
-cd examples/instance_occlsegm/semantic_segmentation
+cd examples/instance_occlsegm/occlusion_segmentation
 ./view_dataset.py
 ```
 <img src="examples/instance_occlsegm/occlusion_segmentation/.readme/view_dataset.png" height="200px" />
