@@ -1,0 +1,69 @@
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_demos
+    uri: https://github.com/jsk-ros-pkg/jsk_demos.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
+- git:
+    local-name: FOR_ASTRA/openni2_camera
+    uri: https://github.com/ros-drivers/openni2_camera.git
+    version: indigo-devel
+- git:
+    local-name: start-jsk/jsk_apc
+    uri: https://github.com/start-jsk/jsk_apc.git
+    version: master
+- git:
+    local-name: RethinkRobotics/baxter_common
+    uri: https://github.com/knorth55/baxter_common.git
+    version: jsk_apc
+- git:
+    local-name: RethinkRobotics/baxter_interface
+    uri: https://github.com/wkentaro/baxter_interface.git
+    version: jsk_apc
+- git:
+    local-name: RethinkRobotics/baxter_examples
+    uri: https://github.com/RethinkRobotics/baxter_examples.git
+    version: v1.2.0
+- git:
+    local-name: RethinkRobotics/baxter_tools
+    uri: https://github.com/RethinkRobotics/baxter_tools.git
+    version: v1.2.0
+# https://github.com/RethinkRobotics/baxter_simulator/pull/130
+- git:
+    local-name: RethinkRobotics/baxter_simulator
+    uri: https://github.com/EmaroLab/baxter_simulator.git
+    version: master
+- git:
+    local-name: FOR_GRIPPER_V5/dynamixel_motor
+    uri: https://github.com/pazeshun/dynamixel_motor.git
+    version: gripper-v6-devel
+- git:
+    local-name: FA-I-sensor/force_proximity_ros
+    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+    version: master
+- tar:
+    local-name: ros-planning/moveit_robots/baxter_moveit_config
+    uri: https://github.com/ros-gbp/moveit_robots-release/archive/release/indigo/baxter_moveit_config/1.0.7-0.tar.gz
+    version: moveit_robots-release-release-indigo-baxter_moveit_config-1.0.7-0
+- git:
+    local-name: turtlebot/turtlebot_description
+    uri: https://github.com/turtlebot-release/turtlebot-release.git
+    version: release/kinetic/turtlebot_description
+- git:
+    local-name: yujinrobot/kobuki_description
+    uri: https://github.com/yujinrobot-release/kobuki-release.git
+    version: release/kinetic/kobuki_description
+- git:
+    local-name: turtlebot/create_description
+    uri: https://github.com/turtlebot-release/turtlebot_create-release.git
+    version: release/kinetic/create_description
