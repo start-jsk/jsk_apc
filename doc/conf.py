@@ -187,6 +187,8 @@ htmlhelp_basename = 'jsk_apcdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
+latex_engine = 'platex'
+latex_use_xindy = False
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
 #'papersize': 'letterpaper',
