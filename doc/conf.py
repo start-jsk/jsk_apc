@@ -213,7 +213,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'jsk_apc.tex', u'jsk_apc Documentation',
+  (master_doc, 'jsk_apc.tex', u'jsk\_apc Documentation',
    author, 'manual'),
 ]
 
