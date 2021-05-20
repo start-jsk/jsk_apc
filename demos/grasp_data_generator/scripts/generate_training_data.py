@@ -31,7 +31,15 @@ def main(
         os.makedirs(savedir)
 
     background_imgs = []
-    for background_name in ['tote', 'cardboard', 'shelf']:
+    background_names = [
+        'brown_table',
+        'cardboard',
+        'shelf',
+        'tote',
+        'white_table',
+        'wooden_table'
+    ]
+    for background_name in background_names:
         background_path = osp.join(
             datadir, 'background', background_name, 'top.jpg')
         background_img = cv2.imread(background_path)[:, :, ::-1]
