@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
+import cv2
 import numpy as np
 import os
 import os.path as osp
-import scipy.misc
-import scipy.ndimage
 import shutil
 
 
@@ -31,18 +30,20 @@ def main(data_dir, visualize, occluded):
                         shutil.copy(osp.join(result_dir, d, f), save_dir)
                 imgpath = osp.join(save_dir, 'input_image.png')
                 input_maskpath = osp.join(save_dir, 'input_mask.png')
-                img = scipy.misc.imread(imgpath, mode='RGB')
-                input_mask = scipy.misc.imread(input_maskpath, mode='L')
+                img = cv2.imread(imgpath)[:, :, ::-1]
+                input_mask = cv2.imread(input_maskpath, cv2.IMREAD_GRAYSCALE)
                 if occluded:
                     label = np.load(
                         osp.join(save_dir, 'vis_cls_label.npz'))['arr_0']
                 else:
-                    label = scipy.misc.imread(osp.join(save_dir, 'label.png'))
+                    label = cv2.imread(
+                        osp.join(save_dir, 'label.png'),
+                        cv2.IMREAD_GRAYSCALE)
                 img[input_mask == 0] = np.array([0, 0, 0])
                 img[label == bg_label] = np.array([0, 0, 0])
                 mask = generate_mask(img, visualize)
                 maskpath = osp.join(save_dir, 'object_mask.png')
-                scipy.misc.imsave(maskpath, mask)
+                cv2.imsave(maskpath, mask)
 
 
 def generate_mask(img, visualize=False):
@@ -51,7 +52,7 @@ def generate_mask(img, visualize=False):
         negative_mask = ~mask
         img_viz = img[:]
         img_viz[negative_mask] = np.array([255, 0, 0])
-        scipy.misc.imshow(img_viz)
+        cv2.imshow('mask', img_viz[:, :, ::-1])
     mask = mask.astype(np.uint32) * 255
     return mask
 
