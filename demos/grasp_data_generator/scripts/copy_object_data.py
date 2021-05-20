@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+import cv2
 import os
 import os.path as osp
-import scipy.misc
 import zipfile
 
 
@@ -37,10 +37,11 @@ def main():
             dst_dir = osp.join(objectdir, '{0:02d}'.format(i))
             if not osp.exists(dst_dir):
                 os.mkdir(dst_dir)
-            img = scipy.misc.imread(pngpath)
-            img = scipy.misc.imresize(img, (500, 500))
+            img = cv2.imread(pngpath)
+            img = cv2.resize(img, (500, 500))
             dst_pngpath = osp.join(dst_dir, 'rgb.png')
-            scipy.misc.imsave(dst_pngpath, img)
+            cv2.imwrite(dst_pngpath, img)
+
 
 if __name__ == '__main__':
     main()

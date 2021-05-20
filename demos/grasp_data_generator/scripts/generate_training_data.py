@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import cv2
 import datetime
 import imgaug.augmenters as iaa
 from imgaug.parameters import Deterministic
@@ -11,7 +12,6 @@ import numpy as np
 import os
 import os.path as osp
 import random
-import scipy.misc
 import shutil
 import skimage.color
 import yaml
@@ -34,8 +34,8 @@ def main(
     for background_name in ['tote', 'cardboard', 'shelf']:
         background_path = osp.join(
             datadir, 'background', background_name, 'top.jpg')
-        background_img = scipy.misc.imread(background_path)
-        background_img = scipy.misc.imresize(background_img, (480, 640))
+        background_img = cv2.imread(background_path)[:, :, ::-1]
+        background_img = cv2.resize(background_img, (480, 640))
         background_imgs.append(background_img)
 
     object_dir = osp.join(datadir, 'objects')
@@ -115,10 +115,10 @@ def generate_train_data(
         object_paths = object_imgpath[label-1]
         rgb_path, mask_path, sg_path, dg_path, pc0_path = \
             random.choice(object_paths)
-        object_img = scipy.misc.imread(rgb_path)
-        mask_img = scipy.misc.imread(mask_path)
-        single_grasp = scipy.misc.imread(sg_path)
-        dual_grasp = scipy.misc.imread(dg_path)
+        object_img = cv2.imread(rgb_path)[:, :, ::-1]
+        mask_img = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        single_grasp = cv2.imread(sg_path, cv2.IMREAD_GRAYSCALE)
+        dual_grasp = cv2.imread(dg_path, cv2.IMREAD_GRAYSCALE)
         pc0 = yaml.load(open(pc0_path, 'r'))
 
         generate_train_data_step(
@@ -179,12 +179,17 @@ def generate_train_data_step(
         random_order=False,
         random_state=random_state)
 
-    # # resize
-    object_img = scipy.misc.imresize(object_img, resize_ratio)
-    mask_img = scipy.misc.imresize(
-        mask_img, resize_ratio, interp='nearest')
-    single_grasp = scipy.misc.imresize(single_grasp, resize_ratio)
-    dual_grasp = scipy.misc.imresize(dual_grasp, resize_ratio)
+    # resize
+    h, w = object_img.shape[:2]
+    object_img = cv2.resize(
+        object_img, (int(w * resize_ratio), int(h * resize_ratio)))
+    mask_img = cv2.resize(
+        mask_img,  (int(w * resize_ratio), int(h * resize_ratio)),
+        interpolation=cv2.INTER_NEAREST)
+    single_grasp = cv2.resize(
+        single_grasp, (int(w * resize_ratio), int(h * resize_ratio)))
+    dual_grasp = cv2.resize(
+        dual_grasp, (int(w * resize_ratio), int(h * resize_ratio)))
 
     # imgaug
     object_img = color_aug.augment_image(object_img)
@@ -301,12 +306,14 @@ def generate_train_data_step(
         # label viz
         label_viz = skimage.color.label2rgb(
             label_img, rgb_img, bg_label=0)
-        scipy.misc.imshow(label_viz)
+        cv2.imshow('label', label_viz[:, :, ::-1])
+        cv2.waitKey(0)
 
         # graspable viz
         graspable_mask_viz = skimage.color.label2rgb(
             graspable_mask, rgb_img, bg_label=0)
-        scipy.misc.imshow(graspable_mask_viz)
+        cv2.imshow('graspable', graspable_mask_viz[:, :, ::-1])
+        cv2.waitKey(0)
 
         # single grasp viz
         sg_img_viz = np.repeat(
@@ -314,7 +321,8 @@ def generate_train_data_step(
         sg_img_viz = sg_img_viz * np.array([1, 0, 0])
         sg_img_viz = 0.3 * rgb_img + 0.7 * sg_img_viz
         sg_img_viz = sg_img_viz.astype(np.int32)
-        scipy.misc.imshow(sg_img_viz)
+        cv2.imshow('single graspable', sg_img_viz[:, :, ::-1])
+        cv2.waitKey(0)
 
         # dual grasp viz
         dg_img_viz = np.repeat(
@@ -322,7 +330,8 @@ def generate_train_data_step(
         dg_img_viz = dg_img_viz * np.array([1, 0, 0])
         dg_img_viz = 0.3 * rgb_img + 0.7 * dg_img_viz
         dg_img_viz = dg_img_viz.astype(np.int32)
-        scipy.misc.imshow(dg_img_viz)
+        cv2.imshow('dual graspable', dg_img_viz[:, :, ::-1])
+        cv2.waitKey(0)
 
         # occluded viz
         occluded_label = np.zeros(
@@ -331,7 +340,8 @@ def generate_train_data_step(
             occluded_label[ins_img[0] == 2] = label
         occluded_img_viz = skimage.color.label2rgb(
             occluded_label, rgb_img, bg_label=0)
-        scipy.misc.imshow(occluded_img_viz)
+        cv2.imshow('occlusion', occluded_img_viz[:, :, ::-1])
+        cv2.waitKey(0)
 
     # save
     savedirs = os.listdir(savedir)
@@ -353,9 +363,9 @@ def generate_train_data_step(
     labelspath = osp.join(datadir, 'labels.yaml')
     object_rotationpath = osp.join(datadir, 'object_rotation.yaml')
     # save
-    scipy.misc.imsave(rgbpath, rgb_img)
-    scipy.misc.imsave(sgpath, sg_img)
-    scipy.misc.imsave(dgpath, dg_img)
+    cv2.imwrite(rgbpath, rgb_img[:, :, ::-1])
+    cv2.imwrite(sgpath, sg_img)
+    cv2.imwrite(dgpath, dg_img)
     np.savez_compressed(labelpath, label_img=label_img)
     np.savez_compressed(
         inspath,
