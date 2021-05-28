@@ -30,6 +30,7 @@ RUN if [ ${ROS_DISTRO} = "indigo" ]; then \
     fi && \
     pip install 'pip==9.0.3' && \
     pip install 'setuptools==44.1.0' && \
+    pip install 'dlib==19.21.1' && \
     rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO
