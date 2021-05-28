@@ -1,3 +1,5 @@
+from __future__ import division
+
 import chainer
 from chainer import cuda
 from chainer.dataset import concat_examples
