@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
+import cv2
 import numpy as np
 import os
 import os.path as osp
-import scipy.misc
 
 filenames = [
     'vis_cls_label',
@@ -30,7 +30,7 @@ def main(data_dir):
                 labelpath = osp.join(save_dir, '{}.png'.format(filename))
                 if osp.exists(labelpath):
                     npzpath = osp.join(save_dir, '{}.npz'.format(filename))
-                    label = scipy.misc.imread(labelpath)
+                    label = cv2.imread(labelpath, cv2.IMREAD_GRAYSCALE)
                     label[label == 0] = -1
                     np.savez_compressed(npzpath, label)
 

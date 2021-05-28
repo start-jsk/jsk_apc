@@ -1,4 +1,5 @@
 import argparse
+import cv2
 import datetime
 import json
 import matplotlib.pyplot as plt
@@ -7,7 +8,6 @@ import os
 import os.path as osp
 import PIL.Image
 import PIL.ImageDraw
-import scipy.misc
 import yaml
 
 from chainercv.utils.mask.mask_to_bbox import mask_to_bbox
@@ -39,7 +39,7 @@ def main(datadir, visualize):
 
             rgbpath = osp.join(timedir, 'masked_rgb.png')
             annopath = osp.join(timedir, 'masked_rgb.json')
-            rgb = scipy.misc.imread(rgbpath)
+            rgb = cv2.imread(rgbpath)[:, :, ::-1]
 
             with open(annopath, 'r') as json_f:
                 data = json.load(json_f)
@@ -87,7 +87,7 @@ def main(datadir, visualize):
             ins_imgs_savepath = osp.join(savedir, 'ins_imgs.npz')
             label_savepath = osp.join(savedir, 'labels.yaml')
 
-            scipy.misc.imsave(rgb_savepath, rgb)
+            cv2.imwrite(rgb_savepath, rgb)
             np.savez_compressed(
                 ins_imgs_savepath,
                 ins_imgs=np.concatenate(ins_imgs, axis=0).astype(np.int32))

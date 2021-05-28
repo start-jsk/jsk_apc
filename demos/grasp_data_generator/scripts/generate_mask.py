@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
+import cv2
 import numpy as np
 import os
 import os.path as osp
-import scipy.misc
 import scipy.ndimage
 from sklearn.decomposition import PCA
 import yaml
@@ -46,7 +46,7 @@ def main(object_dir):
             savedir = osp.join(object_dir, objectname, d)
 
             imgpath = osp.join(savedir, 'rgb.png')
-            img = scipy.misc.imread(imgpath)
+            img = cv2.imread(imgpath)[:, :, ::-1]
 
             # mask
             if args.no_cnn:
@@ -54,7 +54,7 @@ def main(object_dir):
             else:
                 mask = generate_mask_with_fcn(img, model, visualize)
             maskpath = osp.join(savedir, 'mask.png')
-            scipy.misc.imsave(maskpath, mask)
+            cv2.imwrite(maskpath, mask)
 
             if grasp:
                 # single arm grasp img
@@ -70,8 +70,8 @@ def main(object_dir):
                     savedir, 'singlearm_grasp_calc.png')
                 single_img_vizpath = osp.join(
                     savedir, 'singlearm_grasp_visualize.png')
-                scipy.misc.imsave(singlearm_grasp_imgpath, singlearm_grasp_img)
-                scipy.misc.imsave(single_img_vizpath, single_img_viz)
+                cv2.imwrite(singlearm_grasp_imgpath, singlearm_grasp_img)
+                cv2.imwrite(single_img_vizpath, single_img_viz[:, :, ::-1])
 
                 # single arm grasp img
                 dualarm_grasp_img, pc0 = generate_dualarm_grasp_img(
@@ -86,8 +86,8 @@ def main(object_dir):
                     savedir, 'dualarm_grasp_calc.png')
                 dual_img_vizpath = osp.join(
                     savedir, 'dualarm_grasp_visualize.png')
-                scipy.misc.imsave(dualarm_grasp_imgpath, dualarm_grasp_img)
-                scipy.misc.imsave(dual_img_vizpath, dual_img_viz)
+                cv2.imwrite(dualarm_grasp_imgpath, dualarm_grasp_img)
+                cv2.imwrite(dual_img_vizpath, dual_img_viz[:, :, ::-1])
 
                 pc0_path = osp.join(savedir, 'pc0.yaml')
                 with open(pc0_path, 'w') as f:
@@ -101,7 +101,8 @@ def generate_mask(img, visualize=False):
         negative_mask = ~mask
         img_viz = img.copy()
         img_viz[negative_mask] = np.array([255, 0, 0])
-        scipy.misc.imshow(img_viz)
+        cv2.imshow('mask', img_viz[:, :, ::-1])
+        cv2.waitKey(0)
     mask = mask.astype(np.uint8) * 255
     return mask
 
@@ -124,7 +125,8 @@ def generate_mask_with_fcn(img, model, visualize=False):
         negative_mask = ~(mask_pred > 0)
         img_viz = img.copy()
         img_viz[negative_mask] = np.array([255, 0, 0])
-        scipy.misc.imshow(img_viz)
+        cv2.imshow('mask', img_viz[:, :, ::-1])
+        cv2.waitKey(0)
     return mask_pred
 
 
@@ -156,7 +158,8 @@ def generate_grasp_img(mask, grasp_img, visualize=False, img=None, sigma=10):
         grasp_img_viz = np.repeat(grasp_img[:, :, np.newaxis], 3, 2)
         grasp_img_viz = grasp_img_viz * np.array([1, 0, 0])
         img_viz = (0.3 * img_viz + 0.7 * grasp_img_viz).astype(np.uint8)
-        scipy.misc.imshow(img_viz)
+        cv2.imshow('grasp', img_viz[:, :, ::-1])
+        cv2.waitKey(0)
     return grasp_img
 
 

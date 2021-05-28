@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 import argparse
+import cv2
 import datetime
 import networkx as nx
 import numpy as np
 import os
 import os.path as osp
 import random
-import scipy.misc
 import shutil
 import yaml
 
@@ -30,11 +30,19 @@ def main(
         os.makedirs(savedir)
 
     background_imgs = []
-    for background_name in ['tote', 'cardboard', 'shelf']:
+    background_names = [
+        'brown_table',
+        'cardboard',
+        'shelf',
+        'tote',
+        'white_table',
+        'wooden_table'
+    ]
+    for background_name in background_names:
         background_path = osp.join(
             datadir, 'background', background_name, 'top.jpg')
-        background_img = scipy.misc.imread(background_path)
-        background_img = scipy.misc.imresize(background_img, (480, 640))
+        background_img = cv2.imread(background_path)[:, :, ::-1]
+        background_img = cv2.resize(background_img, (480, 640))
         background_imgs.append(background_img)
 
     original_object_dir = osp.join(datadir, 'objects')
@@ -150,17 +158,17 @@ def generate_train_data(
             object_path = random.choice(object_paths)
             rgb_path, mask_path, input_mask_path = object_path[:3]
             sampled_path, result, grasping_way = object_path[3:]
-            object_img = scipy.misc.imread(rgb_path)
-            mask_img = scipy.misc.imread(mask_path)
-            input_mask_img = scipy.misc.imread(
-                input_mask_path, flatten=True)
+            object_img = cv2.imread(rgb_path)[:, :, ::-1]
+            mask_img = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            input_mask_img = cv2.imread(
+                input_mask_path, cv2.IMREAD_GRAYSCALE)
             y_indices, x_indices = np.where(input_mask_img > 0)
             y_max, y_min = y_indices.max(), y_indices.min()
             x_max, x_min = x_indices.max(), x_indices.min()
             object_img = object_img[y_min:y_max, x_min:x_max]
             mask_img = mask_img[y_min:y_max, x_min:x_max]
             if result == 'success':
-                sample_grasp = scipy.misc.imread(sampled_path, flatten=True)
+                sample_grasp = cv2.imread(sampled_path, cv2.IMREAD_GRAYSCALE)
                 sample_grasp = sample_grasp[y_min:y_max, x_min:x_max]
                 sample_grasp = sample_grasp.astype(np.uint8)
                 if grasping_way == 'dual':
@@ -181,10 +189,10 @@ def generate_train_data(
             object_paths = original_object_imgpath[label-1]
             rgb_path, mask_path, sg_path, dg_path, pc0_path = \
                 random.choice(object_paths)
-            object_img = scipy.misc.imread(rgb_path)
-            mask_img = scipy.misc.imread(mask_path)
-            single_grasp = scipy.misc.imread(sg_path)
-            dual_grasp = scipy.misc.imread(dg_path)
+            object_img = cv2.imread(rgb_path)[:, :, ::-1]
+            mask_img = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            single_grasp = cv2.imread(sg_path, cv2.IMREAD_GRAYSCALE)
+            dual_grasp = cv2.imread(dg_path, cv2.IMREAD_GRAYSCALE)
             pc0 = yaml.load(open(pc0_path, 'r'))
 
         generate_train_data_step(
