@@ -20,8 +20,18 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y \
     python-pip && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install 'pip==9.0.3' && \
-    pip install 'setuptools==44.1.0'
+ARG ROS_DISTRO
+RUN if [ ${ROS_DISTRO} = "indigo" ]; then \
+      apt-get update && \
+      apt-get install -y software-properties-common && \
+      add-apt-repository -y ppa:longsleep/python2.7-backports && \
+      apt-get update && \
+      apt-get dist-upgrade -y; \
+    fi && \
+    pip install 'pip==9.0.3' && \
+    pip install 'setuptools==44.1.0' && \
+    pip install 'dlib==19.21.1' && \
+    rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO
 RUN cd ~ && \
