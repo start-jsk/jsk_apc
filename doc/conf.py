@@ -187,6 +187,8 @@ htmlhelp_basename = 'jsk_apcdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
+latex_engine = 'platex'
+latex_use_xindy = False
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
 #'papersize': 'letterpaper',
@@ -213,7 +215,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'jsk_apc.tex', u'jsk_apc Documentation',
+  (master_doc, 'jsk_apc.tex', u'jsk\_apc Documentation',
    author, 'manual'),
 ]
 

@@ -1,5 +1,16 @@
 # Advanced Robotics 2020: Selective dual-arm occluded grasping
 
+## Install `grasp_data_generator`
+
+```bash
+cd ../grasp_data_generator
+pip install --user -e .
+```
+
+## Train initial model (optional)
+
+Please read [grasp_data_generator](../grasp_data_generator/README.md) for more information.
+
 ## Download models
 
 ```bash
@@ -75,9 +86,9 @@ roseus euslisp/test-grasp.l
   author = {Shingo Kitagawa and Kentaro Wada and Shun Hasegawa and Kei Okada and Masayuki Inaba},
   title = {Few-experiential learning system of robotic picking task with selective dual-arm grasping},
   journal = {Advanced Robotics},
-  volume = {0},
-  number = {0},
-  pages = {1-19},
+  volume = {34},
+  number = {18},
+  pages = {1171-1189},
   year  = {2020},
   publisher = {Taylor & Francis},
   doi = {10.1080/01691864.2020.1783352},

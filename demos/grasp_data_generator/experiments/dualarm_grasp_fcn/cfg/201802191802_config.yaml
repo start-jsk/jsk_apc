@@ -1,0 +1,10 @@
+alpha:
+    single: 1.0
+    dual: 1.0
+dataset_class: 'DualarmGraspDatasetV7'
+frequency_balancing: True
+model: 'dualarm_grasp_fcn32s'
+lr: 1.0e-5
+max_iter: 200000
+random_state: 1234
+weight_decay: 0.0005

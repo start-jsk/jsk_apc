@@ -1,0 +1,3 @@
+from grasp_data_generator.models.occluded_mask_rcnn.occluded_mask_rcnn import OccludedMaskRCNN  # NOQA
+from grasp_data_generator.models.occluded_mask_rcnn.occluded_mask_rcnn_resnet import OccludedMaskRCNNResNet101  # NOQA
+from grasp_data_generator.models.occluded_mask_rcnn.occluded_mask_rcnn_train_chain import OccludedMaskRCNNTrainChain  # NOQA
