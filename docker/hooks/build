@@ -12,7 +12,9 @@ else
   TESTING="false"
 fi
 
-if [[ ${ROS_DISTRO} = "melodic" ]]; then
+if [[ ${ROS_DISTRO} = "noetic" ]]; then
+    UBUNTU_VERSION="focal";
+elif [[ ${ROS_DISTRO} = "melodic" ]]; then
     UBUNTU_VERSION="bionic";
 elif [[ ${ROS_DISTRO} = "kinetic" ]]; then
     UBUNTU_VERSION="xenial";
