@@ -9,15 +9,27 @@ RUN apt-get update && apt-get install -y wget git && \
     rm -rf /var/lib/apt/lists/*
 
 RUN wget http://packages.ros.org/ros.key -O - | apt-key add -
+RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y apt-utils && \
+    rm -rf /var/lib/apt/lists/*
 
 # FIXME: https://github.com/start-jsk/jsk_apc/pull/2664
-RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y \
-    apt-utils \
-    python-catkin-tools \
-    python-rosdep \
-    python-setuptools \
-    python-wstool \
-    python-pip && \
+ARG ROS_DISTRO
+RUN apt-get update && \
+    if [ ${ROS_DISTRO} = "noetic" ]; then \
+      apt-get install -y \
+        python3-catkin-tools \
+        python3-rosdep \
+        python3-setuptools \
+        python3-wstool \
+        python3-pip; \
+    else \
+      apt-get install -y \
+        python-catkin-tools \
+        python-rosdep \
+        python-setuptools \
+        python-wstool \
+        python-pip; \
+    fi && \
     rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO
