@@ -24,6 +24,7 @@ env:
     - USE_TRAVIS=true
     # XXX: hotfix for chainer problem (https://github.com/chainer/chainer/issues/8545)
   matrix:
+    - CHECK_PYTHON3_COMPILE=true
     - ROS_DISTRO=indigo
     - >
       ROS_DISTRO=indigo
@@ -42,6 +43,7 @@ matrix:
   allow_failures:
     - env: ROS_DISTRO=indigo
 script:
+  - if [ "${CHECK_PYTHON3_COMPILE}" == "true" ]; then python3 -m compileall .; exit $?; fi
   - export DOCKER_IMAGE="jskrobotics/jsk_apc:${ROS_DISTRO}-latest-testing"
   # build & test ROS packages
   - source .travis/travis.sh
