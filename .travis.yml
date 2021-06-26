@@ -39,6 +39,10 @@ env:
       ROS_DISTRO=melodic
       BEFORE_SCRIPT='sudo -H pip install chainer==6.7.0 gdown==4.4.0'
       CATKIN_TOOLS_CONFIG_OPTIONS="--blacklist imagesift jsk_recognition_msgs jsk_perception jsk_pcl_ros_utils jsk_pcl_ros resized_image_transport checkerboard_detector fetcheus naoqieus jsk_fetch_startup jsk_nao_startup roseus_remote jsk_robot_startup jsk_robot_utils jsk_pr2_calibration pr2_base_trajectory_action jsk_baxter_web peppereus naoeus jsk_baxter_desktop jsk_pepper_startup jsk_pr2_startup jsk_pr2_desktop"
+    - >
+      ROS_DISTRO=noetic
+      BEFORE_SCRIPT='sudo -H pip install chainer==6.7.0 gdown==4.4.0'
+      CATKIN_TOOLS_CONFIG_OPTIONS="--blacklist imagesift jsk_recognition_msgs jsk_perception jsk_pcl_ros_utils jsk_pcl_ros resized_image_transport checkerboard_detector fetcheus naoqieus jsk_fetch_startup jsk_nao_startup roseus_remote jsk_robot_startup jsk_robot_utils jsk_pr2_calibration pr2_base_trajectory_action jsk_baxter_web peppereus naoeus jsk_baxter_desktop jsk_pepper_startup jsk_pr2_startup jsk_pr2_desktop"
 matrix:
   allow_failures:
     - env: ROS_DISTRO=indigo
