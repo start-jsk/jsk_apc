@@ -13,7 +13,7 @@ def color_histogram_matcher_client(object_names):
         resp = probs(object_names)
         print(object_names)
         return resp
-    except rospy.ServiceException, e:
+    except rospy.ServiceException as e:
         rospy.loginfo("Service call faield. {}".format(e))
 
 def main():

@@ -37,7 +37,7 @@ class DemoReal(object):
                 rospy.logwarn(stamp.label.data)
                 self.qrcode_info[stamp.label.data] = stamp.qrcode_pose_stamp
             return resp
-        except rospy.ServiceException, e:
+        except rospy.ServiceException as e:
             rospy.logwarn('/semi/qrcode_pos Service call failed: {0}'.format(e))
 
     def cl_get_item(self):
@@ -62,7 +62,7 @@ class DemoReal(object):
             # resp = get_item(PoseStamped(self.qrcode_info[self.target_bin]))
             # if resp.succeeded is False:
             #     rospy.logwarn('move arm to {0} is failed'.format(self.target_bin))
-        except rospy.ServiceException, e:
+        except rospy.ServiceException as e:
             rospy.logwarn('/semi/get_item Service call failed: {0}'.format(e))
 
     def cl_release_item(self):
@@ -73,7 +73,7 @@ class DemoReal(object):
             resp = release_item(Empty)
             if resp.succeeded is False:
                 rospy.logwarn('release item is failed'.format(self.target_bin))
-        except rospy.ServiceException, e:
+        except rospy.ServiceException as e:
             rospy.logwarn('/semi/release_item Service call failed: {0}'.format(e))
 
     def main(self):

@@ -148,7 +148,7 @@ class FCNSegmentationInBinNode(ConnectionBasedTransport):
                     'Output of SIB does not contain any point clouds.')
             # publish images which contain object probabilities
             # self.publish_predicted_results()
-        except KeyError, e:
+        except KeyError as e:
             rospy.loginfo(repr(e))
 
         # debug output

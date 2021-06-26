@@ -66,7 +66,7 @@ def train(pkl_path):
 
     with open(pkl_path, 'wb') as f:
         pickle.dump(bp, f)
-    print "saved"
+    print("saved")
 
 
 if __name__ == '__main__':

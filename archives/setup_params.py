@@ -37,7 +37,7 @@ def main():
         try:
             rospy.wait_for_service('/rqt_yn_btn', timeout=10)
             wait_for_rqt_yn_btn = False
-        except rospy.ROSException, e:
+        except rospy.ROSException as e:
             rospy.logerr('timeout for /rqt_yn_btn: {0}'.format(e))
         rospy.sleep(1)
     # get user input using rqt_yn_btn

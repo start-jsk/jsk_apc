@@ -3,23 +3,23 @@ from check_common import *
 
 def check_vacuum(arm):
     topic_name = "/vacuum_gripper/limb/"+arm
-    print HEADER+BOLD+"=== Check " +topic_name + " ===" +ENDC
+    print(HEADER+BOLD+"=== Check " +topic_name + " ===" +ENDC)
     pub = rospy.Publisher(topic_name, Bool, queue_size=1)
     msg = Bool()
     msg.data = True
     time.sleep(3)
-    print INFO,"Start " + arm + " Vacuum for 5 seconds..."
+    print(INFO,"Start " + arm + " Vacuum for 5 seconds...")
     pub.publish(msg)
     time.sleep(5)
 
-    print INFO,"Stop " + arm + " Vacuum"
+    print(INFO,"Stop " + arm + " Vacuum")
     msg = Bool()
     msg.data = False
     pub.publish(msg)
 
 if __name__ == "__main__":
 
-    print HEADER+"= Check Start APC Setup =", ENDC
+    print(HEADER+"= Check Start APC Setup =", ENDC)
 
     index_print("== Check MASTER ==")
     check_rosmaster()
