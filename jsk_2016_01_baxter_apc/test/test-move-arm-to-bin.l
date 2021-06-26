@@ -5,7 +5,7 @@
 
 (init-unit-test)
 
-(setq *error-output* nil) ; to suppress to many debug info
+;; (setq *error-output* nil) ; to suppress to many debug info
 
 (deftest
   test-move-arm-to-bin
