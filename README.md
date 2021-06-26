@@ -1,5 +1,4 @@
-jsk\_apc
-=======
+# jsk_apc
 
 <img src="jsk_apc2016_common/resource/icons/icon_white.png" align="right" width="192px" />
 
@@ -16,8 +15,7 @@ jsk\_apc
 The documentation is available at [here](http://jsk-apc.readthedocs.org).
 
 
-Usage
------
+## Usage
 
 | Competition | Documentation                                                                                             |
 |:------------|:----------------------------------------------------------------------------------------------------------|
@@ -26,8 +24,7 @@ Usage
 | ARC2017     | See [jsk_arc2017_baxter](http://jsk-apc.readthedocs.org/en/latest/jsk_arc2017_baxter/index.html).         | 
 
 
-Citations
----------
+## Citations
 
 ```
 # Our system at APC2015
@@ -44,8 +41,7 @@ Citations
 ```
 
 
-Installation
-------------
+## Installation
 
 
 ### Required
@@ -64,15 +60,16 @@ $ catkin build
 $ source devel/setup.bash
 ```
 
-* Edit `/etc/hosts`:
+#### Edit `/etc/hosts`:
 
 ```
 133.11.216.224 baxter 011310P0014.local
 ```
 
-* Add below in your `~/.bashrc`:
+#### Add below in your `~/.bashrc`:
+
 ```
-$ rossetmaster baxter.jsk.imi.i.u-tokyo.ac.jp
+$ rossetmaster baxter
 $ rossetip
 
 $ # we recommend below setup (see http://jsk-docs.readthedocs.org/en/latest/jsk_common/doc/jsk_tools/cltools/setup_env_for_ros.html)
@@ -86,7 +83,7 @@ $ rossetdefault baxter  # set ROS_MASTER_URI as http://baxter:11311
 
 ### Optional
 
-**Setup Arduino and DXHUB**
+#### Setup Arduino and DXHUB
 
 1. To distinguish left DXHUB from right one, follow the instruction [here](http://jsk-apc.readthedocs.io/en/latest/jsk_arc2017_baxter/setup_gripper_v6.html#distinguish-left-dxhub-from-right-one).
 
@@ -96,7 +93,7 @@ $ rosrun jsk_arc2017_baxter create_udev_rules
 ```
 so that Arduinos can appear on `/dev/arduino*` and DXHUBs can appear on `/dev/l_dxhub` and `/dev/r_dxhub`
 
-**Setup scales**
+#### Setup scales
 
 Create udev rules:
 ```
@@ -104,7 +101,7 @@ $ rosrun jsk_arc2017_common create_udev_rules
 ```
 so that scales can appear on `/dev/scale*`
 
-**Setup SSH**
+#### Setup SSH
 
 Write below in `~/.ssh/config`:
 
@@ -114,7 +111,7 @@ Host baxter
   User ruser  # password: rethink
 ```
 
-**Setup UP Board**
+#### Setup UP Board
 
 Inside UP Board...
 1. [Install ros-kinetic-ros-base and setup environment](http://wiki.ros.org/kinetic/Installation/Ubuntu).
