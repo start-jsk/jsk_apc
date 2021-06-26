@@ -1,0 +1,55 @@
+# not released yet in melodic 
+- git:
+    local-name: RethinkRobotics/baxter_simulator
+    # https://github.com/RethinkRobotics/baxter_simulator/pull/130
+    uri: https://github.com/EmaroLab/baxter_simulator.git
+    version: master
+- tar:
+    local-name: baxter_examples
+    uri: https://github.com/RethinkRobotics-release/baxter_examples-release/archive/release/indigo/baxter_examples/1.2.0-0.tar.gz
+    version: baxter_examples-release-release-indigo-baxter_examples-1.2.0-0
+- tar:
+    local-name: baxter_tools
+    uri: https://github.com/RethinkRobotics-release/baxter_tools-release/archive/release/indigo/baxter_tools/1.2.0-0.tar.gz
+    version: baxter_tools-release-release-indigo-baxter_tools-1.2.0-0
+- tar:
+    local-name: jsk_demos/jsk_demo_common
+    uri: https://github.com/tork-a/jsk_demos-release/archive/release/indigo/jsk_demo_common/0.0.4-0.tar.gz
+    version: jsk_demos-release-release-indigo-jsk_demo_common-0.0.4-0
+- tar:
+    local-name: jsk_demos/jsk_maps
+    uri: https://github.com/tork-a/jsk_demos-release/archive/release/indigo/jsk_maps/0.0.4-0.tar.gz
+    version: jsk_demos-release-release-indigo-jsk_maps-0.0.4-0
+- tar:
+    local-name: jsk_robot/baxtereus
+    uri: https://github.com/tork-a/jsk_robot-release/archive/release/indigo/baxtereus/1.1.0-1.tar.gz
+    version: jsk_robot-release-release-indigo-baxtereus-1.1.0-1
+- tar:
+    local-name: jsk_robot/jsk_baxter_startup
+    uri: https://github.com/tork-a/jsk_robot-release/archive/release/indigo/jsk_baxter_startup/1.1.0-1.tar.gz
+    version: jsk_robot-release-release-indigo-jsk_baxter_startup-1.1.0-1
+- tar:
+    local-name: moveit_robots/baxter_moveit_config
+    uri: https://github.com/ros-gbp/moveit_robots-release/archive/release/indigo/baxter_moveit_config/1.0.7-0.tar.gz
+    version: moveit_robots-release-release-indigo-baxter_moveit_config-1.0.7-0
+- tar:
+    local-name: baxter_interface
+    uri: https://github.com/RethinkRobotics-release/baxter_interface-release/archive/release/indigo/baxter_interface/1.2.0-0.tar.gz
+    version: baxter_interface-release-release-indigo-baxter_interface-1.2.0-0
+# waiting for release in melodic: https://github.com/turtlebot/turtlebot/issues/272
+- git:
+    local-name: turtlebot_description
+    uri: https://github.com/turtlebot-release/turtlebot-release.git
+    version: release/kinetic/turtlebot_description
+- git:
+    local-name: kobuki_description
+    uri: https://github.com/yujinrobot-release/kobuki-release.git
+    version: release/kinetic/kobuki_description
+- git:
+    local-name: create_description
+    uri: https://github.com/turtlebot-release/turtlebot_create-release.git
+    version: release/kinetic/create_description
+- git:
+    local-name: dynamixel_motor
+    uri: https://github.com/arebgun/dynamixel_motor.git
+    version: 0.4.1 
