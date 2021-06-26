@@ -57,7 +57,11 @@ RUN cd ~ && \
     wstool up -j 2
 
 # /opt/ros/${ROS_DISTRO}/share can be changed after rosdep install, so we run it 3 times.
+ARG ROS_DISTRO
 RUN apt-get update && rosdep update --include-eol-distros && \
+    if [ ${ROS_DISTRO} = "noetic" ]; then \
+      export ROS_PYTHON_VERSION=3; \
+    fi && \
     for i in $(seq 3); do rosdep install --rosdistro ${ROS_DISTRO} -r -y -i --from-paths /opt/ros/${ROS_DISTRO}/share ~/ros/${ROS_DISTRO}/src; done && \
     rm -rf /var/lib/apt/lists/*
 
