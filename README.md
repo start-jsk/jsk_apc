@@ -17,32 +17,28 @@ The documentation is available at [here](http://jsk-apc.readthedocs.org).
 
 ## Usage
 
+### APC/ARC Competitions
+
 | Competition | Documentation                                                                                             |
 |:------------|:----------------------------------------------------------------------------------------------------------|
 | APC2015     | See [jsk_2015_05_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2015_05_baxter_apc/index.html). |
 | APC2016     | See [jsk_2016_01_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2016_01_baxter_apc/index.html). |
 | ARC2017     | See [jsk_arc2017_baxter](http://jsk-apc.readthedocs.org/en/latest/jsk_arc2017_baxter/index.html).         | 
 
+### Research papers
 
-## Citations
-
-```
-# Our system at APC2015
-@article{wada2017pick,
-  title={Pick-and-verify: verification-based highly reliable picking system for various target objects in clutter},
-  author={Wada, Kentaro and Sugiura, Makoto and Yanokura, Iori and Inagaki, Yuto and Okada, Kei and Inaba, Masayuki},
-  journal={Advanced Robotics},
-  volume={31},
-  number={6},
-  pages={311--321},
-  year={2017},
-  publisher={Taylor \& Francis}
-}
-```
-
+| Paper                         | Documentation                                                               | Paper DOI URL                                                                  |
+|:-----------------------------:|:----------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
+| K. Wada et al, ICRA, 2019     | See [demos/instance_occlsegm](./demos/instance_occlsegm).                   | [10.1109/ICRA.2019.8793783](https://doi.org/10.1109/ICRA.2019.8793783)         |
+| K. Wada et al, IROS, 2018     | See [demos/instance_occlsegm](./demos/instance_occlsegm).                   | [10.1109/IROS.2018.8593690](https://doi.org/10.1109/IROS.2018.8593690)         |
+| S .Hasegawa et al, ICRA, 2019 | See [demos/grasp_fusion](./demos/grasp_fusion).                             | [10.1109/ICRA.2019.8793710](https://doi.org/10.1109/ICRA.2019.8793710)         |
+| S. Hasegawa et al, JRM, 2019  | See [demos/baxtergv6_apc2016](./demos/baxtergv6_apc2016).                   | [10.20965/jrm.2019.p0289](https://doi.org/10.20965/jrm.2019.p0289)             |
+| S. Hasegawa et al, IROS, 2018 | See [demos/grasp_prediction_arc2017](./demos/grasp_prediction_arc2017).     | [10.1109/IROS.2018.8593398](https://doi.org/10.1109/IROS.2018.8593398)         |
+| S. Kitagawa et al, AR, 2020   | See [demos/selective_dualarm_grasping](./demos/selective_dualarm_grasping). | [10.1080/01691864.2020.1783352](https://doi.org/10.1080/01691864.2020.1783352) |
+| S. Kitagawa et al, IROS, 2018 | See [demos/selective_dualarm_grasping](./demos/selective_dualarm_grasping). | [10.1109/IROS.2018.8593752](https://doi.org/10.1109/IROS.2018.8593752)         |
+| S. Kitagawa et al, IAS, 2018  | See [demos/selecive_dualarm_stowing](./demos/selective_dualarm_stowing).    | [10.1007/978-3-030-01370-7_34](https://doi.org/10.1007/978-3-030-01370-7_34)   |
 
 ## Installation
-
 
 ### Required
 
@@ -160,3 +156,21 @@ sudo vi /etc/ntp.conf
 From main PC...
 1. `ssh -oHostKeyAlgorithms='ssh-rsa' baxter@<UP Board Host Name>.jsk.imi.i.u-tokyo.ac.jp`
 2. Add main PC's ssh public key to `~/.ssh/authorized_keys` on UP Board.
+
+
+## Citations
+
+###  APC2015
+
+```
+@article{wada2017pick,
+  title={Pick-and-verify: verification-based highly reliable picking system for various target objects in clutter},
+  author={Wada, Kentaro and Sugiura, Makoto and Yanokura, Iori and Inagaki, Yuto and Okada, Kei and Inaba, Masayuki},
+  journal={Advanced Robotics},
+  volume={31},
+  number={6},
+  pages={311--321},
+  year={2017},
+  publisher={Taylor \& Francis}
+}
+```
