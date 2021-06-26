@@ -113,7 +113,7 @@ class SelectTargetWidget(QDialog):
                                 "{} : Failed to update target object"
                                 .format(bin_)
                                 )
-                except rospy.ServiceException, e:
+                except rospy.ServiceException as e:
                     rospy.logerr("Service call failed. {}".format(e))
         self.prev_work_order = work_order.copy()
 

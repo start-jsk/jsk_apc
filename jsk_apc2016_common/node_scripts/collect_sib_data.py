@@ -106,7 +106,7 @@ class CollectSIBData(object):
         """
         # path of files to save
         dir_path = os.path.expanduser(rospy.get_param('~save_dir'))
-        print dir_path
+        print(dir_path)
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
         time = strftime('%Y%m%d%H%M%S', gmtime())

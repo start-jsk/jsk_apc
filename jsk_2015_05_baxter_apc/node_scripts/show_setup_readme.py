@@ -5,21 +5,21 @@ from check_common import *
 def ask_yesno():
     answer=""
     while not ( answer in ["y", "Y", "n", "N"]):
-        print OKGREEN + "Next? [y/n]", ENDC
+        print(OKGREEN + "Next? [y/n]", ENDC)
         answer = raw_input()
         if not ( answer in ["y", "Y", "n", "N"]):
-            print WARNING + "Please type y/n !", ENDC
+            print(WARNING + "Please type y/n !", ENDC)
     if answer in ["n", "N"]:
         fail_print("You canceled....")
         exit(-1)
 
 def show_description(show_what_next, sub, command):
     index_print("=========================================")
-    print OKGREEN + show_what_next, ENDC
-    print OKGREEN + sub, ENDC
-    print
-    print command
-    print
+    print(OKGREEN + show_what_next, ENDC)
+    print(OKGREEN + sub, ENDC)
+    print()
+    print(command)
+    print()
 
 
 if __name__ == "__main__":

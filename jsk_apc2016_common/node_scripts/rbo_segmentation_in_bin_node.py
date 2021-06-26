@@ -68,7 +68,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
             self.mask_img = self.bridge.imgmsg_to_cv2(mask_msg, "passthrough")
             self.mask_img = self.mask_img.astype('bool')
         except CvBridgeError as e:
-            print "error"
+            print("error")
         self.dist_img = self.bridge.imgmsg_to_cv2(dist_msg, "passthrough")
         self.height_img = self.bridge.imgmsg_to_cv2(height_msg, "passthrough")
         self.height_img = self.height_img.astype(np.float)/255.0
@@ -107,7 +107,7 @@ class RBOSegmentationInBinNode(ConnectionBasedTransport):
                     'Output of RBO does not contain any point clouds.')
             # publish images which contain object probabilities
             self.publish_predicted_results()
-        except KeyError, e:
+        except KeyError as e:
             rospy.loginfo(repr(e))
 
         masked_input_img = cv2.cvtColor(

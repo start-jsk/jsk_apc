@@ -55,7 +55,7 @@ class MoveArmListener(object):
         try:
             rospy.wait_for_service(ns, 5.)
             resp = iksvc(ikreq)
-        except (rospy.ServiceException, rospy.ROSException), e:
+        except (rospy.ServiceException, rospy.ROSException) as e:
             rospy.logerr("Service call failed: %s" % (e,))
             return 1
 
@@ -75,9 +75,9 @@ class MoveArmListener(object):
                 (seed_str,))
             # Format solution into Limb API-compatible dictionary
             limb_joints = dict(zip(resp.joints[0].name, resp.joints[0].position))
-            print "\nIK Joint Solution:\n", limb_joints
-            print "------------------"
-            print "Response Message:\n", resp
+            print("\nIK Joint Solution:\n", limb_joints)
+            print("------------------")
+            print("Response Message:\n", resp)
 
         # leave log information about head pose
         log = rospy.get_name() + ": I heard {}".format(pose_stamp)

@@ -32,7 +32,7 @@ def main():
     goal = MoveArm2TargetBinGoal()
     goal.limb = 'left' if args.limb == 'l' else 'right'
     goal.order = args.bin_name
-    print "Requesting move for bin {0}".format(goal.order)
+    print("Requesting move for bin {0}".format(goal.order))
     client.send_goal(goal)
 
     # wait for result
