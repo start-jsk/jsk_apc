@@ -15,15 +15,17 @@ jobs:
         run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Cache several data
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.ccache
-            ~/.cache/pip
-            ~/apt-cacher-ng
-            ~/.ros/data
-          key: ${{ github.workflow }}
+      # github actions cache does not work because of permission denied.
+      # see: https://github.com/actions/cache/issues/404
+      # - name: Cache several data
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: |
+      #       ~/.ccache
+      #       ~/.cache/pip
+      #       ~/apt-cacher-ng
+      #       ~/.ros/data
+      #     key: ${{ github.workflow }}
       - name: Run jsk_travis
         uses: jsk-ros-pkg/jsk_travis@master
         with:
