@@ -15,8 +15,8 @@ def visualize_color_image(img, title=''):
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_HSV2RGB))
 
 def basic_image_check(img, title):
-    print 'max of img ' + title + ' ', np.max(img)
-    print 'dtype of img ' + title + ' ', img.dtype
+    print('max of img ' + title + ' ', np.max(img))
+    print('dtype of img ' + title + ' ', img.dtype)
     plt.figure()
     plt.title(title)
     plt.imshow(img)
