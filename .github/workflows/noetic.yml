@@ -35,6 +35,6 @@ jobs:
           NOT_TEST_INSTALL: true
           ROSDEP_ADDITIONAL_OPTIONS: "-n -q --ignore-src --skip-keys=jsk_smart_gui --skip-keys=ros3djs --skip-keys=pr2_calibration_launch --skip-keys=jsk_android_gui_api9 --skip-keys=ros2djs --skip-keys=face_recognition --skip-keys=roslibjs --skip-keys=force_proximity_ros --skip-keys=safe_teleop_base --skip-keys=pcl"
           # XXX: hotfix for chainer problem (https://github.com/chainer/chainer/issues/8545)
-          BEFORE_SCRIPT: "sudo -H pip install fcn chainercv chainer==6.7.0 gdown==3.10.1"
+          BEFORE_SCRIPT: "pip3 install fcn chainercv chainer==6.7.0 gdown==3.10.1"
           CATKIN_TOOLS_CONFIG_OPTIONS: "--blacklist imagesift jsk_recognition_msgs jsk_perception jsk_pcl_ros_utils jsk_pcl_ros resized_image_transport checkerboard_detector fetcheus naoqieus jsk_fetch_startup jsk_nao_startup roseus_remote jsk_robot_startup jsk_robot_utils jsk_pr2_calibration pr2_base_trajectory_action jsk_baxter_web peppereus naoeus jsk_baxter_desktop jsk_pepper_startup jsk_pr2_startup jsk_pr2_desktop"          
           TEST_PKGS: "jsk_apc2015_common jsk_apc2016_common jsk_arc2017_common jsk_2015_05_baxter_apc jsk_2016_01_baxter_apc jsk_arc2017_baxter sphand_driver baxtergv6_apc2016"
