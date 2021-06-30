@@ -69,7 +69,7 @@ def evaluate(bp, test_data):
                 continue
             pred_target = sample.object_masks.keys()[1]
         bp.predict(sample, pred_target)
-        print 'done'
+        print('done')
 
         images = []
         images.append(bp.posterior_images_smooth['shelf'])
@@ -89,8 +89,8 @@ def evaluate(bp, test_data):
         if 'shelf' in objects_copy: objects_copy.remove('shelf')
         if 'shelf' in object_masks_keys: object_masks_keys.remove('shelf')
         if set(objects_copy) != set(object_masks_keys):
-            #print 'skip posterior_image keys ', objects_copy
-            #print 'skip object_mask keys ', object_masks_keys
+            #print('skip posterior_image keys ', objects_copy)
+            #print('skip object_mask keys ', object_masks_keys)
             continue
         true = np.zeros_like(pred)
 
@@ -136,7 +136,7 @@ def create_dataset(dataset_path):
                 data_file_prefixes.append(
                     os.path.join(dir_name, f[:-len(key)]))
 
-    print data_file_prefixes
+    print(data_file_prefixes)
     for file_prefix in data_file_prefixes:
         dataset.samples.append(
             APCSample(data_2016_prefix=file_prefix,
@@ -185,10 +185,10 @@ bp.fit(train_data)
 
 acc_list, acc_cls_list, mean_iu_list, fwavacc_list = evaluate(bp, test_data)
         
-print 'all features acc ', np.mean(acc_list)
-print 'all features acc_cls ', np.mean(acc_cls_list)
-print 'all features mean_iu ', np.mean(mean_iu_list)
-print 'all features fwavcc ', np.mean(fwavacc_list)
+print('all features acc ', np.mean(acc_list))
+print('all features acc_cls ', np.mean(acc_cls_list))
+print('all features mean_iu ', np.mean(mean_iu_list))
+print('all features fwavcc ', np.mean(fwavacc_list))
 
 
 ###############################################################################
@@ -204,8 +204,8 @@ bp = ProbabilisticSegmentationBP(**params)
 bp.fit(train_data)
 acc_list, acc_cls_list, mean_iu_list, fwavacc_list = evaluate(bp, test_data)
         
-print 'trained only by color features acc ', np.mean(acc_list)
-print 'trained only by color features acc_cls ', np.mean(acc_cls_list)
-print 'trained only by color features mean_iu ', np.mean(mean_iu_list)
-print 'trained only by color features fwavcc ', np.mean(fwavacc_list)
+print('trained only by color features acc ', np.mean(acc_list))
+print('trained only by color features acc_cls ', np.mean(acc_cls_list))
+print('trained only by color features mean_iu ', np.mean(mean_iu_list))
+print('trained only by color features fwavcc ', np.mean(fwavacc_list))
 
