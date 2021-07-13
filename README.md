@@ -1,5 +1,4 @@
-jsk\_apc
-=======
+# jsk_apc
 
 <img src="jsk_apc2016_common/resource/icons/icon_white.png" align="right" width="192px" />
 
@@ -16,8 +15,9 @@ jsk\_apc
 The documentation is available at [here](http://jsk-apc.readthedocs.org).
 
 
-Usage
------
+## Usage
+
+### APC/ARC Competitions
 
 | Competition | Documentation                                                                                             |
 |:------------|:----------------------------------------------------------------------------------------------------------|
@@ -25,28 +25,20 @@ Usage
 | APC2016     | See [jsk_2016_01_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2016_01_baxter_apc/index.html). |
 | ARC2017     | See [jsk_arc2017_baxter](http://jsk-apc.readthedocs.org/en/latest/jsk_arc2017_baxter/index.html).         | 
 
+### Research papers
 
-Citations
----------
+| Paper                         | Documentation                                                               | Paper DOI URL                                                                  |
+|:-----------------------------:|:----------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
+| K. Wada et al, ICRA, 2019     | See [demos/instance_occlsegm](./demos/instance_occlsegm).                   | [10.1109/ICRA.2019.8793783](https://doi.org/10.1109/ICRA.2019.8793783)         |
+| K. Wada et al, IROS, 2018     | See [demos/instance_occlsegm](./demos/instance_occlsegm).                   | [10.1109/IROS.2018.8593690](https://doi.org/10.1109/IROS.2018.8593690)         |
+| S .Hasegawa et al, ICRA, 2019 | See [demos/grasp_fusion](./demos/grasp_fusion).                             | [10.1109/ICRA.2019.8793710](https://doi.org/10.1109/ICRA.2019.8793710)         |
+| S. Hasegawa et al, JRM, 2019  | See [demos/baxtergv6_apc2016](./demos/baxtergv6_apc2016).                   | [10.20965/jrm.2019.p0289](https://doi.org/10.20965/jrm.2019.p0289)             |
+| S. Hasegawa et al, IROS, 2018 | See [demos/grasp_prediction_arc2017](./demos/grasp_prediction_arc2017).     | [10.1109/IROS.2018.8593398](https://doi.org/10.1109/IROS.2018.8593398)         |
+| S. Kitagawa et al, AR, 2020   | See [demos/selective_dualarm_grasping](./demos/selective_dualarm_grasping). | [10.1080/01691864.2020.1783352](https://doi.org/10.1080/01691864.2020.1783352) |
+| S. Kitagawa et al, IROS, 2018 | See [demos/selective_dualarm_grasping](./demos/selective_dualarm_grasping). | [10.1109/IROS.2018.8593752](https://doi.org/10.1109/IROS.2018.8593752)         |
+| S. Kitagawa et al, IAS, 2018  | See [demos/selecive_dualarm_stowing](./demos/selective_dualarm_stowing).    | [10.1007/978-3-030-01370-7_34](https://doi.org/10.1007/978-3-030-01370-7_34)   |
 
-```
-# Our system at APC2015
-@article{wada2017pick,
-  title={Pick-and-verify: verification-based highly reliable picking system for various target objects in clutter},
-  author={Wada, Kentaro and Sugiura, Makoto and Yanokura, Iori and Inagaki, Yuto and Okada, Kei and Inaba, Masayuki},
-  journal={Advanced Robotics},
-  volume={31},
-  number={6},
-  pages={311--321},
-  year={2017},
-  publisher={Taylor \& Francis}
-}
-```
-
-
-Installation
-------------
-
+## Installation
 
 ### Required
 
@@ -64,15 +56,16 @@ $ catkin build
 $ source devel/setup.bash
 ```
 
-* Edit `/etc/hosts`:
+#### Edit `/etc/hosts`:
 
 ```
 133.11.216.224 baxter 011310P0014.local
 ```
 
-* Add below in your `~/.bashrc`:
+#### Add below in your `~/.bashrc`:
+
 ```
-$ rossetmaster baxter.jsk.imi.i.u-tokyo.ac.jp
+$ rossetmaster baxter
 $ rossetip
 
 $ # we recommend below setup (see http://jsk-docs.readthedocs.org/en/latest/jsk_common/doc/jsk_tools/cltools/setup_env_for_ros.html)
@@ -86,7 +79,7 @@ $ rossetdefault baxter  # set ROS_MASTER_URI as http://baxter:11311
 
 ### Optional
 
-**Setup Arduino and DXHUB**
+#### Setup Arduino and DXHUB
 
 1. To distinguish left DXHUB from right one, follow the instruction [here](http://jsk-apc.readthedocs.io/en/latest/jsk_arc2017_baxter/setup_gripper_v6.html#distinguish-left-dxhub-from-right-one).
 
@@ -96,7 +89,7 @@ $ rosrun jsk_arc2017_baxter create_udev_rules
 ```
 so that Arduinos can appear on `/dev/arduino*` and DXHUBs can appear on `/dev/l_dxhub` and `/dev/r_dxhub`
 
-**Setup scales**
+#### Setup scales
 
 Create udev rules:
 ```
@@ -104,7 +97,7 @@ $ rosrun jsk_arc2017_common create_udev_rules
 ```
 so that scales can appear on `/dev/scale*`
 
-**Setup SSH**
+#### Setup SSH
 
 Write below in `~/.ssh/config`:
 
@@ -114,7 +107,7 @@ Host baxter
   User ruser  # password: rethink
 ```
 
-**Setup UP Board**
+#### Setup UP Board
 
 Inside UP Board...
 1. [Install ros-kinetic-ros-base and setup environment](http://wiki.ros.org/kinetic/Installation/Ubuntu).
@@ -163,3 +156,21 @@ sudo vi /etc/ntp.conf
 From main PC...
 1. `ssh -oHostKeyAlgorithms='ssh-rsa' baxter@<UP Board Host Name>.jsk.imi.i.u-tokyo.ac.jp`
 2. Add main PC's ssh public key to `~/.ssh/authorized_keys` on UP Board.
+
+
+## Citations
+
+###  APC2015
+
+```
+@article{wada2017pick,
+  title={Pick-and-verify: verification-based highly reliable picking system for various target objects in clutter},
+  author={Wada, Kentaro and Sugiura, Makoto and Yanokura, Iori and Inagaki, Yuto and Okada, Kei and Inaba, Masayuki},
+  journal={Advanced Robotics},
+  volume={31},
+  number={6},
+  pages={311--321},
+  year={2017},
+  publisher={Taylor \& Francis}
+}
+```

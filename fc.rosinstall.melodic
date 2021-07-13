@@ -51,10 +51,10 @@
     local-name: FA-I-sensor/force_proximity_ros
     uri: https://github.com/RoboticMaterials/FA-I-sensor.git
     version: master
-- tar:
-    local-name: ros-planning/moveit_robots/baxter_moveit_config
-    uri: https://github.com/ros-gbp/moveit_robots-release/archive/release/indigo/baxter_moveit_config/1.0.7-0.tar.gz
-    version: moveit_robots-release-release-indigo-baxter_moveit_config-1.0.7-0
+- git:
+    local-name: ros-planning/moveit_robots
+    uri: https://github.com/ros-planning/moveit_robots.git
+    version: kinetic-devel
 - git:
     local-name: turtlebot/turtlebot_description
     uri: https://github.com/turtlebot-release/turtlebot-release.git
