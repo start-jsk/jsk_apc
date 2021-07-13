@@ -1,7 +1,16 @@
 <launch>
 
+  <arg name="ready_for_roseus_resume" default="false" />
+
   <include file="$(find sphand_driver)/launch/baxterlgv7_common.launch" />
 
   <include file="$(find baxter_paper_filing)/launch/include/setup_paper_location.xml" />
+
+  <group if="$(arg ready_for_roseus_resume)">
+    <!-- roseus_resume -->
+    <node name="relay_to_roseus_resume"
+          pkg="topic_tools" type="relay"
+          args="/gripper_front/limb/left/intensity_prox_calibrator/output /roseus_resume/intensity_prox_for_intervention" />
+  </group>
 
 </launch>
