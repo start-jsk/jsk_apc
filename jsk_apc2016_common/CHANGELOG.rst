@@ -2,8 +2,8 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.3.0 (2021-07-14)
+------------------
 * Merge branch 'master' into add-sleep
 * Merge pull request `#2747 <https://github.com/start-jsk/jsk_apc/issues/2747>`_ from knorth55/copy-rbo
 * copy jsk_apc2016_common/python rbo_segmentation

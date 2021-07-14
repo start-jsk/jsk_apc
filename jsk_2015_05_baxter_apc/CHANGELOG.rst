@@ -2,8 +2,8 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.3.0 (2021-07-14)
+------------------
 * add baxter.launch in baxter_sim.launch
 * add gazebo arg in setup_head.launch
 * add gazebo arg for robot xacro

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>baxtergv6_apc2016</name>
-  <version>4.2.1</version>
+  <version>4.3.0</version>
   <description>Execute mimic APC2016 tasks with ARC2017 robot system</description>
 
   <maintainer email="pazeshun3684@gmail.com">Shun Hasegawa</maintainer>

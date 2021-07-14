@@ -2,8 +2,8 @@
 Changelog for package dualarm_grasping
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.3.0 (2021-07-14)
+------------------
 * Merge pull request `#2751 <https://github.com/start-jsk/jsk_apc/issues/2751>`_ from knorth55/fix-version
   fix version in demo packages
 * fix version in demo packages

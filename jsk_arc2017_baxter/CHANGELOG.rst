@@ -2,8 +2,8 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.3.0 (2021-07-14)
+------------------
 * Merge branch 'master' into fix-version
 * Merge pull request `#2722 <https://github.com/start-jsk/jsk_apc/issues/2722>`_ from knorth55/add-sleep
   add sleep in calib_required_controller

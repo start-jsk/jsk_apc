@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>grasp_prediction_arc2017</name>
-  <version>4.2.1</version>
+  <version>4.3.0</version>
   <description>Grasp prediction for ARC2017.</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>

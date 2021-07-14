@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>grasp_fusion</name>
-  <version>4.2.1</version>
+  <version>4.3.0</version>
   <description>Predict and execute simultaneous suction and pinch.</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
