@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>baxter_paper_filing</name>
+  <version>0.0.0</version>
+  <description>Paper filing with Baxter</description>
+
+  <maintainer email="pazeshun3684@gmail.com">Shun Hasegawa</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>jsk_arc2017_baxter</exec_depend>
+  <exec_depend>sphand_driver</exec_depend>
+
+  <export>
+  </export>
+</package>
