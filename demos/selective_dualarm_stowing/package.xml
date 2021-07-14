@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>selective_dualarm_stowing</name>
-  <version>0.0.0</version>
+  <version>4.2.1</version>
   <description>Selective Dualarm Stowing</description>
 
   <maintainer email="s-kitagawa@jsk.imi.u-tokyo.ac.jp">Shingo Kitagawa</maintainer>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>dualarm_grasping</name>
-  <version>0.0.0</version>
+  <version>4.2.1</version>
   <description>The dualarm_grasping package</description>
 
   <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
