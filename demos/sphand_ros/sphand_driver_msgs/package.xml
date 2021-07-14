@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>sphand_driver_msgs</name>
-  <version>4.2.1</version>
+  <version>4.3.0</version>
   <description>ROS messages for sphand_driver</description>
 
   <maintainer email="pazeshun3684@gmail.com">Shun Hasegawa</maintainer>

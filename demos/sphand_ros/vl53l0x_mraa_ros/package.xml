@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>vl53l0x_mraa_ros</name>
-  <version>4.2.1</version>
+  <version>4.3.0</version>
   <description>The vl53l0x_mraa_ros package</description>
 
   <maintainer email="pazeshun3684@gmail.com">Shun Hasegawa</maintainer>
