@@ -2,6 +2,17 @@
 Changelog for package jsk_apc2016_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' into add-sleep
+* Merge pull request `#2747 <https://github.com/start-jsk/jsk_apc/issues/2747>`_ from knorth55/copy-rbo
+* copy jsk_apc2016_common/python rbo_segmentation
+* remove rbo segmentation submodule
+* Merge pull request `#2709 <https://github.com/start-jsk/jsk_apc/issues/2709>`_ from pazeshun/add-baxtergv6_apc2016
+* Enable to change proba_threshold in object_segmentation_3d.launch
+* use Eigen3
+* Contributors: Shingo Kitagawa, Shun Hasegawa
+
 4.2.1 (2019-04-18)
 ------------------
 * Improve visualization (alpha: 0.7, tile_image)

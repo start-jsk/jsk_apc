@@ -2,6 +2,15 @@
 Changelog for package jsk_arc2017_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#2704 <https://github.com/start-jsk/jsk_apc/issues/2704>`_ from pazeshun/install_pick_re-experiment
+* [jsk_arc2017_common] Add script to install pick_re-experiment (experiment imitating ARC2017 pick competition)
+* Merge pull request `#2709 <https://github.com/start-jsk/jsk_apc/issues/2709>`_ from pazeshun/add-baxtergv6_apc2016
+* Enable to change proba_threshold in object_segmentation_3d.launch
+* Stop downloading unused model checkpoints
+* Contributors: Kentaro Wada, Shingo Kitagawa, Shun Hasegawa
+
 4.2.1 (2019-04-18)
 ------------------
 * ignore fcn32s.npz

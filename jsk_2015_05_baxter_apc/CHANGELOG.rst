@@ -2,6 +2,16 @@
 Changelog for package jsk_2015_05_baxter_apc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add baxter.launch in baxter_sim.launch
+* add gazebo arg in setup_head.launch
+* add gazebo arg for robot xacro
+* fix package for YesNoRequest
+* set no moveit baxter
+* fix baxter sdk
+* Contributors: Shingo Kitagawa
+
 4.2.1 (2019-04-18)
 ------------------
 

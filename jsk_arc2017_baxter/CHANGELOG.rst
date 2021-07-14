@@ -2,6 +2,27 @@
 Changelog for package jsk_arc2017_baxter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' into fix-version
+* Merge pull request `#2722 <https://github.com/start-jsk/jsk_apc/issues/2722>`_ from knorth55/add-sleep
+  add sleep in calib_required_controller
+* add sleep in calib_required_controller
+* Merge pull request `#2708 <https://github.com/start-jsk/jsk_apc/issues/2708>`_ from pazeshun/add-grasp_prediction_arc2017
+* Change topic name 'from_main' -> 'gripper_front'
+* [jsk_arc2017_baxter] Modify & re-apply https://github.com/start-jsk/jsk_apc/pull/2685
+* [jsk_arc2017_baxter] Copy baxterlgv7-interface.l from https://github.com/pazeshun/jsk_apc/blob/baxterlgv7-book-picking/jsk_arc2017_baxter/euslisp/lib/baxterlgv7-interface.l
+* [jsk_arc2017_baxter] Set png_level of compressedDepth to keep image_raw hz on kinetic
+  When subscribing compressedDepth on kinetic, hz of image_raw drops.
+  This is because load of CPU processing camera becomes too high.
+  To avoid this on baxter-c1, png_level should be under 6.
+* Merge pull request `#2685 <https://github.com/start-jsk/jsk_apc/issues/2685>`_ from pazeshun/fix-wait-interpolation-until
+  Fix :wait-interpolation-until not to finish immediately
+* Avoid infinite loop in :wait-interpolation-until called when robot stops
+* Fix :wait-interpolation-until not to finish immediately
+* add dynamixel_controllers as build_depend
+* Contributors: Shingo Kitagawa, Shun Hasegawa
+
 4.2.1 (2019-04-18)
 ------------------
 * remove define_machine arg
