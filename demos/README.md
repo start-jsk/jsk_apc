@@ -9,6 +9,7 @@
 |:-----------------------------:|:----------------------------------------------------------------------------|:-------------------------------------------------------------------|
 | K. Wada et al, ICRA, 2019     | See [instance_occlsegm](./instance_occlsegm).                   | [10.1109/ICRA.2019.8793783](https://doi.org/10.1109/ICRA.2019.8793783)         |
 | K. Wada et al, IROS, 2018     | See [instance_occlsegm](./instance_occlsegm).                   | [10.1109/IROS.2018.8593690](https://doi.org/10.1109/IROS.2018.8593690)         |
+| S .Hasegawa et al, RA-L, 2020 | See [baxter_paper_filing](./baxter_paper_filing).               | [10.1109/LRA.2020.3010440](https://doi.org/10.1109/LRA.2020.3010440)           |
 | S .Hasegawa et al, ICRA, 2019 | See [grasp_fusion](./grasp_fusion).                             | [10.1109/ICRA.2019.8793710](https://doi.org/10.1109/ICRA.2019.8793710)         |
 | S. Hasegawa et al, JRM, 2019  | See [baxtergv6_apc2016](./baxtergv6_apc2016).                   | [10.20965/jrm.2019.p0289](https://doi.org/10.20965/jrm.2019.p0289)             |
 | S. Hasegawa et al, IROS, 2018 | See [grasp_prediction_arc2017](./grasp_prediction_arc2017).     | [10.1109/IROS.2018.8593398](https://doi.org/10.1109/IROS.2018.8593398)         |

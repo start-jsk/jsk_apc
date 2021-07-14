@@ -27,16 +27,18 @@ The documentation is available at [here](http://jsk-apc.readthedocs.org).
 
 ### Research papers
 
-| Paper                         | Documentation                                                               | Paper DOI URL                                                                  |
-|:-----------------------------:|:----------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
-| K. Wada et al, ICRA, 2019     | See [demos/instance_occlsegm](./demos/instance_occlsegm).                   | [10.1109/ICRA.2019.8793783](https://doi.org/10.1109/ICRA.2019.8793783)         |
-| K. Wada et al, IROS, 2018     | See [demos/instance_occlsegm](./demos/instance_occlsegm).                   | [10.1109/IROS.2018.8593690](https://doi.org/10.1109/IROS.2018.8593690)         |
-| S .Hasegawa et al, ICRA, 2019 | See [demos/grasp_fusion](./demos/grasp_fusion).                             | [10.1109/ICRA.2019.8793710](https://doi.org/10.1109/ICRA.2019.8793710)         |
-| S. Hasegawa et al, JRM, 2019  | See [demos/baxtergv6_apc2016](./demos/baxtergv6_apc2016).                   | [10.20965/jrm.2019.p0289](https://doi.org/10.20965/jrm.2019.p0289)             |
-| S. Hasegawa et al, IROS, 2018 | See [demos/grasp_prediction_arc2017](./demos/grasp_prediction_arc2017).     | [10.1109/IROS.2018.8593398](https://doi.org/10.1109/IROS.2018.8593398)         |
-| S. Kitagawa et al, AR, 2020   | See [demos/selective_dualarm_grasping](./demos/selective_dualarm_grasping). | [10.1080/01691864.2020.1783352](https://doi.org/10.1080/01691864.2020.1783352) |
-| S. Kitagawa et al, IROS, 2018 | See [demos/selective_dualarm_grasping](./demos/selective_dualarm_grasping). | [10.1109/IROS.2018.8593752](https://doi.org/10.1109/IROS.2018.8593752)         |
-| S. Kitagawa et al, IAS, 2018  | See [demos/selecive_dualarm_stowing](./demos/selective_dualarm_stowing).    | [10.1007/978-3-030-01370-7_34](https://doi.org/10.1007/978-3-030-01370-7_34)   |
+| Paper                         | Documentation                                                                                                               | Paper DOI URL                                                                  |
+|:-----------------------------:|:----------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
+| K. Wada et al, ICRA, 2019     | See [demos/instance_occlsegm](./demos/instance_occlsegm).                                                                   | [10.1109/ICRA.2019.8793783](https://doi.org/10.1109/ICRA.2019.8793783)         |
+| K. Wada et al, IROS, 2018     | See [demos/instance_occlsegm](./demos/instance_occlsegm).                                                                   | [10.1109/IROS.2018.8593690](https://doi.org/10.1109/IROS.2018.8593690)         |
+| S .Hasegawa et al, RA-L, 2020 | See [demos/baxter_paper_filing](./demos/baxter_paper_filing).                                                               | [10.1109/LRA.2020.3010440](https://doi.org/10.1109/LRA.2020.3010440)           |
+| S .Hasegawa et al, ICRA, 2019 | See [demos/grasp_fusion](./demos/grasp_fusion).                                                                             | [10.1109/ICRA.2019.8793710](https://doi.org/10.1109/ICRA.2019.8793710)         |
+| S. Hasegawa et al, JRM, 2019  | See [demos/baxtergv6_apc2016](./demos/baxtergv6_apc2016).                                                                   | [10.20965/jrm.2019.p0289](https://doi.org/10.20965/jrm.2019.p0289)             |
+| S. Hasegawa et al, IROS, 2018 | See [demos/grasp_prediction_arc2017](./demos/grasp_prediction_arc2017).                                                     | [10.1109/IROS.2018.8593398](https://doi.org/10.1109/IROS.2018.8593398)         |
+| S. Hasegawa et al, IROS, 2017 | See [jsk_2016_01_baxter_apc](http://jsk-apc.readthedocs.org/en/latest/jsk_2016_01_baxter_apc/apc2016_pick_trial_rgv5.html). | [10.1109/IROS.2017.8202288](https://doi.org/10.1109/IROS.2017.8202288)         |
+| S. Kitagawa et al, AR, 2020   | See [demos/selective_dualarm_grasping](./demos/selective_dualarm_grasping).                                                 | [10.1080/01691864.2020.1783352](https://doi.org/10.1080/01691864.2020.1783352) |
+| S. Kitagawa et al, IROS, 2018 | See [demos/selective_dualarm_grasping](./demos/selective_dualarm_grasping).                                                 | [10.1109/IROS.2018.8593752](https://doi.org/10.1109/IROS.2018.8593752)         |
+| S. Kitagawa et al, IAS, 2018  | See [demos/selecive_dualarm_stowing](./demos/selective_dualarm_stowing).                                                    | [10.1007/978-3-030-01370-7_34](https://doi.org/10.1007/978-3-030-01370-7_34)   |
 
 ## Installation
 
