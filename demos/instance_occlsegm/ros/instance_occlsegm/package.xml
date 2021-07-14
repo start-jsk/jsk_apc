@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>instance_occlsegm</name>
-  <version>0.0.2</version>
+  <version>4.2.1</version>
   <description>Learning Instance Occlusion Segmentation.</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>

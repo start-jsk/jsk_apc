@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>sphand_driver</name>
-  <version>0.0.1</version>
+  <version>4.2.1</version>
   <description>ROS driver for the Suction Pinching Hand after Ver.7.0.</description>
 
   <maintainer email="pazeshun3684@gmail.com">Shun Hasegawa</maintainer>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>synthetic2d</name>
-  <version>0.0.2</version>
+  <version>4.2.1</version>
   <description>Learning from Image Synthesis on 2D Image.</description>
 
   <maintainer email="www.kentaro.wada@gmail.com">Kentaro Wada</maintainer>
