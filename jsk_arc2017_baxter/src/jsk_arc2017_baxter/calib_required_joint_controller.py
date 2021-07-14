@@ -88,6 +88,7 @@ class CalibRequiredJointController(JointPositionController):
             self.__set_angle_limits(prev_limits['min'], prev_limits['max'])
         self.set_torque_enable(False)
         self.set_speed(self.joint_speed)
+        rospy.sleep(0.5)
         if self.torque_limit is not None:
             self.set_torque_limit(self.torque_limit)
         motor_states_sub_for_init.unregister()
