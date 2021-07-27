@@ -84,7 +84,7 @@
                (instance ros::simple-action-client :init
                          (format nil "/gripper_front/limb/~a/dxl/prismatic_joint_controller/calib"
                                  (arm2str arm))
-                         jsk_arc2017_baxter::CalibJointAction
+                         dynamixel_controllers::CalibJointAction
                          :groupname groupname))
       ;; check if action is respond
       (unless
@@ -284,7 +284,7 @@
     (> (aref (send self :get-real-finger-av arm) 1) 30))
   (:start-prismatic-calib (arm)
     (send (gethash arm prismatic-calib-actions-)
-          :send-goal (instance jsk_arc2017_baxter::CalibJointActionGoal :init)))
+          :send-goal (instance dynamixel_controllers::CalibJointActionGoal :init)))
   (:prismatic-calibratingp (arm)
     (send self :spin-once)
     (eq (send (gethash arm prismatic-calib-actions-) :get-state) ros::*simple-goal-state-active*))
