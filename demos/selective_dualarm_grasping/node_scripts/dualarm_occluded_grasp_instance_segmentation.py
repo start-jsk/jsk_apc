@@ -33,9 +33,8 @@ from sklearn.cluster import KMeans
 from std_srvs.srv import Trigger
 from std_srvs.srv import TriggerResponse
 
-from grasp_data_generator.models import OccludedGraspMaskRCNNResNet101
-from grasp_data_generator.visualizations \
-    import vis_occluded_grasp_instance_segmentation
+from dualarm_grasping.models import OccludedGraspMaskRCNNResNet101
+from dualarm_grasping.visualizations import vis_occluded_grasp_instance_segmentation
 
 from dualarm_grasping.cfg \
     import DualarmOccludedGraspInstanceSegmentationConfig
