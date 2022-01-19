@@ -182,9 +182,6 @@ class DualarmOccludedGraspInstanceSegmentation(ConnectionBasedTransport):
             self._dyn_callback)
 
     def subscribe(self):
-        self.model.score_thresh = self.score_thresh
-        self.model.nms_thresh = self.nms_thresh
-
         # larger buff_size is necessary for taking time callback
         # http://stackoverflow.com/questions/26415699/ros-subscriber-not-up-to-date/29160379#29160379  # NOQA
         queue_size = rospy.get_param('~queue_size', 10)
@@ -213,6 +210,9 @@ class DualarmOccludedGraspInstanceSegmentation(ConnectionBasedTransport):
             sub.unregister()
 
     def _recognize(self, img_msg, mask_msg=None):
+        self.model.score_thresh = self.score_thresh
+        self.model.nms_thresh = self.nms_thresh
+
         bridge = cv_bridge.CvBridge()
         rgb = bridge.imgmsg_to_cv2(img_msg, desired_encoding='rgb8')
         if self.use_mask:
