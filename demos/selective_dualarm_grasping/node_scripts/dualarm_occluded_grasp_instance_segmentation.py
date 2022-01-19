@@ -272,6 +272,9 @@ class DualarmOccludedGraspInstanceSegmentation(ConnectionBasedTransport):
         occ_ins_lbl = - np.ones(img.shape[1:], dtype=np.int32)
         occ_ins_n_pixel = []
 
+        if len(label) == 0 or len(ins_label) == 0:
+            return
+
         for ins_id, (cls_id, ins_lbl) in enumerate(zip(label, ins_label)):
             # vis region
             if self.use_mask:
