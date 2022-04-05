@@ -77,7 +77,7 @@ def main():
     # augmentation: stack
     download_data(
         path='data/models/fcn32s_arc2017_datasetv3_cfg009_20170724.npz',
-        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vWXRNa3BpeWlqcFE',
+        url='https://drive.google.com/uc?id=1JH7vTqj1o6_XhK6gWDKfuX4CffhHdgjg',
         md5='17536436262487185740e186e39651bf',
     )
 
