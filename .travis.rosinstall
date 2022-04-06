@@ -10,8 +10,3 @@
     local-name: dynamixel_motor
     uri: https://github.com/pazeshun/dynamixel_motor.git
     version: gripper-v6-devel
-# https://github.com/locusrobotics/catkin_virtualenv/pull/85
-- git:
-    local-name: catkin_virtualenv
-    uri: https://github.com/knorth55/catkin_virtualenv.git
-    version: rospkg-bump

@@ -49,3 +49,8 @@
     local-name: create_description
     uri: https://github.com/turtlebot-release/turtlebot_create-release.git
     version: release/kinetic/create_description
+# https://github.com/locusrobotics/catkin_virtualenv/pull/85
+- git:
+    local-name: catkin_virtualenv
+    uri: https://github.com/knorth55/catkin_virtualenv.git
+    version: rospkg-bump
