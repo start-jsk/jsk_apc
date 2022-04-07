@@ -51,8 +51,8 @@
     version: release/kinetic/create_description
 - git:
     local-name: dynamixel_motor
-    uri: https://github.com/arebgun/dynamixel_motor.git
-    version: 0.4.1 
+    uri: https://github.com/pazeshun/dynamixel_motor.git
+    version: gripper-v6-devel
 # https://github.com/locusrobotics/catkin_virtualenv/pull/85
 - git:
     local-name: catkin_virtualenv
