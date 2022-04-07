@@ -1,4 +1,4 @@
-# not released yet in melodic 
+# not released yet in noetic
 - git:
     local-name: RethinkRobotics/baxter_simulator
     # https://github.com/RethinkRobotics/baxter_simulator/pull/130
@@ -53,3 +53,8 @@
     local-name: dynamixel_motor
     uri: https://github.com/arebgun/dynamixel_motor.git
     version: 0.4.1 
+# https://github.com/locusrobotics/catkin_virtualenv/pull/85
+- git:
+    local-name: catkin_virtualenv
+    uri: https://github.com/knorth55/catkin_virtualenv.git
+    version: rospkg-bump
