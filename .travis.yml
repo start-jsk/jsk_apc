@@ -16,7 +16,6 @@ cache:
 
 env:
   global:
-    - CATKIN_TOOLS_CONFIG_OPTIONS="--blacklist imagesift jsk_recognition_msgs jsk_perception jsk_pcl_ros_utils jsk_pcl_ros resized_image_transport checkerboard_detector fetcheus naoqieus jsk_fetch_startup jsk_nao_startup roseus_remote jsk_robot_startup jsk_robot_utils jsk_pr2_calibration pr2_base_trajectory_action jsk_baxter_web peppereus naoeus jsk_baxter_desktop jsk_pepper_startup jsk_pr2_startup jsk_pr2_desktop test_catkin_virtualenv test_catkin_virtualenv_py3_isolated test_catkin_virtualenv_inherited"
     - NOT_TEST_INSTALL=true
     - ROS_PARALLEL_JOBS="-j2"
     - ROSDEP_ADDITIONAL_OPTIONS="-n -q --ignore-src --skip-keys=jsk_smart_gui --skip-keys=ros3djs --skip-keys=pr2_calibration_launch --skip-keys=jsk_android_gui_api9 --skip-keys=ros2djs --skip-keys=face_recognition --skip-keys=roslibjs --skip-keys=force_proximity_ros --skip-keys=safe_teleop_base --skip-keys=pcl"
@@ -24,12 +23,21 @@ env:
     - USE_DOCKER=true
     - USE_TRAVIS=true
     # XXX: hotfix for chainer problem (https://github.com/chainer/chainer/issues/8545)
-    - BEFORE_SCRIPT='sudo -H pip install chainer==6.7.0 gdown==4.4.0 scikit-learn==0.19.1'
   matrix:
     - ROS_DISTRO=indigo
-    - ROS_DISTRO=indigo BUILD_PKGS="jsk_apc2015_common jsk_apc2016_common jsk_arc2017_common jsk_2015_05_baxter_apc jsk_2016_01_baxter_apc jsk_arc2017_baxter selective_dualarm_stowing sphand_driver sphand_driver_msgs vl53l0x_mraa_ros baxtergv6_apc2016 baxter_paper_filing"
-    - ROS_DISTRO=kinetic
-    - ROS_DISTRO=melodic
+    - >
+      ROS_DISTRO=indigo
+      BUILD_PKGS="jsk_apc2015_common jsk_apc2016_common jsk_arc2017_common jsk_2015_05_baxter_apc jsk_2016_01_baxter_apc jsk_arc2017_baxter selective_dualarm_stowing sphand_driver sphand_driver_msgs vl53l0x_mraa_ros baxtergv6_apc2016 baxter_paper_filing"
+      BEFORE_SCRIPT='sudo -H pip install chainer==6.7.0 gdown==4.4.0 scikit-learn==0.19.1'
+      CATKIN_TOOLS_CONFIG_OPTIONS="--blacklist imagesift jsk_recognition_msgs jsk_perception jsk_pcl_ros_utils jsk_pcl_ros resized_image_transport checkerboard_detector fetcheus naoqieus jsk_fetch_startup jsk_nao_startup roseus_remote jsk_robot_startup jsk_robot_utils jsk_pr2_calibration pr2_base_trajectory_action jsk_baxter_web peppereus naoeus jsk_baxter_desktop jsk_pepper_startup jsk_pr2_startup jsk_pr2_desktop"
+    - >
+      ROS_DISTRO=kinetic
+      BEFORE_SCRIPT='sudo -H pip install chainer==6.7.0 gdown==4.4.0'
+      CATKIN_TOOLS_CONFIG_OPTIONS="--blacklist imagesift jsk_recognition_msgs jsk_perception jsk_pcl_ros_utils jsk_pcl_ros resized_image_transport checkerboard_detector fetcheus naoqieus jsk_fetch_startup jsk_nao_startup roseus_remote jsk_robot_startup jsk_robot_utils jsk_pr2_calibration pr2_base_trajectory_action jsk_baxter_web peppereus naoeus jsk_baxter_desktop jsk_pepper_startup jsk_pr2_startup jsk_pr2_desktop test_catkin_virtualenv test_catkin_virtualenv_py3_isolated test_catkin_virtualenv_inherited"
+    - >
+      ROS_DISTRO=melodic
+      BEFORE_SCRIPT='sudo -H pip install chainer==6.7.0 gdown==4.4.0'
+      CATKIN_TOOLS_CONFIG_OPTIONS="--blacklist imagesift jsk_recognition_msgs jsk_perception jsk_pcl_ros_utils jsk_pcl_ros resized_image_transport checkerboard_detector fetcheus naoqieus jsk_fetch_startup jsk_nao_startup roseus_remote jsk_robot_startup jsk_robot_utils jsk_pr2_calibration pr2_base_trajectory_action jsk_baxter_web peppereus naoeus jsk_baxter_desktop jsk_pepper_startup jsk_pr2_startup jsk_pr2_desktop"
 matrix:
   allow_failures:
     - env: ROS_DISTRO=indigo
