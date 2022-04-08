@@ -53,6 +53,15 @@
     local-name: dynamixel_motor
     uri: https://github.com/pazeshun/dynamixel_motor.git
     version: gripper-v6-devel
+# waiting for release in noetic
+- git:
+    local-name: openni_camera
+    uri: https://github.com/ros-drivers/openni_camera.git
+    version: indigo-devel
+- git:
+    local-name: pr2_gripper_sensor
+    uri: https://github.com/PR2/pr2_gripper_sensor.git
+    version: hydro-devel
 # https://github.com/locusrobotics/catkin_virtualenv/pull/85
 - git:
     local-name: catkin_virtualenv
