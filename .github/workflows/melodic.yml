@@ -15,7 +15,7 @@ jobs:
         run: |
           set -x
           export USER=$(whoami)
-          git config --global --add safe.directory $GITHUB_WORKSPACE || echo "OK" # Show 'could not lock config file /github/home/.gitconfig: Permission denied', but it is ok
+          sudo git config --global --add safe.directory $GITHUB_WORKSPACE || echo "OK" # Show 'could not lock config file /github/home/.gitconfig: Permission denied', but it is ok
           sudo mkdir -p /__w/
           sudo chmod 777 -R /__w/
           sudo chown -R $USER $HOME
