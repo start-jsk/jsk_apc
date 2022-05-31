@@ -12,6 +12,7 @@ numpy
 opencv-python==4.2.0.32
 pathlib2
 Pillow
+protobuf==3.18.0
 PyYaml
 scipy>=1.0.0
 scikit-image
