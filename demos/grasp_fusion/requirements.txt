@@ -6,7 +6,7 @@ filelock
 gdown
 imageio==2.6.1
 imgaug>=0.2.7
-labelme>=4.0.0
+labelme>=4.0.0,<5.0.0
 matplotlib
 numpy
 opencv-python==4.2.0.32

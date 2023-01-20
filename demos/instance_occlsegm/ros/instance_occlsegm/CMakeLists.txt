@@ -106,6 +106,7 @@ catkin_package(
 )
 
 catkin_generate_virtualenv(
+  PYTHON_INTERPRETER python2
   CHECK_VENV FALSE
   EXTRA_PIP_ARGS
     -qqq  # Suppress log not to exceed maximum length in travis test

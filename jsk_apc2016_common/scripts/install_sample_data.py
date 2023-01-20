@@ -9,7 +9,7 @@ def main():
     download_data(
         pkg_name=PKG,
         path='samples/data/tabletop_objects.bag.tgz',
-        url='https://drive.google.com/uc?id=0B9P1L--7Wd2vQm9FaUFHa3h4bFE',
+        url='https://drive.google.com/uc?id=1X4ORFGMA2zjdLbrKqb5FHtwIh0lXb9fz',
         md5='9047b0cfd31dfaef08b75204f64ae56f',
         extract=True,
     )
