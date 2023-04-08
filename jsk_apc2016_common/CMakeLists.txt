@@ -207,10 +207,43 @@ install(DIRECTORY include/sib/
 ## rqt plugin
 install(FILES plugin.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-install(PROGRAMS node_scripts/rqt_select_target
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 install(DIRECTORY resource
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+if($ENV{ROS_DISTRO} STREQUAL "indigo") # on noetic it needs catkin_install_python to support Python3 and it does not work on indigo for some reason...
+  install(DIRECTORY node_scripts
+          DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+          USE_SOURCE_PERMISSIONS
+  )
+  install(DIRECTORY scripts
+          DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+          USE_SOURCE_PERMISSIONS
+  )
+else()
+  install(DIRECTORY scripts
+          DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+          USE_SOURCE_PERMISSIONS
+          PATTERN "*"
+          PATTERN "*/*.py" EXCLUDE
+  )
+  install(DIRECTORY node_scripts
+          DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+          USE_SOURCE_PERMISSIONS
+          PATTERN "*"
+          PATTERN "*/*.py" EXCLUDE
+  )
+
+  file(GLOB SCRIPT_PROGRAMS scripts/*.py)
+  catkin_install_python(
+    PROGRAMS ${SCRIPT_PROGRAMS}
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts
+  )
+  file(GLOB SCRIPT_PROGRAMS node_scripts/*.py)
+  catkin_install_python(
+    PROGRAMS ${SCRIPT_PROGRAMS}
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/node_scripts
+  )
+endif()
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES
