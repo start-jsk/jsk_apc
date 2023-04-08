@@ -59,29 +59,29 @@ bool TendonTransmissionLoader::getJointConfig(const transmission_interface::Tran
     TiXmlElement jnt_element = loadXmlElement(joints[i].xml_element_);
 
     // Parse required mechanical reduction
-    const ParseStatus reduction_status = getJointReduction(jnt_element,
-                                                           jnt_name,
-                                                           transmission_info.name_,
-                                                           true, // Required
-                                                           joint_reduction[i]);
-    if (reduction_status != SUCCESS) {return false;}
+    const bool reduction_status = getJointReduction(jnt_element,
+                                                    jnt_name,
+                                                    transmission_info.name_,
+                                                    true, // Required
+                                                    joint_reduction[i]);
+    if (reduction_status != true) {return false;}
 
     // Parse required joint limit
-    const ParseStatus limit_status = getJointLimit(jnt_element,
-                                                   jnt_name,
-                                                   transmission_info.name_,
-                                                   true, // Required
-                                                   joint_limit[i]);
-    if (limit_status != SUCCESS) {return false;}
+    const bool limit_status = getJointLimit(jnt_element,
+                                            jnt_name,
+                                            transmission_info.name_,
+                                            true, // Required
+                                            joint_limit[i]);
+    if (limit_status != true) {return false;}
   }
 
   return true;
 }
 
-TendonTransmissionLoader::ParseStatus TendonTransmissionLoader::getJointLimit(const TiXmlElement& parent_el,
-                                                                              const std::string& joint_name,
-                                                                              const std::string& transmission_name,
-                                                                              bool required, double& limit)
+bool TendonTransmissionLoader::getJointLimit(const TiXmlElement& parent_el,
+                                             const std::string& joint_name,
+                                             const std::string& transmission_name,
+                                             bool required, double& limit)
 {
   // Get XML element
   const TiXmlElement* limit_el = parent_el.FirstChildElement("limit");
@@ -97,7 +97,6 @@ TendonTransmissionLoader::ParseStatus TendonTransmissionLoader::getJointLimit(co
       ROS_DEBUG_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name
                                                  << "' does not specify the optional <limit> element.");
     }
-    return NO_DATA;
   }
 
   // Cast to number
@@ -109,9 +108,9 @@ TendonTransmissionLoader::ParseStatus TendonTransmissionLoader::getJointLimit(co
   {
     ROS_ERROR_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name
                                                << "' specifies the <limit> element, but is not a number.");
-    return BAD_TYPE;
+    return false;
   }
-  return SUCCESS;
+  return true;
 }
 
 } // namespace
