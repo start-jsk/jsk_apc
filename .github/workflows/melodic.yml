@@ -14,7 +14,9 @@ jobs:
       - name: Before Checkout # need for actions/checkout with ros-ubuntu container
         run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
+        with:
+          submodules: true
       # github actions cache does not work because of permission denied.
       # see: https://github.com/actions/cache/issues/404
       # - name: Cache several data
