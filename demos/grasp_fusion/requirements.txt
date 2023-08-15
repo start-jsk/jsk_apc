@@ -1,6 +1,10 @@
 chainer==6.7.0
 chainer-mask-rcnn>=0.5.13
 chainercv>=0.9.0
+# pycocotools is required implicitly (via chainer-mask-rcnn), and
+# Python2-compatible pycocotools (<=2.0.3) cannot be installed with Cython>=3.0.0.
+# See https://github.com/cython/cython/issues/5539.
+Cython<3.0.0
 fcn>=6.1.8
 filelock
 gdown
