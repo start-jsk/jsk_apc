@@ -1,10 +1,10 @@
 chainer==6.7.0
 chainer-mask-rcnn>=0.5.13
 chainercv>=0.9.0
-# To install pycocotools (available version: 2.0.0), Cython should be installed in advance.
-# See https://github.com/cocodataset/cocoapi/issues/327.
-# '-e git+https://github.com/cocodataset/cocoapi.git#egg=pycocotools&subdirectory=PythonAPI' does not work due to https://github.com/locusrobotics/catkin_virtualenv/issues/48.
-Cython
+# pycocotools is required both implicitly (via chainer-mask-rcnn) and explicitly, and
+# Python2-compatible pycocotools (<=2.0.3) cannot be installed with Cython>=3.0.0.
+# See https://github.com/cython/cython/issues/5539.
+Cython<3.0.0
 fcn>=6.1.8
 filelock
 gdown
@@ -16,6 +16,7 @@ numpy
 opencv-python==4.2.0.32
 pathlib2
 Pillow
+protobuf==3.17.3
 pycocotools
 PyYaml
 scipy>=1.0.0

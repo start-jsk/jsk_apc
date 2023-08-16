@@ -52,5 +52,5 @@
 # https://github.com/locusrobotics/catkin_virtualenv/pull/85
 - git:
     local-name: catkin_virtualenv
-    uri: https://github.com/knorth55/catkin_virtualenv.git
-    version: rospkg-bump
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: 24ab7433e3e98a3ad4c7f3b29960026d858b73bf
