@@ -12,6 +12,14 @@ import yaml
 from dataset import DatasetV1
 
 
+# basestring is deleted on Python3
+# https://stackoverflow.com/questions/11301138/how-to-check-if-variable-is-string-with-python-2-and-3-compatibility/22679982#22679982
+try:
+    basestring
+except NameError:
+    basestring = str
+
+
 this_dir = osp.dirname(osp.realpath(__file__))
 
 

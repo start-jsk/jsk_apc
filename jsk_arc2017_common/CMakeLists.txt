@@ -59,7 +59,7 @@ catkin_package(
 ## Build ##
 ###########
 
-# add_custom_target(install_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_data.py)
+# add_custom_target(install_data ALL COMMAND python$ENV{ROS_PYTHON_VERSION} ${PROJECT_SOURCE_DIR}/scripts/install_data.py)
 
 #############
 ## Install ##

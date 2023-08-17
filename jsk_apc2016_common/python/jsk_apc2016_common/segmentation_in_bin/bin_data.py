@@ -3,6 +3,11 @@
 from geometry_msgs.msg import Point, PointStamped
 
 
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
+
+
 class BinData(object):
     def __init__(self, *args, **kwargs):
         if 'bin_info' in kwargs:

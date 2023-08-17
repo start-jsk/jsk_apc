@@ -24,9 +24,9 @@ def test_load_json():
     json_file = osp.join(_this_dir, 'data', 'f2.json')
     bin_contents, work_order = jsk_apc2015_common.load_json(json_file)
     assert_true(isinstance(bin_contents, dict))
-    assert_equal(bin_contents.keys(), ['f'])
+    assert_equal(list(bin_contents.keys()), ['f'])
     assert_true(isinstance(work_order, dict))
-    assert_equal(work_order.keys(), ['f'])
+    assert_equal(list(work_order.keys()), ['f'])
 
 
 def test__get_tile_shape():

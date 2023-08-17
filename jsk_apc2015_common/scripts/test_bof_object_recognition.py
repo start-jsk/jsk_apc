@@ -2,7 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import cPickle as pickle
+try:
+    # Python2
+    import cPickle as pickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as pickle
 import gzip
 import sys
 

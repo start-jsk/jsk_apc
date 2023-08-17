@@ -4,7 +4,12 @@
 import os
 import yaml
 import gzip
-import cPickle as pickle
+try:
+    # Python2
+    import cPickle as pickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as pickle
 
 import cv2
 from catkin import terminal_color

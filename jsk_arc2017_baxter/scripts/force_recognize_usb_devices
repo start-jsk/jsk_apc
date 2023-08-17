@@ -12,6 +12,11 @@ import time
 import termcolor
 
 
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
+
+
 def sudo_bash_cmd(cmd):
     return "sudo bash -c '%s'" % cmd
 

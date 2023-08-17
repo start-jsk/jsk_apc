@@ -9,7 +9,12 @@ and save it.
 import numpy as np
 import os
 import gzip
-import cPickle as pickle
+try:
+    # Python2
+    import cPickle as pickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as pickle
 
 from sklearn.svm import SVC
 from skimage.io import imread

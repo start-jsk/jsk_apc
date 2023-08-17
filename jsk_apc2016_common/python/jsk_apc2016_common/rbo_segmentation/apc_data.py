@@ -4,7 +4,12 @@ from copy import deepcopy
 import cv2
 import os.path
 
-import cPickle as pickle
+try:
+    # Python2
+    import cPickle as pickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as pickle
 import matplotlib.pyplot as plt
 import numpy as np
 

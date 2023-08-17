@@ -114,7 +114,7 @@ def visualize_stow_contents(work_order):
     tote_region = [[190, 230], [1080, 790]]
     region_h = tote_region[1][1] - tote_region[0][1]
     region_w = tote_region[1][0] - tote_region[0][0]
-    max_obj_h, max_obj_w = region_h / 3, region_w / 4
+    max_obj_h, max_obj_w = region_h // 3, region_w // 4
     tote_x_min, tote_y_min = tote_region[0][0], tote_region[0][1]
     x_min, y_min = tote_x_min, tote_y_min
     for obj in work_order:

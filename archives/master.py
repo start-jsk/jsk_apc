@@ -24,6 +24,11 @@ from jsk_2015_05_baxter_apc.srv import (
     )
 
 
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
+
+
 class Master(object):
     """Master program for Amazon Picking Challenge. The strategy is belows::
         * Move arm in the front of target bin.

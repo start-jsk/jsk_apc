@@ -3,6 +3,14 @@ from unittest import TestCase
 from jsk_arc2017_common import data
 
 
+# basestring is deleted on Python3
+# https://stackoverflow.com/questions/11301138/how-to-check-if-variable-is-string-with-python-2-and-3-compatibility/22679982#22679982
+try:
+    basestring
+except NameError:
+    basestring = str
+
+
 class TestData(TestCase):
 
     def test_get_known_object_names(self):
