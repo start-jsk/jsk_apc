@@ -87,7 +87,7 @@
 
   <group if="$(arg rviz)">
     <param name="/robot_description"
-           command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxter.xacro" />
+           command="$(find xacro)/xacro $(find jsk_arc2017_baxter)/robots/baxter.xacro" />
     <node name="rviz"
           pkg="rviz" type="rviz"
           args="-d $(find grasp_fusion)/rvizconfig/stow.rviz">

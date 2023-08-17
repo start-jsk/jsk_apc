@@ -19,12 +19,12 @@
   <!-- gripper-v6 -->
   <group unless="$(arg v7)">
     <param name="/robot_description"
-           command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxter.xacro finger:=false" />
+           command="$(find xacro)/xacro $(find jsk_arc2017_baxter)/robots/baxter.xacro finger:=false" />
   </group>
   <!-- right gripper-v6 and vacuum cleaners -->
   <group if="$(arg v7)">
     <param name="/robot_description"
-           command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxterlgv7.xacro" />
+           command="$(find xacro)/xacro $(find jsk_arc2017_baxter)/robots/baxterlgv7.xacro" />
   </group>
 
   <!-- gripper-v6 -->
