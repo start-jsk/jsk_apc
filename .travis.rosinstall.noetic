@@ -93,3 +93,8 @@
     local-name: collada_urdf
     uri: https://github.com/werner291/collada_urdf.git
     version: patch-1
+# https://github.com/jsk-ros-pkg/jsk_visualization/pull/882, https://github.com/jsk-ros-pkg/jsk_visualization/pull/867
+- git:
+    local-name: jsk_visualization
+    uri: https://github.com/pazeshun/jsk_visualization.git
+    version: fix-for-noetic
