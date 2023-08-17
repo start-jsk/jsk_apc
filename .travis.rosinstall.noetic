@@ -1,9 +1,9 @@
 # not released yet in noetic
 - git:
     local-name: RethinkRobotics/baxter_simulator
-    # https://github.com/RethinkRobotics/baxter_simulator/pull/130
-    uri: https://github.com/EmaroLab/baxter_simulator.git
-    version: master
+    # https://github.com/RethinkRobotics/baxter_simulator/pull/132
+    uri: https://github.com/k-okada/baxter_simulator.git
+    version: fix_noetic
 - tar:
     local-name: baxter_examples
     uri: https://github.com/RethinkRobotics-release/baxter_examples-release/archive/release/indigo/baxter_examples/1.2.0-0.tar.gz
@@ -32,10 +32,11 @@
     local-name: moveit_robots/baxter_moveit_config
     uri: https://github.com/ros-gbp/moveit_robots-release/archive/release/indigo/baxter_moveit_config/1.0.7-0.tar.gz
     version: moveit_robots-release-release-indigo-baxter_moveit_config-1.0.7-0
-- tar:
+# https://github.com/RethinkRobotics/baxter_interface/pull/86
+- git:
     local-name: baxter_interface
-    uri: https://github.com/RethinkRobotics-release/baxter_interface-release/archive/release/indigo/baxter_interface/1.2.0-0.tar.gz
-    version: baxter_interface-release-release-indigo-baxter_interface-1.2.0-0
+    uri: https://github.com/k-okada/baxter_interface.git
+    version: development
 # waiting for release in melodic: https://github.com/turtlebot/turtlebot/issues/272
 - git:
     local-name: turtlebot_description
