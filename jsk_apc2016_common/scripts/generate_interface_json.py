@@ -164,6 +164,7 @@ def generateBinContents():
 
     return bin_contents
 
+
 # Do the work for the picking task
 # ------------------------------------------------------------------------------
 # Generate bin contents for the pick pod

@@ -21,7 +21,7 @@ def get_label_names():
 
 def get_object_names():
     label_names = get_label_names()
-    return [l for l in label_names if not l.startswith('__')]
+    return [ln for ln in label_names if not ln.startswith('__')]
 
 
 def get_known_object_names():

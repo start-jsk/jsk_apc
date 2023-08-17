@@ -63,8 +63,8 @@ class CandidatesPublisher(ConnectionBasedTransport):
                 contents = tote_contents
             else:
                 return
-            candidates_fixed = [l for l in self.label_names
-                                if l.startswith('__')]
+            candidates_fixed = [ln for ln in self.label_names
+                                if ln.startswith('__')]
             candidates = candidates_fixed + contents
             label_list = [self.label_names.index(x) for x in candidates]
             label_list = sorted(label_list)
@@ -78,6 +78,7 @@ class CandidatesPublisher(ConnectionBasedTransport):
             msg.labels = labels
             msg.header.stamp = rospy.Time.now()
             self.pub.publish(msg)
+
 
 if __name__ == '__main__':
     rospy.init_node('candidates_publisher')

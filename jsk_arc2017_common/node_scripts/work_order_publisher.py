@@ -116,6 +116,7 @@ class WorkOrderPublisher(object):
         self.larm_pub.publish(self.larm_msg)
         self.rarm_pub.publish(self.rarm_msg)
 
+
 if __name__ == '__main__':
     rospy.init_node('work_order_publisher')
     work_order_publisher = WorkOrderPublisher()
