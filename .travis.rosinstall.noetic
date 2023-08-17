@@ -86,3 +86,10 @@
     local-name: ml_classifiers
     uri: https://github.com/pazeshun/ml_classifiers.git
     version: add-noetic-test
+# find_package(collada_urdf) failed due to wrong collada_urdfConfig.cmake
+# - https://github.com/ros/collada_urdf/issues/43
+# - https://github.com/ros/collada_urdf/pull/44
+- git:
+    local-name: collada_urdf
+    uri: https://github.com/werner291/collada_urdf.git
+    version: patch-1
