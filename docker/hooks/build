@@ -2,7 +2,12 @@
 
 set -eu
 
-[[ ${DOCKER_TAG} =~ ([a-z]+)-([0-9a-z.]+)$ ]]
+if [[ ${DOCKER_TAG} != "this" ]]; then
+  [[ ${DOCKER_TAG} =~ ([a-z]+)-([0-9a-z.]+)$ ]];  # master
+else
+  [[ ${CACHE_TAG} =~ ([a-z]+)-([0-9a-z.]+)$ ]];  # pull request
+fi
+
 if [[ ${BASH_REMATCH[2]} = "testing" ]]; then
   [[ ${DOCKER_TAG} =~ ([a-z]+)-([0-9a-z.]+)-([a-z]+)$ ]];
   ROS_DISTRO=${BASH_REMATCH[1]};
