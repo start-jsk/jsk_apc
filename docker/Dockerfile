@@ -3,12 +3,12 @@ ARG UBUNTU_VERSION
 FROM osrf/ros:${ROS_DISTRO}-desktop-${UBUNTU_VERSION}
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN echo "deb http://packages.ros.org/ros-testing/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
-
-RUN apt-get update && apt-get install -y wget git && \
+RUN apt-get update && apt-get install -y curl git && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget http://packages.ros.org/ros.key -O - | apt-key add -
+RUN echo "deb http://packages.ros.org/ros-testing/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
+
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y apt-utils && \
     rm -rf /var/lib/apt/lists/*
 
