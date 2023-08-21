@@ -3,7 +3,7 @@ ARG UBUNTU_VERSION
 FROM osrf/ros:${ROS_DISTRO}-desktop-${UBUNTU_VERSION}
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get install -y curl git && \
+RUN apt-get update && apt-get install -y curl git wget && \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo "deb http://packages.ros.org/ros-testing/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
@@ -55,6 +55,14 @@ RUN cd ~ && \
     wstool merge start-jsk/jsk_apc/.travis.rosinstall && \
     wstool merge start-jsk/jsk_apc/.travis.rosinstall.${ROS_DISTRO} && \
     wstool up -j 2
+
+# Use snapshot of rosdep list on indigo and kinetic
+# https://github.com/jsk-ros-pkg/jsk_travis/blob/0.5.26/travis.sh#L295-L300
+ARG ROS_DISTRO
+RUN if [ ${ROS_DISTRO} = "indigo" ] || [ ${ROS_DISTRO} = "kinetic" ]; then \
+      rm /etc/ros/rosdep/sources.list.d/20-default.list; \
+      wget https://gist.githubusercontent.com/cottsay/b27a46e53b8f7453bf9ff637d32ea283/raw/476b3714bb90cfbc6b8b9d068162fc6408fa7f76/30-xenial.list -O /etc/ros/rosdep/sources.list.d/30-xenial.list; \
+    fi
 
 # /opt/ros/${ROS_DISTRO}/share can be changed after rosdep install, so we run it 3 times.
 ARG ROS_DISTRO
