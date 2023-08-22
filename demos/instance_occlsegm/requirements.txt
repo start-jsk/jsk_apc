@@ -16,7 +16,7 @@ numpy
 opencv-python==4.2.0.32
 pathlib2
 Pillow
-protobuf==3.17.3
+protobuf==3.18.3
 pycocotools
 PyYaml
 scipy>=1.0.0
