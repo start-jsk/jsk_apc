@@ -45,6 +45,22 @@ RUN if [ ${ROS_DISTRO} = "indigo" ]; then \
     pip install 'dlib==19.21.1' && \
     rm -rf /var/lib/apt/lists/*
 
+# Install python2-compatible packages before rosdep install.
+# Related issues:
+# - https://github.com/chainer/chainer/issues/8545
+# - https://github.com/protocolbuffers/protobuf/issues/8984
+ARG ROS_DISTRO
+RUN if [ ${ROS_DISTRO} = "indigo" ]; then \
+      pip install -U numpy fcn chainercv chainer==6.7.0 gdown==4.4.0 scikit-learn==0.19.1 protobuf==3.17.3; \
+    elif [ ${ROS_DISTRO} = "kinetic" ] || [ ${ROS_DISTRO} = "melodic" ]; then \
+      pip install fcn chainercv chainer==6.7.0 gdown==4.4.0 protobuf==3.17.3; \
+    else \
+      apt-get update && \
+      apt-get install -y python3-scipy python3-skimage && \
+      pip3 install fcn chainercv chainer==6.7.0 gdown==4.4.0 && \
+      rm -rf /var/lib/apt/lists/*; \
+    fi
+
 ARG ROS_DISTRO
 RUN cd ~ && \
     mkdir -p ros/${ROS_DISTRO}/src && \
