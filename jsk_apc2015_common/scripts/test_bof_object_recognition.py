@@ -2,7 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import cPickle as pickle
+try:
+    # Python2
+    import cPickle as pickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as pickle
 import gzip
 import sys
 
@@ -45,5 +50,5 @@ normalize(X, copy=False)
 y_pred = clf.predict(X)
 
 y = bunch_files.target
-print accuracy_score(y, y_pred)
-print classification_report(y, y_pred, target_names=clf.target_names_)
+print(accuracy_score(y, y_pred))
+print(classification_report(y, y_pred, target_names=clf.target_names_))

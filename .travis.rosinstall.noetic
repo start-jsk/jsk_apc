@@ -1,0 +1,100 @@
+# not released yet in noetic
+- git:
+    local-name: RethinkRobotics/baxter_simulator
+    # https://github.com/RethinkRobotics/baxter_simulator/pull/132
+    uri: https://github.com/k-okada/baxter_simulator.git
+    version: fix_noetic
+- tar:
+    local-name: baxter_examples
+    uri: https://github.com/RethinkRobotics-release/baxter_examples-release/archive/release/indigo/baxter_examples/1.2.0-0.tar.gz
+    version: baxter_examples-release-release-indigo-baxter_examples-1.2.0-0
+- tar:
+    local-name: baxter_tools
+    uri: https://github.com/RethinkRobotics-release/baxter_tools-release/archive/release/indigo/baxter_tools/1.2.0-0.tar.gz
+    version: baxter_tools-release-release-indigo-baxter_tools-1.2.0-0
+- tar:
+    local-name: jsk_planning/pddl_planner
+    uri: https://github.com/tork-a/jsk_planning-release/archive/release/melodic/pddl_planner/0.1.12-1.tar.gz
+    version: jsk_planning-release-release-melodic-pddl_planner-0.1.12-1
+- tar:
+    local-name: jsk_planning/pddl_msgs
+    uri: https://github.com/tork-a/jsk_planning-release/archive/release/melodic/pddl_msgs/0.1.12-1.tar.gz
+    version: jsk_planning-release-release-melodic-pddl_msgs-0.1.12-1
+- tar:
+    local-name: jsk_demos/jsk_demo_common
+    uri: https://github.com/tork-a/jsk_demos-release/archive/release/indigo/jsk_demo_common/0.0.4-0.tar.gz
+    version: jsk_demos-release-release-indigo-jsk_demo_common-0.0.4-0
+- tar:
+    local-name: jsk_demos/jsk_maps
+    uri: https://github.com/tork-a/jsk_demos-release/archive/release/indigo/jsk_maps/0.0.4-0.tar.gz
+    version: jsk_demos-release-release-indigo-jsk_maps-0.0.4-0
+- tar:
+    local-name: jsk_robot/baxtereus
+    uri: https://github.com/tork-a/jsk_robot-release/archive/release/indigo/baxtereus/1.1.0-1.tar.gz
+    version: jsk_robot-release-release-indigo-baxtereus-1.1.0-1
+- tar:
+    local-name: jsk_robot/jsk_baxter_startup
+    uri: https://github.com/tork-a/jsk_robot-release/archive/release/indigo/jsk_baxter_startup/1.1.0-1.tar.gz
+    version: jsk_robot-release-release-indigo-jsk_baxter_startup-1.1.0-1
+- tar:
+    local-name: moveit_robots/baxter_moveit_config
+    uri: https://github.com/ros-gbp/moveit_robots-release/archive/release/indigo/baxter_moveit_config/1.0.7-0.tar.gz
+    version: moveit_robots-release-release-indigo-baxter_moveit_config-1.0.7-0
+# https://github.com/RethinkRobotics/baxter_interface/pull/86
+- git:
+    local-name: baxter_interface
+    uri: https://github.com/k-okada/baxter_interface.git
+    version: development
+# waiting for release in melodic: https://github.com/turtlebot/turtlebot/issues/272
+- git:
+    local-name: turtlebot_description
+    uri: https://github.com/turtlebot-release/turtlebot-release.git
+    version: release/kinetic/turtlebot_description
+- git:
+    local-name: kobuki_description
+    uri: https://github.com/yujinrobot-release/kobuki-release.git
+    version: release/kinetic/kobuki_description
+- git:
+    local-name: create_description
+    uri: https://github.com/turtlebot-release/turtlebot_create-release.git
+    version: release/kinetic/create_description
+- git:
+    local-name: dynamixel_motor
+    uri: https://github.com/pazeshun/dynamixel_motor.git
+    version: gripper-v6-devel
+# waiting for release in noetic
+- git:
+    local-name: openni_camera
+    uri: https://github.com/ros-drivers/openni_camera.git
+    version: indigo-devel
+- git:
+    local-name: pr2_gripper_sensor
+    uri: https://github.com/PR2/pr2_gripper_sensor.git
+    version: hydro-devel
+# https://github.com/locusrobotics/catkin_virtualenv/pull/85
+- git:
+    local-name: catkin_virtualenv
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: 24ab7433e3e98a3ad4c7f3b29960026d858b73bf
+# jsk_pr2eus is not released yet
+- git:
+    local-name: jsk_pr2eus
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus
+    version: master
+# https://github.com/astuff/ml_classifiers/pull/6
+- git:
+    local-name: ml_classifiers
+    uri: https://github.com/pazeshun/ml_classifiers.git
+    version: add-noetic-test
+# find_package(collada_urdf) failed due to wrong collada_urdfConfig.cmake
+# - https://github.com/ros/collada_urdf/issues/43
+# - https://github.com/ros/collada_urdf/pull/44
+- git:
+    local-name: collada_urdf
+    uri: https://github.com/werner291/collada_urdf.git
+    version: patch-1
+# https://github.com/jsk-ros-pkg/jsk_visualization/pull/882, https://github.com/jsk-ros-pkg/jsk_visualization/pull/867
+- git:
+    local-name: jsk_visualization
+    uri: https://github.com/pazeshun/jsk_visualization.git
+    version: fix-for-noetic

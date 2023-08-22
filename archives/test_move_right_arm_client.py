@@ -20,8 +20,8 @@ def move_arm_client(pose):
         move_arm = rospy.ServiceProxy('semi/move_right_arm', MoveArm)
         resp = move_arm(pose)
         return resp.succeeded
-    except rospy.ServiceException, e:
-        print "Service call failed: %s" % e
+    except rospy.ServiceException as e:
+        print("Service call failed: %s" % e)
 
 
 if __name__ == '__main__':
@@ -32,8 +32,8 @@ if __name__ == '__main__':
     pose = Pose(position=position, orientation=orientation)
     right_pose = PoseStamped(header=hdr, pose=pose)
 
-    print "Requesting {0}, {1}".format(position, orientation)
+    print("Requesting {0}, {1}".format(position, orientation))
     if move_arm_client(right_pose) is True:
-        print "The move succeeded"
+        print("The move succeeded")
     else:
-        print "The move failed"
+        print("The move failed")

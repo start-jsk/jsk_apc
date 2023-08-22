@@ -26,7 +26,7 @@ private:
   static bool getJointConfig(const transmission_interface::TransmissionInfo& transmission_info,
                              std::vector<double>& joint_reduction, std::vector<double>& joint_limit);
 
-  static ParseStatus getJointLimit(const TiXmlElement& parent_el, const std::string& joint_name,
+  static bool getJointLimit(const TiXmlElement& parent_el, const std::string& joint_name,
                                    const std::string& transmission_name, bool required, double& limit);
 };
 

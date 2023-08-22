@@ -10,12 +10,20 @@ import numpy as np
 import jsk_apc2016_common
 
 
+# basestring is deleted on Python3
+# https://stackoverflow.com/questions/11301138/how-to-check-if-variable-is-string-with-python-2-and-3-compatibility/22679982#22679982
+try:
+    basestring
+except NameError:
+    basestring = str
+
+
 _this_dir = osp.dirname(osp.realpath(osp.abspath(__file__)))
 
 
 def test_get_object_data():
     obj_data = jsk_apc2016_common.get_object_data()
-    obj_names = map(lambda d: d['name'], obj_data)
+    obj_names = list(map(lambda d: d['name'], obj_data))
     assert_true(isinstance(obj_data, list))
     assert_equal(39, len(obj_data))
     assert_equal(sorted(obj_names), obj_names)

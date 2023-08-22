@@ -10,6 +10,11 @@ import json
 import jsk_apc2015_common
 
 
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('json_id')
 args = parser.parse_args()

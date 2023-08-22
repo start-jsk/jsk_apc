@@ -2,7 +2,12 @@
 # -*- coding:utf-8 -*-
 
 import gzip
-import cPickle
+try:
+    # Python2
+    import cPickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as cPickle
 import sys
 import argparse
 

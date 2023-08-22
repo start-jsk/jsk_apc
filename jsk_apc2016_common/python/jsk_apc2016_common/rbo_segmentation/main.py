@@ -9,7 +9,12 @@ import matplotlib.colorbar
 import numpy as np
 import cv2
 import os, sys
-import cPickle as pickle
+try:
+    # Python2
+    import cPickle as pickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as pickle
 import copy
 
 import utils
@@ -228,7 +233,12 @@ def display_experiment_objects(filename):
                       "stick_notes", "safety_glasses", "duck_toy", "highlighters",
                       "frog_toy", "stanley_66", "dental_treats", "tennis_ball", "shelf"]
 
-    import cPickle as pickle
+    try:
+        # Python2
+        import cPickle as pickle
+    except ModuleNotFoundError:
+        # Python3
+        import _pickle as pickle
 
     with open(filename,'rb') as f:
         results = pickle.load(f)
@@ -440,7 +450,12 @@ def experiment_baseline(datasets, results_path):
 
 def display_experiment_baseline(filename):
 
-    import cPickle as pickle
+    try:
+        # Python2
+        import cPickle as pickle
+    except ModuleNotFoundError:
+        # Python3
+        import _pickle as pickle
     with open(filename,'rb') as f:
         results = pickle.load(f)
 
@@ -549,7 +564,12 @@ def experiment_removed_features(datasets, results_path):
 
 def display_experiment_features(filenames):
 
-    import cPickle as pickle
+    try:
+        # Python2
+        import cPickle as pickle
+    except ModuleNotFoundError:
+        # Python3
+        import _pickle as pickle
 
     results = dict()
     for filename in filenames:
@@ -894,7 +914,12 @@ def experiment_model(datasets, results_path):
 
 def display_experiment_model(filename):
 
-    import cPickle as pickle
+    try:
+        # Python2
+        import cPickle as pickle
+    except ModuleNotFoundError:
+        # Python3
+        import _pickle as pickle
     with open(filename,'rb') as f:
         results = pickle.load(f)
 

@@ -52,6 +52,7 @@ class PublishTF(object):
             bbox_dict[bin_.name] = bin_.bbox
         return bbox_dict
 
+
 if __name__ == '__main__':
     rospy.init_node('sib_publish_tf')
     pub_tf = PublishTF()

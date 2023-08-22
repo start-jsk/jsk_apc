@@ -7,7 +7,7 @@
   </node>
 
   <param name="/robot_description"
-         command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxter.xacro" />
+         command="$(find xacro)/xacro $(find jsk_arc2017_baxter)/robots/baxter.xacro" />
 
   <include file="$(find synthetic2d)/launch/include/setup_for_stow.launch">
     <arg name="load_driver" value="false" />

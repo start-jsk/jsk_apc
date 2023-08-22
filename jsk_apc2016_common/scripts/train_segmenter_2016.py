@@ -36,18 +36,18 @@ def train(dataset_path, params):
                 data_file_prefixes.append(
                     os.path.join(dir_name, f[:-len(key)]))
 
-    print data_file_prefixes
+    print(data_file_prefixes)
     for file_prefix in data_file_prefixes:
         dataset.samples.append(
             APCSample(data_2016_prefix=file_prefix,
                       labeled=True, is_2016=True, infer_shelf_mask=True))
 
     bp.fit(dataset)
-    print "done fitting"
+    print("done fitting")
 
     with open(pkl_path, 'wb') as f:
         pickle.dump(bp, f)
-    print "done dumping model"
+    print("done dumping model")
 
     # with open(common_path + '/data/dataset.pkl', 'wb') as f:
     #    pickle.dump(dataset, f)

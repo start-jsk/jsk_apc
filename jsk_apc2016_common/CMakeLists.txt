@@ -171,9 +171,9 @@ target_link_libraries(sib_topic_synchronizer ${catkin_LIBRARIES})
 target_link_libraries(cloud_to_spatial_features ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 
 # trained data
-add_custom_target(install_trained_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_trained_data.py)
+# add_custom_target(install_trained_data ALL COMMAND python$ENV{ROS_PYTHON_VERSION} ${PROJECT_SOURCE_DIR}/scripts/install_trained_data.py)
 # sample data
-add_custom_target(install_sample_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_sample_data.py)
+# add_custom_target(install_sample_data ALL COMMAND python$ENV{ROS_PYTHON_VERSION} ${PROJECT_SOURCE_DIR}/scripts/install_sample_data.py)
 
 #############
 ## Install ##
@@ -207,10 +207,43 @@ install(DIRECTORY include/sib/
 ## rqt plugin
 install(FILES plugin.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-install(PROGRAMS node_scripts/rqt_select_target
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 install(DIRECTORY resource
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+if($ENV{ROS_DISTRO} STREQUAL "indigo") # on noetic it needs catkin_install_python to support Python3 and it does not work on indigo for some reason...
+  install(DIRECTORY node_scripts
+          DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+          USE_SOURCE_PERMISSIONS
+  )
+  install(DIRECTORY scripts
+          DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+          USE_SOURCE_PERMISSIONS
+  )
+else()
+  install(DIRECTORY scripts
+          DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+          USE_SOURCE_PERMISSIONS
+          PATTERN "*"
+          PATTERN "*/*.py" EXCLUDE
+  )
+  install(DIRECTORY node_scripts
+          DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+          USE_SOURCE_PERMISSIONS
+          PATTERN "*"
+          PATTERN "*/*.py" EXCLUDE
+  )
+
+  file(GLOB SCRIPT_PROGRAMS scripts/*.py)
+  catkin_install_python(
+    PROGRAMS ${SCRIPT_PROGRAMS}
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts
+  )
+  file(GLOB SCRIPT_PROGRAMS node_scripts/*.py)
+  catkin_install_python(
+    PROGRAMS ${SCRIPT_PROGRAMS}
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/node_scripts
+  )
+endif()
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

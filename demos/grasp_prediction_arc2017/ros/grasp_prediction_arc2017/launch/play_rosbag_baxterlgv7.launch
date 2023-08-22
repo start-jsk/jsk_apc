@@ -22,7 +22,7 @@
   <group if="$(arg set_baxter_params)">
     <!-- custom baxter params -->
     <param name="/robot_description"
-           command="$(find xacro)/xacro.py $(find jsk_arc2017_baxter)/robots/baxterlgv7.xacro" />
+           command="$(find xacro)/xacro $(find jsk_arc2017_baxter)/robots/baxterlgv7.xacro" />
   </group>
   <arg name="setup_source_location" default="true" />
   <include file="$(find grasp_prediction_arc2017)/launch/include/setup_book_picking_location.xml" if="$(arg setup_source_location)" />

@@ -103,8 +103,8 @@ def interface_test(json_file):
     # do some validitiy testing on the input file
     #--------------------------------------------------------------------------
 
-    print ''
-    print 'Checking that the bin contents meet our contest definition ...'
+    print('')
+    print('Checking that the bin contents meet our contest definition ...')
     bin_counts = [0,0,0,0,0,0,0]
     total_items = 0
     for bin_name in data['bin_contents']:
@@ -142,8 +142,8 @@ def interface_test(json_file):
 
     #--------------------------------------------------------------------------
 
-    print ''
-    print 'Checking if the work order is valid ...'
+    print('')
+    print('Checking if the work order is valid ...')
     n_found_items = 0
     for line_item in data['work_order']:
         item = line_item['item']

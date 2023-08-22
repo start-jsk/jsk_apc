@@ -3,7 +3,7 @@ from check_common import *
 
 if __name__ == "__main__":
 
-    print HEADER+"= Check Start APC Setup =", ENDC
+    print(HEADER+"= Check Start APC Setup =", ENDC)
 
     index_print("== Check MASTER ==")
     check_rosmaster()

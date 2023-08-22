@@ -36,7 +36,7 @@ def handle_move_arm(pose_req):
     try:
         rospy.wait_for_service(ns, 5.)
         resp = iksvc(ikreq)
-    except (rospy.ServiceException, rospy.ROSException), e:
+    except (rospy.ServiceException, rospy.ROSException) as e:
         rospy.logerr("Service call failed: %s" % (e,))
         return False
 
@@ -66,7 +66,7 @@ def handle_move_arm(pose_req):
 def move_arm_server():
     rospy.init_node('move_left_arm_server')
     s = rospy.Service('semi/move_left_arm', MoveArm, handle_move_arm)
-    print "Ready to move left arm."
+    print("Ready to move left arm.")
     rospy.spin()
 
 

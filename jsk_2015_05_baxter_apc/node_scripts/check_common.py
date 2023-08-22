@@ -23,16 +23,16 @@ UNDERLINE = '\033[4m'
 is_topic_published=False
 first_time_callback=True
 def success_print(msg):
-    print OKGREEN, "[OK]   : " , msg, ENDC
+    print(OKGREEN, "[OK]   : " , msg, ENDC)
 
 def warning_print(msg):
-    print WARNING , "[WARN] : " , msg , ENDC
+    print(WARNING , "[WARN] : " , msg , ENDC)
 
 def fail_print(msg):
-    print FAIL, "[FAIL] : " , msg , ENDC
+    print(FAIL, "[FAIL] : " , msg , ENDC)
 
 def index_print(msg):
-    print OKBLUE+BOLD+msg, ENDC
+    print(OKBLUE+BOLD+msg, ENDC)
 
 def check_param(param_name, expected, must=False):
     if not rospy.has_param(param_name):
@@ -53,7 +53,7 @@ def check_publish_callback(msg, callback_args):
     is_topic_published = True
 
     if callback_args["print_data"] and first_time_callback:
-        print INFO+"---"
+        print(INFO+"---")
         first_time_callback = False
         field_filter_fn = rostopic.create_field_filter(False, True)
         callback_echo = rostopic.CallbackEcho(callback_args["topic"], None, plot=False,
@@ -62,7 +62,7 @@ def check_publish_callback(msg, callback_args):
                                               offset_time=False, count=None,
                                               field_filter_fn=field_filter_fn)
         callback_echo.callback(msg, callback_args)
-        print ENDC
+        print(ENDC)
 
 def check_publishers(topic_name):
     master = rosgraph.Master('/rostopic')
@@ -76,7 +76,7 @@ def check_publishers(topic_name):
 def check_topic(topic_name,
                 print_data = False,
                 timeout = 1):
-    print HEADER+BOLD+"=== Check " +topic_name + " ===" +ENDC
+    print(HEADER+BOLD+"=== Check " +topic_name + " ===" +ENDC)
     global is_topic_published, first_time_callback
     first_time_callback = True
 
@@ -120,20 +120,20 @@ def check_node(target_node_name, needed, sub_success="", sub_fail=""):
         if needed:
             success_print("Node " + target_node_name + " exists")
             if sub_success:
-                print OKGREEN+"    "+sub_success,ENDC
+                print(OKGREEN+"    "+sub_success,ENDC)
         else:
             fail_print("Node " + target_node_name + " exists unexpecetedly. This should be killed with rosnode kill")
             if sub_fail:
-                print FAIL+"    "+sub_fail,ENDC            
+                print(FAIL+"    "+sub_fail,ENDC)
     else:
         if needed:
             fail_print("Node " + target_node_name + " doesn't exists. This node is NEEDED")
             if sub_fail:
-                print FAIL+"    "+sub_fail,ENDC
+                print(FAIL+"    "+sub_fail,ENDC)
         else:
             success_print("Node " + target_node_name + " doesn't exists")
             if sub_success:
-                print OKGREEN+"    "+sub_success,ENDC
+                print(OKGREEN+"    "+sub_success,ENDC)
 
 def check_rosmaster():
     try:
@@ -146,13 +146,13 @@ def check_rosmaster():
 
 def check_vacuum(arm):
     topic_name = "/vacuum_gripper/limb/"+arm
-    print HEADER+BOLD+"=== Check " +topic_name + " ===" +ENDC
-    print INFO,"Start " + arm + " Vacuum for 5 seconds..."
+    print(HEADER+BOLD+"=== Check " +topic_name + " ===" +ENDC)
+    print(INFO,"Start " + arm + " Vacuum for 5 seconds...")
     pub = rospy.Publisher(topic_name, Bool, queue_size=1)
     pub.publish(Bool(True))
     time.sleep(5)
 
-    print INFO,"Stop " + arm + " Vacuum"
+    print(INFO,"Stop " + arm + " Vacuum")
     pub.publish(Bool(False))
 
 from baxter_core_msgs.srv import (
@@ -160,9 +160,9 @@ from baxter_core_msgs.srv import (
 )
 
 def check_cameras():
-    print HEADER+BOLD+"=== Check CAMERAS ===" +ENDC
+    print(HEADER+BOLD+"=== Check CAMERAS ===" +ENDC)
     ls = rospy.ServiceProxy('cameras/list', ListCameras)
-    print INFO+" wait for server..." +ENDC
+    print(INFO+" wait for server..." +ENDC)
     try:
         rospy.wait_for_service('cameras/list', timeout=5)
     except rospy.exceptions.ROSException:

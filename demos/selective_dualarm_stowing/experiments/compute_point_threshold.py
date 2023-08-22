@@ -15,6 +15,11 @@ import re
 from utils import get_APC_pt
 
 
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
+
+
 def compute_point_threshold(
         gpu, data_type, log_dir, model_type):
     answer_pt_list = []

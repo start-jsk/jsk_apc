@@ -3,7 +3,7 @@
 
   <!-- For testing gripper only -->
   <param name="/robot_description"
-         command="$(find xacro)/xacro.py $(find jsk_2016_01_baxter_apc)/robots/baxterrgv5.xacro"
+         command="$(find xacro)/xacro $(find jsk_2016_01_baxter_apc)/robots/baxterrgv5.xacro"
          if="$(arg gripper_only)"/>
 
   <group ns="gripper_front/limb/right">

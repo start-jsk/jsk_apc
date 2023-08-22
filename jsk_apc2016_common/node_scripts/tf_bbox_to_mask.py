@@ -136,6 +136,7 @@ class TFBboxToMask(ConnectionBasedTransport):
                             [point.point.x, point.point.y, point.point.z]))
         return projected_points
 
+
 if __name__ == '__main__':
     rospy.init_node('tf_bbox_to_mask')
     tfmask = TFBboxToMask()

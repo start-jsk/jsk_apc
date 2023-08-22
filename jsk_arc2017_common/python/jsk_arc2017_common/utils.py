@@ -1,5 +1,10 @@
 import collections
-import cPickle as pickle
+try:
+    # Python2
+    import cPickle as pickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as pickle
 import hashlib
 import json
 import math
@@ -14,6 +19,11 @@ import skimage.transform
 import rospkg
 
 from .data import get_object_images
+
+
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
 
 
 PKG_DIR = rospkg.RosPack().get_path('jsk_arc2017_common')

@@ -1,7 +1,7 @@
 <launch>
 
   <!-- interactive_marker to adjust kiva pod pose it means for /kiva_pod_base frame -->
-  <param name="kiva_pod_description" command="$(find xacro)/xacro.py $(find jsk_apc2015_common)/models/kiva_pod/urdf/pod_lowres_convex.xacro" />
+  <param name="kiva_pod_description" command="$(find xacro)/xacro $(find jsk_apc2015_common)/models/kiva_pod/urdf/pod_lowres_convex.xacro" />
 
   <!--
   <node name="kiva_pod_joint_state_publisher"

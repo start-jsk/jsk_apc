@@ -17,7 +17,12 @@ Usage
 from __future__ import division
 import rospy
 import cv2
-import cPickle
+try:
+    # Python2
+    import cPickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as cPickle
 import gzip
 import numpy as np
 import os

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="3">
   <name>jsk_2015_05_baxter_apc</name>
   <version>4.3.0</version>
   <description>ROS package for Amazon Picking Challenge in May 2015</description>
@@ -26,36 +26,43 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>xacro</build_depend>
 
-  <run_depend>baxter_gazebo</run_depend>
+  <exec_depend>baxter_gazebo</exec_depend>
   <!--
   FIXME: Can't be installed on build.ros.org.
   https://github.com/start-jsk/jsk_apc/issues/2069
-  <run_depend>baxter_sim_hardware</run_depend>
+  <exec_depend>baxter_sim_hardware</exec_depend>
   -->
-  <run_depend>baxtereus</run_depend>
-  <run_depend>dynamic_reconfigure</run_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>imagesift</run_depend>
-  <run_depend>jsk_apc2015_common</run_depend>
-  <run_depend>jsk_pcl_ros</run_depend>
-  <run_depend>jsk_recognition_msgs</run_depend>
-  <run_depend>jsk_rqt_plugins</run_depend>
-  <run_depend>message_runtime</run_depend>
-  <run_depend>posedetection_msgs</run_depend>
-  <run_depend>python-gdown-pip</run_depend>
-  <run_depend>python-numpy</run_depend>
-  <run_depend>python-opencv</run_depend>
-  <run_depend>python-progressbar</run_depend>
-  <run_depend>python-skimage</run_depend>
-  <run_depend>python-sklearn</run_depend>
-  <run_depend>python-termcolor</run_depend>
-  <run_depend>roseus</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>rosserial_arduino</run_depend>
-  <run_depend>rosserial_client</run_depend>
-  <run_depend>sound_play</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>turtlebot_description</run_depend>
+  <exec_depend>baxtereus</exec_depend>
+  <exec_depend>dynamic_reconfigure</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>imagesift</exec_depend>
+  <exec_depend>jsk_apc2015_common</exec_depend>
+  <exec_depend>jsk_pcl_ros</exec_depend>
+  <exec_depend>jsk_recognition_msgs</exec_depend>
+  <exec_depend>jsk_rqt_plugins</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>posedetection_msgs</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==2">python-gdown-pip</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==3">python3-gdown-pip</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==2">python-numpy</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==3">python3-numpy</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==2">python-opencv</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==3">python3-opencv</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==2">python-progressbar</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==3">python3-progressbar</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==2">python-skimage</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==3">python3-skimage</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==2">python-sklearn</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==3">python3-sklearn</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==2">python-termcolor</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION==3">python3-termcolor</exec_depend>
+  <exec_depend>roseus</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>rosserial_arduino</exec_depend>
+  <exec_depend>rosserial_client</exec_depend>
+  <exec_depend>sound_play</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>turtlebot_description</exec_depend>
 
   <test_depend>jsk_tools</test_depend>
 

@@ -5,7 +5,7 @@
 
   <!-- custom baxter params -->
   <param name="/robot_description"
-         command="$(find xacro)/xacro.py $(find jsk_2016_01_baxter_apc)/robots/baxterrgv5.xacro" />
+         command="$(find xacro)/xacro $(find jsk_2016_01_baxter_apc)/robots/baxterrgv5.xacro" />
   <node name="robot_state_publisher"
         pkg="robot_state_publisher" type="robot_state_publisher">
     <remap from="joint_states" to="/robot/joint_states"/>

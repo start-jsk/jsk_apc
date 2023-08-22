@@ -9,6 +9,11 @@ import pandas as pd
 from selective_arm_stowing.dataset.v4 import DualarmDatasetV4
 
 
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
+
+
 def show_acc_graph(log_dir, line_num):
     for root, dirs, files in os.walk(log_dir):
         plt.figure()

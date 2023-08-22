@@ -61,7 +61,7 @@ class LabelMeMultiple(object):
 
     def print_target_objects(self):
         for _object in self.data['objects']:
-            print 'id: {},  {}'.format(object_names_dict[_object], _object)
+            print('id: {},  {}'.format(object_names_dict[_object], _object))
 
     def convert_id_to_object_name(self):
         """Modify label name of json from ids to object names
@@ -71,7 +71,7 @@ class LabelMeMultiple(object):
             label_name = object_names[int(label)]
 
             if label_name not in self.data['objects']:
-                print 'wrong object id'
+                print('wrong object id')
                 return False
 
             shape['label'] = label_name
@@ -82,7 +82,7 @@ class LabelMeMultiple(object):
     def check_delete_command(self):
         for shape in self.json_data['shapes']:
             if shape['label'] == '-1':
-                print 'deleting images'
+                print('deleting images')
                 return True
         return False
 
@@ -92,8 +92,8 @@ class LabelMeMultiple(object):
 
     def move_data_to_labeled(self):
         if not os.path.exists(self.labeled_dir):
-            print 'entered'
-            os.makedirs(self.labeled_dir, mode=0755)
+            print('entered')
+            os.makedirs(self.labeled_dir, mode=0o755)
         for input_path in self.input_paths:
             output_path = self._convert_to_path_labeled(input_path)
             shutil.move(input_path, output_path)
@@ -130,12 +130,12 @@ class LabelMeMultiple(object):
         with open(self.pkl_path, 'rb') as f:
             self.data = pickle.load(f)
         if os.path.exists(self.json_path):
-            print 'SKIPPING because json alreadly exists'
+            print('SKIPPING because json alreadly exists')
             return
 
-        print '\n\n'
-        print 'working on......  ', self.prefix
-        print '=============================================================='
+        print('\n\n')
+        print('working on......  ', self.prefix)
+        print('==============================================================')
         self.print_target_objects()
 
         # create label json
@@ -143,7 +143,7 @@ class LabelMeMultiple(object):
             'labelme -O ' + self.json_path + ' ' + self.img_path, shell=True)
 
         if not os.path.isfile(self.json_path):
-            print 'exiting'
+            print('exiting')
             return
 
         # load json data and pkl data

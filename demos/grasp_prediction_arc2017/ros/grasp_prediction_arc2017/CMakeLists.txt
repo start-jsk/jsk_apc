@@ -5,7 +5,7 @@ find_package(catkin REQUIRED catkin_virtualenv)
 
 catkin_python_setup()
 
-# add_custom_target(${PROJECT_NAME}_install_data ALL COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_data.py)
+# add_custom_target(${PROJECT_NAME}_install_data ALL COMMAND python$ENV{ROS_PYTHON_VERSION} ${PROJECT_SOURCE_DIR}/scripts/install_data.py)
 # Don't install data on build time to prevent build failure on travis due to googledrive access limit
 
 ################################################
@@ -27,18 +27,33 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
-catkin_generate_virtualenv(
-  PYTHON_INTERPRETER python2
-  CHECK_VENV FALSE
-  EXTRA_PIP_ARGS
-    -qqq  # Suppress log not to exceed maximum length in travis test
-    --upgrade
-    --upgrade-strategy=eager
-    # '--upgrade-strategy=only-if-needed' does not work in following case:
-    # python-dateutil is required by matplotlib.
-    # It is satisfied and skipped as python-dateutil 2.4.2 is already installed.
-    # Later, panda require python-dateutil>=2.5.0, but pip does not execute upgrading.
-)
+if($ENV{ROS_DISTRO} STREQUAL "noetic")
+  catkin_generate_virtualenv(
+    PYTHON_INTERPRETER python3
+    CHECK_VENV FALSE
+    EXTRA_PIP_ARGS
+      -qqq  # Suppress log not to exceed maximum length in travis test
+      --upgrade
+      --upgrade-strategy=eager
+      # '--upgrade-strategy=only-if-needed' does not work in following case:
+      # python-dateutil is required by matplotlib.
+      # It is satisfied and skipped as python-dateutil 2.4.2 is already installed.
+      # Later, panda require python-dateutil>=2.5.0, but pip does not execute upgrading.
+  )
+else()
+  catkin_generate_virtualenv(
+    PYTHON_INTERPRETER python2
+    CHECK_VENV FALSE
+    EXTRA_PIP_ARGS
+      -qqq  # Suppress log not to exceed maximum length in travis test
+      --upgrade
+      --upgrade-strategy=eager
+      # '--upgrade-strategy=only-if-needed' does not work in following case:
+      # python-dateutil is required by matplotlib.
+      # It is satisfied and skipped as python-dateutil 2.4.2 is already installed.
+      # Later, panda require python-dateutil>=2.5.0, but pip does not execute upgrading.
+  )
+endif()
 
 ###########
 ## Build ##

@@ -4,9 +4,19 @@ from copy import deepcopy
 import cv2
 import os.path
 
-import cPickle as pickle
+try:
+    # Python2
+    import cPickle as pickle
+except ModuleNotFoundError:
+    # Python3
+    import _pickle as pickle
 import matplotlib.pyplot as plt
 import numpy as np
+
+
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
 
 
 def visualize_color_image(img, title=''):
@@ -15,8 +25,8 @@ def visualize_color_image(img, title=''):
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_HSV2RGB))
 
 def basic_image_check(img, title):
-    print 'max of img ' + title + ' ', np.max(img)
-    print 'dtype of img ' + title + ' ', img.dtype
+    print('max of img ' + title + ' ', np.max(img))
+    print('dtype of img ' + title + ' ', img.dtype)
     plt.figure()
     plt.title(title)
     plt.imshow(img)

@@ -82,6 +82,7 @@ class OutputJsonStow():
                 is_updated = True
         return is_updated
 
+
 if __name__ == '__main__':
     rospy.init_node('output_json_stow')
     ojs = OutputJsonStow()

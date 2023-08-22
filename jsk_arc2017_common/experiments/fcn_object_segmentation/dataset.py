@@ -15,6 +15,11 @@ import torch.utils.data
 import yaml
 
 
+# Python2's xrange equals Python3's range, and xrange is removed on Python3
+if not hasattr(__builtins__, 'xrange'):
+    xrange = range
+
+
 this_dir = osp.dirname(osp.abspath(__file__))
 
 
