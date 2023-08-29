@@ -76,7 +76,7 @@ RUN cd ~ && \
 # https://github.com/jsk-ros-pkg/jsk_travis/blob/0.5.26/travis.sh#L295-L300
 ARG ROS_DISTRO
 RUN if [ ${ROS_DISTRO} = "indigo" ] || [ ${ROS_DISTRO} = "kinetic" ]; then \
-      rm /etc/ros/rosdep/sources.list.d/20-default.list; \
+      rm /etc/ros/rosdep/sources.list.d/20-default.list && \
       wget https://gist.githubusercontent.com/cottsay/b27a46e53b8f7453bf9ff637d32ea283/raw/476b3714bb90cfbc6b8b9d068162fc6408fa7f76/30-xenial.list -O /etc/ros/rosdep/sources.list.d/30-xenial.list; \
     fi
 
