@@ -145,8 +145,8 @@ class MaskRCNNInstanceSegmentation(ConnectionBasedTransport):
 
         if self.pub_viz.get_num_connections() > 0:
             n_fg_class = len(self.fg_class_names)
-            captions = ['{:d}: {:s}'.format(l, self.fg_class_names[l])
-                        for l in labels]
+            captions = ['{:d}: {:s}'.format(lbl, self.fg_class_names[lbl])
+                        for lbl in labels]
             viz = chainer_mask_rcnn.utils.draw_instance_bboxes(
                 img, bboxes, labels + 1, n_class=n_fg_class + 1,
                 masks=masks, captions=captions)

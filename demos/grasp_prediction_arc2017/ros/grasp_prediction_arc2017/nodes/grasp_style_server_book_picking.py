@@ -49,6 +49,7 @@ class GraspStyleServer(object):
         res.success = True
         return res
 
+
 if __name__ == "__main__":
     rospy.init_node('grasp_style_server')
     server = GraspStyleServer()
