@@ -76,7 +76,7 @@ RUN cd ~ && \
 # https://github.com/jsk-ros-pkg/jsk_travis/blob/0.5.26/travis.sh#L295-L300
 ARG ROS_DISTRO
 RUN if [ ${ROS_DISTRO} = "indigo" ] || [ ${ROS_DISTRO} = "kinetic" ]; then \
-      rm /etc/ros/rosdep/sources.list.d/20-default.list; \
+      rm /etc/ros/rosdep/sources.list.d/20-default.list && \
       wget https://gist.githubusercontent.com/cottsay/b27a46e53b8f7453bf9ff637d32ea283/raw/476b3714bb90cfbc6b8b9d068162fc6408fa7f76/30-xenial.list -O /etc/ros/rosdep/sources.list.d/30-xenial.list; \
     fi
 
@@ -98,6 +98,9 @@ RUN if [ ${TESTING} = "true" ] ; then \
       cd ~/ros/${ROS_DISTRO} && \
       if [ ${ROS_DISTRO} = "indigo" ]; then \
         catkin build jsk_apc2015_common jsk_apc2016_common jsk_arc2017_common jsk_2015_05_baxter_apc jsk_2016_01_baxter_apc jsk_arc2017_baxter selective_dualarm_stowing sphand_driver sphand_driver_msgs vl53l0x_mraa_ros baxtergv6_apc2016;\
+      elif [ ${ROS_DISTRO} = "kinetic" ]; then \
+        catkin config --blacklist test_catkin_virtualenv test_catkin_virtualenv_py3_isolated test_catkin_virtualenv_inherited && \
+        catkin build; \
       else \
         catkin build; \
       fi; \
