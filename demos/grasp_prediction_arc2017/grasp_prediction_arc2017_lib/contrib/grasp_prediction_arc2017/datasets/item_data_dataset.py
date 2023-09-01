@@ -17,7 +17,7 @@ def get_shelf_data_hasegawa_iros2018():
     path = osp.expanduser('~/data/hasegawa_iros2018/item_data/table/image.jpg')
     if not osp.exists(path):
         grasp_fusion_lib.data.download(
-            url='https://drive.google.com/uc?id=15e24rM1ibVO9GTz9VUmzF2abppsudFpU',  # NOQA
+            url='https://drive.google.com/uc?id=1CpqYodklHISXSRL9fk1aKk70ycHet5Fd',  # NOQA
             path=path,
             md5='3b32a48aa265e7896417af34a501ec9b',
         )
