@@ -1,5 +1,6 @@
 #include <Wire.h>
-#include <VL53L0X.h>
+#include <VL53L0X.h>  // Search and install VL53L0X on library manager of Arduino IDE
+// https://github.com/pololu/vl53l0x-arduino
 
 /***** GLOBAL CONSTANTS *****/
 
