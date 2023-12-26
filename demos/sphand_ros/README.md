@@ -182,6 +182,7 @@ cat /var/log/supervisor/LaunchLeftGripper.log  # Log of preprocess for roslaunch
 3. Search and install VL53L0X on library manager of Arduino IDE
 4. Upload [test_palm_v8.ino](sphand_driver/arduino/test_palm_v8/test_palm_v8.ino) to Arduino
 5. Check Serial Monitor of Arduino IDE
+   - When you bring your hand close to the board, the printed values should change (`intensity` increases and `tof` decreases)
 
 ### WrPPS Single Board
 
@@ -190,3 +191,4 @@ cat /var/log/supervisor/LaunchLeftGripper.log  # Log of preprocess for roslaunch
 3. Search and install VL53L0X on library manager of Arduino IDE
 4. Upload [test_wrpps_single_board.ino](sphand_driver/arduino/test_wrpps_single_board/test_wrpps_single_board.ino) to Arduino
 5. Check Serial Monitor of Arduino IDE
+   - When you bring your hand close to the board, the printed values should change (`intensity` increases and `tof` decreases)
