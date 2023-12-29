@@ -177,7 +177,7 @@ cat /var/log/supervisor/LaunchLeftGripper.log  # Log of preprocess for roslaunch
 
 ### Palm board of gripper-v8
 
-1. Connect the palm board to Arduino (Vcc, GND, SCL, and SDA)
+1. Connect the palm board to Arduino (Vcc (3.3V), GND, SCL, and SDA)
 2. Install Arduino IDE
 3. Search and install VL53L0X on library manager of Arduino IDE
 4. Upload [test_palm_v8.ino](sphand_driver/arduino/test_palm_v8/test_palm_v8.ino) to Arduino
@@ -186,7 +186,7 @@ cat /var/log/supervisor/LaunchLeftGripper.log  # Log of preprocess for roslaunch
 
 ### WrPPS Single Board
 
-1. Connect WrPPS Single Board to Arduino (Vcc, GND, SCL, and SDA)
+1. Connect WrPPS Single Board to Arduino (Vcc (3.3V), GND, SCL, and SDA)
 2. Install Arduino IDE
 3. Search and install VL53L0X on library manager of Arduino IDE
 4. Upload [test_wrpps_single_board.ino](sphand_driver/arduino/test_wrpps_single_board/test_wrpps_single_board.ino) to Arduino
