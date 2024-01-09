@@ -1,0 +1,103 @@
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_demos
+    uri: https://github.com/jsk-ros-pkg/jsk_demos.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
+- git:
+    local-name: FOR_ASTRA/openni2_camera
+    uri: https://github.com/ros-drivers/openni2_camera.git
+    version: indigo-devel
+- git:
+    local-name: start-jsk/jsk_apc
+    uri: https://github.com/start-jsk/jsk_apc.git
+    version: master
+- git:
+    local-name: RethinkRobotics/baxter_common
+    uri: https://github.com/knorth55/baxter_common.git
+    version: jsk_apc
+- git:
+    local-name: RethinkRobotics/baxter_interface
+    uri: https://github.com/wkentaro/baxter_interface.git
+    version: jsk_apc
+- git:
+    local-name: RethinkRobotics/baxter_examples
+    uri: https://github.com/RethinkRobotics/baxter_examples.git
+    version: v1.2.0
+- git:
+    local-name: RethinkRobotics/baxter_tools
+    uri: https://github.com/RethinkRobotics/baxter_tools.git
+    version: v1.2.0
+- git:
+    local-name: RethinkRobotics/baxter_simulator
+    # https://github.com/RethinkRobotics/baxter_simulator/pull/132
+    uri: https://github.com/k-okada/baxter_simulator.git
+    version: fix_noetic
+- git:
+    local-name: FOR_GRIPPER_V5/dynamixel_motor
+    uri: https://github.com/pazeshun/dynamixel_motor.git
+    version: gripper-v6-devel
+- git:
+    local-name: FA-I-sensor/force_proximity_ros
+    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+    version: master
+- git:
+    local-name: ros-planning/moveit_robots
+    uri: https://github.com/ros-planning/moveit_robots.git
+    version: kinetic-devel
+- git:
+    local-name: turtlebot/turtlebot_description
+    uri: https://github.com/turtlebot-release/turtlebot-release.git
+    version: release/kinetic/turtlebot_description
+- git:
+    local-name: yujinrobot/kobuki_description
+    uri: https://github.com/yujinrobot-release/kobuki-release.git
+    version: release/kinetic/kobuki_description
+- git:
+    local-name: turtlebot/create_description
+    uri: https://github.com/turtlebot-release/turtlebot_create-release.git
+    version: release/kinetic/create_description
+- tar:
+    local-name: jsk_planning/pddl_planner
+    uri: https://github.com/tork-a/jsk_planning-release/archive/release/melodic/pddl_planner/0.1.12-1.tar.gz
+    version: jsk_planning-release-release-melodic-pddl_planner-0.1.12-1
+- tar:
+    local-name: jsk_planning/pddl_msgs
+    uri: https://github.com/tork-a/jsk_planning-release/archive/release/melodic/pddl_msgs/0.1.12-1.tar.gz
+    version: jsk_planning-release-release-melodic-pddl_msgs-0.1.12-1
+# waiting for release in noetic
+- git:
+    local-name: ros-drivers/openni_camera
+    uri: https://github.com/ros-drivers/openni_camera.git
+    version: indigo-devel
+- git:
+    local-name: PR2/pr2_gripper_sensor
+    uri: https://github.com/PR2/pr2_gripper_sensor.git
+    version: hydro-devel
+# https://github.com/astuff/ml_classifiers/pull/6
+- git:
+    local-name: ml_classifiers
+    uri: https://github.com/pazeshun/ml_classifiers.git
+    version: add-noetic-test
+# find_package(collada_urdf) failed due to wrong collada_urdfConfig.cmake
+# - https://github.com/ros/collada_urdf/issues/43
+# - https://github.com/ros/collada_urdf/pull/44
+- git:
+    local-name: collada_urdf
+    uri: https://github.com/werner291/collada_urdf.git
+    version: patch-1
+# https://github.com/jsk-ros-pkg/jsk_visualization/pull/882, https://github.com/jsk-ros-pkg/jsk_visualization/pull/867
+- git:
+    local-name: jsk_visualization
+    uri: https://github.com/pazeshun/jsk_visualization.git
+    version: fix-for-noetic
