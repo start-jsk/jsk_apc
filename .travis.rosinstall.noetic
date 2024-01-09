@@ -76,11 +76,6 @@
     local-name: catkin_virtualenv
     uri: https://github.com/locusrobotics/catkin_virtualenv.git
     version: 24ab7433e3e98a3ad4c7f3b29960026d858b73bf
-# jsk_pr2eus is not released yet
-- git:
-    local-name: jsk_pr2eus
-    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus
-    version: master
 # https://github.com/astuff/ml_classifiers/pull/6
 - git:
     local-name: ml_classifiers
