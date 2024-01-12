@@ -84,3 +84,8 @@
     local-name: jsk-ros-pkg/jsk_visualization
     uri: https://github.com/pazeshun/jsk_visualization.git
     version: fix-for-noetic
+# Wait https://github.com/ros-perception/image_transport_plugins/pull/64 to be released
+- git:
+   local-name: ros-perception/image_transport_plugins
+   uri: https://github.com/ros-perception/image_transport_plugins.git
+   version: noetic-devel
