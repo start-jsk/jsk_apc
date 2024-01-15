@@ -172,3 +172,23 @@ cat /var/log/supervisor/LaunchLogger.log
 cat /var/log/supervisor/CheckI2cdetect.log  # Log of I2C interface recognition test
 cat /var/log/supervisor/LaunchLeftGripper.log  # Log of preprocess for roslaunch (e.g., network checking)
 ```
+
+## Sensor Board Test
+
+### Palm board of gripper-v8
+
+1. Connect the palm board to Arduino (Vcc (3.3V), GND, SCL, and SDA)
+2. Install Arduino IDE
+3. Search and install VL53L0X on library manager of Arduino IDE
+4. Upload [test_palm_v8.ino](sphand_driver/arduino/test_palm_v8/test_palm_v8.ino) to Arduino
+5. Check Serial Monitor of Arduino IDE
+   - When you bring your hand close to the board, the printed values should change (`intensity` increases and `tof` decreases)
+
+### WrPPS Single Board
+
+1. Connect WrPPS Single Board to Arduino (Vcc (3.3V), GND, SCL, and SDA)
+2. Install Arduino IDE
+3. Search and install VL53L0X on library manager of Arduino IDE
+4. Upload [test_wrpps_single_board.ino](sphand_driver/arduino/test_wrpps_single_board/test_wrpps_single_board.ino) to Arduino
+5. Check Serial Monitor of Arduino IDE
+   - When you bring your hand close to the board, the printed values should change (`intensity` increases and `tof` decreases)

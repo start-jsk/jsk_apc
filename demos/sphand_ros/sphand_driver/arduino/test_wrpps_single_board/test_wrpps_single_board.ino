@@ -14,40 +14,18 @@
 #define PS_DATA_L 0x08
 //#define PS_DATA_M //High byte of PS_DATA_L
 
-#define NSENSORS 4
-
-VL53L0X tof_sen[NSENSORS];
-
-// PCA9546A
-int ChgI2CMultiplexer(unsigned char adrs,unsigned char ch)
-{
-  unsigned char c;
-  int  ans;
-
-  Wire.beginTransmission(adrs);
-  c = 1 << ch;
-  Wire.write(c);
-  ans = Wire.endTransmission();
-
-  return ans;
-}
+VL53L0X tof_sen;
 
 void measure_proximity()
 {
-  int i;
-  for(i=0;i<NSENSORS;i++)
-  {
-    ChgI2CMultiplexer(0x71, i);
-    startProxSensor();
-    delay(10);
-    Serial.print("intensity");
-    Serial.print(i);
-    Serial.print(": ");
-    Serial.print(readFromCommandRegister(PS_DATA_L));
-    Serial.println();
-    stopProxSensor();
-    delay(1);
-  }
+  startProxSensor();
+  delay(10);
+  Serial.print("intensity");
+  Serial.print(": ");
+  Serial.print(readFromCommandRegister(PS_DATA_L));
+  Serial.print(", ");
+  stopProxSensor();
+  delay(1);
 }
 
 void initVCNL4040()
@@ -110,34 +88,20 @@ void setup()
   Serial.begin(9600);
   Wire.begin();
 
-  int i;
-  for (i = 0; i < NSENSORS; i++)
-  {
-    ChgI2CMultiplexer(0x71, i);
-    initVCNL4040(); //Configure sensor
-    tof_sen[i].init();
-    tof_sen[i].setTimeout(500);
-  }
+  initVCNL4040(); //Configure sensor
+  tof_sen.init();
+  tof_sen.setTimeout(500);
 }
 
 void loop()
 {
   measure_proximity();
-  int i;
-  int res;
-  for (i = 0; i < NSENSORS; i++)
+  Serial.print("tof");
+  Serial.print(": ");
+  Serial.print(tof_sen.readRangeSingleMillimeters());
+  if (tof_sen.timeoutOccurred())
   {
-    res = ChgI2CMultiplexer(0x71, i);
-    Serial.print("tof");
-    Serial.print(i);
-    Serial.print(": ");
-    Serial.print(tof_sen[i].readRangeSingleMillimeters());
-    if (tof_sen[i].timeoutOccurred())
-    {
-      Serial.print("TIMEOUT");
-    }
-    Serial.println();
+    Serial.print("TIMEOUT");
   }
-  Serial.print("Multiplexer res: ");
-  Serial.println(res);
+  Serial.println();
 }
