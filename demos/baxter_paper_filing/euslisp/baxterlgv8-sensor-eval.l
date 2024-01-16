@@ -73,9 +73,9 @@
   (send *ri* :wait-interpolation)
   (unix::sleep 1)
   (send *ri* :move-hand :larm
-        (send *baxter* :hand :larm :angle-vector (float-vector 0 72 72)) 1500)
+        (send *baxter* :hand :larm :angle-vector (float-vector 0 72 72)) 1000)
   (send *ri* :move-hand :larm
-        (send *baxter* :hand :larm :angle-vector (float-vector 0 90 90)) 1500 :wait nil)
+        (send *baxter* :hand :larm :angle-vector (float-vector 0 90 90)) 1000 :wait nil)
   (let (cancel-func stopped-p l-prox r-prox l-thre r-thre l-refl r-refl)
     (if intensity
       (progn

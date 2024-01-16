@@ -11,9 +11,9 @@
   (&key (type :lgripper-controller))
   (sphand_driver::baxterlgv8-init :type type)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1500)
+        (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1000)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500)
+        (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000)
   (send *baxter* :rotate-gripper *arm* 0 :relative nil)
   (send *baxter* :slide-gripper *arm* 0 :relative nil)
   (send *ri* :angle-vector (send *baxter* :angle-vector))
@@ -25,33 +25,33 @@
   (when move-fingers
     ;; test of abduction/adduction
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1500)
+          (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical) 1000)
     (unix::sleep 2)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500)
+          (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000)
     (unix::sleep 2)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pose *arm* :opposed :angle 0) 1500)
+          (send *baxter* :hand-grasp-pose *arm* :opposed :angle 0) 1000)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pose *arm* :cylindrical :angle 0) 1500)
+          (send *baxter* :hand-grasp-pose *arm* :cylindrical :angle 0) 1000)
     (unix::sleep 2)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pose *arm* :opposed :angle 0) 1500)
+          (send *baxter* :hand-grasp-pose *arm* :opposed :angle 0) 1000)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500)
+          (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000)
     (unix::sleep 2)
     ;; test of closing fingers
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pose *arm* :opposed :angle 80) 1500)
+          (send *baxter* :hand-grasp-pose *arm* :opposed :angle 80) 1000)
     (unix::sleep 1)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500)
+          (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000)
     (unix::sleep 1)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pose *arm* :opposed :angle 100) 1500)
+          (send *baxter* :hand-grasp-pose *arm* :opposed :angle 100) 1000)
     (unix::sleep 1)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1500))
+          (send *baxter* :hand-grasp-pre-pose *arm* :opposed) 1000))
   ;; test of prismatic joint
   (send *baxter* :slide-gripper *arm* 206 :relative nil)
   (send *ri* :angle-vector (send *baxter* :angle-vector) :fast nil 0)

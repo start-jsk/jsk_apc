@@ -34,7 +34,7 @@
         (send *baxter* :rotate-gripper *arm* 0 :relative nil)
         1500)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand *arm* :angle-vector) 1500)
+        (send *baxter* :hand *arm* :angle-vector) 1000)
   (send *ri* :spin-off-by-wrist *arm* :times 20)
   (send *ri* :gripper-servo-on *arm*)
   (send *ri* :wait-interpolation)
@@ -43,7 +43,7 @@
   (send *ri* :wait-interpolation)
   (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand *arm* :angle-vector) 1500)
+        (send *baxter* :hand *arm* :angle-vector) 1000)
   )
 
 
@@ -55,7 +55,7 @@
 
   (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand *arm* :angle-vector) 1500)
+        (send *baxter* :hand *arm* :angle-vector) 1000)
   (unix::sleep 3)
   (send *ri* :move-arm-body->bin *arm* *bin*)
   (send *ri* :wait-interpolation)
@@ -77,7 +77,7 @@
     (send *ri* :wait-interpolation)
     (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand *arm* :angle-vector) 1500)
+          (send *baxter* :hand *arm* :angle-vector) 1000)
     ;; approach to object
     (pushback (send *baxter* *arm* :move-end-pos #f(50 0 0) :world) avs)
     (pushback (send *baxter* *arm* :move-end-pos #f(50 0 0) :world) avs)
@@ -105,7 +105,7 @@
     (send *ri* :wait-interpolation)
     (send *baxter* :hand-grasp-pose *arm* :cylindrical)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand *arm* :angle-vector) 1500)
+          (send *baxter* :hand *arm* :angle-vector) 1000)
     ;; draw out object
     (pushback (send *baxter* *arm* :move-end-pos #f(0 0 50) :world) avs)
     (pushback (send *baxter* *arm* :move-end-pos #f(0 0 50) :world) avs)
@@ -137,7 +137,7 @@
 
   (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand *arm* :angle-vector) 1500)
+        (send *baxter* :hand *arm* :angle-vector) 1000)
   (unix::sleep 3)
   (send *ri* :move-arm-body->bin *arm* *bin*)
   (send *ri* :wait-interpolation)
@@ -181,7 +181,7 @@
     ;; grasp object by hand
     (send *baxter* :hand-grasp-pose *arm* :opposed)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand *arm* :angle-vector) 1500)
+          (send *baxter* :hand *arm* :angle-vector) 1000)
     ;; draw out object
     (pushback (send *baxter* *arm* :move-end-pos #f(0 0 50) :world) avs)
     (pushback (send *baxter* *arm* :move-end-pos #f(0 0 10) :world) avs)
@@ -217,7 +217,7 @@
 
   (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand *arm* :angle-vector) 1500)
+        (send *baxter* :hand *arm* :angle-vector) 1000)
   (unix::sleep 3)
   (send *ri* :move-arm-body->bin *arm* *bin*)
   (send *ri* :wait-interpolation)
@@ -261,7 +261,7 @@
     ;; grasp object by hand
     (send *baxter* :hand-grasp-pose *arm* :opposed)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand *arm* :angle-vector) 1500)
+          (send *baxter* :hand *arm* :angle-vector) 1000)
     ;; draw out object
     (pushback (send *baxter* *arm* :move-end-pos #f(0 0 50) :world) avs)
     (pushback (send *baxter* *arm* :move-end-pos #f(0 0 10) :world) avs)
@@ -297,7 +297,7 @@
 
   (send *baxter* :hand-grasp-pre-pose *arm* :opposed)
   (send *ri* :move-hand *arm*
-        (send *baxter* :hand *arm* :angle-vector) 1500)
+        (send *baxter* :hand *arm* :angle-vector) 1000)
   (unix::sleep 3)
   (send *ri* :move-arm-body->bin *arm* *bin*)
   (send *ri* :wait-interpolation)
@@ -331,7 +331,7 @@
     ;; prepare fingers
     (send *baxter* :hand-grasp-pre-pose *arm* :cylindrical)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand *arm* :angle-vector) 1500)
+          (send *baxter* :hand *arm* :angle-vector) 1000)
     (unix::sleep 3)
     ;; approach and drag object by sliding gripper
     (pushback (send *baxter* *arm* :move-end-pos #f(0 40 0) :world) avs)
@@ -344,7 +344,7 @@
     ;; grasp object by hand
     (send *baxter* :hand-grasp-pose *arm* :cylindrical)
     (send *ri* :move-hand *arm*
-          (send *baxter* :hand *arm* :angle-vector) 1500)
+          (send *baxter* :hand *arm* :angle-vector) 1000)
     (unix::sleep 3)
     ;; draw out object
     ;(pushback (send *baxter* *arm* :move-end-pos #f(0 0 50) :world) avs)
